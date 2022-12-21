@@ -36,6 +36,7 @@ common_ccflags = [
     '-std=c++23',
     '-Wall',
     '-Werror=vla',
+    '-Werror=uninitialized',
     '-Wextra',
     '-Wno-delete-non-virtual-dtor',
     '-Wno-packed-bitfield-compat',
@@ -66,6 +67,9 @@ n.rule(
 
 code_in_files = [
     os.path.join('source', 'main.cc'),
+    os.path.join('source', 'egg', 'core', 'Decomp.cc'),
+    os.path.join('source', 'egg', 'math', 'Math.cc'),
+    os.path.join('source', 'egg', 'math', 'Vector.cc'),
 ]
 
 code_out_files = []
