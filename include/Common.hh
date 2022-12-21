@@ -1,7 +1,9 @@
 #pragma once
 
 #include <array>
+#include <assert.h>
 #include <cstdint>
+#include <cstdio>
 #include <float.h>
 #include <limits>
 
@@ -20,6 +22,18 @@ typedef double f64;
 
 // Allow 40MiB in allocatable memory
 #define MAX_ALLOC_SIZE 0x2800000
+
+// CREDIT: MKW-SP
+// Hack required to print preprocessor macro
+#define K_TOSTRING(x) #x
+#define K_TOSTRING2(x) K_TOSTRING(x)
+
+// CREDIT: MKW-SP
+// Better console logging
+#define K_LOG(m, ...) \
+    do { \
+        printf("[" __FILE_NAME__ ":" K_TOSTRING2(__LINE__) "] " m "\n", ##__VA_ARGS__); \
+    } while (0)
 
 static_assert(FLT_EPSILON == 1.0f / 8388608.0f);
 
