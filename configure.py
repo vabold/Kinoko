@@ -36,6 +36,7 @@ common_ccflags = [
     '-std=c++23',
     '-Wall',
     '-Werror=vla',
+    '-Werror=uninitialized',
     '-Wextra',
     '-Wno-delete-non-virtual-dtor',
     '-Wno-packed-bitfield-compat',
@@ -43,7 +44,6 @@ common_ccflags = [
 ]
 
 target_cflags = [
-    '-fstack-protector-strong',
     '-O2',
 ]
 
@@ -65,7 +65,14 @@ n.rule(
 )
 
 code_in_files = [
-    os.path.join('source', 'main.cc'),
+    os.path.join('source', 'abstract', 'Archive.cc'),
+    os.path.join('source', 'abstract', 'File.cc'),
+    os.path.join('source', 'egg', 'core', 'Decomp.cc'),
+    os.path.join('source', 'egg', 'core', 'Archive.cc'),
+    os.path.join('source', 'egg', 'math', 'Math.cc'),
+    os.path.join('source', 'egg', 'math', 'Vector.cc'),
+    os.path.join('source', 'host', 'main.cc'),
+    os.path.join('source', 'host', 'System.cc'),
 ]
 
 code_out_files = []
