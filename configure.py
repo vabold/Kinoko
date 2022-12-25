@@ -66,6 +66,7 @@ n.rule(
 
 code_in_files = [
     os.path.join('source', 'abstract', 'Archive.cc'),
+    os.path.join('source', 'abstract', 'File.cc'),
     os.path.join('source', 'egg', 'core', 'Decomp.cc'),
     os.path.join('source', 'egg', 'core', 'Archive.cc'),
     os.path.join('source', 'egg', 'math', 'Math.cc'),
