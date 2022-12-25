@@ -4,6 +4,14 @@
 
 namespace EGG::Decomp {
 
+s32 getExpandSize(const u8 *src) {
+    if (src[0] == 'Y' && src[1] == 'a' && src[2] == 'z') {
+        return getSZSExpandSize(src);
+    }
+
+    return -1;
+}
+
 s32 decodeSZS(const u8 *src, u8 *dst) {
     s32 expandSize = getSZSExpandSize(src);
     s32 srcIdx = 0x10;
