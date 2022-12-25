@@ -66,6 +66,7 @@ s32 ArchiveHandle::convertPathToEntryId(const char *path) {
         bool endOfPath = nameEnd[0] == '\0';
         s32 nameLength = nameEnd - path;
 
+        bool found = false;
         const u32 anchor = entryId;
         entryId++;
         while (entryId < node(anchor)->m_directory.m_next) {
@@ -79,7 +80,8 @@ s32 ArchiveHandle::convertPathToEntryId(const char *path) {
                     }
 
                     if (strcmp(path, entryName) == 0) {
-                        goto descend;
+                        found = true;
+                        break;
                     }
                 }
 
@@ -92,9 +94,11 @@ s32 ArchiveHandle::convertPathToEntryId(const char *path) {
                 break;
             }
 
-            return -1;
+            if (!found) {
+                return -1;
+            }
         }
-    descend:
+
         if (endOfPath) {
             return entryId;
         }
