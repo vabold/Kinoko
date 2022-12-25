@@ -6,7 +6,7 @@ Kinoko is a reimplementation of Mario Kart Wii's physics engine in C++. This pro
 
 ### Dependencies
 
-- gcc (C++23)
+- g++ 12 (C++23)
 - ninja
 - Python 3
 

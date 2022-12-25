@@ -2,6 +2,7 @@
 
 #include <array>
 #include <assert.h>
+#include <bit>
 #include <cstdint>
 #include <cstdio>
 #include <float.h>
@@ -36,6 +37,13 @@ typedef double f64;
     } while (0)
 
 static_assert(FLT_EPSILON == 1.0f / 8388608.0f);
+
+// Consistent file parsing with byte-swappable values
+template <typename T>
+static inline T parse(T val, std::endian endian) {
+    assert(endian == std::endian::big || endian == std::endian::little);
+    return endian == std::endian::native ? val : std::byteswap(val);
+}
 
 // frsqrte matching
 struct BaseAndDec {

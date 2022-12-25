@@ -44,7 +44,6 @@ common_ccflags = [
 ]
 
 target_cflags = [
-    '-fstack-protector-strong',
     '-O2',
 ]
 
@@ -66,7 +65,9 @@ n.rule(
 )
 
 code_in_files = [
+    os.path.join('source', 'abstract', 'Archive.cc'),
     os.path.join('source', 'egg', 'core', 'Decomp.cc'),
+    os.path.join('source', 'egg', 'core', 'Archive.cc'),
     os.path.join('source', 'egg', 'math', 'Math.cc'),
     os.path.join('source', 'egg', 'math', 'Vector.cc'),
     os.path.join('source', 'host', 'main.cc'),
