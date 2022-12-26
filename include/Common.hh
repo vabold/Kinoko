@@ -41,7 +41,8 @@ static_assert(FLT_EPSILON == 1.0f / 8388608.0f);
 // Consistent file parsing with byte-swappable values
 template <typename T>
 static inline T parse(T val, std::endian endian) {
-    assert(endian == std::endian::big || endian == std::endian::little);
+    static_assert(
+            std::endian::native == std::endian::big || std::endian::native == std::endian::little);
     return endian == std::endian::native ? val : std::byteswap(val);
 }
 
