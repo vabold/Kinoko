@@ -1,19 +1,17 @@
 #include "Decomp.hh"
 
-#define getSZSExpandSize(src) ((src[4] << 24) | (src[5] << 16) | (src[6] << 8) | src[7])
-
 namespace EGG::Decomp {
 
 s32 getExpandSize(const u8 *src) {
     if (src[0] == 'Y' && src[1] == 'a' && src[2] == 'z') {
-        return getSZSExpandSize(src);
+        return parse<s32>(form<s32>(&src[4]), std::endian::big);
     }
 
     return -1;
 }
 
 s32 decodeSZS(const u8 *src, u8 *dst) {
-    s32 expandSize = getSZSExpandSize(src);
+    s32 expandSize = getExpandSize(src);
     s32 srcIdx = 0x10;
     u8 code = 0;
 
