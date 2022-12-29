@@ -59,9 +59,7 @@ s32 ArchiveHandle::convertPathToEntryId(const char *path) {
 
         // Main search
         const char *nameEnd = path;
-        for (; nameEnd[0] != '\0' && nameEnd[0] != '/'; nameEnd++) {
-            ;
-        }
+        for (; nameEnd[0] != '\0' && nameEnd[0] != '/'; nameEnd++) {}
 
         bool endOfPath = nameEnd[0] == '\0';
         s32 nameLength = nameEnd - path;
