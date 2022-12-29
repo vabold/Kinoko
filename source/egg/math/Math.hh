@@ -23,7 +23,7 @@ union c64 {
         f = p;
     }
 
-    const u64 _hex() const {
+    u64 _hex() const {
         return u;
     }
 
