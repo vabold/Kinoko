@@ -6,7 +6,9 @@ namespace Abstract::File {
 
 u8 *Load(const char *path) {
     std::ifstream file(path, std::ios::binary);
-    assert(file);
+    if (!file) {
+        K_PANIC("File with provided path %s was not loaded correctly!", path);
+    }
 
     file.seekg(0, std::ios::end);
     size_t size = file.tellg();

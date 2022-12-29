@@ -36,17 +36,24 @@ typedef double f64;
         printf("[" __FILE_NAME__ ":" K_TOSTRING2(__LINE__) "] " m "\n", ##__VA_ARGS__); \
     } while (0)
 
+#define K_PANIC(m, ...) \
+    do { \
+        K_LOG(m, ##__VA_ARGS__); \
+        K_LOG("Exiting with code 1..."); \
+        exit(1); \
+    } while (0)
+
 static_assert(FLT_EPSILON == 1.0f / 8388608.0f);
 
 // Form data into integral value
 template <typename T>
 static inline T form(const u8 *data) {
-  static_assert(std::is_integral<T>::value);
-  T result = 0;
-  for (size_t i = 0; i < sizeof(T); ++i) {
-    result = (result << 8) | data[i];
-  }
-  return result;
+    static_assert(std::is_integral<T>::value);
+    T result = 0;
+    for (size_t i = 0; i < sizeof(T); ++i) {
+        result = (result << 8) | data[i];
+    }
+    return result;
 }
 
 // Consistent file parsing with byte-swappable values

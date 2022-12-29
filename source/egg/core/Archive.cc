@@ -43,7 +43,6 @@ Archive *Archive::Mount(void *archiveStart) {
     } else {
         // Create a new archive and add it to the vector
         archive = new Archive(archiveStart);
-        assert(archive);
         s_archiveList.push_back(archive);
     }
 
