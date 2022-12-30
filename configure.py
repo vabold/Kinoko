@@ -71,6 +71,9 @@ code_in_files = [
     os.path.join('source', 'egg', 'core', 'Archive.cc'),
     os.path.join('source', 'egg', 'math', 'Math.cc'),
     os.path.join('source', 'egg', 'math', 'Vector.cc'),
+    os.path.join('source', 'game', 'system', 'DvdArchive.cc'),
+    os.path.join('source', 'game', 'system', 'MultiDvdArchive.cc'),
+    os.path.join('source', 'game', 'system', 'ResourceManager.cc'),
     os.path.join('source', 'host', 'main.cc'),
     os.path.join('source', 'host', 'System.cc'),
 ]
