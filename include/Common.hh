@@ -111,6 +111,7 @@ enum class Vehicle {
     Jet_Bubble = 33,
     Dolphin_Dasher = 34,
     Phantom = 35,
+    Max = 36,
 };
 
 enum class Character {
@@ -162,9 +163,11 @@ enum class Character {
     Peach_Biker_Outfit = 45,
     Daisy_Biker_Outfit = 46,
     Rosalina_Biker_Outfit = 47,
+    Max = 48,
 };
 
 extern const char *const COURSE_NAMES[59];
+extern const char *const VEHICLE_NAMES[36];
 
 // CREDIT: MKW-SP
 // Hack required to print preprocessor macro

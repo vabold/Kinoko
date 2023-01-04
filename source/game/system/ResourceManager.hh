@@ -29,6 +29,8 @@ public:
     void load(Course courseId);
     MultiDvdArchive *load(s32 idx, const char *filename);
 
+    static const char *GetVehicleName(Vehicle vehicle);
+
     static ResourceManager *CreateInstance();
     static void DestroyInstance();
     static ResourceManager *Instance();

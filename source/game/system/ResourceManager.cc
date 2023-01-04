@@ -1,5 +1,7 @@
 #include "ResourceManager.hh"
 
+#include "source/game/system/RaceConfig.hh"
+
 namespace System {
 
 #define ARCHIVE_COUNT 2
@@ -14,10 +16,13 @@ void *ResourceManager::getFile(const char *filename, size_t *size, s32 idx) {
 }
 
 void *ResourceManager::getBsp(u8 playerIdx, size_t *size) {
-    // TODO: This is reliant on RaceConfig
-    (void)playerIdx;
-    (void)size;
-    return nullptr;
+    char buffer[32];
+
+    auto *raceConfig = RaceConfig::Instance();
+    const char *vehicle = GetVehicleName(raceConfig->raceScenario().player(playerIdx).vehicle());
+    snprintf(buffer, sizeof(buffer), "bsp/%s.bsp", vehicle);
+
+    return m_archives[0]->isLoaded() ? m_archives[0]->getFile(buffer, size) : nullptr;
 }
 
 MultiDvdArchive *ResourceManager::load(s32 idx, const char *filename) {
@@ -37,6 +42,10 @@ MultiDvdArchive *ResourceManager::load(s32 idx, const char *filename) {
 
 void ResourceManager::load(Course courseId) {
     static_cast<CourseArchive *>(m_archives[1])->load(courseId);
+}
+
+const char *ResourceManager::GetVehicleName(Vehicle vehicle) {
+    return vehicle < Vehicle::Max ? VEHICLE_NAMES[static_cast<u8>(vehicle)] : nullptr;
 }
 
 ResourceManager *ResourceManager::CreateInstance() {
