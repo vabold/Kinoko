@@ -4,3 +4,4 @@ __pycache__
 out
 .vs
 .vscode
+*.szs
