@@ -5,6 +5,7 @@
 #include <bit>
 #include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 #include <float.h>
 #include <limits>
 
