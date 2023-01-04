@@ -4,13 +4,6 @@
 
 namespace System {
 
-#define ARCHIVE_COUNT 2
-
-const char *const RESOURCE_PATHS[] = {
-    "/Kinoko/Common",
-    nullptr,
-};
-
 class ResourceManager {
 public:
     class CourseArchive : public MultiDvdArchive {
