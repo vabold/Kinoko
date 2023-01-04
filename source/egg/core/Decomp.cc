@@ -2,7 +2,7 @@
 
 namespace EGG::Decomp {
 
-s32 getExpandSize(const u8 *src) {
+s32 GetExpandSize(const u8 *src) {
     if (src[0] == 'Y' && src[1] == 'a' && src[2] == 'z') {
         return parse<s32>(form<s32>(&src[4]), std::endian::big);
     }
@@ -10,8 +10,8 @@ s32 getExpandSize(const u8 *src) {
     return -1;
 }
 
-s32 decodeSZS(const u8 *src, u8 *dst) {
-    s32 expandSize = getExpandSize(src);
+s32 DecodeSZS(const u8 *src, u8 *dst) {
+    s32 expandSize = GetExpandSize(src);
     s32 srcIdx = 0x10;
     u8 code = 0;
 

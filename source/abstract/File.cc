@@ -4,14 +4,21 @@
 
 namespace Abstract::File {
 
-u8 *Load(const char *path) {
-    std::ifstream file(path, std::ios::binary);
+u8 *Load(const char *path, size_t &size) {
+    char filepath[256];
+
+    if (path[0] == '/') {
+        path++;
+    }
+
+    snprintf(filepath, sizeof(filepath), "./%s", path);
+    std::ifstream file(filepath, std::ios::binary);
     if (!file) {
         K_PANIC("File with provided path %s was not loaded correctly!", path);
     }
 
     file.seekg(0, std::ios::end);
-    size_t size = file.tellg();
+    size = file.tellg();
     file.seekg(0, std::ios::beg);
 
     u8 *buffer = new u8[size];

@@ -1,28 +1,34 @@
 #include "System.hh"
 
-namespace Host {
+#include <source/game/system/ResourceManager.hh>
 
-void System::init() {}
+void HostSystem::create() {
+    System::ResourceManager::CreateInstance();
+}
 
-void System::DestroyInstance() {
+void HostSystem::init() {
+    System::ResourceManager::Instance()->load(0, nullptr);
+}
+
+void HostSystem::calc() {}
+
+void HostSystem::DestroyInstance() {
     assert(s_instance);
     delete s_instance;
     s_instance = nullptr;
 }
 
-System *System::Instance() {
+HostSystem *HostSystem::Instance() {
     return s_instance;
 }
 
-System *System::CreateInstance() {
+HostSystem *HostSystem::CreateInstance() {
     assert(!s_instance);
-    return s_instance = new System();
+    return s_instance = new HostSystem();
 }
 
-System::System() = default;
+HostSystem::HostSystem() = default;
 
-System::~System() = default;
+HostSystem::~HostSystem() = default;
 
-System *System::s_instance = nullptr;
-
-} // namespace Host
+HostSystem *HostSystem::s_instance = nullptr;

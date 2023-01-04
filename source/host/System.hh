@@ -2,21 +2,19 @@
 
 #include <Common.hh>
 
-namespace Host {
-
-class System {
+class HostSystem {
 public:
+    void create();
     void init();
+    void calc();
 
-    static System *CreateInstance();
+    static HostSystem *CreateInstance();
     static void DestroyInstance();
-    static System *Instance();
+    static HostSystem *Instance();
 
 private:
-    System();
-    ~System();
+    HostSystem();
+    ~HostSystem();
 
-    static System *s_instance;
+    static HostSystem *s_instance;
 };
-
-} // namespace Host

@@ -10,11 +10,6 @@ namespace EGG {
 
 class Archive {
 public:
-    struct FileInfo {
-        u32 m_startOffset;
-        u32 m_length;
-    };
-
     ~Archive();
 
     void unmount();
