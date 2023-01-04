@@ -5,6 +5,7 @@
 #include <bit>
 #include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 #include <float.h>
 #include <limits>
 
@@ -20,6 +21,8 @@ typedef uint64_t u64;
 
 typedef float f32;
 typedef double f64;
+
+#define MAX_PLAYER_COUNT 2
 
 enum class Course {
     Mario_Circuit = 0,
@@ -71,7 +74,100 @@ enum class Course {
     Ending_Demo = 58,
 };
 
+enum class Vehicle {
+    Standard_Kart_S = 0,
+    Standard_Kart_M = 1,
+    Standard_Kart_L = 2,
+    Baby_Booster = 3,
+    Classic_Dragster = 4,
+    Offroader = 5,
+    Mini_Beast = 6,
+    Wild_Wing = 7,
+    Flame_Flyer = 8,
+    Cheep_Charger = 9,
+    Super_Blooper = 10,
+    Piranha_Prowler = 11,
+    Tiny_Titan = 12,
+    Daytripper = 13,
+    Jetsetter = 14,
+    Blue_Falcon = 15,
+    Sprinter = 16,
+    Honeycoupe = 17,
+    Standard_Bike_S = 18,
+    Standard_Bike_M = 19,
+    Standard_Bike_L = 20,
+    Bullet_Bike = 21,
+    Mach_Bike = 22,
+    Flame_Runner = 23,
+    Bit_Bike = 24,
+    Sugarscoot = 25,
+    Wario_Bike = 26,
+    Quacker = 27,
+    Zip_Zip = 28,
+    Shooting_Star = 29,
+    Magikruiser = 30,
+    Sneakster = 31,
+    Spear = 32,
+    Jet_Bubble = 33,
+    Dolphin_Dasher = 34,
+    Phantom = 35,
+    Max = 36,
+};
+
+enum class Character {
+    Mario = 0,
+    Baby_Peach = 1,
+    Waluigi = 2,
+    Bowser = 3,
+    Baby_Daisy = 4,
+    Dry_Bones = 5,
+    Baby_Mario = 6,
+    Luigi = 7,
+    Toad = 8,
+    Donkey_Kong = 9,
+    Yoshi = 10,
+    Wario = 11,
+    Baby_Luigi = 12,
+    Toadette = 13,
+    Koopa_Troopa = 14,
+    Daisy = 15,
+    Peach = 16,
+    Birdo = 17,
+    Diddy_Kong = 18,
+    King_Boo = 19,
+    Bowser_Jr = 20,
+    Dry_Bowser = 21,
+    Funky_Kong = 22,
+    Rosalina = 23,
+    Small_Mii_Outfit_A_Male = 24,
+    Small_Mii_Outfit_A_Female = 25,
+    Small_Mii_Outfit_B_Male = 26,
+    Small_Mii_Outfit_B_Female = 27,
+    Small_Mii_Outfit_C_Male = 28,
+    Small_Mii_Outfit_C_Female = 29,
+    Medium_Mii_Outfit_A_Male = 30,
+    Medium_Mii_Outfit_A_Female = 31,
+    Medium_Mii_Outfit_B_Male = 32,
+    Medium_Mii_Outfit_B_Female = 33,
+    Medium_Mii_Outfit_C_Male = 34,
+    Medium_Mii_Outfit_C_Female = 35,
+    Large_Mii_Outfit_A_Male = 36,
+    Large_Mii_Outfit_A_Female = 37,
+    Large_Mii_Outfit_B_Male = 38,
+    Large_Mii_Outfit_B_Female = 39,
+    Large_Mii_Outfit_C_Male = 40,
+    Large_Mii_Outfit_C_Female = 41,
+    Medium_Mii = 42,
+    Small_Mii = 43,
+    Large_Mii = 44,
+    Peach_Biker_Outfit = 45,
+    Daisy_Biker_Outfit = 46,
+    Rosalina_Biker_Outfit = 47,
+    Max = 48,
+};
+
 extern const char *const COURSE_NAMES[59];
+extern const char *const VEHICLE_NAMES[36];
 
 // CREDIT: MKW-SP
 // Hack required to print preprocessor macro
