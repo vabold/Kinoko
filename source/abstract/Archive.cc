@@ -8,8 +8,8 @@ ArchiveHandle::ArchiveHandle(void *archiveStart) : m_startAddress(archiveStart) 
     RawArchive *rawArchive = reinterpret_cast<RawArchive *>(archiveStart);
     assert(rawArchive->isValidSignature());
 
-    m_nodesAddress = static_cast<u8 *>(archiveStart) + rawArchive->m_nodesOffset;
-    m_filesAddress = static_cast<u8 *>(archiveStart) + rawArchive->m_filesOffset;
+    m_nodesAddress = static_cast<u8 *>(archiveStart) + parse<u32>(rawArchive->m_nodesOffset, std::endian::big);
+    m_filesAddress = static_cast<u8 *>(archiveStart) + parse<u32>(rawArchive->m_filesOffset, std::endian::big);
 
     // "The right bound of the root node is the number of nodes"
     m_count = parse<u32>(node(0)->m_directory.m_next, std::endian::big);
