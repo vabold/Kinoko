@@ -4,7 +4,7 @@ namespace EGG::Decomp {
 
 s32 GetExpandSize(const u8 *src) {
     if (src[0] == 'Y' && src[1] == 'a' && src[2] == 'z') {
-        return parse<s32>(form<s32>(&src[4]), std::endian::big);
+        return form<s32>(&src[4]);
     }
 
     return -1;
