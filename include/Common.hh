@@ -208,3 +208,8 @@ static inline T parse(T val, std::endian endian) {
             std::endian::native == std::endian::big || std::endian::native == std::endian::little);
     return endian == std::endian::native ? val : std::byteswap(val);
 }
+
+// Does not support f64
+static inline f32 parsef(f32 val, std::endian endian) {
+    return std::bit_cast<f32>(parse<u32>(std::bit_cast<u32>(val), endian));
+}
