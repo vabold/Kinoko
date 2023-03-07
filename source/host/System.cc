@@ -1,5 +1,6 @@
 #include "System.hh"
 
+#include <source/game/kart/KartParam.hh>
 #include <source/game/system/RaceConfig.hh>
 #include <source/game/system/ResourceManager.hh>
 
@@ -9,6 +10,8 @@ void HostSystem::initControllers() {}
 void HostSystem::create() {
     System::RaceConfig::CreateInstance();
     System::ResourceManager::CreateInstance();
+
+    Kart::KartParam::CreateInstance();
 }
 
 void HostSystem::init() {
@@ -19,6 +22,8 @@ void HostSystem::init() {
 
     System::RaceConfig::Instance()->init();
     System::ResourceManager::Instance()->load(0, nullptr);
+
+    Kart::KartParam::Instance()->init();
 }
 
 void HostSystem::calc() {}
