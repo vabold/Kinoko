@@ -31,9 +31,9 @@ public:
     struct Node {
         bool isDirectory() const;
         const char *getName() const;
+        u32 stringOffset() const;
 
-        u8 m_isDir : 8;
-        u32 m_stringOffset : 24;
+        u32 m_val;
         union {
             struct {
                 u32 m_parent;
