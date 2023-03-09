@@ -73,7 +73,6 @@ s32 ArchiveHandle::convertPathToEntryId(const char *path) {
             while (true) {
                 if (node(anchor)->isDirectory() || !endOfPath) {
                     const char *entryName = m_strings + node(entryId)->stringOffset();
-                    K_LOG("%s", entryName);
 
                     if (entryName[0] == '.' && entryName[1] == '\0') {
                         entryId++;
@@ -119,8 +118,8 @@ bool ArchiveHandle::open(s32 entryId, FileInfo &info) const {
         return false;
     }
 
-    info.m_startOffset = node_->m_file.m_startAddress;
-    info.m_length = node_->m_file.m_length;
+    info.m_startOffset = parse<u32>(node_->m_file.m_startAddress, std::endian::big);
+    info.m_length = parse<u32>(node_->m_file.m_length, std::endian::big);
     return true;
 }
 
