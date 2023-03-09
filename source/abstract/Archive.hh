@@ -33,7 +33,10 @@ public:
         const char *getName() const;
         u32 stringOffset() const;
 
-        u32 m_val;
+        union {
+            u32 m_val;
+            u8 m_str[4];
+        };
         union {
             struct {
                 u32 m_parent;

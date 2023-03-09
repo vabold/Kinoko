@@ -16,7 +16,7 @@ ArchiveHandle::ArchiveHandle(void *archiveStart) : m_startAddress(archiveStart) 
     // "The right bound of the root node is the number of nodes"
     m_count = parse<u32>(node(0)->m_directory.m_next, std::endian::big);
     // Strings exist directly after the last node
-    m_strings = static_cast<const char *>(m_nodesAddress) + m_count;
+    m_strings = reinterpret_cast<const char *>(reinterpret_cast<Node *>(m_nodesAddress) + m_count);
     m_currentNode = 0;
 }
 
@@ -73,6 +73,7 @@ s32 ArchiveHandle::convertPathToEntryId(const char *path) {
             while (true) {
                 if (node(anchor)->isDirectory() || !endOfPath) {
                     const char *entryName = m_strings + node(entryId)->stringOffset();
+                    K_LOG("%s", entryName);
 
                     if (entryName[0] == '.' && entryName[1] == '\0') {
                         entryId++;
@@ -91,12 +92,13 @@ s32 ArchiveHandle::convertPathToEntryId(const char *path) {
                 }
 
                 entryId++;
-                break;
             }
 
             if (!found) {
                 return -1;
             }
+
+            break;
         }
 
         if (endOfPath) {
@@ -141,11 +143,11 @@ bool ArchiveHandle::RawArchive::isValidSignature() const {
 }
 
 bool ArchiveHandle::Node::isDirectory() const {
-    return std::endian::native == std::endian::little ? !!(m_val & 0xFF) : !!(m_val & ~0xFFFFFF);
+    return !!(m_str[0]);
 }
 
 u32 ArchiveHandle::Node::stringOffset() const {
-    return parse<u32>(m_val & 0xFFFFFF, std::endian::big);
+    return parse<u32>(m_val, std::endian::big) & 0xFFFFFF;
 }
 
 } // namespace Abstract
