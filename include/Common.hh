@@ -208,3 +208,10 @@ static inline T parse(T val, std::endian endian) {
             std::endian::native == std::endian::big || std::endian::native == std::endian::little);
     return endian == std::endian::native ? val : std::byteswap(val);
 }
+
+// Does not support f64
+static inline f32 parsef(f32 val, std::endian endian) {
+    u32 swappable = *reinterpret_cast<u32 *>(&val);
+    swappable = parse<u32>(swappable, endian);
+    return *reinterpret_cast<f32 *>(&swappable);
+}
