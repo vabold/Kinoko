@@ -19,7 +19,7 @@ void KartParam::initStats(Character character, Vehicle vehicle) {
     fileManager->stats(characterStats, character);
     fileManager->stats(vehicleStats, vehicle);
 
-    m_stats = characterStats + vehicleStats;
+    m_stats = vehicleStats + characterStats;
 }
 
 // TODO: Add BSP parsing
