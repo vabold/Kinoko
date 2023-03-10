@@ -73,6 +73,8 @@ code_in_files = [
     os.path.join('source', 'egg', 'core', 'Archive.cc'),
     os.path.join('source', 'egg', 'math', 'Math.cc'),
     os.path.join('source', 'egg', 'math', 'Vector.cc'),
+    os.path.join('source', 'game', 'kart', 'KartObject.cc'),
+    os.path.join('source', 'game', 'kart', 'KartObjectManager.cc'),
     os.path.join('source', 'game', 'kart', 'KartParam.cc'),
     os.path.join('source', 'game', 'system', 'DvdArchive.cc'),
     os.path.join('source', 'game', 'system', 'MultiDvdArchive.cc'),

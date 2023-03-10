@@ -26,10 +26,13 @@ public:
             Heavy = 2,
         };
 
+        Stats operator+(const Stats &ext);
+        void read(Stats &raw);
+
         Body m_body;
         DriftType m_driftType;
         WeightClass m_weightClass;
-        f32 _00c;
+        f32 _00c; // Unused
         f32 m_weight;
         f32 m_bumpDeviationLevel;
         f32 m_speed;
@@ -60,16 +63,35 @@ public:
     };
     static_assert(sizeof(Stats) == 0x18c);
 
-    void clear();
-    void init();
-
-    static KartParam *CreateInstance();
-    static void DestroyInstance();
-    static KartParam *Instance();
+    KartParam(Character character, Vehicle vehicle);
+    ~KartParam();
 
 private:
-    KartParam();
-    ~KartParam();
+    void initStats(Character character, Vehicle vehicle);
+    void initHitboxes(Vehicle vehicle);
+
+    Stats m_stats;
+};
+
+class KartParamFileManager {
+public:
+    void clear();
+    void init();
+    void stats(KartParam::Stats &stats, Character character);
+    void stats(KartParam::Stats &stats, Vehicle vehicle);
+
+    static KartParamFileManager *CreateInstance();
+    static void DestroyInstance();
+    static KartParamFileManager *Instance();
+
+private:
+    struct ParamFile {
+        u32 m_count;
+        KartParam::Stats m_params[];
+    };
+
+    KartParamFileManager();
+    ~KartParamFileManager();
 
     struct FileInfo {
         void clear();
@@ -84,7 +106,7 @@ private:
     FileInfo m_kartParam;   // kartParam.bin
     FileInfo m_driverParam; // driverParam.bin
 
-    static KartParam *s_instance;
+    static KartParamFileManager *s_instance;
 };
 
 } // namespace Kart
