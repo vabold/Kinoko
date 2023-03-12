@@ -68,7 +68,7 @@ public:
         struct Hitbox {
             u16 m_enableFlag;
             EGG::Vector3f m_sphereCenterPos;
-            f32  m_sphereRadius;
+            f32 m_sphereRadius;
             u16 m_wallCollideOnly;
             u16 m_collisionIndex;
         };
@@ -82,6 +82,7 @@ public:
             f32 m_wheelXrot;                // "always zero"
             f32 m_wheelRadius;
             f32 m_sphereRadiusCollision;
+            u32 _28;
         };
 
         f32 m_initYpos;
@@ -89,6 +90,7 @@ public:
         EGG::Vector3f m_cuboidMass1;
         EGG::Vector3f m_cuboidMass12;
         f32 m_rotSpeedModifier;
+        f32 _1a0;
         Wheel m_frontWheel;
         Wheel m_backWheel;
         Wheel m_wheel[2]; // Unused
