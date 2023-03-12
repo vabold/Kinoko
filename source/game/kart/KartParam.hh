@@ -85,9 +85,9 @@ public:
         };
 
         f32 m_initYpos;
-        Col m_col[16];
-        EGG:Vector3f m_cuboidMass1;
-        EGG:Vector3f m_cuboidMass12;
+        Hitbox m_hitboxes[16];
+        EGG::Vector3f m_cuboidMass1;
+        EGG::Vector3f m_cuboidMass12;
         f32 m_rotSpeedModifier;
         Wheel m_frontWheel;
         Wheel m_backWheel;
