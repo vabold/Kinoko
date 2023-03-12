@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Common.hh>
+#include <source/egg/math/Vector.hh>
 
 namespace Kart {
 
@@ -65,9 +65,8 @@ public:
     static_assert(sizeof(Stats) == 0x18c);
     
     struct Col {
-        struct Hibox {
+        struct Hitbox {
             u16 m_enableFlag;
-            u16  m_padding;
             EGG::Vector3f m_sphereCenterPos;
             f32  m_sphereRadius;
             u16 m_wallCollideOnly;
@@ -84,8 +83,19 @@ public:
             f32 m_wheelRadius;
             f32 m_sphereRadiusCollision;
         };
+
+        f32 m_initYpos;
+        Col m_col[16];
+        EGG:Vector3f m_cuboidMass1;
+        EGG:Vector3f m_cuboidMass12;
+        f32 m_rotSpeedModifier;
+        Wheel m_frontWheel;
+        Wheel m_backWheel;
+        Wheel m_wheel[2]; // Unused
+        f32 m_maxVertRumble;
+        f32 m_rumbleSpeed;
     };
-    
+
     static_assert(sizeof(Col) == 0x25c);
     
     KartParam(Character character, Vehicle vehicle);
@@ -105,6 +115,7 @@ public:
     void init();
     void stats(KartParam::Stats &stats, Character character);
     void stats(KartParam::Stats &stats, Vehicle vehicle);
+    void stats(KartParam::Col &col, Vehicle vehicle);
 
     static KartParamFileManager *CreateInstance();
     static void DestroyInstance();
