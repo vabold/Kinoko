@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Common.hh>
+#include <source/egg/math/Vector.hh>
 
 namespace Kart {
 
@@ -61,8 +61,45 @@ public:
         f32 m_megaScale;
         f32 m_wheelDistance;
     };
-    static_assert(sizeof(Stats) == 0x18c);
 
+    static_assert(sizeof(Stats) == 0x18c);
+    
+    struct Col {
+        struct Hitbox {
+            u16 m_enableFlag;
+            EGG::Vector3f m_sphereCenterPos;
+            f32 m_sphereRadius;
+            u16 m_wallCollideOnly;
+            u16 m_collisionIndex;
+        };
+
+        struct Wheel {
+            u16 m_enableFlag;
+            f32 m_suspensionFactorPos;      // "multiplies the distance between the current position and the bottommost position"
+            f32 m_suspensionFactorSpeed;    // "multiplies the wheel speed on the vertical axis"
+            f32 m_wheelDistanceVert;
+            EGG::Vector3f m_wheelCenterPos;
+            f32 m_wheelXrot;                // "always zero"
+            f32 m_wheelRadius;
+            f32 m_sphereRadiusCollision;
+            u32 _28;
+        };
+
+        f32 m_initYpos;
+        Hitbox m_hitboxes[16];
+        EGG::Vector3f m_cuboidMass1;
+        EGG::Vector3f m_cuboidMass12;
+        f32 m_rotSpeedModifier;
+        f32 _1a0;
+        Wheel m_frontWheel;
+        Wheel m_backWheel;
+        Wheel m_wheel[2]; // Unused
+        f32 m_maxVertRumble;
+        f32 m_rumbleSpeed;
+    };
+
+    static_assert(sizeof(Col) == 0x25c);
+    
     KartParam(Character character, Vehicle vehicle);
     ~KartParam();
 
@@ -71,6 +108,7 @@ private:
     void initHitboxes(Vehicle vehicle);
 
     Stats m_stats;
+    Col m_Col;
 };
 
 class KartParamFileManager {
@@ -79,6 +117,7 @@ public:
     void init();
     void stats(KartParam::Stats &stats, Character character);
     void stats(KartParam::Stats &stats, Vehicle vehicle);
+    void stats(KartParam::Col &col, Vehicle vehicle);
 
     static KartParamFileManager *CreateInstance();
     static void DestroyInstance();
