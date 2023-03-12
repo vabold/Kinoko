@@ -61,8 +61,33 @@ public:
         f32 m_megaScale;
         f32 m_wheelDistance;
     };
-    static_assert(sizeof(Stats) == 0x18c);
 
+    static_assert(sizeof(Stats) == 0x18c);
+    
+    struct Col {
+        struct Hibox {
+            u16 m_enableFlag;
+            u16  m_padding;
+            EGG::Vector3f m_sphereCenterPos;
+            f32  m_sphereRadius;
+            u16 m_wallCollideOnly;
+            u16 m_collisionIndex;
+        };
+
+        struct Wheel {
+            u16 m_enableFlag;
+            f32 m_suspensionFactorPos;      // "multiplies the distance between the current position and the bottommost position"
+            f32 m_suspensionFactorSpeed;    // "multiplies the wheel speed on the vertical axis"
+            f32 m_wheelDistanceVert;
+            EGG::Vector3f m_wheelCenterPos;
+            f32 m_wheelXrot;                // "always zero"
+            f32 m_wheelRadius;
+            f32 m_sphereRadiusCollision;
+        };
+    };
+    
+    static_assert(sizeof(Col) == 0x25c);
+    
     KartParam(Character character, Vehicle vehicle);
     ~KartParam();
 
@@ -71,6 +96,7 @@ private:
     void initHitboxes(Vehicle vehicle);
 
     Stats m_stats;
+    Col m_Col;
 };
 
 class KartParamFileManager {
