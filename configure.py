@@ -44,7 +44,12 @@ common_ccflags = [
 ]
 
 target_cflags = [
-    '-O2',
+    '-O3',
+]
+
+debug_cflags = [
+    '-O0',
+    '-ggdb',
 ]
 
 common_ldflags = []
@@ -83,14 +88,20 @@ code_in_files = [
     os.path.join('source', 'host', 'System.cc'),
 ]
 
-code_out_files = []
+target_code_out_files = []
+debug_code_out_files = []
 
 for in_file in code_in_files:
     _, ext = os.path.splitext(in_file)
-    out_file = os.path.join('$builddir', in_file + '.o')
-    code_out_files.append(out_file)
+
+    target_out_file = os.path.join('$builddir', in_file + '.o')
+    target_code_out_files.append(target_out_file)
+
+    debug_out_file = os.path.join('$builddir', in_file + 'D.o')
+    debug_code_out_files.append(debug_out_file)
+
     n.build(
-        out_file,
+        target_out_file,
         ext[1:],
         in_file,
         variables={
@@ -99,11 +110,32 @@ for in_file in code_in_files:
     )
     n.newline()
 
+    n.build(
+        debug_out_file,
+        ext[1:],
+        in_file,
+        variables={
+            'ccflags': ' '.join([*common_ccflags, *debug_cflags])
+        }
+    )
+    n.newline()
+
 
 n.build(
     os.path.join('$outdir', f'kinoko{file_extension}'),
     'ld',
-    code_out_files,
+    target_code_out_files,
+    variables={
+        'ldflags': ' '.join([
+            *common_ldflags,
+        ])
+    },
+)
+
+n.build(
+    os.path.join('$outdir', f'kinokoD{file_extension}'),
+    'ld',
+    debug_code_out_files,
     variables={
         'ldflags': ' '.join([
             *common_ldflags,
