@@ -1,10 +1,11 @@
 #pragma once
 
+#include "source/game/kart/KartObjectProxy.hh"
 #include "source/game/kart/KartParam.hh"
 
 namespace Kart {
 
-class KartObject {
+class KartObject : public KartObjectProxy {
 public:
     KartObject(KartParam *param);
     virtual ~KartObject();
@@ -14,6 +15,7 @@ public:
 
 protected:
     KartParam *m_param;
+    KartAccessor m_pointers;
 };
 
 class KartObjectBike : public KartObject {

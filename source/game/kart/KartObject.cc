@@ -13,6 +13,9 @@ KartObject::~KartObject() {
 void KartObject::createComponents() {}
 
 KartObject *KartObject::Create(Character character, Vehicle vehicle) {
+    Abstract::List list{};
+    s_list = &list;
+
     KartParam *param = new KartParam(character, vehicle);
 
     KartObject *object = nullptr;
@@ -21,6 +24,9 @@ KartObject *KartObject::Create(Character character, Vehicle vehicle) {
     } else {
         object = new KartObjectBike(param);
     }
+
+    ApplyAll(object->m_pointers);
+    s_list = nullptr;
     return object;
 }
 
