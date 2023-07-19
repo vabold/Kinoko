@@ -5,16 +5,16 @@ namespace EGG {
 Archive::~Archive() = default;
 
 void Archive::unmount() {
-    if (m_refCount-- == 0) {
+    if (--m_refCount == 0) {
         delete this;
     }
 }
 
-s32 Archive::convertPathToEntryId(const char *path) {
+s32 Archive::convertPathToEntryId(const char *path) const {
     return m_handle.convertPathToEntryId(path);
 }
 
-void *Archive::getFile(s32 entryId, Abstract::ArchiveHandle::FileInfo &info) {
+void *Archive::getFile(s32 entryId, Abstract::ArchiveHandle::FileInfo &info) const {
     m_handle.open(entryId, info);
     return m_handle.getFileAddress(info);
 }

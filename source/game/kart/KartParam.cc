@@ -16,8 +16,8 @@ void KartParam::initStats(Character character, Vehicle vehicle) {
     Stats characterStats{};
     Stats vehicleStats{};
 
-    fileManager->stats(characterStats, character);
-    fileManager->stats(vehicleStats, vehicle);
+    fileManager->readStats(characterStats, character);
+    fileManager->readStats(vehicleStats, vehicle);
 
     m_stats = vehicleStats + characterStats;
 }
@@ -40,7 +40,7 @@ void KartParamFileManager::init() {
     }
 }
 
-void KartParamFileManager::stats(KartParam::Stats &stats, Character character) {
+void KartParamFileManager::readStats(KartParam::Stats &stats, Character character) {
     s32 idx = -1;
     switch (character) {
     case Character::Small_Mii_Outfit_A_Male:
@@ -84,7 +84,7 @@ void KartParamFileManager::stats(KartParam::Stats &stats, Character character) {
     stats.read(rawStats);
 }
 
-void KartParamFileManager::stats(KartParam::Stats &stats, Vehicle vehicle) {
+void KartParamFileManager::readStats(KartParam::Stats &stats, Vehicle vehicle) {
     if (vehicle >= Vehicle::Max) {
         K_PANIC("Uh oh.");
     }
@@ -115,7 +115,7 @@ KartParamFileManager::KartParamFileManager() = default;
 
 KartParamFileManager::~KartParamFileManager() = default;
 
-bool KartParamFileManager::validate() {
+bool KartParamFileManager::validate() const {
     // Validate kartParam.bin
     if (!m_kartParam.m_file || m_kartParam.m_size == 0) {
         return false;
@@ -141,7 +141,7 @@ bool KartParamFileManager::validate() {
     return true;
 }
 
-KartParam::Stats KartParam::Stats::operator+(const Stats &ext) {
+KartParam::Stats KartParam::Stats::operator+(const Stats &ext) const {
     Stats stats = *this;
     stats.m_weight += ext.m_weight;
     stats.m_speed += ext.m_speed;
@@ -176,7 +176,7 @@ KartParam::Stats KartParam::Stats::operator+(const Stats &ext) {
     return stats;
 }
 
-void KartParam::Stats::read(Stats &raw) {
+void KartParam::Stats::read(const Stats &raw) {
     m_body = static_cast<Body>(parse<s32>(static_cast<s32>(raw.m_body), std::endian::big));
     m_driftType =
             static_cast<DriftType>(parse<s32>(static_cast<s32>(raw.m_driftType), std::endian::big));
