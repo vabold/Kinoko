@@ -19,7 +19,7 @@ void *ResourceManager::getBsp(u8 playerIdx, size_t *size) {
     char buffer[32];
 
     auto *raceConfig = RaceConfig::Instance();
-    const char *vehicle = GetVehicleName(raceConfig->raceScenario().player(playerIdx).vehicle());
+    const char *vehicle = GetVehicleName(raceConfig->raceScenario().m_players[playerIdx].m_vehicle);
     snprintf(buffer, sizeof(buffer), "bsp/%s.bsp", vehicle);
 
     return m_archives[0]->isLoaded() ? m_archives[0]->getFile(buffer, size) : nullptr;

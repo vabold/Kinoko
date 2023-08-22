@@ -22,8 +22,6 @@ typedef uint64_t u64;
 typedef float f32;
 typedef double f64;
 
-#define MAX_PLAYER_COUNT 2
-
 enum class Course {
     Mario_Circuit = 0,
     Moo_Moo_Meadows = 1,

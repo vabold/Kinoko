@@ -21,12 +21,12 @@ KartObjectManager *KartObjectManager::Instance() {
 }
 
 KartObjectManager::KartObjectManager() {
-    auto &raceScenario = System::RaceConfig::Instance()->raceScenario();
-    m_count = raceScenario.playerCount();
+    const auto &raceScenario = System::RaceConfig::Instance()->raceScenario();
+    m_count = raceScenario.m_playerCount;
     m_objects = new KartObject *[m_count];
     for (size_t i = 0; i < m_count; ++i) {
-        auto &player = raceScenario.player(i);
-        m_objects[i] = KartObject::Create(player.character(), player.vehicle());
+        const auto &player = raceScenario.m_players[i];
+        m_objects[i] = KartObject::Create(player.m_character, player.m_vehicle);
     }
 }
 
