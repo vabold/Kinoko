@@ -1,11 +1,11 @@
 #include "RootScene.hh"
 
-#include "source/game/system/InputManager.hh"
-#include "source/game/system/RaceConfig.hh"
-#include "source/game/system/ResourceManager.hh"
+#include "game/system/InputManager.hh"
+#include "game/system/RaceConfig.hh"
+#include "game/system/ResourceManager.hh"
 
-#include <source/egg/core/SceneManager.hh>
-#include <source/host/SceneId.hh>
+#include <egg/core/SceneManager.hh>
+#include <host/SceneId.hh>
 
 namespace Scene {
 

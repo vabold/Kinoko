@@ -1,6 +1,6 @@
 #include "System.hh"
 
-#include "source/host/SceneCreatorDynamic.hh"
+#include "host/SceneCreatorDynamic.hh"
 
 namespace Host {
 

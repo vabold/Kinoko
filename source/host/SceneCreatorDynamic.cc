@@ -1,6 +1,6 @@
 #include "SceneCreatorDynamic.hh"
 
-#include <source/game/scene/RootScene.hh>
+#include <game/scene/RootScene.hh>
 
 namespace Host {
 

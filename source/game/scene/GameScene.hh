@@ -1,6 +1,6 @@
 #pragma once
 
-#include <source/egg/core/Scene.hh>
+#include <egg/core/Scene.hh>
 
 namespace Scene {
 

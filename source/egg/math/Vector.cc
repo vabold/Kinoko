@@ -1,6 +1,6 @@
 #include "Vector.hh"
 
-#include "source/egg/math/Math.hh"
+#include "egg/math/Math.hh"
 
 namespace EGG {
 

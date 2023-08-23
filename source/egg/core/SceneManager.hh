@@ -1,8 +1,8 @@
 #pragma once
 
-#include "source/egg/core/ColorFader.hh"
-#include "source/egg/core/Scene.hh"
-#include "source/egg/core/SceneCreator.hh"
+#include "egg/core/ColorFader.hh"
+#include "egg/core/Scene.hh"
+#include "egg/core/SceneCreator.hh"
 
 namespace EGG {
 

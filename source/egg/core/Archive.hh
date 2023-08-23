@@ -4,7 +4,7 @@
 
 #include <vector>
 
-#include <source/abstract/Archive.hh>
+#include <abstract/Archive.hh>
 
 namespace EGG {
 

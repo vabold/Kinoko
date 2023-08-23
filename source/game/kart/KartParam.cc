@@ -1,6 +1,6 @@
 #include "KartParam.hh"
 
-#include "source/game/system/ResourceManager.hh"
+#include "game/system/ResourceManager.hh"
 
 namespace Kart {
 

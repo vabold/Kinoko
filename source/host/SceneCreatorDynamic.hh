@@ -1,8 +1,8 @@
 #pragma once
 
-#include "source/host/SceneId.hh"
+#include "host/SceneId.hh"
 
-#include <source/egg/core/SceneCreator.hh>
+#include <egg/core/SceneCreator.hh>
 
 #include <Common.hh>
 

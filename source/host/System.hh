@@ -1,6 +1,6 @@
 #pragma once
 
-#include <source/egg/core/SceneManager.hh>
+#include <egg/core/SceneManager.hh>
 
 namespace Host {
 

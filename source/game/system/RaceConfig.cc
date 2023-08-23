@@ -1,6 +1,6 @@
 #include "RaceConfig.hh"
 
-#include <source/host/System.hh>
+#include <host/System.hh>
 
 namespace System {
 

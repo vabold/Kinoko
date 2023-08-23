@@ -1,6 +1,6 @@
 #pragma once
 
-#include "source/game/system/DvdArchive.hh"
+#include "game/system/DvdArchive.hh"
 
 const char *const SZS_EXTENSION = ".szs";
 

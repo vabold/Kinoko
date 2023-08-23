@@ -1,8 +1,8 @@
 #include "GameScene.hh"
 
-#include "source/game/system/InputManager.hh"
+#include "game/system/InputManager.hh"
 
-#include <source/egg/core/SceneManager.hh>
+#include <egg/core/SceneManager.hh>
 
 namespace Scene {
 

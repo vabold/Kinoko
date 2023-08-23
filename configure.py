@@ -31,7 +31,7 @@ common_ccflags = [
     '-fstack-protector-strong',
     '-isystem', '.',
     '-isystem', 'include',
-    '-isystem', 'payload',
+    '-isystem', 'source',
     '-isystem', 'vendor',
     '-isystem', 'build',
     '-std=c++23',

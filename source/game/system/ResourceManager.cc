@@ -1,6 +1,6 @@
 #include "ResourceManager.hh"
 
-#include "source/game/system/RaceConfig.hh"
+#include "game/system/RaceConfig.hh"
 
 namespace System {
 

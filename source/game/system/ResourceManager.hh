@@ -1,6 +1,6 @@
 #pragma once
 
-#include "source/game/system/MultiDvdArchive.hh"
+#include "game/system/MultiDvdArchive.hh"
 
 namespace System {
 

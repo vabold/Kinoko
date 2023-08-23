@@ -1,4 +1,4 @@
-#include "source/host/System.hh"
+#include "host/System.hh"
 
 int main() {
     return Host::KSystem::Instance().main();
