@@ -4,6 +4,10 @@
 
 namespace Kart {
 
+void KartObjectManager::init() {}
+
+void KartObjectManager::calc() {}
+
 KartObjectManager *KartObjectManager::CreateInstance() {
     assert(!s_instance);
     s_instance = new KartObjectManager;

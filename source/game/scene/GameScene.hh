@@ -1,5 +1,8 @@
 #pragma once
 
+#include "game/system/MultiDvdArchive.hh"
+
+#include <abstract/List.hh>
 #include <egg/core/Scene.hh>
 
 namespace Scene {
@@ -21,10 +24,18 @@ public:
     virtual void configure() = 0;
     virtual void onReinit() {}
 
+protected:
+    void appendResource(System::MultiDvdArchive *arc, s32 id);
+
 private:
+    struct Resource : private Abstract::Node {
+        s32 m_id;
+    };
+
     void initScene();
     void deinitScene();
 
+    Abstract::List m_resources;
     int m_nextSceneId;
 };
 

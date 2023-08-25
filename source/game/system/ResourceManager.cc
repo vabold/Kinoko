@@ -40,8 +40,9 @@ MultiDvdArchive *ResourceManager::load(s32 idx, const char *filename) {
     return m_archives[idx];
 }
 
-void ResourceManager::load(Course courseId) {
+MultiDvdArchive *ResourceManager::load(Course courseId) {
     static_cast<CourseArchive *>(m_archives[1])->load(courseId);
+    return m_archives[1];
 }
 
 const char *ResourceManager::GetVehicleName(Vehicle vehicle) {

@@ -86,6 +86,7 @@ code_in_files = [
     os.path.join('source', 'game', 'kart', 'KartObjectProxy.cc'),
     os.path.join('source', 'game', 'kart', 'KartParam.cc'),
     os.path.join('source', 'game', 'scene', 'GameScene.cc'),
+    os.path.join('source', 'game', 'scene', 'RaceScene.cc'),
     os.path.join('source', 'game', 'scene', 'RootScene.cc'),
     os.path.join('source', 'game', 'system', 'DvdArchive.cc'),
     os.path.join('source', 'game', 'system', 'InputManager.cc'),

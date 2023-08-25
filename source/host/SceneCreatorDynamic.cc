@@ -1,6 +1,8 @@
 #include "SceneCreatorDynamic.hh"
 
+#include <game/scene/RaceScene.hh>
 #include <game/scene/RootScene.hh>
+
 
 namespace Host {
 
@@ -12,24 +14,22 @@ void SceneCreatorDynamic::destroy(int sceneId) const {
     destroy(static_cast<SceneId>(sceneId));
 }
 
-// TODO
 EGG::Scene *SceneCreatorDynamic::create(SceneId sceneId) const {
     switch (sceneId) {
     case SceneId::Root:
         return new Scene::RootScene;
     case SceneId::Race:
-        return nullptr;
+        return new Scene::RaceScene;
     default:
         K_PANIC("Unreachable scene creation!");
     }
 }
 
-// TODO
 void SceneCreatorDynamic::destroy(SceneId sceneId) const {
     switch (sceneId) {
     case SceneId::Root:
-        break;
     case SceneId::Race:
+        // The base game doesn't do anything, so we don't either
         break;
     default:
         K_PANIC("Unreachable scene deletion!");

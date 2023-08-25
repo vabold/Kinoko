@@ -28,9 +28,11 @@ public:
 
         Player m_players[12];
         u8 m_playerCount;
+        Course m_course;
     };
 
     void init();
+    void initRace();
 
     const Scenario &raceScenario() const {
         return m_raceScenario;

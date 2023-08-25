@@ -7,6 +7,8 @@ namespace System {
 // TODO: read from parameter file
 void RaceConfig::init() {}
 
+void RaceConfig::initRace() {}
+
 RaceConfig *RaceConfig::CreateInstance() {
     assert(!s_instance);
     s_instance = new RaceConfig;
