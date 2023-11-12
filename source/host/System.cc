@@ -17,6 +17,8 @@ void KSystem::init() {
 }
 
 void KSystem::run() {
+    K_LOG("Initialized successfully!");
+    K_LOG("The program will now run in an infinite loop to test 'calc' functionality.");
     while (true) {
         m_sceneMgr->calc();
     }

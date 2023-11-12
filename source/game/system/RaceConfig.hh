@@ -17,6 +17,7 @@ public:
 
         Character m_character;
         Vehicle m_vehicle;
+        Type m_type;
     };
 
     struct Scenario {
@@ -26,7 +27,9 @@ public:
             Ghost_Race = 5,
         };
 
-        Player m_players[12];
+        void init();
+
+        std::array<Player, 12> m_players;
         u8 m_playerCount;
         Course m_course;
     };

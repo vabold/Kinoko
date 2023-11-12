@@ -111,7 +111,9 @@ KartParamFileManager *KartParamFileManager::Instance() {
     return s_instance;
 }
 
-KartParamFileManager::KartParamFileManager() = default;
+KartParamFileManager::KartParamFileManager() {
+    init();
+}
 
 KartParamFileManager::~KartParamFileManager() = default;
 
