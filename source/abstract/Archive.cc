@@ -22,7 +22,7 @@ ArchiveHandle::ArchiveHandle(void *archiveStart) : m_startAddress(archiveStart) 
 
 // NOTE (vabold): If anyone wants to de-spaghetti this, please feel free
 //                My hope is that I can leave this function alone forever
-s32 ArchiveHandle::convertPathToEntryId(const char *path) {
+s32 ArchiveHandle::convertPathToEntryId(const char *path) const {
     u32 entryId = m_currentNode;
 
     while (true) {
@@ -67,8 +67,7 @@ s32 ArchiveHandle::convertPathToEntryId(const char *path) {
         s32 nameLength = nameEnd - path;
 
         bool found = false;
-        const u32 anchor = entryId;
-        entryId++;
+        const u32 anchor = entryId++;
         while (entryId < node(anchor)->m_directory.m_next) {
             while (true) {
                 if (node(anchor)->isDirectory() || !endOfPath) {

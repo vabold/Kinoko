@@ -1,8 +1,8 @@
 #include "DvdArchive.hh"
 
-#include <source/abstract/File.hh>
+#include <abstract/File.hh>
 
-#include <source/egg/core/Decomp.hh>
+#include <egg/core/Decomp.hh>
 
 namespace System {
 

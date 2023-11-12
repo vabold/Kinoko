@@ -22,8 +22,6 @@ typedef uint64_t u64;
 typedef float f32;
 typedef double f64;
 
-#define MAX_PLAYER_COUNT 2
-
 enum class Course {
     Mario_Circuit = 0,
     Moo_Moo_Meadows = 1,
@@ -184,7 +182,7 @@ extern const char *const VEHICLE_NAMES[36];
 #define K_PANIC(m, ...) \
     do { \
         K_LOG(m, ##__VA_ARGS__); \
-        K_LOG("Exiting with code 1..."); \
+        K_LOG("\aExiting with code 1..."); \
         exit(1); \
     } while (0)
 

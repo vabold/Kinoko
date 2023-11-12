@@ -1,6 +1,6 @@
 #pragma once
 
-#include "source/game/system/MultiDvdArchive.hh"
+#include "game/system/MultiDvdArchive.hh"
 
 namespace System {
 
@@ -26,7 +26,7 @@ public:
 
     void *getFile(const char *filename, size_t *size, s32 idx);
     void *getBsp(u8 playerIdx, size_t *size);
-    void load(Course courseId);
+    MultiDvdArchive *load(Course courseId);
     MultiDvdArchive *load(s32 idx, const char *filename);
 
     static const char *GetVehicleName(Vehicle vehicle);

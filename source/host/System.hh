@@ -1,34 +1,28 @@
 #pragma once
 
-#include <Common.hh>
+#include <egg/core/SceneManager.hh>
 
-class HostSystem {
+namespace Host {
+
+class KSystem {
 public:
-    void initControllers();
-
-    void create();
+    int main();
     void init();
-    void calc();
+    void run();
 
-    s8 controllerCount() const;
-    s8 ghostCount() const;
-    Character character(s8 controllerId) const;
-    Vehicle vehicle(s8 controllerId) const;
-    Course course() const;
+    EGG::SceneManager *sceneMgr() const {
+        return m_sceneMgr;
+    }
 
-    static HostSystem *CreateInstance(s8 controllerCount, s8 ghostCount);
-    static void DestroyInstance();
-    static HostSystem *Instance();
+    static KSystem &Instance();
 
 private:
-    HostSystem(s8 controllerCount, s8 ghostCount);
-    ~HostSystem();
+    KSystem();
+    KSystem(const KSystem &) = delete;
+    KSystem(KSystem &&) = delete;
+    ~KSystem();
 
-    Vehicle *m_vehicles;
-    Character *m_characters;
-    Course m_course;
-    s8 m_controllerCount;
-    s8 m_ghostCount;
-
-    static HostSystem *s_instance;
+    EGG::SceneManager *m_sceneMgr;
 };
+
+} // namespace Host

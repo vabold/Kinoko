@@ -1,8 +1,12 @@
 #include "KartObjectManager.hh"
 
-#include "source/game/system/RaceConfig.hh"
+#include "game/system/RaceConfig.hh"
 
 namespace Kart {
+
+void KartObjectManager::init() {}
+
+void KartObjectManager::calc() {}
 
 KartObjectManager *KartObjectManager::CreateInstance() {
     assert(!s_instance);
@@ -21,12 +25,13 @@ KartObjectManager *KartObjectManager::Instance() {
 }
 
 KartObjectManager::KartObjectManager() {
-    auto &raceScenario = System::RaceConfig::Instance()->raceScenario();
-    m_count = raceScenario.playerCount();
+    const auto &raceScenario = System::RaceConfig::Instance()->raceScenario();
+    m_count = raceScenario.m_playerCount;
     m_objects = new KartObject *[m_count];
+    KartParamFileManager::CreateInstance();
     for (size_t i = 0; i < m_count; ++i) {
-        auto &player = raceScenario.player(i);
-        m_objects[i] = KartObject::Create(player.character(), player.vehicle());
+        const auto &player = raceScenario.m_players[i];
+        m_objects[i] = KartObject::Create(player.m_character, player.m_vehicle);
     }
 }
 

@@ -1,6 +1,6 @@
 #include "KartObjectProxy.hh"
 
-#include "source/game/kart/KartObject.hh"
+#include "game/kart/KartObject.hh"
 
 namespace Kart {
 

@@ -6,7 +6,6 @@ AlignConsecutiveDeclarations: None
 AlignConsecutiveMacros: None
 AlignEscapedNewlines: DontAlign
 AlignOperands: DontAlign
-AlignTrailingComments: True
 AllowAllArgumentsOnNextLine: False
 AllowAllParametersOfDeclarationOnNextLine: False
 AllowShortBlocksOnASingleLine: Empty

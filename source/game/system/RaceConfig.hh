@@ -4,63 +4,42 @@
 
 namespace System {
 
+// TODO: elaborate on implementation
 class RaceConfig {
 public:
-    class Scenario {
+    struct Player {
     public:
-        class Player {
-        public:
-            enum class Type {
-                Local = 0, // Inputs managed by ML algorithm
-                Ghost = 3, // Inputs managed by ghost
-                None = 5,
-            };
-
-            Player();
-            ~Player();
-
-            void init(s8 controllerId);
-            void initLocal(s8 controllerId);
-            void initGhost();
-
-            Vehicle vehicle() const;
-            Character character() const;
-            Type type() const;
-
-        private:
-            Vehicle m_vehicle;
-            Character m_character;
-            Type m_type;
-            s8 m_controllerId;
+        enum class Type {
+            Local = 0, // Inputs managed by ML algorithm
+            Ghost = 3, // Inputs managed by ghost
+            None = 5,
         };
 
+        Character m_character;
+        Vehicle m_vehicle;
+        Type m_type;
+    };
+
+    struct Scenario {
+    public:
         enum class GameMode {
             Time_Trial = 2,
             Ghost_Race = 5,
         };
 
-        Scenario();
-        ~Scenario();
-
         void init();
 
-        const Player &player(size_t idx) const;
-        Player &player(size_t idx);
-        size_t playerCount() const;
-
-    private:
-        Player m_players[MAX_PLAYER_COUNT];
-        size_t m_playerCount;
-        GameMode m_gameMode;
-        s8 m_lapCount;
+        std::array<Player, 12> m_players;
+        u8 m_playerCount;
+        Course m_course;
     };
 
     void init();
-    void setGhost();
+    void initRace();
 
-    Scenario &raceScenario();
-
-    static size_t PlayerCount();
+    const Scenario &raceScenario() const {
+        return m_raceScenario;
+    }
 
     static RaceConfig *CreateInstance();
     static void DestroyInstance();

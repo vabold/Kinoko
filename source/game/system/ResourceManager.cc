@@ -1,6 +1,6 @@
 #include "ResourceManager.hh"
 
-#include "source/game/system/RaceConfig.hh"
+#include "game/system/RaceConfig.hh"
 
 namespace System {
 
@@ -19,7 +19,7 @@ void *ResourceManager::getBsp(u8 playerIdx, size_t *size) {
     char buffer[32];
 
     auto *raceConfig = RaceConfig::Instance();
-    const char *vehicle = GetVehicleName(raceConfig->raceScenario().player(playerIdx).vehicle());
+    const char *vehicle = GetVehicleName(raceConfig->raceScenario().m_players[playerIdx].m_vehicle);
     snprintf(buffer, sizeof(buffer), "bsp/%s.bsp", vehicle);
 
     return m_archives[0]->isLoaded() ? m_archives[0]->getFile(buffer, size) : nullptr;
@@ -40,8 +40,9 @@ MultiDvdArchive *ResourceManager::load(s32 idx, const char *filename) {
     return m_archives[idx];
 }
 
-void ResourceManager::load(Course courseId) {
+MultiDvdArchive *ResourceManager::load(Course courseId) {
     static_cast<CourseArchive *>(m_archives[1])->load(courseId);
+    return m_archives[1];
 }
 
 const char *ResourceManager::GetVehicleName(Vehicle vehicle) {

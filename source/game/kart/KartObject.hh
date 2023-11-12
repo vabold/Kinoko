@@ -1,7 +1,7 @@
 #pragma once
 
-#include "source/game/kart/KartObjectProxy.hh"
-#include "source/game/kart/KartParam.hh"
+#include "game/kart/KartObjectProxy.hh"
+#include "game/kart/KartParam.hh"
 
 namespace Kart {
 

@@ -1,11 +1,14 @@
 #pragma once
 
-#include "source/game/kart/KartObject.hh"
+#include "game/kart/KartObject.hh"
 
 namespace Kart {
 
 class KartObjectManager {
 public:
+    void init();
+    void calc();
+
     static KartObjectManager *CreateInstance();
     static void DestroyInstance();
     static KartObjectManager *Instance();

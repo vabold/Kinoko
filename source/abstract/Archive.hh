@@ -56,7 +56,7 @@ public:
 
     ArchiveHandle(void *archiveStart);
 
-    s32 convertPathToEntryId(const char *path);
+    s32 convertPathToEntryId(const char *path) const;
     bool open(s32 entryId, FileInfo &info) const;
 
     void *getFileAddress(const FileInfo &info) const;

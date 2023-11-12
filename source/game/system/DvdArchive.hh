@@ -1,6 +1,6 @@
 #pragma once
 
-#include <source/egg/core/Archive.hh>
+#include <egg/core/Archive.hh>
 
 namespace System {
 

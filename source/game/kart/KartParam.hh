@@ -26,8 +26,8 @@ public:
             Heavy = 2,
         };
 
-        Stats operator+(const Stats &ext);
-        void read(Stats &raw);
+        Stats operator+(const Stats &ext) const;
+        void read(const Stats &raw);
 
         Body m_body;
         DriftType m_driftType;
@@ -77,8 +77,8 @@ class KartParamFileManager {
 public:
     void clear();
     void init();
-    void stats(KartParam::Stats &stats, Character character);
-    void stats(KartParam::Stats &stats, Vehicle vehicle);
+    void readStats(KartParam::Stats &stats, Character character);
+    void readStats(KartParam::Stats &stats, Vehicle vehicle);
 
     static KartParamFileManager *CreateInstance();
     static void DestroyInstance();
@@ -101,7 +101,7 @@ private:
         size_t m_size;
     };
 
-    bool validate();
+    bool validate() const;
 
     FileInfo m_kartParam;   // kartParam.bin
     FileInfo m_driverParam; // driverParam.bin

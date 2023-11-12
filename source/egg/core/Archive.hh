@@ -4,7 +4,7 @@
 
 #include <vector>
 
-#include <source/abstract/Archive.hh>
+#include <abstract/Archive.hh>
 
 namespace EGG {
 
@@ -13,8 +13,8 @@ public:
     ~Archive();
 
     void unmount();
-    s32 convertPathToEntryId(const char *path);
-    void *getFile(s32 entryId, Abstract::ArchiveHandle::FileInfo &info);
+    s32 convertPathToEntryId(const char *path) const;
+    void *getFile(s32 entryId, Abstract::ArchiveHandle::FileInfo &info) const;
 
     static Archive *Mount(void *archiveStart);
 
