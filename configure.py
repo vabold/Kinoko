@@ -81,6 +81,7 @@ code_in_files = [
     os.path.join('source', 'egg', 'core', 'SceneManager.cc'),
     os.path.join('source', 'egg', 'math', 'Math.cc'),
     os.path.join('source', 'egg', 'math', 'Vector.cc'),
+    os.path.join('source', 'egg', 'util', 'Stream.cc'),
     os.path.join('source', 'game', 'kart', 'KartObject.cc'),
     os.path.join('source', 'game', 'kart', 'KartObjectManager.cc'),
     os.path.join('source', 'game', 'kart', 'KartObjectProxy.cc'),
