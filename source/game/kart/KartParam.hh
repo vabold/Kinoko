@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Common.hh>
+#include <egg/util/Stream.hh>
 
 namespace Kart {
 
@@ -26,8 +26,11 @@ public:
             Heavy = 2,
         };
 
-        Stats operator+(const Stats &ext) const;
-        void read(const Stats &raw);
+        Stats();
+        Stats(EGG::RamStream &stream);
+
+        void read(EGG::RamStream &stream);
+        void applyCharacterBonus(EGG::RamStream &stream);
 
         Body m_body;
         DriftType m_driftType;
@@ -51,8 +54,8 @@ public:
         f32 m_driftOutsideTargetAngle;
         f32 m_driftOutsideDecrement;
         u32 m_miniTurbo;
-        f32 m_kclSpeed[32];
-        f32 m_kclRot[32];
+        std::array<f32, 32> m_kclSpeed;
+        std::array<f32, 32> m_kclRot;
         f32 m_itemUnk170;
         f32 m_itemUnk174;
         f32 m_itemUnk178;
@@ -71,42 +74,6 @@ private:
     void initHitboxes(Vehicle vehicle);
 
     Stats m_stats;
-};
-
-class KartParamFileManager {
-public:
-    void clear();
-    void init();
-    void readStats(KartParam::Stats &stats, Character character);
-    void readStats(KartParam::Stats &stats, Vehicle vehicle);
-
-    static KartParamFileManager *CreateInstance();
-    static void DestroyInstance();
-    static KartParamFileManager *Instance();
-
-private:
-    struct ParamFile {
-        u32 m_count;
-        KartParam::Stats m_params[];
-    };
-
-    KartParamFileManager();
-    ~KartParamFileManager();
-
-    struct FileInfo {
-        void clear();
-        void load(const char *filename);
-
-        void *m_file;
-        size_t m_size;
-    };
-
-    bool validate() const;
-
-    FileInfo m_kartParam;   // kartParam.bin
-    FileInfo m_driverParam; // driverParam.bin
-
-    static KartParamFileManager *s_instance;
 };
 
 } // namespace Kart
