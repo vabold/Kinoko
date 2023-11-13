@@ -13,6 +13,9 @@ public:
     virtual void write(void *input, u32 size) = 0;
     virtual bool eof() = 0;
 
+    void skip(u32 count);
+    void jump(u32 index);
+
     u8 read_u8();
     u16 read_u16();
     u32 read_u32();
@@ -51,7 +54,7 @@ public:
     void write(void *input, u32 size) override;
     bool eof() override;
 
-    void setBufferAndSize(u8 *buffer, u32 size);
+    void setBufferAndSize(void *buffer, u32 size);
 
 private:
     u8 *m_buffer;

@@ -6,6 +6,16 @@ Stream::Stream() : m_endian(std::endian::big), m_index(0) {}
 
 Stream::~Stream() = default;
 
+void Stream::skip(u32 count) {
+    m_index += count;
+    assert(!eof());
+}
+
+void Stream::jump(u32 index) {
+    m_index = index;
+    assert(!eof());
+}
+
 u8 Stream::read_u8() {
     return read<u8>();
 }
@@ -83,8 +93,8 @@ bool RamStream::eof() {
     return m_index > m_size;
 }
 
-void RamStream::setBufferAndSize(u8 *buffer, u32 size) {
-    m_buffer = buffer;
+void RamStream::setBufferAndSize(void *buffer, u32 size) {
+    m_buffer = reinterpret_cast<u8 *>(buffer);
     m_size = size;
 }
 

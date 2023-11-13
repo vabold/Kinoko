@@ -1,5 +1,6 @@
 #include "KartObjectManager.hh"
 
+#include "game/kart/KartParamFileManager.hh"
 #include "game/system/RaceConfig.hh"
 
 namespace Kart {
