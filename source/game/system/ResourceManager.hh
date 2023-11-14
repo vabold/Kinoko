@@ -6,24 +6,6 @@ namespace System {
 
 class ResourceManager {
 public:
-    class CourseArchive : public MultiDvdArchive {
-    public:
-        enum class State {
-            Cleared = 0,
-            Loading = 1,
-            Loaded = 2,
-        };
-
-        CourseArchive();
-        ~CourseArchive();
-
-        void load(Course courseId);
-
-    private:
-        Course m_course;
-        State m_state;
-    };
-
     void *getFile(const char *filename, size_t *size, s32 idx);
     void *getBsp(u8 playerIdx, size_t *size);
     MultiDvdArchive *load(Course courseId);

@@ -1,6 +1,7 @@
 #include "RaceScene.hh"
 
 #include "game/kart/KartObjectManager.hh"
+#include "game/system/CourseMap.hh"
 #include "game/system/RaceConfig.hh"
 #include "game/system/ResourceManager.hh"
 
@@ -11,7 +12,7 @@ RaceScene::RaceScene() = default;
 RaceScene::~RaceScene() = default;
 
 void RaceScene::createEngines() {
-    // System::CourseMap::CreateInstance()->init();
+    System::CourseMap::CreateInstance()->init();
     // System::RaceManager::CreateInstance();
     Kart::KartObjectManager::CreateInstance();
     // Field::CourseModel::CreateInstance();
@@ -40,7 +41,7 @@ void RaceScene::destroyEngines() {
     // Field::CourseModel::DestroyInstance();
     // Item::ItemDirector::DestroyInstance();
     // System::RaceManager::DestroyInstance();
-    // System::CourseMap::DestroyInstance();
+    System::CourseMap::DestroyInstance();
 }
 
 void RaceScene::configure() {

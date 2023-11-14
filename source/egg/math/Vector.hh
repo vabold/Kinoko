@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Common.hh>
+#include "egg/util/Stream.hh"
 
 namespace EGG {
 
@@ -64,6 +64,8 @@ struct Vector3f {
     f32 dot() const;
     f32 length() const;
     f32 normalise();
+
+    void read(Stream &stream);
 
     f32 x;
     f32 y;
