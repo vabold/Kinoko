@@ -3,6 +3,7 @@
 #include <Common.hh>
 
 #define DEG2RAD(x) 0.017453292f * x
+#define F_PI 3.1415927f
 
 namespace EGG::Mathf {
 
@@ -11,6 +12,11 @@ f32 frsqrt(f32 x);
 
 f32 sin(f32 x);
 f32 cos(f32 x);
+
+// sin/cos struct
+struct SinCosEntry {
+    f32 sinVal, cosVal, sinDt, cosDt;
+};
 
 // frsqrte matching
 struct BaseAndDec {
