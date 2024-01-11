@@ -28,7 +28,7 @@ Quatf Quatf::conjugate() const {
     return Quatf(w, -v);
 }
 
-Vector3f Quatf::rotateVector(const EGG::Vector3f &vec) const {
+Vector3f Quatf::rotateVector(const Vector3f &vec) const {
     Quatf conj = conjugate();
     Quatf res = *this * vec;
     res *= conj;

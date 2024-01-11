@@ -26,4 +26,6 @@ MapdataStageInfoAccessor::MapdataStageInfoAccessor(const MapSectionHeader *heade
             m_sectionHeader->count);
 }
 
+MapdataStageInfoAccessor::~MapdataStageInfoAccessor() = default;
+
 } // namespace System

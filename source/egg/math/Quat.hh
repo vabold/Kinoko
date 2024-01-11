@@ -15,13 +15,16 @@ struct Quatf {
         return Quatf(-v.dot(vec), cross + scale);
     }
 
-    void operator*=(const Quatf &q) {
-        Vector3f cross = v.cross(q.v);
-        Vector3f scaleLhs = v * q.w;
-        Vector3f scaleRhs = q.v * w;
+    Quatf operator*(const Quatf &rhs) const {
+        Vector3f cross = v.cross(rhs.v);
+        Vector3f scaleLhs = v * rhs.w;
+        Vector3f scaleRhs = rhs.v * w;
 
-        w = w * q.w - v.dot(q.v);
-        v = cross + scaleRhs + scaleLhs;
+        return Quatf(w * rhs.w - v.dot(rhs.v), cross + scaleRhs + scaleLhs);
+    }
+
+    Quatf &operator*=(const Quatf &q) {
+        return *this = *this * q;
     }
 
     void setRPY(const Vector3f &rpy);

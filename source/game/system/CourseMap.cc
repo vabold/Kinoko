@@ -105,9 +105,15 @@ CourseMap *CourseMap::Instance() {
     return s_instance;
 }
 
-CourseMap::CourseMap() : m_course(nullptr), m_startPoint(nullptr) {}
+CourseMap::CourseMap()
+    : m_course(nullptr), m_startPoint(nullptr), m_stageInfo(nullptr), m_startTmpAngle(0.0f),
+      m_startTmp0(0.0f), m_startTmp1(0.0f), m_startTmp2(0.0f), m_startTmp3(0.0f) {}
 
-CourseMap::~CourseMap() = default;
+CourseMap::~CourseMap() {
+    delete m_course;
+    delete m_startPoint;
+    delete m_stageInfo;
+}
 
 void *CourseMap::LoadFile(const char *filename) {
     return ResourceManager::Instance()->getFile(filename, nullptr, 1);

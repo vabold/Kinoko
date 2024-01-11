@@ -14,6 +14,18 @@ class MapdataAccessorBase {
 public:
     MapdataAccessorBase(const MapSectionHeader *header)
         : m_entries(nullptr), m_entryCount(0), m_sectionHeader(header) {}
+    MapdataAccessorBase(const MapdataAccessorBase &) = delete;
+    MapdataAccessorBase(MapdataAccessorBase &&) = delete;
+
+    virtual ~MapdataAccessorBase() {
+        if (m_entries) {
+            for (size_t i = 0; i < m_entryCount; ++i) {
+                delete m_entries[i];
+            }
+        }
+
+        delete[] m_entries;
+    }
 
     T *get(u16 i) const {
         return i < m_entryCount ? m_entries[i] : nullptr;

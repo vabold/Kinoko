@@ -8,6 +8,37 @@
 
 namespace System {
 
+// We have to define these early so they're available for findKartStartPoint
+static constexpr s8 X_TRANSLATION_TABLE[12][12] = {
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {-5, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {-10, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {-10, 5, -5, 10, 0, 0, 0, 0, 0, 0, 0, 0},
+        {-10, 0, 10, -5, 5, 0, 0, 0, 0, 0, 0, 0},
+        {-10, -2, 6, -6, 2, 10, 0, 0, 0, 0, 0, 0},
+        {-5, 5, -10, 0, 10, -5, 5, 0, 0, 0, 0, 0},
+        {-10, 0, 10, -5, 5, -10, 0, 10, 0, 0, 0, 0},
+        {-10, -2, 6, -6, 2, 10, -10, -2, 6, 0, 0, 0},
+        {-10, 0, 10, -5, 5, -10, 0, 10, -5, 5, 0, 0},
+        {-10, -2, 6, -6, 2, 10, -10, -2, 6, -6, 2, 0},
+        {-10, -2, 6, -6, 2, 10, -10, -2, 6, -6, 2, 10},
+};
+
+static constexpr s8 Z_TRANSLATION_TABLE[12][12] = {
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0},
+        {0, 0, 1, 1, 1, 2, 2, 0, 0, 0, 0, 0},
+        {0, 0, 0, 1, 1, 2, 2, 2, 0, 0, 0, 0},
+        {0, 0, 0, 1, 1, 1, 2, 2, 2, 0, 0, 0},
+        {0, 0, 0, 1, 1, 2, 2, 2, 3, 3, 0, 0},
+        {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 0},
+        {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3},
+};
+
 MapdataStartPoint::MapdataStartPoint(const SData *data) : m_rawData(data) {
     u8 *unsafeData = reinterpret_cast<u8 *>(const_cast<SData *>(data));
     EGG::RamStream stream = EGG::RamStream(unsafeData, sizeof(SData));
@@ -41,12 +72,12 @@ void MapdataStartPoint::findKartStartPoint(EGG::Vector3f &pos, EGG::Vector3f &an
     f32 cos = EGG::Mathf::CosFIdx(courseMap->startTmpAngle() * DEG2FIDX);
     f32 sin = EGG::Mathf::SinFIdx(courseMap->startTmpAngle() * DEG2FIDX) * translationDirection;
 
-    int xTranslation = translationDirection * s_xTranslationTable[playerCount - 1][0];
+    int xTranslation = translationDirection * X_TRANSLATION_TABLE[playerCount - 1][0];
     f32 xScalar =
             sin * (courseMap->startTmp0() * (static_cast<f32>(xTranslation) + 10.0f) / 10.0f) / cos;
     EGG::Vector3f xTmp = -zAxis * xScalar;
 
-    int zTranslation = s_zTranslationTable[playerCount - 1][placement];
+    int zTranslation = Z_TRANSLATION_TABLE[playerCount - 1][placement];
     f32 zScalar = courseMap->startTmp2() * static_cast<f32>(zTranslation / 2) +
             courseMap->startTmp1() * static_cast<f32>(zTranslation) +
             courseMap->startTmp3() * static_cast<f32>((zTranslation + 1) / 2);
@@ -61,7 +92,7 @@ void MapdataStartPoint::findKartStartPoint(EGG::Vector3f &pos, EGG::Vector3f &an
     EGG::Vector3f vSin = zAxis * sin;
     EGG::Vector3f vRes = vCos + vSin;
 
-    int tmpTranslation = translationDirection * s_xTranslationTable[playerCount - 1][placement];
+    int tmpTranslation = translationDirection * X_TRANSLATION_TABLE[playerCount - 1][placement];
     f32 tmpScalar =
             courseMap->startTmp0() * (static_cast<f32>(tmpTranslation) + 10.0f) / (cos * 10.0f);
     EGG::Vector3f tmpRes = vRes * tmpScalar;
@@ -82,34 +113,6 @@ MapdataStartPointAccessor::MapdataStartPointAccessor(const MapSectionHeader *hea
     }
 }
 
-const s8 MapdataStartPoint::s_xTranslationTable[12][12] = {
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {-5, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {-10, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {-10, 5, -5, 10, 0, 0, 0, 0, 0, 0, 0, 0},
-        {-10, 0, 10, -5, 5, 0, 0, 0, 0, 0, 0, 0},
-        {-10, -2, 6, -6, 2, 10, 0, 0, 0, 0, 0, 0},
-        {-5, 5, -10, 0, 10, -5, 5, 0, 0, 0, 0, 0},
-        {-10, 0, 10, -5, 5, -10, 0, 10, 0, 0, 0, 0},
-        {-10, -2, 6, -6, 2, 10, -10, -2, 6, 0, 0, 0},
-        {-10, 0, 10, -5, 5, -10, 0, 10, -5, 5, 0, 0},
-        {-10, -2, 6, -6, 2, 10, -10, -2, 6, -6, 2, 0},
-        {-10, -2, 6, -6, 2, 10, -10, -2, 6, -6, 2, 10},
-};
-
-const s8 MapdataStartPoint::s_zTranslationTable[12][12] = {
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0},
-        {0, 0, 1, 1, 1, 2, 2, 0, 0, 0, 0, 0},
-        {0, 0, 0, 1, 1, 2, 2, 2, 0, 0, 0, 0},
-        {0, 0, 0, 1, 1, 1, 2, 2, 2, 0, 0, 0},
-        {0, 0, 0, 1, 1, 2, 2, 2, 3, 3, 0, 0},
-        {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 0},
-        {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3},
-};
+MapdataStartPointAccessor::~MapdataStartPointAccessor() = default;
 
 } // namespace System
