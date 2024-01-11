@@ -18,20 +18,23 @@ public:
     MapdataStartPoint(const SData *data);
 
     void read(EGG::Stream &stream);
+    void findKartStartPoint(EGG::Vector3f &pos, EGG::Vector3f &angles, u8 placement,
+            u8 playerCount);
 
 private:
     const SData *m_rawData;
     EGG::Vector3f m_position;
     EGG::Vector3f m_rotation;
     s16 m_playerIndex;
+
+    static const s8 s_xTranslationTable[12][12];
+    static const s8 s_zTranslationTable[12][12];
 };
 
 class MapdataStartPointAccessor
     : public MapdataAccessorBase<MapdataStartPoint, MapdataStartPoint::SData> {
 public:
     MapdataStartPointAccessor(const MapSectionHeader *header);
-
-    MapdataStartPoint *get(u16 i) const;
 };
 
 } // namespace System

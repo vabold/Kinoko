@@ -2,14 +2,18 @@
 
 #include <Common.hh>
 
-#define DEG2RAD(x) 0.017453292f * x
 #define F_PI 3.1415927f
+#define DEG2RAD (F_PI / 180.0f)
+#define DEG2FIDX (256.0f / 360.0f)
+#define RAD2FIDX (128.0f / F_PI)
 
 namespace EGG::Mathf {
 
 f32 sqrt(f32 x);
 f32 frsqrt(f32 x);
 
+f32 SinFIdx(f32 fidx);
+f32 CosFIdx(f32 fidx);
 f32 sin(f32 x);
 f32 cos(f32 x);
 

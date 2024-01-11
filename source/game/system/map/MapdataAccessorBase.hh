@@ -23,6 +23,10 @@ public:
         return i < m_entryCount ? m_entries[i].data() : nullptr;
     }
 
+    u16 size() const {
+        return m_entryCount;
+    }
+
     void init(const TData *start, u16 count) {
         if (count != 0) {
             m_entryCount = count;

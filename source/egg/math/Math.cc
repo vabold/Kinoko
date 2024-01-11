@@ -286,7 +286,7 @@ f32 frsqrt(f32 x) {
     return tmp1 * tmp2;
 }
 
-static f32 SinFIdx(f32 fidx) {
+f32 SinFIdx(f32 fidx) {
     f32 abs_fidx = fabs(fidx);
 
     while (abs_fidx >= 65536.0f) {
@@ -300,7 +300,7 @@ static f32 SinFIdx(f32 fidx) {
     return fidx < 0.0f ? -val : val;
 }
 
-static f32 CosFIdx(f32 fidx) {
+f32 CosFIdx(f32 fidx) {
     f32 abs_fidx = fabs(fidx);
 
     while (abs_fidx >= 65536.0f) {
@@ -316,12 +316,12 @@ static f32 CosFIdx(f32 fidx) {
 
 // Takes in radians
 f32 sin(f32 x) {
-    return SinFIdx(x * (128.0f / F_PI));
+    return SinFIdx(x * RAD2FIDX);
 }
 
 // Takes in radians
 f32 cos(f32 x) {
-    return CosFIdx(x * (128.0f / F_PI));
+    return CosFIdx(x * RAD2FIDX);
 }
 
 } // namespace EGG::Mathf

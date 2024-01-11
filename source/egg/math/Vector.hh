@@ -48,7 +48,7 @@ struct Vector3f {
     }
 
     Vector3f operator-(const Vector3f &rhs) const {
-        return Vector3f(x - rhs.x, y - rhs.y, z - rhs.y);
+        return Vector3f(x - rhs.x, y - rhs.y, z - rhs.z);
     }
 
     Vector3f operator+(const Vector3f &rhs) const {
