@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Common.hh>
+#include "egg/util/Stream.hh"
 
 namespace EGG {
 
@@ -48,7 +48,7 @@ struct Vector3f {
     }
 
     Vector3f operator-(const Vector3f &rhs) const {
-        return Vector3f(x - rhs.x, y - rhs.y, z - rhs.y);
+        return Vector3f(x - rhs.x, y - rhs.y, z - rhs.z);
     }
 
     Vector3f operator+(const Vector3f &rhs) const {
@@ -64,6 +64,8 @@ struct Vector3f {
     f32 dot() const;
     f32 length() const;
     f32 normalise();
+
+    void read(Stream &stream);
 
     f32 x;
     f32 y;

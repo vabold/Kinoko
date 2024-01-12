@@ -201,7 +201,7 @@ static inline T form(const u8 *data) {
 
 // Consistent file parsing with byte-swappable values
 template <typename T>
-static inline T parse(T val, std::endian endian) {
+static inline T parse(T val, std::endian endian = std::endian::big) {
     static_assert(
             std::endian::native == std::endian::big || std::endian::native == std::endian::little);
     return endian == std::endian::native ? val : std::byteswap(val);

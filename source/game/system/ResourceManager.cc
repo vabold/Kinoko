@@ -41,7 +41,9 @@ MultiDvdArchive *ResourceManager::load(s32 idx, const char *filename) {
 }
 
 MultiDvdArchive *ResourceManager::load(Course courseId) {
-    static_cast<CourseArchive *>(m_archives[1])->load(courseId);
+    char buffer[256];
+    snprintf(buffer, sizeof(buffer), "Kinoko/Course/%s", COURSE_NAMES[static_cast<s32>(courseId)]);
+    m_archives[1]->load(buffer);
     return m_archives[1];
 }
 
@@ -76,36 +78,8 @@ ResourceManager::~ResourceManager() = default;
 
 MultiDvdArchive *ResourceManager::Create(u8 i) {
     switch (i) {
-    case 1:
-        return new CourseArchive;
     default:
         return new MultiDvdArchive;
-    }
-}
-
-ResourceManager::CourseArchive::CourseArchive()
-    : m_course(Course::SNES_Mario_Circuit_3), m_state(State::Cleared) {}
-
-ResourceManager::CourseArchive::~CourseArchive() {
-    clear();
-}
-
-void ResourceManager::CourseArchive::load(Course courseId) {
-    char buffer[128];
-
-    m_course = courseId;
-    if (m_state == State::Loaded) {
-        clear();
-    }
-
-    m_state = State::Loading;
-    snprintf(buffer, sizeof(buffer), "Kinoko/Course/%s", COURSE_NAMES[static_cast<u8>(courseId)]);
-    rip(buffer);
-    if (rippedArchiveCount() == 0) {
-        clear();
-        m_state = State::Cleared;
-    } else {
-        m_state = State::Loaded;
     }
 }
 

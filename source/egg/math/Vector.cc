@@ -66,6 +66,12 @@ f32 Vector3f::normalise() {
     return len;
 }
 
+void Vector3f::read(Stream &stream) {
+    x = stream.read_f32();
+    y = stream.read_f32();
+    z = stream.read_f32();
+}
+
 const Vector2f Vector2f::zero = Vector2f(0.0f, 0.0f);
 const Vector2f Vector2f::ex = Vector2f(1.0f, 0.0f);
 const Vector2f Vector2f::ey = Vector2f(0.0f, 1.0f);

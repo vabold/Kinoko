@@ -106,7 +106,7 @@ bool KartParamFileManager::validate() const {
 
     auto *file = reinterpret_cast<ParamFile *>(m_kartParam.m_file);
     if (m_kartParam.m_size !=
-            parse<u32>(file->m_count, std::endian::big) * sizeof(KartParam::Stats) + 4) {
+            parse<u32>(file->m_count) * sizeof(KartParam::Stats) + 4) {
         return false;
     }
 
@@ -117,7 +117,7 @@ bool KartParamFileManager::validate() const {
 
     file = reinterpret_cast<ParamFile *>(m_driverParam.m_file);
     if (m_driverParam.m_size !=
-            parse<u32>(file->m_count, std::endian::big) * sizeof(KartParam::Stats) + 4) {
+            parse<u32>(file->m_count) * sizeof(KartParam::Stats) + 4) {
         return false;
     }
 
