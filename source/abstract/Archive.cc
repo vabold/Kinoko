@@ -18,8 +18,6 @@ ArchiveHandle::ArchiveHandle(void *archiveStart) : m_startAddress(archiveStart) 
     m_currentNode = 0;
 }
 
-// NOTE (vabold): If anyone wants to de-spaghetti this, please feel free
-//                My hope is that I can leave this function alone forever
 s32 ArchiveHandle::convertPathToEntryId(const char *path) const {
     u32 entryId = m_currentNode;
 
@@ -66,35 +64,29 @@ s32 ArchiveHandle::convertPathToEntryId(const char *path) const {
 
         bool found = false;
         const u32 anchor = entryId++;
-        while (entryId < node(anchor)->m_directory.m_next) {
-            while (true) {
-                if (node(anchor)->isDirectory() || !endOfPath) {
-                    const char *entryName = m_strings + node(entryId)->stringOffset();
-
-                    if (entryName[0] == '.' && entryName[1] == '\0') {
-                        entryId++;
-                        continue;
-                    }
-
-                    if (strcmp(path, entryName) == 0) {
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (node(entryId)->isDirectory()) {
-                    entryId = node(entryId)->m_directory.m_next;
-                    break;
-                }
-
+        while (entryId < parse<u32>(node(anchor)->m_directory.m_next)) {
+            if (!node(anchor)->isDirectory() && endOfPath) {
                 entryId++;
+                continue;
             }
 
-            if (!found) {
-                return -1;
+            const char *entryName = m_strings + node(entryId)->stringOffset();
+
+            if (entryName[0] == '.' && entryName[1] == '\0') {
+                entryId++;
+                continue;
             }
 
-            break;
+            if (strncmp(path, entryName, nameLength) == 0) {
+                found = true;
+                break;
+            }
+
+            entryId++;
+        }
+
+        if (!found) {
+            return -1;
         }
 
         if (endOfPath) {
