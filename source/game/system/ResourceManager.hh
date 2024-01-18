@@ -7,7 +7,7 @@ namespace System {
 class ResourceManager {
 public:
     void *getFile(const char *filename, size_t *size, s32 idx);
-    void *getBsp(u8 playerIdx, size_t *size);
+    void *getBsp(Vehicle vehicle, size_t *size);
     MultiDvdArchive *load(Course courseId);
     MultiDvdArchive *load(s32 idx, const char *filename);
 
