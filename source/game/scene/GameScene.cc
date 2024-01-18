@@ -36,7 +36,7 @@ void GameScene::reinit() {
     }
 }
 
-void GameScene::appendResource(System::MultiDvdArchive *arc, s32 id) {}
+void GameScene::appendResource(System::MultiDvdArchive * /*arc*/, s32 /*id*/) {}
 
 void GameScene::initScene() {
     createEngines();
