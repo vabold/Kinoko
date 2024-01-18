@@ -3,7 +3,6 @@
 #include <game/scene/RaceScene.hh>
 #include <game/scene/RootScene.hh>
 
-
 namespace Host {
 
 EGG::Scene *SceneCreatorDynamic::create(int sceneId) const {
