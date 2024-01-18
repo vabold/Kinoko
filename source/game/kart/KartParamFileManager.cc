@@ -76,6 +76,20 @@ EGG::RamStream KartParamFileManager::getVehicleStream(Vehicle vehicle) const {
     return EGG::RamStream(reinterpret_cast<u8 *>(offset), size);
 }
 
+EGG::RamStream KartParamFileManager::getHitboxStream(Vehicle vehicle) const {
+    if (vehicle >= Vehicle::Max) {
+        K_PANIC("Uh oh.");
+    }
+
+    auto *resourceManager = System::ResourceManager::Instance();
+    size_t size;
+
+    auto *file = resourceManager->getBsp(vehicle, &size);
+    assert(file);
+    assert(size == sizeof(KartParam::BSP));
+    return EGG::RamStream(reinterpret_cast<u8 *>(file), size);
+}
+
 KartParamFileManager *KartParamFileManager::CreateInstance() {
     assert(!s_instance);
     s_instance = new KartParamFileManager;
@@ -105,8 +119,7 @@ bool KartParamFileManager::validate() const {
     }
 
     auto *file = reinterpret_cast<ParamFile *>(m_kartParam.m_file);
-    if (m_kartParam.m_size !=
-            parse<u32>(file->m_count) * sizeof(KartParam::Stats) + 4) {
+    if (m_kartParam.m_size != parse<u32>(file->m_count) * sizeof(KartParam::Stats) + 4) {
         return false;
     }
 
@@ -116,8 +129,7 @@ bool KartParamFileManager::validate() const {
     }
 
     file = reinterpret_cast<ParamFile *>(m_driverParam.m_file);
-    if (m_driverParam.m_size !=
-            parse<u32>(file->m_count) * sizeof(KartParam::Stats) + 4) {
+    if (m_driverParam.m_size != parse<u32>(file->m_count) * sizeof(KartParam::Stats) + 4) {
         return false;
     }
 

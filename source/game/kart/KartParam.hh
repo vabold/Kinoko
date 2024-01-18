@@ -1,6 +1,6 @@
 #pragma once
 
-#include <egg/util/Stream.hh>
+#include <egg/math/Vector.hh>
 
 namespace Kart {
 
@@ -66,6 +66,45 @@ public:
     };
     static_assert(sizeof(Stats) == 0x18c);
 
+    struct BSP {
+        struct Hitbox {
+            u16 m_enable;
+            EGG::Vector3f m_position;
+            f32 m_radius;
+            u16 m_wallsOnly;
+            u16 m_tireCollisionIdx;
+        };
+        static_assert(sizeof(Hitbox) == 0x18);
+
+        struct Wheel {
+            u16 m_enable;
+            f32 m_springStiffness;
+            f32 m_dampingFactor;
+            f32 m_maxTravel;
+            EGG::Vector3f m_relPosition;
+            f32 m_xRot;
+            f32 m_wheelRadius;
+            f32 m_sphereRadius;
+            u32 _28;
+        };
+        static_assert(sizeof(Wheel) == 0x2c);
+
+        BSP();
+        BSP(EGG::RamStream &stream);
+
+        void read(EGG::RamStream &stream);
+
+        f32 m_initialYPos;
+        std::array<Hitbox, 16> m_hitboxes;
+        EGG::Vector3f m_cuboids[2];
+        f32 m_angVel0Factor;
+        f32 _1a0;
+        std::array<Wheel, 4> m_wheels;
+        f32 m_rumbleHeight;
+        f32 m_rumbleSpeed;
+    };
+    static_assert(sizeof(BSP) == 0x25c);
+
     KartParam(Character character, Vehicle vehicle);
     ~KartParam();
 
@@ -74,6 +113,7 @@ private:
     void initHitboxes(Vehicle vehicle);
 
     Stats m_stats;
+    BSP m_bsp;
 };
 
 } // namespace Kart

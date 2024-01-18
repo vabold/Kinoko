@@ -10,6 +10,7 @@ public:
     void init();
     EGG::RamStream getDriverStream(Character character) const;
     EGG::RamStream getVehicleStream(Vehicle vehicle) const;
+    EGG::RamStream getHitboxStream(Vehicle vehicle) const;
 
     static KartParamFileManager *CreateInstance();
     static void DestroyInstance();

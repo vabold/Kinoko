@@ -15,12 +15,11 @@ void *ResourceManager::getFile(const char *filename, size_t *size, s32 idx) {
     return m_archives[idx]->isLoaded() ? m_archives[idx]->getFile(filename, size) : nullptr;
 }
 
-void *ResourceManager::getBsp(u8 playerIdx, size_t *size) {
+void *ResourceManager::getBsp(Vehicle vehicle, size_t *size) {
     char buffer[32];
 
-    auto *raceConfig = RaceConfig::Instance();
-    const char *vehicle = GetVehicleName(raceConfig->raceScenario().m_players[playerIdx].m_vehicle);
-    snprintf(buffer, sizeof(buffer), "bsp/%s.bsp", vehicle);
+    const char *name = GetVehicleName(vehicle);
+    snprintf(buffer, sizeof(buffer), "/bsp/%s.bsp", name);
 
     return m_archives[0]->isLoaded() ? m_archives[0]->getFile(buffer, size) : nullptr;
 }

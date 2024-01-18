@@ -21,9 +21,11 @@ void KartParam::initStats(Character character, Vehicle vehicle) {
     m_stats.applyCharacterBonus(driverStream);
 }
 
-// TODO: Add BSP parsing
 void KartParam::initHitboxes(Vehicle vehicle) {
-    (void)vehicle;
+    auto *fileManager = KartParamFileManager::Instance();
+
+    auto hitboxStream = fileManager->getHitboxStream(vehicle);
+    m_bsp = BSP(hitboxStream);
 }
 
 KartParam::Stats::Stats() = default;
@@ -114,6 +116,46 @@ void KartParam::Stats::applyCharacterBonus(EGG::RamStream &stream) {
     for (size_t i = 0; i < m_kclRot.size(); ++i) {
         m_kclRot[i] += stream.read_f32();
     }
+}
+
+KartParam::BSP::BSP() = default;
+
+KartParam::BSP::BSP(EGG::RamStream &stream) {
+    read(stream);
+}
+
+void KartParam::BSP::read(EGG::RamStream &stream) {
+    m_initialYPos = stream.read_f32();
+
+    for (auto &hitbox : m_hitboxes) {
+        hitbox.m_enable = stream.read_u16();
+        stream.skip(2);
+        hitbox.m_position.read(stream);
+        hitbox.m_radius = stream.read_f32();
+        hitbox.m_wallsOnly = stream.read_u16();
+        hitbox.m_tireCollisionIdx = stream.read_u16();
+    }
+
+    m_cuboids[0].read(stream);
+    m_cuboids[1].read(stream);
+    m_angVel0Factor = stream.read_f32();
+    _1a0 = stream.read_f32();
+
+    for (auto &wheel : m_wheels) {
+        wheel.m_enable = stream.read_u16();
+        stream.skip(2);
+        wheel.m_springStiffness = stream.read_f32();
+        wheel.m_dampingFactor = stream.read_f32();
+        wheel.m_maxTravel = stream.read_f32();
+        wheel.m_relPosition.read(stream);
+        wheel.m_xRot = stream.read_f32();
+        wheel.m_wheelRadius = stream.read_f32();
+        wheel.m_sphereRadius = stream.read_f32();
+        wheel._28 = stream.read_u32();
+    }
+
+    m_rumbleHeight = stream.read_f32();
+    m_rumbleSpeed = stream.read_f32();
 }
 
 } // namespace Kart
