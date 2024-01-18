@@ -10,7 +10,7 @@ MapdataStageInfo::MapdataStageInfo(const SData *data) : m_rawData(data) {
     read(stream);
 }
 
-void MapdataStageInfo::read(EGG::Stream &stream) {}
+void MapdataStageInfo::read(EGG::Stream & /*stream*/) {}
 
 u8 MapdataStageInfo::polePosition() const {
     return m_rawData->polePosition;
