@@ -21,8 +21,6 @@ jobs:
           sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-12 10
           sudo update-alternatives --set gcc "/usr/bin/gcc-12"
           sudo update-alternatives --set g++ "/usr/bin/g++-12"
-      - name: Display G++ version
-        run: g++ --version
       - name: Configure ninja
         run: ./configure.py
       - name: Compile
@@ -32,3 +30,16 @@ jobs:
         with:
           name: Kinoko
           path: out
+
+  format:
+    name: Format
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install clang-format
+        run: sudo apt-get update && sudo apt-get install clang-format-15
+      - name: Format Kinoko
+        run: |
+          dirs="include source"
+          find $dirs -regex '.*\.\(c\|h\|cc\|hh\)' | xargs clang-format-15 --dry-run -Werror
