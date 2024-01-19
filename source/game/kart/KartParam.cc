@@ -4,12 +4,26 @@
 
 namespace Kart {
 
-KartParam::KartParam(Character character, Vehicle vehicle) {
+KartParam::KartParam(Character character, Vehicle vehicle, u8 playerIdx) {
     initStats(character, vehicle);
     initHitboxes(vehicle);
+    m_playerIdx = playerIdx;
+    m_isBike = vehicle >= Vehicle::Standard_Bike_S;
 }
 
 KartParam::~KartParam() = default;
+
+const BSP &KartParam::bsp() const {
+    return m_bsp;
+}
+
+u8 KartParam::playerIdx() const {
+    return m_playerIdx;
+}
+
+bool KartParam::isBike() const {
+    return m_isBike;
+}
 
 void KartParam::initStats(Character character, Vehicle vehicle) {
     auto *fileManager = KartParamFileManager::Instance();
@@ -118,13 +132,13 @@ void KartParam::Stats::applyCharacterBonus(EGG::RamStream &stream) {
     }
 }
 
-KartParam::BSP::BSP() = default;
+BSP::BSP() = default;
 
-KartParam::BSP::BSP(EGG::RamStream &stream) {
+BSP::BSP(EGG::RamStream &stream) {
     read(stream);
 }
 
-void KartParam::BSP::read(EGG::RamStream &stream) {
+void BSP::read(EGG::RamStream &stream) {
     m_initialYPos = stream.read_f32();
 
     for (auto &hitbox : m_hitboxes) {

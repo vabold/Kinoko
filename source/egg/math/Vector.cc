@@ -41,16 +41,22 @@ Vector3f::Vector3f() = default;
 
 Vector3f::~Vector3f() = default;
 
-Vector3f Vector3f::cross(const Vector3f &rhs) const {
-    return Vector3f(y * rhs.z - z * rhs.y, z * rhs.x - x * rhs.z, x * rhs.y - y * rhs.x);
+f32 Vector3f::dot() const {
+    return x * x + y * y + z * z;
 }
 
 f32 Vector3f::dot(const Vector3f &rhs) const {
     return x * rhs.x + y * rhs.y + z * rhs.z;
 }
 
-f32 Vector3f::dot() const {
-    return x * x + y * y + z * z;
+f32 Vector3f::ps_dot(const Vector3f &rhs) const {
+    f32 y_ = y * rhs.y;
+    f32 xy = static_cast<f32>(static_cast<f64>(x) * static_cast<f64>(rhs.x) + static_cast<f64>(y_));
+    return xy + z * rhs.z;
+}
+
+Vector3f Vector3f::cross(const Vector3f &rhs) const {
+    return Vector3f(y * rhs.z - z * rhs.y, z * rhs.x - x * rhs.z, x * rhs.y - y * rhs.x);
 }
 
 f32 Vector3f::length() const {
@@ -64,6 +70,26 @@ f32 Vector3f::normalise() {
     }
 
     return len;
+}
+
+Vector3f Vector3f::maximize(const Vector3f &rhs) const {
+    Vector3f out;
+
+    out.x = x > rhs.x ? x : rhs.x;
+    out.y = y > rhs.y ? y : rhs.y;
+    out.z = z > rhs.z ? z : rhs.z;
+
+    return out;
+}
+
+Vector3f Vector3f::minimize(const Vector3f &rhs) const {
+    Vector3f out;
+
+    out.x = x < rhs.x ? x : rhs.x;
+    out.y = y < rhs.y ? y : rhs.y;
+    out.z = z < rhs.z ? z : rhs.z;
+
+    return out;
 }
 
 void Vector3f::read(Stream &stream) {
@@ -80,5 +106,8 @@ const Vector3f Vector3f::zero = Vector3f(0.0f, 0.0f, 0.0f);
 const Vector3f Vector3f::ex = Vector3f(1.0f, 0.0f, 0.0f);
 const Vector3f Vector3f::ey = Vector3f(0.0f, 1.0f, 0.0f);
 const Vector3f Vector3f::ez = Vector3f(0.0f, 0.0f, 1.0f);
+
+const Vector3f Vector3f::inf = Vector3f(std::numeric_limits<f32>::infinity(),
+        std::numeric_limits<f32>::infinity(), std::numeric_limits<f32>::infinity());
 
 } // namespace EGG

@@ -1,0 +1,108 @@
+#pragma once
+
+#include <egg/math/Vector.hh>
+
+// Credit: em-eight/mkw
+
+#define KCL_ATTRIBUTE_TYPE(x) ((x)&0x1f)
+#define KCL_TYPE_BIT(x) (1 << (x))
+#define KCL_ATTRIBUTE_TYPE_BIT(x) KCL_TYPE_BIT(KCL_ATTRIBUTE_TYPE(x))
+
+// KCL attribute types
+typedef enum {
+    COL_TYPE_ROAD = 0,
+    COL_TYPE_SLIPPERY_ROAD = 1,
+    COL_TYPE_WEAK_OFF_ROAD = 2,
+    COL_TYPE_OFF_ROAD = 3,
+    COL_TYPE_HEAVY_OFF_ROAD = 4,
+    COL_TYPE_SLIPPERY_ROAD_2 = 5,
+    COL_TYPE_BOOST_PAD = 6,
+    COL_TYPE_BOOST_RAMP = 7,
+    COL_TYPE_JUMP_PAD = 8,
+    COL_TYPE_ITEM_ROAD = 9,
+
+    COL_TYPE_SOLID_OOB = 0xa,
+    COL_TYPE_MOVING_WATER = 0xb,
+
+    COL_TYPE_WALL = 0xc,
+    COL_TYPE_INVISIBLE_WALL = 0xd,
+    COL_TYPE_ITEM_WALL = 0xe,
+    COL_TYPE_WALL_2 = 0xf,
+
+    COL_TYPE_FALL_BOUNDARY = 0x10,
+    COL_TYPE_CANNON_TRIGGER = 0x11,
+    COL_TYPE_FORCE_RECALCULATE_ROUTE = 0x12,
+    COL_TYPE_HALFPIPE_RAMP = 0x13,
+    COL_TYPE_PLAYER_WALL = 0x14,
+    COL_TYPE_MOVING_ROAD = 0x15,
+    COL_TYPE_STICKY_ROAD = 0x16,
+    COL_TYPE_ROAD2 = 0x17,
+    COL_TYPE_SOUND_TRIGGER = 0x18,
+    COL_TYPE_WEAK_WALL = 0x19,
+    COL_TYPE_EFFECT_TRIGGER = 0x1a,
+    COL_TYPE_ITEM_STATE_MODIFIER = 0x1b,
+
+    COL_TYPE_HALFPIPE_INVISIBLE_WALL = 0x1c,
+    COL_TYPE_ROTATING_ROAD = 0x1d,
+    COL_TYPE_SPECIAL_WALL = 0x1e,
+    COL_TYPE_INVISIBLE_WALL2 = 0x1f,
+
+    COL_TYPE_COUNT
+} KColType;
+
+#define KCL_SOFT_WALL_MASK 0x8000
+#define KCL_ANY 0xffffffff
+#define KCL_NONE 0x00000000
+
+#define KCL_TYPE_DIRECTIONAL \
+    (KCL_TYPE_BIT(COL_TYPE_FALL_BOUNDARY) | KCL_TYPE_BIT(COL_TYPE_SOUND_TRIGGER) | \
+            KCL_TYPE_BIT(COL_TYPE_FORCE_RECALCULATE_ROUTE) | \
+            KCL_TYPE_BIT(COL_TYPE_EFFECT_TRIGGER) | KCL_TYPE_BIT(COL_TYPE_CANNON_TRIGGER))
+
+#define KCL_TYPE_SOLID_SURFACE \
+    (KCL_ANY & \
+            (~KCL_TYPE_BIT(COL_TYPE_FALL_BOUNDARY) & ~KCL_TYPE_BIT(COL_TYPE_CANNON_TRIGGER) & \
+                    ~KCL_TYPE_BIT(COL_TYPE_FORCE_RECALCULATE_ROUTE) & \
+                    ~KCL_TYPE_BIT(COL_TYPE_SOUND_TRIGGER) & ~KCL_TYPE_BIT(COL_TYPE_WEAK_WALL) & \
+                    ~KCL_TYPE_BIT(COL_TYPE_EFFECT_TRIGGER) & \
+                    ~KCL_TYPE_BIT(COL_TYPE_ITEM_STATE_MODIFIER)))
+
+#define KCL_TYPE_FLOOR \
+    (KCL_TYPE_BIT(COL_TYPE_ROAD) | KCL_TYPE_BIT(COL_TYPE_SLIPPERY_ROAD) | \
+            KCL_TYPE_BIT(COL_TYPE_WEAK_OFF_ROAD) | KCL_TYPE_BIT(COL_TYPE_OFF_ROAD) | \
+            KCL_TYPE_BIT(COL_TYPE_HEAVY_OFF_ROAD) | KCL_TYPE_BIT(COL_TYPE_SLIPPERY_ROAD_2) | \
+            KCL_TYPE_BIT(COL_TYPE_BOOST_PAD) | KCL_TYPE_BIT(COL_TYPE_BOOST_RAMP) | \
+            KCL_TYPE_BIT(COL_TYPE_JUMP_PAD) | KCL_TYPE_BIT(COL_TYPE_ITEM_ROAD) | \
+            KCL_TYPE_BIT(COL_TYPE_SOLID_OOB) | KCL_TYPE_BIT(COL_TYPE_MOVING_WATER) | \
+            KCL_TYPE_BIT(COL_TYPE_HALFPIPE_RAMP) | KCL_TYPE_BIT(COL_TYPE_MOVING_ROAD) | \
+            KCL_TYPE_BIT(COL_TYPE_STICKY_ROAD) | KCL_TYPE_BIT(COL_TYPE_ROAD2) | \
+            KCL_TYPE_BIT(COL_TYPE_ROTATING_ROAD))
+
+#define KCL_TYPE_WALL \
+    (KCL_TYPE_BIT(COL_TYPE_WALL) | KCL_TYPE_BIT(COL_TYPE_INVISIBLE_WALL) | \
+            KCL_TYPE_BIT(COL_TYPE_ITEM_WALL) | KCL_TYPE_BIT(COL_TYPE_WALL_2) | \
+            KCL_TYPE_BIT(COL_TYPE_PLAYER_WALL) | KCL_TYPE_BIT(COL_TYPE_HALFPIPE_INVISIBLE_WALL) | \
+            KCL_TYPE_BIT(COL_TYPE_SPECIAL_WALL) | KCL_TYPE_BIT(COL_TYPE_INVISIBLE_WALL2))
+
+namespace Field {
+
+struct KColHeader {
+    u32 pos_data_offset;
+    u32 nrm_data_offset;
+    u32 prism_data_offset;
+    u32 block_data_offset;
+    f32 prism_thickness;
+    EGG::Vector3f area_min_pos;
+    u32 area_x_width_mask;
+    u32 area_y_width_mask;
+    u32 area_z_width_mask;
+    u32 block_width_shift;
+    u32 area_x_blocks_shift;
+    u32 area_xy_blocks_shift;
+    f32 sphere_radius;
+};
+static_assert(sizeof(KColHeader) == 0x3c);
+
+typedef u32 KCLTypeMask;
+
+} // namespace Field
