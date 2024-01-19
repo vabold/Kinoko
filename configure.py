@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from glob import glob
 import io
 import os
 import sys
@@ -69,40 +70,7 @@ n.rule(
     description='LD $out',
 )
 
-code_in_files = [
-    os.path.join('include', 'Common.cc'),
-    os.path.join('source', 'abstract', 'Archive.cc'),
-    os.path.join('source', 'abstract', 'File.cc'),
-    os.path.join('source', 'abstract', 'List.cc'),
-    os.path.join('source', 'egg', 'core', 'Archive.cc'),
-    os.path.join('source', 'egg', 'core', 'Decomp.cc'),
-    os.path.join('source', 'egg', 'core', 'Scene.cc'),
-    os.path.join('source', 'egg', 'core', 'SceneManager.cc'),
-    os.path.join('source', 'egg', 'math', 'Math.cc'),
-    os.path.join('source', 'egg', 'math', 'Quat.cc'),
-    os.path.join('source', 'egg', 'math', 'Vector.cc'),
-    os.path.join('source', 'egg', 'util', 'Stream.cc'),
-    os.path.join('source', 'game', 'kart', 'KartObject.cc'),
-    os.path.join('source', 'game', 'kart', 'KartObjectManager.cc'),
-    os.path.join('source', 'game', 'kart', 'KartObjectProxy.cc'),
-    os.path.join('source', 'game', 'kart', 'KartParam.cc'),
-    os.path.join('source', 'game', 'kart', 'KartParamFileManager.cc'),
-    os.path.join('source', 'game', 'scene', 'GameScene.cc'),
-    os.path.join('source', 'game', 'scene', 'RaceScene.cc'),
-    os.path.join('source', 'game', 'scene', 'RootScene.cc'),
-    os.path.join('source', 'game', 'system', 'map', 'MapdataFileAccessor.cc'),
-    os.path.join('source', 'game', 'system', 'map', 'MapdataStageInfo.cc'),
-    os.path.join('source', 'game', 'system', 'map', 'MapdataStartPoint.cc'),
-    os.path.join('source', 'game', 'system', 'CourseMap.cc'),
-    os.path.join('source', 'game', 'system', 'DvdArchive.cc'),
-    os.path.join('source', 'game', 'system', 'InputManager.cc'),
-    os.path.join('source', 'game', 'system', 'MultiDvdArchive.cc'),
-    os.path.join('source', 'game', 'system', 'RaceConfig.cc'),
-    os.path.join('source', 'game', 'system', 'ResourceManager.cc'),
-    os.path.join('source', 'host', 'main.cc'),
-    os.path.join('source', 'host', 'SceneCreatorDynamic.cc'),
-    os.path.join('source', 'host', 'System.cc'),
-]
+code_in_files = [file for file in glob('**/*.cc', recursive=True)]
 
 target_code_out_files = []
 debug_code_out_files = []
