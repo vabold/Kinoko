@@ -11,7 +11,8 @@ static const char *const RESOURCE_PATHS[] = {
         nullptr,
 };
 
-void *ResourceManager::getFile(const char *filename, size_t *size, s32 idx) {
+void *ResourceManager::getFile(const char *filename, size_t *size, ArchiveId id) {
+    s32 idx = static_cast<s32>(id);
     return m_archives[idx]->isLoaded() ? m_archives[idx]->getFile(filename, size) : nullptr;
 }
 

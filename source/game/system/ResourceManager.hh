@@ -4,9 +4,14 @@
 
 namespace System {
 
+enum class ArchiveId {
+    Core = 0,
+    Course = 1,
+};
+
 class ResourceManager {
 public:
-    void *getFile(const char *filename, size_t *size, s32 idx);
+    void *getFile(const char *filename, size_t *size, ArchiveId id);
     void *getBsp(Vehicle vehicle, size_t *size);
     MultiDvdArchive *load(Course courseId);
     MultiDvdArchive *load(s32 idx, const char *filename);

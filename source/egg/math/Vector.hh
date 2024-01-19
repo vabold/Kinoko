@@ -9,6 +9,10 @@ struct Vector2f {
     Vector2f();
     ~Vector2f();
 
+    inline void set(f32 val) {
+        x = y = val;
+    }
+
     Vector2f operator-() const {
         return Vector2f(-x, -y);
     }
@@ -43,6 +47,14 @@ struct Vector3f {
     Vector3f();
     ~Vector3f();
 
+    inline void setZero() {
+        set(0.0f);
+    }
+
+    inline void set(f32 val) {
+        x = y = z = val;
+    }
+
     Vector3f operator-() const {
         return Vector3f(-x, -y, -z);
     }
@@ -55,15 +67,30 @@ struct Vector3f {
         return Vector3f(x + rhs.x, y + rhs.y, z + rhs.z);
     }
 
-    Vector3f operator*(float scalar) const {
+    Vector3f &operator+=(const Vector3f &rhs) {
+        return *this = *this + rhs;
+    }
+
+    Vector3f operator*(f32 scalar) const {
         return Vector3f(x * scalar, y * scalar, z * scalar);
     }
 
+    Vector3f &operator*=(f32 scalar) {
+        return *this = *this * scalar;
+    }
+
+    Vector3f operator/(f32 scalar) const {
+        return Vector3f(x / scalar, y / scalar, z / scalar);
+    }
+
     Vector3f cross(const EGG::Vector3f &rhs) const;
-    f32 dot(const EGG::Vector3f &rhs) const;
     f32 dot() const;
+    f32 dot(const EGG::Vector3f &rhs) const;
+    f32 ps_dot(const EGG::Vector3f &rhs) const;
     f32 length() const;
     f32 normalise();
+    Vector3f maximize(const Vector3f &rhs) const;
+    Vector3f minimize(const Vector3f &rhs) const;
 
     void read(Stream &stream);
 
@@ -73,6 +100,7 @@ struct Vector3f {
 
     static const Vector3f zero;
     static const Vector3f ex, ey, ez;
+    static const Vector3f inf;
 };
 
 } // namespace EGG

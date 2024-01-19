@@ -9,6 +9,13 @@ struct Quatf {
     Quatf(f32 w_, const Vector3f &v_);
     ~Quatf();
 
+    Quatf &operator=(const Quatf &q) {
+        w = q.w;
+        v = q.v;
+
+        return *this;
+    }
+
     Quatf operator*(const Vector3f &vec) const {
         Vector3f cross = v.cross(vec);
         Vector3f scale = vec * w;

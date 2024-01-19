@@ -86,7 +86,7 @@ EGG::RamStream KartParamFileManager::getHitboxStream(Vehicle vehicle) const {
 
     auto *file = resourceManager->getBsp(vehicle, &size);
     assert(file);
-    assert(size == sizeof(KartParam::BSP));
+    assert(size == sizeof(BSP));
     return EGG::RamStream(reinterpret_cast<u8 *>(file), size);
 }
 
@@ -143,7 +143,7 @@ void KartParamFileManager::FileInfo::clear() {
 
 void KartParamFileManager::FileInfo::load(const char *filename) {
     auto *resourceManager = System::ResourceManager::Instance();
-    m_file = resourceManager->getFile(filename, &m_size, 0);
+    m_file = resourceManager->getFile(filename, &m_size, System::ArchiveId::Core);
 }
 
 KartParamFileManager *KartParamFileManager::s_instance = nullptr;

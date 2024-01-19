@@ -5,7 +5,12 @@
 
 namespace Kart {
 
-void KartObjectManager::init() {}
+void KartObjectManager::init() {
+    for (size_t i = 0; i < m_count; ++i) {
+        m_objects[i]->initImpl();
+        m_objects[i]->prepare();
+    }
+}
 
 void KartObjectManager::calc() {}
 
@@ -32,7 +37,7 @@ KartObjectManager::KartObjectManager() {
     KartParamFileManager::CreateInstance();
     for (size_t i = 0; i < m_count; ++i) {
         const auto &player = raceScenario.m_players[i];
-        m_objects[i] = KartObject::Create(player.m_character, player.m_vehicle);
+        m_objects[i] = KartObject::Create(player.m_character, player.m_vehicle, i);
     }
 }
 

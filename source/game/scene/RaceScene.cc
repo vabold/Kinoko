@@ -1,8 +1,10 @@
 #include "RaceScene.hh"
 
+#include "game/field/CollisionDirector.hh"
 #include "game/kart/KartObjectManager.hh"
 #include "game/system/CourseMap.hh"
 #include "game/system/RaceConfig.hh"
+#include "game/system/RaceManager.hh"
 #include "game/system/ResourceManager.hh"
 
 namespace Scene {
@@ -13,9 +15,9 @@ RaceScene::~RaceScene() = default;
 
 void RaceScene::createEngines() {
     System::CourseMap::CreateInstance()->init();
-    // System::RaceManager::CreateInstance();
+    System::RaceManager::CreateInstance();
     Kart::KartObjectManager::CreateInstance();
-    // Field::CourseModel::CreateInstance();
+    Field::CollisionDirector::CreateInstance();
     // Item::ItemDirector::CreateInstance();
 }
 
@@ -38,9 +40,9 @@ void RaceScene::calcEngines() {
 
 void RaceScene::destroyEngines() {
     Kart::KartObjectManager::DestroyInstance();
-    // Field::CourseModel::DestroyInstance();
+    Field::CollisionDirector::DestroyInstance();
     // Item::ItemDirector::DestroyInstance();
-    // System::RaceManager::DestroyInstance();
+    System::RaceManager::DestroyInstance();
     System::CourseMap::DestroyInstance();
 }
 
