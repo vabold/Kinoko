@@ -22,6 +22,16 @@ void RaceManager::findKartStartPoint(EGG::Vector3f &pos, EGG::Vector3f &angles) 
     }
 }
 
+void RaceManager::calc() {
+    if (m_stage == Stage::Intro) {
+        ++m_introTimer;
+    }
+}
+
+RaceManager::Stage RaceManager::stage() const {
+    return m_stage;
+}
+
 RaceManager *RaceManager::CreateInstance() {
     assert(!s_instance);
     s_instance = new RaceManager;
@@ -38,7 +48,7 @@ void RaceManager::DestroyInstance() {
     s_instance = nullptr;
 }
 
-RaceManager::RaceManager() = default;
+RaceManager::RaceManager() : m_stage(Stage::Intro), m_introTimer(0) {}
 
 RaceManager::~RaceManager() = default;
 

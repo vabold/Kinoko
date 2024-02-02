@@ -12,7 +12,11 @@ void KartObjectManager::init() {
     }
 }
 
-void KartObjectManager::calc() {}
+void KartObjectManager::calc() {
+    for (size_t i = 0; i < m_count; ++i) {
+        m_objects[i]->calcSub();
+    }
+}
 
 KartObjectManager *KartObjectManager::CreateInstance() {
     assert(!s_instance);

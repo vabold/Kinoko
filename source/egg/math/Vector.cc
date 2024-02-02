@@ -37,7 +37,7 @@ f32 Vector2f::normalise() {
 
 Vector3f::Vector3f(f32 x_, f32 y_, f32 z_) : x(x_), y(y_), z(z_) {}
 
-Vector3f::Vector3f() = default;
+Vector3f::Vector3f() : x(0.0f), y(0.0f), z(0.0f) {}
 
 Vector3f::~Vector3f() = default;
 

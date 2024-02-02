@@ -42,6 +42,10 @@ void KartObject::createSub() {
     m_pointers.m_sub->createSubsystems(m_pointers.m_param->isBike());
 }
 
+void KartObject::calcSub() {
+    m_pointers.m_sub->calcPass0();
+}
+
 KartObject *KartObject::Create(Character character, Vehicle vehicle, u8 playerIdx) {
     Abstract::List list;
     s_list = &list;
