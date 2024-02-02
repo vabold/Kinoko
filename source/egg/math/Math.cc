@@ -324,4 +324,8 @@ f32 cos(f32 x) {
     return CosFIdx(x * RAD2FIDX);
 }
 
+f32 acos(f32 x) {
+    return std::acos(x);
+}
+
 } // namespace EGG::Mathf

@@ -15,8 +15,13 @@ public:
     void initPhysicsValues();
     void resetPhysics();
 
+    void calcPass0();
+
 private:
     KartMove *m_move;
+    KartState *m_state;
+
+    static constexpr f32 DT = 1.0f;
 };
 
 } // namespace Kart

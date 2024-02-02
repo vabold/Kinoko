@@ -28,9 +28,8 @@ void RaceScene::initEngines() {
 }
 
 void RaceScene::calcEngines() {
-    // auto *raceMgr = System::RaceManager::Instance();
-    // raceMgr->calc();
-    // if (!raceMgr->spectatorMode())
+    auto *raceMgr = System::RaceManager::Instance();
+    raceMgr->calc();
     Kart::KartObjectManager::Instance()->calc();
     // if (raceMgr->isStateReached(State::Countdown)) {
     //     Item::ItemDirector::Instance()->calc();

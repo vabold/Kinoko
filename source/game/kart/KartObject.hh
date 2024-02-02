@@ -19,6 +19,8 @@ public:
 
     void createSub();
 
+    void calcSub();
+
     static KartObject *Create(Character character, Vehicle vehicle, u8 playerIdx);
 
 protected:

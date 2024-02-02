@@ -57,12 +57,24 @@ const KartDynamics *KartObjectProxy::dynamics() const {
     return physics()->getDynamics();
 }
 
+KartState *KartObjectProxy::state() {
+    return m_accessor->m_state;
+}
+
+const KartState *KartObjectProxy::state() const {
+    return m_accessor->m_state;
+}
+
 KartSub *KartObjectProxy::sub() {
     return m_accessor->m_sub;
 }
 
 const KartSub *KartObjectProxy::sub() const {
     return m_accessor->m_sub;
+}
+
+const EGG::Vector3f &KartObjectProxy::scale() const {
+    return m_accessor->m_move->scale();
 }
 
 void KartObjectProxy::setPos(const EGG::Vector3f &pos) {

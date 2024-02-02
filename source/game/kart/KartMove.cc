@@ -1,5 +1,6 @@
 #include "KartMove.hh"
 
+#include "game/kart/KartDynamics.hh"
 #include "game/kart/KartParam.hh"
 #include "game/kart/KartSub.hh"
 
@@ -11,7 +12,7 @@
 
 namespace Kart {
 
-KartMove::KartMove() = default;
+KartMove::KartMove() : m_scale(1.0f, 1.0f, 1.0f) {}
 
 void KartMove::setInitialPhysicsValues(const EGG::Vector3f &pos, const EGG::Vector3f &angles) {
     EGG::Quatf quaternion;
@@ -33,6 +34,23 @@ void KartMove::setInitialPhysicsValues(const EGG::Vector3f &pos, const EGG::Vect
     setRot(quaternion);
 
     sub()->initPhysicsValues();
+}
+
+void KartMove::setKartSpeedLimit() {
+    constexpr f32 limit = 120.0f;
+    m_hardSpeedLimit = limit;
+}
+
+void KartMove::calc() {
+    dynamics()->resetInternalVelocity();
+}
+
+const EGG::Vector3f &KartMove::scale() const {
+    return m_scale;
+}
+
+f32 KartMove::hardSpeedLimit() const {
+    return m_hardSpeedLimit;
 }
 
 } // namespace Kart

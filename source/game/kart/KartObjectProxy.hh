@@ -12,6 +12,7 @@ class KartMove;
 class KartParam;
 struct BSP;
 class KartPhysics;
+class KartState;
 class KartSub;
 
 struct KartAccessor {
@@ -19,6 +20,7 @@ struct KartAccessor {
     KartBody *m_body;
     KartSub *m_sub;
     KartMove *m_move;
+    KartState *m_state;
 };
 
 class KartObjectProxy {
@@ -39,8 +41,12 @@ public:
     const KartPhysics *physics() const;
     KartDynamics *dynamics();
     const KartDynamics *dynamics() const;
+    KartState *state();
+    const KartState *state() const;
     KartSub *sub();
     const KartSub *sub() const;
+
+    const EGG::Vector3f &scale() const;
 
     void setPos(const EGG::Vector3f &pos);
     void setRot(const EGG::Quatf &q);

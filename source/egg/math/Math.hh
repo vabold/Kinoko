@@ -16,6 +16,7 @@ f32 SinFIdx(f32 fidx);
 f32 CosFIdx(f32 fidx);
 f32 sin(f32 x);
 f32 cos(f32 x);
+f32 acos(f32 x);
 
 // sin/cos struct
 struct SinCosEntry {

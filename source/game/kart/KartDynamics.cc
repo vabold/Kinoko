@@ -7,25 +7,44 @@ KartDynamics::KartDynamics() {
 }
 
 void KartDynamics::init() {
-    m_pos.setZero();
-    m_speed.setZero();
-    m_fullRot = EGG::Quatf(1.0f, EGG::Vector3f::zero);
-    m_top = EGG::Vector3f::ey;
+    m_speedNorm = 0.0f;
+    m_gravity = -1.0f;
+    m_forceUpright = true;
+    m_noGravity = false;
 }
 
-const EGG::Vector3f &KartDynamics::getPos() const {
+void KartDynamics::resetInternalVelocity() {
+    m_intVel.setZero();
+}
+
+void KartDynamics::calc(f32 dt, f32 maxSpeed, bool /*air*/) {
+    if (!m_noGravity) {
+        m_totalForce.y += m_gravity;
+    }
+
+    m_acceleration0 = m_totalForce;
+    m_extVel += m_acceleration0 * dt;
+    m_extVel *= 0.998f;
+    m_velocity = m_extVel * dt + m_intVel + m_movingObjVel + m_movingRoadVel;
+    m_speedNorm = std::min(m_velocity.normalise(), maxSpeed);
+    m_velocity *= m_speedNorm;
+    m_pos += m_velocity;
+
+    m_fullRot = m_extraRot * m_mainRot * m_specialRot;
+
+    m_mainRot.normalise();
+    m_fullRot.normalise();
+}
+
+const EGG::Vector3f &KartDynamics::pos() const {
     return m_pos;
 }
 
-const EGG::Vector3f &KartDynamics::getSpeed() const {
-    return m_speed;
+const EGG::Vector3f &KartDynamics::velocity() const {
+    return m_velocity;
 }
 
-const EGG::Vector3f &KartDynamics::getTop() const {
-    return m_top;
-}
-
-const EGG::Quatf &KartDynamics::getFullRot() const {
+const EGG::Quatf &KartDynamics::fullRot() const {
     return m_fullRot;
 }
 
@@ -33,8 +52,8 @@ void KartDynamics::setPos(const EGG::Vector3f &pos) {
     m_pos = pos;
 }
 
-void KartDynamics::setTop(const EGG::Vector3f &top) {
-    m_top = top;
+void KartDynamics::setGravity(f32 gravity) {
+    m_gravity = gravity;
 }
 
 void KartDynamics::setMainRot(const EGG::Quatf &q) {
@@ -43,6 +62,14 @@ void KartDynamics::setMainRot(const EGG::Quatf &q) {
 
 void KartDynamics::setFullRot(const EGG::Quatf &q) {
     m_fullRot = q;
+}
+
+void KartDynamics::setSpecialRot(const EGG::Quatf &q) {
+    m_specialRot = q;
+}
+
+void KartDynamics::setExtraRot(const EGG::Quatf &q) {
+    m_extraRot = q;
 }
 
 } // namespace Kart

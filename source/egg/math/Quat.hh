@@ -7,6 +7,7 @@ namespace EGG {
 struct Quatf {
     Quatf();
     Quatf(f32 w_, const Vector3f &v_);
+    Quatf(f32 w_, f32 x_, f32 y_, f32 z_);
     ~Quatf();
 
     Quatf &operator=(const Quatf &q) {
@@ -35,11 +36,17 @@ struct Quatf {
     }
 
     void setRPY(const Vector3f &rpy);
+    void normalise();
     Quatf conjugate() const;
     Vector3f rotateVector(const Vector3f &vec) const;
+    Quatf slerpTo(const Quatf &q2, f32 t) const;
+    f32 dot() const;
+    f32 dot(const Quatf &q) const;
 
     Vector3f v;
     f32 w;
+
+    static const Quatf ident;
 };
 
 } // namespace EGG

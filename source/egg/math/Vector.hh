@@ -75,12 +75,20 @@ struct Vector3f {
         return Vector3f(x * scalar, y * scalar, z * scalar);
     }
 
+    friend Vector3f operator*(f32 scalar, const Vector3f &rhs) {
+        return rhs * scalar;
+    }
+
     Vector3f &operator*=(f32 scalar) {
         return *this = *this * scalar;
     }
 
     Vector3f operator/(f32 scalar) const {
         return Vector3f(x / scalar, y / scalar, z / scalar);
+    }
+
+    Vector3f &operator/=(f32 scalar) {
+        return *this = *this / scalar;
     }
 
     Vector3f cross(const EGG::Vector3f &rhs) const;
