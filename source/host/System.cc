@@ -7,21 +7,25 @@ namespace Host {
 int KSystem::main() {
     init();
     m_sceneMgr->changeScene(0);
-    run();
-    return 0;
+    if (!m_testDirector->init()) {
+        return 1;
+    }
+    return run() ? 0 : 1;
 }
 
 void KSystem::init() {
     auto *sceneCreator = new SceneCreatorDynamic;
     m_sceneMgr = new EGG::SceneManager(sceneCreator);
+
+    m_testDirector = new Test::TestDirector;
 }
 
-void KSystem::run() {
-    K_LOG("Initialized successfully!");
-    K_LOG("The program will now run in an infinite loop to test 'calc' functionality.");
-    while (true) {
+bool KSystem::run() {
+    do {
         m_sceneMgr->calc();
-    }
+    } while (m_testDirector->calc());
+
+    return m_testDirector->sync();
 }
 
 KSystem &KSystem::Instance() {

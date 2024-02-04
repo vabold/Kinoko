@@ -16,6 +16,10 @@ public:
     void skip(u32 count);
     void jump(u32 index);
 
+    void setEndian(std::endian endian);
+
+    u32 index() const;
+
     u8 read_u8();
     u16 read_u16();
     u32 read_u32();

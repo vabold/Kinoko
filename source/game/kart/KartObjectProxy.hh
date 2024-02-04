@@ -51,6 +51,9 @@ public:
     void setPos(const EGG::Vector3f &pos);
     void setRot(const EGG::Quatf &q);
 
+    const EGG::Vector3f &pos() const;
+    const EGG::Quatf &fullRot() const;
+
     Abstract::List *list() const;
 
 protected:

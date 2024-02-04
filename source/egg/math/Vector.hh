@@ -91,6 +91,14 @@ struct Vector3f {
         return *this = *this / scalar;
     }
 
+    bool operator==(const Vector3f &rhs) const {
+        return x == rhs.x && y == rhs.y && z == rhs.z;
+    }
+
+    bool operator!=(const Vector3f &rhs) const {
+        return !(*this == rhs);
+    }
+
     Vector3f cross(const EGG::Vector3f &rhs) const;
     f32 dot() const;
     f32 dot(const EGG::Vector3f &rhs) const;

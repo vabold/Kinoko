@@ -1,6 +1,7 @@
 #pragma once
 
 #include <egg/core/SceneManager.hh>
+#include <test/TestDirector.hh>
 
 namespace Host {
 
@@ -8,11 +9,7 @@ class KSystem {
 public:
     int main();
     void init();
-    void run();
-
-    EGG::SceneManager *sceneMgr() const {
-        return m_sceneMgr;
-    }
+    bool run();
 
     static KSystem &Instance();
 
@@ -23,6 +20,7 @@ private:
     ~KSystem();
 
     EGG::SceneManager *m_sceneMgr;
+    Test::TestDirector *m_testDirector;
 };
 
 } // namespace Host

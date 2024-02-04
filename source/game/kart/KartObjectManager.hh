@@ -9,6 +9,8 @@ public:
     void init();
     void calc();
 
+    KartObject *object(size_t i) const;
+
     static KartObjectManager *CreateInstance();
     static void DestroyInstance();
     static KartObjectManager *Instance();

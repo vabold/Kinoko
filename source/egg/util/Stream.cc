@@ -16,6 +16,14 @@ void Stream::jump(u32 index) {
     assert(!eof());
 }
 
+void Stream::setEndian(std::endian endian) {
+    m_endian = endian;
+}
+
+u32 Stream::index() const {
+    return m_index;
+}
+
 u8 Stream::read_u8() {
     return read<u8>();
 }
