@@ -18,6 +18,11 @@ void KartObjectManager::calc() {
     }
 }
 
+KartObject *KartObjectManager::object(size_t i) const {
+    assert(i < m_count);
+    return m_objects[i];
+}
+
 KartObjectManager *KartObjectManager::CreateInstance() {
     assert(!s_instance);
     s_instance = new KartObjectManager;

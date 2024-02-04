@@ -80,6 +80,11 @@ f32 Quatf::dot(const Quatf &q) const {
     return w * q.w + v.dot(q.v);
 }
 
+void Quatf::read(Stream &stream) {
+    v.read(stream);
+    w = stream.read_f32();
+}
+
 const Quatf Quatf::ident = Quatf(1.0f, Vector3f::zero);
 
 } // namespace EGG

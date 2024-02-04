@@ -86,6 +86,14 @@ void KartObjectProxy::setRot(const EGG::Quatf &q) {
     dynamics()->setMainRot(q);
 }
 
+const EGG::Vector3f &KartObjectProxy::pos() const {
+    return dynamics()->pos();
+}
+
+const EGG::Quatf &KartObjectProxy::fullRot() const {
+    return dynamics()->fullRot();
+}
+
 Abstract::List *KartObjectProxy::list() const {
     return s_list;
 }

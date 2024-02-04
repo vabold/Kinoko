@@ -35,6 +35,14 @@ struct Quatf {
         return *this = *this * q;
     }
 
+    bool operator==(const Quatf &rhs) const {
+        return w == rhs.w && v == rhs.v;
+    }
+
+    bool operator!=(const Quatf &rhs) const {
+        return !(*this == rhs);
+    }
+
     void setRPY(const Vector3f &rpy);
     void normalise();
     Quatf conjugate() const;
@@ -42,6 +50,8 @@ struct Quatf {
     Quatf slerpTo(const Quatf &q2, f32 t) const;
     f32 dot() const;
     f32 dot(const Quatf &q) const;
+
+    void read(Stream &stream);
 
     Vector3f v;
     f32 w;
