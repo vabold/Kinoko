@@ -43,3 +43,19 @@ jobs:
         run: |
           dirs="include source"
           find $dirs -regex '.*\.\(c\|h\|cc\|hh\)' | xargs clang-format-15 --dry-run -Werror
+
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: Kinoko
+      - name: Download dependencies
+        run: curl -L -o Runtime.tar.gz ${{ secrets.RUNTIME_DEPENDENCIES }}
+      - name: Extract dependencies
+        run: tar -xzf Runtime.tar.gz
+      - name: Run Kinoko
+        run: chmod u+x ./kinoko && ./kinoko
