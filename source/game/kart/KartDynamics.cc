@@ -34,6 +34,8 @@ void KartDynamics::calc(f32 dt, f32 maxSpeed, bool /*air*/) {
 
     m_mainRot.normalise();
     m_fullRot.normalise();
+
+    m_totalForce.setZero();
 }
 
 const EGG::Vector3f &KartDynamics::pos() const {
@@ -46,6 +48,10 @@ const EGG::Vector3f &KartDynamics::velocity() const {
 
 const EGG::Quatf &KartDynamics::fullRot() const {
     return m_fullRot;
+}
+
+const EGG::Vector3f &KartDynamics::extVel() const {
+    return m_extVel;
 }
 
 void KartDynamics::setPos(const EGG::Vector3f &pos) {
@@ -70,6 +76,10 @@ void KartDynamics::setSpecialRot(const EGG::Quatf &q) {
 
 void KartDynamics::setExtraRot(const EGG::Quatf &q) {
     m_extraRot = q;
+}
+
+void KartDynamics::setExtVel(const EGG::Vector3f &v) {
+    m_extVel = v;
 }
 
 } // namespace Kart

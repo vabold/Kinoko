@@ -107,6 +107,9 @@ struct Vector3f {
     f32 normalise();
     Vector3f maximize(const Vector3f &rhs) const;
     Vector3f minimize(const Vector3f &rhs) const;
+    Vector3f proj(const Vector3f &rhs) const;
+    Vector3f rej(const Vector3f &rhs) const;
+    std::pair<Vector3f, Vector3f> projAndRej(const Vector3f &rhs);
 
     void read(Stream &stream);
 

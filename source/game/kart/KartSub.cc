@@ -41,6 +41,17 @@ void KartSub::calcPass0() {
 
     move()->calc();
 
+    // Pertains to startslides / leaning in stage 0 and 1
+    EGG::Vector3f killExtVel = dynamics()->extVel();
+    if (isBike()) {
+        killExtVel = killExtVel.rej(move()->smoothedUp());
+    } else {
+        killExtVel.x = 0.0f;
+        killExtVel.z = 0.0f;
+    }
+
+    dynamics()->setExtVel(killExtVel);
+
     f32 maxSpeed = move()->hardSpeedLimit();
     physics()->calc(DT, maxSpeed, scale(), !state()->isGround());
 }

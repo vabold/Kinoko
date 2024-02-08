@@ -94,6 +94,10 @@ const EGG::Quatf &KartObjectProxy::fullRot() const {
     return dynamics()->fullRot();
 }
 
+bool KartObjectProxy::isBike() const {
+    return param()->isBike();
+}
+
 Abstract::List *KartObjectProxy::list() const {
     return s_list;
 }

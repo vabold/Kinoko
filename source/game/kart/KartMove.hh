@@ -15,8 +15,10 @@ public:
 
     const EGG::Vector3f &scale() const;
     f32 hardSpeedLimit() const;
+    const EGG::Vector3f &smoothedUp() const;
 
 private:
+    EGG::Vector3f m_smoothedUp;
     EGG::Vector3f m_scale;
     f32 m_hardSpeedLimit;
 };

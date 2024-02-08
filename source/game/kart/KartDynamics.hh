@@ -15,6 +15,7 @@ public:
     const EGG::Vector3f &pos() const;
     const EGG::Vector3f &velocity() const;
     const EGG::Quatf &fullRot() const;
+    const EGG::Vector3f &extVel() const;
 
     void setPos(const EGG::Vector3f &pos);
     void setGravity(f32 gravity);
@@ -22,6 +23,7 @@ public:
     void setFullRot(const EGG::Quatf &q);
     void setSpecialRot(const EGG::Quatf &q);
     void setExtraRot(const EGG::Quatf &q);
+    void setExtVel(const EGG::Vector3f &v);
 
 private:
     // These are the only vars needed in setInitialPhysicsValues
