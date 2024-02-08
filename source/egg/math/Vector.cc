@@ -92,6 +92,18 @@ Vector3f Vector3f::minimize(const Vector3f &rhs) const {
     return out;
 }
 
+Vector3f Vector3f::proj(const Vector3f &rhs) const {
+    return rhs * rhs.dot(*this);
+}
+
+Vector3f Vector3f::rej(const Vector3f &rhs) const {
+    return *this - proj(rhs);
+}
+
+std::pair<Vector3f, Vector3f> Vector3f::projAndRej(const Vector3f &rhs) {
+    return std::pair(proj(rhs), rej(rhs));
+}
+
 void Vector3f::read(Stream &stream) {
     x = stream.read_f32();
     y = stream.read_f32();

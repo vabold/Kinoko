@@ -12,7 +12,7 @@
 
 namespace Kart {
 
-KartMove::KartMove() : m_scale(1.0f, 1.0f, 1.0f) {}
+KartMove::KartMove() : m_smoothedUp(EGG::Vector3f::ey), m_scale(1.0f, 1.0f, 1.0f) {}
 
 void KartMove::setInitialPhysicsValues(const EGG::Vector3f &pos, const EGG::Vector3f &angles) {
     EGG::Quatf quaternion;
@@ -51,6 +51,10 @@ const EGG::Vector3f &KartMove::scale() const {
 
 f32 KartMove::hardSpeedLimit() const {
     return m_hardSpeedLimit;
+}
+
+const EGG::Vector3f &KartMove::smoothedUp() const {
+    return m_smoothedUp;
 }
 
 } // namespace Kart

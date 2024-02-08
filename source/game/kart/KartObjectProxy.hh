@@ -53,6 +53,7 @@ public:
 
     const EGG::Vector3f &pos() const;
     const EGG::Quatf &fullRot() const;
+    bool isBike() const;
 
     Abstract::List *list() const;
 
