@@ -22,6 +22,9 @@ struct RaceInputState {
 
     void reset();
 
+    bool accelerate() const;
+    bool trickUp() const;
+
     u16 buttons;
     u16 buttonsRaw;
     EGG::Vector2f stick;
@@ -35,13 +38,12 @@ struct KPadGhostButtonsStream {
     KPadGhostButtonsStream();
     ~KPadGhostButtonsStream();
 
-    virtual u16 readFrame();
-    virtual bool readIsNewSequence(const u16 *sequence) const;
-    virtual u16 readVal(const u16 *sequence) const;
+    virtual u8 readFrame();
+    virtual bool readIsNewSequence() const;
+    virtual u8 readVal() const;
 
-    const u16 *buffer;
-    s32 sequenceCount;
-    u32 size;
+    EGG::RamStream buffer;
+    u32 currentSequence;
     u16 readSequenceFrames;
     u32 state;
 };
@@ -60,8 +62,8 @@ struct KPadGhostTrickButtonsStream : public KPadGhostButtonsStream {
     KPadGhostTrickButtonsStream();
     ~KPadGhostTrickButtonsStream();
 
-    bool readIsNewSequence(const u16 *sequence) const override;
-    u16 readVal(const u16 *sequence) const override;
+    bool readIsNewSequence() const override;
+    u8 readVal() const override;
 };
 
 class KPadController {
@@ -95,14 +97,14 @@ public:
     ControlSource controlSource() override;
     void reset(bool driftIsAuto) override;
 
-    void readGhostBuffer(const u16 *buffer, bool driftIsAuto);
+    void readGhostBuffer(const u8 *buffer, bool driftIsAuto);
 
     void calcImpl() override;
 
     void setAcceptingInputs(bool set);
 
 private:
-    const u16 *m_ghostBuffer;
+    const u8 *m_ghostBuffer;
     std::array<KPadGhostButtonsStream *, 3> m_buttonsStreams;
     bool m_acceptingInputs;
 };
@@ -114,6 +116,8 @@ public:
 
     void calc();
     void reset();
+
+    const RaceInputState &currentState() const;
 
 protected:
     KPadController *m_controller;

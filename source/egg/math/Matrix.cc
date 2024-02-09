@@ -222,6 +222,20 @@ Matrix34f Matrix34f::inverseTo() const {
     return ret;
 }
 
+Matrix34f Matrix34f::transpose() const {
+    // NOTE: 4th element in each row is not meant to be used reliably
+    Matrix34f ret = *this;
+
+    ret(0, 1) = mtx[1][0];
+    ret(0, 2) = mtx[2][0];
+    ret(1, 0) = mtx[0][1];
+    ret(1, 2) = mtx[2][1];
+    ret(2, 0) = mtx[0][2];
+    ret(2, 1) = mtx[1][2];
+
+    return ret;
+}
+
 void Matrix34f::setAxisRotation(f32 angle, const EGG::Vector3f &axis) {
     EGG::Quatf q;
     q.setAxisRotation(angle, axis);

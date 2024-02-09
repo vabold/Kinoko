@@ -27,6 +27,7 @@ void RootScene::allocate() {
 
 void RootScene::init() {
     System::RaceConfig::Instance()->init();
+    System::KPadDirector::Instance()->init();
 }
 
 } // namespace Scene

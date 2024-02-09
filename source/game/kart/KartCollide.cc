@@ -9,8 +9,7 @@
 
 namespace Kart {
 
-KartCollide::KartCollide()
-    : m_offRoad(false), m_groundBoostPanelOrRamp(false), m_notTrickable(false) {}
+KartCollide::KartCollide() : m_notTrickable(false) {}
 
 KartCollide::~KartCollide() = default;
 
@@ -168,13 +167,15 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox & /*hitbox*/
     const Field::CollisionDirector::CollisionEntry *closestColEntry =
             Field::CollisionDirector::Instance()->closestCollisionEntry();
 
-    if (!(closestColEntry->attribute & 0x2000)) {
+    u16 attribute = closestColEntry->attribute;
+    if (!(attribute & 0x2000)) {
         m_notTrickable = true;
     }
 
-    collisionData.intensity = (closestColEntry->attribute >> 0xb) & 3;
+    collisionData.intensity = (attribute >> 0xb) & 3;
+    collisionData.rotFactor += param()->stats().kclRot[attribute & 0x1f];
     collisionData.closestFloorFlags = closestColEntry->typeMask;
-    collisionData.closestFloorSettings = (closestColEntry->attribute >> 5) & 7;
+    collisionData.closestFloorSettings = (attribute >> 5) & 7;
 
     if (!(*maskOut & KCL_TYPE_BIT(COL_TYPE_BOOST_RAMP))) {
         m_notTrickable = true;
@@ -198,7 +199,8 @@ void KartCollide::applySomeFloorMoment(f32 down, f32 rate, CollisionGroup *hitbo
     EGG::Matrix34f rotMat;
     rotMat.makeQ(dynamics()->mainRot());
     EGG::Matrix34f tmp = rotMat.multiplyTo(dynamics()->invInertiaTensor());
-    tmp = tmp.multiplyTo(rotMat);
+    EGG::Matrix34f rotMatTrans = rotMat.transpose();
+    tmp = tmp.multiplyTo(rotMatTrans);
 
     EGG::Vector3f crossVec = colData.relPos.cross(colData.floorNrm);
     crossVec = tmp.multVector(crossVec);
@@ -236,7 +238,7 @@ void KartCollide::applySomeFloorMoment(f32 down, f32 rate, CollisionGroup *hitbo
     if (dVar5 < EGG::Mathf::abs(rejNorm)) {
         rejNorm_ = dVar5;
         if (rejNorm < 0.0f) {
-            rejNorm = -rate * EGG::Mathf::abs(scalar);
+            rejNorm_ = -rate * EGG::Mathf::abs(scalar);
         }
     }
 
@@ -264,7 +266,7 @@ void KartCollide::applySomeFloorMoment(f32 down, f32 rate, CollisionGroup *hitbo
     if (b3) {
         EGG::Vector3f rotation = colData.relPos.cross(projRejSumOrig);
         EGG::Vector3f rotation2 = dynamics()->mainRot().rotateVectorInv(tmp.multVector(rotation));
-
+        
         EGG::Vector3f angVel = rotation2;
         angVel.y = 0.0f;
         if (!b1) {

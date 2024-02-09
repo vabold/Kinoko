@@ -6,6 +6,8 @@
 #include "game/kart/KartSuspension.hh"
 #include "game/kart/KartTire.hh"
 
+#include "game/system/RaceManager.hh"
+
 namespace Kart {
 
 KartObjectProxy::KartObjectProxy() : m_accessor(nullptr) {
@@ -132,6 +134,10 @@ const CollisionData &KartObjectProxy::collisionData() const {
     return m_accessor->body->physics()->hitboxGroup()->collisionData();
 }
 
+const System::KPad *KartObjectProxy::inputs() const {
+    return System::RaceManager::Instance()->player().inputs();
+}
+
 CollisionData &KartObjectProxy::collisionData(u16 tireIdx) {
     return tirePhysics(tireIdx)->hitboxGroup()->collisionData();
 }
@@ -156,6 +162,10 @@ EGG::Vector3f KartObjectProxy::bodyFront() const {
 EGG::Vector3f KartObjectProxy::bodyForward() const {
     const EGG::Matrix34f &mtx = pose();
     return EGG::Vector3f(mtx(0, 0), mtx(1, 0), mtx(2, 0));
+}
+
+const EGG::Vector3f &KartObjectProxy::componentXAxis() const {
+    return physics()->xAxis();
 }
 
 const EGG::Vector3f &KartObjectProxy::componentYAxis() const {

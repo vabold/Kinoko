@@ -11,6 +11,10 @@ void KPadDirector::calcPads() {
     m_ghostController->calc();
 }
 
+void KPadDirector::clear() {}
+
+void KPadDirector::init() {}
+
 void KPadDirector::reset() {
     m_playerInput.reset();
 }

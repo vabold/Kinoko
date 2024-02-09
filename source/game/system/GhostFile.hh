@@ -2,6 +2,8 @@
 
 #include "game/system/Timer.hh"
 
+#include <egg/util/Stream.hh>
+
 #include <array>
 
 namespace System {
@@ -43,8 +45,7 @@ public:
     GhostFile(RawGhostFile *raw);
     ~GhostFile();
 
-    void read(RawGhostFile *raw);
-    void readHeader(RawGhostFile *raw);
+    void read(EGG::RamStream &stream);
 
     Character character() const;
     Vehicle vehicle() const;

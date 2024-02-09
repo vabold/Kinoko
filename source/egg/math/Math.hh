@@ -7,28 +7,27 @@
 #define RAD2DEG (180.0f / F_PI)
 #define DEG2FIDX (256.0f / 360.0f)
 #define RAD2FIDX (128.0f / F_PI)
+#define FIDX2RAD (F_PI / 128.0f)
 
 namespace EGG::Mathf {
 
 f32 sqrt(f32 x);
 f32 frsqrt(f32 x);
 
+f32 AtanFIdx_(f32 fidx);
 f32 SinFIdx(f32 fidx);
 f32 CosFIdx(f32 fidx);
+f32 Atan2FIdx(f32 x, f32 y);
 f32 sin(f32 x);
 f32 cos(f32 x);
 f32 acos(f32 x);
+f32 atan2(f32 x, f32 y);
 
 f32 abs(f32 x);
 
 f32 fma(f32 x, f32 y, f32 z);
 
 f64 force25Bit(f64 x);
-
-// sin/cos struct
-struct SinCosEntry {
-    f32 sinVal, cosVal, sinDt, cosDt;
-};
 
 // frsqrte matching
 struct BaseAndDec {

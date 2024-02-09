@@ -70,6 +70,10 @@ CollisionGroup *KartPhysics::hitboxGroup() {
     return m_hitboxGroup;
 }
 
+const EGG::Vector3f &KartPhysics::xAxis() const {
+    return m_xAxis;
+}
+
 const EGG::Vector3f &KartPhysics::yAxis() const {
     return m_yAxis;
 }

@@ -81,7 +81,8 @@ bool CourseColMgr::checkSphereCachedFullPush(KColData *data, const EGG::Vector3f
     data->lookupSphereCached(pos / scale, prevPos / scale, typeMask, radius / scale);
 
     if (colInfo) {
-        return doCheckWithFullInfoPush(data, &KColData::checkSphereCollision, colInfo, typeMaskOut);
+        return doCheckWithFullInfoPush(data, &KColData::checkSphereCollision, colInfo,
+                typeMaskOut);
     } else {
         // Not needed currently
         return false;

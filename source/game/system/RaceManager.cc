@@ -31,6 +31,7 @@ void RaceManager::calc() {
     case Stage::Intro:
         if (++m_introTimer >= STAGE_INTRO_DURATION) {
             m_stage = Stage::Countdown;
+            KPadDirector::Instance()->startGhostProxies();
         }
         break;
     case Stage::Countdown:
@@ -44,6 +45,10 @@ void RaceManager::calc() {
     default:
         break;
     }
+}
+
+const RaceManagerPlayer &RaceManager::player() const {
+    return m_player;
 }
 
 RaceManager::Stage RaceManager::stage() const {
@@ -72,6 +77,10 @@ RaceManager::~RaceManager() = default;
 
 RaceManagerPlayer::RaceManagerPlayer() {
     m_inputs = &KPadDirector::Instance()->playerInput();
+}
+
+const KPad *RaceManagerPlayer::inputs() const {
+    return m_inputs;
 }
 
 RaceManager *RaceManager::s_instance = nullptr;

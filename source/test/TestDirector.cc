@@ -6,6 +6,8 @@
 
 #include <cstddef>
 
+#include "game/system/RaceManager.hh"
+
 namespace Test {
 
 TestDirector::TestDirector() {
@@ -33,7 +35,7 @@ bool TestDirector::init() {
 
 bool TestDirector::calc() {
     // Check if we're out of frames
-    constexpr u16 TARGET_FRAME = 172;
+    constexpr u16 TARGET_FRAME = 411;
     assert(TARGET_FRAME <= m_frameCount);
     if (++m_currentFrame > TARGET_FRAME) {
         return false;

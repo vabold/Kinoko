@@ -16,6 +16,8 @@ void KartDynamics::init() {
     m_gravity = -1.0f;
     m_forceUpright = true;
     m_noGravity = false;
+    m_stabilizationFactor = 0.1f;
+    m_top_ = EGG::Vector3f::ey;
     m_angVel0YFactor = 0.0f;
 }
 
@@ -71,10 +73,14 @@ void KartDynamics::calc(f32 dt, f32 maxSpeed, bool /*air*/) {
     m_angVel0.y = std::min(0.4f, std::max(-0.4f, m_angVel0.y)) * m_angVel0YFactor;
     m_angVel0.z = std::min(0.8f, std::max(-0.8f, m_angVel0.z));
 
+    if (m_forceUpright) {
+        forceUpright();
+    }
+
     EGG::Vector3f angVelSum = m_angVel2 + m_angVel1 + m_angVel0Factor * m_angVel0;
 
     if (FLT_EPSILON < angVelSum.dot()) {
-        m_mainRot += m_mainRot * angVelSum * dt * 0.5;
+        m_mainRot += m_mainRot.multSwap(angVelSum) * (dt * 0.5f);
 
         if (EGG::Mathf::abs(m_mainRot.dot()) < FLT_EPSILON) {
             m_mainRot = EGG::Quatf::ident;
@@ -83,16 +89,17 @@ void KartDynamics::calc(f32 dt, f32 maxSpeed, bool /*air*/) {
         }
     }
 
-    // TODO: Can we prove we don't need this given above???
+    if (m_forceUpright) {
+        stabilize();
+    }
+
     if (EGG::Mathf::abs(m_mainRot.dot()) < FLT_EPSILON) {
         m_mainRot = EGG::Quatf::ident;
     } else {
         m_mainRot.normalise();
     }
 
-    m_fullRot = m_extraRot * m_mainRot * m_specialRot;
-
-    m_mainRot.normalise();
+    m_fullRot = m_extraRot.multSwap(m_mainRot).multSwap(m_specialRot);
     m_fullRot.normalise();
 
     m_totalForce.setZero();
@@ -146,6 +153,10 @@ const EGG::Vector3f &KartDynamics::angVel0() const {
     return m_angVel0;
 }
 
+const EGG::Vector3f &KartDynamics::angVel2() const {
+    return m_angVel2;
+}
+
 void KartDynamics::setPos(const EGG::Vector3f &pos) {
     m_pos = pos;
 }
@@ -178,8 +189,44 @@ void KartDynamics::setAngVel0(const EGG::Vector3f &v) {
     m_angVel0 = v;
 }
 
+void KartDynamics::setAngVel2(const EGG::Vector3f &v) {
+    m_angVel2 = v;
+}
+
 void KartDynamics::setAngVel0YFactor(f32 val) {
     m_angVel0YFactor = val;
+}
+
+void KartDynamics::setTop_(const EGG::Vector3f &v) {
+    m_top_ = v;
+}
+
+KartDynamicsBike::KartDynamicsBike() = default;
+
+KartDynamicsBike::~KartDynamicsBike() = default;
+
+void KartDynamicsBike::forceUpright() {
+    m_angVel0.z = 0.0f;
+}
+
+void KartDynamicsBike::stabilize() {
+    EGG::Vector3f forward = m_mainRot.rotateVector(EGG::Vector3f::ez);
+    EGG::Vector3f cross = m_top_.cross(forward);
+    EGG::Vector3f forward_ = cross.cross(m_top_);
+    forward_.normalise();
+    EGG::Vector3f local_40 = m_top_.cross(forward_);
+    EGG::Vector3f local_4c = forward_.cross(local_40);
+    local_4c.normalise();
+
+    EGG::Vector3f top = m_mainRot.rotateVector(EGG::Vector3f::ey);
+    if (top.dot(local_4c) >= 0.9999f) {
+        return;
+    }
+
+    EGG::Quatf local_78;
+    local_78.makeVectorRotation(top, local_4c);
+    EGG::Quatf stack_88 = local_78.multSwap(m_mainRot);
+    m_mainRot = m_mainRot.slerpTo(stack_88, m_stabilizationFactor);
 }
 
 } // namespace Kart
