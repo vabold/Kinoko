@@ -15,9 +15,9 @@ public:
             None = 5,
         };
 
-        Character m_character;
-        Vehicle m_vehicle;
-        Type m_type;
+        Character character;
+        Vehicle vehicle;
+        Type type;
     };
 
     struct Scenario {
@@ -29,9 +29,9 @@ public:
 
         void init();
 
-        std::array<Player, 12> m_players;
-        u8 m_playerCount;
-        Course m_course;
+        std::array<Player, 12> players;
+        u8 playerCount;
+        Course course;
     };
 
     void init();

@@ -47,16 +47,23 @@ Vector3f Quatf::rotateVector(const Vector3f &vec) const {
     return res.v;
 }
 
+Vector3f Quatf::rotateVectorInv(const Vector3f &vec) const {
+    Quatf conj = conjugate();
+    Quatf res = conj * vec;
+    res *= *this;
+    return res.v;
+}
+
 Quatf Quatf::slerpTo(const Quatf &q1, f32 t) const {
     f32 dot_ = std::max(-1.0f, std::min(1.0f, dot(q1)));
     bool bDot = dot_ < 0.0f;
-    dot_ = std::abs(dot_);
+    dot_ = Mathf::abs(dot_);
 
     f32 acos = Mathf::acos(dot_);
     f32 sin = Mathf::sin(acos);
 
     f32 s;
-    if (std::abs(sin) < 0.00001f) {
+    if (Mathf::abs(sin) < 0.00001f) {
         s = 1.0f - t;
     } else {
         f32 invSin = 1.0f / sin;
@@ -78,6 +85,16 @@ f32 Quatf::dot() const {
 
 f32 Quatf::dot(const Quatf &q) const {
     return w * q.w + v.dot(q.v);
+}
+
+void Quatf::setAxisRotation(f32 angle, const EGG::Vector3f &axis) {
+    const f32 half_angle = angle * 0.5f;
+    const f32 cos = Mathf::cos(half_angle);
+    const f32 sin = Mathf::sin(half_angle);
+
+    w = cos;
+    v = axis;
+    v *= sin;
 }
 
 void Quatf::read(Stream &stream) {

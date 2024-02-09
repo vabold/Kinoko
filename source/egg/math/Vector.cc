@@ -49,9 +49,15 @@ f32 Vector3f::dot(const Vector3f &rhs) const {
     return x * rhs.x + y * rhs.y + z * rhs.z;
 }
 
+f32 Vector3f::ps_dot() const {
+    f32 y_ = y * y;
+    f32 xy = Mathf::fma(x, x, y_);
+    return xy + z * z;
+}
+
 f32 Vector3f::ps_dot(const Vector3f &rhs) const {
     f32 y_ = y * rhs.y;
-    f32 xy = static_cast<f32>(static_cast<f64>(x) * static_cast<f64>(rhs.x) + static_cast<f64>(y_));
+    f32 xy = Mathf::fma(x, rhs.x, y_);
     return xy + z * rhs.z;
 }
 
@@ -60,12 +66,12 @@ Vector3f Vector3f::cross(const Vector3f &rhs) const {
 }
 
 f32 Vector3f::length() const {
-    return dot() > FLT_EPSILON ? Mathf::sqrt(dot()) : 0.0f;
+    return Mathf::sqrt(dot());
 }
 
 f32 Vector3f::normalise() {
     f32 len = length();
-    if (len != 0.0f) {
+    if (FLT_EPSILON < dot()) {
         *this = *this * (1.0f / len);
     }
 
@@ -102,6 +108,38 @@ Vector3f Vector3f::rej(const Vector3f &rhs) const {
 
 std::pair<Vector3f, Vector3f> Vector3f::projAndRej(const Vector3f &rhs) {
     return std::pair(proj(rhs), rej(rhs));
+}
+
+f32 Vector3f::distance(const Vector3f &rhs) const {
+    const EGG::Vector3f diff = *this - rhs;
+    return diff.dot();
+}
+
+f32 Vector3f::ps_distance(const Vector3f &rhs) const {
+    const EGG::Vector3f diff = *this - rhs;
+    return diff.ps_dot();
+}
+
+Vector3f Vector3f::abs() const {
+    return Vector3f(Mathf::abs(x), Mathf::abs(y), Mathf::abs(z));
+}
+
+Vector3f Vector3f::perpInPlane(const EGG::Vector3f &rhs, bool normalise) const {
+    if (Mathf::abs(dot(rhs)) == 1.0f) {
+        return EGG::Vector3f::zero;
+    }
+
+    f32 _x = (rhs.z * x - rhs.x * z) * rhs.z - (rhs.x * y - rhs.y * x) * rhs.y;
+    f32 _y = (rhs.x * y - rhs.y * x) * rhs.x - (rhs.y * z - rhs.z * y) * rhs.z;
+    f32 _z = (rhs.y * z - rhs.z * y) * rhs.y - (rhs.z * x - rhs.x * z) * rhs.x;
+
+    EGG::Vector3f ret(_x, _y, _z);
+
+    if (normalise) {
+        ret.normalise();
+    }
+
+    return ret;
 }
 
 void Vector3f::read(Stream &stream) {

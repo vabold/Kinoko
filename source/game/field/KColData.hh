@@ -29,11 +29,21 @@ public:
     KColData();
     KColData(const void *file);
 
+    void narrowScopeLocal(const EGG::Vector3f &pos, f32 radius, KCLTypeMask mask);
+    void narrowPolygon_EachBlock(const u16 *prismArray);
+
+    u16 prismCache(u32 idx) const;
+
     void computeBBox();
     bool checkSphereCollision(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut);
     bool checkSphere(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut);
+    bool checkSphereSingle(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut);
+
     void lookupSphere(f32 radius, const EGG::Vector3f &pos, const EGG::Vector3f &prevPos,
             KCLTypeMask typeMask);
+    void lookupSphereCached(const EGG::Vector3f &p1, const EGG::Vector3f &p2, u32 typeMask,
+            f32 radius);
+
     const u16 *searchBlock(const EGG::Vector3f &pos);
     /*bool checkSphereMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut);*/
 
@@ -47,6 +57,9 @@ public:
 private:
     bool checkSphereTriCollision(const KCollisionPrism &prism, f32 *distOut, EGG::Vector3f *fnrmOut,
             u16 *flagsOut);
+    bool checkSphereMovementCollision(const KCollisionPrism &prism, f32 *distOut,
+            EGG::Vector3f *fnrmOut, u16 *flagsOut);
+    bool checkSphereMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut);
 
     const void *m_posData;
     const void *m_nrmData;

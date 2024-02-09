@@ -1,7 +1,10 @@
 #include "KartObjectProxy.hh"
 
+#include "game/kart/CollisionGroup.hh"
 #include "game/kart/KartObject.hh"
 #include "game/kart/KartSub.hh"
+#include "game/kart/KartSuspension.hh"
+#include "game/kart/KartTire.hh"
 
 namespace Kart {
 
@@ -14,27 +17,43 @@ KartObjectProxy::KartObjectProxy() : m_accessor(nullptr) {
 KartObjectProxy::~KartObjectProxy() = default;
 
 KartBody *KartObjectProxy::body() {
-    return m_accessor->m_body;
+    return m_accessor->body;
 }
 
 const KartBody *KartObjectProxy::body() const {
-    return m_accessor->m_body;
+    return m_accessor->body;
+}
+
+KartCollide *KartObjectProxy::collide() {
+    return m_accessor->collide;
+}
+
+const KartCollide *KartObjectProxy::collide() const {
+    return m_accessor->collide;
+}
+
+CollisionGroup *KartObjectProxy::collisionGroup() {
+    return m_accessor->body->physics()->hitboxGroup();
+}
+
+const CollisionGroup *KartObjectProxy::collisionGroup() const {
+    return m_accessor->body->physics()->hitboxGroup();
 }
 
 KartMove *KartObjectProxy::move() {
-    return m_accessor->m_move;
+    return m_accessor->move;
 }
 
 const KartMove *KartObjectProxy::move() const {
-    return m_accessor->m_move;
+    return m_accessor->move;
 }
 
 KartParam *KartObjectProxy::param() {
-    return m_accessor->m_param;
+    return m_accessor->param;
 }
 
 const KartParam *KartObjectProxy::param() const {
-    return m_accessor->m_param;
+    return m_accessor->param;
 }
 
 const BSP &KartObjectProxy::bsp() const {
@@ -42,39 +61,109 @@ const BSP &KartObjectProxy::bsp() const {
 }
 
 KartPhysics *KartObjectProxy::physics() {
-    return m_accessor->m_body->getPhysics();
+    return body()->physics();
 }
 
 const KartPhysics *KartObjectProxy::physics() const {
-    return m_accessor->m_body->getPhysics();
+    return body()->physics();
 }
 
 KartDynamics *KartObjectProxy::dynamics() {
-    return physics()->getDynamics();
+    return physics()->dynamics();
 }
 
 const KartDynamics *KartObjectProxy::dynamics() const {
-    return physics()->getDynamics();
+    return physics()->dynamics();
 }
 
 KartState *KartObjectProxy::state() {
-    return m_accessor->m_state;
+    return m_accessor->state;
 }
 
 const KartState *KartObjectProxy::state() const {
-    return m_accessor->m_state;
+    return m_accessor->state;
 }
 
 KartSub *KartObjectProxy::sub() {
-    return m_accessor->m_sub;
+    return m_accessor->sub;
 }
 
 const KartSub *KartObjectProxy::sub() const {
-    return m_accessor->m_sub;
+    return m_accessor->sub;
+}
+
+KartSuspension *KartObjectProxy::suspension(u16 suspIdx) {
+    return m_accessor->suspensions[suspIdx];
+}
+
+const KartSuspension *KartObjectProxy::suspension(u16 suspIdx) const {
+    return m_accessor->suspensions[suspIdx];
+}
+
+KartSuspensionPhysics *KartObjectProxy::suspensionPhysics(u16 suspIdx) {
+    return m_accessor->suspensions[suspIdx]->suspPhysics();
+}
+
+const KartSuspensionPhysics *KartObjectProxy::suspensionPhysics(u16 suspIdx) const {
+    return m_accessor->suspensions[suspIdx]->suspPhysics();
+}
+
+KartTire *KartObjectProxy::tire(u16 tireIdx) {
+    return m_accessor->tires[tireIdx];
+}
+
+const KartTire *KartObjectProxy::tire(u16 tireIdx) const {
+    return m_accessor->tires[tireIdx];
+}
+
+WheelPhysics *KartObjectProxy::tirePhysics(u16 tireIdx) {
+    return tire(tireIdx)->wheelPhysics();
+}
+
+const WheelPhysics *KartObjectProxy::tirePhysics(u16 tireIdx) const {
+    return m_accessor->tires[tireIdx]->wheelPhysics();
+}
+
+CollisionData &KartObjectProxy::collisionData() {
+    return physics()->hitboxGroup()->collisionData();
+}
+
+const CollisionData &KartObjectProxy::collisionData() const {
+    return m_accessor->body->physics()->hitboxGroup()->collisionData();
+}
+
+CollisionData &KartObjectProxy::collisionData(u16 tireIdx) {
+    return tirePhysics(tireIdx)->hitboxGroup()->collisionData();
+}
+
+const CollisionData &KartObjectProxy::collisionData(u16 tireIdx) const {
+    return m_accessor->tires[tireIdx]->wheelPhysics()->hitboxGroup()->collisionData();
 }
 
 const EGG::Vector3f &KartObjectProxy::scale() const {
-    return m_accessor->m_move->scale();
+    return move()->scale();
+}
+
+const EGG::Matrix34f &KartObjectProxy::pose() const {
+    return physics()->pose();
+}
+
+EGG::Vector3f KartObjectProxy::bodyFront() const {
+    const EGG::Matrix34f &mtx = pose();
+    return EGG::Vector3f(mtx(0, 2), mtx(1, 2), mtx(2, 2));
+}
+
+EGG::Vector3f KartObjectProxy::bodyForward() const {
+    const EGG::Matrix34f &mtx = pose();
+    return EGG::Vector3f(mtx(0, 0), mtx(1, 0), mtx(2, 0));
+}
+
+const EGG::Vector3f &KartObjectProxy::componentYAxis() const {
+    return physics()->yAxis();
+}
+
+const EGG::Vector3f &KartObjectProxy::componentZAxis() const {
+    return physics()->zAxis();
 }
 
 void KartObjectProxy::setPos(const EGG::Vector3f &pos) {
@@ -96,6 +185,18 @@ const EGG::Quatf &KartObjectProxy::fullRot() const {
 
 bool KartObjectProxy::isBike() const {
     return param()->isBike();
+}
+
+u16 KartObjectProxy::suspCount() const {
+    return param()->suspCount();
+}
+
+u16 KartObjectProxy::tireCount() const {
+    return param()->tireCount();
+}
+
+bool KartObjectProxy::hasFloorCollision(const WheelPhysics *wheelPhysics) const {
+    return wheelPhysics->hitboxGroup()->collisionData().floor;
 }
 
 Abstract::List *KartObjectProxy::list() const {

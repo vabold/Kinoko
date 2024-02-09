@@ -4,6 +4,8 @@
 
 #include <egg/util/Stream.hh>
 
+#include "game/system/RaceManager.hh"
+
 namespace Test {
 
 class TestDirector {

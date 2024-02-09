@@ -11,15 +11,34 @@ public:
             f32 _e20, f32 _e21, f32 _e22, f32 _e23);
     ~Matrix34f();
 
+    bool operator==(const Matrix34f &rhs) const {
+        return mtx == rhs.mtx;
+    }
+
     f32 &operator()(int i, int j) {
+        return mtx[i][j];
+    }
+
+    f32 operator()(int i, int j) const {
         return mtx[i][j];
     }
 
     // Q for Quaternion, T for translation
     void makeQT(const Quatf &q, const Vector3f &t);
+    void makeQ(const Quatf &q);
+    void makeRT(const Vector3f &r, const Vector3f &t);
+    void makeR(const Vector3f &r);
     void makeZero();
+    void setAxisRotation(f32 angle, const EGG::Vector3f &axis);
+
+    Matrix34f multiplyTo(const Matrix34f &rhs) const;
+    Vector3f multVector(const Vector3f &vec) const;
+    Vector3f ps_multVector(const Vector3f &vec) const;
+    Vector3f multVector33(const Vector3f &vec) const;
+    Matrix34f inverseTo() const;
 
     static const Matrix34f ident;
+    static const Matrix34f zero;
 
 private:
     union {

@@ -54,7 +54,7 @@ void RaceScene::configure() {
     auto *commonArc = resMgr->load(0, nullptr);
     appendResource(commonArc, 0);
 
-    auto *courseArc = resMgr->load(raceCfg->raceScenario().m_course);
+    auto *courseArc = resMgr->load(raceCfg->raceScenario().course);
     appendResource(courseArc, 1);
 }
 

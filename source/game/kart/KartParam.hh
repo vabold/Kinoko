@@ -6,23 +6,23 @@ namespace Kart {
 
 struct BSP {
     struct Hitbox {
-        u16 m_enable;
-        EGG::Vector3f m_position;
-        f32 m_radius;
-        u16 m_wallsOnly;
-        u16 m_tireCollisionIdx;
+        u16 enable;
+        EGG::Vector3f position;
+        f32 radius;
+        u16 wallsOnly;
+        u16 tireCollisionIdx;
     };
     static_assert(sizeof(Hitbox) == 0x18);
 
     struct Wheel {
-        u16 m_enable;
-        f32 m_springStiffness;
-        f32 m_dampingFactor;
-        f32 m_maxTravel;
-        EGG::Vector3f m_relPosition;
-        f32 m_xRot;
-        f32 m_wheelRadius;
-        f32 m_sphereRadius;
+        u16 enable;
+        f32 springStiffness;
+        f32 dampingFactor;
+        f32 maxTravel;
+        EGG::Vector3f relPosition;
+        f32 xRot;
+        f32 wheelRadius;
+        f32 sphereRadius;
         u32 _28;
     };
     static_assert(sizeof(Wheel) == 0x2c);
@@ -32,19 +32,32 @@ struct BSP {
 
     void read(EGG::RamStream &stream);
 
-    f32 m_initialYPos;
-    std::array<Hitbox, 16> m_hitboxes;
-    EGG::Vector3f m_cuboids[2];
-    f32 m_angVel0Factor;
+    f32 initialYPos;
+    std::array<Hitbox, 16> hitboxes;
+    EGG::Vector3f cuboids[2];
+    f32 angVel0Factor;
     f32 _1a0;
-    std::array<Wheel, 4> m_wheels;
-    f32 m_rumbleHeight;
-    f32 m_rumbleSpeed;
+    std::array<Wheel, 4> wheels;
+    f32 rumbleHeight;
+    f32 rumbleSpeed;
 };
 static_assert(sizeof(BSP) == 0x25c);
 
 class KartParam {
 public:
+    struct BikeDisp {
+        BikeDisp();
+        BikeDisp(EGG::RamStream &stream);
+
+        void read(EGG::RamStream &stream);
+
+        u8 _00[0x0c - 0x00];
+        EGG::Vector3f m_handlePos;
+        EGG::Vector3f m_handleRot;
+        u8 _24[0xb0 - 0x24];
+    };
+    static_assert(sizeof(BikeDisp) == 0xB0);
+
     struct Stats {
         enum class Body {
             Four_Wheel_Kart = 0,       // Used by most karts
@@ -71,37 +84,37 @@ public:
         void read(EGG::RamStream &stream);
         void applyCharacterBonus(EGG::RamStream &stream);
 
-        Body m_body;
-        DriftType m_driftType;
-        WeightClass m_weightClass;
+        Body body;
+        DriftType driftType;
+        WeightClass weightClass;
         f32 _00c; // Unused
-        f32 m_weight;
-        f32 m_bumpDeviationLevel;
-        f32 m_speed;
-        f32 m_turningSpeed;
-        f32 m_tilt;
-        f32 m_accelerationStandardA[4];
-        f32 m_accelerationStandardT[3];
-        f32 m_accelerationDriftA[2];
-        f32 m_accelerationDriftT[1];
-        f32 m_handlingManualTightness;
-        f32 m_handlingAutomaticTightness;
-        f32 m_handlingReactivity;
-        f32 m_driftManualTightness;
-        f32 m_driftAutomaticTightness;
-        f32 m_driftReactivity;
-        f32 m_driftOutsideTargetAngle;
-        f32 m_driftOutsideDecrement;
-        u32 m_miniTurbo;
-        std::array<f32, 32> m_kclSpeed;
-        std::array<f32, 32> m_kclRot;
-        f32 m_itemUnk170;
-        f32 m_itemUnk174;
-        f32 m_itemUnk178;
-        f32 m_itemUnk17c;
-        f32 m_maxNormalAcceleration;
-        f32 m_megaScale;
-        f32 m_wheelDistance;
+        f32 weight;
+        f32 bumpDeviationLevel;
+        f32 speed;
+        f32 turningSpeed;
+        f32 tilt;
+        f32 accelerationStandardA[4];
+        f32 accelerationStandardT[3];
+        f32 accelerationDriftA[2];
+        f32 accelerationDriftT[1];
+        f32 handlingManualTightness;
+        f32 handlingAutomaticTightness;
+        f32 handlingReactivity;
+        f32 driftManualTightness;
+        f32 driftAutomaticTightness;
+        f32 driftReactivity;
+        f32 driftOutsideTargetAngle;
+        f32 driftOutsideDecrement;
+        u32 miniTurbo;
+        std::array<f32, 32> kclSpeed;
+        std::array<f32, 32> kclRot;
+        f32 itemUnk170;
+        f32 itemUnk174;
+        f32 itemUnk178;
+        f32 itemUnk17c;
+        f32 maxNormalAcceleration;
+        f32 megaScale;
+        f32 wheelDistance;
     };
     static_assert(sizeof(Stats) == 0x18c);
 
@@ -109,17 +122,28 @@ public:
     ~KartParam();
 
     const BSP &bsp() const;
+    const Stats &stats() const;
+    const BikeDisp &bikeDisp() const;
     u8 playerIdx() const;
     bool isBike() const;
+    u16 suspCount() const;
+    u16 tireCount() const;
+
+    void setTireCount(u16 tireCount);
+    void setSuspCount(u16 suspCount);
 
 private:
     void initStats(Character character, Vehicle vehicle);
+    void initBikeDispParams(Vehicle vehicle);
     void initHitboxes(Vehicle vehicle);
 
     Stats m_stats;
+    BikeDisp m_bikeDisp;
     BSP m_bsp;
     u8 m_playerIdx;
     bool m_isBike;
+    u16 m_suspCount;
+    u16 m_tireCount;
 };
 
 } // namespace Kart

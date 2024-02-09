@@ -1,5 +1,6 @@
 #pragma once
 
+#include "game/kart/CollisionGroup.hh"
 #include "game/kart/KartDynamics.hh"
 #include "game/kart/KartParam.hh"
 
@@ -10,23 +11,31 @@ namespace Kart {
 class KartPhysics {
 public:
     KartPhysics(bool isBike);
+    ~KartPhysics();
 
     void reset();
     void updatePose();
 
     void calc(f32 dt, f32 maxSpeed, const EGG::Vector3f &scale, bool air);
 
-    KartDynamics *getDynamics();
-    const KartDynamics *getDynamics() const;
-    const EGG::Matrix34f &getPose() const;
+    KartDynamics *dynamics();
+    const KartDynamics *dynamics() const;
+    const EGG::Matrix34f &pose() const;
+    CollisionGroup *hitboxGroup();
+    const EGG::Vector3f &yAxis() const;
+    const EGG::Vector3f &zAxis() const;
+    const EGG::Vector3f &pos() const;
+    f32 fc() const;
 
     void setPos(const EGG::Vector3f &pos);
     void setVelocity(const EGG::Vector3f &vel);
+    void set_fc(f32 val);
 
     static KartPhysics *Create(const KartParam &param);
 
 private:
     KartDynamics *m_dynamics;
+    CollisionGroup *m_hitboxGroup;
     EGG::Vector3f m_pos;
     EGG::Quatf m_decayingStuntRot;
     EGG::Quatf m_instantaneousStuntRot;
@@ -39,6 +48,7 @@ private:
     EGG::Vector3f m_yAxis;
     EGG::Vector3f m_zAxis;
     EGG::Vector3f m_velocity;
+    f32 m_fc; // collisionLimit?
 };
 
 } // namespace Kart

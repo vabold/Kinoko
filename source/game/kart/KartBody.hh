@@ -10,9 +10,11 @@ public:
     KartBody(KartPhysics *physics);
     virtual ~KartBody() {}
 
+    virtual EGG::Matrix34f wheelMatrix(u16);
+
     void reset();
 
-    KartPhysics *getPhysics() const;
+    KartPhysics *physics() const;
 
 protected:
     KartPhysics *m_physics;
@@ -26,6 +28,8 @@ public:
 class KartBodyBike : public KartBody {
 public:
     KartBodyBike(KartPhysics *physics);
+
+    EGG::Matrix34f wheelMatrix(u16 wheelIdx) override;
 };
 
 } // namespace Kart

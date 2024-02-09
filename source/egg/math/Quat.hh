@@ -17,10 +17,26 @@ struct Quatf {
         return *this;
     }
 
+    Quatf operator+(const Quatf &rhs) const {
+        return Quatf(w + rhs.w, v + rhs.v);
+    }
+
+    Quatf &operator+=(const Quatf &rhs) {
+        return *this = *this + rhs;
+    }
+
     Quatf operator*(const Vector3f &vec) const {
         Vector3f cross = v.cross(vec);
         Vector3f scale = vec * w;
         return Quatf(-v.dot(vec), cross + scale);
+    }
+
+    Quatf operator*(f32 scalar) const {
+        return Quatf(w * scalar, v * scalar);
+    }
+
+    Quatf &operator*=(f32 scalar) {
+        return *this = *this * scalar;
     }
 
     Quatf operator*(const Quatf &rhs) const {
@@ -47,9 +63,11 @@ struct Quatf {
     void normalise();
     Quatf conjugate() const;
     Vector3f rotateVector(const Vector3f &vec) const;
+    Vector3f rotateVectorInv(const Vector3f &vec) const;
     Quatf slerpTo(const Quatf &q2, f32 t) const;
     f32 dot() const;
     f32 dot(const Quatf &q) const;
+    void setAxisRotation(f32 angle, const EGG::Vector3f &axis);
 
     void read(Stream &stream);
 

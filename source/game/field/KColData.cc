@@ -1,5 +1,6 @@
 #include "KColData.hh"
 
+#include <egg/geom/Sphere.hh>
 #include <egg/math/Math.hh>
 
 #include <cmath>
@@ -53,9 +54,41 @@ KColData::KColData(const void *file) {
     computeBBox();
 }
 
+void KColData::narrowScopeLocal(const EGG::Vector3f &pos, f32 radius, KCLTypeMask mask) {
+    m_prismCacheTop = m_prismCache.data();
+    m_pos = pos;
+    m_radius = radius;
+    m_typeMask = mask;
+    m_cachedPos = pos;
+    m_cachedRadius = radius;
+
+    if (radius <= m_sphereRadius) {
+        narrowPolygon_EachBlock(searchBlock(pos));
+    }
+
+    *m_prismCacheTop = 0;
+}
+
+void KColData::narrowPolygon_EachBlock(const u16 *prismArray) {
+    m_prismIter = prismArray;
+
+    while (checkSphereSingle(nullptr, nullptr, nullptr)) {
+        *(m_prismCacheTop++) = parse<u16>(*m_prismIter);
+
+        if (m_prismCacheTop == m_prismCache.end()) {
+            --m_prismCacheTop;
+            return;
+        }
+    }
+}
+
+u16 KColData::prismCache(u32 idx) const {
+    return m_prismCache[idx];
+}
+
 void KColData::computeBBox() {
-    m_bbox.mMax.set(-999999.0f);
-    m_bbox.mMin.set(999999.0f);
+    m_bbox.max.set(-999999.0f);
+    m_bbox.min.set(999999.0f);
 
     for (size_t i = 0; i < m_prismCount; i++) {
         const KCollisionPrism prism = getPrism(i);
@@ -69,12 +102,12 @@ void KColData::computeBBox() {
         const EGG::Vector3f vtx2 = GetVertex(prism.height, vtx1, fnrm, enrm3, enrm1);
         const EGG::Vector3f vtx3 = GetVertex(prism.height, vtx1, fnrm, enrm3, enrm2);
 
-        m_bbox.mMin = m_bbox.mMin.minimize(vtx1);
-        m_bbox.mMin = m_bbox.mMin.minimize(vtx2);
-        m_bbox.mMin = m_bbox.mMin.minimize(vtx3);
-        m_bbox.mMax = m_bbox.mMax.maximize(vtx1);
-        m_bbox.mMax = m_bbox.mMax.maximize(vtx2);
-        m_bbox.mMax = m_bbox.mMax.maximize(vtx3);
+        m_bbox.min = m_bbox.min.minimize(vtx1);
+        m_bbox.min = m_bbox.min.minimize(vtx2);
+        m_bbox.min = m_bbox.min.minimize(vtx3);
+        m_bbox.max = m_bbox.max.maximize(vtx1);
+        m_bbox.max = m_bbox.max.maximize(vtx2);
+        m_bbox.max = m_bbox.max.maximize(vtx3);
     }
 }
 
@@ -94,6 +127,25 @@ void KColData::lookupSphere(f32 radius, const EGG::Vector3f &pos, const EGG::Vec
     m_prevPos = prevPos;
     m_movement = pos - prevPos;
     m_radius = std::min(radius, m_sphereRadius);
+    m_typeMask = typeMask;
+}
+
+void KColData::lookupSphereCached(const EGG::Vector3f &p1, const EGG::Vector3f &p2, u32 typeMask,
+        f32 radius) {
+    EGG::Sphere3f sphere1(p1, radius);
+    EGG::Sphere3f sphere2(m_cachedPos, m_cachedRadius);
+
+    if (sphere1.isInsideOtherSphere(sphere2)) {
+        m_prismIter = searchBlock(p1);
+        m_radius = std::min(m_sphereRadius, radius);
+    } else {
+        m_radius = radius;
+        m_prismIter = m_cachedPrismArray;
+    }
+
+    m_pos = p1;
+    m_prevPos = p2;
+    m_movement = p1 - p2;
     m_typeMask = typeMask;
 }
 
@@ -146,11 +198,9 @@ const u16 *KColData::searchBlock(const EGG::Vector3f &point) {
     return reinterpret_cast<const u16 *>(curBlock + (offset & ~0x80000000));
 }
 
-/* 807c2410 - checkCollision */
 bool KColData::checkSphereCollision(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut) {
-    return std::isfinite(m_prevPos.y) ?
-            false /* checkSphereMovement(distOut, fnrmOut, flagsOut) */ :
-            checkSphere(distOut, fnrmOut, flagsOut);
+    return std::isfinite(m_prevPos.y) ? checkSphereMovement(distOut, fnrmOut, flagsOut) :
+                                        checkSphere(distOut, fnrmOut, flagsOut);
 }
 
 // Returns whether or not our sphere is colliding with the triangle
@@ -176,29 +226,29 @@ bool KColData::checkSphereTriCollision(const KCollisionPrism &prism, f32 *distOu
         return false;
     }
 
-    const EGG::Vector3f vert = m_pos - getPos(prism.pos_i);
+    const EGG::Vector3f relativePos = m_pos - getPos(prism.pos_i);
 
     // Edge normals point outside the triangle
     const EGG::Vector3f enrm1 = getNrm(prism.enrm1_i);
-    f32 dist_ca = vert.ps_dot(enrm1);
+    f32 dist_ca = relativePos.ps_dot(enrm1);
     if (m_radius <= dist_ca) {
         return false;
     }
 
     const EGG::Vector3f enrm2 = getNrm(prism.enrm2_i);
-    f32 dist_ab = vert.ps_dot(enrm2);
+    f32 dist_ab = relativePos.ps_dot(enrm2);
     if (m_radius <= dist_ab) {
         return false;
     }
 
     const EGG::Vector3f enrm3 = getNrm(prism.enrm3_i);
-    f32 dist_bc = vert.ps_dot(enrm3) - prism.height;
+    f32 dist_bc = relativePos.ps_dot(enrm3) - prism.height;
     if (m_radius <= dist_bc) {
         return false;
     }
 
     const EGG::Vector3f fnrm = getNrm(prism.fnrm_i);
-    f32 plane_dist = vert.ps_dot(fnrm);
+    f32 plane_dist = relativePos.ps_dot(fnrm);
     f32 dist_in_plane = m_radius - plane_dist;
     if (dist_in_plane <= 0.0f || dist_in_plane >= m_prismThickness) {
         return false;
@@ -288,6 +338,142 @@ bool KColData::checkSphereTriCollision(const KCollisionPrism &prism, f32 *distOu
     return out(dist);
 }
 
+bool KColData::checkSphereMovementCollision(const KCollisionPrism &prism, f32 *distOut,
+        EGG::Vector3f *fnrmOut, u16 *flagsOut) {
+    // Responsible for updating the output params
+    auto out = [&](f32 dist) {
+        if (distOut) {
+            *distOut = dist;
+        }
+        if (fnrmOut) {
+            *fnrmOut = getNrm(prism.fnrm_i);
+        }
+        if (flagsOut) {
+            *flagsOut = prism.attribute;
+        }
+        return true;
+    };
+
+    // The flag check occurs earlier than in the base game here. We don't want to do math if the tri
+    // we're checking doesn't have matching flags.
+    if ((KCL_ATTRIBUTE_TYPE_BIT(prism.attribute) & m_typeMask) == 0) {
+        return false;
+    }
+
+    const EGG::Vector3f relativePos = m_pos - getPos(prism.pos_i);
+
+    // Edge normals point outside the triangle
+    const EGG::Vector3f enrm1 = getNrm(prism.enrm1_i);
+    f32 dist_ca = relativePos.ps_dot(enrm1);
+    if (m_radius <= dist_ca) {
+        return false;
+    }
+
+    const EGG::Vector3f enrm2 = getNrm(prism.enrm2_i);
+    f32 dist_ab = relativePos.ps_dot(enrm2);
+    if (m_radius <= dist_ab) {
+        return false;
+    }
+
+    const EGG::Vector3f enrm3 = getNrm(prism.enrm3_i);
+    f32 dist_bc = relativePos.ps_dot(enrm3) - prism.height;
+    if (m_radius <= dist_bc) {
+        return false;
+    }
+
+    const EGG::Vector3f fnrm = getNrm(prism.fnrm_i);
+    f32 plane_dist = relativePos.ps_dot(fnrm);
+    f32 dist_in_plane = m_radius - plane_dist;
+    if (dist_in_plane <= 0.0f || dist_in_plane >= m_prismThickness) {
+        return false;
+    }
+
+    // Originally part of the edge searching, but moved out for simplicity
+    // If these are all zero, then we're inside the triangle
+    if (dist_ab <= 0.0f && dist_bc <= 0.0f && dist_ca <= 0.0f) {
+        EGG::Vector3f lastPos = relativePos - (m_pos - m_prevPos);
+        if (plane_dist < 0.0f && lastPos.dot(fnrm) < 0.0f) {
+            return false;
+        }
+
+        return out(dist_in_plane);
+    }
+
+    EGG::Vector3f edge_nor, other_edge_nor;
+    f32 edge_dist, other_edge_dist;
+    // > means further, < means closer, = means same distance
+    if (dist_ab >= dist_ca && dist_ab > dist_bc) {
+        // AB is the furthest edge
+        edge_nor = enrm2;
+        edge_dist = dist_ab;
+        if (dist_ca >= dist_bc) {
+            // CA is the second furthest edge
+            other_edge_nor = enrm1;
+            other_edge_dist = dist_ca;
+        } else {
+            // BC is the second furthest edge
+            other_edge_nor = enrm3;
+            other_edge_dist = dist_bc;
+        }
+    } else if (dist_bc >= dist_ca) {
+        // BC is the furthest edge
+        edge_nor = enrm3;
+        edge_dist = dist_bc;
+        if (dist_ab >= dist_ca) {
+            // AB is the second furthest edge
+            other_edge_nor = enrm2;
+            other_edge_dist = dist_ab;
+        } else {
+            // CA is the second furthest edge
+            other_edge_nor = enrm1;
+            other_edge_dist = dist_ca;
+        }
+    } else {
+        // CA is the furthest edge
+        edge_nor = enrm1;
+        edge_dist = dist_ca;
+        if (dist_bc >= dist_ab) {
+            // BC is the second furthest edge
+            other_edge_nor = enrm3;
+            other_edge_dist = dist_bc;
+        } else {
+            // AB is the second furthest edge
+            other_edge_nor = enrm2;
+            other_edge_dist = dist_ab;
+        }
+    }
+
+    f32 cos = edge_nor.ps_dot(other_edge_nor);
+    f32 sq_dist;
+    if (cos * edge_dist > other_edge_dist) {
+        sq_dist = m_radius * m_radius - edge_dist * edge_dist;
+    } else {
+        f32 sq_sin = cos * cos - 1.0f;
+        f32 t = (cos * edge_dist - other_edge_dist) / sq_sin;
+        f32 s = edge_dist - t * cos;
+        const EGG::Vector3f corner_pos = edge_nor * s + other_edge_nor * t;
+        f32 corner_sq_dist = corner_pos.dot();
+        sq_dist = m_radius * m_radius - corner_sq_dist;
+    }
+
+    if (sq_dist < plane_dist * plane_dist || sq_dist < 0.0f) {
+        return false;
+    }
+
+    f32 dist = EGG::Mathf::sqrt(sq_dist) - plane_dist;
+    if (dist <= 0.0f) {
+        return false;
+    }
+
+    EGG::Vector3f lastPos = relativePos - (m_pos - m_prevPos);
+
+    if (lastPos.dot(fnrm) < 0.0f) {
+        return false;
+    }
+
+    return out(dist);
+}
+
 bool KColData::checkSphere(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut) {
     // If there's no list of triangles to check, there's no collision
     if (!m_prismIter) {
@@ -298,6 +484,54 @@ bool KColData::checkSphere(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut) 
     while (*++m_prismIter != 0) {
         const KCollisionPrism prism = getPrism(parse<u16>(*m_prismIter));
         if (checkSphereTriCollision(prism, distOut, fnrmOut, flagsOut)) {
+            return true;
+        }
+    }
+
+    // We're out of triangles to check - another list must be prepared for subsequent calls
+    m_prismIter = nullptr;
+    return false;
+}
+
+bool KColData::checkSphereSingle(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut) {
+    if (!m_prismIter) {
+        return false;
+    }
+
+    while (*++m_prismIter != 0) {
+        if (m_prismCacheTop != m_prismCache.begin()) {
+            u16 *puVar10 = m_prismCacheTop - 1;
+            while (*m_prismIter != *puVar10) {
+                if (puVar10-- < m_prismCache.begin()) {
+                    break;
+                }
+            }
+
+            if (puVar10 >= m_prismCache.begin()) {
+                continue;
+            }
+        }
+
+        const KCollisionPrism prism = getPrism(parse<u16>(*m_prismIter));
+        if (checkSphereTriCollision(prism, distOut, fnrmOut, flagsOut)) {
+            return true;
+        }
+    }
+
+    m_prismIter = nullptr;
+    return false;
+}
+
+bool KColData::checkSphereMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut) {
+    // If there's no list of triangles to check, there's no collision
+    if (!m_prismIter) {
+        return false;
+    }
+
+    // Check collision for all triangles, and continuously call the function until we're out
+    while (*++m_prismIter != 0) {
+        const KCollisionPrism prism = getPrism(parse<u16>(*m_prismIter));
+        if (checkSphereMovementCollision(prism, distOut, fnrmOut, attributeOut)) {
             return true;
         }
     }

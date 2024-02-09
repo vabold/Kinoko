@@ -44,7 +44,7 @@ void *DvdArchive::getFile(const char *filename, size_t *size) const {
 
     void *file = m_archive->getFile(entryId, fileInfo);
     if (file && size) {
-        *size = fileInfo.m_length;
+        *size = fileInfo.length;
     }
 
     return file;

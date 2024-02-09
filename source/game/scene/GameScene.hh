@@ -29,7 +29,7 @@ protected:
 
 private:
     struct Resource : private Abstract::Node {
-        s32 m_id;
+        s32 id;
     };
 
     void initScene();

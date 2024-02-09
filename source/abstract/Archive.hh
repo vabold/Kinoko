@@ -10,10 +10,10 @@ namespace Abstract {
 struct RawArchive {
     bool isValidSignature() const;
 
-    u32 m_signature;
-    u32 m_nodesOffset;
-    u32 m_nodesSize;
-    u32 m_filesOffset;
+    u32 signature;
+    u32 nodesOffset;
+    u32 nodesSize;
+    u32 filesOffset;
 };
 
 class ArchiveHandle {
@@ -21,10 +21,10 @@ public:
     struct RawArchive {
         bool isValidSignature() const;
 
-        u32 m_signature;
-        u32 m_nodesOffset;
-        u32 m_nodesSize;
-        u32 m_filesOffset;
+        u32 signature;
+        u32 nodesOffset;
+        u32 nodesSize;
+        u32 filesOffset;
     };
 
     // TODO: union
@@ -34,24 +34,24 @@ public:
         u32 stringOffset() const;
 
         union {
-            u32 m_val;
-            u8 m_str[4];
+            u32 val;
+            u8 str[4];
         };
         union {
             struct {
-                u32 m_parent;
-                u32 m_next;
+                u32 parent;
+                u32 next;
             } m_directory;
             struct {
-                u32 m_startAddress;
-                u32 m_length;
-            } m_file;
+                u32 startAddress;
+                u32 length;
+            } file;
         };
     };
 
     struct FileInfo {
-        u32 m_startOffset;
-        u32 m_length;
+        u32 startOffset;
+        u32 length;
     };
 
     ArchiveHandle(void *archiveStart);

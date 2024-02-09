@@ -16,10 +16,18 @@ public:
     void resetPhysics();
 
     void calcPass0();
+    void calcPass1();
+
+    f32 someScale();
 
 private:
     KartMove *m_move;
+    KartCollide *m_collide;
     KartState *m_state;
+    EGG::Vector3f m_maxSuspOvertravel;
+    EGG::Vector3f m_minSuspOvertravel;
+    u16 m_floorCollisionCount;
+    f32 m_someScale;
 
     static constexpr f32 DT = 1.0f;
 };

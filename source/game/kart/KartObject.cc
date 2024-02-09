@@ -1,6 +1,9 @@
 #include "KartObject.hh"
 
+#include "game/kart/KartParam.hh"
 #include "game/kart/KartSub.hh"
+#include "game/kart/KartSuspension.hh"
+#include "game/kart/KartTire.hh"
 
 #include "game/system/RaceConfig.hh"
 #include "game/system/RaceManager.hh"
@@ -8,11 +11,11 @@
 namespace Kart {
 
 KartObject::KartObject(KartParam *param) {
-    m_pointers.m_param = param;
+    m_pointers.param = param;
 }
 
 KartObject::~KartObject() {
-    delete m_pointers.m_param;
+    delete m_pointers.param;
 }
 
 KartBody *KartObject::createBody(KartPhysics *physics) {
@@ -20,10 +23,15 @@ KartBody *KartObject::createBody(KartPhysics *physics) {
 }
 
 void KartObject::init() {
+    prepareTiresAndSuspensions();
     createSub();
-    auto *physics = KartPhysics::Create(*m_pointers.m_param);
+    auto *physics = KartPhysics::Create(*m_pointers.param);
     auto *body = createBody(physics);
-    m_pointers.m_body = body;
+    m_pointers.body = body;
+    createTires();
+    for (u16 tireIdx = 0; tireIdx < m_pointers.param->tireCount(); ++tireIdx) {
+        m_pointers.tires[tireIdx]->init(tireIdx);
+    }
 }
 
 void KartObject::initImpl() {
@@ -37,13 +45,42 @@ void KartObject::prepare() {
     move()->setInitialPhysicsValues(position, euler_angles_deg);
 }
 
+void KartObject::prepareTiresAndSuspensions() {
+    constexpr u16 local_20[4] = {2, 1, 1, 1};
+    constexpr u16 local_28[4] = {2, 1, 1, 2};
+
+    const BSP &rBsp = m_pointers.param->bsp();
+    const KartParam::Stats::Body bodyWheels = m_pointers.param->stats().body;
+    u16 wheelCount = 0;
+
+    if (rBsp.wheels[0].enable != 0) {
+        wheelCount += local_20[static_cast<u16>(bodyWheels)];
+    }
+    if (rBsp.wheels[1].enable != 0) {
+        wheelCount += local_28[static_cast<u16>(bodyWheels)];
+    }
+    if (rBsp.wheels[2].enable != 0) {
+        wheelCount += local_20[static_cast<u16>(bodyWheels)];
+    }
+    if (rBsp.wheels[3].enable != 0) {
+        wheelCount += local_28[static_cast<u16>(bodyWheels)];
+    }
+
+    m_pointers.param->setTireCount(wheelCount);
+    m_pointers.param->setSuspCount(wheelCount);
+}
+
 void KartObject::createSub() {
-    m_pointers.m_sub = new KartSub;
-    m_pointers.m_sub->createSubsystems(m_pointers.m_param->isBike());
+    m_pointers.sub = new KartSub;
+    m_pointers.sub->createSubsystems(m_pointers.param->isBike());
 }
 
 void KartObject::calcSub() {
-    m_pointers.m_sub->calcPass0();
+    sub()->calcPass0();
+}
+
+void KartObject::calc() {
+    sub()->calcPass1();
 }
 
 KartObject *KartObject::Create(Character character, Vehicle vehicle, u8 playerIdx) {
@@ -60,22 +97,51 @@ KartObject *KartObject::Create(Character character, Vehicle vehicle, u8 playerId
     }
 
     object->init();
-    object->m_pointers.m_sub->copyPointers(object->m_pointers);
+    object->m_pointers.sub->copyPointers(object->m_pointers);
 
     // Applies a valid pointer to all of the proxies we create
     ApplyAll(&object->m_pointers);
     s_list = nullptr;
+
+    for (u16 i = 0; i < object->suspCount(); ++i) {
+        object->suspension(i)->initPhysics();
+    }
+
+    for (u16 i = 0; i < object->tireCount(); ++i) {
+        object->tire(i)->initBsp();
+    }
+
     return object;
 }
 
 KartObjectBike::KartObjectBike(KartParam *param) : KartObject(param) {}
 
 KartObjectBike::~KartObjectBike() {
-    delete m_pointers.m_param;
+    delete m_pointers.param;
 }
 
 KartBody *KartObjectBike::createBody(KartPhysics *physics) {
     return new KartBodyBike(physics);
+}
+
+void KartObjectBike::createTires() {
+    for (u16 wheelIdx = 0; wheelIdx < m_pointers.param->suspCount(); ++wheelIdx) {
+        KartSuspension *sus = nullptr;
+        KartTire *tire = nullptr;
+
+        if (wheelIdx == 0 || wheelIdx == 2) {
+            sus = new KartSuspensionFrontBike;
+            tire = new KartTireFrontBike(0);
+        } else {
+            sus = new KartSuspensionRearBike;
+            tire = new KartTireRearBike(1);
+        }
+
+        m_pointers.suspensions.push_back(sus);
+        m_pointers.tires.push_back(tire);
+
+        sus->init(wheelIdx, wheelIdx);
+    }
 }
 
 } // namespace Kart

@@ -2,6 +2,7 @@
 
 #include "game/field/CollisionDirector.hh"
 
+#include "game/system/RaceManager.hh"
 #include "game/system/ResourceManager.hh"
 
 // Credit: em-eight/mkw
@@ -13,24 +14,78 @@ void CourseColMgr::init() {
     m_data = new KColData(file);
 }
 
-/* 0x807c3e84 - CourseColMgr::checkCollisionOther */
-bool CourseColMgr::checkSphereFullPush(f32 scalar, f32 radius, KColData *data,
+void CourseColMgr::scaledNarrowScopeLocal(f32 scale, f32 radius, KColData *colMgr,
+        const EGG::Vector3f &pos, KCLTypeMask mask) {
+    if (!colMgr) {
+        colMgr = m_data;
+    }
+
+    colMgr->narrowScopeLocal(pos / scale, radius / scale, mask);
+}
+
+bool CourseColMgr::checkSphereFullPush(f32 scalar, f32 radius, KColData *colMgr,
         const EGG::Vector3f &v0, const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *info,
         KCLTypeMask *kcl_flags_out) {
-    if (!data) {
-        data = m_data;
+    if (!colMgr) {
+        colMgr = m_data;
     }
 
     m_kclScale = scalar;
     EGG::Vector3f scaled_position = v0 / scalar;
     EGG::Vector3f vStack88 = v1 / scalar;
-    data->lookupSphere(radius, scaled_position, vStack88, flags);
+    colMgr->lookupSphere(radius, scaled_position, vStack88, flags);
 
     if (info) {
-        return doCheckWithFullInfoPush(data, &KColData::checkSphere, info, kcl_flags_out);
+        return doCheckWithFullInfoPush(colMgr, &KColData::checkSphere, info, kcl_flags_out);
     }
-    return false; // doCheckMaskOnlyPush(data, &KColData::checkSphereCollision,
-                  // kcl_flags_out);
+    return doCheckMaskOnlyPush(colMgr, &KColData::checkSphereCollision, kcl_flags_out);
+}
+
+bool CourseColMgr::checkSphereCachedPartialPush(KColData *colMgr, const EGG::Vector3f &pos,
+        const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CollisionInfo *colInfo,
+        KCLTypeMask *typeMaskOut, f32 scale, f32 radius) {
+    if (!colMgr) {
+        colMgr = m_data;
+    }
+
+    if (colMgr->prismCache(0) == 0) {
+        return false;
+    }
+
+    m_kclScale = scale;
+
+    colMgr->lookupSphereCached(pos / scale, prevPos / scale, typeMask, radius / scale);
+
+    if (colInfo) {
+        return doCheckWithPartialInfoPush(colMgr, &KColData::checkSphereCollision, colInfo,
+                typeMaskOut);
+    }
+
+    return doCheckMaskOnlyPush(colMgr, &KColData::checkSphereCollision, typeMaskOut);
+}
+
+bool CourseColMgr::checkSphereCachedFullPush(KColData *colMgr, const EGG::Vector3f &pos,
+        const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CollisionInfo *colInfo,
+        KCLTypeMask *typeMaskOut, f32 scale, f32 radius) {
+    if (!colMgr) {
+        colMgr = m_data;
+    }
+
+    if (colMgr->prismCache(0) == 0) {
+        return false;
+    }
+
+    m_kclScale = scale;
+
+    colMgr->lookupSphereCached(pos / scale, prevPos / scale, typeMask, radius / scale);
+
+    if (colInfo) {
+        return doCheckWithFullInfoPush(colMgr, &KColData::checkSphereCollision, colInfo,
+                typeMaskOut);
+    } else {
+        // Not needed currently
+        return false;
+    }
 }
 
 void *CourseColMgr::LoadFile(const char *filename) {
@@ -62,8 +117,8 @@ CourseColMgr::~CourseColMgr() {
     delete m_data;
 }
 
-bool CourseColMgr::doCheckWithFullInfoPush(KColData *colMgr, CollisionCheckFunc collisionCheckFunc,
-        CollisionInfo *colInfo, u32 *flagsOut) {
+bool CourseColMgr::doCheckWithPartialInfoPush(KColData *colMgr,
+        CollisionCheckFunc collisionCheckFunc, CollisionInfo *colInfo, KCLTypeMask *typeMask) {
     f32 dist;
     EGG::Vector3f fnrm;
     u16 attribute;
@@ -71,17 +126,34 @@ bool CourseColMgr::doCheckWithFullInfoPush(KColData *colMgr, CollisionCheckFunc 
 
     while ((colMgr->*collisionCheckFunc)(&dist, &fnrm, &attribute)) {
         dist *= m_kclScale;
+        EGG::Vector3f offset;
 
-        /*if (m_noBounceWallInfo && (attribute & KCL_SOFT_WALL_MASK)) {
-            if (m_localMtx) {
-                nw4r::math::VEC3TransformNormal(&fnrm, m_localMtx, &fnrm);
-            }
-
+        u32 flags = KCL_ATTRIBUTE_TYPE_BIT(attribute);
+        if (typeMask) {
+            CollisionDirector::Instance()->pushCollisionEntry(dist, typeMask, flags, attribute);
+        }
+        if ((flags & KCL_TYPE_SOLID_SURFACE) != 0) {
             offset = fnrm * dist;
-            softWallColInfo->update(dist, offset, fnrm);
+            colInfo->bbox.min = colInfo->bbox.min.minimize(offset);
+            colInfo->bbox.max = colInfo->bbox.max.maximize(offset);
+        }
+        hasCol = true;
+    }
 
-            hasCol = true;
-        } else {*/
+    m_localMtx = nullptr;
+
+    return hasCol;
+}
+
+bool CourseColMgr::doCheckWithFullInfoPush(KColData *colMgr, CollisionCheckFunc collisionCheckFunc,
+        CollisionInfo *colInfo, KCLTypeMask *flagsOut) {
+    f32 dist;
+    EGG::Vector3f fnrm;
+    u16 attribute;
+    bool hasCol = false;
+
+    while ((colMgr->*collisionCheckFunc)(&dist, &fnrm, &attribute)) {
+        dist *= m_kclScale;
         u32 kclAttributeTypeBit = KCL_ATTRIBUTE_TYPE_BIT(attribute);
         if (flagsOut) {
             CollisionDirector::Instance()->pushCollisionEntry(dist, flagsOut, kclAttributeTypeBit,
@@ -91,38 +163,58 @@ bool CourseColMgr::doCheckWithFullInfoPush(KColData *colMgr, CollisionCheckFunc 
             colInfo->update(dist, fnrm * dist, fnrm, kclAttributeTypeBit);
         }
         hasCol = true;
-        /*}*/
     }
+
     m_localMtx = nullptr;
+
+    return hasCol;
+}
+
+bool CourseColMgr::doCheckMaskOnlyPush(KColData *colMgr, CollisionCheckFunc collisionCheckFunc,
+        KCLTypeMask *typeMaskOut) {
+    bool hasCol = false;
+    f32 dist;
+    u16 attribute;
+
+    while ((colMgr->*collisionCheckFunc)(&dist, nullptr, &attribute)) {
+        // Ignoring softWallColInfo
+        KCLTypeMask mask = KCL_ATTRIBUTE_TYPE_BIT(attribute);
+
+        if (typeMaskOut) {
+            CollisionDirector::Instance()->pushCollisionEntry(dist, typeMaskOut, mask, attribute);
+        }
+        hasCol = true;
+    }
+
     return hasCol;
 }
 
 void CourseColMgr::CollisionInfo::updateFloor(f32 dist, const EGG::Vector3f &fnrm) {
-    if (dist > m_floorDist) {
-        m_floorDist = dist;
-        m_floorNrm = fnrm;
+    if (dist > floorDist) {
+        floorDist = dist;
+        floorNrm = fnrm;
     }
 }
 
 void CourseColMgr::CollisionInfo::updateWall(f32 dist, const EGG::Vector3f &fnrm) {
-    if (dist > m_wallDist) {
-        m_wallDist = dist;
-        m_wallNrm = fnrm;
+    if (dist > wallDist) {
+        wallDist = dist;
+        wallNrm = fnrm;
     }
 }
 
 void CourseColMgr::CollisionInfo::update(f32 now_dist, const EGG::Vector3f &offset,
         const EGG::Vector3f &fnrm, u32 kclAttributeTypeBit) {
-    m_bbox.mMin = m_bbox.mMin.minimize(offset);
-    m_bbox.mMax = m_bbox.mMax.maximize(offset);
+    bbox.min = bbox.min.minimize(offset);
+    bbox.max = bbox.max.maximize(offset);
 
     if (kclAttributeTypeBit & KCL_TYPE_FLOOR) {
         updateFloor(now_dist, fnrm);
     } else if (kclAttributeTypeBit & KCL_TYPE_WALL) {
-        if (m_wallDist > -std::numeric_limits<f32>::min()) {
-            f32 perpendicularity = 1.0f - m_wallNrm.ps_dot(fnrm);
-            if (perpendicularity > m_perpendicularity) {
-                m_perpendicularity = std::min(perpendicularity, 1.0f);
+        if (wallDist > -std::numeric_limits<f32>::min()) {
+            f32 dot = 1.0f - wallNrm.ps_dot(fnrm);
+            if (dot > perpendicularity) {
+                perpendicularity = std::min(dot, 1.0f);
             }
         }
 

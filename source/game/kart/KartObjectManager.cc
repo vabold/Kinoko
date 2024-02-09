@@ -14,7 +14,9 @@ void KartObjectManager::init() {
 
 void KartObjectManager::calc() {
     for (size_t i = 0; i < m_count; ++i) {
-        m_objects[i]->calcSub();
+        KartObject *object = m_objects[i];
+        object->calcSub();
+        object->calc();
     }
 }
 
@@ -41,12 +43,12 @@ KartObjectManager *KartObjectManager::Instance() {
 
 KartObjectManager::KartObjectManager() {
     const auto &raceScenario = System::RaceConfig::Instance()->raceScenario();
-    m_count = raceScenario.m_playerCount;
+    m_count = raceScenario.playerCount;
     m_objects = new KartObject *[m_count];
     KartParamFileManager::CreateInstance();
     for (size_t i = 0; i < m_count; ++i) {
-        const auto &player = raceScenario.m_players[i];
-        m_objects[i] = KartObject::Create(player.m_character, player.m_vehicle, i);
+        const auto &player = raceScenario.players[i];
+        m_objects[i] = KartObject::Create(player.character, player.vehicle, i);
     }
 }
 
