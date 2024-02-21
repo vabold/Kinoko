@@ -24,7 +24,6 @@ public:
         f32 wallDist;
         f32 _50;
         f32 perpendicularity;
-        void *astruct_7; // TODO
 
         void updateFloor(f32 dist, const EGG::Vector3f &fnrm);
         void updateWall(f32 dist, const EGG::Vector3f &fnrm);
@@ -73,6 +72,7 @@ private:
             CollisionInfo *colInfo, KCLTypeMask *flagsOut);
     bool doCheckMaskOnlyPush(KColData *colMgr, CollisionCheckFunc collisionCheckFunc,
             KCLTypeMask *typeMaskOut);
+
     KColData *m_data;
     f32 m_kclScale;
     NoBounceWallColInfo *m_noBounceWallInfo;

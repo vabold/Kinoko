@@ -46,24 +46,24 @@ void KartObject::prepare() {
 }
 
 void KartObject::prepareTiresAndSuspensions() {
-    constexpr u16 local_20[4] = {2, 1, 1, 1};
-    constexpr u16 local_28[4] = {2, 1, 1, 2};
+    constexpr u16 LOCAL_20[4] = {2, 1, 1, 1};
+    constexpr u16 LOCAL_28[4] = {2, 1, 1, 2};
 
     const BSP &rBsp = m_pointers.param->bsp();
     const KartParam::Stats::Body bodyWheels = m_pointers.param->stats().body;
     u16 wheelCount = 0;
 
     if (rBsp.wheels[0].enable != 0) {
-        wheelCount += local_20[static_cast<u16>(bodyWheels)];
+        wheelCount += LOCAL_20[static_cast<u16>(bodyWheels)];
     }
     if (rBsp.wheels[1].enable != 0) {
-        wheelCount += local_28[static_cast<u16>(bodyWheels)];
+        wheelCount += LOCAL_28[static_cast<u16>(bodyWheels)];
     }
     if (rBsp.wheels[2].enable != 0) {
-        wheelCount += local_20[static_cast<u16>(bodyWheels)];
+        wheelCount += LOCAL_20[static_cast<u16>(bodyWheels)];
     }
     if (rBsp.wheels[3].enable != 0) {
-        wheelCount += local_28[static_cast<u16>(bodyWheels)];
+        wheelCount += LOCAL_28[static_cast<u16>(bodyWheels)];
     }
 
     m_pointers.param->setTireCount(wheelCount);

@@ -23,8 +23,25 @@ void RaceManager::findKartStartPoint(EGG::Vector3f &pos, EGG::Vector3f &angles) 
 }
 
 void RaceManager::calc() {
-    if (m_stage == Stage::Intro) {
-        ++m_introTimer;
+    constexpr u16 STAGE_INTRO_DURATION = 172;
+    constexpr u16 STAGE_COUNTDOWN_DURATION = 240;
+
+    switch (m_stage) {
+    case Stage::Intro:
+        if (++m_introTimer >= STAGE_INTRO_DURATION) {
+            m_stage = Stage::Countdown;
+        }
+        break;
+    case Stage::Countdown:
+        if (++m_timer >= STAGE_COUNTDOWN_DURATION) {
+            m_stage = Stage::Race;
+        }
+        break;
+    case Stage::Race:
+        ++m_timer;
+        break;
+    default:
+        break;
     }
 }
 
@@ -48,7 +65,7 @@ void RaceManager::DestroyInstance() {
     s_instance = nullptr;
 }
 
-RaceManager::RaceManager() : m_stage(Stage::Intro), m_introTimer(0) {}
+RaceManager::RaceManager() : m_stage(Stage::Intro), m_introTimer(0), m_timer(0) {}
 
 RaceManager::~RaceManager() = default;
 

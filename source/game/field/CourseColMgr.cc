@@ -177,7 +177,6 @@ bool CourseColMgr::doCheckMaskOnlyPush(KColData *colMgr, CollisionCheckFunc coll
     u16 attribute;
 
     while ((colMgr->*collisionCheckFunc)(&dist, nullptr, &attribute)) {
-        // Ignoring softWallColInfo
         KCLTypeMask mask = KCL_ATTRIBUTE_TYPE_BIT(attribute);
 
         if (typeMaskOut) {

@@ -49,7 +49,6 @@ void KartMove::setInitialPhysicsValues(const EGG::Vector3f &position, const EGG:
     quaternion.setRPY(angles * DEG2RAD);
     EGG::Vector3f newPos = position;
     Field::CourseColMgr::CollisionInfo info;
-    info.astruct_7 = nullptr;
     Field::KCLTypeMask kcl_flags = KCL_NONE;
 
     bool bColliding = Field::CollisionDirector::Instance()->checkSphereFullPush(100.0f, newPos,
@@ -76,8 +75,8 @@ void KartMove::setInitialPhysicsValues(const EGG::Vector3f &position, const EGG:
 }
 
 void KartMove::setKartSpeedLimit() {
-    constexpr f32 limit = 120.0f;
-    m_hardSpeedLimit = limit;
+    constexpr f32 LIMIT = 120.0f;
+    m_hardSpeedLimit = LIMIT;
 }
 
 void KartMove::calc() {

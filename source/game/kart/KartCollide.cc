@@ -120,7 +120,7 @@ void KartCollide::calcWheelCollision(u16 /*wheelIdx*/, CollisionGroup *hitboxGro
     Field::KCLTypeMask kclOut;
 
     bool collided = Field::CollisionDirector::Instance()->checkSphereCachedFullPush(
-            firstHitbox.worldPos(), firstHitbox.lastPos(), KCL_TYPE_IDK, &colInfo, &kclOut,
+            firstHitbox.worldPos(), firstHitbox.lastPos(), KCL_TYPE_VEHICLE_COLLIDEABLE, &colInfo, &kclOut,
             firstHitbox.radius(), 0);
 
     CollisionData &collisionData = hitboxGroup->collisionData();
@@ -143,11 +143,11 @@ void KartCollide::calcWheelCollision(u16 /*wheelIdx*/, CollisionGroup *hitboxGro
 
     processWheel(collisionData, firstHitbox, &colInfo, &kclOut);
 
-    if ((kclOut & KCL_TYPE_IDK) == 0) {
+    if ((kclOut & KCL_TYPE_VEHICLE_COLLIDEABLE) == 0) {
         return;
     }
 
-    Field::CollisionDirector::Instance()->findClosestCollisionEntry(&kclOut, KCL_TYPE_IDK);
+    Field::CollisionDirector::Instance()->findClosestCollisionEntry(&kclOut, KCL_TYPE_VEHICLE_COLLIDEABLE);
 }
 
 void KartCollide::processWheel(CollisionData &collisionData, Hitbox &hitbox,
@@ -158,7 +158,7 @@ void KartCollide::processWheel(CollisionData &collisionData, Hitbox &hitbox,
 void KartCollide::processFloor(CollisionData &collisionData, Hitbox & /*hitbox*/,
         Field::CourseColMgr::CollisionInfo * /*colInfo*/, Field::KCLTypeMask *maskOut,
         bool /*wheel*/) {
-    if ((*maskOut & KCL_TYPE_IDK) == 0) {
+    if ((*maskOut & KCL_TYPE_VEHICLE_COLLIDEABLE) == 0) {
         return;
     }
 

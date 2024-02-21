@@ -87,7 +87,7 @@ void KartSub::calcPass1() {
     m_minSuspOvertravel.setZero();
 
     Field::CollisionDirector::Instance()->checkCourseColNarrScLocal(250.0f, pos(),
-            KCL_TYPE_VEHICLE_COLLIDEABLE, 0);
+            KCL_TYPE_VEHICLE_INTERACTABLE, 0);
     collide()->findCollision();
     collide()->calcFloorEffect();
 

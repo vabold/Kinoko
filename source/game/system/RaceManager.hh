@@ -29,7 +29,8 @@ private:
     ~RaceManager();
 
     Stage m_stage;
-    u32 m_introTimer;
+    u16 m_introTimer;
+    u32 m_timer;
 
     static RaceManager *s_instance;
 };

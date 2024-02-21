@@ -50,9 +50,7 @@ f32 Vector3f::dot(const Vector3f &rhs) const {
 }
 
 f32 Vector3f::ps_dot() const {
-    f32 y_ = y * y;
-    f32 xy = Mathf::fma(x, x, y_);
-    return xy + z * z;
+    return ps_dot(*this);
 }
 
 f32 Vector3f::ps_dot(const Vector3f &rhs) const {

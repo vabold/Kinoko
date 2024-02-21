@@ -4,6 +4,8 @@
 
 namespace EGG {
 
+using namespace Mathf;
+
 Matrix34f::Matrix34f() {
     makeZero();
 }
@@ -140,38 +142,23 @@ void Matrix34f::makeZero() {
 Matrix34f Matrix34f::multiplyTo(const Matrix34f &rhs) const {
     Matrix34f mat;
 
-    mat(0, 0) = Mathf::fma(rhs(2, 0), mtx[0][2],
-            Mathf::fma(rhs(1, 0), mtx[0][1], rhs(0, 0) * mtx[0][0]));
-    mat(0, 1) = Mathf::fma(rhs(2, 1), mtx[0][2],
-            Mathf::fma(rhs(1, 1), mtx[0][1], rhs(0, 1) * mtx[0][0]));
-
-    mat(1, 0) = Mathf::fma(rhs(2, 0), mtx[1][2],
-            Mathf::fma(rhs(1, 0), mtx[1][1], rhs(0, 0) * mtx[1][0]));
-
-    mat(1, 1) = Mathf::fma(rhs(2, 1), mtx[1][2],
-            Mathf::fma(rhs(1, 1), mtx[1][1], rhs(0, 1) * mtx[1][0]));
-
-    mat(0, 2) = Mathf::fma(rhs(2, 2), mtx[0][2],
-            Mathf::fma(rhs(1, 2), mtx[0][1], rhs(0, 2) * mtx[0][0]));
-    mat(0, 3) = Mathf::fma(1.0f, mtx[0][3],
-            Mathf::fma(rhs(2, 3), mtx[0][2],
-                    Mathf::fma(rhs(1, 3), mtx[0][1], rhs(0, 3) * mtx[0][0])));
-    mat(1, 2) = mtx[1][3] +
-            Mathf::fma(rhs(2, 2), mtx[1][2],
-                    Mathf::fma(rhs(1, 2), mtx[1][1], rhs(0, 2) * mtx[1][0]));
-    mat(1, 3) = Mathf::fma(1.0f, mtx[1][3],
-            Mathf::fma(rhs(2, 3), mtx[1][2],
-                    Mathf::fma(rhs(1, 3), mtx[1][1], rhs(0, 3) * mtx[1][0])));
-    mat(2, 0) = Mathf::fma(rhs(2, 0), mtx[2][2],
-            Mathf::fma(rhs(1, 0), mtx[2][1], rhs(0, 0) * mtx[2][0]));
-    mat(2, 1) = Mathf::fma(rhs(2, 1), mtx[2][2],
-            Mathf::fma(rhs(1, 1), mtx[2][1], rhs(0, 1) * mtx[2][0]));
-    mat(2, 2) = mtx[2][3] +
-            Mathf::fma(rhs(2, 2), mtx[2][2],
-                    Mathf::fma(rhs(1, 2), mtx[2][1], rhs(0, 2) * mtx[2][0]));
-    mat(2, 3) = Mathf::fma(1.0f, mtx[2][3],
-            Mathf::fma(rhs(2, 3), mtx[2][2],
-                    Mathf::fma(rhs(1, 3), mtx[2][1], rhs(0, 3) * mtx[2][0])));
+    mat(0, 0) = fma(rhs(2, 0), mtx[0][2], fma(rhs(1, 0), mtx[0][1], rhs(0, 0) * mtx[0][0]));
+    mat(0, 1) = fma(rhs(2, 1), mtx[0][2], fma(rhs(1, 1), mtx[0][1], rhs(0, 1) * mtx[0][0]));
+    mat(1, 0) = fma(rhs(2, 0), mtx[1][2], fma(rhs(1, 0), mtx[1][1], rhs(0, 0) * mtx[1][0]));
+    mat(1, 1) = fma(rhs(2, 1), mtx[1][2], fma(rhs(1, 1), mtx[1][1], rhs(0, 1) * mtx[1][0]));
+    mat(0, 2) = fma(rhs(2, 2), mtx[0][2], fma(rhs(1, 2), mtx[0][1], rhs(0, 2) * mtx[0][0]));
+    mat(0, 3) = fma(1.0f, mtx[0][3],
+            fma(rhs(2, 3), mtx[0][2], fma(rhs(1, 3), mtx[0][1], rhs(0, 3) * mtx[0][0])));
+    mat(1, 2) =
+            mtx[1][3] + fma(rhs(2, 2), mtx[1][2], fma(rhs(1, 2), mtx[1][1], rhs(0, 2) * mtx[1][0]));
+    mat(1, 3) = fma(1.0f, mtx[1][3],
+            fma(rhs(2, 3), mtx[1][2], fma(rhs(1, 3), mtx[1][1], rhs(0, 3) * mtx[1][0])));
+    mat(2, 0) = fma(rhs(2, 0), mtx[2][2], fma(rhs(1, 0), mtx[2][1], rhs(0, 0) * mtx[2][0]));
+    mat(2, 1) = fma(rhs(2, 1), mtx[2][2], fma(rhs(1, 1), mtx[2][1], rhs(0, 1) * mtx[2][0]));
+    mat(2, 2) =
+            mtx[2][3] + fma(rhs(2, 2), mtx[2][2], fma(rhs(1, 2), mtx[2][1], rhs(0, 2) * mtx[2][0]));
+    mat(2, 3) = fma(1.0f, mtx[2][3],
+            fma(rhs(2, 3), mtx[2][2], fma(rhs(1, 3), mtx[2][1], rhs(0, 3) * mtx[2][0])));
 
     return mat;
 }
@@ -189,12 +176,9 @@ Vector3f Matrix34f::multVector(const Vector3f &vec) const {
 Vector3f Matrix34f::ps_multVector(const Vector3f &vec) const {
     Vector3f ret;
 
-    ret.x = Mathf::fma(mtx[0][2], vec.z, mtx[0][0] * vec.x) +
-            Mathf::fma(mtx[0][3], 1.0f, mtx[0][1] * vec.y);
-    ret.y = Mathf::fma(mtx[1][2], vec.z, mtx[1][0] * vec.x) +
-            Mathf::fma(mtx[1][3], 1.0f, mtx[1][1] * vec.y);
-    ret.z = Mathf::fma(mtx[2][2], vec.z, mtx[2][0] * vec.x) +
-            Mathf::fma(mtx[2][3], 1.0f, mtx[2][1] * vec.y);
+    ret.x = fma(mtx[0][2], vec.z, mtx[0][0] * vec.x) + fma(mtx[0][3], 1.0f, mtx[0][1] * vec.y);
+    ret.y = fma(mtx[1][2], vec.z, mtx[1][0] * vec.x) + fma(mtx[1][3], 1.0f, mtx[1][1] * vec.y);
+    ret.z = fma(mtx[2][2], vec.z, mtx[2][0] * vec.x) + fma(mtx[2][3], 1.0f, mtx[2][1] * vec.y);
 
     return ret;
 }
