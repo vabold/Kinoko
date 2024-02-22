@@ -32,6 +32,7 @@ IndentCaseLabels: False
 IndentGotoLabels: True
 IndentWidth: 4
 InsertBraces: True
+InsertNewlineAtEOF: true
 KeepEmptyLinesAtTheStartOfBlocks: False
 MaxEmptyLinesToKeep: 1
 Language: Cpp

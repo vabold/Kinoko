@@ -37,12 +37,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Download llvm
+        run: wget https://apt.llvm.org/llvm.sh
       - name: Install clang-format
-        run: sudo apt-get update && sudo apt-get install clang-format-15
+        run: |
+          chmod u+x llvm.sh
+          sudo ./llvm.sh 16
+          sudo apt install clang-format-16
       - name: Format Kinoko
         run: |
           dirs="include source"
-          find $dirs -regex '.*\.\(c\|h\|cc\|hh\)' | xargs clang-format-15 --dry-run -Werror
+          find $dirs -regex '.*\.\(c\|h\|cc\|hh\)' | xargs clang-format-16 --dry-run -Werror
 
   verify:
     name: Verify
