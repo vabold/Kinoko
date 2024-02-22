@@ -406,3 +406,8 @@ static inline constexpr T parse(T val, std::endian endian = std::endian::big) {
         }
     }
 }
+
+// Helper function to allow hex representation of f32
+static inline constexpr u32 f2u(f32 val) {
+    return std::bit_cast<u32>(val);
+}
