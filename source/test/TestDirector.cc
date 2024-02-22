@@ -5,6 +5,7 @@
 #include <abstract/File.hh>
 
 #include <cstddef>
+#include <format>
 
 namespace Test {
 
@@ -43,16 +44,26 @@ bool TestDirector::calc() {
 }
 
 bool TestDirector::test(const TestData &data) {
-    auto logVectorDesync = [this](const EGG::Vector3f &v0, const EGG::Vector3f v1,
+    auto f2pf = [](f32 f) -> std::string { return std::format("{}", f); };
+
+    auto logVectorDesync = [this, &f2pf](const EGG::Vector3f &v0, const EGG::Vector3f &v1,
                                    const char *name) {
         K_LOG("DESYNC! Frame: %d; Name: %s", m_currentFrame, name);
-        K_LOG("Expected [%f, %f, %f], got [%f, %f, %f]", v0.x, v0.y, v0.z, v1.x, v1.y, v1.z);
+        K_LOG("Expected: [0x%08X, 0x%08X, 0x%08X] | [%s, %s, %s]", f2u(v0.x), f2u(v0.y), f2u(v0.z),
+                f2pf(v0.x).c_str(), f2pf(v0.y).c_str(), f2pf(v0.z).c_str());
+        K_LOG("Observed: [0x%08X, 0x%08X, 0x%08X] | [%s, %s, %s]", f2u(v1.x), f2u(v1.y), f2u(v1.z),
+                f2pf(v1.x).c_str(), f2pf(v1.y).c_str(), f2pf(v1.z).c_str());
     };
 
-    auto logQuatDesync = [this](const EGG::Quatf &q0, const EGG::Quatf q1, const char *name) {
+    auto logQuatDesync = [this, f2pf = f2pf](const EGG::Quatf &q0, const EGG::Quatf &q1,
+                                 const char *name) {
         K_LOG("DESYNC! Frame: %d; Name: %s", m_currentFrame, name);
-        K_LOG("Expected [%f, %f, %f, %f], got [%f, %f, %f, %f]", q0.v.x, q0.v.y, q0.v.z, q0.w,
-                q1.v.x, q1.v.y, q1.v.z, q1.w);
+        K_LOG("Expected [0x%08X, 0x%08X, 0x%08X, 0x%08X] | [%s, %s, %s, %s]", f2u(q0.v.x),
+                f2u(q0.v.y), f2u(q0.v.z), f2u(q0.w), f2pf(q0.v.x).c_str(), f2pf(q0.v.y).c_str(),
+                f2pf(q0.v.z).c_str(), f2pf(q0.w).c_str());
+        K_LOG("Observed [0x%08X, 0x%08X, 0x%08X, 0x%08X] | [%s, %s, %s, %s]", f2u(q1.v.x),
+                f2u(q1.v.y), f2u(q1.v.z), f2u(q1.w), f2pf(q1.v.x).c_str(), f2pf(q1.v.y).c_str(),
+                f2pf(q1.v.z).c_str(), f2pf(q1.w).c_str());
     };
 
     auto *object = Kart::KartObjectManager::Instance()->object(0);
