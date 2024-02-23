@@ -164,6 +164,49 @@ enum class Character {
     Max = 48,
 };
 
+enum class WeightClass {
+    Light = 0,
+    Medium = 1,
+    Heavy = 2,
+};
+
+constexpr WeightClass characterToWeight(Character character) {
+    switch (character) {
+    case Character::Baby_Peach:
+    case Character::Baby_Daisy... Character::Baby_Mario:
+    case Character::Toad:
+    case Character::Baby_Luigi... Character::Koopa_Troopa:
+    case Character::Small_Mii_Outfit_A_Male... Character::Small_Mii_Outfit_C_Female:
+    case Character::Small_Mii:
+        return WeightClass::Light;
+    case Character::Mario:
+    case Character::Luigi:
+    case Character::Yoshi:
+    case Character::Daisy... Character::Diddy_Kong:
+    case Character::Bowser_Jr:
+    case Character::Medium_Mii_Outfit_A_Male... Character::Medium_Mii_Outfit_C_Female:
+    case Character::Medium_Mii:
+    case Character::Peach_Biker_Outfit:
+    case Character::Daisy_Biker_Outfit:
+        return WeightClass::Medium;
+    case Character::Waluigi:
+    case Character::Bowser:
+    case Character::Donkey_Kong:
+    case Character::Wario:
+    case Character::King_Boo:
+    case Character::Dry_Bowser... Character::Rosalina:
+    case Character::Large_Mii_Outfit_A_Male... Character::Large_Mii_Outfit_C_Female:
+    case Character::Large_Mii:
+    case Character::Rosalina_Biker_Outfit:
+    default:
+        return WeightClass::Heavy;
+    }
+}
+
+constexpr WeightClass vehicleToWeight(Vehicle vehicle) {
+    return static_cast<WeightClass>(static_cast<u8>(vehicle) % 3);
+}
+
 extern const char *const COURSE_NAMES[59];
 extern const char *const VEHICLE_NAMES[36];
 

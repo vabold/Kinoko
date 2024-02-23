@@ -3,6 +3,7 @@
 #include "game/field/CollisionDirector.hh"
 #include "game/kart/KartObjectManager.hh"
 #include "game/system/CourseMap.hh"
+#include "game/system/KPadDirector.hh"
 #include "game/system/RaceConfig.hh"
 #include "game/system/RaceManager.hh"
 #include "game/system/ResourceManager.hh"
