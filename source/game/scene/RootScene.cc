@@ -1,6 +1,6 @@
 #include "RootScene.hh"
 
-#include "game/system/InputManager.hh"
+#include "game/system/KPadDirector.hh"
 #include "game/system/RaceConfig.hh"
 #include "game/system/ResourceManager.hh"
 
@@ -21,13 +21,12 @@ void RootScene::enter() {
 
 void RootScene::allocate() {
     System::ResourceManager::CreateInstance();
-    System::InputManager::CreateInstance();
+    System::KPadDirector::CreateInstance();
     System::RaceConfig::CreateInstance();
 }
 
 void RootScene::init() {
     System::RaceConfig::Instance()->init();
-    System::InputManager::Instance()->init();
 }
 
 } // namespace Scene

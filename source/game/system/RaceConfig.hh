@@ -2,6 +2,8 @@
 
 #include <Common.hh>
 
+#include "game/system/GhostFile.hh"
+
 namespace System {
 
 // TODO: elaborate on implementation
@@ -32,10 +34,12 @@ public:
         std::array<Player, 12> players;
         u8 playerCount;
         Course course;
+        RawGhostFile *ghost;
     };
 
     void init();
     void initRace();
+    void initControllers();
 
     const Scenario &raceScenario() const {
         return m_raceScenario;
