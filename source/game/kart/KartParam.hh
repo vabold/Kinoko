@@ -72,12 +72,6 @@ public:
             Inside_Drift_Bike = 2,
         };
 
-        enum class WeightClass {
-            Light = 0,
-            Medium = 1,
-            Heavy = 2,
-        };
-
         Stats();
         Stats(EGG::RamStream &stream);
 

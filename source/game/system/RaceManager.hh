@@ -1,8 +1,19 @@
 #pragma once
 
+#include "game/system/KPadController.hh"
+
 #include <egg/math/Vector.hh>
 
 namespace System {
+
+class RaceManagerPlayer {
+public:
+    RaceManagerPlayer();
+    virtual ~RaceManagerPlayer() {}
+
+private:
+    const KPad *m_inputs;
+};
 
 class RaceManager {
 public:
@@ -28,6 +39,7 @@ private:
     RaceManager();
     ~RaceManager();
 
+    RaceManagerPlayer m_player;
     Stage m_stage;
     u16 m_introTimer;
     u32 m_timer;

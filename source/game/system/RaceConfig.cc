@@ -1,5 +1,9 @@
 #include "RaceConfig.hh"
 
+#include "game/system/GhostFile.hh"
+#include "game/system/KPadDirector.hh"
+
+#include <abstract/File.hh>
 #include <host/System.hh>
 
 namespace System {
@@ -18,6 +22,23 @@ void RaceConfig::initRace() {
     player.character = Character::Daisy;
     player.vehicle = Vehicle::Mach_Bike;
     player.type = Player::Type::Ghost;
+
+    size_t size;
+    u8 *rkg = Abstract::File::Load("Tests/rmc3-rta-1-17-843.rkg", size);
+    m_raceScenario.ghost = new RawGhostFile(rkg);
+
+    initControllers();
+}
+
+void RaceConfig::initControllers() {
+    // No need for raw validation, as we already do this
+    GhostFile ghost(m_raceScenario.ghost);
+
+    if (ghost.course() != m_raceScenario.course) {
+        K_PANIC("Ghost is playing on wrong track! %u", ghost.course());
+    }
+
+    KPadDirector::Instance()->setGhostPad(ghost.inputs(), ghost.driftIsAuto());
 }
 
 RaceConfig *RaceConfig::CreateInstance() {

@@ -1,6 +1,7 @@
 #include "RaceManager.hh"
 
 #include "game/system/CourseMap.hh"
+#include "game/system/KPadDirector.hh"
 #include "game/system/map/MapdataStartPoint.hh"
 
 namespace System {
@@ -68,6 +69,10 @@ void RaceManager::DestroyInstance() {
 RaceManager::RaceManager() : m_stage(Stage::Intro), m_introTimer(0), m_timer(0) {}
 
 RaceManager::~RaceManager() = default;
+
+RaceManagerPlayer::RaceManagerPlayer() {
+    m_inputs = &KPadDirector::Instance()->playerInput();
+}
 
 RaceManager *RaceManager::s_instance = nullptr;
 

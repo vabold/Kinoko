@@ -1,6 +1,6 @@
 #include "GameScene.hh"
 
-#include "game/system/InputManager.hh"
+#include "game/system/KPadDirector.hh"
 
 #include <egg/core/SceneManager.hh>
 
@@ -13,7 +13,7 @@ GameScene::GameScene() {
 GameScene::~GameScene() = default;
 
 void GameScene::calc() {
-    System::InputManager::Instance()->calc();
+    System::KPadDirector::Instance()->calc();
     calcEngines();
 }
 
@@ -40,6 +40,7 @@ void GameScene::appendResource(System::MultiDvdArchive * /*arc*/, s32 /*id*/) {}
 
 void GameScene::initScene() {
     createEngines();
+    System::KPadDirector::Instance()->reset();
     initEngines();
 }
 
@@ -49,7 +50,6 @@ void GameScene::deinitScene() {
     }
 
     destroyEngines();
-    System::InputManager::Instance()->clear();
 }
 
 } // namespace Scene

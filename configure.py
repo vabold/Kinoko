@@ -3,6 +3,7 @@
 from glob import glob
 import io
 import os
+import shutil
 import sys
 from vendor.ninja_syntax import Writer
 
@@ -147,3 +148,5 @@ n.build(
 with open('build.ninja', 'w') as out_file:
     out_file.write(out_buf.getvalue())
 n.close()
+
+shutil.copytree("samples", "out/Tests", dirs_exist_ok=True)

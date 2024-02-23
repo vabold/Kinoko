@@ -164,6 +164,93 @@ enum class Character {
     Max = 48,
 };
 
+enum class WeightClass {
+    Invalid = -1,
+    Light = 0,
+    Medium = 1,
+    Heavy = 2,
+};
+
+static constexpr WeightClass CharacterToWeight(Character character) {
+    switch (character) {
+    case Character::Baby_Peach:
+    case Character::Baby_Daisy... Character::Baby_Mario:
+    case Character::Toad:
+    case Character::Baby_Luigi... Character::Koopa_Troopa:
+    case Character::Small_Mii_Outfit_A_Male... Character::Small_Mii_Outfit_C_Female:
+    case Character::Small_Mii:
+        return WeightClass::Light;
+    case Character::Mario:
+    case Character::Luigi:
+    case Character::Yoshi:
+    case Character::Daisy... Character::Diddy_Kong:
+    case Character::Bowser_Jr:
+    case Character::Medium_Mii_Outfit_A_Male... Character::Medium_Mii_Outfit_C_Female:
+    case Character::Medium_Mii:
+    case Character::Peach_Biker_Outfit:
+    case Character::Daisy_Biker_Outfit:
+        return WeightClass::Medium;
+    case Character::Waluigi:
+    case Character::Bowser:
+    case Character::Donkey_Kong:
+    case Character::Wario:
+    case Character::King_Boo:
+    case Character::Dry_Bowser... Character::Rosalina:
+    case Character::Large_Mii_Outfit_A_Male... Character::Large_Mii_Outfit_C_Female:
+    case Character::Large_Mii:
+    case Character::Rosalina_Biker_Outfit:
+        return WeightClass::Heavy;
+    default:
+        return WeightClass::Invalid;
+    }
+}
+
+static constexpr WeightClass VehicleToWeight(Vehicle vehicle) {
+    switch (vehicle) {
+    case Vehicle::Standard_Kart_S:
+    case Vehicle::Baby_Booster:
+    case Vehicle::Mini_Beast:
+    case Vehicle::Cheep_Charger:
+    case Vehicle::Tiny_Titan:
+    case Vehicle::Blue_Falcon:
+    case Vehicle::Standard_Bike_S:
+    case Vehicle::Bullet_Bike:
+    case Vehicle::Bit_Bike:
+    case Vehicle::Quacker:
+    case Vehicle::Magikruiser:
+    case Vehicle::Jet_Bubble:
+        return WeightClass::Light;
+    case Vehicle::Standard_Kart_M:
+    case Vehicle::Classic_Dragster:
+    case Vehicle::Wild_Wing:
+    case Vehicle::Super_Blooper:
+    case Vehicle::Daytripper:
+    case Vehicle::Sprinter:
+    case Vehicle::Standard_Bike_M:
+    case Vehicle::Mach_Bike:
+    case Vehicle::Sugarscoot:
+    case Vehicle::Zip_Zip:
+    case Vehicle::Sneakster:
+    case Vehicle::Dolphin_Dasher:
+        return WeightClass::Medium;
+    case Vehicle::Standard_Kart_L:
+    case Vehicle::Offroader:
+    case Vehicle::Flame_Flyer:
+    case Vehicle::Piranha_Prowler:
+    case Vehicle::Jetsetter:
+    case Vehicle::Honeycoupe:
+    case Vehicle::Standard_Bike_L:
+    case Vehicle::Flame_Runner:
+    case Vehicle::Wario_Bike:
+    case Vehicle::Shooting_Star:
+    case Vehicle::Spear:
+    case Vehicle::Phantom:
+        return WeightClass::Heavy;
+    default:
+        return WeightClass::Invalid;
+    }
+}
+
 extern const char *const COURSE_NAMES[59];
 extern const char *const VEHICLE_NAMES[36];
 
