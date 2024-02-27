@@ -128,8 +128,8 @@ struct Vector3f {
     Vector3f proj(const Vector3f &rhs) const;
     Vector3f rej(const Vector3f &rhs) const;
     std::pair<Vector3f, Vector3f> projAndRej(const Vector3f &rhs);
-    f32 distance(const Vector3f &rhs) const;
-    f32 ps_distance(const Vector3f &rhs) const;
+    f32 sqDistance(const Vector3f &rhs) const;
+    f32 ps_sqDistance(const Vector3f &rhs) const;
     Vector3f abs() const;
     Vector3f perpInPlane(const EGG::Vector3f &rhs, bool normalise) const;
 

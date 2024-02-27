@@ -2,7 +2,7 @@
 
 namespace EGG {
 
-Sphere3f::Sphere3f(const EGG::Vector3f &vec, f32 radius) : pos(vec), radius(radius) {}
+Sphere3f::Sphere3f(const EGG::Vector3f &v, f32 r) : pos(v), radius(r) {}
 
 bool Sphere3f::isInsideOtherSphere(const Sphere3f &rhs) const {
     f32 radiusDiff = rhs.radius - radius;
@@ -10,7 +10,7 @@ bool Sphere3f::isInsideOtherSphere(const Sphere3f &rhs) const {
         return false;
     }
 
-    return rhs.pos.ps_distance(this->pos) < radiusDiff * radiusDiff;
+    return rhs.pos.ps_sqDistance(this->pos) < radiusDiff * radiusDiff;
 }
 
 } // namespace EGG

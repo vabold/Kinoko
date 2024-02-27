@@ -64,9 +64,9 @@ bool CollisionDirector::checkSphereCachedFullPush(const EGG::Vector3f &pos,
     if (colInfo) {
         colInfo->bbox.min.setZero();
         colInfo->bbox.max.setZero();
-        colInfo->_50 = -FLT_MIN;
-        colInfo->wallDist = -FLT_MIN;
-        colInfo->floorDist = -FLT_MIN;
+        colInfo->_50 = -std::numeric_limits<f32>::min();
+        colInfo->wallDist = -std::numeric_limits<f32>::min();
+        colInfo->floorDist = -std::numeric_limits<f32>::min();
         colInfo->perpendicularity = 0.0f;
     }
 
@@ -106,7 +106,7 @@ const CollisionDirector::CollisionEntry *CollisionDirector::closestCollisionEntr
 
 bool CollisionDirector::findClosestCollisionEntry(KCLTypeMask * /*typeMask*/, KCLTypeMask type) {
     m_closestCollisionEntry = nullptr;
-    f32 minDist = -FLT_MIN;
+    f32 minDist = -std::numeric_limits<f32>::min();
 
     for (const auto &entry : m_entries) {
         u32 typeMask = entry.typeMask & type;
@@ -116,7 +116,7 @@ bool CollisionDirector::findClosestCollisionEntry(KCLTypeMask * /*typeMask*/, KC
         }
     }
 
-    return m_closestCollisionEntry != nullptr;
+    return !!m_closestCollisionEntry;
 }
 
 CollisionDirector *CollisionDirector::CreateInstance() {

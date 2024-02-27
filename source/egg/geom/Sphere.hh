@@ -5,7 +5,7 @@
 namespace EGG {
 
 struct Sphere3f {
-    Sphere3f(const Vector3f &vec, f32 radius);
+    Sphere3f(const Vector3f &v, f32 r);
 
     bool isInsideOtherSphere(const Sphere3f &rhs) const;
 

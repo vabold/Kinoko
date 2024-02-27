@@ -50,7 +50,9 @@ f32 Vector3f::dot(const Vector3f &rhs) const {
 }
 
 f32 Vector3f::ps_dot() const {
-    return ps_dot(*this);
+    f32 y_ = y * y;
+    f32 xy = Mathf::fma(x, x, y_);
+    return xy + z * z;
 }
 
 f32 Vector3f::ps_dot(const Vector3f &rhs) const {
@@ -108,12 +110,12 @@ std::pair<Vector3f, Vector3f> Vector3f::projAndRej(const Vector3f &rhs) {
     return std::pair(proj(rhs), rej(rhs));
 }
 
-f32 Vector3f::distance(const Vector3f &rhs) const {
+f32 Vector3f::sqDistance(const Vector3f &rhs) const {
     const EGG::Vector3f diff = *this - rhs;
     return diff.dot();
 }
 
-f32 Vector3f::ps_distance(const Vector3f &rhs) const {
+f32 Vector3f::ps_sqDistance(const Vector3f &rhs) const {
     const EGG::Vector3f diff = *this - rhs;
     return diff.ps_dot();
 }
