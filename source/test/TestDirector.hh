@@ -11,7 +11,6 @@ public:
     TestDirector();
     ~TestDirector();
 
-    bool init();
     bool calc();
     bool test(const TestData &data);
 
