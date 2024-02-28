@@ -7,9 +7,6 @@ namespace Host {
 int KSystem::main() {
     init();
     m_sceneMgr->changeScene(0);
-    if (!m_testDirector->init()) {
-        return 1;
-    }
     return run() ? 0 : 1;
 }
 
@@ -21,9 +18,9 @@ void KSystem::init() {
 }
 
 bool KSystem::run() {
-    do {
+    while (m_testDirector->calc()) {
         m_sceneMgr->calc();
-    } while (m_testDirector->calc());
+    }
 
     return m_testDirector->sync();
 }

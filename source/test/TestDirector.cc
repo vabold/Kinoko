@@ -22,14 +22,11 @@ TestDirector::TestDirector() {
     m_stream.setEndian(endian);
 
     readHeader();
+
+    assert(m_stream.read_u32() == m_stream.index());
 }
 
 TestDirector::~TestDirector() = default;
-
-bool TestDirector::init() {
-    assert(m_stream.read_u32() == m_stream.index());
-    return calc();
-}
 
 bool TestDirector::calc() {
     // Check if we're out of frames
