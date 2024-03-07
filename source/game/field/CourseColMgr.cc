@@ -2,7 +2,6 @@
 
 #include "game/field/CollisionDirector.hh"
 
-#include "game/system/RaceManager.hh"
 #include "game/system/ResourceManager.hh"
 
 // Credit: em-eight/mkw

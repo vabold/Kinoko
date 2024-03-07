@@ -1,7 +1,5 @@
 #include "CollisionGroup.hh"
 
-#include <test/TestDirector.hh>
-
 namespace Kart {
 
 void CollisionData::reset() {

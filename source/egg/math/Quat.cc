@@ -89,11 +89,11 @@ f32 Quatf::dot(const Quatf &q) const {
 
 void Quatf::setAxisRotation(f32 angle, const EGG::Vector3f &axis) {
     const f32 half_angle = angle * 0.5f;
-    const f32 cos = Mathf::cos(half_angle);
-    const f32 sin = Mathf::sin(half_angle);
+    const f32 c = Mathf::cos(half_angle);
+    const f32 s = Mathf::sin(half_angle);
 
-    w = cos;
-    v = axis * sin;
+    w = c;
+    v = axis * s;
 }
 
 void Quatf::read(Stream &stream) {

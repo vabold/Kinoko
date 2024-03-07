@@ -144,6 +144,8 @@ void Matrix34f::makeZero() {
 }
 
 Matrix34f Matrix34f::multiplyTo(const Matrix34f &rhs) const {
+    using namespace Mathf;
+
     Matrix34f mat;
 
     mat(0, 0) = fma(rhs(2, 0), mtx[0][2], fma(rhs(1, 0), mtx[0][1], rhs(0, 0) * mtx[0][0]));

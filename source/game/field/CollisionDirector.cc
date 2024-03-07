@@ -1,7 +1,5 @@
 #include "CollisionDirector.hh"
 
-#include <test/TestDirector.hh>
-
 namespace Field {
 
 void CollisionDirector::checkCourseColNarrScLocal(f32 radius, const EGG::Vector3f &pos,
