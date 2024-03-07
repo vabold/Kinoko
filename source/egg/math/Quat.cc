@@ -93,8 +93,7 @@ void Quatf::setAxisRotation(f32 angle, const EGG::Vector3f &axis) {
     const f32 sin = Mathf::sin(half_angle);
 
     w = cos;
-    v = axis;
-    v *= sin;
+    v = axis * sin;
 }
 
 void Quatf::read(Stream &stream) {

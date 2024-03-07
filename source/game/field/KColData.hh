@@ -32,8 +32,6 @@ public:
     void narrowScopeLocal(const EGG::Vector3f &pos, f32 radius, KCLTypeMask mask);
     void narrowPolygon_EachBlock(const u16 *prismArray);
 
-    u16 prismCache(u32 idx) const;
-
     void computeBBox();
     bool checkSphereCollision(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut);
     bool checkSphere(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut);
@@ -45,7 +43,6 @@ public:
             f32 radius);
 
     const u16 *searchBlock(const EGG::Vector3f &pos);
-    /*bool checkSphereMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut);*/
 
     EGG::Vector3f getPos(u16 posIdx) const;
     EGG::Vector3f getNrm(u16 nrmIdx) const;
@@ -53,6 +50,8 @@ public:
 
     static EGG::Vector3f GetVertex(f32 height, const EGG::Vector3f &vertex1,
             const EGG::Vector3f &fnrm, const EGG::Vector3f &enrm3, const EGG::Vector3f &enrm);
+
+    u16 prismCache(u32 idx) const;
 
 private:
     bool checkSphereTriCollision(const KCollisionPrism &prism, f32 *distOut, EGG::Vector3f *fnrmOut,

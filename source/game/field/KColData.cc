@@ -82,10 +82,6 @@ void KColData::narrowPolygon_EachBlock(const u16 *prismArray) {
     }
 }
 
-u16 KColData::prismCache(u32 idx) const {
-    return m_prismCache[idx];
-}
-
 void KColData::computeBBox() {
     m_bbox.max.set(-999999.0f);
     m_bbox.min.set(999999.0f);
@@ -111,13 +107,57 @@ void KColData::computeBBox() {
     }
 }
 
-EGG::Vector3f KColData::GetVertex(f32 height, const EGG::Vector3f &vertex1,
-        const EGG::Vector3f &fnrm, const EGG::Vector3f &enrm3, const EGG::Vector3f &enrm) {
-    EGG::Vector3f cross = fnrm.cross(enrm);
-    f32 dp = cross.ps_dot(enrm3);
-    cross *= (height / dp);
+bool KColData::checkSphereCollision(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut) {
+    return std::isfinite(m_prevPos.y) ? checkSphereMovement(distOut, fnrmOut, flagsOut) :
+                                        checkSphere(distOut, fnrmOut, flagsOut);
+}
 
-    return cross + vertex1;
+bool KColData::checkSphere(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut) {
+    // If there's no list of triangles to check, there's no collision
+    if (!m_prismIter) {
+        return false;
+    }
+
+    // Check collision for all triangles, and continuously call the function until we're out
+    while (*++m_prismIter != 0) {
+        const KCollisionPrism prism = getPrism(parse<u16>(*m_prismIter));
+        if (checkSphereTriCollision(prism, distOut, fnrmOut, flagsOut)) {
+            return true;
+        }
+    }
+
+    // We're out of triangles to check - another list must be prepared for subsequent calls
+    m_prismIter = nullptr;
+    return false;
+}
+
+bool KColData::checkSphereSingle(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut) {
+    if (!m_prismIter) {
+        return false;
+    }
+
+    while (*++m_prismIter != 0) {
+        if (m_prismCacheTop != m_prismCache.begin()) {
+            u16 *puVar10 = m_prismCacheTop - 1;
+            while (*m_prismIter != *puVar10) {
+                if (puVar10-- < m_prismCache.begin()) {
+                    break;
+                }
+            }
+
+            if (puVar10 >= m_prismCache.begin()) {
+                continue;
+            }
+        }
+
+        const KCollisionPrism prism = getPrism(parse<u16>(*m_prismIter));
+        if (checkSphereTriCollision(prism, distOut, fnrmOut, flagsOut)) {
+            return true;
+        }
+    }
+
+    m_prismIter = nullptr;
+    return false;
 }
 
 void KColData::lookupSphere(f32 radius, const EGG::Vector3f &pos, const EGG::Vector3f &prevPos,
@@ -198,9 +238,53 @@ const u16 *KColData::searchBlock(const EGG::Vector3f &point) {
     return reinterpret_cast<const u16 *>(curBlock + (offset & ~0x80000000));
 }
 
-bool KColData::checkSphereCollision(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut) {
-    return std::isfinite(m_prevPos.y) ? checkSphereMovement(distOut, fnrmOut, flagsOut) :
-                                        checkSphere(distOut, fnrmOut, flagsOut);
+EGG::Vector3f KColData::getPos(u16 posIdx) const {
+    const EGG::Vector3f *vec = &reinterpret_cast<const EGG::Vector3f *>(m_posData)[posIdx];
+    u8 *unsafeData = reinterpret_cast<u8 *>(const_cast<EGG::Vector3f *>(vec));
+    EGG::RamStream stream = EGG::RamStream(unsafeData, sizeof(EGG::Vector3f));
+    EGG::Vector3f pos;
+    pos.read(stream);
+    return pos;
+}
+
+EGG::Vector3f KColData::getNrm(u16 nrmIdx) const {
+    const EGG::Vector3f *vec = &reinterpret_cast<const EGG::Vector3f *>(m_nrmData)[nrmIdx];
+    u8 *unsafeData = reinterpret_cast<u8 *>(const_cast<EGG::Vector3f *>(vec));
+    EGG::RamStream stream = EGG::RamStream(unsafeData, sizeof(EGG::Vector3f));
+    EGG::Vector3f nrm;
+    nrm.read(stream);
+    return nrm;
+}
+
+KColData::KCollisionPrism KColData::getPrism(u16 prismIdx) const {
+    const KCollisionPrism *prism =
+            &reinterpret_cast<const KCollisionPrism *>(m_prismData)[prismIdx];
+    u8 *unsafeData = reinterpret_cast<u8 *>(const_cast<KCollisionPrism *>(prism));
+    EGG::RamStream stream = EGG::RamStream(unsafeData, sizeof(KCollisionPrism));
+
+    f32 height = stream.read_f32();
+    u16 posIndex = stream.read_u16();
+    u16 faceNormIndex = stream.read_u16();
+    u16 edge1NormIndex = stream.read_u16();
+    u16 edge2NormIndex = stream.read_u16();
+    u16 edge3NormIndex = stream.read_u16();
+    u16 attribute = stream.read_u16();
+
+    return KCollisionPrism(height, posIndex, faceNormIndex, edge1NormIndex, edge2NormIndex,
+            edge3NormIndex, attribute);
+}
+
+EGG::Vector3f KColData::GetVertex(f32 height, const EGG::Vector3f &vertex1,
+        const EGG::Vector3f &fnrm, const EGG::Vector3f &enrm3, const EGG::Vector3f &enrm) {
+    EGG::Vector3f cross = fnrm.cross(enrm);
+    f32 dp = cross.ps_dot(enrm3);
+    cross *= (height / dp);
+
+    return cross + vertex1;
+}
+
+u16 KColData::prismCache(u32 idx) const {
+    return m_prismCache[idx];
 }
 
 // Returns whether or not our sphere is colliding with the triangle
@@ -474,54 +558,6 @@ bool KColData::checkSphereMovementCollision(const KCollisionPrism &prism, f32 *d
     return out(dist);
 }
 
-bool KColData::checkSphere(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut) {
-    // If there's no list of triangles to check, there's no collision
-    if (!m_prismIter) {
-        return false;
-    }
-
-    // Check collision for all triangles, and continuously call the function until we're out
-    while (*++m_prismIter != 0) {
-        const KCollisionPrism prism = getPrism(parse<u16>(*m_prismIter));
-        if (checkSphereTriCollision(prism, distOut, fnrmOut, flagsOut)) {
-            return true;
-        }
-    }
-
-    // We're out of triangles to check - another list must be prepared for subsequent calls
-    m_prismIter = nullptr;
-    return false;
-}
-
-bool KColData::checkSphereSingle(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut) {
-    if (!m_prismIter) {
-        return false;
-    }
-
-    while (*++m_prismIter != 0) {
-        if (m_prismCacheTop != m_prismCache.begin()) {
-            u16 *puVar10 = m_prismCacheTop - 1;
-            while (*m_prismIter != *puVar10) {
-                if (puVar10-- < m_prismCache.begin()) {
-                    break;
-                }
-            }
-
-            if (puVar10 >= m_prismCache.begin()) {
-                continue;
-            }
-        }
-
-        const KCollisionPrism prism = getPrism(parse<u16>(*m_prismIter));
-        if (checkSphereTriCollision(prism, distOut, fnrmOut, flagsOut)) {
-            return true;
-        }
-    }
-
-    m_prismIter = nullptr;
-    return false;
-}
-
 bool KColData::checkSphereMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut) {
     // If there's no list of triangles to check, there's no collision
     if (!m_prismIter) {
@@ -539,42 +575,6 @@ bool KColData::checkSphereMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *at
     // We're out of triangles to check - another list must be prepared for subsequent calls
     m_prismIter = nullptr;
     return false;
-}
-
-EGG::Vector3f KColData::getPos(u16 posIdx) const {
-    const EGG::Vector3f *vec = &reinterpret_cast<const EGG::Vector3f *>(m_posData)[posIdx];
-    u8 *unsafeData = reinterpret_cast<u8 *>(const_cast<EGG::Vector3f *>(vec));
-    EGG::RamStream stream = EGG::RamStream(unsafeData, sizeof(EGG::Vector3f));
-    EGG::Vector3f pos;
-    pos.read(stream);
-    return pos;
-}
-
-EGG::Vector3f KColData::getNrm(u16 nrmIdx) const {
-    const EGG::Vector3f *vec = &reinterpret_cast<const EGG::Vector3f *>(m_nrmData)[nrmIdx];
-    u8 *unsafeData = reinterpret_cast<u8 *>(const_cast<EGG::Vector3f *>(vec));
-    EGG::RamStream stream = EGG::RamStream(unsafeData, sizeof(EGG::Vector3f));
-    EGG::Vector3f nrm;
-    nrm.read(stream);
-    return nrm;
-}
-
-KColData::KCollisionPrism KColData::getPrism(u16 prismIdx) const {
-    const KCollisionPrism *prism =
-            &reinterpret_cast<const KCollisionPrism *>(m_prismData)[prismIdx];
-    u8 *unsafeData = reinterpret_cast<u8 *>(const_cast<KCollisionPrism *>(prism));
-    EGG::RamStream stream = EGG::RamStream(unsafeData, sizeof(KCollisionPrism));
-
-    f32 height = stream.read_f32();
-    u16 posIndex = stream.read_u16();
-    u16 faceNormIndex = stream.read_u16();
-    u16 edge1NormIndex = stream.read_u16();
-    u16 edge2NormIndex = stream.read_u16();
-    u16 edge3NormIndex = stream.read_u16();
-    u16 attribute = stream.read_u16();
-
-    return KCollisionPrism(height, posIndex, faceNormIndex, edge1NormIndex, edge2NormIndex,
-            edge3NormIndex, attribute);
 }
 
 KColData::KCollisionPrism::KCollisionPrism() = default;

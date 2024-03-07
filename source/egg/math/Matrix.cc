@@ -78,7 +78,7 @@ void Matrix34f::makeQ(const Quatf &q) {
 
     mtx[2][0] = xz - wy;
     mtx[2][1] = yz + wx;
-    mtx[2][2] = 1 - xx - yy;
+    mtx[2][2] = 1.0f - xx - yy;
 
     mtx[0][3] = 0.0f;
     mtx[1][3] = 0.0f;
@@ -86,24 +86,26 @@ void Matrix34f::makeQ(const Quatf &q) {
 }
 
 void Matrix34f::makeRT(const Vector3f &r, const Vector3f &t) {
-    const f32 sin[3] = {Mathf::sin(r.x), Mathf::sin(r.y), Mathf::sin(r.z)};
-    const f32 cos[3] = {Mathf::cos(r.x), Mathf::cos(r.y), Mathf::cos(r.z)};
+    using namespace Mathf;
 
-    const f32 c0_c2 = cos[0] * cos[2];
-    const f32 s0_s1 = sin[0] * sin[1];
-    const f32 c0_s2 = cos[0] * sin[2];
+    EGG::Vector3f s = EGG::Vector3f(sin(r.x), sin(r.y), sin(r.z));
+    EGG::Vector3f c = EGG::Vector3f(cos(r.x), cos(r.y), cos(r.z));
 
-    mtx[0][0] = (cos[1] * cos[2]);
-    mtx[1][0] = (cos[1] * sin[2]);
-    mtx[2][0] = (-sin[1]);
+    const f32 c0_c2 = c.x * c.z;
+    const f32 s0_s1 = s.x * s.y;
+    const f32 c0_s2 = c.x * s.z;
 
-    mtx[0][1] = (s0_s1 * cos[2]) - c0_s2;
-    mtx[1][1] = (s0_s1 * sin[2]) + c0_c2;
-    mtx[2][1] = (sin[0] * cos[1]);
+    mtx[0][0] = (c.y * c.z);
+    mtx[1][0] = (c.y * s.z);
+    mtx[2][0] = (-s.y);
 
-    mtx[0][2] = (c0_c2 * sin[1]) + (sin[0] * sin[2]);
-    mtx[1][2] = (c0_s2 * sin[1]) - (sin[0] * cos[2]);
-    mtx[2][2] = (cos[0] * cos[1]);
+    mtx[0][1] = (s0_s1 * c.z) - c0_s2;
+    mtx[1][1] = (s0_s1 * s.z) + c0_c2;
+    mtx[2][1] = (s.x * c.y);
+
+    mtx[0][2] = (c0_c2 * s.y) + (s.x * s.z);
+    mtx[1][2] = (c0_s2 * s.y) - (s.x * c.z);
+    mtx[2][2] = (c.x * c.y);
 
     mtx[0][3] = t.x;
     mtx[1][3] = t.y;
@@ -111,24 +113,26 @@ void Matrix34f::makeRT(const Vector3f &r, const Vector3f &t) {
 }
 
 void Matrix34f::makeR(const Vector3f &r) {
-    const f32 sin[3] = {Mathf::sin(r.x), Mathf::sin(r.y), Mathf::sin(r.z)};
-    const f32 cos[3] = {Mathf::cos(r.x), Mathf::cos(r.y), Mathf::cos(r.z)};
+    using namespace Mathf;
 
-    const f32 c0_c2 = cos[0] * cos[2];
-    const f32 s0_s1 = sin[0] * sin[1];
-    const f32 c0_s2 = cos[0] * sin[2];
+    EGG::Vector3f s = EGG::Vector3f(sin(r.x), sin(r.y), sin(r.z));
+    EGG::Vector3f c = EGG::Vector3f(cos(r.x), cos(r.y), cos(r.z));
 
-    mtx[0][0] = (cos[1] * cos[2]);
-    mtx[1][0] = (cos[1] * sin[2]);
-    mtx[2][0] = (-sin[1]);
+    const f32 c0_c2 = c.x * c.z;
+    const f32 s0_s1 = s.x * s.y;
+    const f32 c0_s2 = c.x * s.z;
 
-    mtx[0][1] = (s0_s1 * cos[2]) - c0_s2;
-    mtx[1][1] = (s0_s1 * sin[2]) + c0_c2;
-    mtx[2][1] = (sin[0] * cos[1]);
+    mtx[0][0] = (c.y * c.z);
+    mtx[1][0] = (c.y * s.z);
+    mtx[2][0] = (-s.y);
 
-    mtx[0][2] = (c0_c2 * sin[1]) + (sin[0] * sin[2]);
-    mtx[1][2] = (c0_s2 * sin[1]) - (sin[0] * cos[2]);
-    mtx[2][2] = (cos[0] * cos[1]);
+    mtx[0][1] = (s0_s1 * c.z) - c0_s2;
+    mtx[1][1] = (s0_s1 * s.z) + c0_c2;
+    mtx[2][1] = (s.x * c.y);
+
+    mtx[0][2] = (c0_c2 * s.y) + (s.x * s.z);
+    mtx[1][2] = (c0_s2 * s.y) - (s.x * c.z);
+    mtx[2][2] = (c.x * c.y);
 
     mtx[0][3] = 0.0f;
     mtx[1][3] = 0.0f;
