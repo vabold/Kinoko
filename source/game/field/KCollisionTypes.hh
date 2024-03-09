@@ -100,6 +100,11 @@ typedef enum {
             ~KCL_TYPE_BIT(COL_TYPE_CANNON_TRIGGER) & \
             ~KCL_TYPE_BIT(COL_TYPE_FORCE_RECALCULATE_ROUTE))
 
+/*E0F8BDFF*/
+#define KCL_TYPE_TODO \
+    (KCL_TYPE_VEHICLE_COLLIDEABLE & ~KCL_TYPE_BIT(COL_TYPE_ITEM_STATE_MODIFIER) & \
+            ~KCL_TYPE_BIT(COL_TYPE_WEAK_WALL))
+
 namespace Field {
 struct KColHeader {
     u32 pos_data_offset;

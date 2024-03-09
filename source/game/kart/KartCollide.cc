@@ -3,6 +3,8 @@
 #include "game/kart/KartMove.hh"
 #include "game/kart/KartPhysics.hh"
 
+#include <egg/math/Math.hh>
+
 #include <game/field/CollisionDirector.hh>
 
 namespace Kart {
@@ -79,8 +81,8 @@ void KartCollide::calcFloorEffect() {
 
 void KartCollide::calcTriggers(Field::KCLTypeMask *mask, const EGG::Vector3f &pos, bool twoPoint) {
     EGG::Vector3f v1 = twoPoint ? physics()->pos() : EGG::Vector3f::inf;
-    Field::KCLTypeMask typeMask = twoPoint ? 0x05070000 : 0xE0F8BDFF;
-    f32 fVar1 = twoPoint ? 80.0f : 100.0f;
+    Field::KCLTypeMask typeMask = twoPoint ? KCL_TYPE_DIRECTIONAL : KCL_TYPE_TODO;
+    f32 fVar1 = twoPoint ? 80.0f : 100.0f * move()->totalScale();
     f32 scalar = -bsp().initialYPos * move()->totalScale() * 0.3f;
     EGG::Vector3f scaledPos = pos + scalar * componentYAxis();
     EGG::Vector3f zRot = dynamics()->mainRot().rotateVector(EGG::Vector3f::ez);
@@ -89,10 +91,6 @@ void KartCollide::calcTriggers(Field::KCLTypeMask *mask, const EGG::Vector3f &po
 
     scalar = m_50 * -physics()->fc() * 1.8f * move()->totalScale();
     scaledPos += scalar * zRot;
-
-    if (!twoPoint) {
-        fVar1 *= move()->totalScale();
-    }
 
     bool collide = Field::CollisionDirector::Instance()->checkSphereCachedPartialPush(scaledPos, v1,
             typeMask, nullptr, mask, fVar1, 0);
@@ -120,8 +118,8 @@ void KartCollide::calcWheelCollision(u16 /*wheelIdx*/, CollisionGroup *hitboxGro
     Field::KCLTypeMask kclOut;
 
     bool collided = Field::CollisionDirector::Instance()->checkSphereCachedFullPush(
-            firstHitbox.worldPos(), firstHitbox.lastPos(), KCL_TYPE_VEHICLE_COLLIDEABLE, &colInfo, &kclOut,
-            firstHitbox.radius(), 0);
+            firstHitbox.worldPos(), firstHitbox.lastPos(), KCL_TYPE_VEHICLE_COLLIDEABLE, &colInfo,
+            &kclOut, firstHitbox.radius(), 0);
 
     CollisionData &collisionData = hitboxGroup->collisionData();
 
@@ -147,7 +145,8 @@ void KartCollide::calcWheelCollision(u16 /*wheelIdx*/, CollisionGroup *hitboxGro
         return;
     }
 
-    Field::CollisionDirector::Instance()->findClosestCollisionEntry(&kclOut, KCL_TYPE_VEHICLE_COLLIDEABLE);
+    Field::CollisionDirector::Instance()->findClosestCollisionEntry(&kclOut,
+            KCL_TYPE_VEHICLE_COLLIDEABLE);
 }
 
 void KartCollide::processWheel(CollisionData &collisionData, Hitbox &hitbox,
@@ -225,19 +224,19 @@ void KartCollide::applySomeFloorMoment(f32 down, f32 rate, CollisionGroup *hitbo
     f32 projNorm_ = projNorm;
     f32 rejNorm_ = rejNorm;
 
-    f32 dVar7 = down * abs(idk);
-    if (dVar7 < abs(projNorm)) {
+    f32 dVar7 = down * EGG::Mathf::abs(idk);
+    if (dVar7 < EGG::Mathf::abs(projNorm)) {
         projNorm_ = dVar7;
         if (projNorm < 0.0f) {
-            projNorm_ = -down * abs(idk);
+            projNorm_ = -down * EGG::Mathf::abs(idk);
         }
     }
 
-    f32 dVar5 = rate * abs(idk);
-    if (dVar5 < abs(rejNorm)) {
+    f32 dVar5 = rate * EGG::Mathf::abs(idk);
+    if (dVar5 < EGG::Mathf::abs(rejNorm)) {
         rejNorm_ = dVar5;
         if (rejNorm < 0.0f) {
-            rejNorm = -rate * abs(idk);
+            rejNorm = -rate * EGG::Mathf::abs(idk);
         }
     }
 
