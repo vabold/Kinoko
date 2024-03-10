@@ -88,7 +88,7 @@ f32 Hitbox::radius() const {
     return m_radius;
 }
 
-CollisionGroup::CollisionGroup() : m_bspHitboxCount(0), m_hitboxScale(1.0f) {
+CollisionGroup::CollisionGroup() : m_bspHitboxCount(0), m_hitboxes(nullptr), m_hitboxScale(1.0f) {
     m_collisionData.reset();
 }
 

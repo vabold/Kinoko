@@ -146,6 +146,10 @@ u16 KartMove::floorCollisionCount() const {
     return m_floorCollisionCount;
 }
 
+KartMoveBike::KartMoveBike() : m_leanRot(0.0f) {}
+
+KartMoveBike::~KartMoveBike() = default;
+
 void KartMoveBike::setTurnParams() {
     KartMove::setTurnParams();
 }

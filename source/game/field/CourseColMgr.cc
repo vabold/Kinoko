@@ -9,6 +9,8 @@
 namespace Field {
 
 void CourseColMgr::init() {
+    // In the base game, this file is loaded in CollisionDirector::CreateInstance and passed into
+    // this function. It's simpler to just keep it here.
     void *file = LoadFile("course.kcl");
     m_data = new KColData(file);
 }
@@ -79,8 +81,7 @@ bool CourseColMgr::checkSphereCachedFullPush(KColData *data, const EGG::Vector3f
     data->lookupSphereCached(pos / scale, prevPos / scale, typeMask, radius / scale);
 
     if (colInfo) {
-        return doCheckWithFullInfoPush(data, &KColData::checkSphereCollision, colInfo,
-                typeMaskOut);
+        return doCheckWithFullInfoPush(data, &KColData::checkSphereCollision, colInfo, typeMaskOut);
     } else {
         // Not needed currently
         return false;
@@ -116,8 +117,8 @@ CourseColMgr::~CourseColMgr() {
     delete m_data;
 }
 
-bool CourseColMgr::doCheckWithPartialInfoPush(KColData *data,
-        CollisionCheckFunc collisionCheckFunc, CollisionInfo *colInfo, KCLTypeMask *typeMask) {
+bool CourseColMgr::doCheckWithPartialInfoPush(KColData *data, CollisionCheckFunc collisionCheckFunc,
+        CollisionInfo *colInfo, KCLTypeMask *typeMask) {
     f32 dist;
     EGG::Vector3f fnrm;
     u16 attribute;

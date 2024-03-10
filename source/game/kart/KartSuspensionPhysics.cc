@@ -28,7 +28,7 @@ void WheelPhysics::reset() {
     m_lastPos.setZero();
     m_lastPosDiff.setZero();
     m_suspTravel = 0.0f;
-    _48.setZero();
+    m_colVel.setZero();
     m_speed.setZero();
     m_wheelEdgePos.setZero();
     m_effectiveRadius = 0.0f;
@@ -64,7 +64,7 @@ void WheelPhysics::updateCollision(const EGG::Vector3f &bottom, const EGG::Vecto
     scalar = 0.3f * nextRadius * move()->leanRot() * move()->totalScale();
     center += scalar * bodyForward();
     m_hitboxGroup->setHitboxScale(move()->totalScale());
-    collide()->calcWheelCollision(m_wheelIdx, m_hitboxGroup, _48, center, nextRadius);
+    collide()->calcWheelCollision(m_wheelIdx, m_hitboxGroup, m_colVel, center, nextRadius);
     CollisionData &colData = m_hitboxGroup->collisionData();
 
     if (colData.floor) {
@@ -134,8 +134,8 @@ void WheelPhysics::setWheelEdgePos(const EGG::Vector3f &pos) {
     m_wheelEdgePos = pos;
 }
 
-void WheelPhysics::set_48(const EGG::Vector3f &vec) {
-    _48 = vec;
+void WheelPhysics::setColVel(const EGG::Vector3f &vec) {
+    m_colVel = vec;
 }
 
 KartSuspensionPhysics::KartSuspensionPhysics(u16 wheelIdx, u16 bspWheelIdx)
@@ -182,7 +182,7 @@ void KartSuspensionPhysics::calcCollision(f32 dt, const EGG::Vector3f &gravity,
 
     f32 y_down = m_tirePhysics->suspTravel() + sub()->someScale() * 5.0f;
     m_tirePhysics->setSuspTravel(std::max(0.0f, std::min(m_maxTravelScaled, y_down)));
-    m_tirePhysics->set_48(dt * 10.0f * gravity);
+    m_tirePhysics->setColVel(dt * 10.0f * gravity);
     m_tirePhysics->setPos(topmostPos + m_tirePhysics->suspTravel() * m_bottomDir);
     m_tirePhysics->updateCollision(m_bottomDir, topmostPos);
 

@@ -35,7 +35,7 @@ public:
     void setLastPos(const EGG::Vector3f &pos);
     void setLastPosDiff(const EGG::Vector3f &pos);
     void setWheelEdgePos(const EGG::Vector3f &pos);
-    void set_48(const EGG::Vector3f &vec);
+    void setColVel(const EGG::Vector3f &vec);
 
 private:
     u16 m_wheelIdx;
@@ -46,7 +46,7 @@ private:
     EGG::Vector3f m_lastPos;
     EGG::Vector3f m_lastPosDiff;
     f32 m_suspTravel;
-    EGG::Vector3f _48;
+    EGG::Vector3f m_colVel;
     EGG::Vector3f m_speed;
     EGG::Vector3f m_wheelEdgePos;
     f32 m_effectiveRadius;

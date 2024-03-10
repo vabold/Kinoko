@@ -22,6 +22,7 @@ struct BoundBox3f {
     ~BoundBox3f();
 
     void resetBound();
+    void setZero();
     void setDirect(const Vector3f &vMin, const Vector3f &vMax);
     void setMin(const Vector3f &V);
     void setMax(const Vector3f &v);

@@ -22,7 +22,7 @@ public:
     void calcBodyCollision(f32 totalScale, const EGG::Quatf &rot, const EGG::Vector3f &scale);
     void calcFloorEffect();
     void calcTriggers(Field::KCLTypeMask *mask, const EGG::Vector3f &pos, bool twoPoint);
-    void calcWheelCollision(u16 wheelIdx, CollisionGroup *hitboxGroup, const EGG::Vector3f &_48,
+    void calcWheelCollision(u16 wheelIdx, CollisionGroup *hitboxGroup, const EGG::Vector3f &colVel,
             const EGG::Vector3f &center, f32 radius);
 
     void processWheel(CollisionData &collisionData, Hitbox &hitbox,
@@ -35,7 +35,7 @@ public:
             bool b1, bool b2, bool b3);
 
 private:
-    f32 m_50;
+    f32 m_smoothedBack; // 0x50
 
     bool m_offRoad;
     bool m_groundBoostPanelOrRamp;

@@ -39,6 +39,11 @@ void BoundBox3f::resetBound() {
     max.set(-std::numeric_limits<f32>::max());
 }
 
+void BoundBox3f::setZero() {
+    min.setZero();
+    max.setZero();
+}
+
 void BoundBox3f::setDirect(const Vector3f &vMin, const Vector3f &vMax) {
     max = vMax;
     min = vMin;

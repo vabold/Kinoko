@@ -43,6 +43,9 @@ private:
 
 class KartMoveBike : public KartMove {
 public:
+    KartMoveBike();
+    ~KartMoveBike();
+
     void setTurnParams() override;
     void init(bool b1, bool b2) override;
 

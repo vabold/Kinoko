@@ -9,12 +9,13 @@
 
 namespace Kart {
 
-KartCollide::KartCollide() : m_notTrickable(false) {}
+KartCollide::KartCollide()
+    : m_offRoad(false), m_groundBoostPanelOrRamp(false), m_notTrickable(false) {}
 
 KartCollide::~KartCollide() = default;
 
 void KartCollide::init() {
-    m_50 = 0.0f;
+    m_smoothedBack = 0.0f;
     m_offRoad = false;
     m_groundBoostPanelOrRamp = false;
     m_notTrickable = false;
@@ -85,12 +86,12 @@ void KartCollide::calcTriggers(Field::KCLTypeMask *mask, const EGG::Vector3f &po
     f32 fVar1 = twoPoint ? 80.0f : 100.0f * move()->totalScale();
     f32 scalar = -bsp().initialYPos * move()->totalScale() * 0.3f;
     EGG::Vector3f scaledPos = pos + scalar * componentYAxis();
-    EGG::Vector3f zRot = dynamics()->mainRot().rotateVector(EGG::Vector3f::ez);
+    EGG::Vector3f back = dynamics()->mainRot().rotateVector(EGG::Vector3f::ez);
 
-    m_50 += (zRot.dot(move()->smoothedUp()) - m_50) * 0.3f;
+    m_smoothedBack += (back.dot(move()->smoothedUp()) - m_smoothedBack) * 0.3f;
 
-    scalar = m_50 * -physics()->fc() * 1.8f * move()->totalScale();
-    scaledPos += scalar * zRot;
+    scalar = m_smoothedBack * -physics()->fc() * 1.8f * move()->totalScale();
+    scaledPos += scalar * back;
 
     bool collide = Field::CollisionDirector::Instance()->checkSphereCachedPartialPush(scaledPos, v1,
             typeMask, nullptr, mask, fVar1, 0);
@@ -105,7 +106,7 @@ void KartCollide::calcTriggers(Field::KCLTypeMask *mask, const EGG::Vector3f &po
 }
 
 void KartCollide::calcWheelCollision(u16 /*wheelIdx*/, CollisionGroup *hitboxGroup,
-        const EGG::Vector3f &_48, const EGG::Vector3f &center, f32 radius) {
+        const EGG::Vector3f &colVel, const EGG::Vector3f &center, f32 radius) {
     Hitbox &firstHitbox = hitboxGroup->hitbox(0);
     BSP::Hitbox *bspHitbox = const_cast<BSP::Hitbox *>(firstHitbox.bspHitbox());
     bspHitbox->radius = radius;
@@ -113,8 +114,7 @@ void KartCollide::calcWheelCollision(u16 /*wheelIdx*/, CollisionGroup *hitboxGro
     firstHitbox.setWorldPos(center);
 
     Field::CourseColMgr::CollisionInfo colInfo;
-    colInfo.bbox.min = EGG::Vector3f::zero;
-    colInfo.bbox.max = EGG::Vector3f::zero;
+    colInfo.bbox.setZero();
     Field::KCLTypeMask kclOut;
 
     bool collided = Field::CollisionDirector::Instance()->checkSphereCachedFullPush(
@@ -137,7 +137,7 @@ void KartCollide::calcWheelCollision(u16 /*wheelIdx*/, CollisionGroup *hitboxGro
     }
 
     collisionData.relPos = firstHitbox.worldPos() - pos();
-    collisionData.vel = _48;
+    collisionData.vel = colVel;
 
     processWheel(collisionData, firstHitbox, &colInfo, &kclOut);
 

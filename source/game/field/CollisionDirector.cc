@@ -42,8 +42,7 @@ bool CollisionDirector::checkSphereCachedPartialPush(const EGG::Vector3f &pos,
         const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CourseColMgr::CollisionInfo *colInfo,
         KCLTypeMask *typeMaskOut, f32 radius, u32 /*start*/) {
     if (colInfo) {
-        colInfo->bbox.min.setZero();
-        colInfo->bbox.max.setZero();
+        colInfo->bbox.setZero();
     }
 
     if (typeMaskOut) {

@@ -6,6 +6,7 @@ KartPhysics::KartPhysics(bool isBike) {
     m_pose = EGG::Matrix34f::ident;
     m_dynamics = isBike ? new KartDynamicsBike : new KartDynamics;
     m_hitboxGroup = new CollisionGroup;
+    m_fc = 50.0f; // set immediately after in KartPhysics::Create()
 }
 
 KartPhysics::~KartPhysics() {
