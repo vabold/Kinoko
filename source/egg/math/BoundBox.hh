@@ -9,12 +9,12 @@ struct BoundBox2f {
     ~BoundBox2f();
 
     void resetBound();
-    void setDirect(const Vector2f &max, const Vector2f &min);
-    void setMin(const Vector2f &min);
-    void setMax(const Vector2f &max);
+    void setDirect(const Vector2f &vMax, const Vector2f &vMin);
+    void setMin(const Vector2f &v);
+    void setMax(const Vector2f &v);
 
-    Vector2f mMin;
-    Vector2f mMax;
+    Vector2f min;
+    Vector2f max;
 };
 
 struct BoundBox3f {
@@ -22,12 +22,13 @@ struct BoundBox3f {
     ~BoundBox3f();
 
     void resetBound();
-    void setDirect(const Vector3f &max, const Vector3f &min);
-    void setMin(const Vector3f &min);
-    void setMax(const Vector3f &max);
+    void setZero();
+    void setDirect(const Vector3f &vMin, const Vector3f &vMax);
+    void setMin(const Vector3f &V);
+    void setMax(const Vector3f &v);
 
-    Vector3f mMin;
-    Vector3f mMax;
+    Vector3f min;
+    Vector3f max;
 };
 
 } // namespace EGG

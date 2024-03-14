@@ -12,14 +12,17 @@ public:
     KartObject(KartParam *param);
     virtual ~KartObject();
     virtual KartBody *createBody(KartPhysics *physics);
+    virtual void createTires() {}
 
     void init();
     void initImpl();
     void prepare();
+    void prepareTiresAndSuspensions();
 
     void createSub();
 
     void calcSub();
+    void calc();
 
     static KartObject *Create(Character character, Vehicle vehicle, u8 playerIdx);
 
@@ -32,6 +35,7 @@ public:
     KartObjectBike(KartParam *param);
     ~KartObjectBike() override;
     KartBody *createBody(KartPhysics *physics) override;
+    void createTires() override;
 };
 
 } // namespace Kart

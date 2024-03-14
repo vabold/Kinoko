@@ -16,12 +16,25 @@ public:
         f32 dist;
     };
 
+    void checkCourseColNarrScLocal(f32 radius, const EGG::Vector3f &pos, KCLTypeMask mask,
+            u32 /*unused*/);
+
     bool checkSphereFullPush(f32 radius, const EGG::Vector3f &v0, const EGG::Vector3f &v1,
             KCLTypeMask flags, CourseColMgr::CollisionInfo *pInfo, KCLTypeMask *pFlagsOut,
-            u32 /*param_8*/);
+            u32 /*start*/);
+
+    bool checkSphereCachedPartialPush(const EGG::Vector3f &pos, const EGG::Vector3f &prevPos,
+            KCLTypeMask typeMask, CourseColMgr::CollisionInfo *colInfo, KCLTypeMask *typeMaskOut,
+            f32 radius, u32 start);
+    bool checkSphereCachedFullPush(const EGG::Vector3f &pos, const EGG::Vector3f &prevPos,
+            KCLTypeMask typeMask, CourseColMgr::CollisionInfo *colInfo, KCLTypeMask *typeMaskOut,
+            f32 radius, u32 start);
 
     void resetCollisionEntries(KCLTypeMask *ptr);
     void pushCollisionEntry(f32 dist, KCLTypeMask *typeMask, KCLTypeMask kclTypeBit, u16 attribute);
+
+    const CollisionEntry *closestCollisionEntry() const;
+    bool findClosestCollisionEntry(KCLTypeMask *typeMask, KCLTypeMask type);
 
     static CollisionDirector *CreateInstance();
     static CollisionDirector *Instance();
@@ -31,7 +44,7 @@ private:
     CollisionDirector();
     ~CollisionDirector();
 
-    CollisionEntry *m_closestCollisionEntry;
+    const CollisionEntry *m_closestCollisionEntry;
     std::array<CollisionEntry, COLLISION_ARR_LENGTH> m_entries;
     size_t m_collisionEntryCount;
 

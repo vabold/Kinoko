@@ -12,12 +12,12 @@ void RaceConfig::initRace() {
     // Normally we copy the menu scenario into the race scenario
     // There's no menu scenario in Kinoko, so instead we initialize values here
     // TODO: read from parameter file
-    m_raceScenario.m_playerCount = 1;
-    m_raceScenario.m_course = Course::SNES_Mario_Circuit_3;
-    Player &player = m_raceScenario.m_players[0];
-    player.m_character = Character::Daisy;
-    player.m_vehicle = Vehicle::Mach_Bike;
-    player.m_type = Player::Type::Ghost;
+    m_raceScenario.playerCount = 1;
+    m_raceScenario.course = Course::SNES_Mario_Circuit_3;
+    Player &player = m_raceScenario.players[0];
+    player.character = Character::Daisy;
+    player.vehicle = Vehicle::Mach_Bike;
+    player.type = Player::Type::Ghost;
 }
 
 RaceConfig *RaceConfig::CreateInstance() {
@@ -41,14 +41,14 @@ RaceConfig::RaceConfig() = default;
 RaceConfig::~RaceConfig() = default;
 
 void RaceConfig::Scenario::init() {
-    m_playerCount = 0;
-    m_course = Course::GCN_Mario_Circuit;
+    playerCount = 0;
+    course = Course::GCN_Mario_Circuit;
 
-    for (size_t i = 0; i < m_players.size(); ++i) {
-        Player &player = m_players[i];
-        player.m_character = Character::Mario;
-        player.m_vehicle = Vehicle::Standard_Kart_M;
-        player.m_type = Player::Type::None;
+    for (size_t i = 0; i < players.size(); ++i) {
+        Player &player = players[i];
+        player.character = Character::Mario;
+        player.vehicle = Vehicle::Standard_Kart_M;
+        player.type = Player::Type::None;
     }
 }
 

@@ -4,6 +4,7 @@
 
 #define F_PI 3.1415927f
 #define DEG2RAD (F_PI / 180.0f)
+#define RAD2DEG (180.0f / F_PI)
 #define DEG2FIDX (256.0f / 360.0f)
 #define RAD2FIDX (128.0f / F_PI)
 
@@ -18,6 +19,12 @@ f32 sin(f32 x);
 f32 cos(f32 x);
 f32 acos(f32 x);
 
+f32 abs(f32 x);
+
+f32 fma(f32 x, f32 y, f32 z);
+
+f64 force25Bit(f64 x);
+
 // sin/cos struct
 struct SinCosEntry {
     f32 sinVal, cosVal, sinDt, cosDt;
@@ -25,8 +32,8 @@ struct SinCosEntry {
 
 // frsqrte matching
 struct BaseAndDec {
-    int m_base;
-    int m_dec;
+    int base;
+    int dec;
 };
 
 union c64 {
@@ -124,7 +131,7 @@ static inline f64 frsqrte(const f64 val) {
     const int i = static_cast<int>(mantissa >> 37);
     const int index = i / 2048 + (odd_exponent ? 16 : 0);
     const auto &entry = frsqrte_expected[index];
-    input.u |= static_cast<uint64_t>(entry.m_base - entry.m_dec * (i % 2048)) << 26;
+    input.u |= static_cast<uint64_t>(entry.base - entry.dec * (i % 2048)) << 26;
 
     return input.f;
 }

@@ -2,16 +2,21 @@
 
 namespace Field {
 
+void CollisionDirector::checkCourseColNarrScLocal(f32 radius, const EGG::Vector3f &pos,
+        KCLTypeMask mask, u32 /*unused*/) {
+    CourseColMgr::Instance()->scaledNarrowScopeLocal(1.0f, radius, nullptr, pos, mask);
+}
+
 bool CollisionDirector::checkSphereFullPush(f32 radius, const EGG::Vector3f &v0,
         const EGG::Vector3f &v1, KCLTypeMask flags, CourseColMgr::CollisionInfo *pInfo,
         KCLTypeMask *pFlagsOut, u32 /*param_8*/) {
     if (pInfo) {
-        pInfo->m_bbox.mMin = EGG::Vector3f::zero;
-        pInfo->m_bbox.mMax = EGG::Vector3f::zero;
+        pInfo->bbox.min = EGG::Vector3f::zero;
+        pInfo->bbox.max = EGG::Vector3f::zero;
         pInfo->_50 = -std::numeric_limits<f32>::min();
-        pInfo->m_wallDist = -std::numeric_limits<f32>::min();
-        pInfo->m_floorDist = -std::numeric_limits<f32>::min();
-        pInfo->m_perpendicularity = 0.0f;
+        pInfo->wallDist = -std::numeric_limits<f32>::min();
+        pInfo->floorDist = -std::numeric_limits<f32>::min();
+        pInfo->perpendicularity = 0.0f;
     }
 
     if (pFlagsOut) {
@@ -27,10 +32,53 @@ bool CollisionDirector::checkSphereFullPush(f32 radius, const EGG::Vector3f &v0,
     }
 
     if (colliding && pInfo) {
-        pInfo->m_minPlusMax = pInfo->m_bbox.mMin + pInfo->m_bbox.mMax;
+        pInfo->tangentOff = pInfo->bbox.min + pInfo->bbox.max;
     }
 
     return colliding;
+}
+
+bool CollisionDirector::checkSphereCachedPartialPush(const EGG::Vector3f &pos,
+        const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CourseColMgr::CollisionInfo *colInfo,
+        KCLTypeMask *typeMaskOut, f32 radius, u32 /*start*/) {
+    if (colInfo) {
+        colInfo->bbox.setZero();
+    }
+
+    if (typeMaskOut) {
+        resetCollisionEntries(typeMaskOut);
+    }
+
+    bool hasCourseCol = CourseColMgr::Instance()->checkSphereCachedPartialPush(nullptr, pos,
+            prevPos, typeMask, colInfo, typeMaskOut, 1.0f, radius);
+
+    return hasCourseCol;
+}
+
+bool CollisionDirector::checkSphereCachedFullPush(const EGG::Vector3f &pos,
+        const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CourseColMgr::CollisionInfo *colInfo,
+        KCLTypeMask *typeMaskOut, f32 radius, u32 /*start*/) {
+    if (colInfo) {
+        colInfo->bbox.min.setZero();
+        colInfo->bbox.max.setZero();
+        colInfo->_50 = -std::numeric_limits<f32>::min();
+        colInfo->wallDist = -std::numeric_limits<f32>::min();
+        colInfo->floorDist = -std::numeric_limits<f32>::min();
+        colInfo->perpendicularity = 0.0f;
+    }
+
+    if (typeMaskOut) {
+        resetCollisionEntries(typeMaskOut);
+    }
+
+    bool hasCourseCol = CourseColMgr::Instance()->checkSphereCachedFullPush(nullptr, pos, prevPos,
+            typeMask, colInfo, typeMaskOut, 1.0f, radius);
+
+    if (hasCourseCol && colInfo) {
+        colInfo->tangentOff = colInfo->bbox.min + colInfo->bbox.max;
+    }
+
+    return hasCourseCol;
 }
 
 void CollisionDirector::resetCollisionEntries(KCLTypeMask *ptr) {
@@ -47,6 +95,25 @@ void CollisionDirector::pushCollisionEntry(f32 dist, KCLTypeMask *typeMask, KCLT
     }
 
     m_entries[m_collisionEntryCount++] = CollisionEntry(kclTypeBit, attribute, dist);
+}
+
+const CollisionDirector::CollisionEntry *CollisionDirector::closestCollisionEntry() const {
+    return m_closestCollisionEntry;
+}
+
+bool CollisionDirector::findClosestCollisionEntry(KCLTypeMask * /*typeMask*/, KCLTypeMask type) {
+    m_closestCollisionEntry = nullptr;
+    f32 minDist = -std::numeric_limits<f32>::min();
+
+    for (const auto &entry : m_entries) {
+        u32 typeMask = entry.typeMask & type;
+        if (typeMask != 0 && entry.dist > minDist) {
+            minDist = entry.dist;
+            m_closestCollisionEntry = &entry;
+        }
+    }
+
+    return !!m_closestCollisionEntry;
 }
 
 CollisionDirector *CollisionDirector::CreateInstance() {

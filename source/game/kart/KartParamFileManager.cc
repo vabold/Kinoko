@@ -7,11 +7,13 @@ namespace Kart {
 void KartParamFileManager::clear() {
     m_kartParam.clear();
     m_driverParam.clear();
+    m_bikeDispParam.clear();
 }
 
 void KartParamFileManager::init() {
     m_kartParam.load("kartParam.bin");
     m_driverParam.load("driverParam.bin");
+    m_bikeDispParam.load("bikePartsDispParam.bin");
     if (!validate()) {
         K_PANIC("Parameter files could not be validated!");
     }
@@ -56,9 +58,9 @@ EGG::RamStream KartParamFileManager::getDriverStream(Character character) const 
         break;
     }
 
-    auto *file = reinterpret_cast<ParamFile *>(m_driverParam.m_file);
+    auto *file = reinterpret_cast<ParamFile<KartParam::Stats> *>(m_driverParam.file);
     assert(file);
-    void *offset = &file->m_params[idx];
+    void *offset = &file->params[idx];
     u32 size = sizeof(KartParam::Stats);
     return EGG::RamStream(reinterpret_cast<u8 *>(offset), size);
 }
@@ -69,9 +71,9 @@ EGG::RamStream KartParamFileManager::getVehicleStream(Vehicle vehicle) const {
     }
 
     s32 idx = static_cast<s32>(vehicle);
-    auto *file = reinterpret_cast<ParamFile *>(m_kartParam.m_file);
+    auto *file = reinterpret_cast<ParamFile<KartParam::Stats> *>(m_kartParam.file);
     assert(file);
-    void *offset = &file->m_params[idx];
+    void *offset = &file->params[idx];
     u32 size = sizeof(KartParam::Stats);
     return EGG::RamStream(reinterpret_cast<u8 *>(offset), size);
 }
@@ -88,6 +90,22 @@ EGG::RamStream KartParamFileManager::getHitboxStream(Vehicle vehicle) const {
     assert(file);
     assert(size == sizeof(BSP));
     return EGG::RamStream(reinterpret_cast<u8 *>(file), size);
+}
+
+EGG::RamStream KartParamFileManager::getBikeDispParamsStream(Vehicle vehicle) const {
+    if (vehicle < Vehicle::Standard_Bike_S && vehicle >= Vehicle::Max) {
+        K_PANIC("Uh oh.");
+    }
+
+    // We need to index at the correct offset
+    constexpr u32 KART_MAX = 18;
+    s32 idx = static_cast<s32>(vehicle) - KART_MAX;
+
+    auto *file = reinterpret_cast<ParamFile<KartParam::BikeDisp> *>(m_bikeDispParam.file);
+    assert(file);
+    void *offset = &file->params[idx];
+    u32 size = sizeof(KartParam::BikeDisp);
+    return EGG::RamStream(reinterpret_cast<u8 *>(offset), size);
 }
 
 KartParamFileManager *KartParamFileManager::CreateInstance() {
@@ -114,22 +132,32 @@ KartParamFileManager::~KartParamFileManager() = default;
 
 bool KartParamFileManager::validate() const {
     // Validate kartParam.bin
-    if (!m_kartParam.m_file || m_kartParam.m_size == 0) {
+    if (!m_kartParam.file || m_kartParam.size == 0) {
         return false;
     }
 
-    auto *file = reinterpret_cast<ParamFile *>(m_kartParam.m_file);
-    if (m_kartParam.m_size != parse<u32>(file->m_count) * sizeof(KartParam::Stats) + 4) {
+    auto *kartFile = reinterpret_cast<ParamFile<KartParam::Stats> *>(m_kartParam.file);
+    if (m_kartParam.size != parse<u32>(kartFile->count) * sizeof(KartParam::Stats) + 4) {
         return false;
     }
 
     // Validate driverParam.bin
-    if (!m_driverParam.m_file || m_driverParam.m_size == 0) {
+    if (!m_driverParam.file || m_driverParam.size == 0) {
         return false;
     }
 
-    file = reinterpret_cast<ParamFile *>(m_driverParam.m_file);
-    if (m_driverParam.m_size != parse<u32>(file->m_count) * sizeof(KartParam::Stats) + 4) {
+    auto *driverFile = reinterpret_cast<ParamFile<KartParam::Stats> *>(m_driverParam.file);
+    if (m_driverParam.size != parse<u32>(driverFile->count) * sizeof(KartParam::Stats) + 4) {
+        return false;
+    }
+
+    // Validate bikePartsDispParam.bin
+    if (!m_bikeDispParam.file || m_bikeDispParam.size == 0) {
+        return false;
+    }
+
+    auto *bikeDispFile = reinterpret_cast<ParamFile<KartParam::BikeDisp> *>(m_bikeDispParam.file);
+    if (m_bikeDispParam.size != parse<u32>(bikeDispFile->count) * sizeof(KartParam::BikeDisp) + 4) {
         return false;
     }
 
@@ -137,13 +165,13 @@ bool KartParamFileManager::validate() const {
 }
 
 void KartParamFileManager::FileInfo::clear() {
-    m_file = nullptr;
-    m_size = 0;
+    file = nullptr;
+    size = 0;
 }
 
 void KartParamFileManager::FileInfo::load(const char *filename) {
     auto *resourceManager = System::ResourceManager::Instance();
-    m_file = resourceManager->getFile(filename, &m_size, System::ArchiveId::Core);
+    file = resourceManager->getFile(filename, &size, System::ArchiveId::Core);
 }
 
 KartParamFileManager *KartParamFileManager::s_instance = nullptr;

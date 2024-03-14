@@ -270,17 +270,11 @@ f32 sqrt(f32 x) {
 
 // CREDIT: Hanachan
 f32 frsqrt(f32 x) {
-    auto extract = [](f64 val) -> f64 {
-        u64 bits = std::bit_cast<u64>(val);
-        bits = (bits & 0xfffffffff8000000ULL) + (bits & 0x8000000);
-        return std::bit_cast<f64>(bits);
-    };
-
     // frsqrte instruction
     f64 est = frsqrte(x);
 
     // Newton-Raphson refinement
-    f32 tmp0 = static_cast<f32>(est * extract(est));
+    f32 tmp0 = static_cast<f32>(est * force25Bit(est));
     f32 tmp1 = static_cast<f32>(est * 0.5f);
     f32 tmp2 = static_cast<f32>(3.0f - static_cast<f64>(tmp0) * static_cast<f64>(x));
     return tmp1 * tmp2;
@@ -326,6 +320,21 @@ f32 cos(f32 x) {
 
 f32 acos(f32 x) {
     return std::acos(x);
+}
+
+f32 abs(f32 x) {
+    return std::abs(x);
+}
+
+f32 fma(f32 x, f32 y, f32 z) {
+    return static_cast<f32>(
+            static_cast<f64>(x) * force25Bit(static_cast<f64>(y)) + static_cast<f64>(z));
+}
+
+f64 force25Bit(f64 x) {
+    u64 bits = std::bit_cast<u64>(x);
+    bits = (bits & 0xfffffffff8000000ULL) + (bits & 0x8000000);
+    return std::bit_cast<f64>(bits);
 }
 
 } // namespace EGG::Mathf

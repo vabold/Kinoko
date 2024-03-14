@@ -63,12 +63,29 @@ struct Vector3f {
         return Vector3f(x - rhs.x, y - rhs.y, z - rhs.z);
     }
 
+    Vector3f &operator-=(const Vector3f &rhs) {
+        return *this = *this - rhs;
+    }
+
     Vector3f operator+(const Vector3f &rhs) const {
         return Vector3f(x + rhs.x, y + rhs.y, z + rhs.z);
     }
 
     Vector3f &operator+=(const Vector3f &rhs) {
         return *this = *this + rhs;
+    }
+
+    Vector3f operator+(f32 val) const {
+        return Vector3f(x + val, y + val, z + val);
+    }
+
+    Vector3f &operator+=(f32 val) {
+        return *this = *this + val;
+    }
+
+    // TODO: This is surely not an actual operation, but I imagine this will be used often
+    Vector3f operator*(const Vector3f &rhs) const {
+        return Vector3f(x * rhs.x, y * rhs.y, z * rhs.z);
     }
 
     Vector3f operator*(f32 scalar) const {
@@ -102,6 +119,7 @@ struct Vector3f {
     Vector3f cross(const EGG::Vector3f &rhs) const;
     f32 dot() const;
     f32 dot(const EGG::Vector3f &rhs) const;
+    f32 ps_dot() const;
     f32 ps_dot(const EGG::Vector3f &rhs) const;
     f32 length() const;
     f32 normalise();
@@ -110,6 +128,10 @@ struct Vector3f {
     Vector3f proj(const Vector3f &rhs) const;
     Vector3f rej(const Vector3f &rhs) const;
     std::pair<Vector3f, Vector3f> projAndRej(const Vector3f &rhs);
+    f32 sqDistance(const Vector3f &rhs) const;
+    f32 ps_sqDistance(const Vector3f &rhs) const;
+    Vector3f abs() const;
+    Vector3f perpInPlane(const EGG::Vector3f &rhs, bool normalise) const;
 
     void read(Stream &stream);
 
