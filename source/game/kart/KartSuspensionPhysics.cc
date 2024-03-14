@@ -82,11 +82,11 @@ void WheelPhysics::updateCollision(const EGG::Vector3f &bottom, const EGG::Vecto
     m_suspTravel = bottom.dot(m_pos - topmostPos);
 }
 
-EGG::Vector3f WheelPhysics::pos() const {
+const EGG::Vector3f &WheelPhysics::pos() const {
     return m_pos;
 }
 
-EGG::Vector3f WheelPhysics::lastPosDiff() const {
+const EGG::Vector3f &WheelPhysics::lastPosDiff() const {
     return m_lastPosDiff;
 }
 
@@ -94,7 +94,7 @@ f32 WheelPhysics::suspTravel() {
     return m_suspTravel;
 }
 
-EGG::Vector3f WheelPhysics::topmostPos() const {
+const EGG::Vector3f &WheelPhysics::topmostPos() const {
     return m_topmostPos;
 }
 
@@ -106,7 +106,7 @@ const CollisionGroup *WheelPhysics::hitboxGroup() const {
     return m_hitboxGroup;
 }
 
-EGG::Vector3f WheelPhysics::speed() const {
+const EGG::Vector3f &WheelPhysics::speed() const {
     return m_speed;
 }
 
@@ -219,14 +219,11 @@ void KartSuspensionPhysics::calcSuspension(const EGG::Vector3f &forward,
     fLinear.y += rotProj.y;
     fLinear.y = std::min(fLinear.y, param()->stats().maxNormalAcceleration);
 
-    if (dynamics()->extVel().y > 5) {
+    if (dynamics()->extVel().y > 5.0f) {
         fLinear.y = 0.0f;
     }
 
-    dynamics()->applySuspensionWrench(m_topmostPos, fLinear, fRot,
-            false);
-
-    yDown = 0.8f;
+    dynamics()->applySuspensionWrench(m_topmostPos, fLinear, fRot, false);
 
     collide()->applySomeFloorMoment(0.1f, 0.8f, hitboxGroup, forward, move()->dir(),
             m_tirePhysics->speed(), true, true, true);

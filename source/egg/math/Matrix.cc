@@ -86,8 +86,6 @@ void Matrix34f::makeQ(const Quatf &q) {
 }
 
 void Matrix34f::makeRT(const Vector3f &r, const Vector3f &t) {
-    using namespace Mathf;
-
     EGG::Vector3f s = EGG::Vector3f(sin(r.x), sin(r.y), sin(r.z));
     EGG::Vector3f c = EGG::Vector3f(cos(r.x), cos(r.y), cos(r.z));
 
@@ -113,8 +111,6 @@ void Matrix34f::makeRT(const Vector3f &r, const Vector3f &t) {
 }
 
 void Matrix34f::makeR(const Vector3f &r) {
-    using namespace Mathf;
-
     EGG::Vector3f s = EGG::Vector3f(sin(r.x), sin(r.y), sin(r.z));
     EGG::Vector3f c = EGG::Vector3f(cos(r.x), cos(r.y), cos(r.z));
 
@@ -144,8 +140,6 @@ void Matrix34f::makeZero() {
 }
 
 Matrix34f Matrix34f::multiplyTo(const Matrix34f &rhs) const {
-    using namespace Mathf;
-
     Matrix34f mat;
 
     mat(0, 0) = fma(rhs(2, 0), mtx[0][2], fma(rhs(1, 0), mtx[0][1], rhs(0, 0) * mtx[0][0]));

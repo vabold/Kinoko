@@ -21,7 +21,7 @@ Hitbox::Hitbox() : m_bspHitbox(nullptr) {}
 
 Hitbox::~Hitbox() = default;
 
-void Hitbox::update(f32 param_1, f32 totalScale, const EGG::Vector3f &scale, const EGG::Quatf &rot,
+void Hitbox::calc(f32 param_1, f32 totalScale, const EGG::Vector3f &scale, const EGG::Quatf &rot,
         const EGG::Vector3f &pos) {
     f32 fVar1 = 0.0f;
     if (scale.y < param_1) {
@@ -88,7 +88,7 @@ f32 Hitbox::radius() const {
     return m_radius;
 }
 
-CollisionGroup::CollisionGroup() : m_bspHitboxCount(0), m_hitboxes(nullptr), m_hitboxScale(1.0f) {
+CollisionGroup::CollisionGroup() : m_hitboxes(nullptr), m_hitboxScale(1.0f) {
     m_collisionData.reset();
 }
 
@@ -106,9 +106,7 @@ f32 CollisionGroup::initHitboxes(const std::array<BSP::Hitbox, 16> &hitboxes) {
         }
     }
 
-    m_bspHitboxCount = bspHitboxCount;
-
-    m_hitboxes = new std::span<Hitbox>(new Hitbox[m_bspHitboxCount], m_bspHitboxCount);
+    m_hitboxes = new std::span<Hitbox>(new Hitbox[bspHitboxCount], bspHitboxCount);
 
     for (u16 hitboxIdx = 0; hitboxIdx < m_hitboxes->size(); ++hitboxIdx) {
         (*m_hitboxes)[hitboxIdx].setBspHitbox(&hitboxes[hitboxIdx]);
@@ -147,8 +145,7 @@ f32 CollisionGroup::computeCollisionLimits() {
 }
 
 void CollisionGroup::createSingleHitbox(f32 radius, const EGG::Vector3f &relPos) {
-    m_bspHitboxCount = 1;
-    m_hitboxes = new std::span<Hitbox>(new Hitbox[m_bspHitboxCount], m_bspHitboxCount);
+    m_hitboxes = new std::span<Hitbox>(new Hitbox, 1);
 
     // TODO: Do we need for loop if this is just one?
     // And how exactly will we identify to free the BSP::Hitbox on destruction?
@@ -181,7 +178,7 @@ Hitbox &CollisionGroup::hitbox(u16 hitboxIdx) {
 }
 
 u16 CollisionGroup::hitboxCount() const {
-    return m_bspHitboxCount;
+    return m_hitboxes->size();
 }
 
 CollisionData &CollisionGroup::collisionData() {
@@ -195,8 +192,8 @@ const CollisionData &CollisionGroup::collisionData() const {
 void CollisionGroup::setHitboxScale(f32 scale) {
     m_hitboxScale = scale;
 
-    for (auto &hbox : *m_hitboxes) {
-        hbox.setRadius(hbox.bspHitbox()->radius * m_hitboxScale);
+    for (auto &hitbox : *m_hitboxes) {
+        hitbox.setRadius(hitbox.bspHitbox()->radius * m_hitboxScale);
     }
 }
 

@@ -51,7 +51,7 @@ bool KartState::isGround() const {
     return m_ground;
 }
 
-const EGG::Vector3f KartState::top() const {
+const EGG::Vector3f &KartState::top() const {
     return m_top;
 }
 

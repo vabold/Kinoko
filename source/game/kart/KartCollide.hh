@@ -1,8 +1,7 @@
 #pragma once
 
-#include "game/kart/KartObjectProxy.hh"
-
 #include "game/kart/CollisionGroup.hh"
+#include "game/kart/KartObjectProxy.hh"
 
 #include <game/field/CourseColMgr.hh>
 
@@ -16,7 +15,7 @@ public:
     void init();
     void resetHitboxes();
 
-    void updateHitboxes();
+    void calcHitboxes();
 
     void findCollision();
     void calcBodyCollision(f32 totalScale, const EGG::Quatf &rot, const EGG::Vector3f &scale);

@@ -21,13 +21,13 @@ public:
 
     void updateCollision(const EGG::Vector3f &bottom, const EGG::Vector3f &topmostPos);
 
-    EGG::Vector3f pos() const;
-    EGG::Vector3f lastPosDiff() const;
+    const EGG::Vector3f &pos() const;
+    const EGG::Vector3f &lastPosDiff() const;
     f32 suspTravel();
-    EGG::Vector3f topmostPos() const;
+    const EGG::Vector3f &topmostPos() const;
     CollisionGroup *hitboxGroup();
     const CollisionGroup *hitboxGroup() const;
-    EGG::Vector3f speed() const;
+    const EGG::Vector3f &speed() const;
     f32 effectiveRadius() const;
 
     void setSuspTravel(f32 suspTravel);

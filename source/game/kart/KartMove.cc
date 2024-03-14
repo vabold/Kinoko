@@ -99,17 +99,16 @@ void KartMove::calcTop() {
 }
 
 void KartMove::calcDirs() {
-    EGG::Vector3f right = EGG::Vector3f::ex;
-    right = dynamics()->mainRot().rotateVector(right);
+    EGG::Vector3f right = dynamics()->mainRot().rotateVector(EGG::Vector3f::ex);
     EGG::Vector3f local_88 = right.cross(m_smoothedUp);
     EGG::Matrix34f mat;
     mat.setAxisRotation(0.0f, m_smoothedUp);
     EGG::Vector3f local_b8 = mat.multVector(local_88);
     local_b8 = local_b8.perpInPlane(m_smoothedUp, true);
 
-    EGG::Vector3f idkBruh = local_b8 - m_dir;
+    EGG::Vector3f dirDiff = local_b8 - m_dir;
 
-    if (idkBruh.dot() <= FLT_EPSILON) {
+    if (dirDiff.dot() <= FLT_EPSILON) {
         m_dir = local_b8;
     }
 }

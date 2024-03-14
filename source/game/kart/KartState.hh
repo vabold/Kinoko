@@ -15,7 +15,7 @@ public:
     void calcCollisions();
 
     bool isGround() const;
-    const EGG::Vector3f top() const;
+    const EGG::Vector3f &top() const;
 
 private:
     bool m_ground;

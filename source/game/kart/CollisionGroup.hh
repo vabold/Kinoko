@@ -2,8 +2,9 @@
 
 #include "game/kart/KartParam.hh"
 
+#include "game/field/KCollisionTypes.hh"
+
 #include <egg/math/Matrix.hh>
-#include <game/field/KCollisionTypes.hh>
 
 #include <array>
 #include <span>
@@ -32,7 +33,7 @@ public:
     Hitbox();
     ~Hitbox();
 
-    void update(f32 param_1, f32 totalScale, const EGG::Vector3f &scale, const EGG::Quatf &rot,
+    void calc(f32 param_1, f32 totalScale, const EGG::Vector3f &scale, const EGG::Quatf &rot,
             const EGG::Vector3f &pos);
 
     void reset();
@@ -76,7 +77,6 @@ public:
     void setHitboxScale(f32 scale);
 
 private:
-    u16 m_bspHitboxCount;
     f32 m_boundingRadius;
     CollisionData m_collisionData;
     std::span<Hitbox> *m_hitboxes;

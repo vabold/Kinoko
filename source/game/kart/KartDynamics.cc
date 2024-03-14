@@ -51,8 +51,7 @@ void KartDynamics::calc(f32 dt, f32 maxSpeed, bool /*air*/) {
     m_extVel *= 0.998f;
     m_angVel0 *= 0.98f;
 
-    EGG::Vector3f playerBack = m_mainRot.rotateVector(EGG::Vector3f::ez);
-    EGG::Vector3f playerBackHoriz = playerBack;
+    EGG::Vector3f playerBackHoriz = m_mainRot.rotateVector(EGG::Vector3f::ez);
     playerBackHoriz.y = 0.0f;
 
     if (FLT_EPSILON < playerBackHoriz.dot()) {
@@ -69,9 +68,8 @@ void KartDynamics::calc(f32 dt, f32 maxSpeed, bool /*air*/) {
     m_angVel0 += (t1 + m_invInertiaTensor.multVector(t1 + m_totalTorque) * dt) * 0.5f;
 
     m_angVel0.x = std::min(0.4f, std::max(-0.4f, m_angVel0.x));
-    m_angVel0.y = std::min(0.4f, std::max(-0.4f, m_angVel0.y));
+    m_angVel0.y = std::min(0.4f, std::max(-0.4f, m_angVel0.y)) * m_angVel0YFactor;
     m_angVel0.z = std::min(0.8f, std::max(-0.8f, m_angVel0.z));
-    m_angVel0.y *= m_angVel0YFactor;
 
     EGG::Vector3f angVelSum = m_angVel2 + m_angVel1 + m_angVel0Factor * m_angVel0;
 

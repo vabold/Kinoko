@@ -77,7 +77,7 @@ void KartSub::calcPass0() {
     f32 maxSpeed = move()->hardSpeedLimit();
     physics()->calc(DT, maxSpeed, scale(), !state()->isGround());
 
-    collide()->updateHitboxes();
+    collide()->calcHitboxes();
     collisionGroup()->setHitboxScale(move()->totalScale());
 }
 
@@ -102,7 +102,7 @@ void KartSub::calcPass1() {
 
     EGG::Vector3f vehicleCompensation = m_maxSuspOvertravel + m_minSuspOvertravel;
     dynamics()->setPos(dynamics()->pos() + vehicleCompensation);
-    if (physics()->hitboxGroup()->collisionData().floor == 0) {
+    if (!physics()->hitboxGroup()->collisionData().floor) {
         EGG::Vector3f relPos;
         EGG::Vector3f vel;
         EGG::Vector3f floorNrm;

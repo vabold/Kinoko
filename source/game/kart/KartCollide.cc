@@ -3,9 +3,9 @@
 #include "game/kart/KartMove.hh"
 #include "game/kart/KartPhysics.hh"
 
-#include <egg/math/Math.hh>
+#include "game/field/CollisionDirector.hh"
 
-#include <game/field/CollisionDirector.hh>
+#include <egg/math/Math.hh>
 
 namespace Kart {
 
@@ -28,10 +28,10 @@ void KartCollide::resetHitboxes() {
     }
 }
 
-void KartCollide::updateHitboxes() {
+void KartCollide::calcHitboxes() {
     CollisionGroup *hitboxGroup = physics()->hitboxGroup();
     for (u16 idx = 0; idx < hitboxGroup->hitboxCount(); ++idx) {
-        hitboxGroup->hitbox(idx).update(move()->totalScale(), 0.0f, scale(), fullRot(), pos());
+        hitboxGroup->hitbox(idx).calc(move()->totalScale(), 0.0f, scale(), fullRot(), pos());
     }
 }
 
@@ -59,7 +59,7 @@ void KartCollide::calcBodyCollision(f32 totalScale, const EGG::Quatf &rot,
             flags = 0x4A109000;
         }
 
-        hitbox.update(totalScale, 0.0f, scale, rot, pos());
+        hitbox.calc(totalScale, 0.0f, scale, rot, pos());
 
         Field::CollisionDirector::Instance()->checkSphereCachedFullPush(hitbox.worldPos(),
                 hitbox.lastPos(), flags, &colInfo, &maskOut, hitbox.radius(), 0);
@@ -82,7 +82,7 @@ void KartCollide::calcFloorEffect() {
 
 void KartCollide::calcTriggers(Field::KCLTypeMask *mask, const EGG::Vector3f &pos, bool twoPoint) {
     EGG::Vector3f v1 = twoPoint ? physics()->pos() : EGG::Vector3f::inf;
-    Field::KCLTypeMask typeMask = twoPoint ? KCL_TYPE_DIRECTIONAL : KCL_TYPE_TODO;
+    Field::KCLTypeMask typeMask = twoPoint ? KCL_TYPE_DIRECTIONAL : KCL_TYPE_NON_DIRECTIONAL;
     f32 fVar1 = twoPoint ? 80.0f : 100.0f * move()->totalScale();
     f32 scalar = -bsp().initialYPos * move()->totalScale() * 0.3f;
     EGG::Vector3f scaledPos = pos + scalar * componentYAxis();
@@ -100,7 +100,7 @@ void KartCollide::calcTriggers(Field::KCLTypeMask *mask, const EGG::Vector3f &po
         return;
     }
 
-    if ((*mask & KCL_TYPE_FLOOR) != 0) {
+    if (*mask & KCL_TYPE_FLOOR) {
         Field::CollisionDirector::Instance()->findClosestCollisionEntry(mask, KCL_TYPE_FLOOR);
     }
 }
@@ -131,7 +131,7 @@ void KartCollide::calcWheelCollision(u16 /*wheelIdx*/, CollisionGroup *hitboxGro
 
     collisionData.tangentOff = colInfo.tangentOff;
 
-    if ((kclOut & KCL_TYPE_FLOOR) != 0) {
+    if (kclOut & KCL_TYPE_FLOOR) {
         collisionData.floor = true;
         collisionData.floorNrm = colInfo.floorNrm;
     }
@@ -141,7 +141,7 @@ void KartCollide::calcWheelCollision(u16 /*wheelIdx*/, CollisionGroup *hitboxGro
 
     processWheel(collisionData, firstHitbox, &colInfo, &kclOut);
 
-    if ((kclOut & KCL_TYPE_VEHICLE_COLLIDEABLE) == 0) {
+    if (!(kclOut & KCL_TYPE_VEHICLE_COLLIDEABLE)) {
         return;
     }
 
@@ -157,7 +157,7 @@ void KartCollide::processWheel(CollisionData &collisionData, Hitbox &hitbox,
 void KartCollide::processFloor(CollisionData &collisionData, Hitbox & /*hitbox*/,
         Field::CourseColMgr::CollisionInfo * /*colInfo*/, Field::KCLTypeMask *maskOut,
         bool /*wheel*/) {
-    if ((*maskOut & KCL_TYPE_VEHICLE_COLLIDEABLE) == 0) {
+    if (!(*maskOut & KCL_TYPE_VEHICLE_COLLIDEABLE)) {
         return;
     }
 
@@ -168,7 +168,7 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox & /*hitbox*/
     const Field::CollisionDirector::CollisionEntry *closestColEntry =
             Field::CollisionDirector::Instance()->closestCollisionEntry();
 
-    if ((closestColEntry->attribute & 0x2000) == 0) {
+    if (!(closestColEntry->attribute & 0x2000)) {
         m_notTrickable = true;
     }
 
@@ -176,7 +176,7 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox & /*hitbox*/
     collisionData.closestFloorFlags = closestColEntry->typeMask;
     collisionData.closestFloorSettings = (closestColEntry->attribute >> 5) & 7;
 
-    if ((*maskOut & KCL_TYPE_BIT(COL_TYPE_BOOST_RAMP)) == 0) {
+    if (!(*maskOut & KCL_TYPE_BIT(COL_TYPE_BOOST_RAMP))) {
         m_notTrickable = true;
     }
 }
@@ -204,8 +204,8 @@ void KartCollide::applySomeFloorMoment(f32 down, f32 rate, CollisionGroup *hitbo
     crossVec = tmp.multVector(crossVec);
     crossVec = crossVec.cross(colData.relPos);
 
-    f32 idk = -velDotFloorNrm / (1.0f + colData.floorNrm.dot(crossVec));
-    EGG::Vector3f negSpeed = speed * -1;
+    f32 scalar = -velDotFloorNrm / (1.0f + colData.floorNrm.dot(crossVec));
+    EGG::Vector3f negSpeed = -speed;
     crossVec = colData.floorNrm.cross(negSpeed);
     crossVec = crossVec.cross(colData.floorNrm);
 
@@ -215,7 +215,7 @@ void KartCollide::applySomeFloorMoment(f32 down, f32 rate, CollisionGroup *hitbo
 
     crossVec.normalise();
     f32 speedDot = std::min(0.0f, speed.dot(crossVec));
-    crossVec *= ((idk * speedDot) / velDotFloorNrm);
+    crossVec *= ((scalar * speedDot) / velDotFloorNrm);
 
     auto projAndRej = crossVec.projAndRej(forward);
 
@@ -224,19 +224,19 @@ void KartCollide::applySomeFloorMoment(f32 down, f32 rate, CollisionGroup *hitbo
     f32 projNorm_ = projNorm;
     f32 rejNorm_ = rejNorm;
 
-    f32 dVar7 = down * EGG::Mathf::abs(idk);
+    f32 dVar7 = down * EGG::Mathf::abs(scalar);
     if (dVar7 < EGG::Mathf::abs(projNorm)) {
         projNorm_ = dVar7;
         if (projNorm < 0.0f) {
-            projNorm_ = -down * EGG::Mathf::abs(idk);
+            projNorm_ = -down * EGG::Mathf::abs(scalar);
         }
     }
 
-    f32 dVar5 = rate * EGG::Mathf::abs(idk);
+    f32 dVar5 = rate * EGG::Mathf::abs(scalar);
     if (dVar5 < EGG::Mathf::abs(rejNorm)) {
         rejNorm_ = dVar5;
         if (rejNorm < 0.0f) {
-            rejNorm = -rate * EGG::Mathf::abs(idk);
+            rejNorm = -rate * EGG::Mathf::abs(scalar);
         }
     }
 
