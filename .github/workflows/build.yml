@@ -7,8 +7,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: Checkout
+      - name: Checkout (Push)
+        if: github.event_name == 'push'
         uses: actions/checkout@v3
+      - name: Checkout (Pull Request)
+        if: github.event_name == 'pull_request_target'
+        uses: actions/checkout@v3
+        with:
+          ref: "refs/pull/${{ github.event.number }}/merge"
       - name: Install ninja
         run: sudo apt install ninja-build
       - name: Install Python
