@@ -14,7 +14,7 @@ jobs:
         if: github.event_name == 'pull_request_target'
         uses: actions/checkout@v3
         with:
-          ref: "refs/pull/${{ github.event.number }}/merge"
+          ref: "${{ github.event.pull_request.merge_commit_sha }}"
       - name: Install ninja
         run: sudo apt install ninja-build
       - name: Install Python
