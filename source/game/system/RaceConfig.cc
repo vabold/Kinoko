@@ -24,7 +24,7 @@ void RaceConfig::initRace() {
     player.type = Player::Type::Ghost;
 
     size_t size;
-    u8 *rkg = Abstract::File::Load("/Tests/rMC3-1-17-844.rkg", size);
+    u8 *rkg = Abstract::File::Load("/Tests/rMC3-1-17-843.rkg", size);
     m_raceScenario.ghost = new RawGhostFile(rkg);
 
     initControllers();
