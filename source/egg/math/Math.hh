@@ -14,9 +14,9 @@ namespace EGG::Mathf {
 f32 sqrt(f32 x);
 f32 frsqrt(f32 x);
 
-f32 AtanFIdx_(f32 fidx);
 f32 SinFIdx(f32 fidx);
 f32 CosFIdx(f32 fidx);
+f32 AtanFIdx_(f32 fidx);
 f32 Atan2FIdx(f32 x, f32 y);
 f32 sin(f32 x);
 f32 cos(f32 x);

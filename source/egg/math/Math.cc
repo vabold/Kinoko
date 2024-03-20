@@ -326,20 +326,6 @@ f32 frsqrt(f32 x) {
     return tmp1 * tmp2;
 }
 
-f32 AtanFIdx_(f32 x) {
-    u16 idx;
-    f32 val;
-    f32 r;
-
-    x *= 32.0f;
-    idx = static_cast<u16>(x);
-    r = x - static_cast<f32>(idx);
-
-    val = sArcTanTbl[idx].atanVal + r * sArcTanTbl[idx].atanDt;
-
-    return val;
-}
-
 f32 SinFIdx(f32 fidx) {
     f32 abs_fidx = fabs(fidx);
 
@@ -366,6 +352,13 @@ f32 CosFIdx(f32 fidx) {
     idx &= 0xFF;
 
     return sSinCosTbl[idx].cosVal + r * sSinCosTbl[idx].cosDt;
+}
+
+f32 AtanFIdx_(f32 x) {
+    x *= 32.0f;
+    u16 idx = static_cast<u16>(x);
+    f32 r = x - static_cast<f32>(idx);
+    return sArcTanTbl[idx].atanVal + r * sArcTanTbl[idx].atanDt;
 }
 
 f32 Atan2FIdx(f32 x, f32 y) {
@@ -418,9 +411,8 @@ f32 acos(f32 x) {
     return std::acos(x);
 }
 
-// Takes in radians but returns degrees???
-f32 atan2(f32 x, f32 y) {
-    return Atan2FIdx(x, y) * FIDX2RAD;
+f32 atan2(f32 y, f32 x) {
+    return Atan2FIdx(y, x) * FIDX2RAD;
 }
 
 f32 abs(f32 x) {

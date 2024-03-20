@@ -13,8 +13,6 @@ void KPadDirector::calcPads() {
 
 void KPadDirector::clear() {}
 
-void KPadDirector::init() {}
-
 void KPadDirector::reset() {
     m_playerInput.reset();
 }

@@ -17,8 +17,8 @@
 
 namespace Kart {
 
-constexpr f32 LEAN_ROT_INC_COUNTDOWN = 0.08f;
-constexpr f32 LEAN_ROT_CAP_COUNTDOWN = 0.6f;
+static constexpr f32 LEAN_ROT_INC_COUNTDOWN = 0.08f;
+static constexpr f32 LEAN_ROT_CAP_COUNTDOWN = 0.6f;
 
 KartMove::KartMove()
     : m_smoothedUp(EGG::Vector3f::ey), m_scale(1.0f, 1.0f, 1.0f), m_totalScale(1.0f) {}
@@ -207,7 +207,7 @@ KartMoveBike::~KartMoveBike() = default;
 
 void KartMoveBike::startWheelie() {
     constexpr f32 MAX_WHEELIE_ROTATION = 0.07f;
-    constexpr u16 WHEELIE_COOLDOWN = 0x14;
+    constexpr u16 WHEELIE_COOLDOWN = 20;
 
     state()->setWheelie(true);
     m_wheelieFrames = 0;

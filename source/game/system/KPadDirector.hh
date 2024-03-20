@@ -10,7 +10,6 @@ public:
     void calc();
     void calcPads();
     void clear();
-    void init();
     void reset();
     void startGhostProxies();
 

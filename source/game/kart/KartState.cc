@@ -2,7 +2,7 @@
 
 #include "game/kart/CollisionGroup.hh"
 
-#include <game/system/RaceManager.hh>
+#include "game/system/RaceManager.hh"
 
 namespace Kart {
 

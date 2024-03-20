@@ -210,12 +210,9 @@ void KartDynamicsBike::forceUpright() {
 }
 
 void KartDynamicsBike::stabilize() {
-    EGG::Vector3f forward = m_mainRot.rotateVector(EGG::Vector3f::ez);
-    EGG::Vector3f cross = m_top_.cross(forward);
-    EGG::Vector3f forward_ = cross.cross(m_top_);
-    forward_.normalise();
-    EGG::Vector3f local_40 = m_top_.cross(forward_);
-    EGG::Vector3f local_4c = forward_.cross(local_40);
+    EGG::Vector3f forward = m_top_.cross(m_mainRot.rotateVector(EGG::Vector3f::ez).cross(m_top_));
+    forward.normalise();
+    EGG::Vector3f local_4c = forward.cross(m_top_.cross(forward));
     local_4c.normalise();
 
     EGG::Vector3f top = m_mainRot.rotateVector(EGG::Vector3f::ey);
@@ -223,10 +220,9 @@ void KartDynamicsBike::stabilize() {
         return;
     }
 
-    EGG::Quatf local_78;
-    local_78.makeVectorRotation(top, local_4c);
-    EGG::Quatf stack_88 = local_78.multSwap(m_mainRot);
-    m_mainRot = m_mainRot.slerpTo(stack_88, m_stabilizationFactor);
+    EGG::Quatf q;
+    q.makeVectorRotation(top, local_4c);
+    m_mainRot = m_mainRot.slerpTo(q.multSwap(m_mainRot), m_stabilizationFactor);
 }
 
 } // namespace Kart

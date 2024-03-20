@@ -6,8 +6,6 @@
 
 #include <cstddef>
 
-#include "game/system/RaceManager.hh"
-
 namespace Test {
 
 TestDirector::TestDirector() {

@@ -96,7 +96,7 @@ void KartSub::calcPass1() {
 
     if (collisionData().floor) {
         // Update floor count
-        FUN_805980d8();
+        addFloor(collisionData(), false);
     }
 
     EGG::Vector3f forward = fullRot().rotateVector(EGG::Vector3f::ez);
@@ -108,10 +108,10 @@ void KartSub::calcPass1() {
         const EGG::Matrix34f wheelMatrix = body()->wheelMatrix(i);
         suspensionPhysics(i)->calcCollision(DT, gravity, wheelMatrix);
 
-        const CollisionData colData = tirePhysics(i)->hitboxGroup()->collisionData();
+        const CollisionData &colData = tirePhysics(i)->hitboxGroup()->collisionData();
         if (colData.floor) {
             handlingFactor += colData.rotFactor;
-            FUN_805980d8();
+            addFloor(colData, false);
         }
     }
 
@@ -138,7 +138,7 @@ void KartSub::calcPass1() {
     }
 }
 
-void KartSub::FUN_805980d8() {
+void KartSub::addFloor(const CollisionData &, bool) {
     ++m_floorCollisionCount;
 }
 
