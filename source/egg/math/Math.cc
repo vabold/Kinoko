@@ -361,7 +361,7 @@ f32 AtanFIdx_(f32 x) {
     return sArcTanTbl[idx].atanVal + r * sArcTanTbl[idx].atanDt;
 }
 
-f32 Atan2FIdx(f32 x, f32 y) {
+f32 Atan2FIdx(f32 y, f32 x) {
     if (x == 0.0f && y == 0.0f) {
         return 0.0f;
     }
