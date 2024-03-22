@@ -56,23 +56,12 @@ s64 Stream::read_s64() {
     return read<s64>();
 }
 
-// Floating point numbers are not integral, so we have special cases outside of the template
 f32 Stream::read_f32() {
-    f32 val;
-    read(&val, sizeof(val));
-    m_index += sizeof(val);
-    assert(!eof());
-
-    return std::bit_cast<f32>(parse<u32>(std::bit_cast<u32>(val), m_endian));
+    return read<f32>();
 }
 
 f64 Stream::read_f64() {
-    f64 val;
-    read(&val, sizeof(val));
-    m_index += sizeof(val);
-    assert(!eof());
-
-    return std::bit_cast<f64>(parse<u64>(std::bit_cast<u64>(val), m_endian));
+    return read<f64>();
 }
 
 RamStream::RamStream() : m_buffer(nullptr), m_size(0) {}
@@ -82,14 +71,6 @@ RamStream::RamStream(u8 *buffer, u32 size) {
 }
 
 RamStream::~RamStream() = default;
-
-RamStream RamStream::split(u32 size) {
-    RamStream stream = RamStream(m_buffer + m_index, size);
-    m_index += size;
-    assert(!eof());
-
-    return stream;
-}
 
 void RamStream::read(void *output, u32 size) {
     u8 *buffer = reinterpret_cast<u8 *>(output);
@@ -112,6 +93,14 @@ bool RamStream::eof() {
 void RamStream::setBufferAndSize(void *buffer, u32 size) {
     m_buffer = reinterpret_cast<u8 *>(buffer);
     m_size = size;
+}
+
+RamStream RamStream::split(u32 size) {
+    RamStream stream = RamStream(m_buffer + m_index, size);
+    m_index += size;
+    assert(!eof());
+
+    return stream;
 }
 
 } // namespace EGG
