@@ -57,24 +57,18 @@ void KPadGhostController::readGhostBuffer(const u8 *buffer, bool driftIsAuto) {
     m_ghostBuffer = buffer;
     m_driftIsAuto = driftIsAuto;
 
-    EGG::RamStream stream = EGG::RamStream(const_cast<u8 *>(buffer), 0x6);
+    EGG::RamStream stream =
+            EGG::RamStream(const_cast<u8 *>(buffer), RKG_UNCOMPRESSED_INPUT_DATA_SECTION_SIZE);
 
     u16 faceCount = stream.read_u16();
     u16 directionCount = stream.read_u16();
     u16 trickCount = stream.read_u16();
 
-    buffer += 0x8;
+    stream.skip(2);
 
-    m_buttonsStreams[0]->buffer.setBufferAndSize(const_cast<u8 *>(buffer),
-            faceCount * SEQUENCE_SIZE);
-    buffer += faceCount * SEQUENCE_SIZE;
-
-    m_buttonsStreams[1]->buffer.setBufferAndSize(const_cast<u8 *>(buffer),
-            directionCount * SEQUENCE_SIZE);
-    buffer += directionCount * SEQUENCE_SIZE;
-
-    m_buttonsStreams[2]->buffer.setBufferAndSize(const_cast<u8 *>(buffer),
-            trickCount * SEQUENCE_SIZE);
+    m_buttonsStreams[0]->buffer = stream.split(faceCount * SEQUENCE_SIZE);
+    m_buttonsStreams[1]->buffer = stream.split(directionCount * SEQUENCE_SIZE);
+    m_buttonsStreams[2]->buffer = stream.split(trickCount * SEQUENCE_SIZE);
 }
 
 void KPadGhostController::calcImpl() {
@@ -125,11 +119,11 @@ KPadGhostButtonsStream::KPadGhostButtonsStream()
 KPadGhostButtonsStream::~KPadGhostButtonsStream() = default;
 
 bool KPadGhostButtonsStream::readIsNewSequence() const {
-    return readSequenceFrames >= (currentSequence >> 0x8);
+    return readSequenceFrames >= (currentSequence & 0xFF);
 }
 
 u8 KPadGhostButtonsStream::readVal() const {
-    return currentSequence & 0xFF;
+    return currentSequence >> 8;
 }
 
 u8 KPadGhostButtonsStream::readFrame() {
@@ -139,14 +133,14 @@ u8 KPadGhostButtonsStream::readFrame() {
 
     if (currentSequence == std::numeric_limits<u32>::max()) {
         readSequenceFrames = 0;
-        currentSequence = parse<u16>(buffer.read_u16());
+        currentSequence = buffer.read_u16();
     } else {
         if (readIsNewSequence()) {
             readSequenceFrames = 0;
             if (buffer.eof()) {
                 state = 2;
             } else {
-                currentSequence = parse<u16>(buffer.read_u16());
+                currentSequence = buffer.read_u16();
             }
         }
     }
@@ -173,13 +167,13 @@ KPadGhostTrickButtonsStream::KPadGhostTrickButtonsStream() = default;
 KPadGhostTrickButtonsStream::~KPadGhostTrickButtonsStream() = default;
 
 bool KPadGhostTrickButtonsStream::readIsNewSequence() const {
-    u16 duration = currentSequence >> 0x8;
-    duration += 256 * (currentSequence & 0xF);
+    u16 duration = currentSequence & 0xFF;
+    duration += 256 * ((currentSequence >> 8) & 0xF);
     return duration <= readSequenceFrames;
 }
 
 u8 KPadGhostTrickButtonsStream::readVal() const {
-    return currentSequence & 0x7F;
+    return (currentSequence >> 8) & 0x7F;
 }
 
 KPad::KPad() : m_controller(nullptr) {

@@ -83,6 +83,14 @@ RamStream::RamStream(u8 *buffer, u32 size) {
 
 RamStream::~RamStream() = default;
 
+RamStream RamStream::split(u32 size) {
+    RamStream stream = RamStream(m_buffer + m_index, size);
+    m_index += size;
+    assert(!eof());
+
+    return stream;
+}
+
 void RamStream::read(void *output, u32 size) {
     u8 *buffer = reinterpret_cast<u8 *>(output);
     for (size_t i = 0; i < size; ++i) {
