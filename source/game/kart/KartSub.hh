@@ -17,6 +17,7 @@ public:
 
     void calcPass0();
     void calcPass1();
+    void addFloor(const CollisionData &, bool);
 
     f32 someScale();
 

@@ -61,13 +61,16 @@ struct Quatf {
 
     void setRPY(const Vector3f &rpy);
     void normalise();
+    void makeVectorRotation(const Vector3f &from, const Vector3f &to);
     Quatf conjugate() const;
     Vector3f rotateVector(const Vector3f &vec) const;
     Vector3f rotateVectorInv(const Vector3f &vec) const;
     Quatf slerpTo(const Quatf &q2, f32 t) const;
     f32 dot() const;
     f32 dot(const Quatf &q) const;
-    void setAxisRotation(f32 angle, const EGG::Vector3f &axis);
+    void setAxisRotation(f32 angle, const Vector3f &axis);
+    Quatf multSwap(const Vector3f &v) const;
+    Quatf multSwap(const Quatf &q) const;
 
     void read(Stream &stream);
 

@@ -8,6 +8,8 @@
 
 #include "game/field/CollisionDirector.hh"
 
+#include <egg/math/Math.hh>
+
 namespace Kart {
 
 KartSub::KartSub() = default;
@@ -61,6 +63,7 @@ void KartSub::calcPass0() {
     dynamics()->setGravity(-1.3f);
     dynamics()->setAngVel0YFactor(0.9f);
 
+    state()->calcInput();
     move()->calc();
 
     // Pertains to startslides / leaning in stage 0 and 1
@@ -91,13 +94,25 @@ void KartSub::calcPass1() {
     collide()->findCollision();
     collide()->calcFloorEffect();
 
+    if (collisionData().floor) {
+        // Update floor count
+        addFloor(collisionData(), false);
+    }
+
     EGG::Vector3f forward = fullRot().rotateVector(EGG::Vector3f::ez);
     m_someScale = scale().y;
 
     const EGG::Vector3f gravity(0.0f, -1.3f, 0.0f);
+    f32 handlingFactor = 0.0f;
     for (u16 i = 0; i < suspCount(); ++i) {
         const EGG::Matrix34f wheelMatrix = body()->wheelMatrix(i);
         suspensionPhysics(i)->calcCollision(DT, gravity, wheelMatrix);
+
+        const CollisionData &colData = tirePhysics(i)->hitboxGroup()->collisionData();
+        if (colData.floor) {
+            handlingFactor += colData.rotFactor;
+            addFloor(colData, false);
+        }
     }
 
     EGG::Vector3f vehicleCompensation = m_maxSuspOvertravel + m_minSuspOvertravel;
@@ -111,12 +126,20 @@ void KartSub::calcPass1() {
             suspensionPhysics(wheelIdx)->calcSuspension(forward, vehicleCompensation);
         }
 
+        move()->setKCLWheelRotFactor(handlingFactor);
+
         move()->setFloorCollisionCount(m_floorCollisionCount);
 
         physics()->updatePose();
 
         collide()->resetHitboxes();
+
+        // calcRotation() is only ever used for gfx rendering, so skip
     }
+}
+
+void KartSub::addFloor(const CollisionData &, bool) {
+    ++m_floorCollisionCount;
 }
 
 f32 KartSub::someScale() {

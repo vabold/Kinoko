@@ -1,5 +1,7 @@
 #pragma once
 
+#include "game/system/KPadController.hh"
+
 #include <egg/math/Matrix.hh>
 
 #include <abstract/List.hh>
@@ -74,12 +76,14 @@ public:
     const CollisionData &collisionData() const;
     CollisionData &collisionData(u16 tireIdx);
     const CollisionData &collisionData(u16 tireIdx) const;
+    const System::KPad *inputs() const;
 
     const EGG::Vector3f &scale() const;
     const EGG::Matrix34f &pose() const;
     EGG::Vector3f bodyFront() const;
     EGG::Vector3f bodyForward() const;
 
+    const EGG::Vector3f &componentXAxis() const;
     const EGG::Vector3f &componentYAxis() const;
     const EGG::Vector3f &componentZAxis() const;
 

@@ -9,6 +9,7 @@ class KPadDirector {
 public:
     void calc();
     void calcPads();
+    void clear();
     void reset();
     void startGhostProxies();
 

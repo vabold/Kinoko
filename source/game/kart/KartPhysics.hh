@@ -22,6 +22,7 @@ public:
     const KartDynamics *dynamics() const;
     const EGG::Matrix34f &pose() const;
     CollisionGroup *hitboxGroup();
+    const EGG::Vector3f &xAxis() const;
     const EGG::Vector3f &yAxis() const;
     const EGG::Vector3f &zAxis() const;
     const EGG::Vector3f &pos() const;

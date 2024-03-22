@@ -36,6 +36,7 @@ public:
     Vector3f ps_multVector(const Vector3f &vec) const;
     Vector3f multVector33(const Vector3f &vec) const;
     Matrix34f inverseTo() const;
+    Matrix34f transpose() const;
 
     static const Matrix34f ident;
     static const Matrix34f zero;

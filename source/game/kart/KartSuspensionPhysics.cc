@@ -2,6 +2,7 @@
 
 #include "game/kart/KartCollide.hh"
 #include "game/kart/KartDynamics.hh"
+#include "game/kart/KartState.hh"
 #include "game/kart/KartSub.hh"
 #include "game/kart/KartTire.hh"
 
@@ -223,10 +224,10 @@ void KartSuspensionPhysics::calcSuspension(const EGG::Vector3f &forward,
         fLinear.y = 0.0f;
     }
 
-    dynamics()->applySuspensionWrench(m_topmostPos, fLinear, fRot, false);
+    dynamics()->applySuspensionWrench(m_topmostPos, fLinear, fRot, state()->isWheelieRot());
 
     collide()->applySomeFloorMoment(0.1f, 0.8f, hitboxGroup, forward, move()->dir(),
-            m_tirePhysics->speed(), true, true, true);
+            m_tirePhysics->speed(), true, true, !state()->isWheelieRot());
 }
 
 } // namespace Kart

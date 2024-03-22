@@ -50,6 +50,7 @@ void GameScene::deinitScene() {
     }
 
     destroyEngines();
+    System::KPadDirector::Instance()->clear();
 }
 
 } // namespace Scene

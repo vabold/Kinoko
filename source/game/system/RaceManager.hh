@@ -11,6 +11,8 @@ public:
     RaceManagerPlayer();
     virtual ~RaceManagerPlayer() {}
 
+    const KPad *inputs() const;
+
 private:
     const KPad *m_inputs;
 };
@@ -29,6 +31,7 @@ public:
 
     void calc();
 
+    const RaceManagerPlayer &player() const;
     Stage stage() const;
 
     static RaceManager *CreateInstance();

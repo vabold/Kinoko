@@ -7,44 +7,52 @@
 namespace System {
 
 GhostFile::GhostFile(RawGhostFile *raw) {
-    read(raw);
+    u8 *streamPtr = const_cast<u8 *>(raw->buffer());
+    EGG::RamStream stream(streamPtr, RKG_HEADER_SIZE);
+    read(stream);
+    m_inputs = raw->buffer() + RKG_HEADER_SIZE;
 }
 
 GhostFile::~GhostFile() = default;
 
-void GhostFile::read(RawGhostFile *raw) {
-    readHeader(raw);
-    m_inputSize = raw->parseAt<u16>(0xE);
-    m_inputs = raw->buffer() + RKG_HEADER_SIZE;
-}
+void GhostFile::read(EGG::RamStream &stream) {
+    stream.skip(0x4); // RKGD
 
-void GhostFile::readHeader(RawGhostFile *raw) {
-    memcpy(m_userData.data(), raw->buffer() + RKG_USER_DATA_OFFSET, RKG_USER_DATA_SIZE);
-    m_userData[10] = L'\0';
+    // 0x04 - 0x07
+    u32 data = stream.read_u32();
+    m_raceTime = Timer(data);
+    m_course = static_cast<Course>(data >> 0x2 & 0x3F);
 
-    u32 data = raw->parseAt<u32>(0x8);
+    // 0x08 - 0x0B
+    data = stream.read_u32();
+    m_vehicle = static_cast<Vehicle>(data >> 0x1A);
+    m_character = static_cast<Character>(data >> 0x14 & 0x3F);
     m_year = (data >> 0xD) & 0x7F;
     m_month = (data >> 0x9) & 0xF;
     m_day = (data >> 0x4) & 0x1F;
 
-    memcpy(m_miiData.data(), raw->buffer() + RKG_MII_DATA_OFFSET, RKG_MII_DATA_SIZE);
+    // 0x0C - 0x0F
+    data = stream.read_u32();
+    m_type = data >> 0xA & 0x7F;
+    m_driftIsAuto = data >> 0x11 & 0x1;
+    m_inputSize = data & 0xFFFF;
 
-    m_lapCount = raw->parseAt<u8>(0x10);
+    // 0x10
+    m_lapCount = stream.read_u8();
 
-    // TODO: Do we want to add a bounds check here?
-    for (u8 lap = 0; lap < m_lapCount; ++lap) {
-        m_lapTimes[lap] = Timer(raw->parseAt<u32>(0x11 + lap * 3));
+    // 0x11 - 0x1F
+    for (size_t i = 0; i < 5; ++i) {
+        m_lapTimes[i] = Timer(stream.read_u32());
+        stream.jump(stream.index() - 1);
     }
 
-    m_raceTime = Timer(raw->parseAt<u32>(0x4));
+    stream.read(m_userData.data(), RKG_USER_DATA_SIZE);
+    m_userData[10] = L'\0';
 
-    m_course = static_cast<Course>(raw->parseAt<u32>(0x4) >> 0x2 & 0x3F);
-    m_character = static_cast<Character>(raw->parseAt<u16>(0x8) >> 0x4 & 0x3F);
-    m_vehicle = static_cast<Vehicle>(raw->parseAt<u8>(0x8) >> 0x2);
-    m_controllerId = raw->parseAt<u8>(0xB) & 0xF;
-    m_type = raw->parseAt<u16>(0xC) >> 0x2 & 0x7F;
-    m_location = raw->parseAt<u32>(0x34);
-    m_driftIsAuto = raw->parseAt<u8>(0xD) >> 1 & 0x1;
+    // 0x34
+    m_location = stream.read_u8();
+    stream.skip(0x7);
+    stream.read(m_miiData.data(), RKG_MII_DATA_SIZE);
 }
 
 Character GhostFile::character() const {

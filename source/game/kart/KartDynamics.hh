@@ -7,6 +7,10 @@ namespace Kart {
 class KartDynamics {
 public:
     KartDynamics();
+
+    virtual void forceUpright() {}
+    virtual void stabilize() {}
+
     void init();
     void resetInternalVelocity();
     void setBspParams(f32 rotSpeed, const EGG::Vector3f &m, const EGG::Vector3f &n,
@@ -25,6 +29,7 @@ public:
     const EGG::Quatf &fullRot() const;
     const EGG::Vector3f &extVel() const;
     const EGG::Vector3f &angVel0() const;
+    const EGG::Vector3f &angVel2() const;
 
     void setPos(const EGG::Vector3f &pos);
     void setGravity(f32 gravity);
@@ -34,9 +39,11 @@ public:
     void setExtraRot(const EGG::Quatf &q);
     void setExtVel(const EGG::Vector3f &v);
     void setAngVel0(const EGG::Vector3f &v);
+    void setAngVel2(const EGG::Vector3f &v);
     void setAngVel0YFactor(f32 val);
+    void setTop_(const EGG::Vector3f &v);
 
-private:
+protected:
     EGG::Matrix34f m_inertiaTensor;
     EGG::Matrix34f m_invInertiaTensor;
     f32 m_angVel0Factor;
@@ -58,11 +65,21 @@ private:
     EGG::Quatf m_extraRot;
     f32 m_gravity;
     EGG::Vector3f m_intVel;
+    f32 m_stabilizationFactor;
+    EGG::Vector3f m_top_;
     f32 m_angVel0YFactor;
     bool m_forceUpright;
     bool m_noGravity;
 };
 
-class KartDynamicsBike : public KartDynamics {};
+class KartDynamicsBike : public KartDynamics {
+public:
+    KartDynamicsBike();
+    ~KartDynamicsBike();
+
+private:
+    void forceUpright() override;
+    void stabilize() override;
+};
 
 } // namespace Kart

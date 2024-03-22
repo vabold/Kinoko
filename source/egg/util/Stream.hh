@@ -54,6 +54,8 @@ public:
     RamStream(u8 *buffer, u32 size);
     ~RamStream() override;
 
+    RamStream split(u32 size);
+
     void read(void *output, u32 size) override;
     void write(void *input, u32 size) override;
     bool eof() override;

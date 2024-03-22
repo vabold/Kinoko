@@ -4,6 +4,16 @@
 
 namespace EGG::Mathf {
 
+// sin/cos struct
+struct SinCosEntry {
+    f32 sinVal, cosVal, sinDt, cosDt;
+};
+
+// atan struct
+struct AtanEntry {
+    f32 atanVal, atanDt;
+};
+
 static constexpr SinCosEntry sSinCosTbl[256 + 1] = {
         {0.000000f, 1.000000f, 0.024541f, -0.000301f},
         {0.024541f, 0.999699f, 0.024526f, -0.000903f},
@@ -264,6 +274,42 @@ static constexpr SinCosEntry sSinCosTbl[256 + 1] = {
         {-0.000000f, 1.000000f, 0.024541f, -0.000301f},
 };
 
+static constexpr AtanEntry sArcTanTbl[32 + 1] = {
+        {0.000000000f, 1.272825321f},
+        {1.272825321f, 1.270345790f},
+        {2.543171111f, 1.265415586f},
+        {3.808586697f, 1.258091595f},
+        {5.066678293f, 1.248457103f},
+        {6.315135396f, 1.236619467f},
+        {7.551754863f, 1.222707202f},
+        {8.774462065f, 1.206866624f},
+        {9.981328688f, 1.189258212f},
+        {11.170586901f, 1.170052841f},
+        {12.340639741f, 1.149428034f},
+        {13.490067775f, 1.127564381f},
+        {14.617632156f, 1.104642222f},
+        {15.722274378f, 1.080838675f},
+        {16.803113053f, 1.056325088f},
+        {17.859438141f, 1.031264918f},
+        {18.890703059f, 1.005812061f},
+        {19.896515121f, 0.980109621f},
+        {20.876624742f, 0.954289072f},
+        {21.830913814f, 0.928469801f},
+        {22.759383615f, 0.902758952f},
+        {23.662142567f, 0.877251558f},
+        {24.539394125f, 0.852030871f},
+        {25.391424996f, 0.827168886f},
+        {26.218593881f, 0.802726967f},
+        {27.021320848f, 0.778756582f},
+        {27.800077430f, 0.755300081f},
+        {28.555377511f, 0.732391496f},
+        {29.287769007f, 0.710057351f},
+        {29.997826358f, 0.688317453f},
+        {30.686143811f, 0.667185647f},
+        {31.353329458f, 0.646670542f},
+        {32.000000000f, 0.626776175f},
+};
+
 f32 sqrt(f32 x) {
     return x > 0.0 ? frsqrt(x) * x : 0.0;
 }
@@ -308,6 +354,49 @@ f32 CosFIdx(f32 fidx) {
     return sSinCosTbl[idx].cosVal + r * sSinCosTbl[idx].cosDt;
 }
 
+f32 AtanFIdx_(f32 x) {
+    x *= 32.0f;
+    u16 idx = static_cast<u16>(x);
+    f32 r = x - static_cast<f32>(idx);
+    return sArcTanTbl[idx].atanVal + r * sArcTanTbl[idx].atanDt;
+}
+
+f32 Atan2FIdx(f32 y, f32 x) {
+    if (x == 0.0f && y == 0.0f) {
+        return 0.0f;
+    }
+
+    if (x >= 0.0f) {
+        if (y >= 0.0f) {
+            if (x >= y) {
+                return 0.0f + AtanFIdx_(y / x);
+            } else {
+                return 64.0f - AtanFIdx_(x / y);
+            }
+        } else {
+            if (x >= -y) {
+                return 0.0f - AtanFIdx_(-y / x);
+            } else {
+                return -64.0f + AtanFIdx_(x / -y);
+            }
+        }
+    } else {
+        if (y >= 0.0f) {
+            if (-x >= y) {
+                return 128.0f - AtanFIdx_(y / -x);
+            } else {
+                return 64.0f + AtanFIdx_(-x / y);
+            }
+        } else {
+            if (-x >= -y) {
+                return -128.0f + AtanFIdx_(-y / -x);
+            } else {
+                return -64.0f - AtanFIdx_(-x / -y);
+            }
+        }
+    }
+}
+
 // Takes in radians
 f32 sin(f32 x) {
     return SinFIdx(x * RAD2FIDX);
@@ -320,6 +409,10 @@ f32 cos(f32 x) {
 
 f32 acos(f32 x) {
     return std::acos(x);
+}
+
+f32 atan2(f32 y, f32 x) {
+    return Atan2FIdx(y, x) * FIDX2RAD;
 }
 
 f32 abs(f32 x) {
