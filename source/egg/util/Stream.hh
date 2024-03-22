@@ -36,9 +36,8 @@ protected:
     u32 m_index;
 
 private:
-    template <typename T>
+    template <ParseableType T>
     T read() {
-        static_assert(std::is_integral<T>::value);
         T val;
         read(&val, sizeof(val));
         m_index += sizeof(val);
@@ -54,12 +53,11 @@ public:
     RamStream(u8 *buffer, u32 size);
     ~RamStream() override;
 
-    RamStream split(u32 size);
-
     void read(void *output, u32 size) override;
     void write(void *input, u32 size) override;
     bool eof() override;
 
+    RamStream split(u32 size);
     void setBufferAndSize(void *buffer, u32 size);
 
 private:

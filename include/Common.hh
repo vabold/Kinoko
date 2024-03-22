@@ -1,12 +1,13 @@
 #pragma once
 
 #include <array>
-#include <assert.h>
 #include <bit>
+#include <cassert>
+#include <cfloat>
+#include <concepts>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
-#include <float.h>
 #include <limits>
 
 typedef int8_t s8;
@@ -251,8 +252,106 @@ static constexpr WeightClass VehicleToWeight(Vehicle vehicle) {
     }
 }
 
-extern const char *const COURSE_NAMES[59];
-extern const char *const VEHICLE_NAMES[36];
+static constexpr char *COURSE_NAMES[59] = {
+        "castle_course",
+        "farm_course",
+        "kinoko_course",
+        "volcano_course",
+        "factory_course",
+        "shopping_course",
+        "boardcross_course",
+        "truck_course",
+        "beginner_course",
+        "senior_course",
+        "ridgehighway_course",
+        "treehouse_course",
+        "koopa_course",
+        "rainbow_course",
+        "desert_course",
+        "water_course",
+        "old_peach_gc",
+        "old_mario_gc",
+        "old_waluigi_gc",
+        "old_donkey_gc",
+        "old_falls_ds",
+        "old_desert_ds",
+        "old_garden_ds",
+        "old_town_ds",
+        "old_mario_sfc",
+        "old_obake_sfc",
+        "old_mario_64",
+        "old_sherbet_64",
+        "old_koopa_64",
+        "old_donkey_64",
+        "old_koopa_gba",
+        "old_heyho_gba",
+        "venice_battle",
+        "block_battle",
+        "casino_battle",
+        "skate_battle",
+        "sand_battle",
+        "old_CookieLand_gc",
+        "old_House_ds",
+        "old_battle4_sfc",
+        "old_battle3_gba",
+        "old_matenro_64",
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr,
+        "ring_mission",
+        "winningrun_demo",
+        "loser_demo",
+        "draw_dmeo",
+        "ending_demo",
+};
+
+static constexpr char *VEHICLE_NAMES[36] = {
+        "sdf_kart",
+        "mdf_kart",
+        "ldf_kart",
+        "sa_kart",
+        "ma_kart",
+        "la_kart",
+        "sb_kart",
+        "mb_kart",
+        "lb_kart",
+        "sc_kart",
+        "mc_kart",
+        "lc_kart",
+        "sd_kart",
+        "md_kart",
+        "ld_kart",
+        "se_kart",
+        "me_kart",
+        "le_kart",
+        "sdf_bike",
+        "mdf_bike",
+        "ldf_bike",
+        "sa_bike",
+        "ma_bike",
+        "la_bike",
+        "sb_bike",
+        "mb_bike",
+        "lb_bike",
+        "sc_bike",
+        "mc_bike",
+        "lc_bike",
+        "sd_bike",
+        "md_bike",
+        "ld_bike",
+        "se_bike",
+        "me_bike",
+        "le_bike",
+};
 
 // CREDIT: MKW-SP
 // Hack required to print preprocessor macro
@@ -274,11 +373,19 @@ extern const char *const VEHICLE_NAMES[36];
     } while (0)
 
 static_assert(FLT_EPSILON == 1.0f / 8388608.0f);
+static_assert(
+        std::endian::native == std::endian::big || std::endian::native == std::endian::little);
+
+template <typename T>
+concept IntegralType = std::is_integral_v<T>;
+
+template <typename T>
+concept ParseableType =
+        std::is_integral_v<T> || std::is_floating_point_v<T> && (sizeof(T) == 4 || sizeof(T) == 8);
 
 // Form data into integral value
-template <typename T>
+template <IntegralType T>
 static inline T form(const u8 *data) {
-    static_assert(std::is_integral<T>::value);
     T result = 0;
     for (size_t i = 0; i < sizeof(T); ++i) {
         result = (result << 8) | data[i];
@@ -287,14 +394,15 @@ static inline T form(const u8 *data) {
 }
 
 // Consistent file parsing with byte-swappable values
-template <typename T>
-static inline T parse(T val, std::endian endian = std::endian::big) {
-    static_assert(
-            std::endian::native == std::endian::big || std::endian::native == std::endian::little);
-    return endian == std::endian::native ? val : std::byteswap(val);
-}
-
-// Does not support f64
-static inline f32 parsef(f32 val, std::endian endian) {
-    return std::bit_cast<f32>(parse<u32>(std::bit_cast<u32>(val), endian));
+template <ParseableType T>
+static inline constexpr T parse(T val, std::endian endian = std::endian::big) {
+    if constexpr (std::is_integral_v<T>) {
+        return endian == std::endian::native ? val : std::byteswap(val);
+    } else {
+        if constexpr (sizeof(T) == 4) {
+            return std::bit_cast<T>(parse<u32>(std::bit_cast<u32>(val), endian));
+        } else {
+            return std::bit_cast<T>(parse<u64>(std::bit_cast<u64>(val), endian));
+        }
+    }
 }
