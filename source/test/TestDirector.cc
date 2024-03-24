@@ -55,7 +55,7 @@ bool TestDirector::test(const TestData &data) {
                 f2pf(v1.x).c_str(), f2pf(v1.y).c_str(), f2pf(v1.z).c_str());
     };
 
-    auto logQuatDesync = [this, f2pf = f2pf](const EGG::Quatf &q0, const EGG::Quatf &q1,
+    auto logQuatDesync = [this, &f2pf](const EGG::Quatf &q0, const EGG::Quatf &q1,
                                  const char *name) {
         K_LOG("DESYNC! Frame: %d; Name: %s", m_currentFrame, name);
         K_LOG("Expected [0x%08X, 0x%08X, 0x%08X, 0x%08X] | [%s, %s, %s, %s]", f2u(q0.v.x),
