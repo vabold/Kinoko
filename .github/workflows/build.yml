@@ -23,10 +23,10 @@ jobs:
           python-version: "3.10"
       - name: Configure G++ version
         run: |
-          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 10
-          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-12 10
-          sudo update-alternatives --set gcc "/usr/bin/gcc-12"
-          sudo update-alternatives --set g++ "/usr/bin/g++-12"
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 10
+          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-13 10
+          sudo update-alternatives --set gcc "/usr/bin/gcc-13"
+          sudo update-alternatives --set g++ "/usr/bin/g++-13"
       - name: Configure ninja
         run: ./configure.py
       - name: Compile
