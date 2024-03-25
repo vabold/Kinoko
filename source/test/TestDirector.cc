@@ -4,21 +4,88 @@
 
 #include <abstract/File.hh>
 
+#include <egg/util/Stream.hh>
+
 #include <cstddef>
+#include <cstring>
 #include <format>
 
 namespace Test {
 
-TestDirector::TestDirector() {
+TestDirector::TestDirector(std::span<u8> &binaryData) : m_curTestIdx(0) {
+    Abstract::File::Remove("results.txt");
+    EGG::RamStream stream = EGG::RamStream(binaryData.data(), binaryData.size());
+    stream.setEndian(std::endian::big);
+    parseBinaryData(stream);
+    init();
+}
+
+TestDirector::~TestDirector() = default;
+
+void TestDirector::parseBinaryData(EGG::RamStream &stream) {
+    u16 numTestCases = stream.read_u16();
+    m_versionMajor = stream.read_u16();
+    m_versionMinor = stream.read_u16();
+
+    for (u16 i = 0; i < numTestCases; ++i) {
+        // Validate alignment
+        if (stream.read_string() != "TSTH") {
+            K_PANIC("Invalid binary data for test case!");
+        }
+
+        u16 totalSize = stream.read_u16();
+        TestCase testCase;
+
+        u16 nameLen = stream.read_u16();
+        std::string name = stream.read_string();
+        if (nameLen != name.size() + 1) {
+            K_PANIC("Test case name length mismatch!");
+        }
+
+        u16 rkgPathLen = stream.read_u16();
+        std::string rkgPath = stream.read_string();
+        if (rkgPathLen != rkgPath.size() + 1) {
+            K_PANIC("Test case RKG Path length mismatch!");
+        }
+
+        u16 krkgPathLen = stream.read_u16();
+        std::string krkgPath = stream.read_string();
+        if (krkgPathLen != krkgPath.size() + 1) {
+            K_PANIC("Test case KRKG Path length mismatch!");
+        }
+
+        char *nameArr = new char[nameLen];
+        strcpy(nameArr, name.c_str());
+        testCase.name = std::span(nameArr, nameLen);
+
+        char *rkgPathArr = new char[rkgPathLen];
+        strcpy(rkgPathArr, rkgPath.c_str());
+        testCase.rkgPath = std::span(rkgPathArr, rkgPathLen);
+
+        char *krkgPathArr = new char[krkgPathLen];
+        strcpy(krkgPathArr, krkgPath.c_str());
+        testCase.krkgPath = std::span(krkgPathArr, krkgPathLen);
+
+        testCase.targetFrame = stream.read_u16();
+
+        if (totalSize != sizeof(u16) * 4 + nameLen + rkgPathLen + krkgPathLen) {
+            K_PANIC("Unexpected bytes in test case");
+        }
+
+        m_testCases.push(testCase);
+    }
+}
+
+void TestDirector::init() {
     size_t size;
-    u8 *file = Abstract::File::Load("Tests/rmc3-rta-1-17-843.krkg", size);
-    m_file = file;
-    m_stream = EGG::RamStream(file, static_cast<u32>(size));
+    u8 *krkg = Abstract::File::Load(testCase().krkgPath.data(), size);
+    m_file = krkg;
+    m_stream = EGG::RamStream(krkg, static_cast<u32>(size));
     m_currentFrame = -1;
     m_sync = true;
 
     // Initialize endianness for the RAM stream
-    u16 mark = *reinterpret_cast<u16 *>(file + offsetof(TestHeader, byteOrderMark));
+    u16 mark = *reinterpret_cast<u16 *>(krkg + offsetof(TestHeader, byteOrderMark));
     std::endian endian = parse<u16>(mark) == 0xfeff ? std::endian::big : std::endian::little;
     m_stream.setEndian(endian);
 
@@ -27,13 +94,11 @@ TestDirector::TestDirector() {
     assert(m_stream.read_u32() == m_stream.index());
 }
 
-TestDirector::~TestDirector() = default;
-
 bool TestDirector::calc() {
     // Check if we're out of frames
-    constexpr u16 TARGET_FRAME = 411;
-    assert(TARGET_FRAME <= m_frameCount);
-    if (++m_currentFrame > TARGET_FRAME) {
+    u16 targetFrame = testCase().targetFrame;
+    assert(targetFrame <= m_frameCount);
+    if (++m_currentFrame > targetFrame) {
         return false;
     }
 
@@ -82,6 +147,14 @@ bool TestDirector::test(const TestData &data) {
     return true;
 }
 
+void TestDirector::printTestOutput() const {
+    std::string outStr(testCase().name.data());
+    outStr += "\n" + std::string(m_sync ? "1" : "0") + "\n";
+    outStr += std::to_string(testCase().targetFrame) + "\n";
+    outStr += std::to_string(m_frameCount) + "\n";
+    Abstract::File::Append("results.txt", outStr.c_str(), outStr.size());
+}
+
 TestData TestDirector::findNextEntry() {
     EGG::Vector3f pos;
     EGG::Quatf fullRot;
@@ -92,6 +165,11 @@ TestData TestDirector::findNextEntry() {
     data.pos = pos;
     data.fullRot = fullRot;
     return data;
+}
+
+const TestCase &TestDirector::testCase() const {
+    assert(m_testCases.size() > 0);
+    return m_testCases.front();
 }
 
 bool TestDirector::sync() const {

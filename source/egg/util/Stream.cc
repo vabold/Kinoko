@@ -90,6 +90,14 @@ bool RamStream::eof() {
     return m_index > m_size;
 }
 
+// Expects a null-terminated char array, and moves the index past the null terminator
+std::string RamStream::read_string() {
+    std::string ret(reinterpret_cast<char *>(m_buffer + m_index));
+    m_index += ret.size() + 1;
+    assert(!eof());
+    return ret;
+}
+
 void RamStream::setBufferAndSize(void *buffer, u32 size) {
     m_buffer = reinterpret_cast<u8 *>(buffer);
     m_size = size;
