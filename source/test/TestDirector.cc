@@ -29,7 +29,7 @@ void TestDirector::parseBinaryData(EGG::RamStream &stream) {
 
     for (u16 i = 0; i < numTestCases; ++i) {
         // Validate alignment
-        if (stream.read_string() != "TSTH") {
+        if (stream.read_u32() != 0x54535448) {
             K_PANIC("Invalid binary data for test case!");
         }
 
@@ -67,6 +67,11 @@ void TestDirector::parseBinaryData(EGG::RamStream &stream) {
         testCase.krkgPath = std::span(krkgPathArr, krkgPathLen);
 
         testCase.targetFrame = stream.read_u16();
+
+        // Validate alignment
+        if (stream.read_u32() != 0x54535446) {
+            K_PANIC("Invalid binary data for test case!");
+        }
 
         if (totalSize != sizeof(u16) * 4 + nameLen + rkgPathLen + krkgPathLen) {
             K_PANIC("Unexpected bytes in test case");

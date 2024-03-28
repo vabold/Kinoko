@@ -24,8 +24,8 @@ with open('testCases.json') as f:
     for key, value in data.items():
         tests.append(TestCase(key, value))
 
-TEST_CASE_HEADER = b'TSTH\x00'
-TEST_CASE_FOOTER = b'TSTF\x00'
+TEST_CASE_HEADER = b'TSTH'
+TEST_CASE_FOOTER = b'TSTF'
 
 BINARY_VER_MAJOR = 1
 BINARY_VER_MINOR = 0
@@ -44,7 +44,7 @@ with open('out/testCases.bin', 'wb') as f:
 
     for test in tests:
         # Alignment check header
-        f.write(struct.pack('>5s', TEST_CASE_HEADER))
+        f.write(struct.pack('>4s', TEST_CASE_HEADER))
 
         # Total memory size for this test case (excluding header/footer)
         nameLen = len(test.name)
@@ -69,7 +69,7 @@ with open('out/testCases.bin', 'wb') as f:
         f.write(struct.pack('>H', test.targetFrame))
 
         # Alignment check footer
-        f.write(struct.pack('<5s', TEST_CASE_FOOTER))
+        f.write(struct.pack('<4s', TEST_CASE_FOOTER))
 
 
 out_buf = io.StringIO()
