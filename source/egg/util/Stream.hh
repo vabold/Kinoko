@@ -2,6 +2,8 @@
 
 #include <Common.hh>
 
+#include <string>
+
 namespace EGG {
 
 class Stream {
@@ -57,6 +59,7 @@ public:
     void write(void *input, u32 size) override;
     bool eof() override;
 
+    std::string read_string();
     RamStream split(u32 size);
     void setBufferAndSize(void *buffer, u32 size);
 

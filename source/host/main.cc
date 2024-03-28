@@ -1,5 +1,7 @@
 #include "host/System.hh"
 
+#include <cstring>
+
 #if defined(__arm64__) || defined(__aarch64__)
 static void FlushDenormalsToZero() {
     uint64_t fpcr;
@@ -14,7 +16,12 @@ static void FlushDenormalsToZero() {
 }
 #endif
 
-int main() {
+int main(int argc, char **argv) {
     FlushDenormalsToZero();
-    return Host::KSystem::Instance().main();
+
+    if (argc < 2) {
+        K_PANIC("Expected file argument");
+    }
+
+    return Host::KSystem::Instance().main(argc, argv);
 }

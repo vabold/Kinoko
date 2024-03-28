@@ -31,12 +31,14 @@ jobs:
         run: ./configure.py
       - name: Compile
         run: ninja
-      - name: Upload result
+      - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: Kinoko
-          path: out
-
+          path: |
+            out
+            samples
+            tools
   format:
     name: Format
     runs-on: ubuntu-22.04
@@ -67,6 +69,38 @@ jobs:
       - name: Download dependencies
         run: curl -L -o Runtime.tar.gz ${{ secrets.RUNTIME_DEPENDENCIES }}
       - name: Extract dependencies
-        run: tar -xzf Runtime.tar.gz
+        run: tar -xzf Runtime.tar.gz -C out
       - name: Run Kinoko
-        run: chmod u+x ./kinoko && ./kinoko
+        run: cd out && chmod u+x ./kinoko && ./kinoko -s testCases.bin
+      - name: Upload output
+        uses: actions/upload-artifact@v3
+        with:
+          name: Kinoko output
+          path: out/results.txt
+
+  badge:
+    name: Compute Completion
+    runs-on: ubuntu-latest
+    needs: verify
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: Kinoko
+      - name: Download output binary
+        uses: actions/download-artifact@v3
+        with:
+          name: Kinoko output
+      - name: Run python script
+        run: python3 tools/progress.py results.txt
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: out/website/
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
