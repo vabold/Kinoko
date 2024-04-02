@@ -1,6 +1,5 @@
 #include "File.hh"
 
-#include <cstdio>
 #include <fstream>
 
 namespace Abstract::File {
