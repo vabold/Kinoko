@@ -98,7 +98,7 @@ KSystem &KSystem::Instance() {
     return instance;
 }
 
-KSystem::KSystem() {}
+KSystem::KSystem() = default;
 
 KSystem::~KSystem() = default;
 

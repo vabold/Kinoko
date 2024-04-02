@@ -6,8 +6,6 @@
 
 #include <egg/util/Stream.hh>
 
-#include <cstddef>
-#include <cstring>
 #include <format>
 
 namespace Test {
