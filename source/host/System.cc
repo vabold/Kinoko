@@ -9,6 +9,10 @@
 namespace Host {
 
 int KSystem::main(int argc, char **argv) {
+    if (argc < 2) {
+        K_PANIC("Expected file argument");
+    }
+    
     for (int i = 1; i < argc; ++i) {
         if (argv[i][0] != '-') {
             K_PANIC("Invalid argument: %s", argv[i]);
@@ -59,22 +63,21 @@ void KSystem::handleOption(Option opt, int argc, char **argv, int &i) {
 
         size_t size;
         u8 *data = Abstract::File::Load(argv[++i], size);
-        m_binaryData = std::span<u8>(data, size);
+        m_suiteData = std::span<u8>(data, size);
     } break;
     case Option::Invalid:
         break;
+    }
+
+    if (m_suiteData.size() == 0) {
+        K_PANIC("Failed to load suite data!");
     }
 }
 
 void KSystem::init() {
     auto *sceneCreator = new SceneCreatorDynamic;
     m_sceneMgr = new EGG::SceneManager(sceneCreator);
-
-    if (m_binaryData.size() > 0) {
-        m_testDirector = new Test::TestDirector(m_binaryData);
-    } else {
-        K_PANIC("Failed to load binary data!");
-    }
+    m_testDirector = new Test::TestDirector(m_suiteData);
 }
 
 bool KSystem::run() {
@@ -82,7 +85,7 @@ bool KSystem::run() {
         m_sceneMgr->calc();
     }
 
-    m_testDirector->printTestOutput();
+    m_testDirector->writeTestOutput();
     return true;
 }
 

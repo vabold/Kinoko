@@ -18,10 +18,5 @@ static void FlushDenormalsToZero() {
 
 int main(int argc, char **argv) {
     FlushDenormalsToZero();
-
-    if (argc < 2) {
-        K_PANIC("Expected file argument");
-    }
-
     return Host::KSystem::Instance().main(argc, argv);
 }

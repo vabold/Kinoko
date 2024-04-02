@@ -24,7 +24,7 @@ void RaceConfig::initRace() {
     player.type = Player::Type::Ghost;
 
     size_t size;
-    const Test::TestDirector *testDirector = Host::KSystem::Instance().testDirector();
+    const auto *testDirector = Host::KSystem::Instance().testDirector();
     u8 *rkg = Abstract::File::Load(testDirector->testCase().rkgPath.data(), size);
     m_raceScenario.ghost = new RawGhostFile(rkg);
 

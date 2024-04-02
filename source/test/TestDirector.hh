@@ -10,22 +10,22 @@
 namespace Test {
 
 struct TestCase {
-    std::span<char> name;
-    std::span<char> rkgPath;
-    std::span<char> krkgPath;
+    std::string name;
+    std::string rkgPath;
+    std::string krkgPath;
     u16 targetFrame;
 };
 
 class TestDirector {
 public:
-    TestDirector(std::span<u8> &binaryData);
+    TestDirector(std::span<u8> &suiteData);
     ~TestDirector();
 
-    void parseBinaryData(EGG::RamStream &stream);
+    void parseSuite(EGG::RamStream &stream);
     void init();
     bool calc();
     bool test(const TestData &data);
-    void printTestOutput() const;
+    void writeTestOutput() const;
 
     TestData findNextEntry();
     const TestCase &testCase() const;

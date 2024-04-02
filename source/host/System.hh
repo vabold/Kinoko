@@ -31,7 +31,7 @@ private:
     KSystem(KSystem &&) = delete;
     ~KSystem();
 
-    std::span<u8> m_binaryData;
+    std::span<u8> m_suiteData;
     EGG::SceneManager *m_sceneMgr;
     Test::TestDirector *m_testDirector;
 };

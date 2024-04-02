@@ -12,17 +12,17 @@
 
 namespace Test {
 
-TestDirector::TestDirector(std::span<u8> &binaryData) : m_curTestIdx(0) {
+TestDirector::TestDirector(std::span<u8> &suiteData) : m_curTestIdx(0) {
     Abstract::File::Remove("results.txt");
-    EGG::RamStream stream = EGG::RamStream(binaryData.data(), binaryData.size());
+    EGG::RamStream stream = EGG::RamStream(suiteData.data(), suiteData.size());
     stream.setEndian(std::endian::big);
-    parseBinaryData(stream);
+    parseSuite(stream);
     init();
 }
 
 TestDirector::~TestDirector() = default;
 
-void TestDirector::parseBinaryData(EGG::RamStream &stream) {
+void TestDirector::parseSuite(EGG::RamStream &stream) {
     constexpr u32 TEST_HEADER_SIGNATURE = 0x54535448; // TSTH
     constexpr u32 TEST_FOOTER_SIGNATURE = 0x54535446; // TSTF
     constexpr u16 SUITE_MAJOR_VER = 1;
@@ -47,34 +47,22 @@ void TestDirector::parseBinaryData(EGG::RamStream &stream) {
         TestCase testCase;
 
         u16 nameLen = stream.read_u16();
-        std::string name = stream.read_string();
-        if (nameLen != name.size() + 1) {
+        testCase.name = stream.read_string();
+        if (nameLen != testCase.name.size() + 1) {
             K_PANIC("Test case name length mismatch!");
         }
 
         u16 rkgPathLen = stream.read_u16();
-        std::string rkgPath = stream.read_string();
-        if (rkgPathLen != rkgPath.size() + 1) {
+        testCase.rkgPath = stream.read_string();
+        if (rkgPathLen != testCase.rkgPath.size() + 1) {
             K_PANIC("Test case RKG Path length mismatch!");
         }
 
         u16 krkgPathLen = stream.read_u16();
-        std::string krkgPath = stream.read_string();
-        if (krkgPathLen != krkgPath.size() + 1) {
+        testCase.krkgPath = stream.read_string();
+        if (krkgPathLen != testCase.krkgPath.size() + 1) {
             K_PANIC("Test case KRKG Path length mismatch!");
         }
-
-        char *nameArr = new char[nameLen];
-        strcpy(nameArr, name.c_str());
-        testCase.name = std::span(nameArr, nameLen);
-
-        char *rkgPathArr = new char[rkgPathLen];
-        strcpy(rkgPathArr, rkgPath.c_str());
-        testCase.rkgPath = std::span(rkgPathArr, rkgPathLen);
-
-        char *krkgPathArr = new char[krkgPathLen];
-        strcpy(krkgPathArr, krkgPath.c_str());
-        testCase.krkgPath = std::span(krkgPathArr, krkgPathLen);
 
         testCase.targetFrame = stream.read_u16();
 
@@ -162,7 +150,7 @@ bool TestDirector::test(const TestData &data) {
     return true;
 }
 
-void TestDirector::printTestOutput() const {
+void TestDirector::writeTestOutput() const {
     std::string outStr(testCase().name.data());
     outStr += "\n" + std::string(m_sync ? "1" : "0") + "\n";
     outStr += std::to_string(testCase().targetFrame) + "\n";
