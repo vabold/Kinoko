@@ -23,13 +23,23 @@ TestDirector::TestDirector(std::span<u8> &binaryData) : m_curTestIdx(0) {
 TestDirector::~TestDirector() = default;
 
 void TestDirector::parseBinaryData(EGG::RamStream &stream) {
+    constexpr u32 TEST_HEADER_SIGNATURE = 0x54535448; // TSTH
+    constexpr u32 TEST_FOOTER_SIGNATURE = 0x54535446; // TSTF
+    constexpr u16 SUITE_MAJOR_VER = 1;
+    constexpr u16 SUITE_MAX_MINOR_VER = 0;
+
     u16 numTestCases = stream.read_u16();
-    m_versionMajor = stream.read_u16();
-    m_versionMinor = stream.read_u16();
+    u16 testMajorVer = stream.read_u16();
+    u16 testMinorVer = stream.read_u16();
+
+    if (testMajorVer != SUITE_MAJOR_VER || testMinorVer > SUITE_MAX_MINOR_VER) {
+        K_PANIC("Version not supported! Provided file is %d.%d while Kinoko supports up to %d.%d",
+                testMajorVer, testMinorVer, SUITE_MAJOR_VER, SUITE_MAX_MINOR_VER);
+    }
 
     for (u16 i = 0; i < numTestCases; ++i) {
         // Validate alignment
-        if (stream.read_u32() != 0x54535448) {
+        if (stream.read_u32() != TEST_HEADER_SIGNATURE) {
             K_PANIC("Invalid binary data for test case!");
         }
 
@@ -69,7 +79,7 @@ void TestDirector::parseBinaryData(EGG::RamStream &stream) {
         testCase.targetFrame = stream.read_u16();
 
         // Validate alignment
-        if (stream.read_u32() != 0x54535446) {
+        if (stream.read_u32() != TEST_FOOTER_SIGNATURE) {
             K_PANIC("Invalid binary data for test case!");
         }
 
@@ -182,7 +192,9 @@ bool TestDirector::sync() const {
 }
 
 void TestDirector::readHeader() {
-    assert(m_stream.read_u32() == 0x4b524b47); // 'KRKG'
+    constexpr u32 KRKG_SIGNATURE = 0x4b524b47; // KRKG
+
+    assert(m_stream.read_u32() == KRKG_SIGNATURE);
     m_stream.skip(2);
     m_frameCount = m_stream.read_u16();
     m_versionMajor = m_stream.read_u16();
