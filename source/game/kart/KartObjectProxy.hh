@@ -92,6 +92,8 @@ public:
 
     const EGG::Vector3f &pos() const;
     const EGG::Quatf &fullRot() const;
+    const EGG::Vector3f &extVel() const;
+    const EGG::Vector3f &intVel() const;
     bool isBike() const;
     u16 suspCount() const;
     u16 tireCount() const;

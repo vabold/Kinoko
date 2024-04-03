@@ -2,6 +2,8 @@
 
 #include "egg/util/Stream.hh"
 
+#include <format>
+
 namespace EGG {
 
 struct Vector2f {
@@ -114,6 +116,11 @@ struct Vector3f {
 
     bool operator!=(const Vector3f &rhs) const {
         return !(*this == rhs);
+    }
+
+    explicit operator std::string() const {
+        return std::format("[0x{:08X}, 0x{:08X}, 0x{:08X}] | [{}, {}, {}]", f2u(x), f2u(y), f2u(z),
+                x, y, z);
     }
 
     Vector3f cross(const EGG::Vector3f &rhs) const;
