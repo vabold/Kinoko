@@ -1,5 +1,7 @@
 # Kinoko
 
+[![Luke's rMC3 RTA WR](<https://vabold.github.io/Kinoko/Luke rMC3 RTA WR.svg>)](<https://vabold.github.io/Kinoko/Luke rMC3 RTA WR.svg>)
+
 Kinoko is a reimplementation of Mario Kart Wii's physics engine in C++. This project is a spiritual continuation of [stblr/Hanachan](https://github.com/stblr/Hanachan). Like Hanachan, the goal of this reimplementation is to reach perfectly accurate ghost replay.
 
 ## Building

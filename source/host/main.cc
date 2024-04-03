@@ -14,7 +14,7 @@ static void FlushDenormalsToZero() {
 }
 #endif
 
-int main() {
+int main(int argc, char **argv) {
     FlushDenormalsToZero();
-    return Host::KSystem::Instance().main();
+    return Host::KSystem::Instance().main(argc, argv);
 }
