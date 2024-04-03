@@ -16,6 +16,10 @@ struct TestHeader {
 struct TestData {
     EGG::Vector3f pos;
     EGG::Quatf fullRot;
+    // Added in 0.2
+    EGG::Vector3f extVel;
+    // Added in 0.3
+    EGG::Vector3f intVel;
 };
 
 } // namespace Test

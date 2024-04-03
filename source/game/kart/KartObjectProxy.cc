@@ -193,6 +193,14 @@ const EGG::Quatf &KartObjectProxy::fullRot() const {
     return dynamics()->fullRot();
 }
 
+const EGG::Vector3f &KartObjectProxy::extVel() const {
+    return dynamics()->extVel();
+}
+
+const EGG::Vector3f &KartObjectProxy::intVel() const {
+    return dynamics()->intVel();
+}
+
 bool KartObjectProxy::isBike() const {
     return param()->isBike();
 }

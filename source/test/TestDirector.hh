@@ -35,6 +35,21 @@ public:
 private:
     void readHeader();
 
+    template <typename T>
+    bool checkDesync(const T &t0, const T &t1, const char *name) const {
+        if (t0 == t1) {
+            return true;
+        }
+
+        K_LOG("DESYNC! Frame: %d; Name: %s", m_currentFrame, name);
+        std::string s0(t0);
+        std::string s1(t1);
+        K_LOG("Expected: %s", s0.c_str());
+        K_LOG("Observed: %s", s1.c_str());
+
+        return false;
+    }
+
     std::queue<TestCase> m_testCases;
     u16 m_curTestIdx;
 

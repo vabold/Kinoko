@@ -59,6 +59,11 @@ struct Quatf {
         return !(*this == rhs);
     }
 
+    explicit operator std::string() const {
+        return std::format("[0x{:08X}, 0x{:08X}, 0x{:08X}, 0x{:08X}] | [{}, {}, {}, {}]", f2u(v.x),
+                f2u(v.y), f2u(v.z), f2u(w), v.x, v.y, v.z, w);
+    }
+
     void setRPY(const Vector3f &rpy);
     void normalise();
     void makeVectorRotation(const Vector3f &from, const Vector3f &to);
