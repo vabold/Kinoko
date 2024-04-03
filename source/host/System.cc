@@ -12,7 +12,7 @@ int KSystem::main(int argc, char **argv) {
     if (argc < 2) {
         K_PANIC("Expected file argument");
     }
-    
+
     for (int i = 1; i < argc; ++i) {
         if (argv[i][0] != '-') {
             K_PANIC("Invalid argument: %s", argv[i]);
@@ -63,14 +63,15 @@ void KSystem::handleOption(Option opt, int argc, char **argv, int &i) {
 
         size_t size;
         u8 *data = Abstract::File::Load(argv[++i], size);
+
+        if (size == 0) {
+            K_PANIC("Failed to load suite data!");
+        }
+
         m_suiteData = std::span<u8>(data, size);
     } break;
     case Option::Invalid:
         break;
-    }
-
-    if (m_suiteData.size() == 0) {
-        K_PANIC("Failed to load suite data!");
     }
 }
 
