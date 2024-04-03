@@ -156,12 +156,12 @@ const EGG::Matrix34f &KartObjectProxy::pose() const {
 
 EGG::Vector3f KartObjectProxy::bodyFront() const {
     const EGG::Matrix34f &mtx = pose();
-    return EGG::Vector3f(mtx(0, 2), mtx(1, 2), mtx(2, 2));
+    return EGG::Vector3f(mtx[0, 2], mtx[1, 2], mtx[2, 2]);
 }
 
 EGG::Vector3f KartObjectProxy::bodyForward() const {
     const EGG::Matrix34f &mtx = pose();
-    return EGG::Vector3f(mtx(0, 0), mtx(1, 0), mtx(2, 0));
+    return EGG::Vector3f(mtx[0, 0], mtx[1, 0], mtx[2, 0]);
 }
 
 const EGG::Vector3f &KartObjectProxy::componentXAxis() const {

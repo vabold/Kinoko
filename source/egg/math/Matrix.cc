@@ -142,23 +142,23 @@ void Matrix34f::makeZero() {
 Matrix34f Matrix34f::multiplyTo(const Matrix34f &rhs) const {
     Matrix34f mat;
 
-    mat(0, 0) = fma(rhs(2, 0), mtx[0][2], fma(rhs(1, 0), mtx[0][1], rhs(0, 0) * mtx[0][0]));
-    mat(0, 1) = fma(rhs(2, 1), mtx[0][2], fma(rhs(1, 1), mtx[0][1], rhs(0, 1) * mtx[0][0]));
-    mat(1, 0) = fma(rhs(2, 0), mtx[1][2], fma(rhs(1, 0), mtx[1][1], rhs(0, 0) * mtx[1][0]));
-    mat(1, 1) = fma(rhs(2, 1), mtx[1][2], fma(rhs(1, 1), mtx[1][1], rhs(0, 1) * mtx[1][0]));
-    mat(0, 2) = fma(rhs(2, 2), mtx[0][2], fma(rhs(1, 2), mtx[0][1], rhs(0, 2) * mtx[0][0]));
-    mat(0, 3) = fma(1.0f, mtx[0][3],
-            fma(rhs(2, 3), mtx[0][2], fma(rhs(1, 3), mtx[0][1], rhs(0, 3) * mtx[0][0])));
-    mat(1, 2) =
-            mtx[1][3] + fma(rhs(2, 2), mtx[1][2], fma(rhs(1, 2), mtx[1][1], rhs(0, 2) * mtx[1][0]));
-    mat(1, 3) = fma(1.0f, mtx[1][3],
-            fma(rhs(2, 3), mtx[1][2], fma(rhs(1, 3), mtx[1][1], rhs(0, 3) * mtx[1][0])));
-    mat(2, 0) = fma(rhs(2, 0), mtx[2][2], fma(rhs(1, 0), mtx[2][1], rhs(0, 0) * mtx[2][0]));
-    mat(2, 1) = fma(rhs(2, 1), mtx[2][2], fma(rhs(1, 1), mtx[2][1], rhs(0, 1) * mtx[2][0]));
-    mat(2, 2) =
-            mtx[2][3] + fma(rhs(2, 2), mtx[2][2], fma(rhs(1, 2), mtx[2][1], rhs(0, 2) * mtx[2][0]));
-    mat(2, 3) = fma(1.0f, mtx[2][3],
-            fma(rhs(2, 3), mtx[2][2], fma(rhs(1, 3), mtx[2][1], rhs(0, 3) * mtx[2][0])));
+    mat[0, 0] = fma(rhs[2, 0], mtx[0][2], fma(rhs[1, 0], mtx[0][1], rhs[0, 0] * mtx[0][0]));
+    mat[0, 1] = fma(rhs[2, 1], mtx[0][2], fma(rhs[1, 1], mtx[0][1], rhs[0, 1] * mtx[0][0]));
+    mat[1, 0] = fma(rhs[2, 0], mtx[1][2], fma(rhs[1, 0], mtx[1][1], rhs[0, 0] * mtx[1][0]));
+    mat[1, 1] = fma(rhs[2, 1], mtx[1][2], fma(rhs[1, 1], mtx[1][1], rhs[0, 1] * mtx[1][0]));
+    mat[0, 2] = fma(rhs[2, 2], mtx[0][2], fma(rhs[1, 2], mtx[0][1], rhs[0, 2] * mtx[0][0]));
+    mat[0, 3] = fma(1.0f, mtx[0][3],
+            fma(rhs[2, 3], mtx[0][2], fma(rhs[1, 3], mtx[0][1], rhs[0, 3] * mtx[0][0])));
+    mat[1, 2] =
+            mtx[1][3] + fma(rhs[2, 2], mtx[1][2], fma(rhs[1, 2], mtx[1][1], rhs[0, 2] * mtx[1][0]));
+    mat[1, 3] = fma(1.0f, mtx[1][3],
+            fma(rhs[2, 3], mtx[1][2], fma(rhs[1, 3], mtx[1][1], rhs[0, 3] * mtx[1][0])));
+    mat[2, 0] = fma(rhs[2, 0], mtx[2][2], fma(rhs[1, 0], mtx[2][1], rhs[0, 0] * mtx[2][0]));
+    mat[2, 1] = fma(rhs[2, 1], mtx[2][2], fma(rhs[1, 1], mtx[2][1], rhs[0, 1] * mtx[2][0]));
+    mat[2, 2] =
+            mtx[2][3] + fma(rhs[2, 2], mtx[2][2], fma(rhs[1, 2], mtx[2][1], rhs[0, 2] * mtx[2][0]));
+    mat[2, 3] = fma(1.0f, mtx[2][3],
+            fma(rhs[2, 3], mtx[2][2], fma(rhs[1, 3], mtx[2][1], rhs[0, 3] * mtx[2][0])));
 
     return mat;
 }
@@ -209,15 +209,15 @@ Matrix34f Matrix34f::inverseTo() const {
 
     Matrix34f ret;
 
-    ret(0, 2) = (mtx[0][1] * mtx[1][2] - mtx[1][1] * mtx[0][2]) * invDet;
-    ret(1, 2) = -(mtx[0][0] * mtx[1][2] - mtx[0][2] * mtx[1][0]) * invDet;
-    ret(2, 1) = -(mtx[0][0] * mtx[2][1] - mtx[2][0] * mtx[0][1]) * invDet;
-    ret(2, 2) = (mtx[0][0] * mtx[1][1] - mtx[1][0] * mtx[0][1]) * invDet;
-    ret(2, 0) = (mtx[1][0] * mtx[2][1] - mtx[2][0] * mtx[1][1]) * invDet;
-    ret(0, 0) = (mtx[1][1] * mtx[2][2] - mtx[2][1] * mtx[1][2]) * invDet;
-    ret(0, 1) = -(mtx[0][1] * mtx[2][2] - mtx[2][1] * mtx[0][2]) * invDet;
-    ret(1, 0) = -(mtx[1][0] * mtx[2][2] - mtx[2][0] * mtx[1][2]) * invDet;
-    ret(1, 1) = (mtx[0][0] * mtx[2][2] - mtx[2][0] * mtx[0][2]) * invDet;
+    ret[0, 2] = (mtx[0][1] * mtx[1][2] - mtx[1][1] * mtx[0][2]) * invDet;
+    ret[1, 2] = -(mtx[0][0] * mtx[1][2] - mtx[0][2] * mtx[1][0]) * invDet;
+    ret[2, 1] = -(mtx[0][0] * mtx[2][1] - mtx[2][0] * mtx[0][1]) * invDet;
+    ret[2, 2] = (mtx[0][0] * mtx[1][1] - mtx[1][0] * mtx[0][1]) * invDet;
+    ret[2, 0] = (mtx[1][0] * mtx[2][1] - mtx[2][0] * mtx[1][1]) * invDet;
+    ret[0, 0] = (mtx[1][1] * mtx[2][2] - mtx[2][1] * mtx[1][2]) * invDet;
+    ret[0, 1] = -(mtx[0][1] * mtx[2][2] - mtx[2][1] * mtx[0][2]) * invDet;
+    ret[1, 0] = -(mtx[1][0] * mtx[2][2] - mtx[2][0] * mtx[1][2]) * invDet;
+    ret[1, 1] = (mtx[0][0] * mtx[2][2] - mtx[2][0] * mtx[0][2]) * invDet;
 
     return ret;
 }
@@ -226,12 +226,12 @@ Matrix34f Matrix34f::transpose() const {
     // NOTE: 4th element in each row is not meant to be used reliably
     Matrix34f ret = *this;
 
-    ret(0, 1) = mtx[1][0];
-    ret(0, 2) = mtx[2][0];
-    ret(1, 0) = mtx[0][1];
-    ret(1, 2) = mtx[2][1];
-    ret(2, 0) = mtx[0][2];
-    ret(2, 1) = mtx[1][2];
+    ret[0, 1] = mtx[1][0];
+    ret[0, 2] = mtx[2][0];
+    ret[1, 0] = mtx[0][1];
+    ret[1, 2] = mtx[2][1];
+    ret[2, 0] = mtx[0][2];
+    ret[2, 1] = mtx[1][2];
 
     return ret;
 }

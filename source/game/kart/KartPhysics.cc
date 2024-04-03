@@ -24,18 +24,18 @@ void KartPhysics::reset() {
     m_instantaneousExtraRot = EGG::Quatf::ident;
     m_extraRot = EGG::Quatf::ident;
     m_pose = EGG::Matrix34f::ident;
-    m_xAxis = EGG::Vector3f(m_pose(0, 0), m_pose(1, 0), m_pose(2, 0));
-    m_yAxis = EGG::Vector3f(m_pose(0, 1), m_pose(1, 1), m_pose(2, 1));
-    m_zAxis = EGG::Vector3f(m_pose(0, 2), m_pose(1, 2), m_pose(2, 2));
+    m_xAxis = EGG::Vector3f(m_pose[0, 0], m_pose[1, 0], m_pose[2, 0]);
+    m_yAxis = EGG::Vector3f(m_pose[0, 1], m_pose[1, 1], m_pose[2, 1]);
+    m_zAxis = EGG::Vector3f(m_pose[0, 2], m_pose[1, 2], m_pose[2, 2]);
     m_pos = m_dynamics->pos();
     m_velocity = m_dynamics->velocity();
 }
 
 void KartPhysics::updatePose() {
     m_pose.makeQT(m_dynamics->fullRot(), m_dynamics->pos());
-    m_xAxis = EGG::Vector3f(m_pose(0, 0), m_pose(1, 0), m_pose(2, 0));
-    m_yAxis = EGG::Vector3f(m_pose(0, 1), m_pose(1, 1), m_pose(2, 1));
-    m_zAxis = EGG::Vector3f(m_pose(0, 2), m_pose(1, 2), m_pose(2, 2));
+    m_xAxis = EGG::Vector3f(m_pose[0, 0], m_pose[1, 0], m_pose[2, 0]);
+    m_yAxis = EGG::Vector3f(m_pose[0, 1], m_pose[1, 1], m_pose[2, 1]);
+    m_zAxis = EGG::Vector3f(m_pose[0, 2], m_pose[1, 2], m_pose[2, 2]);
 }
 
 void KartPhysics::calc(f32 dt, f32 maxSpeed, const EGG::Vector3f & /*scale*/, bool air) {

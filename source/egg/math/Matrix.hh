@@ -15,12 +15,12 @@ public:
         return mtx == rhs.mtx;
     }
 
-    f32 &operator()(int i, int j) {
-        return mtx[i][j];
+    f32 &operator[](size_t row, size_t col) {
+        return mtx[row][col];
     }
 
-    f32 operator()(int i, int j) const {
-        return mtx[i][j];
+    f32 operator[](size_t row, size_t col) const {
+        return mtx[row][col];
     }
 
     // Q for Quaternion, T for translation
