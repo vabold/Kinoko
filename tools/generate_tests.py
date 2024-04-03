@@ -9,7 +9,7 @@ class TestCase:
         self.krkgPath = str.encode("../"+value["krkgPath"]) + b'\x00'
         self.targetFrame = value["targetFrame"]
 
-def generateTests():
+def generate_tests():
     # Parse test cases from JSON
     tests = []
 

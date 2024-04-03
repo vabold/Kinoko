@@ -4,10 +4,10 @@ from glob import glob
 import io
 import os
 import sys
-from tools.generate_tests import generateTests
+from tools.generate_tests import generate_tests
 from vendor.ninja_syntax import Writer
 
-generateTests()
+generate_tests()
 
 out_buf = io.StringIO()
 n = Writer(out_buf)
