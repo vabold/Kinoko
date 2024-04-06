@@ -82,7 +82,7 @@ jobs:
     name: Compute Completion
     runs-on: ubuntu-latest
     needs: verify
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
       pages: write
       id-token: write
