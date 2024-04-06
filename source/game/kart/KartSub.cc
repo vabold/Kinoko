@@ -8,6 +8,8 @@
 
 #include "game/field/CollisionDirector.hh"
 
+#include "game/system/RaceManager.hh"
+
 #include <egg/math/Math.hh>
 
 namespace Kart {
@@ -67,18 +69,23 @@ void KartSub::calcPass0() {
     move()->calc();
 
     // Pertains to startslides / leaning in stage 0 and 1
-    EGG::Vector3f killExtVel = dynamics()->extVel();
-    if (isBike()) {
-        killExtVel = killExtVel.rej(move()->smoothedUp());
-    } else {
-        killExtVel.x = 0.0f;
-        killExtVel.z = 0.0f;
+    const auto *raceManager = System::RaceManager::Instance();
+    if (!raceManager->isStageReached(System::RaceManager::Stage::Race)) {
+        dynamics()->setIntVel(EGG::Vector3f::zero);
+
+        EGG::Vector3f killExtVel = dynamics()->extVel();
+        if (isBike()) {
+            killExtVel = killExtVel.rej(move()->smoothedUp());
+        } else {
+            killExtVel.x = 0.0f;
+            killExtVel.z = 0.0f;
+        }
+
+        dynamics()->setExtVel(killExtVel);
     }
 
-    dynamics()->setExtVel(killExtVel);
-
     f32 maxSpeed = move()->hardSpeedLimit();
-    physics()->calc(DT, maxSpeed, scale(), !state()->isGround());
+    physics()->calc(DT, maxSpeed, scale(), !state()->isTouchingGround());
 
     collide()->calcHitboxes();
     collisionGroup()->setHitboxScale(move()->totalScale());

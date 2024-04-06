@@ -109,6 +109,14 @@ bool RaceInputState::accelerate() const {
     return !!(buttons & 0x1);
 }
 
+bool RaceInputState::brake() const {
+    return !!(buttons & 0x2);
+}
+
+bool RaceInputState::drift() const {
+    return !!(buttons & 0x8);
+}
+
 bool RaceInputState::trickUp() const {
     return !!(trick & 0x10);
 }
@@ -191,6 +199,14 @@ void KPad::reset() {
 
 const RaceInputState &KPad::currentState() const {
     return m_currentInputState;
+}
+
+const RaceInputState &KPad::lastState() const {
+    return m_lastInputState;
+}
+
+bool KPad::driftIsAuto() const {
+    return m_controller->driftIsAuto();
 }
 
 KPadPlayer::KPadPlayer() = default;

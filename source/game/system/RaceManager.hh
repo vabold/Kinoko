@@ -31,6 +31,9 @@ public:
 
     void calc();
 
+    bool isStageReached(Stage stage) const;
+    int getCountdownTimer() const;
+
     const RaceManagerPlayer &player() const;
     Stage stage() const;
 
@@ -46,6 +49,8 @@ private:
     Stage m_stage;
     u16 m_introTimer;
     u32 m_timer;
+
+    static constexpr u16 STAGE_COUNTDOWN_DURATION = 240;
 
     static RaceManager *s_instance;
 };

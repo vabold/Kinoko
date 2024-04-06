@@ -1,5 +1,6 @@
 #pragma once
 
+#include "game/kart/KartBoost.hh"
 #include "game/kart/KartObjectProxy.hh"
 
 namespace Kart {
@@ -10,7 +11,6 @@ public:
 
     virtual void calcTurn();
     virtual void calcWheelie() {}
-    virtual void calcStandstillBoostRot() {}
     virtual void setTurnParams();
     virtual void init(bool b1, bool b2);
     virtual f32 leanRot() const;
@@ -23,7 +23,15 @@ public:
     void calcDirs();
     void calcOffroad();
     void calcRotation();
+    void calcVehicleSpeed();
+    f32 calcVehicleAcceleration() const;
+    void calcAcceleration();
+    void calcStandstillBoostRot();
     virtual void calcVehicleRotation(f32 /*turn*/) {}
+    virtual f32 getWheelieSoftSpeedLimitBonus() const;
+    virtual bool canWheelie() const;
+
+    void applyStartBoost(s16 frames);
 
     void setFloorCollisionCount(u16 count);
     void setKCLWheelRotFactor(f32 val);
@@ -36,7 +44,12 @@ public:
     u16 floorCollisionCount() const;
 
 protected:
+    f32 m_baseSpeed;
+    f32 m_softSpeedLimit;
+    f32 m_speed;
+    f32 m_lastSpeed;
     f32 m_hardSpeedLimit;
+    f32 m_acceleration;
     EGG::Vector3f m_smoothedUp;
     EGG::Vector3f m_up;
     EGG::Vector3f m_dir;
@@ -47,6 +60,7 @@ protected:
     f32 m_kclWheelRotFactor;
     u16 m_floorCollisionCount;
     f32 m_standStillBoostRot;
+    KartBoost m_boost;
     f32 m_realTurn;
     f32 m_weightedTurn;
     f32 m_rawTurn;
@@ -64,14 +78,15 @@ public:
 
     void calcVehicleRotation(f32 /*turn*/) override;
     void calcWheelie() override;
-    void calcStandstillBoostRot() override;
     void setTurnParams() override;
     void init(bool b1, bool b2) override;
+    f32 getWheelieSoftSpeedLimitBonus() const override;
     f32 wheelieRotFactor() const;
 
     void tryStartWheelie();
 
     f32 leanRot() const override;
+    bool canWheelie() const override;
 
 private:
     f32 m_leanRot;

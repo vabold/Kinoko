@@ -23,6 +23,8 @@ struct RaceInputState {
     void reset();
 
     bool accelerate() const;
+    bool brake() const;
+    bool drift() const;
     bool trickUp() const;
 
     u16 buttons;
@@ -118,6 +120,8 @@ public:
     void reset();
 
     const RaceInputState &currentState() const;
+    const RaceInputState &lastState() const;
+    bool driftIsAuto() const;
 
 protected:
     KPadController *m_controller;
