@@ -30,6 +30,7 @@ public:
     const EGG::Vector3f &extVel() const;
     const EGG::Vector3f &angVel0() const;
     const EGG::Vector3f &angVel2() const;
+    f32 speedFix() const;
 
     void setPos(const EGG::Vector3f &pos);
     void setGravity(f32 gravity);
@@ -37,6 +38,7 @@ public:
     void setFullRot(const EGG::Quatf &q);
     void setSpecialRot(const EGG::Quatf &q);
     void setExtraRot(const EGG::Quatf &q);
+    void setIntVel(const EGG::Vector3f &v);
     void setExtVel(const EGG::Vector3f &v);
     void setAngVel0(const EGG::Vector3f &v);
     void setAngVel2(const EGG::Vector3f &v);
@@ -66,6 +68,7 @@ protected:
     f32 m_gravity;
     EGG::Vector3f m_intVel;
     f32 m_stabilizationFactor;
+    f32 m_speedFix;
     EGG::Vector3f m_top_;
     f32 m_angVel0YFactor;
     bool m_forceUpright;

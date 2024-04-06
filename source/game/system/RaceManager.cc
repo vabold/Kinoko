@@ -25,7 +25,6 @@ void RaceManager::findKartStartPoint(EGG::Vector3f &pos, EGG::Vector3f &angles) 
 
 void RaceManager::calc() {
     constexpr u16 STAGE_INTRO_DURATION = 172;
-    constexpr u16 STAGE_COUNTDOWN_DURATION = 240;
 
     switch (m_stage) {
     case Stage::Intro:
@@ -45,6 +44,15 @@ void RaceManager::calc() {
     default:
         break;
     }
+}
+
+bool RaceManager::isStageReached(Stage stage) const {
+    return static_cast<std::underlying_type_t<Stage>>(m_stage) >=
+            static_cast<std::underlying_type_t<Stage>>(stage);
+}
+
+int RaceManager::getCountdownTimer() const {
+    return STAGE_COUNTDOWN_DURATION - m_timer;
 }
 
 const RaceManagerPlayer &RaceManager::player() const {

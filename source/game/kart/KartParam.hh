@@ -87,10 +87,10 @@ public:
         f32 speed;
         f32 turningSpeed;
         f32 tilt;
-        f32 accelerationStandardA[4];
-        f32 accelerationStandardT[3];
-        f32 accelerationDriftA[2];
-        f32 accelerationDriftT[1];
+        std::array<f32, 4> accelerationStandardA;
+        std::array<f32, 3> accelerationStandardT;
+        std::array<f32, 2> accelerationDriftA;
+        std::array<f32, 1> accelerationDriftT;
         f32 handlingManualTightness;
         f32 handlingAutomaticTightness;
         f32 handlingReactivity;

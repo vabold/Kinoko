@@ -18,6 +18,7 @@ void KartDynamics::init() {
     m_noGravity = false;
     m_stabilizationFactor = 0.1f;
     m_top_ = EGG::Vector3f::ey;
+    m_speedFix = 0.0f;
     m_angVel0YFactor = 0.0f;
 }
 
@@ -53,12 +54,27 @@ void KartDynamics::calc(f32 dt, f32 maxSpeed, bool /*air*/) {
     m_extVel *= 0.998f;
     m_angVel0 *= 0.98f;
 
-    EGG::Vector3f playerBackHoriz = m_mainRot.rotateVector(EGG::Vector3f::ez);
+    EGG::Vector3f playerBack = m_mainRot.rotateVector(EGG::Vector3f::ez);
+    EGG::Vector3f playerBackHoriz = playerBack;
     playerBackHoriz.y = 0.0f;
 
     if (FLT_EPSILON < playerBackHoriz.dot()) {
         playerBackHoriz.normalise();
-        m_extVel = m_extVel.rej(playerBackHoriz);
+        const auto projAndRej = m_extVel.projAndRej(playerBackHoriz);
+        const EGG::Vector3f &speedBack = projAndRej.first;
+        m_extVel = projAndRej.second;
+
+        f32 norm = speedBack.dot();
+        if (FLT_EPSILON < norm) {
+            norm = EGG::Mathf::sqrt(norm);
+        } else {
+            norm = 0.0f;
+        }
+
+        m_speedFix = norm * playerBack.dot(playerBackHoriz);
+        if (speedBack.dot(playerBackHoriz) < 0.0f) {
+            m_speedFix = -m_speedFix;
+        }
     }
 
     m_velocity = m_extVel * dt + m_intVel + m_movingObjVel + m_movingRoadVel;
@@ -157,6 +173,10 @@ const EGG::Vector3f &KartDynamics::angVel2() const {
     return m_angVel2;
 }
 
+f32 KartDynamics::speedFix() const {
+    return m_speedFix;
+}
+
 void KartDynamics::setPos(const EGG::Vector3f &pos) {
     m_pos = pos;
 }
@@ -179,6 +199,10 @@ void KartDynamics::setSpecialRot(const EGG::Quatf &q) {
 
 void KartDynamics::setExtraRot(const EGG::Quatf &q) {
     m_extraRot = q;
+}
+
+void KartDynamics::setIntVel(const EGG::Vector3f &v) {
+    m_intVel = v;
 }
 
 void KartDynamics::setExtVel(const EGG::Vector3f &v) {
