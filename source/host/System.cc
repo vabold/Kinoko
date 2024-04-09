@@ -87,7 +87,7 @@ bool KSystem::run() {
     }
 
     m_testDirector->writeTestOutput();
-    return true;
+    return m_testDirector->sync();
 }
 
 const Test::TestDirector *KSystem::testDirector() const {
