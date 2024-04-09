@@ -408,7 +408,7 @@ f32 cos(f32 x) {
 }
 
 f32 acos(f32 x) {
-    return std::acos(x);
+    return ::acosl(x);
 }
 
 f32 atan2(f32 y, f32 x) {
