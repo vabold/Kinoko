@@ -201,6 +201,26 @@ const EGG::Vector3f &KartObjectProxy::intVel() const {
     return dynamics()->intVel();
 }
 
+f32 KartObjectProxy::speed() const {
+    return move()->speed();
+}
+
+f32 KartObjectProxy::acceleration() const {
+    return move()->acceleration();
+}
+
+f32 KartObjectProxy::softSpeedLimit() const {
+    return move()->softSpeedLimit();
+}
+
+const EGG::Quatf &KartObjectProxy::mainRot() const {
+    return dynamics()->mainRot();
+}
+
+const EGG::Vector3f &KartObjectProxy::angVel2() const {
+    return dynamics()->angVel2();
+}
+
 bool KartObjectProxy::isBike() const {
     return param()->isBike();
 }

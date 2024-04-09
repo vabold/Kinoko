@@ -94,6 +94,11 @@ public:
     const EGG::Quatf &fullRot() const;
     const EGG::Vector3f &extVel() const;
     const EGG::Vector3f &intVel() const;
+    f32 speed() const;
+    f32 acceleration() const;
+    f32 softSpeedLimit() const;
+    const EGG::Quatf &mainRot() const;
+    const EGG::Vector3f &angVel2() const;
     bool isBike() const;
     u16 suspCount() const;
     u16 tireCount() const;

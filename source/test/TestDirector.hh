@@ -50,6 +50,20 @@ private:
         return false;
     }
 
+    bool checkDesync(const f32 &t0, const f32 &t1, const char *name) const {
+        if (t0 == t1) {
+            return true;
+        }
+
+        K_LOG("DESYNC! Frame: %d; Name: %s", m_currentFrame, name);
+        std::string s0 = std::to_string(t0);
+        std::string s1 = std::to_string(t1);
+        K_LOG("Expected: 0x%08X | %s", f2u(t0), s0.c_str());
+        K_LOG("Observed: 0x%08X | %s", f2u(t1), s1.c_str());
+
+        return false;
+    }
+
     std::queue<TestCase> m_testCases;
     u16 m_curTestIdx;
 
