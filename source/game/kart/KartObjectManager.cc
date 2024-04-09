@@ -48,7 +48,9 @@ KartObjectManager::KartObjectManager() {
     KartParamFileManager::CreateInstance();
     for (size_t i = 0; i < m_count; ++i) {
         const auto &player = raceScenario.players[i];
-        m_objects[i] = KartObject::Create(player.character, player.vehicle, i);
+        KartObject *object = KartObject::Create(player.character, player.vehicle, i);
+        object->createModel();
+        m_objects[i] = object;
     }
 }
 

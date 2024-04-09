@@ -24,9 +24,11 @@ public:
     const EGG::Matrix34f &invInertiaTensor() const;
     const EGG::Vector3f &pos() const;
     const EGG::Vector3f &velocity() const;
+    f32 gravity() const;
     const EGG::Vector3f &intVel() const;
     const EGG::Quatf &mainRot() const;
     const EGG::Quatf &fullRot() const;
+    const EGG::Vector3f &totalForce() const;
     const EGG::Vector3f &extVel() const;
     const EGG::Vector3f &angVel0() const;
     const EGG::Vector3f &angVel2() const;
@@ -39,6 +41,8 @@ public:
     void setSpecialRot(const EGG::Quatf &q);
     void setExtraRot(const EGG::Quatf &q);
     void setIntVel(const EGG::Vector3f &v);
+    void setStabilizationFactor(f32 val);
+    void setTotalForce(const EGG::Vector3f &v);
     void setExtVel(const EGG::Vector3f &v);
     void setAngVel0(const EGG::Vector3f &v);
     void setAngVel2(const EGG::Vector3f &v);

@@ -105,7 +105,8 @@ bool CollisionDirector::findClosestCollisionEntry(KCLTypeMask * /*typeMask*/, KC
     m_closestCollisionEntry = nullptr;
     f32 minDist = -std::numeric_limits<f32>::min();
 
-    for (const auto &entry : m_entries) {
+    for (size_t i = 0; i < m_collisionEntryCount; ++i) {
+        const auto &entry = m_entries[i];
         u32 typeMask = entry.typeMask & type;
         if (typeMask != 0 && entry.dist > minDist) {
             minDist = entry.dist;

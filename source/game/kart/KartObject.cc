@@ -5,6 +5,8 @@
 #include "game/kart/KartSuspension.hh"
 #include "game/kart/KartTire.hh"
 
+#include "game/render/KartModel.hh"
+
 #include "game/system/RaceConfig.hh"
 #include "game/system/RaceManager.hh"
 
@@ -75,12 +77,29 @@ void KartObject::createSub() {
     m_pointers.sub->createSubsystems(m_pointers.param->isBike());
 }
 
+void KartObject::createModel() {
+    Abstract::List list;
+    s_list = &list;
+
+    if (isBike()) {
+        m_pointers.model = new Render::KartModelBike;
+    } else {
+        m_pointers.model = new Render::KartModelKart;
+    }
+
+    ApplyAll(&m_pointers);
+    s_list = nullptr;
+
+    m_pointers.model->init();
+}
+
 void KartObject::calcSub() {
     sub()->calcPass0();
 }
 
 void KartObject::calc() {
     sub()->calcPass1();
+    model()->calc();
 }
 
 KartObject *KartObject::Create(Character character, Vehicle vehicle, u8 playerIdx) {

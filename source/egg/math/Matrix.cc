@@ -166,9 +166,9 @@ Matrix34f Matrix34f::multiplyTo(const Matrix34f &rhs) const {
 Vector3f Matrix34f::multVector(const Vector3f &vec) const {
     Vector3f ret;
 
-    ret.x = mtx[0][2] * vec.z + mtx[0][0] * vec.x + mtx[0][3] + mtx[0][1] * vec.y;
-    ret.y = mtx[1][2] * vec.z + mtx[1][0] * vec.x + mtx[1][3] + mtx[1][1] * vec.y;
-    ret.z = mtx[2][2] * vec.z + mtx[2][0] * vec.x + mtx[2][3] + mtx[2][1] * vec.y;
+    ret.x = mtx[0][2] * vec.z + (mtx[0][0] * vec.x + mtx[0][3] + mtx[0][1] * vec.y);
+    ret.y = mtx[1][2] * vec.z + (mtx[1][0] * vec.x + mtx[1][3] + mtx[1][1] * vec.y);
+    ret.z = mtx[2][2] * vec.z + (mtx[2][0] * vec.x + mtx[2][3] + mtx[2][1] * vec.y);
 
     return ret;
 }
