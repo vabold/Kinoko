@@ -20,6 +20,7 @@ public:
     void prepareTiresAndSuspensions();
 
     void createSub();
+    void createModel();
 
     void calcSub();
     void calc();

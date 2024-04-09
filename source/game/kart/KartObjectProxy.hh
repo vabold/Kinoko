@@ -8,6 +8,12 @@
 
 #include <vector>
 
+namespace Render {
+
+class KartModel;
+
+} // namespace Render
+
 namespace Kart {
 
 class CollisionGroup;
@@ -29,6 +35,7 @@ class WheelPhysics;
 struct KartAccessor {
     KartParam *param;
     KartBody *body;
+    Render::KartModel *model;
     KartSub *sub;
     KartMove *move;
     KartCollide *collide;
@@ -77,6 +84,8 @@ public:
     CollisionData &collisionData(u16 tireIdx);
     const CollisionData &collisionData(u16 tireIdx) const;
     const System::KPad *inputs() const;
+    Render::KartModel *model();
+    const Render::KartModel *model() const;
 
     const EGG::Vector3f &scale() const;
     const EGG::Matrix34f &pose() const;

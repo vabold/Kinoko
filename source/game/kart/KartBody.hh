@@ -16,8 +16,11 @@ public:
 
     KartPhysics *physics() const;
 
+    void setAngle(f32 val);
+
 protected:
     KartPhysics *m_physics;
+    f32 m_anAngle;
 };
 
 class KartBodyKart : public KartBody {

@@ -118,7 +118,7 @@ bool RaceInputState::drift() const {
 }
 
 bool RaceInputState::trickUp() const {
-    return !!(trick & 0x10);
+    return (trick >> 4) == 1;
 }
 
 KPadGhostButtonsStream::KPadGhostButtonsStream()

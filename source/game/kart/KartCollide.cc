@@ -2,6 +2,7 @@
 
 #include "game/kart/KartMove.hh"
 #include "game/kart/KartPhysics.hh"
+#include "game/kart/KartState.hh"
 
 #include "game/field/CollisionDirector.hh"
 
@@ -69,8 +70,10 @@ void KartCollide::calcBodyCollision(f32 totalScale, const EGG::Quatf &rot,
 }
 
 void KartCollide::calcFloorEffect() {
-    m_offRoad = true;
-    m_groundBoostPanelOrRamp = true;
+    if (state()->isTouchingGround()) {
+        m_offRoad = true;
+        m_groundBoostPanelOrRamp = true;
+    }
 
     Field::KCLTypeMask mask = KCL_NONE;
     calcTriggers(&mask, pos(), false);
@@ -172,8 +175,11 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox & /*hitbox*/
         m_notTrickable = true;
     }
 
+    collisionData.speedFactor = std::min(collisionData.speedFactor,
+            param()->stats().kclSpeed[KCL_ATTRIBUTE_TYPE(attribute)]);
+
     collisionData.intensity = (attribute >> 0xb) & 3;
-    collisionData.rotFactor += param()->stats().kclRot[attribute & 0x1f];
+    collisionData.rotFactor += param()->stats().kclRot[KCL_ATTRIBUTE_TYPE(attribute)];
     collisionData.closestFloorFlags = closestColEntry->typeMask;
     collisionData.closestFloorSettings = (attribute >> 5) & 7;
 

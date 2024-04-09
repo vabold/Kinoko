@@ -22,23 +22,15 @@ static constexpr std::array<StartBoostEntry, 6> START_BOOST_ENTRIES = {{
 }};
 
 KartState::KartState() {
-    m_bAccelerate = false;
-    m_bBrake = false;
-    m_bDriftInput = false;
-    m_bDriftManual = false;
-    m_bHopStart = false;
-    m_bAccelerateStart = false;
-    m_bStickLeft = false;
-    m_bTouchingGround = false;
-    m_bStickRight = false;
-    m_bAutoDrift = false;
-    m_bWheelie = false;
+    clearBitfield0();
 
     m_bWheelieRot = false;
 
     m_bChargeStartBoost = false;
 
     m_bAutoDrift = inputs()->driftIsAuto();
+
+    m_airtime = 0;
 }
 
 void KartState::init() {
@@ -46,9 +38,13 @@ void KartState::init() {
 }
 
 void KartState::reset() {
-    m_bTouchingGround = false;
     m_bChargeStartBoost = false;
 
+    m_bWheelieRot = false;
+
+    clearBitfield0();
+
+    m_airtime = 0;
     m_top.setZero();
     m_startBoostCharge = 0.0f;
     m_stickX = 0.0f;
@@ -63,9 +59,9 @@ void KartState::calcInput() {
         m_stickY = currentState.stick.y;
 
         if (m_stickX < 0.0f) {
-            m_bStickRight = true;
-        } else if (m_stickX > 0.0f) {
             m_bStickLeft = true;
+        } else if (m_stickX > 0.0f) {
+            m_bStickRight = true;
         }
 
         m_bAccelerate = currentState.accelerate();
@@ -91,11 +87,21 @@ void KartState::calcInput() {
 }
 
 void KartState::calc() {
+    m_bStickLeft = false;
+    m_bStickRight = false;
+    m_bGroundStart = false;
+
+    m_stickY = 0.0f;
     m_stickX = 0.0f;
     calcCollisions();
 }
 
 void KartState::calcCollisions() {
+    bool wasTouchingGround = state()->isTouchingGround();
+
+    state()->setAnyWheelCollision(false);
+    state()->setAllWheelsCollision(false);
+    state()->setTouchingGround(false);
     m_top.setZero();
 
     u16 wheelCollisions = 0;
@@ -103,6 +109,13 @@ void KartState::calcCollisions() {
         if (hasFloorCollision(tirePhysics(tireIdx))) {
             m_top += collisionData(tireIdx).floorNrm;
             ++wheelCollisions;
+        }
+    }
+
+    if (wheelCollisions > 0) {
+        state()->setAnyWheelCollision(true);
+        if (wheelCollisions == tireCount()) {
+            state()->setAllWheelsCollision(true);
         }
     }
 
@@ -114,10 +127,15 @@ void KartState::calcCollisions() {
     m_top.normalise();
 
     if (wheelCollisions < 1 && !colData.floor) {
-        // Airtime
-        ;
+        ++m_airtime;
     } else {
         m_bTouchingGround = true;
+
+        if (!wasTouchingGround) {
+            m_bGroundStart = true;
+        }
+
+        m_airtime = 0;
     }
 }
 
@@ -175,8 +193,40 @@ bool KartState::isAccelerate() const {
     return m_bAccelerate;
 }
 
+bool KartState::isDriftInput() const {
+    return m_bDriftInput;
+}
+
+bool KartState::isDriftManual() const {
+    return m_bDriftManual;
+}
+
+bool KartState::isHopStart() const {
+    return m_bHopStart;
+}
+
+bool KartState::isGroundStart() const {
+    return m_bGroundStart;
+}
+
+bool KartState::isAnyWheelCollision() const {
+    return m_bAnyWheelCollision;
+}
+
+bool KartState::isAllWheelsCollision() const {
+    return m_bAllWheelsCollision;
+}
+
+bool KartState::isStickLeft() const {
+    return m_bStickLeft;
+}
+
 bool KartState::isTouchingGround() const {
     return m_bTouchingGround;
+}
+
+bool KartState::isHop() const {
+    return m_bHop;
 }
 
 bool KartState::isChargeStartBoost() const {
@@ -185,6 +235,14 @@ bool KartState::isChargeStartBoost() const {
 
 bool KartState::isBoost() const {
     return m_bBoost;
+}
+
+bool KartState::isStickRight() const {
+    return m_bStickRight;
+}
+
+bool KartState::isDriftAuto() const {
+    return m_bDriftAuto;
 }
 
 bool KartState::isWheelie() const {
@@ -203,6 +261,14 @@ f32 KartState::stickX() const {
     return m_stickX;
 }
 
+f32 KartState::stickY() const {
+    return m_stickY;
+}
+
+u32 KartState::airtime() const {
+    return m_airtime;
+}
+
 const EGG::Vector3f &KartState::top() const {
     return m_top;
 }
@@ -211,8 +277,46 @@ f32 KartState::startBoostCharge() const {
     return m_startBoostCharge;
 }
 
+void KartState::clearBitfield0() {
+    m_bAccelerate = false;
+    m_bBrake = false;
+    m_bDriftInput = false;
+    m_bDriftManual = false;
+    m_bHopStart = false;
+    m_bAccelerateStart = false;
+    m_bGroundStart = false;
+    m_bAnyWheelCollision = false;
+    m_bAllWheelsCollision = false;
+    m_bStickLeft = false;
+    m_bTouchingGround = false;
+    m_bHop = false;
+    m_bStickRight = false;
+    m_bDriftAuto = false;
+    m_bWheelie = false;
+}
+
 void KartState::setAccelerate(bool isSet) {
     m_bAccelerate = isSet;
+}
+
+void KartState::setDriftManual(bool isSet) {
+    m_bDriftManual = isSet;
+}
+
+void KartState::setAnyWheelCollision(bool isSet) {
+    m_bAnyWheelCollision = isSet;
+}
+
+void KartState::setAllWheelsCollision(bool isSet) {
+    m_bAllWheelsCollision = isSet;
+}
+
+void KartState::setTouchingGround(bool isSet) {
+    m_bTouchingGround = isSet;
+}
+
+void KartState::setHop(bool isSet) {
+    m_bHop = isSet;
 }
 
 void KartState::setBoost(bool isSet) {

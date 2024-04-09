@@ -149,6 +149,10 @@ const EGG::Vector3f &KartDynamics::velocity() const {
     return m_velocity;
 }
 
+f32 KartDynamics::gravity() const {
+    return m_gravity;
+}
+
 const EGG::Vector3f &KartDynamics::intVel() const {
     return m_intVel;
 }
@@ -159,6 +163,10 @@ const EGG::Quatf &KartDynamics::mainRot() const {
 
 const EGG::Quatf &KartDynamics::fullRot() const {
     return m_fullRot;
+}
+
+const EGG::Vector3f &KartDynamics::totalForce() const {
+    return m_totalForce;
 }
 
 const EGG::Vector3f &KartDynamics::extVel() const {
@@ -203,6 +211,14 @@ void KartDynamics::setExtraRot(const EGG::Quatf &q) {
 
 void KartDynamics::setIntVel(const EGG::Vector3f &v) {
     m_intVel = v;
+}
+
+void KartDynamics::setStabilizationFactor(f32 val) {
+    m_stabilizationFactor = val;
+}
+
+void KartDynamics::setTotalForce(const EGG::Vector3f &v) {
+    m_totalForce = v;
 }
 
 void KartDynamics::setExtVel(const EGG::Vector3f &v) {

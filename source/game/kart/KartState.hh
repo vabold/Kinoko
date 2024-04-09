@@ -21,17 +21,37 @@ public:
     bool isDrifting() const;
 
     bool isAccelerate() const;
+    bool isDriftInput() const;
+    bool isDriftManual() const;
+    bool isHopStart() const;
+    bool isGroundStart() const;
+    bool isAnyWheelCollision() const;
+    bool isAllWheelsCollision() const;
+    bool isStickLeft() const;
     bool isTouchingGround() const;
+    bool isHop() const;
     bool isChargeStartBoost() const;
     bool isBoost() const;
+    bool isStickRight() const;
+    bool isDriftAuto() const;
     bool isWheelie() const;
+    bool isMtBoost() const;
     bool isWheelieRot() const;
     bool isAutoDrift() const;
     f32 stickX() const;
+    f32 stickY() const;
+    u32 airtime() const;
     const EGG::Vector3f &top() const;
     f32 startBoostCharge() const;
 
+    void clearBitfield0();
+
     void setAccelerate(bool isSet);
+    void setDriftManual(bool isSet);
+    void setAllWheelsCollision(bool isSet);
+    void setAnyWheelCollision(bool isSet);
+    void setTouchingGround(bool isSet);
+    void setHop(bool isSet);
     void setBoost(bool isSet);
     void setWheelie(bool isSet);
     void setWheelieRot(bool isSet);
@@ -44,8 +64,12 @@ private:
     bool m_bDriftManual;
     bool m_bHopStart;
     bool m_bAccelerateStart;
+    bool m_bGroundStart;
+    bool m_bAnyWheelCollision;
+    bool m_bAllWheelsCollision;
     bool m_bStickLeft;
     bool m_bTouchingGround;
+    bool m_bHop;
     bool m_bBoost;
     bool m_bStickRight;
     bool m_bDriftAuto;
@@ -57,6 +81,7 @@ private:
 
     bool m_bAutoDrift;
 
+    u32 m_airtime;
     EGG::Vector3f m_top;
     f32 m_stickX;
     f32 m_stickY;

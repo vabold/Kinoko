@@ -110,12 +110,16 @@ void KartSub::calcPass1() {
     m_someScale = scale().y;
 
     const EGG::Vector3f gravity(0.0f, -1.3f, 0.0f);
+    f32 speedFactor = 1.0f;
     f32 handlingFactor = 0.0f;
     for (u16 i = 0; i < suspCount(); ++i) {
         const EGG::Matrix34f wheelMatrix = body()->wheelMatrix(i);
         suspensionPhysics(i)->calcCollision(DT, gravity, wheelMatrix);
 
         const CollisionData &colData = tirePhysics(i)->hitboxGroup()->collisionData();
+
+        speedFactor = std::min(speedFactor, colData.speedFactor);
+
         if (colData.floor) {
             handlingFactor += colData.rotFactor;
             addFloor(colData, false);
@@ -124,25 +128,23 @@ void KartSub::calcPass1() {
 
     EGG::Vector3f vehicleCompensation = m_maxSuspOvertravel + m_minSuspOvertravel;
     dynamics()->setPos(dynamics()->pos() + vehicleCompensation);
-    if (!physics()->hitboxGroup()->collisionData().floor) {
-        EGG::Vector3f relPos;
-        EGG::Vector3f vel;
-        EGG::Vector3f floorNrm;
 
-        for (u16 wheelIdx = 0; wheelIdx < suspCount(); ++wheelIdx) {
-            suspensionPhysics(wheelIdx)->calcSuspension(forward, vehicleCompensation);
-        }
-
-        move()->setKCLWheelRotFactor(handlingFactor);
-
-        move()->setFloorCollisionCount(m_floorCollisionCount);
-
-        physics()->updatePose();
-
-        collide()->resetHitboxes();
-
-        // calcRotation() is only ever used for gfx rendering, so skip
+    for (u16 wheelIdx = 0; wheelIdx < suspCount(); ++wheelIdx) {
+        suspensionPhysics(wheelIdx)->calcSuspension(forward, vehicleCompensation);
     }
+
+    move()->calcHopPhysics();
+
+    move()->setKCLWheelSpeedFactor(speedFactor);
+    move()->setKCLWheelRotFactor(handlingFactor);
+
+    move()->setFloorCollisionCount(m_floorCollisionCount);
+
+    physics()->updatePose();
+
+    collide()->resetHitboxes();
+
+    // calcRotation() is only ever used for gfx rendering, so skip
 }
 
 void KartSub::addFloor(const CollisionData &, bool) {

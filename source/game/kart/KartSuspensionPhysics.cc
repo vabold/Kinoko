@@ -62,7 +62,7 @@ void WheelPhysics::updateCollision(const EGG::Vector3f &bottom, const EGG::Vecto
     f32 scalar = m_effectiveRadius * scale().y - nextRadius * move()->totalScale();
 
     EGG::Vector3f center = m_pos + scalar * bottom;
-    scalar = 0.3f * nextRadius * move()->leanRot() * move()->totalScale();
+    scalar = 0.3f * (nextRadius * move()->leanRot()) * move()->totalScale();
     center += scalar * bodyForward();
     m_hitboxGroup->setHitboxScale(move()->totalScale());
     collide()->calcWheelCollision(m_wheelIdx, m_hitboxGroup, m_colVel, center, nextRadius);
