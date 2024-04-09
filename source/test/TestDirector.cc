@@ -16,6 +16,8 @@ enum Changelog {
     Initial = 1,
     AddedExtVel = 2,
     AddedIntVel = 3,
+    AddedSpeed = 4,
+    AddedRotation = 5,
 };
 
 TestDirector::TestDirector(std::span<u8> &suiteData) : m_curTestIdx(0) {
@@ -123,10 +125,24 @@ bool TestDirector::test(const TestData &data) {
     const auto &fullRot = object->fullRot();
     const auto &extVel = object->extVel();
     const auto &intVel = object->intVel();
+    f32 speed = object->speed();
+    f32 acceleration = object->acceleration();
+    f32 softSpeedLimit = object->softSpeedLimit();
+    const auto &mainRot = object->mainRot();
+    const auto &angVel2 = object->angVel2();
 
     bool ok = true;
 
     switch (m_versionMinor) {
+    case Changelog::AddedRotation:
+        ok &= checkDesync(data.mainRot, mainRot, "mainRot");
+        ok &= checkDesync(data.angVel2, angVel2, "angVel2");
+        [[fallthrough]];
+    case Changelog::AddedSpeed:
+        ok &= checkDesync(data.speed, speed, "speed");
+        ok &= checkDesync(data.acceleration, acceleration, "acceleration");
+        ok &= checkDesync(data.softSpeedLimit, softSpeedLimit, "softSpeedLimit");
+        [[fallthrough]];
     case Changelog::AddedIntVel:
         ok &= checkDesync(data.intVel, intVel, "intVel");
         [[fallthrough]];
@@ -154,6 +170,11 @@ TestData TestDirector::findNextEntry() {
     EGG::Quatf fullRot;
     EGG::Vector3f extVel;
     EGG::Vector3f intVel;
+    f32 speed = 0.0f;
+    f32 acceleration = 0.0f;
+    f32 softSpeedLimit = 0.0f;
+    EGG::Quatf mainRot;
+    EGG::Vector3f angVel2;
     pos.read(m_stream);
     fullRot.read(m_stream);
 
@@ -165,11 +186,27 @@ TestData TestDirector::findNextEntry() {
         intVel.read(m_stream);
     }
 
+    if (m_versionMinor >= Changelog::AddedSpeed) {
+        speed = m_stream.read_f32();
+        acceleration = m_stream.read_f32();
+        softSpeedLimit = m_stream.read_f32();
+    }
+
+    if (m_versionMinor >= Changelog::AddedRotation) {
+        mainRot.read(m_stream);
+        angVel2.read(m_stream);
+    }
+
     TestData data;
     data.pos = pos;
     data.fullRot = fullRot;
     data.extVel = extVel;
     data.intVel = intVel;
+    data.speed = speed;
+    data.acceleration = acceleration;
+    data.softSpeedLimit = softSpeedLimit;
+    data.mainRot = mainRot;
+    data.angVel2 = angVel2;
     return data;
 }
 

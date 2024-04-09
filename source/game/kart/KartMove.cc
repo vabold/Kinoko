@@ -325,6 +325,18 @@ void KartMove::setKCLWheelRotFactor(f32 val) {
     m_kclWheelRotFactor = val;
 }
 
+f32 KartMove::softSpeedLimit() const {
+    return m_softSpeedLimit;
+}
+
+f32 KartMove::speed() const {
+    return m_speed;
+}
+
+f32 KartMove::acceleration() const {
+    return m_acceleration;
+}
+
 const EGG::Vector3f &KartMove::scale() const {
     return m_scale;
 }

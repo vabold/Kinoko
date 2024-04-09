@@ -25,11 +25,13 @@ KartState::KartState() {
     m_bAccelerate = false;
     m_bBrake = false;
     m_bDriftInput = false;
+    m_bDriftManual = false;
     m_bHopStart = false;
     m_bAccelerateStart = false;
     m_bStickLeft = false;
     m_bTouchingGround = false;
     m_bStickRight = false;
+    m_bAutoDrift = false;
     m_bWheelie = false;
 
     m_bWheelieRot = false;

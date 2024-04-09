@@ -36,6 +36,9 @@ public:
     void setFloorCollisionCount(u16 count);
     void setKCLWheelRotFactor(f32 val);
 
+    f32 softSpeedLimit() const;
+    f32 speed() const;
+    f32 acceleration() const;
     const EGG::Vector3f &scale() const;
     f32 hardSpeedLimit() const;
     const EGG::Vector3f &smoothedUp() const;

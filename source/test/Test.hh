@@ -20,6 +20,13 @@ struct TestData {
     EGG::Vector3f extVel;
     // Added in 0.3
     EGG::Vector3f intVel;
+    // Added in 0.4
+    f32 speed;
+    f32 acceleration;
+    f32 softSpeedLimit;
+    // Added in 0.5
+    EGG::Quatf mainRot;
+    EGG::Vector3f angVel2;
 };
 
 } // namespace Test
