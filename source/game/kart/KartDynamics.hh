@@ -22,6 +22,7 @@ public:
             const EGG::Vector3f &Frot, bool ignoreX);
 
     const EGG::Matrix34f &invInertiaTensor() const;
+    f32 angVel0Factor() const;
     const EGG::Vector3f &pos() const;
     const EGG::Vector3f &velocity() const;
     f32 gravity() const;

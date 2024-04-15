@@ -43,7 +43,12 @@ public:
     virtual bool canWheelie() const;
     virtual bool canHop() const;
 
+    void activateBoost(KartBoost::Type type, s16 frames);
     void applyStartBoost(s16 frames);
+    void activateMushroom();
+    void setOffroadInvincibility(s16 timer);
+    void calcOffroadInvincibility();
+    void calcMushroomBoost();
 
     void setFloorCollisionCount(u16 count);
     void setKCLWheelSpeedFactor(f32 val);
@@ -99,11 +104,13 @@ protected:
     DriftState m_driftState;
     u16 m_mtCharge;
     KartBoost m_boost;
+    s16 m_offroadInvincibility;
     f32 m_realTurn;
     f32 m_weightedTurn;
     f32 m_rawTurn;
     EGG::Vector3f m_scale;
     f32 m_totalScale;
+    u16 m_mushroomBoostTimer;
     f32 m_hopVelY;
     f32 m_hopPosY;
     f32 m_hopGravity;

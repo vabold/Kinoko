@@ -24,6 +24,8 @@ static constexpr std::array<StartBoostEntry, 6> START_BOOST_ENTRIES = {{
 KartState::KartState() {
     clearBitfield0();
 
+    m_bBoostOffroadInvincibility = false;
+
     m_bWheelieRot = false;
 
     m_bChargeStartBoost = false;
@@ -241,12 +243,20 @@ bool KartState::isStickRight() const {
     return m_bStickRight;
 }
 
+bool KartState::isMushroomBoost() const {
+    return m_bMushroomBoost;
+}
+
 bool KartState::isDriftAuto() const {
     return m_bDriftAuto;
 }
 
 bool KartState::isWheelie() const {
     return m_bWheelie;
+}
+
+bool KartState::isBoostOffroadInvincibility() const {
+    return m_bBoostOffroadInvincibility;
 }
 
 bool KartState::isWheelieRot() const {
@@ -291,6 +301,7 @@ void KartState::clearBitfield0() {
     m_bTouchingGround = false;
     m_bHop = false;
     m_bStickRight = false;
+    m_bMushroomBoost = false;
     m_bDriftAuto = false;
     m_bWheelie = false;
 }
@@ -323,8 +334,16 @@ void KartState::setBoost(bool isSet) {
     m_bBoost = isSet;
 }
 
+void KartState::setMushroomBoost(bool isSet) {
+    m_bMushroomBoost = isSet;
+}
+
 void KartState::setWheelie(bool isSet) {
     m_bWheelie = isSet;
+}
+
+void KartState::setBoostOffroadInvincibility(bool isSet) {
+    m_bBoostOffroadInvincibility = isSet;
 }
 
 void KartState::setWheelieRot(bool isSet) {

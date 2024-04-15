@@ -96,12 +96,14 @@ void KartMove::init(bool b1, bool b2) {
     m_standStillBoostRot = 0.0f;
     m_driftState = DriftState::NotDrifting;
     m_mtCharge = 0;
+    m_offroadInvincibility = 0;
     m_realTurn = 0.0f;
     m_weightedTurn = 0.0f;
 
     if (!b1) {
         m_scale.set(1.0f);
         m_totalScale = 1.0f;
+        m_mushroomBoostTimer = 0;
     }
 
     m_hopVelY = 0.0f;
@@ -169,6 +171,8 @@ void KartMove::calc() {
         state()->setBoost(false);
     }
 
+    calcMushroomBoost();
+    calcOffroadInvincibility();
     calcVehicleSpeed();
     calcAcceleration();
     calcRotation();
@@ -187,15 +191,18 @@ void KartMove::calcTop() {
     } else {
         if (state()->isHop() && m_hopPosY > 0.0f) {
             stabilizationFactor = 0.22f;
-        } else if (state()->isAllWheelsCollision()) {
+        } else if (state()->isTouchingGround()) {
             m_up = state()->top();
 
             f32 topDotZ = 0.8f - 6.0f * (EGG::Mathf::abs(state()->top().dot(componentZAxis())));
             f32 scalar = std::min(0.8f, std::max(0.3f, topDotZ));
 
-            if (state()->isTouchingGround()) {
-                m_smoothedUp += (state()->top() - m_smoothedUp) * scalar;
-                m_smoothedUp.normalise();
+            m_smoothedUp += (state()->top() - m_smoothedUp) * scalar;
+            m_smoothedUp.normalise();
+
+            f32 bodyDotFront = bodyFront().dot(m_smoothedUp);
+            if (bodyDotFront < -0.1f) {
+                stabilizationFactor += std::min(0.2f, EGG::Mathf::abs(bodyDotFront) * 0.5f);
             }
         }
     }
@@ -266,7 +273,10 @@ void KartMove::calcDirs() {
 }
 
 void KartMove::calcOffroad() {
-    if (state()->isAnyWheelCollision()) {
+    if (state()->isBoostOffroadInvincibility()) {
+        m_kclSpeedFactor = 1.0f;
+        m_kclRotFactor = param()->stats().kclRot[0];
+    } else if (state()->isAnyWheelCollision()) {
         m_kclSpeedFactor = m_kclWheelSpeedFactor;
         m_floorCollisionCount = m_floorCollisionCount != 0 ? m_floorCollisionCount : 1;
         m_kclRotFactor = m_kclWheelRotFactor / static_cast<f32>(m_floorCollisionCount);
@@ -370,9 +380,7 @@ void KartMove::releaseMt() {
         K_PANIC("Not implemented yet");
     }
 
-    if (m_boost.activate(KartBoost::Type::AllMt, mtLength)) {
-        state()->setBoost(true);
-    }
+    activateBoost(KartBoost::Type::AllMt, mtLength);
 
     m_driftState = DriftState::NotDrifting;
 }
@@ -526,11 +534,16 @@ void KartMove::calcStandstillBoostRot() {
             next = 0.015f * -state()->startBoostCharge();
         } else {
             f32 speedDiff = m_lastSpeed - m_speed;
-            if (-3.0f <= speedDiff) {
-                scalar = std::min(3.0f, speedDiff);
-            }
+            scalar = std::min(3.0f, std::max(speedDiff, -3.0f));
 
-            next = (scalar * 0.15f) * 0.08f;
+            if (state()->isMushroomBoost()) {
+                next = (scalar * 0.15f) * 0.25f;
+                if (state()->isWheelie()) {
+                    next *= 0.5f;
+                }
+            } else {
+                next = (scalar * 0.15f) * 0.08f;
+            }
             scalar = 0.2f;
         }
     }
@@ -606,10 +619,55 @@ bool KartMove::canHop() const {
     return true;
 }
 
-void KartMove::applyStartBoost(s16 frames) {
-    if (m_boost.activate(KartBoost::Type::AllMt, frames)) {
+void KartMove::activateBoost(KartBoost::Type type, s16 frames) {
+    if (m_boost.activate(type, frames)) {
         state()->setBoost(true);
     }
+}
+
+void KartMove::applyStartBoost(s16 frames) {
+    activateBoost(KartBoost::Type::AllMt, frames);
+}
+
+void KartMove::activateMushroom() {
+    constexpr s16 MUSHROOM_DURATION = 90;
+    activateBoost(KartBoost::Type::MushroomAndBoostPanel, MUSHROOM_DURATION);
+
+    m_mushroomBoostTimer = MUSHROOM_DURATION;
+    state()->setMushroomBoost(true);
+    setOffroadInvincibility(MUSHROOM_DURATION);
+}
+
+void KartMove::setOffroadInvincibility(s16 timer) {
+    if (timer > m_offroadInvincibility) {
+        m_offroadInvincibility = timer;
+    }
+
+    state()->setBoostOffroadInvincibility(true);
+}
+
+void KartMove::calcOffroadInvincibility() {
+    if (!state()->isBoostOffroadInvincibility()) {
+        return;
+    }
+
+    if (--m_offroadInvincibility > 0) {
+        return;
+    }
+
+    state()->setBoostOffroadInvincibility(false);
+}
+
+void KartMove::calcMushroomBoost() {
+    if (!state()->isMushroomBoost()) {
+        return;
+    }
+
+    if (--m_mushroomBoostTimer > 0) {
+        return;
+    }
+
+    state()->setMushroomBoost(false);
 }
 
 void KartMove::setFloorCollisionCount(u16 count) {

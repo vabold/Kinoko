@@ -2,6 +2,7 @@
 
 #include "game/kart/CollisionGroup.hh"
 #include "game/kart/KartObject.hh"
+#include "game/kart/KartObjectManager.hh"
 #include "game/kart/KartSub.hh"
 #include "game/kart/KartSuspension.hh"
 #include "game/kart/KartTire.hh"
@@ -249,7 +250,11 @@ Abstract::List *KartObjectProxy::list() const {
     return s_list;
 }
 
-void KartObjectProxy::ApplyAll(KartAccessor *pointers) {
+void KartObjectProxy::apply(size_t idx) {
+    m_accessor = KartObjectManager::Instance()->object(idx)->accessor();
+}
+
+void KartObjectProxy::ApplyAll(const KartAccessor *pointers) {
     for (Abstract::Node *node = s_list->head(); node; node = s_list->getNext(node)) {
         node->data<KartObjectProxy>()->m_accessor = pointers;
     }
