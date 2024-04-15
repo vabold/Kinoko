@@ -141,6 +141,10 @@ const EGG::Matrix34f &KartDynamics::invInertiaTensor() const {
     return m_invInertiaTensor;
 }
 
+f32 KartDynamics::angVel0Factor() const {
+    return m_angVel0Factor;
+}
+
 const EGG::Vector3f &KartDynamics::pos() const {
     return m_pos;
 }

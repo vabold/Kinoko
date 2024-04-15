@@ -1,6 +1,7 @@
 #include "RaceScene.hh"
 
 #include "game/field/CollisionDirector.hh"
+#include "game/item/ItemDirector.hh"
 #include "game/kart/KartObjectManager.hh"
 #include "game/system/CourseMap.hh"
 #include "game/system/RaceConfig.hh"
@@ -18,22 +19,20 @@ void RaceScene::createEngines() {
     System::RaceManager::CreateInstance();
     Kart::KartObjectManager::CreateInstance();
     Field::CollisionDirector::CreateInstance();
-    // Item::ItemDirector::CreateInstance();
+    Item::ItemDirector::CreateInstance();
 }
 
 void RaceScene::initEngines() {
     Kart::KartObjectManager::Instance()->init();
     // System::RaceManager::Instance()->init();
-    // Item::ItemDirector::Instance()->init();
+    Item::ItemDirector::Instance()->init();
 }
 
 void RaceScene::calcEngines() {
     auto *raceMgr = System::RaceManager::Instance();
     raceMgr->calc();
     Kart::KartObjectManager::Instance()->calc();
-    // if (raceMgr->isStateReached(State::Countdown)) {
-    //     Item::ItemDirector::Instance()->calc();
-    // }
+    Item::ItemDirector::Instance()->calc();
     // raceMgr->random1()->nextU32();
 }
 

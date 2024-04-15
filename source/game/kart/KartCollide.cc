@@ -37,6 +37,100 @@ void KartCollide::calcHitboxes() {
 
 void KartCollide::findCollision() {
     calcBodyCollision(move()->totalScale(), fullRot(), scale());
+
+    f32 fVar1;
+    if (state()->isBoost()) {
+        fVar1 = 0.0f;
+    } else {
+        fVar1 = 0.05f;
+    }
+
+    f32 dVar14 = fVar1;
+    fVar1 = 0.01f;
+
+    FUN_805B72B8(fVar1, dVar14, false, true);
+}
+
+void KartCollide::FUN_805B72B8(f32 param_1, f32 param_2, bool lockXZ, bool addExtVelY) {
+    const auto &colData = collisionData();
+
+    if (!colData.floor) {
+        return;
+    }
+
+    EGG::Vector3f collisionDir = colData.floorNrm;
+    collisionDir.normalise();
+
+    f32 directionalVelocity = colData.vel.dot(collisionDir);
+    if (directionalVelocity >= 0.0f) {
+        return;
+    }
+
+    EGG::Matrix34f rotMat;
+    EGG::Matrix34f rotMatTrans;
+
+    rotMat.makeQ(dynamics()->mainRot());
+    rotMatTrans = rotMat.transpose();
+    rotMat = rotMat.multiplyTo(dynamics()->invInertiaTensor()).multiplyTo(rotMatTrans);
+
+    EGG::Vector3f relPos = colData.relPos;
+    if (lockXZ) {
+        relPos.x = 0.0f;
+        relPos.z = 0.0f;
+    }
+
+    EGG::Vector3f step1 = relPos.cross(collisionDir);
+    EGG::Vector3f step2 = rotMat.multVector33(step1);
+    EGG::Vector3f step3 = step2.cross(relPos);
+    f32 val = (-directionalVelocity * (param_2 + 1.0f)) / (1.0f + collisionDir.dot(step3));
+    EGG::Vector3f step4 = collisionDir.cross(-colData.vel);
+    EGG::Vector3f step5 = step4.cross(collisionDir);
+    step5.normalise();
+
+    f32 fVar1 = param_1 * EGG::Mathf::abs(val);
+    f32 otherVal = (val * colData.vel.dot(step5)) / directionalVelocity;
+
+    f32 fVar3 = otherVal;
+    if (fVar1 < EGG::Mathf::abs(otherVal)) {
+        fVar3 = fVar1;
+        if (otherVal < 0.0f) {
+            fVar3 = -param_1 * EGG::Mathf::abs(val);
+        }
+    }
+
+    EGG::Vector3f step6 = val * collisionDir + fVar3 * step5;
+
+    f32 local_1d0 = step6.y;
+    if (!addExtVelY) {
+        local_1d0 = 0.0f;
+    } else if (colData.floor) {
+        f32 velY = intVel().y;
+        if (velY > 0.0f) {
+            velY += extVel().y;
+            if (velY < 0.0f) {
+                EGG::Vector3f newExtVel = extVel();
+                newExtVel.y = velY;
+                dynamics()->setExtVel(newExtVel);
+            }
+        }
+    }
+
+    f32 prevExtVelY = extVel().y;
+    EGG::Vector3f extVelAdd = step6;
+    extVelAdd.y = local_1d0;
+    dynamics()->setExtVel(extVel() + extVelAdd);
+
+    if (prevExtVelY < 0.0f && extVel().y > 0.0f && extVel().y < 10.0f) {
+        EGG::Vector3f extVelNoY = extVel();
+        extVelNoY.y = 0.0f;
+        dynamics()->setExtVel(extVelNoY);
+    }
+
+    EGG::Vector3f step7 = relPos.cross(step6);
+    EGG::Vector3f step8 = rotMat.multVector33(step7);
+    EGG::Vector3f step9 = mainRot().rotateVectorInv(step8);
+    step9.y = 0.0f;
+    dynamics()->setAngVel0(dynamics()->angVel0() + step9);
 }
 
 void KartCollide::calcBodyCollision(f32 totalScale, const EGG::Quatf &rot,
@@ -46,10 +140,13 @@ void KartCollide::calcBodyCollision(f32 totalScale, const EGG::Quatf &rot,
     collisionData.reset();
 
     EGG::Vector3f posRel;
+    s32 count = 0;
     Field::CourseColMgr::CollisionInfo colInfo;
     colInfo.bbox.setDirect(EGG::Vector3f::zero, EGG::Vector3f::zero);
     Field::KCLTypeMask maskOut;
-    EGG::BoundBox3f minMax = colInfo.bbox;
+    EGG::BoundBox3f minMax;
+    minMax.setZero();
+    bool bVar1 = false;
 
     for (u16 hitboxIdx = 0; hitboxIdx < hitboxGroup->hitboxCount(); ++hitboxIdx) {
         Field::KCLTypeMask flags = 0xEAFABDFF;
@@ -61,12 +158,26 @@ void KartCollide::calcBodyCollision(f32 totalScale, const EGG::Quatf &rot,
 
         hitbox.calc(totalScale, 0.0f, scale, rot, pos());
 
-        Field::CollisionDirector::Instance()->checkSphereCachedFullPush(hitbox.worldPos(),
-                hitbox.lastPos(), flags, &colInfo, &maskOut, hitbox.radius(), 0);
+        if (Field::CollisionDirector::Instance()->checkSphereCachedFullPush(hitbox.worldPos(),
+                    hitbox.lastPos(), flags, &colInfo, &maskOut, hitbox.radius(), 0)) {
+            if (!!(maskOut & KCL_TYPE_VEHICLE_COLLIDEABLE)) {
+                Field::CollisionDirector::Instance()->findClosestCollisionEntry(&maskOut,
+                        KCL_TYPE_VEHICLE_COLLIDEABLE);
+            }
+
+            if (!FUN_805B6A9C(collisionData, hitbox, minMax, posRel, count, maskOut, colInfo)) {
+                bVar1 = true;
+            }
+        }
     }
 
-    collisionData.speedFactor = 1.0f;
-    collisionData.rotFactor = 1.0f;
+    if (bVar1) {
+        EGG::Vector3f movement = minMax.min + minMax.max;
+        applyBodyCollision(collisionData, movement, posRel, count);
+    } else {
+        collisionData.speedFactor = 1.0f;
+        collisionData.rotFactor = 1.0f;
+    }
 }
 
 void KartCollide::calcFloorEffect() {
@@ -279,6 +390,56 @@ void KartCollide::applySomeFloorMoment(f32 down, f32 rate, CollisionGroup *hitbo
             angVel.x = 0.0f;
         }
         dynamics()->setAngVel0(dynamics()->angVel0() + angVel);
+    }
+}
+
+bool KartCollide::FUN_805B6A9C(CollisionData &collisionData, const Hitbox &hitbox,
+        EGG::BoundBox3f &minMax, EGG::Vector3f &relPos, s32 &count, Field::KCLTypeMask &maskOut,
+        const Field::CourseColMgr::CollisionInfo &colInfo) {
+    if (!!(maskOut & KCL_TYPE_FLOOR)) {
+        collisionData.floorNrm += colInfo.floorNrm;
+        collisionData.floor = true;
+    }
+
+    EGG::Vector3f tangentOff = colInfo.tangentOff;
+    minMax.min = minMax.min.minimize(tangentOff);
+    minMax.max = minMax.max.maximize(tangentOff);
+    tangentOff.normalise();
+
+    relPos += hitbox.relPos();
+    relPos += -hitbox.radius() * tangentOff;
+    ++count;
+
+    return false;
+}
+
+void KartCollide::applyBodyCollision(CollisionData &collisionData, const EGG::Vector3f &movement,
+        const EGG::Vector3f &posRel, s32 count) {
+    setPos(pos() + movement);
+
+    if (!collisionData.floor) {
+        collisionData.movement = movement;
+    }
+
+    f32 rotFactor = 1.0f / static_cast<f32>(count);
+    EGG::Vector3f scaledRelPos = rotFactor * posRel;
+    collisionData.rotFactor *= rotFactor;
+
+    EGG::Vector3f scaledAngVel0 = dynamics()->angVel0Factor() * dynamics()->angVel0();
+    EGG::Vector3f local_48 = mainRot().rotateVectorInv(scaledRelPos);
+    EGG::Vector3f local_30 = scaledAngVel0.cross(local_48);
+    local_30 = mainRot().rotateVector(local_30);
+    local_30 += extVel();
+
+    collisionData.vel = local_30;
+    collisionData.relPos = scaledRelPos;
+
+    if (collisionData.floor) {
+        f32 intVelY = dynamics()->intVel().y;
+        if (intVelY > 0.0f) {
+            collisionData.vel.y += intVelY;
+        }
+        collisionData.floorNrm.normalise();
     }
 }
 

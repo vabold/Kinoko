@@ -8,6 +8,7 @@ class KartBoost {
 public:
     enum class Type {
         AllMt,
+        MushroomAndBoostPanel,
         Max,
     };
 

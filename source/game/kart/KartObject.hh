@@ -25,6 +25,8 @@ public:
     void calcSub();
     void calc();
 
+    const KartAccessor *accessor() const;
+
     static KartObject *Create(Character character, Vehicle vehicle, u8 playerIdx);
 
 protected:
