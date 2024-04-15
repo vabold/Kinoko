@@ -102,6 +102,10 @@ void KartObject::calc() {
     model()->calc();
 }
 
+const KartAccessor *KartObject::accessor() const {
+    return &m_pointers;
+}
+
 KartObject *KartObject::Create(Character character, Vehicle vehicle, u8 playerIdx) {
     Abstract::List list;
     s_list = &list;

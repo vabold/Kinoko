@@ -116,10 +116,12 @@ public:
     Abstract::List *list() const;
 
 protected:
-    KartAccessor *m_accessor;
+    void apply(size_t idx);
+
+    const KartAccessor *m_accessor;
 
 private:
-    static void ApplyAll(KartAccessor *pointers);
+    static void ApplyAll(const KartAccessor *pointers);
 
     // Used to initialize multiple KartObjectProxy instances at once
     // Lists are created on the stack in KartObject::Create

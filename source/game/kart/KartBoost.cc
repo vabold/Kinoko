@@ -26,14 +26,17 @@ bool KartBoost::activate(Type type, s16 frames) {
 bool KartBoost::calc() {
     static constexpr std::array<f32, BOOST_TYPE_COUNT> MULTIPLIERS = {{
             0.2f,
+            0.4f,
     }};
 
     static constexpr std::array<f32, BOOST_TYPE_COUNT> ACCELERATIONS = {{
             3.0f,
+            7.0f,
     }};
 
     static constexpr std::array<f32, BOOST_TYPE_COUNT> LIMITS = {{
             -1.0f,
+            115.0f,
     }};
 
     m_multiplier = 1.0f;

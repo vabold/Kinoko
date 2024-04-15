@@ -113,6 +113,10 @@ bool RaceInputState::brake() const {
     return !!(buttons & 0x2);
 }
 
+bool RaceInputState::item() const {
+    return !!(buttons & 0x4);
+}
+
 bool RaceInputState::drift() const {
     return !!(buttons & 0x8);
 }

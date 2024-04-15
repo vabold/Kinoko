@@ -76,12 +76,16 @@ const BSP::Hitbox *Hitbox::bspHitbox() const {
     return m_bspHitbox;
 }
 
-EGG::Vector3f Hitbox::worldPos() const {
+const EGG::Vector3f &Hitbox::worldPos() const {
     return m_worldPos;
 }
 
-EGG::Vector3f Hitbox::lastPos() const {
+const EGG::Vector3f &Hitbox::lastPos() const {
     return m_lastPos;
+}
+
+const EGG::Vector3f &Hitbox::relPos() const {
+    return m_relPos;
 }
 
 f32 Hitbox::radius() const {

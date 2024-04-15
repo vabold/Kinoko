@@ -33,9 +33,10 @@ public:
     bool isChargeStartBoost() const;
     bool isBoost() const;
     bool isStickRight() const;
+    bool isMushroomBoost() const;
     bool isDriftAuto() const;
     bool isWheelie() const;
-    bool isMtBoost() const;
+    bool isBoostOffroadInvincibility() const;
     bool isWheelieRot() const;
     bool isAutoDrift() const;
     f32 stickX() const;
@@ -53,7 +54,9 @@ public:
     void setTouchingGround(bool isSet);
     void setHop(bool isSet);
     void setBoost(bool isSet);
+    void setMushroomBoost(bool isSet);
     void setWheelie(bool isSet);
+    void setBoostOffroadInvincibility(bool isSet);
     void setWheelieRot(bool isSet);
 
 private:
@@ -72,8 +75,11 @@ private:
     bool m_bHop;
     bool m_bBoost;
     bool m_bStickRight;
+    bool m_bMushroomBoost;
     bool m_bDriftAuto;
     bool m_bWheelie;
+
+    bool m_bBoostOffroadInvincibility;
 
     bool m_bWheelieRot;
 

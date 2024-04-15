@@ -45,8 +45,9 @@ public:
     void setLastPos(const EGG::Vector3f &scale, const EGG::Matrix34f &pose);
 
     const BSP::Hitbox *bspHitbox() const;
-    EGG::Vector3f worldPos() const;
-    EGG::Vector3f lastPos() const;
+    const EGG::Vector3f &worldPos() const;
+    const EGG::Vector3f &lastPos() const;
+    const EGG::Vector3f &relPos() const;
     f32 radius() const;
 
 private:

@@ -24,6 +24,7 @@ struct RaceInputState {
 
     bool accelerate() const;
     bool brake() const;
+    bool item() const;
     bool drift() const;
     bool trickUp() const;
 
