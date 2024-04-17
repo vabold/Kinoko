@@ -34,6 +34,7 @@ void WheelPhysics::reset() {
     m_wheelEdgePos.setZero();
     m_effectiveRadius = 0.0f;
     m_targetEffectiveRadius = 0.0f;
+    m_74 = 0.0f;
     m_topmostPos.setZero();
 
     if (m_bspWheel) {
@@ -81,6 +82,14 @@ void WheelPhysics::updateCollision(const EGG::Vector3f &bottom, const EGG::Vecto
     m_wheelEdgePos = m_pos + m_effectiveRadius * move()->totalScale() * bottom;
     m_effectiveRadius += (m_targetEffectiveRadius - m_effectiveRadius) * 0.1f;
     m_suspTravel = bottom.dot(m_pos - topmostPos);
+
+    if (m_suspTravel < 0.0f) {
+        m_74 = 1.0f;
+        EGG::Vector3f suspBottom = m_suspTravel * bottom;
+        sub()->updateSuspOvertravel(suspBottom);
+    } else {
+        m_74 = 0.0f;
+    }
 }
 
 const EGG::Vector3f &WheelPhysics::pos() const {
@@ -113,6 +122,10 @@ const EGG::Vector3f &WheelPhysics::speed() const {
 
 f32 WheelPhysics::effectiveRadius() const {
     return m_effectiveRadius;
+}
+
+f32 WheelPhysics::_74() const {
+    return m_74;
 }
 
 void WheelPhysics::setSuspTravel(f32 suspTravel) {

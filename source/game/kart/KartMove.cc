@@ -22,8 +22,10 @@ static constexpr f32 LEAN_ROT_CAP_RACE = 1.0f;
 static constexpr f32 LEAN_ROT_INC_COUNTDOWN = 0.08f;
 static constexpr f32 LEAN_ROT_CAP_COUNTDOWN = 0.6f;
 
-KartMove::KartMove()
-    : m_smoothedUp(EGG::Vector3f::ey), m_scale(1.0f, 1.0f, 1.0f), m_totalScale(1.0f) {}
+KartMove::KartMove() : m_smoothedUp(EGG::Vector3f::ey), m_scale(1.0f, 1.0f, 1.0f) {
+    m_totalScale = 1.0f;
+    m_bPadBoost = false;
+}
 
 void KartMove::calcTurn() {
     m_realTurn = 0.0f;
@@ -109,6 +111,7 @@ void KartMove::init(bool b1, bool b2) {
     m_hopVelY = 0.0f;
     m_hopPosY = 0.0f;
     m_hopGravity = 0.0f;
+    m_bPadBoost = false;
     m_rawTurn = 0.0f;
 }
 
@@ -155,6 +158,7 @@ void KartMove::setKartSpeedLimit() {
 void KartMove::calc() {
     dynamics()->resetInternalVelocity();
     calcTop();
+    calcSpecialFloor();
     calcDirs();
     calcOffroad();
     calcTurn();
@@ -208,6 +212,19 @@ void KartMove::calcTop() {
     }
 
     dynamics()->setStabilizationFactor(stabilizationFactor);
+}
+
+void KartMove::calcSpecialFloor() {
+    const auto *raceMgr = System::RaceManager::Instance();
+    if (!raceMgr->isStageReached(System::RaceManager::Stage::Race)) {
+        return;
+    }
+
+    if (m_bPadBoost) {
+        tryStartBoostPanel();
+    }
+
+    m_bPadBoost = false;
 }
 
 void KartMove::calcDirs() {
@@ -619,6 +636,13 @@ bool KartMove::canHop() const {
     return true;
 }
 
+void KartMove::tryStartBoostPanel() {
+    constexpr s16 BOOST_PANEL_DURATION = 60;
+
+    activateBoost(KartBoost::Type::MushroomAndBoostPanel, BOOST_PANEL_DURATION);
+    setOffroadInvincibility(BOOST_PANEL_DURATION);
+}
+
 void KartMove::activateBoost(KartBoost::Type type, s16 frames) {
     if (m_boost.activate(type, frames)) {
         state()->setBoost(true);
@@ -680,6 +704,10 @@ void KartMove::setKCLWheelSpeedFactor(f32 val) {
 
 void KartMove::setKCLWheelRotFactor(f32 val) {
     m_kclWheelRotFactor = val;
+}
+
+void KartMove::setPadBoost(bool isSet) {
+    m_bPadBoost = isSet;
 }
 
 s32 KartMove::getAppliedHopStickX() const {

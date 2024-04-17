@@ -29,6 +29,7 @@ public:
     const CollisionGroup *hitboxGroup() const;
     const EGG::Vector3f &speed() const;
     f32 effectiveRadius() const;
+    f32 _74() const;
 
     void setSuspTravel(f32 suspTravel);
     void setPos(const EGG::Vector3f &pos);
@@ -51,6 +52,7 @@ private:
     EGG::Vector3f m_wheelEdgePos;
     f32 m_effectiveRadius;
     f32 m_targetEffectiveRadius;
+    f32 m_74;
     EGG::Vector3f m_topmostPos;
 };
 
