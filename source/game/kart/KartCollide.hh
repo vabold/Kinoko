@@ -18,6 +18,7 @@ public:
     void calcHitboxes();
 
     void findCollision();
+    void FUN_80572F4C();
     void FUN_805B72B8(f32 param_1, f32 param_2, bool lockXZ, bool addExtVelY);
     void calcBodyCollision(f32 totalScale, const EGG::Quatf &rot, const EGG::Vector3f &scale);
     void calcFloorEffect();
@@ -39,6 +40,9 @@ public:
             const Field::CourseColMgr::CollisionInfo &colInfo);
     void applyBodyCollision(CollisionData &collisionData, const EGG::Vector3f &movement,
             const EGG::Vector3f &posRel, s32 count);
+
+    void setFloorColInfo(CollisionData &collisionData, const EGG::Vector3f &relPos,
+            const EGG::Vector3f &vel, const EGG::Vector3f &floorNrm);
 
 private:
     f32 m_smoothedBack; // 0x50

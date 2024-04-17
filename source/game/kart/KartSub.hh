@@ -18,6 +18,7 @@ public:
     void calcPass0();
     void calcPass1();
     void addFloor(const CollisionData &, bool);
+    void updateSuspOvertravel(const EGG::Vector3f &suspOvertravel);
 
     f32 someScale();
 

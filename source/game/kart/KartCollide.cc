@@ -51,6 +51,18 @@ void KartCollide::findCollision() {
     FUN_805B72B8(fVar1, dVar14, false, true);
 }
 
+void KartCollide::FUN_80572F4C() {
+    f32 fVar1;
+
+    if (state()->isBoost()) {
+        fVar1 = 0.0f;
+    } else {
+        fVar1 = 0.05f;
+    }
+
+    FUN_805B72B8(0.01f, fVar1, false, true);
+}
+
 void KartCollide::FUN_805B72B8(f32 param_1, f32 param_2, bool lockXZ, bool addExtVelY) {
     const auto &colData = collisionData();
 
@@ -268,8 +280,7 @@ void KartCollide::processWheel(CollisionData &collisionData, Hitbox &hitbox,
 }
 
 void KartCollide::processFloor(CollisionData &collisionData, Hitbox & /*hitbox*/,
-        Field::CourseColMgr::CollisionInfo * /*colInfo*/, Field::KCLTypeMask *maskOut,
-        bool /*wheel*/) {
+        Field::CourseColMgr::CollisionInfo * /*colInfo*/, Field::KCLTypeMask *maskOut, bool wheel) {
     if (!(*maskOut & KCL_TYPE_VEHICLE_COLLIDEABLE)) {
         return;
     }
@@ -293,6 +304,10 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox & /*hitbox*/
     collisionData.rotFactor += param()->stats().kclRot[KCL_ATTRIBUTE_TYPE(attribute)];
     collisionData.closestFloorFlags = closestColEntry->typeMask;
     collisionData.closestFloorSettings = (attribute >> 5) & 7;
+
+    if (wheel && !!(*maskOut & KCL_TYPE_BIT(COL_TYPE_BOOST_PAD))) {
+        move()->setPadBoost(true);
+    }
 
     if (!(*maskOut & KCL_TYPE_BIT(COL_TYPE_BOOST_RAMP))) {
         m_notTrickable = true;
@@ -441,6 +456,14 @@ void KartCollide::applyBodyCollision(CollisionData &collisionData, const EGG::Ve
         }
         collisionData.floorNrm.normalise();
     }
+}
+
+void KartCollide::setFloorColInfo(CollisionData &collisionData, const EGG::Vector3f &relPos,
+        const EGG::Vector3f &vel, const EGG::Vector3f &floorNrm) {
+    collisionData.relPos = relPos;
+    collisionData.vel = vel;
+    collisionData.floorNrm = floorNrm;
+    collisionData.floor = true;
 }
 
 } // namespace Kart

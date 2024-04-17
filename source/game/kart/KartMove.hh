@@ -21,6 +21,7 @@ public:
 
     void calc();
     void calcTop();
+    void calcSpecialFloor();
     void calcDirs();
     void calcOffroad();
     bool calcPreDrift();
@@ -43,6 +44,8 @@ public:
     virtual bool canWheelie() const;
     virtual bool canHop() const;
 
+    void tryStartBoostPanel();
+
     void activateBoost(KartBoost::Type type, s16 frames);
     void applyStartBoost(s16 frames);
     void activateMushroom();
@@ -53,6 +56,7 @@ public:
     void setFloorCollisionCount(u16 count);
     void setKCLWheelSpeedFactor(f32 val);
     void setKCLWheelRotFactor(f32 val);
+    void setPadBoost(bool isSet);
 
     s32 getAppliedHopStickX() const;
     f32 softSpeedLimit() const;
@@ -107,13 +111,14 @@ protected:
     s16 m_offroadInvincibility;
     f32 m_realTurn;
     f32 m_weightedTurn;
-    f32 m_rawTurn;
     EGG::Vector3f m_scale;
     f32 m_totalScale;
     u16 m_mushroomBoostTimer;
     f32 m_hopVelY;
     f32 m_hopPosY;
     f32 m_hopGravity;
+    bool m_bPadBoost;
+    f32 m_rawTurn;
 };
 
 class KartMoveBike : public KartMove {

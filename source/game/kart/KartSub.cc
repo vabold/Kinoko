@@ -129,6 +129,35 @@ void KartSub::calcPass1() {
     EGG::Vector3f vehicleCompensation = m_maxSuspOvertravel + m_minSuspOvertravel;
     dynamics()->setPos(dynamics()->pos() + vehicleCompensation);
 
+    if (!collisionData().floor) {
+        EGG::Vector3f relPos;
+        EGG::Vector3f vel;
+        EGG::Vector3f floorNrm;
+        u32 count = 0;
+
+        for (u16 wheelIdx = 0; wheelIdx < tireCount(); ++wheelIdx) {
+            const WheelPhysics *wheelPhysics = tirePhysics(wheelIdx);
+            if (wheelPhysics->_74() == 0.0f) {
+                continue;
+            }
+
+            const CollisionData &colData = wheelPhysics->hitboxGroup()->collisionData();
+            relPos += colData.relPos;
+            vel += colData.vel;
+            floorNrm += colData.floorNrm;
+            ++count;
+        }
+
+        if (count > 0) {
+            f32 scalar = (1.0f / static_cast<f32>(count));
+            floorNrm.normalise();
+
+            collide()->setFloorColInfo(collisionData(), relPos * scalar, vel * scalar, floorNrm);
+
+            collide()->FUN_80572F4C();
+        }
+    }
+
     for (u16 wheelIdx = 0; wheelIdx < suspCount(); ++wheelIdx) {
         suspensionPhysics(wheelIdx)->calcSuspension(forward, vehicleCompensation);
     }
@@ -149,6 +178,11 @@ void KartSub::calcPass1() {
 
 void KartSub::addFloor(const CollisionData &, bool) {
     ++m_floorCollisionCount;
+}
+
+void KartSub::updateSuspOvertravel(const EGG::Vector3f &suspOvertravel) {
+    m_maxSuspOvertravel = m_maxSuspOvertravel.minimize(suspOvertravel);
+    m_minSuspOvertravel = m_minSuspOvertravel.maximize(suspOvertravel);
 }
 
 f32 KartSub::someScale() {
