@@ -39,7 +39,7 @@ public:
     void reset();
     void setScale(f32 scale);
     void setRadius(f32 radius);
-    void setBspHitbox(const BSP::Hitbox *hitbox);
+    void setBspHitbox(const BSP::Hitbox *hitbox, bool owns = false);
     void setWorldPos(const EGG::Vector3f &pos);
     void setLastPos(const EGG::Vector3f &pos);
     void setLastPos(const EGG::Vector3f &scale, const EGG::Matrix34f &pose);
@@ -56,6 +56,8 @@ private:
     EGG::Vector3f m_worldPos;
     EGG::Vector3f m_lastPos;
     EGG::Vector3f m_relPos;
+
+    bool m_ownsBSP;
 };
 
 class CollisionGroup {
@@ -80,7 +82,7 @@ public:
 private:
     f32 m_boundingRadius;
     CollisionData m_collisionData;
-    std::span<Hitbox> *m_hitboxes;
+    std::span<Hitbox> m_hitboxes;
     f32 m_hitboxScale;
 };
 

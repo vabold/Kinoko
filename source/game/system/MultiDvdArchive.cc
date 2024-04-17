@@ -35,7 +35,7 @@ MultiDvdArchive::~MultiDvdArchive() {
 void *MultiDvdArchive::getFile(const char *filename, size_t *size) const {
     void *file = nullptr;
 
-    for (u16 i = 0; i < m_archiveCount; i++) {
+    for (u16 i = m_archiveCount; i-- > 0; ) {
         const DvdArchive &archive = m_archives[i];
 
         if (!archive.isLoaded()) {

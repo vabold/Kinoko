@@ -15,6 +15,7 @@ public:
     void *getBsp(Vehicle vehicle, size_t *size);
     MultiDvdArchive *load(Course courseId);
     MultiDvdArchive *load(s32 idx, const char *filename);
+    void unmount(MultiDvdArchive *archive);
 
     static const char *GetVehicleName(Vehicle vehicle);
 

@@ -1,6 +1,7 @@
 #include "GameScene.hh"
 
 #include "game/system/KPadDirector.hh"
+#include "game/system/ResourceManager.hh"
 
 #include <egg/core/SceneManager.hh>
 
@@ -24,10 +25,11 @@ void GameScene::enter() {
 
 void GameScene::exit() {
     deinitScene();
+    unmountResources();
 }
 
 void GameScene::reinit() {
-    deinitScene();
+    exit();
     if (m_nextSceneId < 0) {
         onReinit();
         initScene();
@@ -36,7 +38,10 @@ void GameScene::reinit() {
     }
 }
 
-void GameScene::appendResource(System::MultiDvdArchive * /*arc*/, s32 /*id*/) {}
+void GameScene::appendResource(System::MultiDvdArchive *archive, s32 id) {
+    Resource *resource = new Resource(archive, id);
+    m_resources.append(resource);
+}
 
 void GameScene::initScene() {
     createEngines();
@@ -51,6 +56,18 @@ void GameScene::deinitScene() {
 
     destroyEngines();
     System::KPadDirector::Instance()->clear();
+}
+
+void GameScene::unmountResources() {
+    auto *resourceManager = System::ResourceManager::Instance();
+    for (Abstract::Node *node = m_resources.head(); node;) {
+        Resource *resource = node->data<Resource>();
+        resourceManager->unmount(resource->archive);
+        Abstract::Node *nextNode = m_resources.getNext(node);
+        m_resources.remove(node);
+        delete resource;
+        node = nextNode;
+    }
 }
 
 } // namespace Scene

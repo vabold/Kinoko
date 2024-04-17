@@ -28,7 +28,23 @@ int KSystem::main(int argc, char **argv) {
 
     init();
     m_sceneMgr->changeScene(0);
-    return run() ? 0 : 1;
+    bool success = true;
+
+    while (true) {
+        success &= run();
+
+        if (!m_testDirector->popTestCase()) {
+            break;
+        }
+
+        m_testDirector->init();
+        m_sceneMgr->reinitCurrentScene();
+    }
+
+    // Shut down the RootScene
+    m_sceneMgr->destroyToSelectSceneId(0);
+
+    return success ? 0 : 1;
 }
 
 KSystem::Option KSystem::option(char *arg) {
@@ -79,6 +95,7 @@ void KSystem::init() {
     auto *sceneCreator = new SceneCreatorDynamic;
     m_sceneMgr = new EGG::SceneManager(sceneCreator);
     m_testDirector = new Test::TestDirector(m_suiteData);
+    delete[] m_suiteData.data();
 }
 
 bool KSystem::run() {

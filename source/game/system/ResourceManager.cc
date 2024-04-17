@@ -47,6 +47,10 @@ MultiDvdArchive *ResourceManager::load(Course courseId) {
     return m_archives[1];
 }
 
+void ResourceManager::unmount(MultiDvdArchive *archive) {
+    archive->unmount();
+}
+
 const char *ResourceManager::GetVehicleName(Vehicle vehicle) {
     return vehicle < Vehicle::Max ? VEHICLE_NAMES[static_cast<u8>(vehicle)] : nullptr;
 }

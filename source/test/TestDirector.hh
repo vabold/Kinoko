@@ -18,14 +18,15 @@ struct TestCase {
 
 class TestDirector {
 public:
-    TestDirector(std::span<u8> &suiteData);
+    TestDirector(const std::span<u8> &suiteData);
     ~TestDirector();
 
     void parseSuite(EGG::RamStream &stream);
     void init();
     bool calc();
-    bool test(const TestData &data);
+    void test(const TestData &data);
     void writeTestOutput() const;
+    bool popTestCase();
 
     TestData findNextEntry();
     const TestCase &testCase() const;
@@ -36,23 +37,33 @@ private:
     void readHeader();
 
     template <typename T>
-    bool checkDesync(const T &t0, const T &t1, const char *name) const {
+    void checkDesync(const T &t0, const T &t1, const char *name) {
         if (t0 == t1) {
-            return true;
+            return;
         }
 
-        K_LOG("DESYNC! Frame: %d; Name: %s", m_currentFrame, name);
+        if (m_sync) {
+            K_LOG("Test Case Failed: %s [%d / %d]", testCase().name.c_str(), m_currentFrame,
+                    m_frameCount);
+        }
+
+        K_LOG("DESYNC! Name: %s", name);
         std::string s0(t0);
         std::string s1(t1);
         K_LOG("Expected: %s", s0.c_str());
         K_LOG("Observed: %s", s1.c_str());
 
-        return false;
+        m_sync = false;
     }
 
-    bool checkDesync(const f32 &t0, const f32 &t1, const char *name) const {
+    void checkDesync(const f32 &t0, const f32 &t1, const char *name) {
         if (t0 == t1) {
-            return true;
+            return;
+        }
+
+        if (m_sync) {
+            K_LOG("Test Case Failed: %s [%d / %d]", testCase().name.c_str(), m_currentFrame,
+                    m_frameCount);
         }
 
         K_LOG("DESYNC! Frame: %d; Name: %s", m_currentFrame, name);
@@ -61,13 +72,11 @@ private:
         K_LOG("Expected: 0x%08X | %s", f2u(t0), s0.c_str());
         K_LOG("Observed: 0x%08X | %s", f2u(t1), s1.c_str());
 
-        return false;
+        m_sync = false;
     }
 
     std::queue<TestCase> m_testCases;
-    u16 m_curTestIdx;
 
-    void *m_file;
     EGG::RamStream m_stream;
 
     u16 m_versionMajor;

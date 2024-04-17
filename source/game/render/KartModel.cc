@@ -18,6 +18,8 @@ KartModel::KartModel() {
     _64 = 0.0f;
 }
 
+KartModel::~KartModel() = default;
+
 void KartModel::vf_1c() { // FUN_807CD32C
     _58 *= 0.9f;
     f32 xStick = inputs()->currentState().stick.x;
@@ -137,6 +139,10 @@ void KartModel::FUN_807C7828(u8 /*playerIdx*/, bool /*isBike*/) {
 
 KartModelKart::KartModelKart() = default;
 
+KartModelKart::~KartModelKart() = default;
+
 KartModelBike::KartModelBike() = default;
+
+KartModelBike::~KartModelBike() = default;
 
 } // namespace Render

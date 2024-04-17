@@ -22,9 +22,13 @@ static constexpr size_t RKG_MII_DATA_SIZE = 0x4A;
 
 class RawGhostFile {
 public:
+    RawGhostFile();
     RawGhostFile(const u8 *rkg);
     ~RawGhostFile();
 
+    RawGhostFile &operator=(const u8 *rkg);
+
+    void init(const u8 *rkg);
     bool decompress(const u8 *rkg);
     bool isValid(const u8 *rkg) const;
 
@@ -42,7 +46,7 @@ static_assert(sizeof(RawGhostFile) == RKG_UNCOMPRESSED_FILE_SIZE);
 
 class GhostFile {
 public:
-    GhostFile(RawGhostFile *raw);
+    GhostFile(const RawGhostFile &raw);
     ~GhostFile();
 
     void read(EGG::RamStream &stream);

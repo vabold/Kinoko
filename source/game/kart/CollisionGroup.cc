@@ -17,9 +17,13 @@ void CollisionData::reset() {
     floor = false;
 }
 
-Hitbox::Hitbox() : m_bspHitbox(nullptr) {}
+Hitbox::Hitbox() : m_bspHitbox(nullptr), m_ownsBSP(false) {}
 
-Hitbox::~Hitbox() = default;
+Hitbox::~Hitbox() {
+    if (m_ownsBSP) {
+        delete m_bspHitbox;
+    }
+}
 
 void Hitbox::calc(f32 param_1, f32 totalScale, const EGG::Vector3f &scale, const EGG::Quatf &rot,
         const EGG::Vector3f &pos) {
@@ -45,7 +49,8 @@ void Hitbox::setRadius(f32 radius) {
     m_radius = radius;
 }
 
-void Hitbox::setBspHitbox(const BSP::Hitbox *hitbox) {
+void Hitbox::setBspHitbox(const BSP::Hitbox *hitbox, bool owns) {
+    m_ownsBSP = owns;
     m_bspHitbox = hitbox;
 }
 
@@ -92,13 +97,12 @@ f32 Hitbox::radius() const {
     return m_radius;
 }
 
-CollisionGroup::CollisionGroup() : m_hitboxes(nullptr), m_hitboxScale(1.0f) {
+CollisionGroup::CollisionGroup() : m_hitboxScale(1.0f) {
     m_collisionData.reset();
 }
 
 CollisionGroup::~CollisionGroup() {
-    delete[] m_hitboxes->data();
-    delete m_hitboxes;
+    delete[] m_hitboxes.data();
 }
 
 f32 CollisionGroup::initHitboxes(const std::array<BSP::Hitbox, 16> &hitboxes) {
@@ -110,10 +114,10 @@ f32 CollisionGroup::initHitboxes(const std::array<BSP::Hitbox, 16> &hitboxes) {
         }
     }
 
-    m_hitboxes = new std::span<Hitbox>(new Hitbox[bspHitboxCount], bspHitboxCount);
+    m_hitboxes = std::span<Hitbox>(new Hitbox[bspHitboxCount], bspHitboxCount);
 
-    for (u16 hitboxIdx = 0; hitboxIdx < m_hitboxes->size(); ++hitboxIdx) {
-        (*m_hitboxes)[hitboxIdx].setBspHitbox(&hitboxes[hitboxIdx]);
+    for (u16 hitboxIdx = 0; hitboxIdx < m_hitboxes.size(); ++hitboxIdx) {
+        m_hitboxes[hitboxIdx].setBspHitbox(&hitboxes[hitboxIdx]);
     }
 
     return computeCollisionLimits();
@@ -122,7 +126,7 @@ f32 CollisionGroup::initHitboxes(const std::array<BSP::Hitbox, 16> &hitboxes) {
 f32 CollisionGroup::computeCollisionLimits() {
     EGG::Vector3f max;
 
-    for (const auto &hitbox : *m_hitboxes) {
+    for (const auto &hitbox : m_hitboxes) {
         const BSP::Hitbox *bspHitbox = hitbox.bspHitbox();
 
         if (bspHitbox->enable == 0) {
@@ -149,14 +153,14 @@ f32 CollisionGroup::computeCollisionLimits() {
 }
 
 void CollisionGroup::createSingleHitbox(f32 radius, const EGG::Vector3f &relPos) {
-    m_hitboxes = new std::span<Hitbox>(new Hitbox, 1);
+    m_hitboxes = std::span<Hitbox>(new Hitbox[1], 1);
 
     // TODO: Do we need for loop if this is just one?
     // And how exactly will we identify to free the BSP::Hitbox on destruction?
-    for (auto &hitbox : *m_hitboxes) {
+    for (auto &hitbox : m_hitboxes) {
         hitbox.reset();
         BSP::Hitbox *bspHitbox = new BSP::Hitbox;
-        hitbox.setBspHitbox(bspHitbox);
+        hitbox.setBspHitbox(bspHitbox, true);
         bspHitbox->position = relPos;
         bspHitbox->radius = radius;
         hitbox.setRadius(radius);
@@ -167,7 +171,7 @@ void CollisionGroup::createSingleHitbox(f32 radius, const EGG::Vector3f &relPos)
 void CollisionGroup::reset() {
     m_collisionData.reset();
 
-    for (auto &hitbox : *m_hitboxes) {
+    for (auto &hitbox : m_hitboxes) {
         hitbox.reset();
         hitbox.setRadius(hitbox.bspHitbox()->radius * m_hitboxScale);
     }
@@ -178,11 +182,11 @@ void CollisionGroup::resetCollision() {
 }
 
 Hitbox &CollisionGroup::hitbox(u16 hitboxIdx) {
-    return (*m_hitboxes)[hitboxIdx];
+    return m_hitboxes[hitboxIdx];
 }
 
 u16 CollisionGroup::hitboxCount() const {
-    return m_hitboxes->size();
+    return m_hitboxes.size();
 }
 
 CollisionData &CollisionGroup::collisionData() {
@@ -196,7 +200,7 @@ const CollisionData &CollisionGroup::collisionData() const {
 void CollisionGroup::setHitboxScale(f32 scale) {
     m_hitboxScale = scale;
 
-    for (auto &hitbox : *m_hitboxes) {
+    for (auto &hitbox : m_hitboxes) {
         hitbox.setRadius(hitbox.bspHitbox()->radius * m_hitboxScale);
     }
 }

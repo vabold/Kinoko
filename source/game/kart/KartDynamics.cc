@@ -11,6 +11,8 @@ KartDynamics::KartDynamics() {
     init();
 }
 
+KartDynamics::~KartDynamics() = default;
+
 void KartDynamics::init() {
     m_speedNorm = 0.0f;
     m_gravity = -1.0f;

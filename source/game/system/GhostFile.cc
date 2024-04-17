@@ -6,11 +6,11 @@
 
 namespace System {
 
-GhostFile::GhostFile(RawGhostFile *raw) {
-    u8 *streamPtr = const_cast<u8 *>(raw->buffer());
+GhostFile::GhostFile(const RawGhostFile &raw) {
+    u8 *streamPtr = const_cast<u8 *>(raw.buffer());
     EGG::RamStream stream(streamPtr, RKG_HEADER_SIZE);
     read(stream);
-    m_inputs = raw->buffer() + RKG_HEADER_SIZE;
+    m_inputs = raw.buffer() + RKG_HEADER_SIZE;
 }
 
 GhostFile::~GhostFile() = default;
@@ -75,7 +75,23 @@ bool GhostFile::driftIsAuto() const {
     return m_driftIsAuto;
 }
 
+RawGhostFile::RawGhostFile() {
+    memset(m_buffer, 0, RKG_UNCOMPRESSED_FILE_SIZE);
+}
+
 RawGhostFile::RawGhostFile(const u8 *rkg) {
+    init(rkg);
+}
+
+RawGhostFile::~RawGhostFile() = default;
+
+RawGhostFile &RawGhostFile::operator=(const u8 *rkg) {
+    init(rkg);
+
+    return *this;
+}
+
+void RawGhostFile::init(const u8 *rkg) {
     if (!isValid(rkg)) {
         K_PANIC("Invalid RKG header");
     }
@@ -88,8 +104,6 @@ RawGhostFile::RawGhostFile(const u8 *rkg) {
         memcpy(m_buffer, rkg, RKG_UNCOMPRESSED_FILE_SIZE);
     }
 }
-
-RawGhostFile::~RawGhostFile() = default;
 
 bool RawGhostFile::decompress(const u8 *rkg) {
     memcpy(m_buffer, rkg, RKG_HEADER_SIZE);

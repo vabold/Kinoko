@@ -7,7 +7,7 @@ namespace Kart {
 class KartTire {
 public:
     KartTire(u16 bspWheelIdx);
-    ~KartTire();
+    virtual ~KartTire();
 
     virtual void createPhysics(u16 tireIdx);
 

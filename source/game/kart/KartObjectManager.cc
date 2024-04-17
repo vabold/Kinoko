@@ -54,7 +54,15 @@ KartObjectManager::KartObjectManager() {
     }
 }
 
-KartObjectManager::~KartObjectManager() = default;
+KartObjectManager::~KartObjectManager() {
+    KartParamFileManager::DestroyInstance();
+
+    for (size_t i = 0; i < m_count; ++i) {
+        delete m_objects[i];
+    }
+
+    delete[] m_objects;
+}
 
 KartObjectManager *KartObjectManager::s_instance = nullptr;
 

@@ -20,7 +20,7 @@ enum Changelog {
     AddedRotation = 5,
 };
 
-TestDirector::TestDirector(std::span<u8> &suiteData) : m_curTestIdx(0) {
+TestDirector::TestDirector(const std::span<u8> &suiteData) {
     Abstract::File::Remove("results.txt");
     EGG::RamStream stream = EGG::RamStream(suiteData.data(), suiteData.size());
     stream.setEndian(std::endian::big);
@@ -90,7 +90,6 @@ void TestDirector::parseSuite(EGG::RamStream &stream) {
 void TestDirector::init() {
     size_t size;
     u8 *krkg = Abstract::File::Load(testCase().krkgPath.data(), size);
-    m_file = krkg;
     m_stream = EGG::RamStream(krkg, static_cast<u32>(size));
     m_currentFrame = -1;
     m_sync = true;
@@ -110,16 +109,17 @@ bool TestDirector::calc() {
     u16 targetFrame = testCase().targetFrame;
     assert(targetFrame <= m_frameCount);
     if (++m_currentFrame > targetFrame) {
+        K_LOG("Test Case Passed: %s [%d / %d]", testCase().name.c_str(), targetFrame, m_frameCount);
         return false;
     }
 
     // Test the current frame
     TestData data = findNextEntry();
-    m_sync = test(data);
+    test(data);
     return m_sync;
 }
 
-bool TestDirector::test(const TestData &data) {
+void TestDirector::test(const TestData &data) {
     auto *object = Kart::KartObjectManager::Instance()->object(0);
     const auto &pos = object->pos();
     const auto &fullRot = object->fullRot();
@@ -131,30 +131,26 @@ bool TestDirector::test(const TestData &data) {
     const auto &mainRot = object->mainRot();
     const auto &angVel2 = object->angVel2();
 
-    bool ok = true;
-
     switch (m_versionMinor) {
     case Changelog::AddedRotation:
-        ok &= checkDesync(data.mainRot, mainRot, "mainRot");
-        ok &= checkDesync(data.angVel2, angVel2, "angVel2");
+        checkDesync(data.mainRot, mainRot, "mainRot");
+        checkDesync(data.angVel2, angVel2, "angVel2");
         [[fallthrough]];
     case Changelog::AddedSpeed:
-        ok &= checkDesync(data.speed, speed, "speed");
-        ok &= checkDesync(data.acceleration, acceleration, "acceleration");
-        ok &= checkDesync(data.softSpeedLimit, softSpeedLimit, "softSpeedLimit");
+        checkDesync(data.speed, speed, "speed");
+        checkDesync(data.acceleration, acceleration, "acceleration");
+        checkDesync(data.softSpeedLimit, softSpeedLimit, "softSpeedLimit");
         [[fallthrough]];
     case Changelog::AddedIntVel:
-        ok &= checkDesync(data.intVel, intVel, "intVel");
+        checkDesync(data.intVel, intVel, "intVel");
         [[fallthrough]];
     case Changelog::AddedExtVel:
-        ok &= checkDesync(data.extVel, extVel, "extVel");
+        checkDesync(data.extVel, extVel, "extVel");
         [[fallthrough]];
     default:
-        ok &= checkDesync(data.pos, pos, "pos");
-        ok &= checkDesync(data.fullRot, fullRot, "fullRot");
+        checkDesync(data.pos, pos, "pos");
+        checkDesync(data.fullRot, fullRot, "fullRot");
     }
-
-    return ok;
 }
 
 void TestDirector::writeTestOutput() const {
@@ -163,6 +159,17 @@ void TestDirector::writeTestOutput() const {
     outStr += std::to_string(testCase().targetFrame) + "\n";
     outStr += std::to_string(m_frameCount) + "\n";
     Abstract::File::Append("results.txt", outStr.c_str(), outStr.size());
+}
+
+// Pops the first test case in the queue.
+// Also free the KRKG buffer for that test case.
+// Returns whether or not there are remaining test cases.
+bool TestDirector::popTestCase() {
+    assert(m_testCases.size() > 0);
+    m_testCases.pop();
+    delete[] m_stream.data();
+
+    return !m_testCases.empty();
 }
 
 TestData TestDirector::findNextEntry() {

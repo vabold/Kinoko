@@ -8,6 +8,7 @@ namespace Kart {
 class KartMove : public KartObjectProxy {
 public:
     KartMove();
+    virtual ~KartMove();
 
     virtual void calcTurn();
     virtual void calcWheelie() {}

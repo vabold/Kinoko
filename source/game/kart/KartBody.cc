@@ -28,7 +28,15 @@ void KartBody::setAngle(f32 val) {
 
 KartBodyKart::KartBodyKart(KartPhysics *physics) : KartBody(physics) {}
 
+KartBodyKart::~KartBodyKart() {
+    delete m_physics;
+}
+
 KartBodyBike::KartBodyBike(KartPhysics *physics) : KartBody(physics) {}
+
+KartBodyBike::~KartBodyBike() {
+    delete m_physics;
+}
 
 EGG::Matrix34f KartBodyBike::wheelMatrix(u16 wheelIdx) {
     EGG::Matrix34f mat;

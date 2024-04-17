@@ -34,12 +34,11 @@ public:
         std::array<Player, 12> players;
         u8 playerCount;
         Course course;
-        RawGhostFile *ghost;
     };
 
     void init();
     void initRace();
-    void initControllers();
+    void initControllers(const GhostFile &ghost);
 
     const Scenario &raceScenario() const {
         return m_raceScenario;
@@ -54,6 +53,7 @@ private:
     ~RaceConfig();
 
     Scenario m_raceScenario;
+    RawGhostFile m_ghost;
 
     static RaceConfig *s_instance;
 };

@@ -15,11 +15,10 @@ DvdArchive::~DvdArchive() {
 }
 
 void DvdArchive::decompress() {
-    s32 expandSize = EGG::Decomp::GetExpandSize(reinterpret_cast<u8 *>(m_fileStart));
-    void *archive = new u8[expandSize];
-    EGG::Decomp::DecodeSZS(reinterpret_cast<u8 *>(m_fileStart), reinterpret_cast<u8 *>(archive));
-    m_archiveSize = expandSize;
-    m_archiveStart = archive;
+    m_archiveSize = EGG::Decomp::GetExpandSize(reinterpret_cast<u8 *>(m_fileStart));
+    m_archiveStart = new u8[m_archiveSize];
+    EGG::Decomp::DecodeSZS(reinterpret_cast<u8 *>(m_fileStart),
+            reinterpret_cast<u8 *>(m_archiveStart));
     m_state = State::Decompressed;
 }
 
@@ -126,7 +125,7 @@ void DvdArchive::clearArchive() {
 }
 
 void DvdArchive::clearFile() {
-    if (m_fileStart) {
+    if (!m_fileStart) {
         return;
     }
 
