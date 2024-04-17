@@ -18,6 +18,17 @@ KartObject::KartObject(KartParam *param) {
 
 KartObject::~KartObject() {
     delete m_pointers.param;
+    delete m_pointers.body;
+    delete m_pointers.sub;
+    delete m_pointers.model;
+
+    for (auto *susp : m_pointers.suspensions) {
+        delete susp;
+    }
+
+    for (auto *tire : m_pointers.tires) {
+        delete tire;
+    }
 }
 
 KartBody *KartObject::createBody(KartPhysics *physics) {
@@ -139,9 +150,7 @@ KartObject *KartObject::Create(Character character, Vehicle vehicle, u8 playerId
 
 KartObjectBike::KartObjectBike(KartParam *param) : KartObject(param) {}
 
-KartObjectBike::~KartObjectBike() {
-    delete m_pointers.param;
-}
+KartObjectBike::~KartObjectBike() = default;
 
 KartBody *KartObjectBike::createBody(KartPhysics *physics) {
     return new KartBodyBike(physics);

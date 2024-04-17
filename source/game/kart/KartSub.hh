@@ -7,6 +7,7 @@ namespace Kart {
 class KartSub : public KartObjectProxy {
 public:
     KartSub();
+    ~KartSub();
 
     void createSubsystems(bool isBike);
     void copyPointers(KartAccessor &pointers);

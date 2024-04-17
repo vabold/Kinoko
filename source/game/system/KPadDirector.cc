@@ -21,6 +21,10 @@ void KPadDirector::startGhostProxies() {
     m_playerInput.startGhostProxy();
 }
 
+void KPadDirector::endGhostProxies() {
+    m_playerInput.endGhostProxy();
+}
+
 const KPadPlayer &KPadDirector::playerInput() const {
     return m_playerInput;
 }

@@ -43,6 +43,7 @@ void KPadGhostController::reset(bool driftIsAuto) {
     m_raceInputState.reset();
 
     for (auto &stream : m_buttonsStreams) {
+        stream->currentSequence = 0;
         stream->readSequenceFrames = 0;
         stream->state = 1;
     }
@@ -235,6 +236,15 @@ void KPadPlayer::startGhostProxy() {
 
     KPadGhostController *ghostController = reinterpret_cast<KPadGhostController *>(m_controller);
     ghostController->setAcceptingInputs(true);
+}
+
+void KPadPlayer::endGhostProxy() {
+    if (!m_controller || m_controller->controlSource() != ControlSource::Ghost) {
+        return;
+    }
+
+    KPadGhostController *ghostController = reinterpret_cast<KPadGhostController *>(m_controller);
+    ghostController->setAcceptingInputs(false);
 }
 
 } // namespace System

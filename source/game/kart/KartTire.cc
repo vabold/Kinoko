@@ -4,7 +4,9 @@ namespace Kart {
 
 KartTire::KartTire(u16 bspWheelIdx) : m_bspWheelIdx(bspWheelIdx) {}
 
-KartTire::~KartTire() = default;
+KartTire::~KartTire() {
+    delete m_wheelPhysics;
+}
 
 void KartTire::createPhysics(u16 tireIdx) {
     m_wheelPhysics = new WheelPhysics(tireIdx, 1);

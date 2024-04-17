@@ -2,7 +2,9 @@
 
 namespace EGG {
 
-Archive::~Archive() = default;
+Archive::~Archive() {
+    s_archiveList.erase(s_archiveList.begin() + m_vectorIdx);
+}
 
 void Archive::unmount() {
     if (--m_refCount == 0) {
@@ -42,13 +44,13 @@ Archive *Archive::Mount(void *archiveStart) {
         archive->m_refCount++;
     } else {
         // Create a new archive and add it to the vector
-        archive = new Archive(archiveStart);
+        archive = new Archive(archiveStart, s_archiveList.size());
         s_archiveList.push_back(archive);
     }
 
     return archive;
 }
 
-Archive::Archive(void *archiveStart) : m_handle(archiveStart) {}
+Archive::Archive(void *archiveStart, size_t idx) : m_handle(archiveStart), m_vectorIdx(idx) {}
 
 } // namespace EGG

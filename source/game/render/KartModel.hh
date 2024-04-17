@@ -7,6 +7,7 @@ namespace Render {
 class KartModel : Kart::KartObjectProxy {
 public:
     KartModel();
+    virtual ~KartModel();
 
     virtual void vf_1c();
 
@@ -30,11 +31,13 @@ private:
 class KartModelKart : public KartModel {
 public:
     KartModelKart();
+    ~KartModelKart();
 };
 
 class KartModelBike : public KartModel {
 public:
     KartModelBike();
+    ~KartModelBike();
 };
 
 } // namespace Render

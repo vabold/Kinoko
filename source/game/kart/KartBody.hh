@@ -26,11 +26,13 @@ protected:
 class KartBodyKart : public KartBody {
 public:
     KartBodyKart(KartPhysics *physics);
+    ~KartBodyKart();
 };
 
 class KartBodyBike : public KartBody {
 public:
     KartBodyBike(KartPhysics *physics);
+    ~KartBodyBike();
 
     EGG::Matrix34f wheelMatrix(u16 wheelIdx) override;
 };

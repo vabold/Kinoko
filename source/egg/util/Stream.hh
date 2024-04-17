@@ -62,6 +62,7 @@ public:
     std::string read_string();
     RamStream split(u32 size);
     void setBufferAndSize(void *buffer, u32 size);
+    u8 *data();
 
 private:
     u8 *m_buffer;

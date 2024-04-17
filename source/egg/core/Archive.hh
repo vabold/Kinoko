@@ -19,10 +19,10 @@ public:
     static Archive *Mount(void *archiveStart);
 
 private:
-    Archive(void *archiveStart);
+    Archive(void *archiveStart, size_t idx);
 
     Abstract::ArchiveHandle m_handle;
-    size_t m_vectorIdx = -1;
+    size_t m_vectorIdx;
     s32 m_refCount = 1;
 };
 

@@ -3,5 +3,10 @@
         "rkgPath": "samples/rmc3-rta-1-17-843.rkg",
         "krkgPath": "samples/rmc3-rta-1-17-843.krkg",
         "targetFrame": 5077
+    },
+    "Kasey LC RTA WR": {
+        "rkgPath": "samples/lc-rta-1-08-733.rkg",
+        "krkgPath": "samples/lc-rta-1-08-733.krkg",
+        "targetFrame": 2
     }
 }

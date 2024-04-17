@@ -41,4 +41,22 @@ void List::append(void *data) {
     m_tail = node;
 }
 
+void List::remove(Node *node) {
+    if (m_head == node) {
+        m_head = node->m_next;
+    }
+
+    if (node->m_prev) {
+        node->m_prev->m_next = node->m_next;
+    }
+
+    if (node->m_next) {
+        node->m_next->m_prev = node->m_prev;
+    } else {
+        m_tail = node->m_prev;
+    }
+
+    delete node;
+}
+
 } // namespace Abstract

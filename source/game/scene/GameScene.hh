@@ -25,15 +25,17 @@ public:
     virtual void onReinit() {}
 
 protected:
-    void appendResource(System::MultiDvdArchive *arc, s32 id);
+    void appendResource(System::MultiDvdArchive *archive, s32 id);
 
 private:
-    struct Resource : private Abstract::Node {
+    struct Resource {
+        System::MultiDvdArchive *archive;
         s32 id;
     };
 
     void initScene();
     void deinitScene();
+    void unmountResources();
 
     Abstract::List m_resources;
     int m_nextSceneId;

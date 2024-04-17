@@ -7,6 +7,7 @@ namespace Kart {
 class KartDynamics {
 public:
     KartDynamics();
+    virtual ~KartDynamics();
 
     virtual void forceUpright() {}
     virtual void stabilize() {}

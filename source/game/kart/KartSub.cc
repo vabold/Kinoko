@@ -16,6 +16,12 @@ namespace Kart {
 
 KartSub::KartSub() = default;
 
+KartSub::~KartSub() {
+    delete m_collide;
+    delete m_state;
+    delete m_move;
+}
+
 void KartSub::createSubsystems(bool isBike) {
     m_move = isBike ? new KartMoveBike : new KartMove;
     m_state = new KartState;

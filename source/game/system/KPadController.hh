@@ -138,6 +138,7 @@ public:
     void setGhostController(KPadGhostController *controller, const u8 *inputs, bool driftIsAuto);
 
     void startGhostProxy();
+    void endGhostProxy();
 
 private:
     u8 m_ghostBuffer[RKG_UNCOMPRESSED_INPUT_DATA_SECTION_SIZE];

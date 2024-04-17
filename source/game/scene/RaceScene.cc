@@ -4,6 +4,7 @@
 #include "game/item/ItemDirector.hh"
 #include "game/kart/KartObjectManager.hh"
 #include "game/system/CourseMap.hh"
+#include "game/system/KPadDirector.hh"
 #include "game/system/RaceConfig.hh"
 #include "game/system/RaceManager.hh"
 #include "game/system/ResourceManager.hh"
@@ -37,9 +38,10 @@ void RaceScene::calcEngines() {
 }
 
 void RaceScene::destroyEngines() {
+    System::KPadDirector::Instance()->endGhostProxies();
     Kart::KartObjectManager::DestroyInstance();
     Field::CollisionDirector::DestroyInstance();
-    // Item::ItemDirector::DestroyInstance();
+    Item::ItemDirector::DestroyInstance();
     System::RaceManager::DestroyInstance();
     System::CourseMap::DestroyInstance();
 }
@@ -58,7 +60,7 @@ void RaceScene::configure() {
 }
 
 void RaceScene::onReinit() {
-    System::RaceConfig::Instance()->initRace();
+    configure();
 }
 
 } // namespace Scene

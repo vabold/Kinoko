@@ -27,6 +27,8 @@ KartMove::KartMove() : m_smoothedUp(EGG::Vector3f::ey), m_scale(1.0f, 1.0f, 1.0f
     m_bPadBoost = false;
 }
 
+KartMove::~KartMove() = default;
+
 void KartMove::calcTurn() {
     m_realTurn = 0.0f;
     m_rawTurn = 0.0f;
@@ -887,6 +889,7 @@ void KartMoveBike::init(bool b1, bool b2) {
     m_leanRotCap = 0.0f;
     m_leanRotInc = 0.0f;
     m_wheelieRot = 0.0f;
+    m_maxWheelieRot = 0.0f;
     m_wheelieCooldown = 0;
 }
 

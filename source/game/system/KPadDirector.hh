@@ -12,6 +12,7 @@ public:
     void clear();
     void reset();
     void startGhostProxies();
+    void endGhostProxies();
 
     const KPadPlayer &playerInput() const;
 

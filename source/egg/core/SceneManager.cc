@@ -97,7 +97,7 @@ void SceneManager::destroyScene(Scene *scene) {
     }
 
     Scene *parent = scene->parent();
-    m_creator->destroy(scene->id());
+    delete m_currentScene;
     m_currentScene = nullptr;
 
     if (!parent) {

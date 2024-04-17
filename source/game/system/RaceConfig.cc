@@ -15,30 +15,26 @@ void RaceConfig::init() {
 void RaceConfig::initRace() {
     // Normally we copy the menu scenario into the race scenario
     // There's no menu scenario in Kinoko, so instead we initialize values here
-    // TODO: read from parameter file
+    // For now, we want to initialize solely based off the ghost file.
     m_raceScenario.playerCount = 1;
-    m_raceScenario.course = Course::SNES_Mario_Circuit_3;
-    Player &player = m_raceScenario.players[0];
-    player.character = Character::Daisy;
-    player.vehicle = Vehicle::Mach_Bike;
-    player.type = Player::Type::Ghost;
 
     size_t size;
     const auto *testDirector = Host::KSystem::Instance().testDirector();
     u8 *rkg = Abstract::File::Load(testDirector->testCase().rkgPath.data(), size);
-    m_raceScenario.ghost = new RawGhostFile(rkg);
+    m_ghost = rkg;
+    delete[] rkg;
+    GhostFile ghost(m_ghost);
 
-    initControllers();
+    m_raceScenario.course = ghost.course();
+    Player &player = m_raceScenario.players[0];
+    player.character = ghost.character();
+    player.vehicle = ghost.vehicle();
+    player.type = Player::Type::Ghost;
+
+    initControllers(ghost);
 }
 
-void RaceConfig::initControllers() {
-    // No need for raw validation, as we already do this
-    GhostFile ghost(m_raceScenario.ghost);
-
-    if (ghost.course() != m_raceScenario.course) {
-        K_PANIC("Ghost is playing on wrong track! %u", ghost.course());
-    }
-
+void RaceConfig::initControllers(const GhostFile &ghost) {
     KPadDirector::Instance()->setGhostPad(ghost.inputs(), ghost.driftIsAuto());
 }
 

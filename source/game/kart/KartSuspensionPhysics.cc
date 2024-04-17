@@ -13,7 +13,9 @@ namespace Kart {
 WheelPhysics::WheelPhysics(u16 wheelIdx, u16 bspWheelIdx)
     : m_wheelIdx(wheelIdx), m_bspWheelIdx(bspWheelIdx), m_bspWheel(nullptr) {}
 
-WheelPhysics::~WheelPhysics() = default;
+WheelPhysics::~WheelPhysics() {
+    delete m_hitboxGroup;
+}
 
 void WheelPhysics::init() {
     m_hitboxGroup = new CollisionGroup;

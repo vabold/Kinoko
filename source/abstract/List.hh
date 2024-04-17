@@ -32,6 +32,7 @@ public:
     Node *getNext(Node *node) const;
 
     void append(void *data);
+    void remove(Node *node);
 
 private:
     Node *m_head;
