@@ -6,8 +6,10 @@
 
 #include <list>
 
+/// @brief Pertains to scene handling.
 namespace Scene {
 
+/// @brief Interface for menu and race scenes.
 class GameScene : public EGG::Scene {
 public:
     GameScene();
@@ -40,7 +42,7 @@ private:
     void deinitScene();
     void unmountResources();
 
-    std::list<Resource *> m_resources;
+    std::list<Resource *> m_resources; ///< List of all active resources in the scene.
     int m_nextSceneId;
 };
 

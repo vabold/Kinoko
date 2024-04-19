@@ -6,6 +6,7 @@
 
 #include <list>
 
+/// @brief EGG core library
 namespace EGG {
 
 class Archive {
@@ -25,7 +26,7 @@ private:
     Abstract::ArchiveHandle m_handle;
     s32 m_refCount = 1;
 
-    static std::list<Archive *> s_archiveList;
+    static std::list<Archive *> s_archiveList; ///< The linked list of all mounted archives.
 };
 
 } // namespace EGG

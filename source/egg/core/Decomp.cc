@@ -2,6 +2,7 @@
 
 namespace EGG::Decomp {
 
+/// @addr{0x8021997C}
 s32 GetExpandSize(const u8 *src) {
     if (src[0] == 'Y' && src[1] == 'a' && src[2] == 'z') {
         return form<s32>(&src[4]);
@@ -10,6 +11,9 @@ s32 GetExpandSize(const u8 *src) {
     return -1;
 }
 
+/// @brief Performs YAZ0 decompression on a given buffer.
+/// @return The size of the decompressed data.
+/// @addr{0x80218C2C}
 s32 DecodeSZS(const u8 *src, u8 *dst) {
     s32 expandSize = GetExpandSize(src);
     s32 srcIdx = 0x10;

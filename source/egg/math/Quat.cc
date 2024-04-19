@@ -12,6 +12,8 @@ Quatf::Quatf(f32 w_, f32 x_, f32 y_, f32 z_) : v(x_, y_, z_), w(w_) {}
 
 Quatf::~Quatf() = default;
 
+/// @addr{0x80239E10}
+/// @brief Sets roll, pitch, and yaw.
 void Quatf::setRPY(const Vector3f &rpy) {
     const f32 cz = Mathf::cos(rpy.z * 0.5f);
     const f32 cy = Mathf::cos(rpy.y * 0.5f);
@@ -26,6 +28,8 @@ void Quatf::setRPY(const Vector3f &rpy) {
     v.z = sz * cy * cx - cz * sy * sx;
 }
 
+/// @addr{0x8023A168}
+/// @brief Scales the quaternion to a unit length.
 void Quatf::normalise() {
     f32 len = dot() > FLT_EPSILON ? Mathf::sqrt(dot()) : 0.0f;
 
@@ -36,6 +40,8 @@ void Quatf::normalise() {
     }
 }
 
+/// @addr{0x8023A788}
+/// @brief Captures rotation between two vectors.
 void Quatf::makeVectorRotation(const Vector3f &from, const Vector3f &to) {
     f32 t0 = std::max(0.0f, (from.dot(to) + 1) * 2.0f);
     t0 = Mathf::sqrt(t0);
@@ -49,10 +55,13 @@ void Quatf::makeVectorRotation(const Vector3f &from, const Vector3f &to) {
     }
 }
 
+/// @brief Computes \f$conj(a+bi+cj+dk) = a-bi-cj-dk\f$
 Quatf Quatf::conjugate() const {
     return Quatf(w, -v);
 }
 
+/// @addr{0x8023A2D0}
+/// @brief Rotates a vector based on the quat.
 Vector3f Quatf::rotateVector(const Vector3f &vec) const {
     Quatf conj = conjugate();
     Quatf res = *this * vec;
@@ -65,6 +74,8 @@ Vector3f Quatf::rotateVector(const Vector3f &vec) const {
     return ret.v;
 }
 
+/// @addr{0x8023A404}
+/// @brief Rotates a vector on the inverse quat.
 Vector3f Quatf::rotateVectorInv(const Vector3f &vec) const {
     Quatf conj = conjugate();
     Quatf res = conj * vec;
@@ -77,6 +88,9 @@ Vector3f Quatf::rotateVectorInv(const Vector3f &vec) const {
     return ret.v;
 }
 
+/// @addr{0x8023A5C4}
+/// @brief Performs spherical linear interpolation.
+/// @details Slerp is a method in which you can create smooth rotations between two quaternions.
 Quatf Quatf::slerpTo(const Quatf &q1, f32 t) const {
     f32 dot_ = std::max(-1.0f, std::min(1.0f, dot(q1)));
     bool bDot = dot_ < 0.0f;
@@ -102,14 +116,20 @@ Quatf Quatf::slerpTo(const Quatf &q1, f32 t) const {
     return Quatf(s * w + t * q1.w, s * v + t * q1.v);
 }
 
+/// @addr{0x8023A138}
+/// @brief Computes \f$this \cdot this = w^2 + x^2 + y^2 + z^2\f$
 f32 Quatf::dot() const {
     return w * w + v.dot();
 }
 
+/// @brief Computes \f$this \cdot rhs = w \times rhs.w + x \times rhs.x + y \times rhs.y + z \times
+/// rhs.z\f$
 f32 Quatf::dot(const Quatf &q) const {
     return w * q.w + v.dot(q.v);
 }
 
+/// @addr{0x8023A0A0}
+/// @brief Set the quat given angle and axis.
 void Quatf::setAxisRotation(f32 angle, const EGG::Vector3f &axis) {
     const f32 half_angle = angle * 0.5f;
     const f32 c = Mathf::cos(half_angle);

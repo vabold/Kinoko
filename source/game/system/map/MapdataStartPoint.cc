@@ -55,7 +55,8 @@ void MapdataStartPoint::read(EGG::Stream &stream) {
     }
 }
 
-// NOTE (vabold): Chances are these variables are never getting good names. Good luck!
+/// @addr{0x80514368}
+/// @note vabold: Chances are these variables are never getting good names. Good luck!
 void MapdataStartPoint::findKartStartPoint(EGG::Vector3f &pos, EGG::Vector3f &angles, u8 placement,
         u8 playerCount) {
     EGG::Quatf rotation;
@@ -101,6 +102,7 @@ void MapdataStartPoint::findKartStartPoint(EGG::Vector3f &pos, EGG::Vector3f &an
     angles = m_rotation;
 }
 
+/// @addr{0x80514258}
 MapdataStartPointAccessor::MapdataStartPointAccessor(const MapSectionHeader *header)
     : MapdataAccessorBase<MapdataStartPoint, MapdataStartPoint::SData>(header) {
     if (CourseMap::Instance()->version() > 1830) {

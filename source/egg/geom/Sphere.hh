@@ -4,6 +4,7 @@
 
 namespace EGG {
 
+/// @brief Represents a sphere in 3D space.
 struct Sphere3f {
     Sphere3f(const Vector3f &v, f32 r);
 

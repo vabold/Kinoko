@@ -13,6 +13,7 @@ void SceneCreatorDynamic::destroy(int sceneId) const {
     destroy(static_cast<SceneId>(sceneId));
 }
 
+/// @addr{0x8054AA64}
 EGG::Scene *SceneCreatorDynamic::create(SceneId sceneId) const {
     switch (sceneId) {
     case SceneId::Root:
@@ -24,6 +25,7 @@ EGG::Scene *SceneCreatorDynamic::create(SceneId sceneId) const {
     }
 }
 
+/// @addr{0x8054AB28}
 void SceneCreatorDynamic::destroy(SceneId sceneId) const {
     switch (sceneId) {
     case SceneId::Root:

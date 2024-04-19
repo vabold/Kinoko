@@ -14,6 +14,14 @@ KartParam::KartParam(Character character, Vehicle vehicle, u8 playerIdx) {
 
 KartParam::~KartParam() = default;
 
+void KartParam::setTireCount(u16 tireCount) {
+    m_tireCount = tireCount;
+}
+
+void KartParam::setSuspCount(u16 suspCount) {
+    m_suspCount = suspCount;
+}
+
 const BSP &KartParam::bsp() const {
     return m_bsp;
 }
@@ -46,14 +54,7 @@ u16 KartParam::tireCount() const {
     return m_tireCount;
 }
 
-void KartParam::setTireCount(u16 tireCount) {
-    m_tireCount = tireCount;
-}
-
-void KartParam::setSuspCount(u16 suspCount) {
-    m_suspCount = suspCount;
-}
-
+/// @addr{0x80591FA4}
 void KartParam::initStats(Character character, Vehicle vehicle) {
     auto *fileManager = KartParamFileManager::Instance();
 
@@ -96,6 +97,8 @@ KartParam::Stats::Stats(EGG::RamStream &stream) {
     read(stream);
 }
 
+/// @brief Parses out the stats for a given KartParam.bin stream
+/// @param stream A RamStream of data from KartParam.bin
 void KartParam::Stats::read(EGG::RamStream &stream) {
     body = static_cast<Body>(stream.read_s32());
     driftType = static_cast<DriftType>(stream.read_s32());
@@ -142,6 +145,8 @@ void KartParam::Stats::read(EGG::RamStream &stream) {
     wheelDistance = stream.read_f32();
 }
 
+/// @brief Applies character stats on top of the kart stats
+/// @param stream A RamStream of data from driverParam.bin
 void KartParam::Stats::applyCharacterBonus(EGG::RamStream &stream) {
     stream.skip(0x10);
     weight += stream.read_f32();

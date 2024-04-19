@@ -2,8 +2,10 @@
 
 #include "game/kart/KartObjectProxy.hh"
 
+/// @brief Pertains to rendering the kart model.
 namespace Render {
 
+/// @brief Included in Kinoko because it mysteriously sets an angle member variable in KartBody.
 class KartModel : Kart::KartObjectProxy {
 public:
     KartModel();

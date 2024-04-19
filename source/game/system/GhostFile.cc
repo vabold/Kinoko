@@ -6,6 +6,7 @@
 
 namespace System {
 
+/// @addr{0x8051C398}
 GhostFile::GhostFile(const RawGhostFile &raw) {
     u8 *streamPtr = const_cast<u8 *>(raw.buffer());
     EGG::RamStream stream(streamPtr, RKG_HEADER_SIZE);
@@ -13,8 +14,10 @@ GhostFile::GhostFile(const RawGhostFile &raw) {
     m_inputs = raw.buffer() + RKG_HEADER_SIZE;
 }
 
+/// @addr{0x8051CF90}
 GhostFile::~GhostFile() = default;
 
+/// @addr{0x8051C530}
 void GhostFile::read(EGG::RamStream &stream) {
     stream.skip(0x4); // RKGD
 
@@ -105,6 +108,7 @@ void RawGhostFile::init(const u8 *rkg) {
     }
 }
 
+/// @addr{0x8051D1B4}
 bool RawGhostFile::decompress(const u8 *rkg) {
     memcpy(m_buffer, rkg, RKG_HEADER_SIZE);
 
@@ -127,6 +131,9 @@ bool RawGhostFile::decompress(const u8 *rkg) {
     return true;
 }
 
+/// @addr{0x8051C120}
+/// @todo Check for valid controller type?
+/// @todo Check lap times sum to race time?
 bool RawGhostFile::isValid(const u8 *rkg) const {
     if (strncmp(reinterpret_cast<const char *>(rkg), "RKGD", 4) != 0) {
         K_PANIC("RKG header malformed");
@@ -161,10 +168,6 @@ bool RawGhostFile::isValid(const u8 *rkg) const {
     if (charWeight != vehicleWeight) {
         K_PANIC("Character/Bike weight class mismatch!");
     }
-
-    // TODO:
-    // - Check for valid controller type??
-    // - Check lap times sum to race time??
 
     return true;
 }

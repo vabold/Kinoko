@@ -10,8 +10,7 @@
 
 namespace Field {
 
-KColData::KColData() = default;
-
+/// @addr{0x807BDC5C}
 KColData::KColData(const void *file) {
     auto addOffset = [](const void *file, u32 offset) -> const void * {
         return reinterpret_cast<const void *>(reinterpret_cast<const u8 *>(file) + offset);
@@ -54,6 +53,7 @@ KColData::KColData(const void *file) {
     computeBBox();
 }
 
+/// @addr{0x807C24C0}
 void KColData::narrowScopeLocal(const EGG::Vector3f &pos, f32 radius, KCLTypeMask mask) {
     m_prismCacheTop = m_prismCache.data();
     m_pos = pos;
@@ -69,6 +69,7 @@ void KColData::narrowScopeLocal(const EGG::Vector3f &pos, f32 radius, KCLTypeMas
     *m_prismCacheTop = 0;
 }
 
+/// @addr{0x807C243C}
 void KColData::narrowPolygon_EachBlock(const u16 *prismArray) {
     m_prismIter = prismArray;
 
@@ -84,6 +85,8 @@ void KColData::narrowPolygon_EachBlock(const u16 *prismArray) {
     }
 }
 
+/// @brief Calculates a EGG::BoundBox3f that describes the boundary of the track's KCL
+/// @addr{0x807BDDFC}
 void KColData::computeBBox() {
     m_bbox.max.set(-999999.0f);
     m_bbox.min.set(999999.0f);
@@ -109,12 +112,18 @@ void KColData::computeBBox() {
     }
 }
 
+/// @addr{0x807C2410}
 bool KColData::checkSphereCollision(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut) {
     return std::isfinite(m_prevPos.y) ? checkSphereMovement(distOut, fnrmOut, flagsOut) :
                                         checkSphere(distOut, fnrmOut, flagsOut);
 }
 
-/// EQUIVALENT TO checkOnePointCollision (0x807C1514)
+/// @brief Iterates the list of looked-up triangles to see if we are colliding
+/// @addr{0x807C1514}
+/// @param distOut If colliding, returns the distance between the player and the triangle
+/// @param fnrmOut If colliding, returns the floor normal of the triangle
+/// @param flagsOut If colliding, returns the KCL attributes for that triangle
+/// @return whether or not the player is colliding with the triangle
 bool KColData::checkSphere(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut) {
     // If there's no list of triangles to check, there's no collision
     if (!m_prismIter) {
@@ -134,7 +143,7 @@ bool KColData::checkSphere(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut) 
     return false;
 }
 
-/// EQUIVALENT TO checkSphere (0x807C0F00)
+/// @addr{0x807C0F00}
 bool KColData::checkSphereSingle(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut) {
     if (!m_prismIter) {
         return false;
@@ -164,6 +173,8 @@ bool KColData::checkSphereSingle(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flag
     return false;
 }
 
+/// @brief Sets members in preparation of a subsequent collision check call
+/// @addr{0x807C1BB4}
 void KColData::lookupSphere(f32 radius, const EGG::Vector3f &pos, const EGG::Vector3f &prevPos,
         KCLTypeMask typeMask) {
     m_prismIter = searchBlock(pos);
@@ -174,6 +185,7 @@ void KColData::lookupSphere(f32 radius, const EGG::Vector3f &pos, const EGG::Vec
     m_typeMask = typeMask;
 }
 
+/// @addr{0x807C1DE8}
 void KColData::lookupSphereCached(const EGG::Vector3f &p1, const EGG::Vector3f &p2, u32 typeMask,
         f32 radius) {
     EGG::Sphere3f sphere1(p1, radius);
@@ -193,6 +205,10 @@ void KColData::lookupSphereCached(const EGG::Vector3f &p1, const EGG::Vector3f &
     m_typeMask = typeMask;
 }
 
+/// @brief Finds the data block corresponding to the provided position
+/// @addr{0x807BE030}
+/// @param point The player's position
+/// @return the address of the leaf node containing the input point.
 const u16 *KColData::searchBlock(const EGG::Vector3f &point) {
     // Calculate the x, y, and z offsets of the point from the minimum
     // corner of the tree's bounding box.
@@ -237,7 +253,6 @@ const u16 *KColData::searchBlock(const EGG::Vector3f &point) {
         index = 4 * (x_shift | y_shift | z_shift);
     }
 
-    // Return the address of the leaf node containing the input point.
     // We have to remove the MSB since it's solely used to identify leaves.
     return reinterpret_cast<const u16 *>(curBlock + (offset & ~0x80000000));
 }
@@ -278,6 +293,20 @@ KColData::KCollisionPrism KColData::getPrism(u16 prismIdx) const {
             edge3NormIndex, attribute);
 }
 
+u16 KColData::prismCache(u32 idx) const {
+    return m_prismCache[idx];
+}
+
+/// @brief Computes a prism vertex based off of the triangle's normal vectors
+/// @addr{0x807BDF54}
+/// @par Triangle Vertices Formula
+/// Given a triangle with vertices \f$\vec{A}, \vec{B}, \vec{C}\f$, face normal \f$\hat{f}\f$, and
+/// height \f$h\f$, label the edge normals by: \begin{aligned}\hat{en}_1 := e_{AB}, \,\,
+/// \hat{en}_2:= e_{AC}, \,\,\hat{en}_3:=e_{BC} \end{aligned} We can recover \f$\vec{B}, \vec{C}\f$
+/// via: \begin{aligned} \vec{B} = \vec{A} + \dfrac{h}{(\hat{en}_2 \times \hat{f}) \cdot
+/// \hat{en}_3}\left(\hat{en}_2 \times \hat{f}\right), \, \, \vec{C} = \vec{A} +
+/// \dfrac{h}{(\hat{en}_1 \times \hat{f}) \cdot \hat{en}_3}(\hat{en}_1 \times \hat{f}) \, .
+/// \end{aligned}
 EGG::Vector3f KColData::GetVertex(f32 height, const EGG::Vector3f &vertex1,
         const EGG::Vector3f &fnrm, const EGG::Vector3f &enrm3, const EGG::Vector3f &enrm) {
     EGG::Vector3f cross = fnrm.cross(enrm);
@@ -287,15 +316,11 @@ EGG::Vector3f KColData::GetVertex(f32 height, const EGG::Vector3f &vertex1,
     return cross + vertex1;
 }
 
-u16 KColData::prismCache(u32 idx) const {
-    return m_prismCache[idx];
-}
-
-// This is a combination of the three collision checks in the base game.
-// The three checks vary only by a few if-statements, related to whether we are checking for:
-// 1. A collision with at least the triangle edge (0x807C0F00)
-// 2. A collision with the triangle plane (0x807C1514)
-// 3. A collision such that we are inside the triangle (0x807C0884)
+/// @brief This is a combination of the three collision checks in the base game.
+/// @details The checks vary only by a few if-statements, related to whether we are checking for:
+/// 1. A collision with at least the triangle edge (0x807C0F00)
+/// 2. A collision with the triangle plane (0x807C1514)
+/// 3. A collision such that we are inside the triangle (0x807C0884)
 bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::Vector3f *fnrmOut,
         u16 *flagsOut, CollisionCheckType type) {
     // Responsible for updating the output params
@@ -460,7 +485,12 @@ bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::V
     return out(dist);
 }
 
-/// EQUIVALENT TO checkTwoPointCollision (0x807C0884)
+/// @brief Iterates the local data block to check for directional collision
+/// @addr{0x807C0884}
+/// @param distOut If colliding, returns the distance between the player and the tri
+/// @param fnrmOut If colliding, returns the floor normal of the triangle
+/// @param attributeOut If colliding, returns the KCL attributes for that triangle
+/// @return Whether or not a collision has occurred
 bool KColData::checkSphereMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut) {
     // If there's no list of triangles to check, there's no collision
     if (!m_prismIter) {

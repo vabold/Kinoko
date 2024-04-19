@@ -24,6 +24,7 @@ enum class Trick {
     Right = 4,
 };
 
+/// @brief Represents a set of controller inputs.
 struct RaceInputState {
     RaceInputState();
     virtual ~RaceInputState() {}
@@ -45,6 +46,7 @@ struct RaceInputState {
     u8 trickRaw;
 };
 
+/// @brief Represents a stream of button inputs from a ghost file.
 struct KPadGhostButtonsStream {
     KPadGhostButtonsStream();
     ~KPadGhostButtonsStream();
@@ -59,16 +61,40 @@ struct KPadGhostButtonsStream {
     u32 state;
 };
 
+/// @brief A specialized stream for button presses (not tricks).
+/// @details Reads in the status for acceleration, braking, item usage, and drifting. The button
+/// tuples take the following form:
+/// Bitmask  | Description
+///------------- | -------------
+/// 0x01  | **Accelerating**
+/// 0x02  | **Braking/Drifting**
+/// 0x04  | **Item usage**
+/// 0x08  | Set if braking/drifting pressed after pressing accelerating
+/// @warning When bitmask 0x08 is set, the game will register a hop regardless of whether or
+/// not the acceleration button is pressed. This can lead to "successful" synchronization of
+/// ghosts which could not have been created legitimately in the first place.
 struct KPadGhostFaceButtonsStream : public KPadGhostButtonsStream {
     KPadGhostFaceButtonsStream();
     ~KPadGhostFaceButtonsStream();
 };
 
+/// @brief A specialized stream for the analog stick.
+/// Direction tuples take the following form:
+/// Bitmask  | Description
+///------------- | -------------
+/// 0x0F  | Up/Down (0xE = Up, 0x0 = Down, 0x7 = Neutral)
+/// 0xF0  | Left/Right (0xE0 = Right, 0x00 = Left, 0x70 = Neutral)
 struct KPadGhostDirectionButtonsStream : public KPadGhostButtonsStream {
     KPadGhostDirectionButtonsStream();
     ~KPadGhostDirectionButtonsStream();
 };
 
+/// @brief A specialized stream for D-Pad inputs for tricking and wheeling.
+/// Trick tuples take the following form:
+/// Bitmask  | Description
+///------------- | -------------
+/// 0x0F  | The upper four bits of the tuple's duration, forming a 12-bit integer.
+/// 0x70  | 0x00 = No trick, 0x10 = Up/Wheelie, 0x20 = Down, 0x30 = Left, 0x40 = Right
 struct KPadGhostTrickButtonsStream : public KPadGhostButtonsStream {
     KPadGhostTrickButtonsStream();
     ~KPadGhostTrickButtonsStream();
@@ -77,6 +103,7 @@ struct KPadGhostTrickButtonsStream : public KPadGhostButtonsStream {
     u8 readVal() const override;
 };
 
+/// @brief An abstraction for a controller object. It is associated with an input state.
 class KPadController {
 public:
     KPadController();
@@ -95,11 +122,13 @@ public:
     bool driftIsAuto() const;
 
 protected:
-    RaceInputState m_raceInputState;
-    bool m_connected;
-    bool m_driftIsAuto;
+    RaceInputState m_raceInputState; ///< The current inputs from this controller.
+    bool m_connected;                ///< Whether the controller is active.
+    bool m_driftIsAuto;              ///< True for auto transmission, false for manual.
 };
 
+/// @brief The abstraction of a controller object but for ghost playback.
+/// @details When playing back ghosts, their input state is managed by this class.
 class KPadGhostController : public KPadController {
 public:
     KPadGhostController();
@@ -135,9 +164,10 @@ public:
 protected:
     KPadController *m_controller;
     RaceInputState m_currentInputState;
-    RaceInputState m_lastInputState;
+    RaceInputState m_lastInputState; ///< Used to determine changes in input state.
 };
 
+/// @brief A specialized KPad for player input, as opposed to CPU players for example.
 class KPadPlayer : public KPad {
 public:
     KPadPlayer();
@@ -145,8 +175,8 @@ public:
 
     void setGhostController(KPadGhostController *controller, const u8 *inputs, bool driftIsAuto);
 
-    void startGhostProxy();
-    void endGhostProxy();
+    void startGhostProxy(); ///< Signals to start reading ghost data after fade-in.
+    void endGhostProxy();   ///< Signals to stop reading ghost data after race completion.
 
 private:
     u8 m_ghostBuffer[RKG_UNCOMPRESSED_INPUT_DATA_SECTION_SIZE];

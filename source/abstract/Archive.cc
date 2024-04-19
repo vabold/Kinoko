@@ -4,6 +4,7 @@
 
 namespace Abstract {
 
+/// @addr{0x80124500}
 ArchiveHandle::ArchiveHandle(void *archiveStart) : m_startAddress(archiveStart) {
     RawArchive *rawArchive = reinterpret_cast<RawArchive *>(archiveStart);
     assert(rawArchive->isValidSignature());
@@ -18,6 +19,7 @@ ArchiveHandle::ArchiveHandle(void *archiveStart) : m_startAddress(archiveStart) 
     m_currentNode = 0;
 }
 
+/// @addr{0x80124894}
 s32 ArchiveHandle::convertPathToEntryId(const char *path) const {
     u32 entryId = m_currentNode;
 
@@ -97,6 +99,7 @@ s32 ArchiveHandle::convertPathToEntryId(const char *path) const {
     }
 }
 
+/// @addr{0x80124844}
 bool ArchiveHandle::open(s32 entryId, FileInfo &info) const {
     if (entryId < 0 || static_cast<u32>(entryId) >= m_count) {
         return false;
@@ -112,6 +115,7 @@ bool ArchiveHandle::open(s32 entryId, FileInfo &info) const {
     return true;
 }
 
+/// @addr{0x80124cc0}
 void *ArchiveHandle::getFileAddress(const FileInfo &info) const {
     return static_cast<u8 *>(m_startAddress) + info.startOffset;
 }

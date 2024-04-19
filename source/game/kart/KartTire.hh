@@ -4,6 +4,8 @@
 
 namespace Kart {
 
+/// @brief A holder for a wheel's physics data.
+/// @nosubgrouping
 class KartTire {
 public:
     KartTire(u16 bspWheelIdx);
@@ -14,13 +16,16 @@ public:
     void init(u16 tireIdx);
     void initBsp();
 
+    /// @beginGetters
     WheelPhysics *wheelPhysics();
+    /// @endGetters
 
 protected:
     u16 m_bspWheelIdx;
     WheelPhysics *m_wheelPhysics;
 };
 
+/// @brief A holder for a bike's front tire's physics data.
 class KartTireFrontBike : public KartTire {
 public:
     KartTireFrontBike(u16 bspWheelIdx);
@@ -29,6 +34,7 @@ public:
     void createPhysics(u16 tireIdx) override;
 };
 
+/// @brief A holder for a bike's rear tire's physics data.
 class KartTireRearBike : public KartTire {
 public:
     KartTireRearBike(u16 bspWheelIdx);

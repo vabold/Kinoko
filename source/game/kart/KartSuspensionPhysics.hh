@@ -8,6 +8,8 @@
 
 namespace Kart {
 
+/// @brief Manages wheel physics and collision checks.
+/// @nosubgrouping
 class WheelPhysics : KartObjectProxy {
 public:
     WheelPhysics(u16 wheelIdx, u16 bspWheelIdx);
@@ -21,6 +23,16 @@ public:
 
     void updateCollision(const EGG::Vector3f &bottom, const EGG::Vector3f &topmostPos);
 
+    /// @beginSetters
+    void setSuspTravel(f32 suspTravel);
+    void setPos(const EGG::Vector3f &pos);
+    void setLastPos(const EGG::Vector3f &pos);
+    void setLastPosDiff(const EGG::Vector3f &pos);
+    void setWheelEdgePos(const EGG::Vector3f &pos);
+    void setColVel(const EGG::Vector3f &vec);
+    /// @endSetters
+
+    /// @beginGetters
     const EGG::Vector3f &pos() const;
     const EGG::Vector3f &lastPosDiff() const;
     f32 suspTravel();
@@ -30,13 +42,7 @@ public:
     const EGG::Vector3f &speed() const;
     f32 effectiveRadius() const;
     f32 _74() const;
-
-    void setSuspTravel(f32 suspTravel);
-    void setPos(const EGG::Vector3f &pos);
-    void setLastPos(const EGG::Vector3f &pos);
-    void setLastPosDiff(const EGG::Vector3f &pos);
-    void setWheelEdgePos(const EGG::Vector3f &pos);
-    void setColVel(const EGG::Vector3f &vec);
+    /// @endGetters
 
 private:
     u16 m_wheelIdx;
@@ -56,6 +62,7 @@ private:
     EGG::Vector3f m_topmostPos;
 };
 
+/// @brief Physics for a single wheel's suspension.
 class KartSuspensionPhysics : KartObjectProxy {
 public:
     KartSuspensionPhysics(u16 wheelIdx, u16 bspWheelIdx);

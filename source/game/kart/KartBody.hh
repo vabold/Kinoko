@@ -5,7 +5,8 @@
 
 namespace Kart {
 
-class KartBody : public KartObjectProxy {
+/// @nosubgrouping
+class KartBody : protected KartObjectProxy {
 public:
     KartBody(KartPhysics *physics);
     virtual ~KartBody() {}
@@ -14,13 +15,17 @@ public:
 
     void reset();
 
-    KartPhysics *physics() const;
-
+    /// @beginSetters
     void setAngle(f32 val);
+    /// @endSetters
+
+    /// @beginGetters
+    KartPhysics *physics() const;
+    /// @endGetters
 
 protected:
     KartPhysics *m_physics;
-    f32 m_anAngle;
+    f32 m_anAngle; ///< @rename
 };
 
 class KartBodyKart : public KartBody {

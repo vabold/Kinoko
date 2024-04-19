@@ -8,6 +8,8 @@
 
 namespace Host {
 
+/// @brief The main entry point for the program.
+/// @addr{0x80008EF0}
 int KSystem::main(int argc, char **argv) {
     if (argc < 2) {
         K_PANIC("Expected file argument");
@@ -91,6 +93,7 @@ void KSystem::handleOption(Option opt, int argc, char **argv, int &i) {
     }
 }
 
+/// @addr{0x80009194}
 void KSystem::init() {
     auto *sceneCreator = new SceneCreatorDynamic;
     m_sceneMgr = new EGG::SceneManager(sceneCreator);
@@ -98,6 +101,9 @@ void KSystem::init() {
     delete[] m_suiteData.data();
 }
 
+/// @brief The main loop of the program.
+/// @return Whether or not all test cases have passed.
+/// @addr{0x8000951C}
 bool KSystem::run() {
     while (m_testDirector->calc()) {
         m_sceneMgr->calc();
@@ -111,6 +117,7 @@ const Test::TestDirector *KSystem::testDirector() const {
     return m_testDirector;
 }
 
+/// @addr{0x80008E84}
 KSystem &KSystem::Instance() {
     static KSystem instance;
     return instance;

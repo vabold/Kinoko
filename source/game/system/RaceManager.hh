@@ -17,6 +17,13 @@ private:
     const KPad *m_inputs;
 };
 
+/// @addr{0x809BD730}
+/// @brief Manages the timers that track the stages of a race.
+/// Also acts as the interface between the physics engine and CourseMap.
+/// @details The physics engine leverages the RaceManager in order to determine what stage of the
+/// race we're in, as that affects several things like acceleration. This class also retrieves the
+/// player start position from CourseMap and communicates it to the physics engine.
+/// @nosubgrouping
 class RaceManager {
 public:
     enum class Stage {
@@ -32,10 +39,12 @@ public:
     void calc();
 
     bool isStageReached(Stage stage) const;
-    int getCountdownTimer() const;
 
+    /// @beginGetters
+    int getCountdownTimer() const;
     const RaceManagerPlayer &player() const;
     Stage stage() const;
+    /// @endGetters
 
     static RaceManager *CreateInstance();
     static RaceManager *Instance();
@@ -52,7 +61,7 @@ private:
 
     static constexpr u16 STAGE_COUNTDOWN_DURATION = 240;
 
-    static RaceManager *s_instance;
+    static RaceManager *s_instance; ///< @addr{0x809BD730}
 };
 
 } // namespace System

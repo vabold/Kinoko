@@ -4,8 +4,10 @@
 
 #include <span>
 
+/// @brief Pertains to item handling.
 namespace Item {
 
+/// @addr{0x809C3618}
 class ItemDirector {
 public:
     void init();
@@ -21,7 +23,7 @@ private:
 
     std::span<KartItem> m_karts;
 
-    static ItemDirector *s_instance;
+    static ItemDirector *s_instance; ///< @addr{0x809C3618}
 };
 
 } // namespace Item

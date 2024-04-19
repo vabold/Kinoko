@@ -4,6 +4,7 @@
 
 namespace EGG {
 
+/// @brief A representation of a bounding rectangle.
 struct BoundBox2f {
     BoundBox2f();
     ~BoundBox2f();
@@ -17,6 +18,7 @@ struct BoundBox2f {
     Vector2f max;
 };
 
+/// @brief A representation of a bounding cuboid.
 struct BoundBox3f {
     BoundBox3f();
     ~BoundBox3f();

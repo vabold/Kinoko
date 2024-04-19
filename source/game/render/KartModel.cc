@@ -20,7 +20,8 @@ KartModel::KartModel() {
 
 KartModel::~KartModel() = default;
 
-void KartModel::vf_1c() { // FUN_807CD32C
+/// @addr{0x807CD32C}
+void KartModel::vf_1c() {
     _58 *= 0.9f;
     f32 xStick = inputs()->currentState().stick.x;
     f32 fVar2 = 0.1f;
@@ -97,14 +98,18 @@ void KartModel::vf_1c() { // FUN_807CD32C
     body()->setAngle(_5c);
 }
 
+/// @addr{0x807C8758}
 void KartModel::init() {
     FUN_807C7828(param()->playerIdx(), isBike());
 }
 
+/// @addr{0x807CB360}
 void KartModel::calc() {
     FUN_807CB530();
 }
 
+/// @addr{0x807CB198}
+/// @rename
 void KartModel::FUN_807CB198() {
     m_somethingRight = false;
     m_somethingLeft = false;
@@ -127,22 +132,30 @@ void KartModel::FUN_807CB198() {
     }
 }
 
+/// @addr{0x807CB530}
+/// @rename
 void KartModel::FUN_807CB530() {
     FUN_807CB198();
     vf_1c();
 }
 
+/// @addr{0x807C7828}
+/// @rename
 void KartModel::FUN_807C7828(u8 /*playerIdx*/, bool /*isBike*/) {
     m_isInsideDrift =
             param()->stats().driftType == Kart::KartParam::Stats::DriftType::Inside_Drift_Bike;
 }
 
+/// @addr{0x807C7364}
 KartModelKart::KartModelKart() = default;
 
+/// @addr{0x807CDD08}
 KartModelKart::~KartModelKart() = default;
 
+/// @addr{0x807CDCCC}
 KartModelBike::KartModelBike() = default;
 
+/// @addr{0x807D3F58}
 KartModelBike::~KartModelBike() = default;
 
 } // namespace Render
