@@ -8,6 +8,8 @@
 
 namespace Kart {
 
+/// @brief Manages the lifecycle of KartDynamics, handles moving floors and trick rotation.
+/// @nosubgrouping
 class KartPhysics {
 public:
     KartPhysics(bool isBike);
@@ -18,6 +20,15 @@ public:
 
     void calc(f32 dt, f32 maxSpeed, const EGG::Vector3f &scale, bool air);
 
+    /// @beginSetters
+    void setPos(const EGG::Vector3f &pos);
+    void setVelocity(const EGG::Vector3f &vel);
+    void set_fc(f32 val);
+    void composeStuntRot(const EGG::Quatf &rot);
+    void composeDecayingRot(const EGG::Quatf &rot);
+    /// @endSetters
+
+    /// @beginGetters
     KartDynamics *dynamics();
     const KartDynamics *dynamics() const;
     const EGG::Matrix34f &pose() const;
@@ -27,12 +38,7 @@ public:
     const EGG::Vector3f &zAxis() const;
     const EGG::Vector3f &pos() const;
     f32 fc() const;
-
-    void setPos(const EGG::Vector3f &pos);
-    void setVelocity(const EGG::Vector3f &vel);
-    void set_fc(f32 val);
-    void composeStuntRot(const EGG::Quatf &rot);
-    void composeDecayingRot(const EGG::Quatf &rot);
+    /// @endGetters
 
     static KartPhysics *Create(const KartParam &param);
 
@@ -47,12 +53,12 @@ private:
     EGG::Quatf m_decayingExtraRot;
     EGG::Quatf m_instantaneousExtraRot;
     EGG::Quatf m_extraRot;
-    EGG::Matrix34f m_pose;
-    EGG::Vector3f m_xAxis;
-    EGG::Vector3f m_yAxis;
-    EGG::Vector3f m_zAxis;
-    EGG::Vector3f m_velocity;
-    f32 m_fc; // collisionLimit?
+    EGG::Matrix34f m_pose;    ///< The kart's current rotation and position.
+    EGG::Vector3f m_xAxis;    ///< The first column of the pose.
+    EGG::Vector3f m_yAxis;    ///< The second column of the pose.
+    EGG::Vector3f m_zAxis;    ///< The third column of the pose.
+    EGG::Vector3f m_velocity; ///< Copied from KartDynamics.
+    f32 m_fc;                 /// @rename
 };
 
 } // namespace Kart

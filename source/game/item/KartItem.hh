@@ -6,6 +6,8 @@
 
 namespace Item {
 
+/// @brief State management for item usage
+/// @nosubgrouping
 class KartItem : Kart::KartObjectProxy {
 public:
     KartItem();
@@ -17,9 +19,13 @@ public:
     void activateMushroom();
     void useMushroom();
 
-    ItemInventory &inventory();
-
+    /// @beginSetters
     void clearButtonFlags();
+    /// @endSetters
+
+    /// @beginGetters
+    ItemInventory &inventory();
+    /// @endGetters
 
 private:
     bool m_bItemButtonHold;

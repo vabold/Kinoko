@@ -11,11 +11,13 @@ static const char *const RESOURCE_PATHS[] = {
         nullptr,
 };
 
+/// @addr{0x805411FC}
 void *ResourceManager::getFile(const char *filename, size_t *size, ArchiveId id) {
     s32 idx = static_cast<s32>(id);
     return m_archives[idx]->isLoaded() ? m_archives[idx]->getFile(filename, size) : nullptr;
 }
 
+/// @addr{0x805414A8}
 void *ResourceManager::getBsp(Vehicle vehicle, size_t *size) {
     char buffer[32];
 
@@ -25,6 +27,7 @@ void *ResourceManager::getBsp(Vehicle vehicle, size_t *size) {
     return m_archives[0]->isLoaded() ? m_archives[0]->getFile(buffer, size) : nullptr;
 }
 
+/// @addr{0x80540450}
 MultiDvdArchive *ResourceManager::load(s32 idx, const char *filename) {
     // Course has a dedicated load function, so we do not want it here
     assert(idx != 1);
@@ -40,6 +43,7 @@ MultiDvdArchive *ResourceManager::load(s32 idx, const char *filename) {
     return m_archives[idx];
 }
 
+/// @addr{0x80540760}
 MultiDvdArchive *ResourceManager::load(Course courseId) {
     char buffer[256];
     snprintf(buffer, sizeof(buffer), "Kinoko/Course/%s", COURSE_NAMES[static_cast<s32>(courseId)]);
@@ -47,20 +51,24 @@ MultiDvdArchive *ResourceManager::load(Course courseId) {
     return m_archives[1];
 }
 
+/// @addr{0x805411E4}
 void ResourceManager::unmount(MultiDvdArchive *archive) {
     archive->unmount();
 }
 
+/// @addr{0x805419EC}
 const char *ResourceManager::GetVehicleName(Vehicle vehicle) {
     return vehicle < Vehicle::Max ? VEHICLE_NAMES[static_cast<u8>(vehicle)] : nullptr;
 }
 
+/// @addr{0x8053FC4C}
 ResourceManager *ResourceManager::CreateInstance() {
     assert(!s_instance);
     s_instance = new ResourceManager;
     return s_instance;
 }
 
+/// @addr{0x8053FC9C}
 void ResourceManager::DestroyInstance() {
     assert(s_instance);
     delete s_instance;
@@ -71,6 +79,7 @@ ResourceManager *ResourceManager::Instance() {
     return s_instance;
 }
 
+/// @addr{0x8053FCEC}
 ResourceManager::ResourceManager() {
     m_archives = new MultiDvdArchive *[ARCHIVE_COUNT];
     for (u8 i = 0; i < ARCHIVE_COUNT; i++) {
@@ -78,8 +87,10 @@ ResourceManager::ResourceManager() {
     }
 }
 
+/// @addr{0x8053FF1C}
 ResourceManager::~ResourceManager() = default;
 
+/// @addr{Inlined in 0x8053FCEC}
 MultiDvdArchive *ResourceManager::Create(u8 i) {
     switch (i) {
     default:

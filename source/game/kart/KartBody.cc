@@ -4,40 +4,52 @@
 
 namespace Kart {
 
+/// @addr{0x8056C394}
 KartBody::KartBody(KartPhysics *physics) : m_physics(physics) {
     m_anAngle = 0.0f;
 }
 
-// TODO LATER
+/// @addr{0x8056C604}
+/// @todo: Implement for karts
 EGG::Matrix34f KartBody::wheelMatrix(u16) {
     return EGG::Matrix34f::ident;
 }
 
+/// @addr{0x8056C4B4}
 void KartBody::reset() {
     m_physics->reset();
     m_anAngle = 0.0f;
-}
-
-KartPhysics *KartBody::physics() const {
-    return m_physics;
 }
 
 void KartBody::setAngle(f32 val) {
     m_anAngle = val;
 }
 
+KartPhysics *KartBody::physics() const {
+    return m_physics;
+}
+
+/// @addr{0x8056CCC0}
 KartBodyKart::KartBodyKart(KartPhysics *physics) : KartBody(physics) {}
 
+/// @addr{0x8056E494}
 KartBodyKart::~KartBodyKart() {
     delete m_physics;
 }
 
+/// @addr{0x8056D858}
 KartBodyBike::KartBodyBike(KartPhysics *physics) : KartBody(physics) {}
 
+/// @addr{0x8056E2BC}
 KartBodyBike::~KartBodyBike() {
     delete m_physics;
 }
 
+/// @addr{0x8056DD54}
+/// @brief Computes a matrix to represent the rotation of a wheel.
+/// @details For the front wheel, we factor in the handlebar rotation.
+/// For the rear wheel, we only factor in the kart's rotation.
+/// @param wheelIdx 0 for front wheel, 1 for rear wheel
 EGG::Matrix34f KartBodyBike::wheelMatrix(u16 wheelIdx) {
     EGG::Matrix34f mat;
 

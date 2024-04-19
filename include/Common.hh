@@ -1,3 +1,6 @@
+/// @file Common.hh
+/// @brief This header houses common data types such as our integral types and enums.
+
 #pragma once
 
 #include <array>

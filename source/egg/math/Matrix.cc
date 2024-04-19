@@ -28,7 +28,8 @@ Matrix34f::Matrix34f(f32 _e00, f32 _e01, f32 _e02, f32 _e03, f32 _e10, f32 _e11,
 
 Matrix34f::~Matrix34f() = default;
 
-// Credit: elijah-thomas774/bba-wd
+/// @addr{0x80230118}
+/// @brief Sets matrix from rotation and position.
 void Matrix34f::makeQT(const Quatf &q, const Vector3f &t) {
     f32 yy = 2.0f * q.v.y * q.v.y;
     f32 zz = 2.0f * q.v.z * q.v.z;
@@ -57,6 +58,8 @@ void Matrix34f::makeQT(const Quatf &q, const Vector3f &t) {
     mtx[2][3] = t.z;
 }
 
+/// @addr{0x8023030C}
+/// @brief Sets rotation matrix from quaternion.
 void Matrix34f::makeQ(const Quatf &q) {
     f32 yy = 2.0f * q.v.y * q.v.y;
     f32 zz = 2.0f * q.v.z * q.v.z;
@@ -85,6 +88,8 @@ void Matrix34f::makeQ(const Quatf &q) {
     mtx[2][3] = 0.0f;
 }
 
+/// @addr{0x8022FE14}
+/// @brief Sets rotation-translation matrix.
 void Matrix34f::makeRT(const Vector3f &r, const Vector3f &t) {
     EGG::Vector3f s = EGG::Vector3f(sin(r.x), sin(r.y), sin(r.z));
     EGG::Vector3f c = EGG::Vector3f(cos(r.x), cos(r.y), cos(r.z));
@@ -110,6 +115,8 @@ void Matrix34f::makeRT(const Vector3f &r, const Vector3f &t) {
     mtx[2][3] = t.z;
 }
 
+/// @addr{0x8022FF98}
+/// @brief Sets 3x3 rotation matrix from a vector of Euler angles.
 void Matrix34f::makeR(const Vector3f &r) {
     EGG::Vector3f s = EGG::Vector3f(sin(r.x), sin(r.y), sin(r.z));
     EGG::Vector3f c = EGG::Vector3f(cos(r.x), cos(r.y), cos(r.z));
@@ -135,10 +142,21 @@ void Matrix34f::makeR(const Vector3f &r) {
     mtx[2][3] = 0.0f;
 }
 
+/// @brief Zeroes every element of the matrix.
 void Matrix34f::makeZero() {
     *this = Matrix34f::zero;
 }
 
+/// @addr{0x802303BC}
+/// @brief Rotates the matrix about an axis.
+void Matrix34f::setAxisRotation(f32 angle, const EGG::Vector3f &axis) {
+    EGG::Quatf q;
+    q.setAxisRotation(angle, axis);
+    makeQ(q);
+}
+
+/// @addr{0x80230410}
+/// @brief Multiplies two matrices.
 Matrix34f Matrix34f::multiplyTo(const Matrix34f &rhs) const {
     Matrix34f mat;
 
@@ -161,6 +179,7 @@ Matrix34f Matrix34f::multiplyTo(const Matrix34f &rhs) const {
     return mat;
 }
 
+/// @brief Multiplies a vector by a matrix.
 Vector3f Matrix34f::multVector(const Vector3f &vec) const {
     Vector3f ret;
 
@@ -171,6 +190,8 @@ Vector3f Matrix34f::multVector(const Vector3f &vec) const {
     return ret;
 }
 
+/// @addr{0x802303F8}
+/// @brief Paired-singles impl. of @ref multVector.
 Vector3f Matrix34f::ps_multVector(const Vector3f &vec) const {
     Vector3f ret;
 
@@ -181,6 +202,7 @@ Vector3f Matrix34f::ps_multVector(const Vector3f &vec) const {
     return ret;
 }
 
+/// @brief Multiplies a 3x3 matrix by a vector.
 Vector3f Matrix34f::multVector33(const Vector3f &vec) const {
     Vector3f ret;
 
@@ -191,7 +213,11 @@ Vector3f Matrix34f::multVector33(const Vector3f &vec) const {
     return ret;
 }
 
-Matrix34f Matrix34f::inverseTo() const {
+/// @addr{0x8022F90C}
+/// @brief Inverts the 3x3 portion of the 3x4 matrix.
+/// @details Unlike a typical matrix inversion, if the determinant is 0, then this function returns
+/// the identity matrix.
+Matrix34f Matrix34f::inverseTo33() const {
     f32 determinant = (((mtx[2][1] * mtx[0][2] * mtx[1][0] + mtx[2][2] * mtx[0][0] * mtx[1][1] +
                                 mtx[2][0] * mtx[0][1] * mtx[1][2]) -
                                mtx[0][2] * mtx[2][0] * mtx[1][1]) -
@@ -219,8 +245,8 @@ Matrix34f Matrix34f::inverseTo() const {
     return ret;
 }
 
+/// @brief Transposes the 3x3 portion of the matrix.
 Matrix34f Matrix34f::transpose() const {
-    // NOTE: 4th element in each row is not meant to be used reliably
     Matrix34f ret = *this;
 
     ret[0, 1] = mtx[1][0];
@@ -233,12 +259,7 @@ Matrix34f Matrix34f::transpose() const {
     return ret;
 }
 
-void Matrix34f::setAxisRotation(f32 angle, const EGG::Vector3f &axis) {
-    EGG::Quatf q;
-    q.setAxisRotation(angle, axis);
-    makeQ(q);
-}
-
+/// @addr{0x80384370}
 const Matrix34f Matrix34f::ident(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
         0.0f);
 

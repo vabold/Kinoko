@@ -2,6 +2,7 @@
 
 namespace System {
 
+/// @addr{0x80512C2C}
 MapdataFileAccessor::MapdataFileAccessor(const MapdataFileAccessor::SData *data) : m_rawData(data) {
     u32 offset = parse<u16>(data->headerSize) - parse<u16>(data->sectionCount) * 4;
     m_sectionDefOffset = offset;
@@ -9,6 +10,7 @@ MapdataFileAccessor::MapdataFileAccessor(const MapdataFileAccessor::SData *data)
     m_version = offset > 12 ? parse<u32>(m_sectionDef[-1]) : 0;
 }
 
+/// @addr{0x80514208}
 const MapSectionHeader *MapdataFileAccessor::findSection(u32 signature) const {
     const MapSectionHeader *sectionPtr = nullptr;
 

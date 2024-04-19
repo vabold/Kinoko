@@ -14,6 +14,7 @@ struct AtanEntry {
     f32 atanVal, atanDt;
 };
 
+/// @addr{0x80248010}
 static constexpr SinCosEntry sSinCosTbl[256 + 1] = {
         {0.000000f, 1.000000f, 0.024541f, -0.000301f},
         {0.024541f, 0.999699f, 0.024526f, -0.000903f},
@@ -274,6 +275,7 @@ static constexpr SinCosEntry sSinCosTbl[256 + 1] = {
         {-0.000000f, 1.000000f, 0.024541f, -0.000301f},
 };
 
+/// @addr{0x80274148}
 static constexpr AtanEntry sArcTanTbl[32 + 1] = {
         {0.000000000f, 1.272825321f},
         {1.272825321f, 1.270345790f},
@@ -310,11 +312,13 @@ static constexpr AtanEntry sArcTanTbl[32 + 1] = {
         {32.000000000f, 0.626776175f},
 };
 
+/// @addr{0x8022F80C}
 f32 sqrt(f32 x) {
     return x > 0.0 ? frsqrt(x) * x : 0.0;
 }
 
-// CREDIT: Hanachan
+/// CREDIT: Hanachan
+/// @addr{0x80085040}
 f32 frsqrt(f32 x) {
     // frsqrte instruction
     f64 est = frsqrte(x);
@@ -326,6 +330,7 @@ f32 frsqrt(f32 x) {
     return tmp1 * tmp2;
 }
 
+/// @addr{0x80085110}
 f32 SinFIdx(f32 fidx) {
     f32 abs_fidx = fabs(fidx);
 
@@ -340,6 +345,7 @@ f32 SinFIdx(f32 fidx) {
     return fidx < 0.0f ? -val : val;
 }
 
+/// @addr{0x80085180}
 f32 CosFIdx(f32 fidx) {
     f32 abs_fidx = fabs(fidx);
 
@@ -361,6 +367,7 @@ f32 AtanFIdx_(f32 x) {
     return sArcTanTbl[idx].atanVal + r * sArcTanTbl[idx].atanDt;
 }
 
+/// @addr{0x800853C0}
 f32 Atan2FIdx(f32 y, f32 x) {
     if (x == 0.0f && y == 0.0f) {
         return 0.0f;
@@ -397,20 +404,24 @@ f32 Atan2FIdx(f32 y, f32 x) {
     }
 }
 
-// Takes in radians
+/// Takes in radians
+/// @addr{0x8022F860}
 f32 sin(f32 x) {
     return SinFIdx(x * RAD2FIDX);
 }
 
-// Takes in radians
+/// Takes in radians
+/// @addr{0x8022F86C}
 f32 cos(f32 x) {
     return CosFIdx(x * RAD2FIDX);
 }
 
+/// @addr{0x8022F8C0}
 f32 acos(f32 x) {
     return ::acosl(x);
 }
 
+/// @addr{0x8022F8E4}
 f32 atan2(f32 y, f32 x) {
     return Atan2FIdx(y, x) * FIDX2RAD;
 }
@@ -419,11 +430,16 @@ f32 abs(f32 x) {
     return std::abs(x);
 }
 
+/// @brief Fused multiply-add operation.
+/// @details We cannot use std::fma due to the Wii computing at 64-bit precision.
 f32 fma(f32 x, f32 y, f32 z) {
     return static_cast<f32>(
             static_cast<f64>(x) * force25Bit(static_cast<f64>(y)) + static_cast<f64>(z));
 }
 
+/// @brief This is used to mimic the Wii's floating-point unit.
+/// @details This handles the edgecase where double-precision floating-point numbers are passed into
+/// single-precision floating-point operands in assembly.
 f64 force25Bit(f64 x) {
     u64 bits = std::bit_cast<u64>(x);
     bits = (bits & 0xfffffffff8000000ULL) + (bits & 0x8000000);

@@ -7,6 +7,7 @@
 
 namespace Kart {
 
+/// @brief The highest level abstraction for a kart.
 class KartObject : public KartObjectProxy {
 public:
     KartObject(KartParam *param);
@@ -33,6 +34,7 @@ protected:
     KartAccessor m_pointers;
 };
 
+/// @brief The highest level abstraction for a bike.
 class KartObjectBike : public KartObject {
 public:
     KartObjectBike(KartParam *param);

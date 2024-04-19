@@ -4,7 +4,9 @@
 
 namespace Kart {
 
-class KartSuspension : KartObjectProxy {
+/// @brief Doesn't do much besides hold a pointer to KartSuspensionPhysics.
+/// @nosubgrouping
+class KartSuspension : protected KartObjectProxy {
 public:
     KartSuspension();
     virtual ~KartSuspension();
@@ -12,9 +14,13 @@ public:
     void init(u16 wheelIdx, u16 bspWheelIdx);
     void initPhysics();
 
+    /// @beginSetters
     void setInitialState();
+    /// @endSetters
 
+    /// @beginGetters
     KartSuspensionPhysics *suspPhysics();
+    /// @endGetters
 
 private:
     KartSuspensionPhysics *m_physics;

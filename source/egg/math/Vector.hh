@@ -6,6 +6,7 @@
 
 namespace EGG {
 
+/// @brief A 2D float vector.
 struct Vector2f {
     Vector2f(f32 x_, f32 y_);
     Vector2f();
@@ -44,6 +45,7 @@ struct Vector2f {
     static const Vector2f ex, ey;
 };
 
+/// @brief A 3D float vector.
 struct Vector3f {
     Vector3f(f32 x_, f32 y_, f32 z_);
     Vector3f();
@@ -85,7 +87,6 @@ struct Vector3f {
         return *this = *this + val;
     }
 
-    // TODO: This is surely not an actual operation, but I imagine this will be used often
     Vector3f operator*(const Vector3f &rhs) const {
         return Vector3f(x * rhs.x, y * rhs.y, z * rhs.z);
     }
@@ -118,6 +119,7 @@ struct Vector3f {
         return !(*this == rhs);
     }
 
+    /// @brief Allows for copy construction from a vector to a string.
     explicit operator std::string() const {
         return std::format("[0x{:08X}, 0x{:08X}, 0x{:08X}] | [{}, {}, {}]", f2u(x), f2u(y), f2u(z),
                 x, y, z);

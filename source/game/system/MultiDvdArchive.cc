@@ -6,6 +6,7 @@ namespace System {
 
 static size_t SUFFIX_SIZE = 8;
 
+/// @addr{0x8052A538}
 MultiDvdArchive::MultiDvdArchive(u16 archiveCount) : m_archiveCount(archiveCount) {
     m_archives = new DvdArchive[archiveCount];
     m_fileStarts = new void *[archiveCount];
@@ -22,6 +23,7 @@ MultiDvdArchive::MultiDvdArchive(u16 archiveCount) : m_archiveCount(archiveCount
     }
 }
 
+/// @addr{0x8052A6DC}
 MultiDvdArchive::~MultiDvdArchive() {
     delete[] m_archives;
     // WARN: Could lead to a memory leak if this is the only reference to the file!
@@ -32,6 +34,7 @@ MultiDvdArchive::~MultiDvdArchive() {
     delete[] m_formats;
 }
 
+/// @addr{0x8052A760}
 void *MultiDvdArchive::getFile(const char *filename, size_t *size) const {
     void *file = nullptr;
 
@@ -51,6 +54,7 @@ void *MultiDvdArchive::getFile(const char *filename, size_t *size) const {
     return file;
 }
 
+/// @addr{0x8052A954}
 void MultiDvdArchive::load(const char *filename) {
     char buffer[256];
 
@@ -76,12 +80,14 @@ void MultiDvdArchive::load(const char *filename) {
     }
 }
 
+/// @addr{0x8052AAE8}
 void MultiDvdArchive::load(const MultiDvdArchive *other) {
     for (u16 i = 0; i < m_archiveCount; i++) {
         m_archives[i].load(&other->m_archives[i]);
     }
 }
 
+/// @addr{0x8052AB6C}
 void MultiDvdArchive::rip(const char *filename) {
     char buffer[256];
 
@@ -102,18 +108,21 @@ void MultiDvdArchive::rip(const char *filename) {
     }
 }
 
+/// @addr{0x8052AC40}
 void MultiDvdArchive::clear() {
     for (u16 i = 0; i < m_archiveCount; i++) {
         m_archives[i].clear();
     }
 }
 
+/// @addr{0x8052AA88}
 void MultiDvdArchive::unmount() {
     for (u16 i = 0; i < m_archiveCount; i++) {
         m_archives[i].unmount();
     }
 }
 
+/// @addr{0x8052A800}
 bool MultiDvdArchive::isLoaded() const {
     for (u16 i = 0; i < m_archiveCount; i++) {
         if (m_archives[i].isLoaded()) {
@@ -124,6 +133,7 @@ bool MultiDvdArchive::isLoaded() const {
     return false;
 }
 
+/// @addr{0x8052AE08}
 u16 MultiDvdArchive::rippedArchiveCount() const {
     u16 count = 0;
     for (u16 i = 0; i < m_archiveCount; i++) {

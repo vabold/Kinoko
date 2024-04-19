@@ -10,6 +10,7 @@
 
 namespace Kart {
 
+/// @addr{0x8056E56C}
 KartCollide::KartCollide() {
     m_rampBoost = false;
     m_offRoad = false;
@@ -17,8 +18,10 @@ KartCollide::KartCollide() {
     m_notTrickable = false;
 }
 
+/// @addr{0x80573FF0}
 KartCollide::~KartCollide() = default;
 
+/// @addr{0x8056E624}
 void KartCollide::init() {
     m_rampBoost = false;
     m_offRoad = false;
@@ -32,6 +35,7 @@ void KartCollide::init() {
     m_someSoftWallTimer = 0;
 }
 
+/// @addr{0x805730D4}
 void KartCollide::resetHitboxes() {
     CollisionGroup *hitboxGroup = physics()->hitboxGroup();
     for (u16 idx = 0; idx < hitboxGroup->hitboxCount(); ++idx) {
@@ -39,6 +43,9 @@ void KartCollide::resetHitboxes() {
     }
 }
 
+/// @stage All
+/// @brief On each frame, calculates the positions for each hitbox
+/// @addr{0x8056EE24}
 void KartCollide::calcHitboxes() {
     CollisionGroup *hitboxGroup = physics()->hitboxGroup();
     for (u16 idx = 0; idx < hitboxGroup->hitboxCount(); ++idx) {
@@ -46,6 +53,8 @@ void KartCollide::calcHitboxes() {
     }
 }
 
+/// @stage All
+/// @addr{0x80572C20}
 void KartCollide::findCollision() {
     calcBodyCollision(move()->totalScale(), fullRot(), scale());
 
@@ -63,6 +72,9 @@ void KartCollide::findCollision() {
     FUN_805B72B8(fVar1, dVar14, resetXZ, true);
 }
 
+/// @stage 2
+/// @addr{0x80572F4C}
+/// @rename
 void KartCollide::FUN_80572F4C() {
     f32 fVar1;
 
@@ -77,6 +89,13 @@ void KartCollide::FUN_80572F4C() {
     FUN_805B72B8(0.01f, fVar1, resetXZ, !state()->isJumpPadDisableYsusForce());
 }
 
+/// @stage All
+/// @brief Affects velocity when landing from airtime.
+/// @addr{0x805B72B8}
+/// @details Every frame, this function checks the player's velocity relative to the floor collision
+/// and applies external velocity and angular velocity.
+/// This is mostly relevant when you were midair and just landed.
+/// @rename
 void KartCollide::FUN_805B72B8(f32 param_1, f32 param_2, bool lockXZ, bool addExtVelY) {
     const auto &colData = collisionData();
 
@@ -159,6 +178,12 @@ void KartCollide::FUN_805B72B8(f32 param_1, f32 param_2, bool lockXZ, bool addEx
     dynamics()->setAngVel0(dynamics()->angVel0() + step9);
 }
 
+/// @stage All
+/// @addr{0x805B6724}
+/// @brief Checks and acts on collision for each kart hitbox.
+/// @param totalScale
+/// @param rot
+/// @param scale
 void KartCollide::calcBodyCollision(f32 totalScale, const EGG::Quatf &rot,
         const EGG::Vector3f &scale) {
     CollisionGroup *hitboxGroup = physics()->hitboxGroup();
@@ -209,6 +234,7 @@ void KartCollide::calcBodyCollision(f32 totalScale, const EGG::Quatf &rot,
     }
 }
 
+/// @addr{0x80571634}
 void KartCollide::calcFloorEffect() {
     if (state()->isTouchingGround()) {
         m_offRoad = true;
@@ -231,6 +257,7 @@ void KartCollide::calcFloorEffect() {
     calcTriggers(&mask, pos(), true);
 }
 
+/// @addr{0x805718D4}
 void KartCollide::calcTriggers(Field::KCLTypeMask *mask, const EGG::Vector3f &pos, bool twoPoint) {
     EGG::Vector3f v1 = twoPoint ? physics()->pos() : EGG::Vector3f::inf;
     Field::KCLTypeMask typeMask = twoPoint ? KCL_TYPE_DIRECTIONAL : KCL_TYPE_NON_DIRECTIONAL;
@@ -256,6 +283,14 @@ void KartCollide::calcTriggers(Field::KCLTypeMask *mask, const EGG::Vector3f &po
     }
 }
 
+/// @stage All
+/// @brief Checks wheel hitbox collision and stores position/velocity info.
+/// @addr{0x805B6F4C}
+/// @param hitboxGroup The wheel's collision information
+/// @param colVel The wheel's velocity. In the base game, it is always \f$\vec{v} = \begin{bmatrix}
+/// 0 \\ -13 \\ 0 \end{bmatrix}\f$
+/// @param center The wheel's position
+/// @param radius The wheel's size
 void KartCollide::calcWheelCollision(u16 /*wheelIdx*/, CollisionGroup *hitboxGroup,
         const EGG::Vector3f &colVel, const EGG::Vector3f &center, f32 radius) {
     Hitbox &firstHitbox = hitboxGroup->hitbox(0);
@@ -308,16 +343,26 @@ void KartCollide::calcWheelCollision(u16 /*wheelIdx*/, CollisionGroup *hitboxGro
             KCL_TYPE_VEHICLE_COLLIDEABLE);
 }
 
+/// @stage All
+/// @brief Processes moving water and floor collision effects
+/// @addr{0x8056E8D4}
 void KartCollide::processWheel(CollisionData &collisionData, Hitbox &hitbox,
         Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut) {
     processFloor(collisionData, hitbox, colInfo, maskOut, true);
 }
 
+/// @addr{0x8056E764}
 void KartCollide::processBody(CollisionData &collisionData, Hitbox &hitbox,
         Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut) {
     processFloor(collisionData, hitbox, colInfo, maskOut, false);
 }
 
+/// @stage All
+/// @addr{0x8056EA04}
+/// @brief Processes the floor triangles' attributes.
+/// @param collisionData Stores the resulting speed and handling info
+/// @param maskOut Stores the flags from the floor KCL
+/// @param wheel Differentiates between body and wheel floor collision (boost panels)
 void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
         Field::CourseColMgr::CollisionInfo * /*colInfo*/, Field::KCLTypeMask *maskOut, bool wheel) {
     constexpr Field::KCLTypeMask BOOST_RAMP_MASK = KCL_TYPE_BIT(COL_TYPE_BOOST_RAMP);
@@ -391,6 +436,15 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
     }
 }
 
+/// @stage All
+/// @brief Applies external and angular velocity based on the collision with the floor
+/// @addr{0x805B7928}
+/// @param down Always 0.1f
+/// @param rate Downward velocity? Related to suspension stiffness
+/// @param hitboxGroup Used to retrieve CollisionData reference
+/// @param forward Current world facing direction of the kart
+/// @param nextDir Updated facing direction of the kart
+/// @param speed Tire speed
 void KartCollide::applySomeFloorMoment(f32 down, f32 rate, CollisionGroup *hitboxGroup,
         const EGG::Vector3f &forward, const EGG::Vector3f &nextDir, const EGG::Vector3f &speed,
         bool b1, bool b2, bool b3) {
@@ -485,6 +539,10 @@ void KartCollide::applySomeFloorMoment(f32 down, f32 rate, CollisionGroup *hitbo
     }
 }
 
+/// @stage All
+/// @brief Called on collision of a new KCL type??? This only happens after airtime so far.
+/// @addr{0x805B6A9C}
+/// @rename
 bool KartCollide::FUN_805B6A9C(CollisionData &collisionData, const Hitbox &hitbox,
         EGG::BoundBox3f &minMax, EGG::Vector3f &relPos, s32 &count, Field::KCLTypeMask &maskOut,
         const Field::CourseColMgr::CollisionInfo &colInfo) {
@@ -505,6 +563,10 @@ bool KartCollide::FUN_805B6A9C(CollisionData &collisionData, const Hitbox &hitbo
     return false;
 }
 
+/// @stage 2
+/// @brief Saves collision info when vehicle body collision occurs.
+/// @details Additionally may apply a change in position for certain KCL types.
+/// @addr{0x805B6D48}
 void KartCollide::applyBodyCollision(CollisionData &collisionData, const EGG::Vector3f &movement,
         const EGG::Vector3f &posRel, s32 count) {
     setPos(pos() + movement);
@@ -535,12 +597,17 @@ void KartCollide::applyBodyCollision(CollisionData &collisionData, const EGG::Ve
     }
 }
 
+/// @addr{0x805B78D0}
 void KartCollide::setFloorColInfo(CollisionData &collisionData, const EGG::Vector3f &relPos,
         const EGG::Vector3f &vel, const EGG::Vector3f &floorNrm) {
     collisionData.relPos = relPos;
     collisionData.vel = vel;
     collisionData.floorNrm = floorNrm;
     collisionData.bFloor = true;
+}
+
+void KartCollide::setMovement(const EGG::Vector3f &v) {
+    m_movement = v;
 }
 
 const EGG::Vector3f &KartCollide::movement() const {
@@ -569,10 +636,6 @@ bool KartCollide::isRampBoost() const {
 
 bool KartCollide::isNotTrickable() const {
     return m_notTrickable;
-}
-
-void KartCollide::setMovement(const EGG::Vector3f &v) {
-    m_movement = v;
 }
 
 } // namespace Kart

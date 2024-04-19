@@ -6,6 +6,13 @@ namespace EGG {
 
 class SceneManager;
 
+/// @brief Base class for all scenes.
+/// @details A scene compartmentalizes certain elements of the game,
+/// such as the menu, the race, the credits, etc.
+/// This allows for easy cleanup when transitioning to a different scene,
+/// as scenes destroy instances of classes used only during the scene lifetime.
+/// While this is not an abstract class, you'll never see an instance of this base class.
+/// @nosubgrouping
 class Scene {
 public:
     /*------------*
@@ -26,45 +33,19 @@ public:
     virtual void incoming_childDestroy() {}
     virtual void outgoing_childCreate() {}
 
-    /*-----------*
-        Getters
-     *-----------*/
+    /// @beginSetters
+    void setParent(Scene *parent);
+    void setChild(Scene *child);
+    void setId(int id);
+    void setSceneMgr(SceneManager *sceneMgr);
+    /// @endSetters
 
-    Scene *parent() const {
-        return m_parent;
-    }
-
-    Scene *child() const {
-        return m_child;
-    }
-
-    int id() const {
-        return m_id;
-    }
-
-    SceneManager *sceneMgr() const {
-        return m_sceneMgr;
-    }
-
-    /*-----------*
-        Setters
-     *-----------*/
-
-    void setParent(Scene *parent) {
-        m_parent = parent;
-    }
-
-    void setChild(Scene *child) {
-        m_child = child;
-    }
-
-    void setId(int id) {
-        m_id = id;
-    }
-
-    void setSceneMgr(SceneManager *sceneMgr) {
-        m_sceneMgr = sceneMgr;
-    }
+    /// @beginGetters
+    Scene *parent() const;
+    Scene *child() const;
+    int id() const;
+    SceneManager *sceneMgr() const;
+    /// @endGetters
 
 protected:
     /*-----------*

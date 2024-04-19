@@ -2,6 +2,7 @@
 
 namespace Kart {
 
+/// @addr{0x805B821C}
 void CollisionData::reset() {
     tangentOff.setZero();
     floorNrm.setZero();
@@ -19,14 +20,18 @@ void CollisionData::reset() {
     bTrickable = false;
 }
 
+/// @addr{0x805B7F48}
 Hitbox::Hitbox() : m_bspHitbox(nullptr), m_ownsBSP(false) {}
 
+/// @addr{0x805B8480}
 Hitbox::~Hitbox() {
     if (m_ownsBSP) {
         delete m_bspHitbox;
     }
 }
 
+/// @brief Calculates the position of a given hitbox, both relative to the player and world
+/// @addr{0x805B7FBC}
 void Hitbox::calc(f32 param_1, f32 totalScale, const EGG::Vector3f &scale, const EGG::Quatf &rot,
         const EGG::Vector3f &pos) {
     f32 fVar1 = 0.0f;
@@ -41,6 +46,7 @@ void Hitbox::calc(f32 param_1, f32 totalScale, const EGG::Vector3f &scale, const
     m_worldPos = m_relPos + pos;
 }
 
+/// @addr{0x805B7F84}
 void Hitbox::reset() {
     m_worldPos.setZero();
     m_lastPos.setZero();
@@ -64,6 +70,7 @@ void Hitbox::setLastPos(const EGG::Vector3f &pos) {
     m_lastPos = pos;
 }
 
+/// @addr{0x805B80A8}
 void Hitbox::setLastPos(const EGG::Vector3f &scale, const EGG::Matrix34f &pose) {
     f32 yScaleFactor = scale.y;
     EGG::Vector3f scaledPos = m_bspHitbox->position;
@@ -99,6 +106,7 @@ f32 Hitbox::radius() const {
     return m_radius;
 }
 
+/// @addr{0x805B82BC}
 CollisionGroup::CollisionGroup() : m_hitboxScale(1.0f) {
     m_collisionData.reset();
 }
@@ -107,6 +115,13 @@ CollisionGroup::~CollisionGroup() {
     delete[] m_hitboxes.data();
 }
 
+/// @brief Initializes the hitbox array based on the KartParam's BSP hitboxes
+/// @addr{0x805B84C0}
+/// @details The BSP always contains 16 hitboxes, but only some of them are valid/enabled.
+/// The game iterates the BSP::Hitbox array to see how many are enabled, allocates a Hitbox array of
+/// that size, and then sets all the enabled BSP hitboxes.
+/// @param hitboxes The hitboxes from KartParam.bin
+/// @return The furthest point out of the hitboxes' spheres
 f32 CollisionGroup::initHitboxes(const std::array<BSP::Hitbox, 16> &hitboxes) {
     u16 bspHitboxCount = 0;
 
@@ -128,6 +143,9 @@ f32 CollisionGroup::initHitboxes(const std::array<BSP::Hitbox, 16> &hitboxes) {
     return computeCollisionLimits();
 }
 
+/// @brief Sets the bounding radius
+/// @addr{0x805B883C}
+/// @return The furthest point of all the hitboxes' spheres
 f32 CollisionGroup::computeCollisionLimits() {
     EGG::Vector3f max;
 
@@ -157,6 +175,9 @@ f32 CollisionGroup::computeCollisionLimits() {
     return max.z * 0.5f;
 }
 
+/// @brief Creates a hitbox to represent a tire
+/// @addr{0x805B875C}
+/// @param radius The radius of the tire
 void CollisionGroup::createSingleHitbox(f32 radius, const EGG::Vector3f &relPos) {
     m_hitboxes = std::span<Hitbox>(new Hitbox[1], 1);
 
@@ -173,6 +194,7 @@ void CollisionGroup::createSingleHitbox(f32 radius, const EGG::Vector3f &relPos)
     m_boundingRadius = radius;
 }
 
+/// @addr{0x805B8330}
 void CollisionGroup::reset() {
     m_collisionData.reset();
 
@@ -184,6 +206,15 @@ void CollisionGroup::reset() {
 
 void CollisionGroup::resetCollision() {
     m_collisionData.reset();
+}
+
+/// @addr{0x805B83D8}
+void CollisionGroup::setHitboxScale(f32 scale) {
+    m_hitboxScale = scale;
+
+    for (auto &hitbox : m_hitboxes) {
+        hitbox.setRadius(hitbox.bspHitbox()->radius * m_hitboxScale);
+    }
 }
 
 Hitbox &CollisionGroup::hitbox(u16 hitboxIdx) {
@@ -200,14 +231,6 @@ CollisionData &CollisionGroup::collisionData() {
 
 const CollisionData &CollisionGroup::collisionData() const {
     return m_collisionData;
-}
-
-void CollisionGroup::setHitboxScale(f32 scale) {
-    m_hitboxScale = scale;
-
-    for (auto &hitbox : m_hitboxes) {
-        hitbox.setRadius(hitbox.bspHitbox()->radius * m_hitboxScale);
-    }
 }
 
 } // namespace Kart

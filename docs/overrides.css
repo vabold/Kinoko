@@ -1,0 +1,45 @@
+/* Remove nav-sync button */
+#nav-sync {
+    display: none;
+}
+
+/* Add border to cell descriptions (left) */
+td.mdescLeft {
+    border-left: 1px solid var(--separator-color);
+    border-bottom: 1px solid var(--separator-color);
+}
+
+/* Add border to cell descriptions (right) */
+td.mdescRight {
+    border-right: 1px solid var(--separator-color);
+    border-bottom: 1px solid var(--separator-color);
+}
+
+/* Remove border radius on memItemLeft and right and use a less colorful background */
+td.memItemLeft, td.memItemRight {
+    border-radius: 0px !important;
+    padding-right: 0px !important;
+    background-color: var(--code-background) !important;
+}
+
+/* Remove padding above paragraphs */
+h2.groupheader {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+/* Remove "Definition at line XXX" */
+p.definition {
+    display: none;
+}
+
+/* Remove padding in page title */
+div.headertitle {
+    margin-top: -20px;
+    margin-bottom: -10px;
+}
+
+/* Prevent vertical table formatting of function parameters */
+table.memname tr {
+    float: left;
+}

@@ -6,6 +6,7 @@
 
 #include <Common.hh>
 
+/// @brief Represents the host application.
 namespace Host {
 
 class SceneCreatorDynamic final : public EGG::SceneCreator {

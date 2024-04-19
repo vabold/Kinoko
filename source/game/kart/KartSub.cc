@@ -16,12 +16,14 @@ namespace Kart {
 
 KartSub::KartSub() = default;
 
+/// @addr{0x80598AC8}
 KartSub::~KartSub() {
     delete m_collide;
     delete m_state;
     delete m_move;
 }
 
+/// @addr{0x80595D48}
 void KartSub::createSubsystems(bool isBike) {
     m_move = isBike ? new KartMoveBike : new KartMove;
     m_move->createSubsystems();
@@ -29,12 +31,15 @@ void KartSub::createSubsystems(bool isBike) {
     m_collide = new KartCollide;
 }
 
+/// @brief Called during static construction of KartObject to synchronize the pointers.
+/// @addr{0x80596454}
 void KartSub::copyPointers(KartAccessor &pointers) {
     pointers.collide = m_collide;
     pointers.state = m_state;
     pointers.move = m_move;
 }
 
+/// @addr{0x80595F78}
 void KartSub::init() {
     resetPhysics();
     body()->reset();
@@ -43,11 +48,13 @@ void KartSub::init() {
     m_collide->init();
 }
 
+/// @addr{0x80597934}
 void KartSub::initPhysicsValues() {
     physics()->updatePose();
     collide()->resetHitboxes();
 }
 
+/// @addr{0x8059617C}
 void KartSub::resetPhysics() {
     physics()->reset();
     physics()->updatePose();
@@ -65,6 +72,11 @@ void KartSub::resetPhysics() {
     m_minSuspOvertravel.setZero();
 }
 
+/// @stage All
+/// @brief The first phase of physics computations on each frame.
+/// @addr{0x80596480}
+/// @details Handles the first-half of physics calculations. This includes input processing,
+/// subsequent position/speed updates, as well as responding to last frame's collisions.
 void KartSub::calcPass0() {
     state()->calc();
     physics()->setPos(dynamics()->pos());
@@ -111,6 +123,11 @@ void KartSub::calcPass0() {
     collisionGroup()->setHitboxScale(move()->totalScale());
 }
 
+/// @stage All
+/// @brief The second phase of physics computations on each frame.
+/// @addr{0x80596CFC}
+/// Handles the second-half of physics calculations. This mainly includes
+/// collision detection, as well as suspension physics.
 void KartSub::calcPass1() {
     m_floorCollisionCount = 0;
     m_maxSuspOvertravel.setZero();
@@ -210,10 +227,12 @@ void KartSub::calcPass1() {
     // calcRotation() is only ever used for gfx rendering, so skip
 }
 
+/// @addr{0x805980D8}
 void KartSub::addFloor(const CollisionData &, bool) {
     ++m_floorCollisionCount;
 }
 
+/// @addr{0x805979EC}
 void KartSub::updateSuspOvertravel(const EGG::Vector3f &suspOvertravel) {
     m_maxSuspOvertravel = m_maxSuspOvertravel.minimize(suspOvertravel);
     m_minSuspOvertravel = m_minSuspOvertravel.maximize(suspOvertravel);

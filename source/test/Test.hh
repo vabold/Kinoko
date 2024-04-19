@@ -2,6 +2,7 @@
 
 #include <egg/math/Quat.hh>
 
+/// @brief Pertains to management of test cases.
 namespace Test {
 
 struct TestHeader {

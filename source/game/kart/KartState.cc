@@ -14,6 +14,8 @@ struct StartBoostEntry {
     s16 frames;
 };
 
+/// @addr{0x808B64F8}
+/// @memberof KartState
 static constexpr std::array<StartBoostEntry, 6> START_BOOST_ENTRIES = {{
         {0.85f, 0},
         {0.88f, 10},
@@ -23,6 +25,7 @@ static constexpr std::array<StartBoostEntry, 6> START_BOOST_ENTRIES = {{
         {0.95f, 70},
 }};
 
+/// @addr{0x805943B4}
 KartState::KartState() {
     clearBitfield0();
     clearBitfield1();
@@ -37,10 +40,12 @@ KartState::KartState() {
     m_airtime = 0;
 }
 
+/// @addr{0x8059455C}
 void KartState::init() {
     reset();
 }
 
+/// @addr{0x80594594}
 void KartState::reset() {
     clearBitfield3();
 
@@ -60,6 +65,9 @@ void KartState::reset() {
     m_trickableTimer = 0;
 }
 
+/// @stage 1+
+/// @brief Each frame, read input and save related bit flags. Also handles start boosts.
+/// @addr{0x8059487C}
 void KartState::calcInput() {
     const auto *raceMgr = System::RaceManager::Instance();
     if (raceMgr->isStageReached(System::RaceManager::Stage::Race)) {
@@ -96,6 +104,9 @@ void KartState::calcInput() {
     }
 }
 
+/// @stage All
+/// @brief Every frame, resets the input state and saves collision-related bit flags.
+/// @addr{0x8059474C}
 void KartState::calc() {
     m_bStickLeft = false;
     m_bStickRight = false;
@@ -107,6 +118,13 @@ void KartState::calc() {
     calcCollisions();
 }
 
+/// @stage All
+/// @brief Each frame, checks for collision and saves relevant bit flags.
+/// @addr{0x80594BD4}
+/// @details Iterates each tire to check for collision. If any tire is colliding with the floor,
+/// the "Any Wheel Collision" bit is set. If all tires are colliding with the floor, the
+/// "All Wheels Collision" bit is set. Tracks airtime and computes the appropriate
+/// top vector, given the floor normals of all colliding floor KCLs.
 void KartState::calcCollisions() {
     bool wasTouchingGround = state()->isTouchingGround();
 
@@ -245,6 +263,10 @@ void KartState::calcCollisions() {
     }
 }
 
+/// @brief STAGE 1 - Each frame, calculates the start boost charge.
+/// @addr{0x80595918}
+/// @details If the player is holding accelerate, the start boost charge increases using exponential
+/// decay. If the player is not holding accelerate, the start boost charge decays by 4% each frame.
 void KartState::calcStartBoost() {
     constexpr f32 START_BOOST_DELTA_ONE = 0.02f;
     constexpr f32 START_BOOST_DELTA_TWO = 0.002f;
@@ -260,6 +282,9 @@ void KartState::calcStartBoost() {
     m_startBoostCharge = std::max(0.0f, std::min(1.0f, m_startBoostCharge));
 }
 
+/// @stage 1
+/// @brief On countdown end, calculates and applies our start boost charge.
+/// @addr{0x805959D4}
 void KartState::calcHandleStartBoost() {
     if (System::RaceManager::Instance()->getCountdownTimer() != 0) {
         return;
@@ -284,6 +309,9 @@ void KartState::calcHandleStartBoost() {
     m_bChargeStartBoost = false;
 }
 
+/// @brief Applies the relevant start boost duration.
+/// @addr{0x80595AF8}
+/// @param idx The index into the start boost entries array.
 void KartState::handleStartBoost(size_t idx) {
     if (m_startBoostIdx == std::numeric_limits<size_t>::max()) {
         K_PANIC("More burnout RE required. See KartMoveSub264 function 0x805890b0.");
@@ -463,6 +491,7 @@ s16 KartState::trickableTimer() const {
     return m_trickableTimer;
 }
 
+/// @brief Helper function to clear all bit flags at 0x4-0x7 in KartState.
 void KartState::clearBitfield0() {
     m_bAccelerate = false;
     m_bBrake = false;
@@ -489,6 +518,7 @@ void KartState::clearBitfield0() {
     m_bRampBoost = false;
 }
 
+/// @brief Helper function to clear all bit flags at 0x8-0xB in KartState.
 void KartState::clearBitfield1() {
     m_bTrickStart = false;
     m_bInATrick = false;
@@ -497,6 +527,7 @@ void KartState::clearBitfield1() {
     m_bTrickable = false;
 }
 
+/// @brief Helper function to clear all bit flags at 0x10-0x13 in KartState.
 void KartState::clearBitfield3() {
     m_bUNK2 = false;
     m_bSomethingWallCollision = false;

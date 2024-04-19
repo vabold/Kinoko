@@ -4,6 +4,10 @@
 
 namespace EGG {
 
+/// @brief A quaternion, used to represent 3D rotation.
+/// @details A quaternion is comprised of a scalar (w) and a vector (v).
+/// The vector is used to represent the axis of rotation, while
+/// the scalar is used to represent the amount of rotation.
 struct Quatf {
     Quatf();
     Quatf(f32 w_, const Vector3f &v_);
@@ -62,6 +66,7 @@ struct Quatf {
         return !(*this == rhs);
     }
 
+    /// @brief A conversion function that allows for string representation of a quaternion.
     explicit operator std::string() const {
         return std::format("[0x{:08X}, 0x{:08X}, 0x{:08X}, 0x{:08X}] | [{}, {}, {}, {}]", f2u(v.x),
                 f2u(v.y), f2u(v.z), f2u(w), v.x, v.y, v.z, w);

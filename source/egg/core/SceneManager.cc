@@ -6,6 +6,7 @@ namespace EGG {
     Lifecycle
  *------------*/
 
+/// @addr{0x8023ADDC}
 SceneManager::SceneManager(SceneCreator *creator) {
     m_creator = creator;
     m_currentScene = nullptr;
@@ -20,11 +21,13 @@ SceneManager::~SceneManager() = default;
     Virtual
  *----------*/
 
+/// @addr{0x8023AE60}
 void SceneManager::calc() {
     calcCurrentScene();
     calcCurrentFader();
 }
 
+/// @addr{0x8023B588}
 void SceneManager::calcCurrentScene() {
     if (!m_currentScene) {
         return;
@@ -33,8 +36,9 @@ void SceneManager::calcCurrentScene() {
     m_currentScene->calc();
 }
 
-// This currently does nothing, but in the interest of including the base game's scene management
-// system, we add its proper definition in the trimmed library.
+/// @addr{0x8023B5A8}
+/// @details This currently does nothing, but in the interest of including the base game's scene
+/// management system, we add its proper definition in the trimmed library.
 void SceneManager::calcCurrentFader() {
     if (!m_currentFader) {
         return;
@@ -61,6 +65,7 @@ void SceneManager::calcCurrentFader() {
     resetAfterFadeType();
 }
 
+/// @addr{0x8023B8B0}
 void SceneManager::createDefaultFader() {
     m_currentFader = new ColorFader;
 }
@@ -69,6 +74,7 @@ void SceneManager::createDefaultFader() {
     Methods
  *----------*/
 
+/// @addr{0x8023B248}
 void SceneManager::createChildScene(int id, Scene *parent) {
     outgoingParentScene(parent);
     setNextSceneId(id);
@@ -76,6 +82,7 @@ void SceneManager::createChildScene(int id, Scene *parent) {
     createScene(id, parent);
 }
 
+/// @addr{0x8023B0E4}
 void SceneManager::createScene(int id, Scene *parent) {
     Scene *newScene = m_creator->create(id);
 
@@ -90,6 +97,7 @@ void SceneManager::createScene(int id, Scene *parent) {
     newScene->enter();
 }
 
+/// @addr{0x8023B3F0}
 void SceneManager::destroyScene(Scene *scene) {
     scene->exit();
     if (scene->child()) {
@@ -108,6 +116,7 @@ void SceneManager::destroyScene(Scene *scene) {
     m_currentScene = parent;
 }
 
+/// @addr{0x8023AF84}
 void SceneManager::changeScene(int nextSceneId) {
     while (m_currentScene) {
         destroyCurrentSceneNoIncoming(true);
@@ -116,11 +125,13 @@ void SceneManager::changeScene(int nextSceneId) {
     changeSiblingScene(nextSceneId);
 }
 
+/// @addr{0x8023AFE0}
 void SceneManager::changeSiblingScene(int nextSceneId) {
     setNextSceneId(nextSceneId);
     changeSiblingScene();
 }
 
+/// @addr{0x8023B064}
 void SceneManager::changeSiblingScene() {
     Scene *parentScene = m_currentScene ? m_currentScene->parent() : nullptr;
 
@@ -134,6 +145,7 @@ void SceneManager::changeSiblingScene() {
     createScene(nextSceneId, parentScene);
 }
 
+/// @addr{0x8023B568}
 void SceneManager::incomingCurrentScene() {
     if (!m_currentScene) {
         return;
@@ -142,10 +154,12 @@ void SceneManager::incomingCurrentScene() {
     m_currentScene->incoming_childDestroy();
 }
 
+/// @addr{0x8023B92C}
 void SceneManager::outgoingParentScene(Scene *parent) {
     parent->outgoing_childCreate();
 }
 
+/// @addr{0x8023AEF8}
 void SceneManager::reinitCurrentScene() {
     if (!m_currentScene) {
         return;
@@ -154,6 +168,7 @@ void SceneManager::reinitCurrentScene() {
     m_currentScene->reinit();
 }
 
+/// @addr{0x8023AFE8}
 bool SceneManager::changeSiblingSceneAfterFadeOut(int id) {
     if (m_fadeType != FadeType::Idle || !fadeOut()) {
         return false;
@@ -164,6 +179,7 @@ bool SceneManager::changeSiblingSceneAfterFadeOut(int id) {
     return true;
 }
 
+/// @addr{0x8023AF18}
 bool SceneManager::reinitCurrentSceneAfterFadeOut() {
     if (m_fadeType != FadeType::Idle || !fadeOut()) {
         return false;
@@ -173,6 +189,7 @@ bool SceneManager::reinitCurrentSceneAfterFadeOut() {
     return true;
 }
 
+/// @addr{0x8023B2AC}
 bool SceneManager::destroyCurrentSceneNoIncoming(bool destroyRootIfNoParent) {
     if (!m_currentScene) {
         return false;
@@ -194,6 +211,7 @@ bool SceneManager::destroyCurrentSceneNoIncoming(bool destroyRootIfNoParent) {
     }
 }
 
+/// @addr{0x8023B344}
 bool SceneManager::destroyToSelectSceneId(int id) {
     Scene *parent = findParentScene(id);
     if (!parent) {
@@ -207,6 +225,7 @@ bool SceneManager::destroyToSelectSceneId(int id) {
     return true;
 }
 
+/// @addr{0x8023B940}
 Scene *SceneManager::findParentScene(int id) {
     Scene *scene = m_currentScene->parent();
     for (; scene; scene = scene->parent()) {
@@ -218,12 +237,14 @@ Scene *SceneManager::findParentScene(int id) {
     return scene;
 }
 
+/// @addr{0x8023B910}
 void SceneManager::setupNextSceneId() {
     m_prevSceneId = m_currentSceneId;
     m_currentSceneId = m_nextSceneId;
     m_nextSceneId = -1;
 }
 
+/// @addr{0x8023AE4C}
 bool SceneManager::fadeIn() {
     return m_currentFader->fadeIn();
 }
