@@ -101,6 +101,7 @@ void KartState::calc() {
 void KartState::calcCollisions() {
     bool wasTouchingGround = state()->isTouchingGround();
 
+    state()->setVehicleBodyFloorCollision(false);
     state()->setAnyWheelCollision(false);
     state()->setAllWheelsCollision(false);
     state()->setTouchingGround(false);
@@ -123,14 +124,19 @@ void KartState::calcCollisions() {
 
     const CollisionData &colData = collisionData();
     if (colData.floor) {
+        state()->setVehicleBodyFloorCollision(true);
         m_top += colData.floorNrm;
     }
 
-    m_top.normalise();
+    m_bAirtimeOver20 = false;
 
     if (wheelCollisions < 1 && !colData.floor) {
-        ++m_airtime;
+        if (++m_airtime > 20) {
+            m_bAirtimeOver20 = true;
+        }
     } else {
+        m_top.normalise();
+
         m_bTouchingGround = true;
 
         if (!wasTouchingGround) {
@@ -211,6 +217,10 @@ bool KartState::isGroundStart() const {
     return m_bGroundStart;
 }
 
+bool KartState::isVehicleBodyFloorCollision() const {
+    return m_bVehicleBodyFloorCollision;
+}
+
 bool KartState::isAnyWheelCollision() const {
     return m_bAnyWheelCollision;
 }
@@ -221,6 +231,10 @@ bool KartState::isAllWheelsCollision() const {
 
 bool KartState::isStickLeft() const {
     return m_bStickLeft;
+}
+
+bool KartState::isAirtimeOver20() const {
+    return m_bAirtimeOver20;
 }
 
 bool KartState::isTouchingGround() const {
@@ -295,9 +309,11 @@ void KartState::clearBitfield0() {
     m_bHopStart = false;
     m_bAccelerateStart = false;
     m_bGroundStart = false;
+    m_bVehicleBodyFloorCollision = false;
     m_bAnyWheelCollision = false;
     m_bAllWheelsCollision = false;
     m_bStickLeft = false;
+    m_bAirtimeOver20 = false;
     m_bTouchingGround = false;
     m_bHop = false;
     m_bStickRight = false;
@@ -312,6 +328,10 @@ void KartState::setAccelerate(bool isSet) {
 
 void KartState::setDriftManual(bool isSet) {
     m_bDriftManual = isSet;
+}
+
+void KartState::setVehicleBodyFloorCollision(bool isSet) {
+    m_bVehicleBodyFloorCollision = isSet;
 }
 
 void KartState::setAnyWheelCollision(bool isSet) {

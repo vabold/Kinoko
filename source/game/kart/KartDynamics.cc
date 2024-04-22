@@ -16,6 +16,7 @@ KartDynamics::~KartDynamics() = default;
 void KartDynamics::init() {
     m_speedNorm = 0.0f;
     m_gravity = -1.0f;
+    m_top = EGG::Vector3f::ey;
     m_forceUpright = true;
     m_noGravity = false;
     m_stabilizationFactor = 0.1f;
@@ -219,6 +220,10 @@ void KartDynamics::setIntVel(const EGG::Vector3f &v) {
     m_intVel = v;
 }
 
+void KartDynamics::setTop(const EGG::Vector3f &v) {
+    m_top = v;
+}
+
 void KartDynamics::setStabilizationFactor(f32 val) {
     m_stabilizationFactor = val;
 }
@@ -256,7 +261,7 @@ void KartDynamicsBike::forceUpright() {
 }
 
 void KartDynamicsBike::stabilize() {
-    EGG::Vector3f forward = m_top_.cross(m_mainRot.rotateVector(EGG::Vector3f::ez).cross(m_top_));
+    EGG::Vector3f forward = m_top.cross(m_mainRot.rotateVector(EGG::Vector3f::ez)).cross(m_top);
     forward.normalise();
     EGG::Vector3f local_4c = forward.cross(m_top_.cross(forward));
     local_4c.normalise();

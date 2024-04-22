@@ -7,6 +7,6 @@
     "Kasey LC RTA WR": {
         "rkgPath": "samples/lc-rta-1-08-733.rkg",
         "krkgPath": "samples/lc-rta-1-08-733.krkg",
-        "targetFrame": 2
+        "targetFrame": 4531
     }
 }

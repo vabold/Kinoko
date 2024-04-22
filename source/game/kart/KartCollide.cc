@@ -179,6 +179,7 @@ void KartCollide::calcBodyCollision(f32 totalScale, const EGG::Quatf &rot,
 
             if (!FUN_805B6A9C(collisionData, hitbox, minMax, posRel, count, maskOut, colInfo)) {
                 bVar1 = true;
+                processBody(collisionData, hitbox, &colInfo, &maskOut);
             }
         }
     }
@@ -277,6 +278,11 @@ void KartCollide::calcWheelCollision(u16 /*wheelIdx*/, CollisionGroup *hitboxGro
 void KartCollide::processWheel(CollisionData &collisionData, Hitbox &hitbox,
         Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut) {
     processFloor(collisionData, hitbox, colInfo, maskOut, true);
+}
+
+void KartCollide::processBody(CollisionData &collisionData, Hitbox &hitbox,
+        Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut) {
+    processFloor(collisionData, hitbox, colInfo, maskOut, false);
 }
 
 void KartCollide::processFloor(CollisionData &collisionData, Hitbox & /*hitbox*/,

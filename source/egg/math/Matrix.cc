@@ -149,14 +149,12 @@ Matrix34f Matrix34f::multiplyTo(const Matrix34f &rhs) const {
     mat[0, 2] = fma(rhs[2, 2], mtx[0][2], fma(rhs[1, 2], mtx[0][1], rhs[0, 2] * mtx[0][0]));
     mat[0, 3] = fma(1.0f, mtx[0][3],
             fma(rhs[2, 3], mtx[0][2], fma(rhs[1, 3], mtx[0][1], rhs[0, 3] * mtx[0][0])));
-    mat[1, 2] =
-            mtx[1][3] + fma(rhs[2, 2], mtx[1][2], fma(rhs[1, 2], mtx[1][1], rhs[0, 2] * mtx[1][0]));
+    mat[1, 2] = fma(rhs[2, 2], mtx[1][2], fma(rhs[1, 2], mtx[1][1], rhs[0, 2] * mtx[1][0]));
     mat[1, 3] = fma(1.0f, mtx[1][3],
             fma(rhs[2, 3], mtx[1][2], fma(rhs[1, 3], mtx[1][1], rhs[0, 3] * mtx[1][0])));
     mat[2, 0] = fma(rhs[2, 0], mtx[2][2], fma(rhs[1, 0], mtx[2][1], rhs[0, 0] * mtx[2][0]));
     mat[2, 1] = fma(rhs[2, 1], mtx[2][2], fma(rhs[1, 1], mtx[2][1], rhs[0, 1] * mtx[2][0]));
-    mat[2, 2] =
-            mtx[2][3] + fma(rhs[2, 2], mtx[2][2], fma(rhs[1, 2], mtx[2][1], rhs[0, 2] * mtx[2][0]));
+    mat[2, 2] = fma(rhs[2, 2], mtx[2][2], fma(rhs[1, 2], mtx[2][1], rhs[0, 2] * mtx[2][0]));
     mat[2, 3] = fma(1.0f, mtx[2][3],
             fma(rhs[2, 3], mtx[2][2], fma(rhs[1, 3], mtx[2][1], rhs[0, 3] * mtx[2][0])));
 
@@ -166,9 +164,9 @@ Matrix34f Matrix34f::multiplyTo(const Matrix34f &rhs) const {
 Vector3f Matrix34f::multVector(const Vector3f &vec) const {
     Vector3f ret;
 
-    ret.x = mtx[0][2] * vec.z + (mtx[0][0] * vec.x + mtx[0][3] + mtx[0][1] * vec.y);
-    ret.y = mtx[1][2] * vec.z + (mtx[1][0] * vec.x + mtx[1][3] + mtx[1][1] * vec.y);
-    ret.z = mtx[2][2] * vec.z + (mtx[2][0] * vec.x + mtx[2][3] + mtx[2][1] * vec.y);
+    ret.x = mtx[0][0] * vec.x + mtx[0][3] + mtx[0][1] * vec.y + mtx[0][2] * vec.z;
+    ret.y = mtx[1][0] * vec.x + mtx[1][3] + mtx[1][1] * vec.y + mtx[1][2] * vec.z;
+    ret.z = mtx[2][0] * vec.x + mtx[2][3] + mtx[2][1] * vec.y + mtx[2][2] * vec.z;
 
     return ret;
 }
@@ -186,10 +184,9 @@ Vector3f Matrix34f::ps_multVector(const Vector3f &vec) const {
 Vector3f Matrix34f::multVector33(const Vector3f &vec) const {
     Vector3f ret;
 
-    ret.x = mtx[0][2] * vec.z + mtx[0][0] * vec.x + mtx[0][1] * vec.y;
-
-    ret.y = mtx[1][2] * vec.z + mtx[1][0] * vec.x + mtx[1][1] * vec.y;
-    ret.z = mtx[2][2] * vec.z + mtx[2][0] * vec.x + mtx[2][1] * vec.y;
+    ret.x = mtx[0][0] * vec.x + mtx[0][1] * vec.y + mtx[0][2] * vec.z;
+    ret.y = mtx[1][0] * vec.x + mtx[1][1] * vec.y + mtx[1][2] * vec.z;
+    ret.z = mtx[2][0] * vec.x + mtx[2][1] * vec.y + mtx[2][2] * vec.z;
 
     return ret;
 }

@@ -10,6 +10,7 @@ public:
     KartMove();
     virtual ~KartMove();
 
+    virtual void calcAirtimeTop() {}
     virtual void calcTurn();
     virtual void calcWheelie() {}
     virtual void setTurnParams();
@@ -66,6 +67,7 @@ public:
     const EGG::Vector3f &scale() const;
     f32 hardSpeedLimit() const;
     const EGG::Vector3f &smoothedUp() const;
+    const EGG::Vector3f &up() const;
     f32 totalScale() const;
     const EGG::Vector3f &dir() const;
     u16 floorCollisionCount() const;
@@ -115,6 +117,7 @@ protected:
     EGG::Vector3f m_scale;
     f32 m_totalScale;
     u16 m_mushroomBoostTimer;
+    u32 m_nonZipperAirtime;
     f32 m_hopVelY;
     f32 m_hopPosY;
     f32 m_hopGravity;
@@ -129,6 +132,7 @@ public:
 
     virtual void startWheelie();
 
+    void calcAirtimeTop() override;
     void calcVehicleRotation(f32 /*turn*/) override;
     void calcWheelie() override;
     void onHop() override;
