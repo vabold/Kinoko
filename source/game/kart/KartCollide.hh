@@ -28,6 +28,8 @@ public:
 
     void processWheel(CollisionData &collisionData, Hitbox &hitbox,
             Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut);
+    void processBody(CollisionData &collisionData, Hitbox &hitbox,
+            Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut);
     void processFloor(CollisionData &collisionData, Hitbox &hitbox,
             Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut, bool wheel);
 

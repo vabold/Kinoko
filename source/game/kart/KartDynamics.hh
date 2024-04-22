@@ -43,6 +43,7 @@ public:
     void setSpecialRot(const EGG::Quatf &q);
     void setExtraRot(const EGG::Quatf &q);
     void setIntVel(const EGG::Vector3f &v);
+    void setTop(const EGG::Vector3f &v);
     void setStabilizationFactor(f32 val);
     void setTotalForce(const EGG::Vector3f &v);
     void setExtVel(const EGG::Vector3f &v);
@@ -73,6 +74,7 @@ protected:
     EGG::Quatf m_extraRot;
     f32 m_gravity;
     EGG::Vector3f m_intVel;
+    EGG::Vector3f m_top;
     f32 m_stabilizationFactor;
     f32 m_speedFix;
     EGG::Vector3f m_top_;

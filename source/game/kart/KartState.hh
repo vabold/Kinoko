@@ -25,9 +25,11 @@ public:
     bool isDriftManual() const;
     bool isHopStart() const;
     bool isGroundStart() const;
+    bool isVehicleBodyFloorCollision() const;
     bool isAnyWheelCollision() const;
     bool isAllWheelsCollision() const;
     bool isStickLeft() const;
+    bool isAirtimeOver20() const;
     bool isTouchingGround() const;
     bool isHop() const;
     bool isChargeStartBoost() const;
@@ -49,6 +51,7 @@ public:
 
     void setAccelerate(bool isSet);
     void setDriftManual(bool isSet);
+    void setVehicleBodyFloorCollision(bool isSet);
     void setAllWheelsCollision(bool isSet);
     void setAnyWheelCollision(bool isSet);
     void setTouchingGround(bool isSet);
@@ -68,9 +71,12 @@ private:
     bool m_bHopStart;
     bool m_bAccelerateStart;
     bool m_bGroundStart;
+    bool m_bVehicleBodyFloorCollision;
     bool m_bAnyWheelCollision;
     bool m_bAllWheelsCollision;
     bool m_bStickLeft;
+    /// @brief Set when we have been in the air for more than 20 frames
+    bool m_bAirtimeOver20;
     bool m_bTouchingGround;
     bool m_bHop;
     bool m_bBoost;

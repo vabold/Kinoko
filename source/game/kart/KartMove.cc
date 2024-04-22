@@ -35,6 +35,9 @@ void KartMove::calcTurn() {
 
     if (!state()->isHop() || m_hopStickX == 0) {
         m_rawTurn = -state()->stickX();
+        if (state()->isAirtimeOver20()) {
+            m_rawTurn *= 0.01f;
+        }
     } else {
         m_rawTurn = static_cast<f32>(m_hopStickX);
     }
@@ -101,6 +104,7 @@ void KartMove::init(bool b1, bool b2) {
     m_driftState = DriftState::NotDrifting;
     m_mtCharge = 0;
     m_offroadInvincibility = 0;
+    m_nonZipperAirtime = 0;
     m_realTurn = 0.0f;
     m_weightedTurn = 0.0f;
 
@@ -146,6 +150,7 @@ void KartMove::setInitialPhysicsValues(const EGG::Vector3f &position, const EGG:
 
     m_landingDir = bodyFront();
     m_dir = bodyFront();
+    dynamics()->setTop(m_up);
 
     for (u16 tireIdx = 0; tireIdx < suspCount(); ++tireIdx) {
         suspension(tireIdx)->setInitialState();
@@ -188,7 +193,7 @@ void KartMove::calcTop() {
     f32 stabilizationFactor = 0.1f;
     m_hasLandingDir = false;
 
-    if (state()->isGroundStart()) {
+    if (state()->isGroundStart() && m_nonZipperAirtime >= 3) {
         m_smoothedUp = state()->top();
         m_up = state()->top();
         m_landingDir = m_dir.perpInPlane(m_smoothedUp, true);
@@ -200,8 +205,12 @@ void KartMove::calcTop() {
         } else if (state()->isTouchingGround()) {
             m_up = state()->top();
 
-            f32 topDotZ = 0.8f - 6.0f * (EGG::Mathf::abs(state()->top().dot(componentZAxis())));
-            f32 scalar = std::min(0.8f, std::max(0.3f, topDotZ));
+            f32 scalar = 0.8f;
+
+            if (!state()->isBoost() && !state()->isWheelie()) {
+                f32 topDotZ = 0.8f - 6.0f * (EGG::Mathf::abs(state()->top().dot(componentZAxis())));
+                scalar = std::min(0.8f, std::max(0.3f, topDotZ));
+            }
 
             m_smoothedUp += (state()->top() - m_smoothedUp) * scalar;
             m_smoothedUp.normalise();
@@ -210,10 +219,14 @@ void KartMove::calcTop() {
             if (bodyDotFront < -0.1f) {
                 stabilizationFactor += std::min(0.2f, EGG::Mathf::abs(bodyDotFront) * 0.5f);
             }
+        } else {
+            calcAirtimeTop();
         }
     }
 
     dynamics()->setStabilizationFactor(stabilizationFactor);
+
+    m_nonZipperAirtime = state()->airtime();
 }
 
 void KartMove::calcSpecialFloor() {
@@ -271,7 +284,7 @@ void KartMove::calcDirs() {
     if (m_hasLandingDir) {
         f32 dot = m_dir.dot(m_landingDir);
         EGG::Vector3f cross = m_dir.cross(m_landingDir);
-        f32 crossDot = cross.dot();
+        f32 crossDot = EGG::Mathf::sqrt(cross.dot());
         f32 angle = EGG::Mathf::atan2(crossDot, dot);
         angle = EGG::Mathf::abs(angle);
 
@@ -295,10 +308,27 @@ void KartMove::calcOffroad() {
     if (state()->isBoostOffroadInvincibility()) {
         m_kclSpeedFactor = 1.0f;
         m_kclRotFactor = param()->stats().kclRot[0];
-    } else if (state()->isAnyWheelCollision()) {
-        m_kclSpeedFactor = m_kclWheelSpeedFactor;
-        m_floorCollisionCount = m_floorCollisionCount != 0 ? m_floorCollisionCount : 1;
-        m_kclRotFactor = m_kclWheelRotFactor / static_cast<f32>(m_floorCollisionCount);
+    } else {
+        bool anyWheel = state()->isAnyWheelCollision();
+        if (anyWheel) {
+            m_kclSpeedFactor = m_kclWheelSpeedFactor;
+            m_floorCollisionCount = m_floorCollisionCount != 0 ? m_floorCollisionCount : 1;
+            m_kclRotFactor = m_kclWheelRotFactor / static_cast<f32>(m_floorCollisionCount);
+        }
+
+        if (state()->isVehicleBodyFloorCollision()) {
+            const CollisionData &colData = collisionData();
+            if (anyWheel) {
+                if (colData.speedFactor < m_kclWheelSpeedFactor) {
+                    m_kclSpeedFactor = colData.speedFactor;
+                }
+                m_kclRotFactor = (m_kclWheelRotFactor + colData.rotFactor) /
+                        static_cast<f32>(m_floorCollisionCount + 1);
+            } else {
+                m_kclSpeedFactor = colData.speedFactor;
+                m_kclRotFactor = colData.rotFactor;
+            }
+        }
     }
 }
 
@@ -437,8 +467,13 @@ void KartMove::calcRotation() {
             turn = 0.0f;
         }
 
-        if (m_speed >= 70.0f) {
+        if (m_speed >= 20.0f) {
             turn *= 0.5f;
+            if (m_speed < 70.0f) {
+                turn += (1.0f - (m_speed - 20.0f) / 50.0f) * turn;
+            }
+        } else {
+            turn = (turn * 0.4f) + (m_speed / 20.0f) * (turn * 0.6f);
         }
     }
 
@@ -746,6 +781,10 @@ const EGG::Vector3f &KartMove::smoothedUp() const {
     return m_smoothedUp;
 }
 
+const EGG::Vector3f &KartMove::up() const {
+    return m_up;
+}
+
 f32 KartMove::totalScale() const {
     return m_totalScale;
 }
@@ -777,6 +816,27 @@ void KartMoveBike::startWheelie() {
     m_wheelieRotDec = 0.0f;
 }
 
+/// @brief Calculates rotation of the bike due to excessive airtime.
+void KartMoveBike::calcAirtimeTop() {
+    if (!state()->isAirtimeOver20()) {
+        return;
+    }
+
+    if (m_smoothedUp.y <= 0.99f) {
+        m_smoothedUp += (EGG::Vector3f::ey - m_smoothedUp) * 0.03f;
+        m_smoothedUp.normalise();
+    } else {
+        m_smoothedUp = EGG::Vector3f::ey;
+    }
+
+    if (m_up.y <= 0.99f) {
+        m_up += (EGG::Vector3f::ey - m_up) * 0.03f;
+        m_up.normalise();
+    } else {
+        m_up = EGG::Vector3f::ey;
+    }
+}
+
 void KartMoveBike::calcVehicleRotation(f32 turn) {
     constexpr f32 LEAN_ROT_MAX_DRIFT = 1.5f;
     constexpr f32 LEAN_ROT_MIN_DRIFT = 0.7f;
@@ -786,7 +846,7 @@ void KartMoveBike::calcVehicleRotation(f32 turn) {
     const auto *raceManager = System::RaceManager::Instance();
 
     if (!raceManager->isStageReached(System::RaceManager::Stage::Race) ||
-            EGG::Mathf::abs(m_speed) < 50.0f) {
+            EGG::Mathf::abs(m_speed) < 5.0f) {
         leanRotInc = LEAN_ROT_INC_COUNTDOWN;
         leanRotCap = LEAN_ROT_CAP_COUNTDOWN;
     }
@@ -799,7 +859,7 @@ void KartMoveBike::calcVehicleRotation(f32 turn) {
     f32 leanRotLowerBound = -m_leanRotCap;
     f32 leanRotUpperBound = m_leanRotCap;
 
-    if (state()->isWheelie()) {
+    if (state()->isWheelie() || state()->isAirtimeOver20()) {
         m_leanRot *= 0.9f;
     } else if (!state()->isDrifting()) {
         if (stickX <= 0.2f) {

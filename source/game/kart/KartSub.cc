@@ -74,6 +74,8 @@ void KartSub::calcPass0() {
     state()->calcInput();
     move()->calc();
 
+    dynamics()->setTop(move()->up());
+
     // Pertains to startslides / leaning in stage 0 and 1
     const auto *raceManager = System::RaceManager::Instance();
     if (!raceManager->isStageReached(System::RaceManager::Stage::Race)) {
