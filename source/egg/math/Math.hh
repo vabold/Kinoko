@@ -2,12 +2,12 @@
 
 #include <Common.hh>
 
-#define F_PI 3.1415927f
-#define DEG2RAD (F_PI / 180.0f)
-#define RAD2DEG (180.0f / F_PI)
-#define DEG2FIDX (256.0f / 360.0f)
-#define RAD2FIDX (128.0f / F_PI)
-#define FIDX2RAD (F_PI / 128.0f)
+static constexpr f32 F_PI = 3.1415927f;
+static constexpr f32 DEG2RAD = 0.017453292f; ///< F_PI / 180.0f. Double precision and casted down.
+static constexpr f32 RAD2DEG = 57.2957795f;  ///< 180.0f / F_PI. Double precision and casted down.
+static constexpr f32 DEG2FIDX = 256.0f / 360.0f;
+static constexpr f32 RAD2FIDX = 128.0f / F_PI;
+static constexpr f32 FIDX2RAD = F_PI / 128.0f;
 
 namespace EGG::Mathf {
 

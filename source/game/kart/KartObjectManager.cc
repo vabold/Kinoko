@@ -1,5 +1,6 @@
 #include "KartObjectManager.hh"
 
+#include "game/kart/KartCollide.hh"
 #include "game/kart/KartParamFileManager.hh"
 #include "game/system/RaceConfig.hh"
 
@@ -13,6 +14,11 @@ void KartObjectManager::init() {
 }
 
 void KartObjectManager::calc() {
+    for (size_t i = 0; i < m_count; ++i) {
+        KartObject *object = m_objects[i];
+        object->collide()->setMovement(EGG::Vector3f::zero);
+    }
+
     for (size_t i = 0; i < m_count; ++i) {
         KartObject *object = m_objects[i];
         object->calcSub();

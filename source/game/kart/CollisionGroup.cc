@@ -14,7 +14,8 @@ void CollisionData::reset() {
     closestFloorSettings = 0xffffffff;
     intensity = 0.0f;
 
-    floor = false;
+    bFloor = false;
+    bSoftWall = false;
 }
 
 Hitbox::Hitbox() : m_bspHitbox(nullptr), m_ownsBSP(false) {}

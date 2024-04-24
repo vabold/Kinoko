@@ -102,6 +102,14 @@ void KartPhysics::set_fc(f32 val) {
     m_fc = val;
 }
 
+void KartPhysics::composeStuntRot(const EGG::Quatf &rot) {
+    m_instantaneousStuntRot *= rot;
+}
+
+void KartPhysics::composeDecayingRot(const EGG::Quatf &rot) {
+    m_decayingStuntRot *= rot;
+}
+
 KartPhysics *KartPhysics::Create(const KartParam &param) {
     KartPhysics *physics = new KartPhysics(param.isBike());
 

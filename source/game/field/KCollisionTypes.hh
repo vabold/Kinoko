@@ -7,6 +7,7 @@
 #define KCL_ATTRIBUTE_TYPE(x) ((x)&0x1f)
 #define KCL_TYPE_BIT(x) (1 << (x))
 #define KCL_ATTRIBUTE_TYPE_BIT(x) KCL_TYPE_BIT(KCL_ATTRIBUTE_TYPE(x))
+#define KCL_VARIANT_TYPE(x) ((x >> 5) & 7)
 
 // KCL attribute types
 typedef enum {
@@ -104,6 +105,10 @@ typedef enum {
 #define KCL_TYPE_NON_DIRECTIONAL \
     (KCL_TYPE_VEHICLE_COLLIDEABLE & ~KCL_TYPE_BIT(COL_TYPE_ITEM_STATE_MODIFIER) & \
             ~KCL_TYPE_BIT(COL_TYPE_WEAK_WALL))
+
+/*EAFABDFF*/
+#define KCL_TYPE_DRIVER_SOLID_SURFACE \
+    (KCL_TYPE_VEHICLE_COLLIDEABLE | KCL_TYPE_BIT(COL_TYPE_CANNON_TRIGGER))
 
 namespace Field {
 struct KColHeader {

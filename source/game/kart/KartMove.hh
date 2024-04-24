@@ -10,6 +10,7 @@ public:
     KartMove();
     virtual ~KartMove();
 
+    virtual void createSubsystems() {}
     virtual void calcAirtimeTop() {}
     virtual void calcTurn();
     virtual void calcWheelie() {}
@@ -25,7 +26,10 @@ public:
     void calcTop();
     void calcSpecialFloor();
     void calcDirs();
+    void calcStickyRoad();
     void calcOffroad();
+    void calcBoost();
+    void calcRampBoost();
     bool calcPreDrift();
     void calcManualDrift();
     void startManualDrift();
@@ -47,6 +51,7 @@ public:
     virtual bool canHop() const;
 
     void tryStartBoostPanel();
+    void tryStartBoostRamp();
 
     void activateBoost(KartBoost::Type type, s16 frames);
     void applyStartBoost(s16 frames);
@@ -54,10 +59,14 @@ public:
     void setOffroadInvincibility(s16 timer);
     void calcOffroadInvincibility();
     void calcMushroomBoost();
+    void landTrick();
 
+    void setDir(const EGG::Vector3f &v);
+    void setVel1Dir(const EGG::Vector3f &v);
     void setFloorCollisionCount(u16 count);
     void setKCLWheelSpeedFactor(f32 val);
     void setKCLWheelRotFactor(f32 val);
+    void setRampBoost(bool isSet);
     void setPadBoost(bool isSet);
 
     s32 getAppliedHopStickX() const;
@@ -70,8 +79,11 @@ public:
     const EGG::Vector3f &up() const;
     f32 totalScale() const;
     const EGG::Vector3f &dir() const;
+    const EGG::Vector3f &vel1Dir() const;
+    f32 speedRatioCapped() const;
     u16 floorCollisionCount() const;
     s32 hopStickX() const;
+    KartJump *jump() const;
 
 protected:
     enum class DriftState {
@@ -118,10 +130,13 @@ protected:
     f32 m_totalScale;
     u16 m_mushroomBoostTimer;
     u32 m_nonZipperAirtime;
+    s16 m_rampBoost;
     f32 m_hopVelY;
     f32 m_hopPosY;
     f32 m_hopGravity;
+    bool m_bRampBoost;
     bool m_bPadBoost;
+    KartJump *m_jump;
     f32 m_rawTurn;
 };
 
@@ -131,7 +146,7 @@ public:
     ~KartMoveBike();
 
     virtual void startWheelie();
-
+    void createSubsystems() override;
     void calcAirtimeTop() override;
     void calcVehicleRotation(f32 /*turn*/) override;
     void calcWheelie() override;
