@@ -4,7 +4,10 @@
 
 #define F_PI 3.1415927f
 #define DEG2RAD (F_PI / 180.0f)
-#define RAD2DEG (180.0f / F_PI)
+/// @brief 180 / Pi
+/// This was evaluated with double precision and casted down,
+/// so we must define the constant like so.
+static constexpr f32 RAD2DEG = 57.2957795f;
 #define DEG2FIDX (256.0f / 360.0f)
 #define RAD2FIDX (128.0f / F_PI)
 #define FIDX2RAD (F_PI / 128.0f)

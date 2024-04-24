@@ -16,6 +16,14 @@ enum class ControlSource {
     AI = 5,
 };
 
+enum class Trick {
+    None = 0,
+    Up = 1,
+    Down = 2,
+    Left = 3,
+    Right = 4
+};
+
 struct RaceInputState {
     RaceInputState();
     virtual ~RaceInputState() {}
@@ -33,7 +41,7 @@ struct RaceInputState {
     EGG::Vector2f stick;
     u8 stickXRaw;
     u8 stickYRaw;
-    u8 trick;
+    Trick trick;
     u8 trickRaw;
 };
 

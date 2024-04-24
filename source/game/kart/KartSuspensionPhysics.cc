@@ -54,6 +54,7 @@ void WheelPhysics::realign(const EGG::Vector3f &bottom, const EGG::Vector3f &veh
     m_speed = m_pos - m_lastPos;
     m_speed -= dynamics()->intVel();
     m_speed -= collisionData().movement;
+    m_speed -= collide()->movement();
     m_hitboxGroup->collisionData().vel += m_speed;
     m_lastPos = m_pos;
     m_lastPosDiff = m_pos - topmostPos;
@@ -67,11 +68,16 @@ void WheelPhysics::updateCollision(const EGG::Vector3f &bottom, const EGG::Vecto
     EGG::Vector3f center = m_pos + scalar * bottom;
     scalar = 0.3f * (nextRadius * move()->leanRot()) * move()->totalScale();
     center += scalar * bodyForward();
+
     m_hitboxGroup->setHitboxScale(move()->totalScale());
+    if (state()->isUNK2()) {
+        m_hitboxGroup->hitbox(0).setLastPos(dynamics()->pos());
+    }
+
     collide()->calcWheelCollision(m_wheelIdx, m_hitboxGroup, m_colVel, center, nextRadius);
     CollisionData &colData = m_hitboxGroup->collisionData();
 
-    if (colData.floor) {
+    if (colData.bFloor) {
         m_pos += colData.tangentOff;
         if (colData.intensity > -1) {
             m_targetEffectiveRadius = m_bspWheel->wheelRadius - static_cast<f32>(colData.intensity);
@@ -83,7 +89,7 @@ void WheelPhysics::updateCollision(const EGG::Vector3f &bottom, const EGG::Vecto
     m_topmostPos = topmostPos;
     m_wheelEdgePos = m_pos + m_effectiveRadius * move()->totalScale() * bottom;
     m_effectiveRadius += (m_targetEffectiveRadius - m_effectiveRadius) * 0.1f;
-    m_suspTravel = bottom.dot(m_pos - topmostPos);
+    m_suspTravel = bottom.dot(m_pos - topmostPos); // m_pos wrong wheel 2
 
     if (m_suspTravel < 0.0f) {
         m_74 = 1.0f;
@@ -213,7 +219,7 @@ void KartSuspensionPhysics::calcSuspension(const EGG::Vector3f &forward,
 
     CollisionGroup *hitboxGroup = m_tirePhysics->hitboxGroup();
     CollisionData &collisionData = hitboxGroup->collisionData();
-    if (!collisionData.floor) {
+    if (!collisionData.bFloor) {
         return;
     }
 
@@ -241,7 +247,9 @@ void KartSuspensionPhysics::calcSuspension(const EGG::Vector3f &forward,
 
     dynamics()->applySuspensionWrench(m_topmostPos, fLinear, fRot, state()->isWheelieRot());
 
-    collide()->applySomeFloorMoment(0.1f, 0.8f, hitboxGroup, forward, move()->dir(),
+    f32 rate = state()->isSomethingWallCollision() ? 0.01f : 0.8f;
+
+    collide()->applySomeFloorMoment(0.1f, rate, hitboxGroup, forward, move()->dir(),
             m_tirePhysics->speed(), true, true, !state()->isWheelieRot());
 }
 

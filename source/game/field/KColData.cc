@@ -114,6 +114,7 @@ bool KColData::checkSphereCollision(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *f
                                         checkSphere(distOut, fnrmOut, flagsOut);
 }
 
+/// EQUIVALENT TO checkOnePointCollision (0x807C1514)
 bool KColData::checkSphere(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut) {
     // If there's no list of triangles to check, there's no collision
     if (!m_prismIter) {
@@ -133,6 +134,7 @@ bool KColData::checkSphere(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut) 
     return false;
 }
 
+/// EQUIVALENT TO checkSphere (0x807C0F00)
 bool KColData::checkSphereSingle(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut) {
     if (!m_prismIter) {
         return false;
@@ -449,6 +451,7 @@ bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::V
     return out(dist);
 }
 
+/// EQUIVALENT TO checkTwoPointCollision (0x807C0884)
 bool KColData::checkSphereMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut) {
     // If there's no list of triangles to check, there's no collision
     if (!m_prismIter) {

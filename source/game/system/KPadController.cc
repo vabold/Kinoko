@@ -85,7 +85,24 @@ void KPadGhostController::calcImpl() {
             EGG::Vector2f((static_cast<f32>(m_raceInputState.stickXRaw) - 7.0f) / 7.0f,
                     (static_cast<f32>(m_raceInputState.stickYRaw) - 7.0f) / 7.0f);
     m_raceInputState.trickRaw = m_buttonsStreams[2]->readFrame();
-    m_raceInputState.trick = m_raceInputState.trickRaw;
+
+    switch (m_raceInputState.trickRaw >> 4) {
+    case 1:
+        m_raceInputState.trick = Trick::Up;
+        break;
+    case 2:
+        m_raceInputState.trick = Trick::Down;
+        break;
+    case 3:
+        m_raceInputState.trick = Trick::Left;
+        break;
+    case 4:
+        m_raceInputState.trick = Trick::Right;
+        break;
+    default:
+        m_raceInputState.trick = Trick::None;
+        break;
+    }
 }
 
 void KPadGhostController::setAcceptingInputs(bool set) {
@@ -102,7 +119,7 @@ void RaceInputState::reset() {
     stick = EGG::Vector2f::zero;
     stickXRaw = 7;
     stickYRaw = 7;
-    trick = 0;
+    trick = Trick::None;
     trickRaw = 0;
 }
 
@@ -123,7 +140,7 @@ bool RaceInputState::drift() const {
 }
 
 bool RaceInputState::trickUp() const {
-    return (trick >> 4) == 1;
+    return trick == Trick::Up;
 }
 
 KPadGhostButtonsStream::KPadGhostButtonsStream()

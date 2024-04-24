@@ -23,6 +23,12 @@ bool CollisionDirector::checkSphereFullPush(f32 radius, const EGG::Vector3f &v0,
         resetCollisionEntries(pFlagsOut);
     }
 
+    CourseColMgr::NoBounceWallColInfo *noBounceInfo = CourseColMgr::Instance()->noBounceWallInfo();
+    if (noBounceInfo) {
+        noBounceInfo->bbox.setZero();
+        noBounceInfo->dist = FLT_MIN;
+    }
+
     bool colliding = false;
 
     if (flags &&
@@ -31,9 +37,17 @@ bool CollisionDirector::checkSphereFullPush(f32 radius, const EGG::Vector3f &v0,
         colliding = true;
     }
 
-    if (colliding && pInfo) {
-        pInfo->tangentOff = pInfo->bbox.min + pInfo->bbox.max;
+    if (colliding) {
+        if (pInfo) {
+            pInfo->tangentOff = pInfo->bbox.min + pInfo->bbox.max;
+        }
+
+        if (noBounceInfo) {
+            noBounceInfo->tangentOff = noBounceInfo->bbox.min + noBounceInfo->bbox.max;
+        }
     }
+
+    CourseColMgr::Instance()->clearNoBounceWallInfo();
 
     return colliding;
 }
@@ -49,8 +63,16 @@ bool CollisionDirector::checkSphereCachedPartialPush(const EGG::Vector3f &pos,
         resetCollisionEntries(typeMaskOut);
     }
 
+    CourseColMgr::NoBounceWallColInfo *noBounceInfo = CourseColMgr::Instance()->noBounceWallInfo();
+    if (noBounceInfo) {
+        noBounceInfo->bbox.setZero();
+        noBounceInfo->dist = FLT_MIN;
+    }
+
     bool hasCourseCol = CourseColMgr::Instance()->checkSphereCachedPartialPush(nullptr, pos,
             prevPos, typeMask, colInfo, typeMaskOut, 1.0f, radius);
+
+    CourseColMgr::Instance()->clearNoBounceWallInfo();
 
     return hasCourseCol;
 }
@@ -71,12 +93,26 @@ bool CollisionDirector::checkSphereCachedFullPush(const EGG::Vector3f &pos,
         resetCollisionEntries(typeMaskOut);
     }
 
+    CourseColMgr::NoBounceWallColInfo *info = CourseColMgr::Instance()->noBounceWallInfo();
+    if (info) {
+        info->bbox.setZero();
+        info->dist = FLT_MIN;
+    }
+
     bool hasCourseCol = CourseColMgr::Instance()->checkSphereCachedFullPush(nullptr, pos, prevPos,
             typeMask, colInfo, typeMaskOut, 1.0f, radius);
 
-    if (hasCourseCol && colInfo) {
-        colInfo->tangentOff = colInfo->bbox.min + colInfo->bbox.max;
+    if (hasCourseCol) {
+        if (colInfo) {
+            colInfo->tangentOff = colInfo->bbox.min + colInfo->bbox.max;
+        }
+
+        if (info) {
+            info->tangentOff = info->bbox.min + info->bbox.max;
+        }
     }
+
+    CourseColMgr::Instance()->clearNoBounceWallInfo();
 
     return hasCourseCol;
 }

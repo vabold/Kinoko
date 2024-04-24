@@ -21,6 +21,7 @@ struct CollisionData;
 class KartBody;
 class KartCollide;
 class KartDynamics;
+class KartJump;
 class KartMove;
 class KartParam;
 struct BSP;
@@ -60,6 +61,8 @@ public:
     const CollisionGroup *collisionGroup() const;
     KartMove *move();
     const KartMove *move() const;
+    KartJump *jump();
+    const KartJump *jump() const;
     KartParam *param();
     const KartParam *param() const;
     const BSP &bsp() const;

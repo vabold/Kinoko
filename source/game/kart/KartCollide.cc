@@ -10,15 +10,25 @@
 
 namespace Kart {
 
-KartCollide::KartCollide() : m_notTrickable(false) {}
+KartCollide::KartCollide() {
+    m_rampBoost = false;
+    m_offRoad = false;
+    m_groundBoostPanelOrRamp = false;
+    m_notTrickable = false;
+}
 
 KartCollide::~KartCollide() = default;
 
 void KartCollide::init() {
-    m_smoothedBack = 0.0f;
+    m_rampBoost = false;
     m_offRoad = false;
     m_groundBoostPanelOrRamp = false;
     m_notTrickable = false;
+    m_smoothedBack = 0.0f;
+    m_suspBottomHeightNonSoftWall = 0.0f;
+    m_suspBottomHeightSoftWall = 0.0f;
+    m_someNonSoftWallTimer = 0;
+    m_someSoftWallTimer = 0;
 }
 
 void KartCollide::resetHitboxes() {
@@ -47,8 +57,9 @@ void KartCollide::findCollision() {
 
     f32 dVar14 = fVar1;
     fVar1 = 0.01f;
+    bool resetXZ = dVar14 > 0.0f && state()->isAirtimeOver20() && dynamics()->velocity().y < -50.0f;
 
-    FUN_805B72B8(fVar1, dVar14, false, true);
+    FUN_805B72B8(fVar1, dVar14, resetXZ, true);
 }
 
 void KartCollide::FUN_80572F4C() {
@@ -60,13 +71,18 @@ void KartCollide::FUN_80572F4C() {
         fVar1 = 0.05f;
     }
 
-    FUN_805B72B8(0.01f, fVar1, false, true);
+    bool resetXZ = false;
+    if (fVar1 > 0.0f && state()->isAirtimeOver20() && dynamics()->velocity().y < -50.0f) {
+        resetXZ = true;
+    }
+
+    FUN_805B72B8(0.01f, fVar1, resetXZ, true);
 }
 
 void KartCollide::FUN_805B72B8(f32 param_1, f32 param_2, bool lockXZ, bool addExtVelY) {
     const auto &colData = collisionData();
 
-    if (!colData.floor) {
+    if (!colData.bFloor) {
         return;
     }
 
@@ -115,7 +131,7 @@ void KartCollide::FUN_805B72B8(f32 param_1, f32 param_2, bool lockXZ, bool addEx
     f32 local_1d0 = step6.y;
     if (!addExtVelY) {
         local_1d0 = 0.0f;
-    } else if (colData.floor) {
+    } else if (colData.bFloor) {
         f32 velY = intVel().y;
         if (velY > 0.0f) {
             velY += extVel().y;
@@ -156,16 +172,18 @@ void KartCollide::calcBodyCollision(f32 totalScale, const EGG::Quatf &rot,
     Field::CourseColMgr::CollisionInfo colInfo;
     colInfo.bbox.setDirect(EGG::Vector3f::zero, EGG::Vector3f::zero);
     Field::KCLTypeMask maskOut;
+    Field::CourseColMgr::NoBounceWallColInfo noBounceWallInfo;
     EGG::BoundBox3f minMax;
     minMax.setZero();
     bool bVar1 = false;
 
     for (u16 hitboxIdx = 0; hitboxIdx < hitboxGroup->hitboxCount(); ++hitboxIdx) {
-        Field::KCLTypeMask flags = 0xEAFABDFF;
+        Field::KCLTypeMask flags = KCL_TYPE_DRIVER_SOLID_SURFACE;
         Hitbox &hitbox = hitboxGroup->hitbox(hitboxIdx);
 
         if (hitbox.bspHitbox()->wallsOnly != 0) {
             flags = 0x4A109000;
+            Field::CourseColMgr::Instance()->setNoBounceWallInfo(&noBounceWallInfo);
         }
 
         hitbox.calc(totalScale, 0.0f, scale, rot, pos());
@@ -198,6 +216,14 @@ void KartCollide::calcFloorEffect() {
         m_offRoad = true;
         m_groundBoostPanelOrRamp = true;
     }
+
+    m_suspBottomHeightNonSoftWall = 0.0f;
+    m_rampBoost = false;
+    m_offRoad = false;
+    m_notTrickable = false;
+    m_suspBottomHeightSoftWall = 0.0f;
+    m_someNonSoftWallTimer = 0;
+    m_someSoftWallTimer = 0;
 
     Field::KCLTypeMask mask = KCL_NONE;
     calcTriggers(&mask, pos(), false);
@@ -242,6 +268,8 @@ void KartCollide::calcWheelCollision(u16 /*wheelIdx*/, CollisionGroup *hitboxGro
     Field::CourseColMgr::CollisionInfo colInfo;
     colInfo.bbox.setZero();
     Field::KCLTypeMask kclOut;
+    Field::CourseColMgr::NoBounceWallColInfo noBounceWallInfo;
+    Field::CourseColMgr::Instance()->setNoBounceWallInfo(&noBounceWallInfo);
 
     bool collided = Field::CollisionDirector::Instance()->checkSphereCachedFullPush(
             firstHitbox.worldPos(), firstHitbox.lastPos(), KCL_TYPE_VEHICLE_COLLIDEABLE, &colInfo,
@@ -257,8 +285,14 @@ void KartCollide::calcWheelCollision(u16 /*wheelIdx*/, CollisionGroup *hitboxGro
 
     collisionData.tangentOff = colInfo.tangentOff;
 
+    if (noBounceWallInfo.dist > FLT_MIN) {
+        collisionData.tangentOff += noBounceWallInfo.tangentOff;
+        collisionData.noBounceWallNrm = noBounceWallInfo.fnrm;
+        collisionData.bSoftWall = true;
+    }
+
     if (kclOut & KCL_TYPE_FLOOR) {
-        collisionData.floor = true;
+        collisionData.bFloor = true;
         collisionData.floorNrm = colInfo.floorNrm;
     }
 
@@ -285,18 +319,26 @@ void KartCollide::processBody(CollisionData &collisionData, Hitbox &hitbox,
     processFloor(collisionData, hitbox, colInfo, maskOut, false);
 }
 
-void KartCollide::processFloor(CollisionData &collisionData, Hitbox & /*hitbox*/,
+void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
         Field::CourseColMgr::CollisionInfo * /*colInfo*/, Field::KCLTypeMask *maskOut, bool wheel) {
+    constexpr Field::KCLTypeMask BOOST_RAMP_MASK = KCL_TYPE_BIT(COL_TYPE_BOOST_RAMP);
+
+    if (collisionData.bSoftWall) {
+        ++m_someSoftWallTimer;
+        m_suspBottomHeightSoftWall += hitbox.worldPos().y - hitbox.radius();
+    }
+
     if (!(*maskOut & KCL_TYPE_VEHICLE_COLLIDEABLE)) {
         return;
     }
 
-    if (!Field::CollisionDirector::Instance()->findClosestCollisionEntry(maskOut, KCL_TYPE_FLOOR)) {
+    auto *colDirector = Field::CollisionDirector::Instance();
+
+    if (!colDirector->findClosestCollisionEntry(maskOut, KCL_TYPE_FLOOR)) {
         return;
     }
 
-    const Field::CollisionDirector::CollisionEntry *closestColEntry =
-            Field::CollisionDirector::Instance()->closestCollisionEntry();
+    const auto *closestColEntry = colDirector->closestCollisionEntry();
 
     u16 attribute = closestColEntry->attribute;
     if (!(attribute & 0x2000)) {
@@ -309,14 +351,30 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox & /*hitbox*/
     collisionData.intensity = (attribute >> 0xb) & 3;
     collisionData.rotFactor += param()->stats().kclRot[KCL_ATTRIBUTE_TYPE(attribute)];
     collisionData.closestFloorFlags = closestColEntry->typeMask;
-    collisionData.closestFloorSettings = (attribute >> 5) & 7;
+    collisionData.closestFloorSettings = KCL_VARIANT_TYPE(attribute);
 
     if (wheel && !!(*maskOut & KCL_TYPE_BIT(COL_TYPE_BOOST_PAD))) {
         move()->setPadBoost(true);
     }
 
-    if (!(*maskOut & KCL_TYPE_BIT(COL_TYPE_BOOST_RAMP))) {
+    if (!!(*maskOut & BOOST_RAMP_MASK) &&
+            colDirector->findClosestCollisionEntry(maskOut, BOOST_RAMP_MASK)) {
+        move()->setRampBoost(true);
+        state()->setBoostRampType(KCL_VARIANT_TYPE(closestColEntry->attribute));
+        m_rampBoost = true;
+        m_trickable = true;
+    } else {
+        state()->setBoostRampType(-1);
         m_notTrickable = true;
+    }
+
+    if (!collisionData.bSoftWall) {
+        ++m_someNonSoftWallTimer;
+        m_suspBottomHeightNonSoftWall += hitbox.worldPos().y - hitbox.radius();
+    }
+
+    if (*maskOut & KCL_TYPE_BIT(COL_TYPE_STICKY_ROAD)) {
+        state()->setStickyRoad(true);
     }
 }
 
@@ -324,7 +382,7 @@ void KartCollide::applySomeFloorMoment(f32 down, f32 rate, CollisionGroup *hitbo
         const EGG::Vector3f &forward, const EGG::Vector3f &nextDir, const EGG::Vector3f &speed,
         bool b1, bool b2, bool b3) {
     CollisionData &colData = hitboxGroup->collisionData();
-    if (!colData.floor) {
+    if (!colData.bFloor) {
         return;
     }
 
@@ -419,7 +477,7 @@ bool KartCollide::FUN_805B6A9C(CollisionData &collisionData, const Hitbox &hitbo
         const Field::CourseColMgr::CollisionInfo &colInfo) {
     if (!!(maskOut & KCL_TYPE_FLOOR)) {
         collisionData.floorNrm += colInfo.floorNrm;
-        collisionData.floor = true;
+        collisionData.bFloor = true;
     }
 
     EGG::Vector3f tangentOff = colInfo.tangentOff;
@@ -438,7 +496,7 @@ void KartCollide::applyBodyCollision(CollisionData &collisionData, const EGG::Ve
         const EGG::Vector3f &posRel, s32 count) {
     setPos(pos() + movement);
 
-    if (!collisionData.floor) {
+    if (!collisionData.bFloor) {
         collisionData.movement = movement;
     }
 
@@ -455,7 +513,7 @@ void KartCollide::applyBodyCollision(CollisionData &collisionData, const EGG::Ve
     collisionData.vel = local_30;
     collisionData.relPos = scaledRelPos;
 
-    if (collisionData.floor) {
+    if (collisionData.bFloor) {
         f32 intVelY = dynamics()->intVel().y;
         if (intVelY > 0.0f) {
             collisionData.vel.y += intVelY;
@@ -469,7 +527,35 @@ void KartCollide::setFloorColInfo(CollisionData &collisionData, const EGG::Vecto
     collisionData.relPos = relPos;
     collisionData.vel = vel;
     collisionData.floorNrm = floorNrm;
-    collisionData.floor = true;
+    collisionData.bFloor = true;
+}
+
+const EGG::Vector3f &KartCollide::movement() const {
+    return m_movement;
+}
+
+f32 KartCollide::suspBottomHeightSoftWall() const {
+    return m_suspBottomHeightSoftWall;
+}
+
+u16 KartCollide::someSoftWallTimer() const {
+    return m_someSoftWallTimer;
+}
+
+f32 KartCollide::suspBottomHeightNonSoftWall() const {
+    return m_suspBottomHeightNonSoftWall;
+}
+
+u16 KartCollide::someNonSoftWallTimer() const {
+    return m_someNonSoftWallTimer;
+}
+
+bool KartCollide::isRampBoost() const {
+    return m_rampBoost;
+}
+
+void KartCollide::setMovement(const EGG::Vector3f &v) {
+    m_movement = v;
 }
 
 } // namespace Kart

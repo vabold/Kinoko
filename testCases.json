@@ -1,4 +1,9 @@
 {
+    "Luke rBC RTA WR": {
+        "rkgPath": "samples/rbc-rta-2-30-459.rkg",
+        "krkgPath": "samples/rbc-rta-2-30-459.krkg",
+        "targetFrame": 9430
+    },
     "Luke rMC3 RTA WR": {
         "rkgPath": "samples/rmc3-rta-1-17-843.rkg",
         "krkgPath": "samples/rmc3-rta-1-17-843.krkg",

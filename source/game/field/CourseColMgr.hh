@@ -32,9 +32,8 @@ public:
     };
 
     struct NoBounceWallColInfo {
-        EGG::Vector3f bboxLow;
-        EGG::Vector3f bboxHigh;
-        EGG::Vector3f lowPlusHigh; // bboxLow + bboxHigh, see 0x805998c0
+        EGG::BoundBox3f bbox;
+        EGG::Vector3f tangentOff;
         f32 dist;
         EGG::Vector3f fnrm;
     };
@@ -55,6 +54,11 @@ public:
     bool checkSphereCachedFullPush(KColData *data, const EGG::Vector3f &pos,
             const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CollisionInfo *colInfo,
             KCLTypeMask *typeMaskOut, f32 scale, f32 radius);
+
+    void setNoBounceWallInfo(NoBounceWallColInfo *info);
+    void clearNoBounceWallInfo();
+
+    NoBounceWallColInfo *noBounceWallInfo() const;
 
     static void *LoadFile(const char *filename);
 

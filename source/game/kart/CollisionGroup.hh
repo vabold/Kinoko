@@ -16,6 +16,7 @@ struct CollisionData {
 
     EGG::Vector3f tangentOff;
     EGG::Vector3f floorNrm;
+    EGG::Vector3f noBounceWallNrm;
     EGG::Vector3f vel;
     EGG::Vector3f relPos;
     EGG::Vector3f movement;
@@ -25,7 +26,8 @@ struct CollisionData {
     u32 closestFloorSettings;
     s32 intensity;
 
-    bool floor;
+    bool bFloor;
+    bool bSoftWall;
 };
 
 class Hitbox {
