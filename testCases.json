@@ -1,4 +1,9 @@
 {
+    "Kasey rSGB RTA WR": {
+        "rkgPath": "samples/rsgb-rta-1-21-363.rkg",
+        "krkgPath": "samples/rsgb-rta-1-21-363.krkg",
+        "targetFrame": 5288
+    },
     "Kierio rMC3 Test": {
         "rkgPath": "samples/rmc3-kierio-test-3-24-416.rkg",
         "krkgPath": "samples/rmc3-kierio-test-3-24-416.krkg",

@@ -42,23 +42,27 @@ public:
     bool isSlipdriftCharge() const;
     bool isWheelie() const;
     bool isRampBoost() const;
+    bool isJumpPad() const;
     bool isTrickStart() const;
     bool isInATrick() const;
     bool isBoostOffroadInvincibility() const;
     bool isTrickRot() const;
     bool isTrickable() const;
     bool isWheelieRot() const;
+    bool isJumpPadDisableYsusForce() const;
     bool isUNK2() const;
     bool isSomethingWallCollision() const;
     bool isAutoDrift() const;
 
     s32 boostRampType() const;
+    s32 jumpPadVariant() const;
     f32 stickX() const;
     f32 stickY() const;
     u32 airtime() const;
     const EGG::Vector3f &top() const;
     const EGG::Vector3f &softWallSpeed() const;
     f32 startBoostCharge() const;
+    s16 trickableTimer() const;
 
     void clearBitfield0();
     void clearBitfield1();
@@ -79,14 +83,17 @@ public:
     void setRampBoost(bool isSet);
     void setTrickStart(bool isSet);
     void setInATrick(bool isSet);
+    void setJumpPad(bool isSet);
     void setBoostOffroadInvincibility(bool isSet);
     void setTrickRot(bool isSet);
     void setTrickable(bool isSet);
     void setWheelieRot(bool isSet);
+    void setJumpPadDisableYsusForce(bool isSet);
     void setSomethingWallCollision(bool isSet);
     void setSoftWallDrift(bool isSet);
-
     void setBoostRampType(s32 val);
+    void setJumpPadVariant(s32 val);
+    void setTrickableTimer(s16 val);
 
 private:
     // Bits from the base game's bitfields are marked with prefix 'b'
@@ -113,6 +120,7 @@ private:
     bool m_bDriftAuto;
     bool m_bSlipdriftCharge;
     bool m_bWheelie;
+    bool m_bJumpPad;
     bool m_bRampBoost;
 
     bool m_bTrickStart;
@@ -122,6 +130,7 @@ private:
     bool m_bTrickable;
 
     bool m_bWheelieRot;
+    bool m_bJumpPadDisableYsusForce;
 
     bool m_bUNK2;
     bool m_bSomethingWallCollision;
@@ -135,10 +144,12 @@ private:
     EGG::Vector3f m_softWallSpeed;
     s32 m_hwgTimer;
     s32 m_boostRampType;
+    s32 m_jumpPadVariant;
     f32 m_stickX;
     f32 m_stickY;
     f32 m_startBoostCharge;
     size_t m_startBoostIdx;
+    s16 m_trickableTimer;
 };
 
 } // namespace Kart
