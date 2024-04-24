@@ -53,6 +53,7 @@ public:
     u16 someNonSoftWallTimer() const;
 
     bool isRampBoost() const;
+    bool isNotTrickable() const;
 
     void setMovement(const EGG::Vector3f &v);
 

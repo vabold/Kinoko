@@ -28,6 +28,7 @@ KartState::KartState() {
     clearBitfield1();
 
     m_bWheelieRot = false;
+    m_bJumpPadDisableYsusForce = false;
 
     clearBitfield3();
 
@@ -44,6 +45,7 @@ void KartState::reset() {
     clearBitfield3();
 
     m_bWheelieRot = false;
+    m_bJumpPadDisableYsusForce = false;
 
     clearBitfield1();
     clearBitfield0();
@@ -52,8 +54,10 @@ void KartState::reset() {
     m_top.setZero();
     m_hwgTimer = 0;
     m_boostRampType = -1;
+    m_jumpPadVariant = -1;
     m_startBoostCharge = 0.0f;
     m_stickX = 0.0f;
+    m_trickableTimer = 0;
 }
 
 void KartState::calcInput() {
@@ -96,6 +100,7 @@ void KartState::calc() {
     m_bStickLeft = false;
     m_bStickRight = false;
     m_bGroundStart = false;
+    m_bJumpPadDisableYsusForce = false;
 
     m_stickY = 0.0f;
     m_stickX = 0.0f;
@@ -135,11 +140,13 @@ void KartState::calcCollisions() {
     u16 wheelCollisions = 0;
     u16 softWallCount = 0;
     EGG::Vector3f wallNrm;
+    bool trickable = false;
 
     for (u16 tireIdx = 0; tireIdx < tireCount(); ++tireIdx) {
         const auto &colData = collisionData(tireIdx);
         if (hasFloorCollision(tirePhysics(tireIdx))) {
             m_top += colData.floorNrm;
+            trickable = trickable || colData.bTrickable;
             ++wheelCollisions;
         }
 
@@ -160,6 +167,7 @@ void KartState::calcCollisions() {
     if (colData.bFloor) {
         state()->setVehicleBodyFloorCollision(true);
         m_top += colData.floorNrm;
+        trickable = trickable || colData.bTrickable;
     }
 
     bool hitboxGroupSoftWallCollision = false;
@@ -191,7 +199,7 @@ void KartState::calcCollisions() {
         m_bUNK2 = true;
         m_softWallSpeed = wallNrm;
         m_softWallSpeed.normalise();
-        if (!state()->isHop()) {
+        if (!m_bHop) {
             m_bSoftWallDrift = true;
         }
 
@@ -202,6 +210,7 @@ void KartState::calcCollisions() {
     }
 
     m_bAirtimeOver20 = false;
+    m_trickableTimer = std::max(0, m_trickableTimer - 1);
 
     if (wheelCollisions < 1 && !colData.bFloor) {
         if (++m_airtime > 20) {
@@ -212,11 +221,17 @@ void KartState::calcCollisions() {
 
         m_bTouchingGround = true;
 
+        if (trickable) {
+            m_trickableTimer = 3;
+        }
+
+        m_bTrickable = m_trickableTimer > 0;
+
         if (!wasTouchingGround) {
             m_bGroundStart = true;
         }
 
-        if (state()->isInATrick() && jump()->cooldown() == 0) {
+        if (m_bInATrick && jump()->cooldown() == 0) {
             move()->landTrick();
             jump()->end();
         }
@@ -359,6 +374,10 @@ bool KartState::isWheelie() const {
     return m_bWheelie;
 }
 
+bool KartState::isJumpPad() const {
+    return m_bJumpPad;
+}
+
 bool KartState::isRampBoost() const {
     return m_bRampBoost;
 }
@@ -387,6 +406,10 @@ bool KartState::isWheelieRot() const {
     return m_bWheelieRot;
 }
 
+bool KartState::isJumpPadDisableYsusForce() const {
+    return m_bJumpPadDisableYsusForce;
+}
+
 bool KartState::isUNK2() const {
     return m_bUNK2;
 }
@@ -401,6 +424,10 @@ bool KartState::isAutoDrift() const {
 
 s32 KartState::boostRampType() const {
     return m_boostRampType;
+}
+
+s32 KartState::jumpPadVariant() const {
+    return m_jumpPadVariant;
 }
 
 f32 KartState::stickX() const {
@@ -427,6 +454,10 @@ f32 KartState::startBoostCharge() const {
     return m_startBoostCharge;
 }
 
+s16 KartState::trickableTimer() const {
+    return m_trickableTimer;
+}
+
 void KartState::clearBitfield0() {
     m_bAccelerate = false;
     m_bBrake = false;
@@ -449,6 +480,7 @@ void KartState::clearBitfield0() {
     m_bDriftAuto = false;
     m_bSlipdriftCharge = false;
     m_bWheelie = false;
+    m_bJumpPad = false;
     m_bRampBoost = false;
 }
 
@@ -515,6 +547,10 @@ void KartState::setWheelie(bool isSet) {
     m_bWheelie = isSet;
 }
 
+void KartState::setJumpPad(bool isSet) {
+    m_bJumpPad = isSet;
+}
+
 void KartState::setRampBoost(bool isSet) {
     m_bRampBoost = isSet;
 }
@@ -543,6 +579,10 @@ void KartState::setWheelieRot(bool isSet) {
     m_bWheelieRot = isSet;
 }
 
+void KartState::setJumpPadDisableYsusForce(bool isSet) {
+    m_bJumpPadDisableYsusForce = isSet;
+}
+
 void KartState::setSomethingWallCollision(bool isSet) {
     m_bSomethingWallCollision = isSet;
 }
@@ -553,6 +593,14 @@ void KartState::setSoftWallDrift(bool isSet) {
 
 void KartState::setBoostRampType(s32 val) {
     m_boostRampType = val;
+}
+
+void KartState::setJumpPadVariant(s32 val) {
+    m_jumpPadVariant = val;
+}
+
+void KartState::setTrickableTimer(s16 val) {
+    m_trickableTimer = val;
 }
 
 } // namespace Kart

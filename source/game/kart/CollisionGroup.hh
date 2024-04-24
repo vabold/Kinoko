@@ -28,6 +28,7 @@ struct CollisionData {
 
     bool bFloor;
     bool bSoftWall;
+    bool bTrickable;
 };
 
 class Hitbox {

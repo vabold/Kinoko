@@ -26,8 +26,9 @@ static constexpr f32 LEAN_ROT_CAP_COUNTDOWN = 0.6f;
 
 KartMove::KartMove() : m_smoothedUp(EGG::Vector3f::ey), m_scale(1.0f, 1.0f, 1.0f) {
     m_totalScale = 1.0f;
-    m_bRampBoost = false;
     m_bPadBoost = false;
+    m_bRampBoost = false;
+    m_bPadJump = false;
     m_jump = nullptr;
 }
 
@@ -118,13 +119,16 @@ void KartMove::init(bool b1, bool b2) {
         m_mushroomBoostTimer = 0;
     }
 
+    m_jumpPadMinSpeed = 0.0f;
+    m_jumpPadMaxSpeed = 0.0f;
     m_rampBoost = 0;
 
     m_hopVelY = 0.0f;
     m_hopPosY = 0.0f;
     m_hopGravity = 0.0f;
-    m_bRampBoost = false;
     m_bPadBoost = false;
+    m_bRampBoost = false;
+    m_bPadJump = false;
     m_jump->reset();
     m_rawTurn = 0.0f;
 }
@@ -173,6 +177,7 @@ void KartMove::setKartSpeedLimit() {
 void KartMove::calc() {
     dynamics()->resetInternalVelocity();
     calcTop();
+    tryEndJumpPad();
     calcSpecialFloor();
     m_jump->calc();
     calcDirs();
@@ -196,10 +201,11 @@ void KartMove::calc() {
 void KartMove::calcTop() {
     f32 stabilizationFactor = 0.1f;
     m_hasLandingDir = false;
+    EGG::Vector3f inputTop = state()->top();
 
     if (state()->isGroundStart() && m_nonZipperAirtime >= 3) {
-        m_smoothedUp = state()->top();
-        m_up = state()->top();
+        m_smoothedUp = inputTop;
+        m_up = inputTop;
         m_landingDir = m_dir.perpInPlane(m_smoothedUp, true);
         m_dirDiff = m_landingDir.proj(m_landingDir);
         m_hasLandingDir = true;
@@ -207,16 +213,21 @@ void KartMove::calcTop() {
         if (state()->isHop() && m_hopPosY > 0.0f) {
             stabilizationFactor = 0.22f;
         } else if (state()->isTouchingGround()) {
-            m_up = state()->top();
+            if (state()->trickableTimer() > 0 && inputTop.dot(m_dir) > 0.0f && m_speed > 50.0f &&
+                    collide()->isNotTrickable()) {
+                inputTop = m_up;
+            } else {
+                m_up = inputTop;
+            }
 
             f32 scalar = 0.8f;
 
             if (!state()->isBoost() && !state()->isWheelie()) {
-                f32 topDotZ = 0.8f - 6.0f * (EGG::Mathf::abs(state()->top().dot(componentZAxis())));
+                f32 topDotZ = 0.8f - 6.0f * (EGG::Mathf::abs(inputTop.dot(componentZAxis())));
                 scalar = std::min(0.8f, std::max(0.3f, topDotZ));
             }
 
-            m_smoothedUp += (state()->top() - m_smoothedUp) * scalar;
+            m_smoothedUp += (inputTop - m_smoothedUp) * scalar;
             m_smoothedUp.normalise();
 
             f32 bodyDotFront = bodyFront().dot(m_smoothedUp);
@@ -251,8 +262,13 @@ void KartMove::calcSpecialFloor() {
         tryStartBoostRamp();
     }
 
-    m_bRampBoost = false;
+    if (m_bPadJump) {
+        tryStartJumpPad();
+    }
+
     m_bPadBoost = false;
+    m_bRampBoost = false;
+    m_bPadJump = false;
 }
 
 void KartMove::calcDirs() {
@@ -263,7 +279,7 @@ void KartMove::calcDirs() {
     if (!state()->isInATrick() &&
             (state()->isTouchingGround() || !state()->isRampBoost() ||
                     !m_jump->isBoostRampEnabled()) &&
-            state()->airtime() <= 5) {
+            !state()->isJumpPad() && state()->airtime() <= 5) {
         if (state()->isHop()) {
             local_88 = m_hopDir;
         }
@@ -589,8 +605,12 @@ void KartMove::calcVehicleSpeed() {
         if (state()->isRampBoost() && state()->airtime() < 4) {
             m_acceleration = 7.0f;
         } else {
-            if (state()->airtime() > 5) {
-                m_speedDragMultiplier = 0.999f;
+            if (state()->isJumpPad() && !state()->isAccelerate()) {
+                m_speedDragMultiplier = 0.99f;
+            } else {
+                if (state()->airtime() > 5) {
+                    m_speedDragMultiplier = 0.999f;
+                }
             }
             m_speed *= m_speedDragMultiplier;
         }
@@ -598,7 +618,7 @@ void KartMove::calcVehicleSpeed() {
     } else if (state()->isBoost()) {
         m_acceleration = m_boost.acceleration();
     } else {
-        if (!state()->isRampBoost()) {
+        if (!state()->isJumpPad() && !state()->isRampBoost()) {
             if (state()->isAccelerate()) {
                 m_acceleration = calcVehicleAcceleration();
             }
@@ -657,11 +677,10 @@ void KartMove::calcAcceleration() {
 
     m_lastSpeed = m_speed;
     m_speed += m_acceleration;
-    f32 dVar17 = m_baseSpeed;
-    f32 fVar1 = (m_boost.multiplier() + getWheelieSoftSpeedLimitBonus()) * m_kclSpeedFactor;
-    dVar17 *= fVar1;
-    f32 boostSpeedLimit = m_boost.speedLimit() * m_kclSpeedFactor;
-    dVar17 = std::max(dVar17, boostSpeedLimit);
+
+    f32 dVar17 = state()->isJumpPad() ? m_jumpPadMaxSpeed : m_baseSpeed;
+    dVar17 *= (m_boost.multiplier() + getWheelieSoftSpeedLimitBonus()) * m_kclSpeedFactor;
+    dVar17 = std::max(dVar17, m_boost.speedLimit() * m_kclSpeedFactor);
 
     if (state()->isRampBoost()) {
         dVar17 = std::max(dVar17, 100.0f);
@@ -677,6 +696,10 @@ void KartMove::calcAcceleration() {
     m_softSpeedLimit = std::min(m_hardSpeedLimit, m_softSpeedLimit);
 
     m_speed = std::min(m_softSpeedLimit, std::max(-m_softSpeedLimit, m_speed));
+
+    if (state()->isJumpPad()) {
+        m_speed = std::max(m_speed, m_jumpPadMinSpeed);
+    }
 
     m_speedRatioCapped = std::min(1.0f, EGG::Mathf::abs(m_speed / m_baseSpeed));
 
@@ -704,7 +727,7 @@ void KartMove::calcStandstillBoostRot() {
         if (System::RaceManager::Instance()->stage() == System::RaceManager::Stage::Countdown) {
             next = 0.015f * -state()->startBoostCharge();
         } else {
-            if (!state()->isRampBoost() && !state()->isSoftWallDrift()) {
+            if (!state()->isJumpPad() && !state()->isRampBoost() && !state()->isSoftWallDrift()) {
                 f32 speedDiff = m_lastSpeed - m_speed;
                 scalar = std::min(3.0f, std::max(speedDiff, -3.0f));
 
@@ -845,6 +868,58 @@ void KartMove::tryStartBoostRamp() {
     setOffroadInvincibility(BOOST_RAMP_DURATION);
 }
 
+void KartMove::tryStartJumpPad() {
+    static constexpr std::array<JumpPadProperties, 8> JUMP_PAD_PROPERTIES = {{
+            {50.0f, 50.0f, 35.0f},
+            {50.0f, 50.0f, 47.0f},
+            {59.0f, 59.0f, 30.0f},
+            {73.0f, 73.0f, 45.0f},
+            {73.0f, 73.0f, 53.0f},
+            {55.0f, 55.0f, 35.0f},
+            {56.0f, 56.0f, 50.0f},
+    }};
+
+    state()->setJumpPad(true);
+    s32 jumpPadVariant = state()->jumpPadVariant();
+    const auto &jumpPadProperties = JUMP_PAD_PROPERTIES[jumpPadVariant];
+
+    if (jumpPadVariant != 4) {
+        EGG::Vector3f extVel = dynamics()->extVel();
+        EGG::Vector3f totalForce = dynamics()->totalForce();
+
+        extVel.y = jumpPadProperties.velY;
+        totalForce.y = 0.0f;
+
+        dynamics()->setExtVel(extVel);
+        dynamics()->setTotalForce(totalForce);
+
+        if (jumpPadVariant != 3) {
+            EGG::Vector3f dir = m_dir;
+            dir.y = 0.0f;
+            dir.normalise();
+            m_speed *= m_dir.dot(dir);
+            m_dir = dir;
+            m_vel1Dir = dir;
+            state()->setJumpPadDisableYsusForce(true);
+        }
+    }
+
+    m_jumpPadMinSpeed = jumpPadProperties.minSpeed;
+    m_jumpPadMaxSpeed = jumpPadProperties.maxSpeed;
+    m_speed = std::max(m_speed, m_jumpPadMinSpeed);
+}
+
+void KartMove::tryEndJumpPad() {
+    if (state()->isGroundStart()) {
+        cancelJumpPad();
+    }
+}
+
+void KartMove::cancelJumpPad() {
+    m_jumpPadMinSpeed = 0.0f;
+    state()->setJumpPad(false);
+}
+
 void KartMove::activateBoost(KartBoost::Type type, s16 frames) {
     if (m_boost.activate(type, frames)) {
         state()->setBoost(true);
@@ -938,12 +1013,16 @@ void KartMove::setKCLWheelRotFactor(f32 val) {
     m_kclWheelRotFactor = val;
 }
 
+void KartMove::setPadBoost(bool isSet) {
+    m_bPadBoost = isSet;
+}
+
 void KartMove::setRampBoost(bool isSet) {
     m_bRampBoost = isSet;
 }
 
-void KartMove::setPadBoost(bool isSet) {
-    m_bPadBoost = isSet;
+void KartMove::setPadJump(bool isSet) {
+    m_bPadJump = isSet;
 }
 
 s32 KartMove::getAppliedHopStickX() const {

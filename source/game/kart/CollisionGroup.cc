@@ -16,6 +16,7 @@ void CollisionData::reset() {
 
     bFloor = false;
     bSoftWall = false;
+    bTrickable = false;
 }
 
 Hitbox::Hitbox() : m_bspHitbox(nullptr), m_ownsBSP(false) {}
