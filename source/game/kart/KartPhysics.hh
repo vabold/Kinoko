@@ -31,6 +31,8 @@ public:
     void setPos(const EGG::Vector3f &pos);
     void setVelocity(const EGG::Vector3f &vel);
     void set_fc(f32 val);
+    void composeStuntRot(const EGG::Quatf &rot);
+    void composeDecayingRot(const EGG::Quatf &rot);
 
     static KartPhysics *Create(const KartParam &param);
 
@@ -41,6 +43,7 @@ private:
     EGG::Quatf m_decayingStuntRot;
     EGG::Quatf m_instantaneousStuntRot;
     EGG::Quatf m_specialRot;
+    /// @brief Rotation that occurs when landing from a trick.
     EGG::Quatf m_decayingExtraRot;
     EGG::Quatf m_instantaneousExtraRot;
     EGG::Quatf m_extraRot;

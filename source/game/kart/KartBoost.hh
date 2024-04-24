@@ -9,6 +9,7 @@ public:
     enum class Type {
         AllMt,
         MushroomAndBoostPanel,
+        TrickAndZipper,
         Max,
     };
 

@@ -24,6 +24,7 @@ KartSub::~KartSub() {
 
 void KartSub::createSubsystems(bool isBike) {
     m_move = isBike ? new KartMoveBike : new KartMove;
+    m_move->createSubsystems();
     m_state = new KartState;
     m_collide = new KartCollide;
 }
@@ -74,6 +75,17 @@ void KartSub::calcPass0() {
     state()->calcInput();
     move()->calc();
 
+    if (state()->isSoftWallDrift()) {
+        if (EGG::Mathf::abs(move()->speed()) > 15.0f || state()->isAirtimeOver20() ||
+                state()->isAllWheelsCollision()) {
+            state()->setSoftWallDrift(false);
+        } else if (state()->isTouchingGround()) {
+            if (componentXAxis().dot(EGG::Vector3f::ey) > 0.8f) {
+                state()->setSoftWallDrift(false);
+            }
+        }
+    }
+
     dynamics()->setTop(move()->up());
 
     // Pertains to startslides / leaning in stage 0 and 1
@@ -104,12 +116,26 @@ void KartSub::calcPass1() {
     m_maxSuspOvertravel.setZero();
     m_minSuspOvertravel.setZero();
 
+    if (state()->isSomethingWallCollision()) {
+        f32 speedFactor = 5.0f;
+        const EGG::Vector3f &softWallSpeed = state()->softWallSpeed();
+        EGG::Vector3f effectiveSpeed = softWallSpeed.perpInPlane(move()->smoothedUp(), true);
+        f32 speedDotUp = softWallSpeed.dot(move()->smoothedUp());
+        if (speedDotUp < 0.0f) {
+            speedFactor += -speedDotUp * 10.0f;
+        }
+
+        effectiveSpeed *= speedFactor * scale().y;
+        setPos(pos() + effectiveSpeed);
+        collide()->setMovement(collide()->movement() + effectiveSpeed);
+    }
+
     Field::CollisionDirector::Instance()->checkCourseColNarrScLocal(250.0f, pos(),
             KCL_TYPE_VEHICLE_INTERACTABLE, 0);
     collide()->findCollision();
     collide()->calcFloorEffect();
 
-    if (collisionData().floor) {
+    if (collisionData().bFloor) {
         // Update floor count
         addFloor(collisionData(), false);
     }
@@ -128,7 +154,7 @@ void KartSub::calcPass1() {
 
         speedFactor = std::min(speedFactor, colData.speedFactor);
 
-        if (colData.floor) {
+        if (colData.bFloor) {
             handlingFactor += colData.rotFactor;
             addFloor(colData, false);
         }
@@ -137,7 +163,7 @@ void KartSub::calcPass1() {
     EGG::Vector3f vehicleCompensation = m_maxSuspOvertravel + m_minSuspOvertravel;
     dynamics()->setPos(dynamics()->pos() + vehicleCompensation);
 
-    if (!collisionData().floor) {
+    if (!collisionData().bFloor) {
         EGG::Vector3f relPos;
         EGG::Vector3f vel;
         EGG::Vector3f floorNrm;
