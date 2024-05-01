@@ -11,6 +11,12 @@ namespace Field {
 
 class KColData {
 public:
+    enum class CollisionCheckType {
+        Edge,
+        Plane,
+        Movement,
+    };
+
     struct KCollisionPrism {
         KCollisionPrism();
         KCollisionPrism(f32 height, u16 posIndex, u16 faceNormIndex, u16 edge1NormIndex,
@@ -54,10 +60,8 @@ public:
     u16 prismCache(u32 idx) const;
 
 private:
-    bool checkSphereTriCollision(const KCollisionPrism &prism, f32 *distOut, EGG::Vector3f *fnrmOut,
-            u16 *flagsOut);
-    bool checkSphereMovementCollision(const KCollisionPrism &prism, f32 *distOut,
-            EGG::Vector3f *fnrmOut, u16 *flagsOut);
+    bool checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::Vector3f *fnrmOut,
+            u16 *flagsOut, CollisionCheckType type);
     bool checkSphereMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut);
 
     const void *m_posData;

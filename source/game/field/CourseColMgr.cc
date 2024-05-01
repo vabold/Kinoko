@@ -37,7 +37,7 @@ bool CourseColMgr::checkSphereFullPush(f32 scalar, f32 radius, KColData *data,
     data->lookupSphere(radius, scaled_position, vStack88, flags);
 
     if (info) {
-        return doCheckWithFullInfoPush(data, &KColData::checkSphere, info, kcl_flags_out);
+        return doCheckWithFullInfoPush(data, &KColData::checkSphereCollision, info, kcl_flags_out);
     }
     return doCheckMaskOnlyPush(data, &KColData::checkSphereCollision, kcl_flags_out);
 }
