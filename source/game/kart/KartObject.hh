@@ -12,7 +12,7 @@ class KartObject : public KartObjectProxy {
 public:
     KartObject(KartParam *param);
     virtual ~KartObject();
-    virtual KartBody *createBody(KartPhysics *physics);
+    [[nodiscard]] virtual KartBody *createBody(KartPhysics *physics);
     virtual void createTires() {}
 
     void init();
@@ -26,9 +26,9 @@ public:
     void calcSub();
     void calc();
 
-    const KartAccessor *accessor() const;
+    [[nodiscard]] const KartAccessor *accessor() const;
 
-    static KartObject *Create(Character character, Vehicle vehicle, u8 playerIdx);
+    [[nodiscard]] static KartObject *Create(Character character, Vehicle vehicle, u8 playerIdx);
 
 protected:
     KartAccessor m_pointers;
@@ -39,7 +39,7 @@ class KartObjectBike : public KartObject {
 public:
     KartObjectBike(KartParam *param);
     ~KartObjectBike() override;
-    KartBody *createBody(KartPhysics *physics) override;
+    [[nodiscard]] KartBody *createBody(KartPhysics *physics) override;
     void createTires() override;
 };
 

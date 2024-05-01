@@ -60,16 +60,16 @@ public:
     RawGhostFile &operator=(const u8 *rkg);
 
     void init(const u8 *rkg);
-    bool decompress(const u8 *rkg);
-    bool isValid(const u8 *rkg) const;
+    [[nodiscard]] bool decompress(const u8 *rkg);
+    [[nodiscard]] bool isValid(const u8 *rkg) const;
 
-    const u8 *buffer() const;
+    [[nodiscard]] const u8 *buffer() const;
 
     template <typename T>
-    T parseAt(size_t offset) const;
+    [[nodiscard]] T parseAt(size_t offset) const;
 
 private:
-    bool compressed(const u8 *rkg) const;
+    [[nodiscard]] bool compressed(const u8 *rkg) const;
 
     u8 m_buffer[RKG_UNCOMPRESSED_FILE_SIZE];
 };
@@ -85,11 +85,11 @@ public:
     void read(EGG::RamStream &stream); ///< Organizes binary data into members. See RawGhostFile.
 
     /// @beginGetters
-    Character character() const;
-    Vehicle vehicle() const;
-    Course course() const;
-    const u8 *inputs() const;
-    bool driftIsAuto() const;
+    [[nodiscard]] Character character() const;
+    [[nodiscard]] Vehicle vehicle() const;
+    [[nodiscard]] Course course() const;
+    [[nodiscard]] const u8 *inputs() const;
+    [[nodiscard]] bool driftIsAuto() const;
     /// @endGetters
 
 private:

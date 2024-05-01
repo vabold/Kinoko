@@ -33,15 +33,15 @@ public:
     /// @endSetters
 
     /// @beginGetters
-    const EGG::Vector3f &pos() const;
-    const EGG::Vector3f &lastPosDiff() const;
-    f32 suspTravel();
-    const EGG::Vector3f &topmostPos() const;
-    CollisionGroup *hitboxGroup();
-    const CollisionGroup *hitboxGroup() const;
-    const EGG::Vector3f &speed() const;
-    f32 effectiveRadius() const;
-    f32 _74() const;
+    [[nodiscard]] const EGG::Vector3f &pos() const;
+    [[nodiscard]] const EGG::Vector3f &lastPosDiff() const;
+    [[nodiscard]] f32 suspTravel();
+    [[nodiscard]] const EGG::Vector3f &topmostPos() const;
+    [[nodiscard]] CollisionGroup *hitboxGroup();
+    [[nodiscard]] const CollisionGroup *hitboxGroup() const;
+    [[nodiscard]] const EGG::Vector3f &speed() const;
+    [[nodiscard]] f32 effectiveRadius() const;
+    [[nodiscard]] f32 _74() const;
     /// @endGetters
 
 private:

@@ -24,7 +24,7 @@ public:
     void updateSuspOvertravel(const EGG::Vector3f &suspOvertravel);
 
     /// @beginGetters
-    f32 someScale();
+    [[nodiscard]] f32 someScale();
     /// @endGetters
 
 private:

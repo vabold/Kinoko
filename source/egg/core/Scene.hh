@@ -41,10 +41,10 @@ public:
     /// @endSetters
 
     /// @beginGetters
-    Scene *parent() const;
-    Scene *child() const;
-    int id() const;
-    SceneManager *sceneMgr() const;
+    [[nodiscard]] Scene *parent() const;
+    [[nodiscard]] Scene *child() const;
+    [[nodiscard]] int id() const;
+    [[nodiscard]] SceneManager *sceneMgr() const;
     /// @endGetters
 
 protected:

@@ -31,12 +31,12 @@ struct RaceInputState {
 
     void reset();
 
-    bool accelerate() const;
-    bool brake() const;
-    bool item() const;
-    bool drift() const;
-    bool trickUp() const;
-    bool trickDown() const;
+    [[nodiscard]] bool accelerate() const;
+    [[nodiscard]] bool brake() const;
+    [[nodiscard]] bool item() const;
+    [[nodiscard]] bool drift() const;
+    [[nodiscard]] bool trickUp() const;
+    [[nodiscard]] bool trickDown() const;
 
     u16 buttons;
     u16 buttonsRaw;
@@ -52,9 +52,9 @@ struct KPadGhostButtonsStream {
     KPadGhostButtonsStream();
     ~KPadGhostButtonsStream();
 
-    virtual u8 readFrame();
-    virtual bool readIsNewSequence() const;
-    virtual u8 readVal() const;
+    [[nodiscard]] virtual u8 readFrame();
+    [[nodiscard]] virtual bool readIsNewSequence() const;
+    [[nodiscard]] virtual u8 readVal() const;
 
     EGG::RamStream buffer;
     u32 currentSequence;
@@ -100,8 +100,8 @@ struct KPadGhostTrickButtonsStream : public KPadGhostButtonsStream {
     KPadGhostTrickButtonsStream();
     ~KPadGhostTrickButtonsStream();
 
-    bool readIsNewSequence() const override;
-    u8 readVal() const override;
+    [[nodiscard]] bool readIsNewSequence() const override;
+    [[nodiscard]] u8 readVal() const override;
 };
 
 /// @brief An abstraction for a controller object. It is associated with an input state.
@@ -110,17 +110,17 @@ public:
     KPadController();
     virtual ~KPadController() {}
 
-    virtual ControlSource controlSource();
+    [[nodiscard]] virtual ControlSource controlSource();
     virtual void reset(bool /*driftIsAuto*/) {}
     virtual void calcImpl() {}
 
     void calc();
 
-    const RaceInputState &raceInputState() const;
+    [[nodiscard]] const RaceInputState &raceInputState() const;
 
     void setDriftIsAuto(bool driftIsAuto);
 
-    bool driftIsAuto() const;
+    [[nodiscard]] bool driftIsAuto() const;
 
 protected:
     RaceInputState m_raceInputState; ///< The current inputs from this controller.
@@ -135,7 +135,7 @@ public:
     KPadGhostController();
     ~KPadGhostController();
 
-    ControlSource controlSource() override;
+    [[nodiscard]] ControlSource controlSource() override;
     void reset(bool driftIsAuto) override;
 
     void readGhostBuffer(const u8 *buffer, bool driftIsAuto);
@@ -158,9 +158,9 @@ public:
     void calc();
     void reset();
 
-    const RaceInputState &currentState() const;
-    const RaceInputState &lastState() const;
-    bool driftIsAuto() const;
+    [[nodiscard]] const RaceInputState &currentState() const;
+    [[nodiscard]] const RaceInputState &lastState() const;
+    [[nodiscard]] bool driftIsAuto() const;
 
 protected:
     KPadController *m_controller;

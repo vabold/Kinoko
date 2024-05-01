@@ -47,17 +47,17 @@ public:
     void scaledNarrowScopeLocal(f32 scale, f32 radius, KColData *data, const EGG::Vector3f &pos,
             KCLTypeMask mask);
 
-    bool checkSphereFull(f32 scalar, f32 radius, KColData *data, const EGG::Vector3f &v0,
-            const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *info,
-            KCLTypeMask *kcl_flags_out);
-    bool checkSphereFullPush(f32 scalar, f32 radius, KColData *data, const EGG::Vector3f &v0,
-            const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *info,
-            KCLTypeMask *kcl_flags_out);
+    [[nodiscard]] bool checkSphereFull(f32 scalar, f32 radius, KColData *data,
+            const EGG::Vector3f &v0, const EGG::Vector3f &v1, KCLTypeMask flags,
+            CollisionInfo *info, KCLTypeMask *kcl_flags_out);
+    [[nodiscard]] bool checkSphereFullPush(f32 scalar, f32 radius, KColData *data,
+            const EGG::Vector3f &v0, const EGG::Vector3f &v1, KCLTypeMask flags,
+            CollisionInfo *info, KCLTypeMask *kcl_flags_out);
 
-    bool checkSphereCachedPartialPush(KColData *data, const EGG::Vector3f &pos,
+    [[nodiscard]] bool checkSphereCachedPartialPush(KColData *data, const EGG::Vector3f &pos,
             const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CollisionInfo *colInfo,
             KCLTypeMask *typeMaskOut, f32 scale, f32 radius);
-    bool checkSphereCachedFullPush(KColData *data, const EGG::Vector3f &pos,
+    [[nodiscard]] bool checkSphereCachedFullPush(KColData *data, const EGG::Vector3f &pos,
             const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CollisionInfo *colInfo,
             KCLTypeMask *typeMaskOut, f32 scale, f32 radius);
 
@@ -67,26 +67,26 @@ public:
     /// @endSetters
 
     /// @beginGetters
-    NoBounceWallColInfo *noBounceWallInfo() const;
+    [[nodiscard]] NoBounceWallColInfo *noBounceWallInfo() const;
     /// @endGetters
 
     static void *LoadFile(const char *filename);
 
     static CourseColMgr *CreateInstance();
     static void DestroyInstance();
-    static CourseColMgr *Instance();
+    [[nodiscard]] static CourseColMgr *Instance();
 
 private:
     CourseColMgr();
     ~CourseColMgr();
 
-    bool doCheckWithPartialInfoPush(KColData *data, CollisionCheckFunc collisionCheckFunc,
-            CollisionInfo *colInfo, KCLTypeMask *typeMask);
-    bool doCheckWithFullInfo(KColData *data, CollisionCheckFunc collisionCheckFunc,
+    [[nodiscard]] bool doCheckWithPartialInfoPush(KColData *data,
+            CollisionCheckFunc collisionCheckFunc, CollisionInfo *colInfo, KCLTypeMask *typeMask);
+    [[nodiscard]] bool doCheckWithFullInfo(KColData *data, CollisionCheckFunc collisionCheckFunc,
             CollisionInfo *colInfo, KCLTypeMask *flagsOut);
-    bool doCheckWithFullInfoPush(KColData *data, CollisionCheckFunc collisionCheckFunc,
-            CollisionInfo *colInfo, KCLTypeMask *flagsOut);
-    bool doCheckMaskOnlyPush(KColData *data, CollisionCheckFunc collisionCheckFunc,
+    [[nodiscard]] bool doCheckWithFullInfoPush(KColData *data,
+            CollisionCheckFunc collisionCheckFunc, CollisionInfo *colInfo, KCLTypeMask *flagsOut);
+    [[nodiscard]] bool doCheckMaskOnlyPush(KColData *data, CollisionCheckFunc collisionCheckFunc,
             KCLTypeMask *typeMaskOut);
 
     KColData *m_data;

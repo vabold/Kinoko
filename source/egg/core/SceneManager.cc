@@ -226,7 +226,7 @@ bool SceneManager::destroyToSelectSceneId(int id) {
 }
 
 /// @addr{0x8023B940}
-Scene *SceneManager::findParentScene(int id) {
+Scene *SceneManager::findParentScene(int id) const {
     Scene *scene = m_currentScene->parent();
     for (; scene; scene = scene->parent()) {
         if (scene->id() == id) {

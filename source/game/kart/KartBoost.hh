@@ -18,13 +18,13 @@ public:
     KartBoost();
     ~KartBoost();
 
-    bool activate(Type type, s16 frames);
-    bool calc();
+    [[nodiscard]] bool activate(Type type, s16 frames);
+    [[nodiscard]] bool calc();
 
     /// @beginGetters
-    f32 multiplier() const;
-    f32 acceleration() const;
-    f32 speedLimit() const;
+    [[nodiscard]] f32 multiplier() const;
+    [[nodiscard]] f32 acceleration() const;
+    [[nodiscard]] f32 speedLimit() const;
     /// @endGetters
 
 private:

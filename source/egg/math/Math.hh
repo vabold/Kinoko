@@ -12,23 +12,23 @@ static constexpr f32 FIDX2RAD = F_PI / 128.0f;   ///< Fixed index to radians
 /// @brief Math functions and constants used in the base game.
 namespace EGG::Mathf {
 
-f32 sqrt(f32 x);
-f32 frsqrt(f32 x);
+[[nodiscard]] f32 sqrt(f32 x);
+[[nodiscard]] f32 frsqrt(f32 x);
 
-f32 SinFIdx(f32 fidx);
-f32 CosFIdx(f32 fidx);
-f32 AtanFIdx_(f32 fidx);
-f32 Atan2FIdx(f32 x, f32 y);
-f32 sin(f32 x);
-f32 cos(f32 x);
-f32 acos(f32 x);
-f32 atan2(f32 x, f32 y);
+[[nodiscard]] f32 SinFIdx(f32 fidx);
+[[nodiscard]] f32 CosFIdx(f32 fidx);
+[[nodiscard]] f32 AtanFIdx_(f32 fidx);
+[[nodiscard]] f32 Atan2FIdx(f32 x, f32 y);
+[[nodiscard]] f32 sin(f32 x);
+[[nodiscard]] f32 cos(f32 x);
+[[nodiscard]] f32 acos(f32 x);
+[[nodiscard]] f32 atan2(f32 x, f32 y);
 
-f32 abs(f32 x);
+[[nodiscard]] f32 abs(f32 x);
 
-f32 fma(f32 x, f32 y, f32 z);
+[[nodiscard]] f32 fma(f32 x, f32 y, f32 z);
 
-f64 force25Bit(f64 x);
+[[nodiscard]] f64 force25Bit(f64 x);
 
 // frsqrte matching
 struct BaseAndDec {
@@ -41,7 +41,7 @@ union c64 {
         f = p;
     }
 
-    u64 _hex() const {
+    [[nodiscard]] u64 _hex() const {
         return u;
     }
 
@@ -84,7 +84,7 @@ static const std::array<BaseAndDec, 32> frsqrte_expected = {{
         {0x0105800, 0x20b},
 }};
 
-static inline f64 frsqrte(const f64 val) {
+[[nodiscard]] static inline f64 frsqrte(const f64 val) {
     c64 input(val);
 
     u64 mantissa = input._hex() & ((1LL << 52) - 1);

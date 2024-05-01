@@ -11,7 +11,7 @@ public:
     RaceManagerPlayer();
     virtual ~RaceManagerPlayer() {}
 
-    const KPad *inputs() const;
+    [[nodiscard]] const KPad *inputs() const;
 
 private:
     const KPad *m_inputs;
@@ -38,16 +38,16 @@ public:
 
     void calc();
 
-    bool isStageReached(Stage stage) const;
+    [[nodiscard]] bool isStageReached(Stage stage) const;
 
     /// @beginGetters
-    int getCountdownTimer() const;
-    const RaceManagerPlayer &player() const;
-    Stage stage() const;
+    [[nodiscard]] int getCountdownTimer() const;
+    [[nodiscard]] const RaceManagerPlayer &player() const;
+    [[nodiscard]] Stage stage() const;
     /// @endGetters
 
     static RaceManager *CreateInstance();
-    static RaceManager *Instance();
+    [[nodiscard]] static RaceManager *Instance();
     static void DestroyInstance();
 
 private:

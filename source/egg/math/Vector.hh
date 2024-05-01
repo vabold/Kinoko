@@ -16,27 +16,27 @@ struct Vector2f {
         x = y = val;
     }
 
-    Vector2f operator-() const {
+    [[nodiscard]] Vector2f operator-() const {
         return Vector2f(-x, -y);
     }
 
-    Vector2f operator-(const Vector2f &rhs) const {
+    [[nodiscard]] Vector2f operator-(const Vector2f &rhs) const {
         return Vector2f(x - rhs.x, y - rhs.y);
     }
 
-    Vector2f operator+(const Vector2f &rhs) const {
+    [[nodiscard]] Vector2f operator+(const Vector2f &rhs) const {
         return Vector2f(x + rhs.x, y + rhs.y);
     }
 
-    Vector2f operator*(const f32 scalar) const {
+    [[nodiscard]] Vector2f operator*(const f32 scalar) const {
         return Vector2f(x * scalar, y * scalar);
     }
 
-    f32 cross(const Vector2f &rhs) const;
-    f32 dot(const Vector2f &rhs) const;
-    f32 dot() const;
-    f32 length() const;
-    f32 normalise();
+    [[nodiscard]] f32 cross(const Vector2f &rhs) const;
+    [[nodiscard]] f32 dot(const Vector2f &rhs) const;
+    [[nodiscard]] f32 dot() const;
+    [[nodiscard]] f32 length() const;
+    [[nodiscard]] f32 normalise();
 
     f32 x;
     f32 y;
@@ -59,11 +59,11 @@ struct Vector3f {
         x = y = z = val;
     }
 
-    Vector3f operator-() const {
+    [[nodiscard]] Vector3f operator-() const {
         return Vector3f(-x, -y, -z);
     }
 
-    Vector3f operator-(const Vector3f &rhs) const {
+    [[nodiscard]] Vector3f operator-(const Vector3f &rhs) const {
         return Vector3f(x - rhs.x, y - rhs.y, z - rhs.z);
     }
 
@@ -71,7 +71,7 @@ struct Vector3f {
         return *this = *this - rhs;
     }
 
-    Vector3f operator+(const Vector3f &rhs) const {
+    [[nodiscard]] Vector3f operator+(const Vector3f &rhs) const {
         return Vector3f(x + rhs.x, y + rhs.y, z + rhs.z);
     }
 
@@ -79,7 +79,7 @@ struct Vector3f {
         return *this = *this + rhs;
     }
 
-    Vector3f operator+(f32 val) const {
+    [[nodiscard]] Vector3f operator+(f32 val) const {
         return Vector3f(x + val, y + val, z + val);
     }
 
@@ -87,15 +87,15 @@ struct Vector3f {
         return *this = *this + val;
     }
 
-    Vector3f operator*(const Vector3f &rhs) const {
+    [[nodiscard]] Vector3f operator*(const Vector3f &rhs) const {
         return Vector3f(x * rhs.x, y * rhs.y, z * rhs.z);
     }
 
-    Vector3f operator*(f32 scalar) const {
+    [[nodiscard]] Vector3f operator*(f32 scalar) const {
         return Vector3f(x * scalar, y * scalar, z * scalar);
     }
 
-    friend Vector3f operator*(f32 scalar, const Vector3f &rhs) {
+    [[nodiscard]] friend Vector3f operator*(f32 scalar, const Vector3f &rhs) {
         return rhs * scalar;
     }
 
@@ -103,7 +103,7 @@ struct Vector3f {
         return *this = *this * scalar;
     }
 
-    Vector3f operator/(f32 scalar) const {
+    [[nodiscard]] Vector3f operator/(f32 scalar) const {
         return Vector3f(x / scalar, y / scalar, z / scalar);
     }
 
@@ -125,22 +125,22 @@ struct Vector3f {
                 x, y, z);
     }
 
-    Vector3f cross(const EGG::Vector3f &rhs) const;
-    f32 dot() const;
-    f32 dot(const EGG::Vector3f &rhs) const;
-    f32 ps_dot() const;
-    f32 ps_dot(const EGG::Vector3f &rhs) const;
-    f32 length() const;
+    [[nodiscard]] Vector3f cross(const EGG::Vector3f &rhs) const;
+    [[nodiscard]] f32 dot() const;
+    [[nodiscard]] f32 dot(const EGG::Vector3f &rhs) const;
+    [[nodiscard]] f32 ps_dot() const;
+    [[nodiscard]] f32 ps_dot(const EGG::Vector3f &rhs) const;
+    [[nodiscard]] f32 length() const;
     f32 normalise();
     [[nodiscard]] Vector3f maximize(const Vector3f &rhs) const;
     [[nodiscard]] Vector3f minimize(const Vector3f &rhs) const;
-    Vector3f proj(const Vector3f &rhs) const;
-    Vector3f rej(const Vector3f &rhs) const;
-    std::pair<Vector3f, Vector3f> projAndRej(const Vector3f &rhs);
-    f32 sqDistance(const Vector3f &rhs) const;
-    f32 ps_sqDistance(const Vector3f &rhs) const;
-    Vector3f abs() const;
-    Vector3f perpInPlane(const EGG::Vector3f &rhs, bool normalise) const;
+    [[nodiscard]] Vector3f proj(const Vector3f &rhs) const;
+    [[nodiscard]] Vector3f rej(const Vector3f &rhs) const;
+    [[nodiscard]] std::pair<Vector3f, Vector3f> projAndRej(const Vector3f &rhs) const;
+    [[nodiscard]] f32 sqDistance(const Vector3f &rhs) const;
+    [[nodiscard]] f32 ps_sqDistance(const Vector3f &rhs) const;
+    [[nodiscard]] Vector3f abs() const;
+    [[nodiscard]] Vector3f perpInPlane(const EGG::Vector3f &rhs, bool normalise) const;
 
     void read(Stream &stream);
 

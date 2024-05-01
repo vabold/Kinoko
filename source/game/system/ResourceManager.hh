@@ -17,15 +17,15 @@ class ResourceManager {
 public:
     void *getFile(const char *filename, size_t *size, ArchiveId id);
     void *getBsp(Vehicle vehicle, size_t *size);
-    MultiDvdArchive *load(Course courseId);
-    MultiDvdArchive *load(s32 idx, const char *filename);
+    [[nodiscard]] MultiDvdArchive *load(Course courseId);
+    [[nodiscard]] MultiDvdArchive *load(s32 idx, const char *filename);
     void unmount(MultiDvdArchive *archive);
 
-    static const char *GetVehicleName(Vehicle vehicle);
+    [[nodiscard]] static const char *GetVehicleName(Vehicle vehicle);
 
     static ResourceManager *CreateInstance();
     static void DestroyInstance();
-    static ResourceManager *Instance();
+    [[nodiscard]] static ResourceManager *Instance();
 
 private:
     ResourceManager();
@@ -35,7 +35,7 @@ private:
     // 1: Course archive
     MultiDvdArchive **m_archives;
 
-    static MultiDvdArchive *Create(u8 i);
+    [[nodiscard]] static MultiDvdArchive *Create(u8 i);
     static ResourceManager *s_instance; ///< @addr{0x809BD738}
 };
 

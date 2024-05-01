@@ -45,13 +45,13 @@ public:
     void initRace();
     void initControllers(const GhostFile &ghost);
 
-    const Scenario &raceScenario() const {
+    [[nodiscard]] const Scenario &raceScenario() const {
         return m_raceScenario;
     }
 
     static RaceConfig *CreateInstance();
     static void DestroyInstance();
-    static RaceConfig *Instance();
+    [[nodiscard]] static RaceConfig *Instance();
 
 private:
     RaceConfig();

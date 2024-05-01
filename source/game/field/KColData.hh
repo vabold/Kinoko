@@ -40,32 +40,32 @@ public:
     void narrowPolygon_EachBlock(const u16 *prismArray);
 
     void computeBBox();
-    bool checkSphereCollision(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut);
-    bool checkSphere(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut);
-    bool checkSphereSingle(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut);
+    [[nodiscard]] bool checkSphereCollision(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut);
+    [[nodiscard]] bool checkSphere(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut);
+    [[nodiscard]] bool checkSphereSingle(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut);
 
     void lookupSphere(f32 radius, const EGG::Vector3f &pos, const EGG::Vector3f &prevPos,
             KCLTypeMask typeMask);
     void lookupSphereCached(const EGG::Vector3f &p1, const EGG::Vector3f &p2, u32 typeMask,
             f32 radius);
 
-    const u16 *searchBlock(const EGG::Vector3f &pos);
+    [[nodiscard]] const u16 *searchBlock(const EGG::Vector3f &pos);
 
-    EGG::Vector3f getPos(u16 posIdx) const;
-    EGG::Vector3f getNrm(u16 nrmIdx) const;
-    KCollisionPrism getPrism(u16 prismIdx) const;
+    [[nodiscard]] EGG::Vector3f getPos(u16 posIdx) const;
+    [[nodiscard]] EGG::Vector3f getNrm(u16 nrmIdx) const;
+    [[nodiscard]] KCollisionPrism getPrism(u16 prismIdx) const;
 
     /// @beginGetters
-    u16 prismCache(u32 idx) const;
+    [[nodiscard]] u16 prismCache(u32 idx) const;
     /// @endGetters
 
-    static EGG::Vector3f GetVertex(f32 height, const EGG::Vector3f &vertex1,
+    [[nodiscard]] static EGG::Vector3f GetVertex(f32 height, const EGG::Vector3f &vertex1,
             const EGG::Vector3f &fnrm, const EGG::Vector3f &enrm3, const EGG::Vector3f &enrm);
 
 private:
-    bool checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::Vector3f *fnrmOut,
-            u16 *flagsOut, CollisionCheckType type);
-    bool checkSphereMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut);
+    [[nodiscard]] bool checkCollision(const KCollisionPrism &prism, f32 *distOut,
+            EGG::Vector3f *fnrmOut, u16 *flagsOut, CollisionCheckType type);
+    [[nodiscard]] bool checkSphereMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut);
 
     const void *m_posData;
     const void *m_nrmData;

@@ -61,11 +61,11 @@ public:
     /// @endSetters
 
     /// @beginGetters
-    bool isBoostRampEnabled() const;
+    [[nodiscard]] bool isBoostRampEnabled() const;
 
-    TrickType type() const;
-    SurfaceVariant variant() const;
-    s16 cooldown() const;
+    [[nodiscard]] TrickType type() const;
+    [[nodiscard]] SurfaceVariant variant() const;
+    [[nodiscard]] s16 cooldown() const;
     /// @endGetters
 
 protected:

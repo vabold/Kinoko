@@ -58,7 +58,7 @@ public:
 
     bool destroyCurrentSceneNoIncoming(bool destroyRootIfNoParent);
     bool destroyToSelectSceneId(int nextSceneId);
-    Scene *findParentScene(int id);
+    [[nodiscard]] Scene *findParentScene(int id) const;
     void setupNextSceneId();
 
     bool fadeIn();
@@ -69,7 +69,7 @@ public:
         Getters
      *----------*/
 
-    int currentSceneId() const {
+    [[nodiscard]] int currentSceneId() const {
         return m_currentSceneId;
     }
 

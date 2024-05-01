@@ -14,11 +14,11 @@ public:
     ~Archive();
 
     void unmount();
-    s32 convertPathToEntryId(const char *path) const;
+    [[nodiscard]] s32 convertPathToEntryId(const char *path) const;
     void *getFileFast(s32 entryId, Abstract::ArchiveHandle::FileInfo &info) const;
 
-    static Archive *FindArchive(void *archiveStart);
-    static Archive *Mount(void *archiveStart);
+    [[nodiscard]] static Archive *FindArchive(void *archiveStart);
+    [[nodiscard]] static Archive *Mount(void *archiveStart);
 
 private:
     Archive(void *archiveStart);

@@ -11,11 +11,11 @@ namespace Host {
 
 class SceneCreatorDynamic final : public EGG::SceneCreator {
 public:
-    EGG::Scene *create(int sceneId) const override;
+    [[nodiscard]] EGG::Scene *create(int sceneId) const override;
     void destroy(int sceneId) const override;
 
 private:
-    EGG::Scene *create(SceneId sceneId) const;
+    [[nodiscard]] EGG::Scene *create(SceneId sceneId) const;
     void destroy(SceneId sceneId) const;
 };
 

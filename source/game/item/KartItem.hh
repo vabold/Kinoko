@@ -24,7 +24,7 @@ public:
     /// @endSetters
 
     /// @beginGetters
-    ItemInventory &inventory();
+    [[nodiscard]] ItemInventory &inventory();
     /// @endGetters
 
 private:

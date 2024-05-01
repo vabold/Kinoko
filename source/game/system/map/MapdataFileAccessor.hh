@@ -17,9 +17,9 @@ public:
 
     MapdataFileAccessor(const SData *data);
 
-    const MapSectionHeader *findSection(u32 sectionName) const;
+    [[nodiscard]] const MapSectionHeader *findSection(u32 sectionName) const;
 
-    u32 version() const {
+    [[nodiscard]] u32 version() const {
         return m_version;
     }
 

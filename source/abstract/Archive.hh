@@ -9,7 +9,7 @@
 namespace Abstract {
 
 struct RawArchive {
-    bool isValidSignature() const;
+    [[nodiscard]] bool isValidSignature() const;
 
     u32 signature;
     u32 nodesOffset;
@@ -20,7 +20,7 @@ struct RawArchive {
 class ArchiveHandle {
 public:
     struct RawArchive {
-        bool isValidSignature() const;
+        [[nodiscard]] bool isValidSignature() const;
 
         u32 signature;
         u32 nodesOffset;
@@ -30,9 +30,9 @@ public:
 
     // TODO: union
     struct Node {
-        bool isDirectory() const;
-        const char *getName() const;
-        u32 stringOffset() const;
+        [[nodiscard]] bool isDirectory() const;
+        [[nodiscard]] const char *getName() const;
+        [[nodiscard]] u32 stringOffset() const;
 
         union {
             u32 val;
@@ -57,12 +57,12 @@ public:
 
     ArchiveHandle(void *archiveStart);
 
-    s32 convertPathToEntryId(const char *path) const;
+    [[nodiscard]] s32 convertPathToEntryId(const char *path) const;
     bool open(s32 entryId, FileInfo &info) const;
 
-    void *getFileAddress(const FileInfo &info) const;
-    Node *node(s32 entryId) const;
-    void *startAddress() const;
+    [[nodiscard]] void *getFileAddress(const FileInfo &info) const;
+    [[nodiscard]] Node *node(s32 entryId) const;
+    [[nodiscard]] void *startAddress() const;
 
 private:
     void *m_startAddress;
