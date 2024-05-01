@@ -21,7 +21,7 @@ struct Quatf {
         return *this;
     }
 
-    Quatf operator+(const Quatf &rhs) const {
+    [[nodiscard]] Quatf operator+(const Quatf &rhs) const {
         return Quatf(w + rhs.w, v + rhs.v);
     }
 
@@ -29,13 +29,13 @@ struct Quatf {
         return *this = *this + rhs;
     }
 
-    Quatf operator*(const Vector3f &vec) const {
+    [[nodiscard]] Quatf operator*(const Vector3f &vec) const {
         Vector3f cross = v.cross(vec);
         Vector3f scale = vec * w;
         return Quatf(-v.dot(vec), cross + scale);
     }
 
-    Quatf operator*(f32 scalar) const {
+    [[nodiscard]] Quatf operator*(f32 scalar) const {
         return Quatf(w * scalar, v * scalar);
     }
 
@@ -45,7 +45,7 @@ struct Quatf {
 
     /// Though part of this is a vector cross/dot product, FP arithmetic is not associative or
     /// commutative. It has to be done in this order.
-    Quatf operator*(const Quatf &rhs) const {
+    [[nodiscard]] Quatf operator*(const Quatf &rhs) const {
         f32 _w = w * rhs.w - v.x * rhs.v.x - v.y * rhs.v.y - v.z * rhs.v.z;
         f32 _x = v.y * rhs.v.z + (v.x * rhs.w + w * rhs.v.x) - v.z * rhs.v.y;
         f32 _y = v.z * rhs.v.x + (v.y * rhs.w + w * rhs.v.y) - v.x * rhs.v.z;

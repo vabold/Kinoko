@@ -13,12 +13,12 @@ public:
     void calc();
 
     /// @beginGetters
-    KartObject *object(size_t i) const;
+    [[nodiscard]] KartObject *object(size_t i) const;
     /// @endGetters
 
     static KartObjectManager *CreateInstance();
     static void DestroyInstance();
-    static KartObjectManager *Instance();
+    [[nodiscard]] static KartObjectManager *Instance();
 
 private:
     KartObjectManager();

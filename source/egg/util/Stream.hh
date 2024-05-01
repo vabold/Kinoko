@@ -21,18 +21,18 @@ public:
 
     void setEndian(std::endian endian);
 
-    u32 index() const;
+    [[nodiscard]] u32 index() const;
 
-    u8 read_u8();
-    u16 read_u16();
-    u32 read_u32();
-    u64 read_u64();
-    s8 read_s8();
-    s16 read_s16();
-    s32 read_s32();
-    s64 read_s64();
-    f32 read_f32();
-    f64 read_f64();
+    [[nodiscard]] u8 read_u8();
+    [[nodiscard]] u16 read_u16();
+    [[nodiscard]] u32 read_u32();
+    [[nodiscard]] u64 read_u64();
+    [[nodiscard]] s8 read_s8();
+    [[nodiscard]] s16 read_s16();
+    [[nodiscard]] s32 read_s32();
+    [[nodiscard]] s64 read_s64();
+    [[nodiscard]] f32 read_f32();
+    [[nodiscard]] f64 read_f64();
 
 protected:
     std::endian m_endian;
@@ -40,7 +40,7 @@ protected:
 
 private:
     template <ParseableType T>
-    T read() {
+    [[nodiscard]] T read() {
         T val;
         read(&val, sizeof(val));
         m_index += sizeof(val);
@@ -63,12 +63,12 @@ public:
 
     void read(void *output, u32 size) override;
     void write(void *input, u32 size) override;
-    bool eof() override;
+    [[nodiscard]] bool eof() override;
 
-    std::string read_string();
-    RamStream split(u32 size);
+    [[nodiscard]] std::string read_string();
+    [[nodiscard]] RamStream split(u32 size);
     void setBufferAndSize(void *buffer, u32 size);
-    u8 *data();
+    [[nodiscard]] u8 *data();
 
 private:
     u8 *m_buffer;

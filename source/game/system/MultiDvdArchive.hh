@@ -25,8 +25,8 @@ public:
     void clear();
     void unmount();
 
-    bool isLoaded() const;
-    u16 rippedArchiveCount() const;
+    [[nodiscard]] bool isLoaded() const;
+    [[nodiscard]] u16 rippedArchiveCount() const;
 
 private:
     DvdArchive *m_archives;

@@ -39,9 +39,9 @@ public:
             const EGG::Vector3f &forward, const EGG::Vector3f &nextDir, const EGG::Vector3f &speed,
             bool b1, bool b2, bool b3);
 
-    bool FUN_805B6A9C(CollisionData &collisionData, const Hitbox &hitbox, EGG::BoundBox3f &minMax,
-            EGG::Vector3f &relPos, s32 &count, const Field::KCLTypeMask &maskOut,
-            const Field::CourseColMgr::CollisionInfo &colInfo);
+    [[nodiscard]] bool FUN_805B6A9C(CollisionData &collisionData, const Hitbox &hitbox,
+            EGG::BoundBox3f &minMax, EGG::Vector3f &relPos, s32 &count,
+            const Field::KCLTypeMask &maskOut, const Field::CourseColMgr::CollisionInfo &colInfo);
     void applyBodyCollision(CollisionData &collisionData, const EGG::Vector3f &movement,
             const EGG::Vector3f &posRel, s32 count);
 
@@ -52,14 +52,14 @@ public:
     /// @endSetters
 
     /// @beginGetters
-    const EGG::Vector3f &movement() const;
-    f32 suspBottomHeightSoftWall() const;
-    u16 someSoftWallTimer() const;
-    f32 suspBottomHeightNonSoftWall() const;
-    u16 someNonSoftWallTimer() const;
+    [[nodiscard]] const EGG::Vector3f &movement() const;
+    [[nodiscard]] f32 suspBottomHeightSoftWall() const;
+    [[nodiscard]] u16 someSoftWallTimer() const;
+    [[nodiscard]] f32 suspBottomHeightNonSoftWall() const;
+    [[nodiscard]] u16 someNonSoftWallTimer() const;
 
-    bool isRampBoost() const;
-    bool isNotTrickable() const;
+    [[nodiscard]] bool isRampBoost() const;
+    [[nodiscard]] bool isNotTrickable() const;
     /// @endGetters
 
 private:

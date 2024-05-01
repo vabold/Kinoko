@@ -29,18 +29,18 @@ public:
     /// @endSetters
 
     /// @beginGetters
-    KartDynamics *dynamics();
-    const KartDynamics *dynamics() const;
-    const EGG::Matrix34f &pose() const;
-    CollisionGroup *hitboxGroup();
-    const EGG::Vector3f &xAxis() const;
-    const EGG::Vector3f &yAxis() const;
-    const EGG::Vector3f &zAxis() const;
-    const EGG::Vector3f &pos() const;
-    f32 fc() const;
+    [[nodiscard]] KartDynamics *dynamics();
+    [[nodiscard]] const KartDynamics *dynamics() const;
+    [[nodiscard]] const EGG::Matrix34f &pose() const;
+    [[nodiscard]] CollisionGroup *hitboxGroup();
+    [[nodiscard]] const EGG::Vector3f &xAxis() const;
+    [[nodiscard]] const EGG::Vector3f &yAxis() const;
+    [[nodiscard]] const EGG::Vector3f &zAxis() const;
+    [[nodiscard]] const EGG::Vector3f &pos() const;
+    [[nodiscard]] f32 fc() const;
     /// @endGetters
 
-    static KartPhysics *Create(const KartParam &param);
+    [[nodiscard]] static KartPhysics *Create(const KartParam &param);
 
 private:
     KartDynamics *m_dynamics;

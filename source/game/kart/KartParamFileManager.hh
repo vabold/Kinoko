@@ -11,14 +11,14 @@ class KartParamFileManager {
 public:
     void clear();
     void init();
-    EGG::RamStream getDriverStream(Character character) const;
-    EGG::RamStream getVehicleStream(Vehicle vehicle) const;
-    EGG::RamStream getHitboxStream(Vehicle vehicle) const;
-    EGG::RamStream getBikeDispParamsStream(Vehicle vehicle) const;
+    [[nodiscard]] EGG::RamStream getDriverStream(Character character) const;
+    [[nodiscard]] EGG::RamStream getVehicleStream(Vehicle vehicle) const;
+    [[nodiscard]] EGG::RamStream getHitboxStream(Vehicle vehicle) const;
+    [[nodiscard]] EGG::RamStream getBikeDispParamsStream(Vehicle vehicle) const;
 
     static KartParamFileManager *CreateInstance();
     static void DestroyInstance();
-    static KartParamFileManager *Instance();
+    [[nodiscard]] static KartParamFileManager *Instance();
 
 private:
     template <typename T>
@@ -38,7 +38,7 @@ private:
     KartParamFileManager();
     ~KartParamFileManager();
 
-    bool validate() const;
+    [[nodiscard]] bool validate() const;
 
     FileInfo m_kartParam;     // kartParam.bin
     FileInfo m_driverParam;   // driverParam.bin

@@ -57,11 +57,11 @@ public:
     /// @endSetters
 
     /// @beginGetters
-    const BSP::Hitbox *bspHitbox() const;
-    const EGG::Vector3f &worldPos() const;
-    const EGG::Vector3f &lastPos() const;
-    const EGG::Vector3f &relPos() const;
-    f32 radius() const;
+    [[nodiscard]] const BSP::Hitbox *bspHitbox() const;
+    [[nodiscard]] const EGG::Vector3f &worldPos() const;
+    [[nodiscard]] const EGG::Vector3f &lastPos() const;
+    [[nodiscard]] const EGG::Vector3f &relPos() const;
+    [[nodiscard]] f32 radius() const;
     /// @endGetters
 
 private:
@@ -81,8 +81,8 @@ public:
     CollisionGroup();
     ~CollisionGroup();
 
-    f32 initHitboxes(const std::array<BSP::Hitbox, 16> &hitboxes);
-    f32 computeCollisionLimits();
+    [[nodiscard]] f32 initHitboxes(const std::array<BSP::Hitbox, 16> &hitboxes);
+    [[nodiscard]] f32 computeCollisionLimits();
     void createSingleHitbox(f32 radius, const EGG::Vector3f &relPos);
 
     /// @beginSetters
@@ -92,10 +92,10 @@ public:
     /// @endSetters
 
     /// @beginGetters
-    Hitbox &hitbox(u16 hitboxIdx);
-    u16 hitboxCount() const;
-    CollisionData &collisionData();
-    const CollisionData &collisionData() const;
+    [[nodiscard]] Hitbox &hitbox(u16 hitboxIdx);
+    [[nodiscard]] u16 hitboxCount() const;
+    [[nodiscard]] CollisionData &collisionData();
+    [[nodiscard]] const CollisionData &collisionData() const;
     /// @endGetters
 
 private:

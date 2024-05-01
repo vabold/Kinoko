@@ -17,12 +17,12 @@ public:
     }
 
     /// @brief Accesses the matrix element at the specified row and column.
-    f32 &operator[](size_t row, size_t col) {
+    [[nodiscard]] f32 &operator[](size_t row, size_t col) {
         return mtx[row][col];
     }
 
     /// @brief Accesses the matrix element at the specified row and column.
-    f32 operator[](size_t row, size_t col) const {
+    [[nodiscard]] f32 operator[](size_t row, size_t col) const {
         return mtx[row][col];
     }
 
@@ -33,12 +33,12 @@ public:
     void makeZero();
     void setAxisRotation(f32 angle, const Vector3f &axis);
 
-    Matrix34f multiplyTo(const Matrix34f &rhs) const;
-    Vector3f multVector(const Vector3f &vec) const;
-    Vector3f ps_multVector(const Vector3f &vec) const;
-    Vector3f multVector33(const Vector3f &vec) const;
-    Matrix34f inverseTo33() const;
-    Matrix34f transpose() const;
+    [[nodiscard]] Matrix34f multiplyTo(const Matrix34f &rhs) const;
+    [[nodiscard]] Vector3f multVector(const Vector3f &vec) const;
+    [[nodiscard]] Vector3f ps_multVector(const Vector3f &vec) const;
+    [[nodiscard]] Vector3f multVector33(const Vector3f &vec) const;
+    [[nodiscard]] Matrix34f inverseTo33() const;
+    [[nodiscard]] Matrix34f transpose() const;
 
     static const Matrix34f ident;
     static const Matrix34f zero;

@@ -47,19 +47,19 @@ public:
     /// @endSetters
 
     /// @beginGetters
-    const EGG::Matrix34f &invInertiaTensor() const;
-    f32 angVel0Factor() const;
-    const EGG::Vector3f &pos() const;
-    const EGG::Vector3f &velocity() const;
-    f32 gravity() const;
-    const EGG::Vector3f &intVel() const;
-    const EGG::Quatf &mainRot() const;
-    const EGG::Quatf &fullRot() const;
-    const EGG::Vector3f &totalForce() const;
-    const EGG::Vector3f &extVel() const;
-    const EGG::Vector3f &angVel0() const;
-    const EGG::Vector3f &angVel2() const;
-    f32 speedFix() const;
+    [[nodiscard]] const EGG::Matrix34f &invInertiaTensor() const;
+    [[nodiscard]] f32 angVel0Factor() const;
+    [[nodiscard]] const EGG::Vector3f &pos() const;
+    [[nodiscard]] const EGG::Vector3f &velocity() const;
+    [[nodiscard]] f32 gravity() const;
+    [[nodiscard]] const EGG::Vector3f &intVel() const;
+    [[nodiscard]] const EGG::Quatf &mainRot() const;
+    [[nodiscard]] const EGG::Quatf &fullRot() const;
+    [[nodiscard]] const EGG::Vector3f &totalForce() const;
+    [[nodiscard]] const EGG::Vector3f &extVel() const;
+    [[nodiscard]] const EGG::Vector3f &angVel0() const;
+    [[nodiscard]] const EGG::Vector3f &angVel2() const;
+    [[nodiscard]] f32 speedFix() const;
     /// @endGetters
 
 protected:

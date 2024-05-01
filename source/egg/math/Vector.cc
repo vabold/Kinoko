@@ -126,7 +126,7 @@ Vector3f Vector3f::rej(const Vector3f &rhs) const {
 }
 
 /// @addr{0x805AEC24}
-std::pair<Vector3f, Vector3f> Vector3f::projAndRej(const Vector3f &rhs) {
+std::pair<Vector3f, Vector3f> Vector3f::projAndRej(const Vector3f &rhs) const {
     return std::pair(proj(rhs), rej(rhs));
 }
 

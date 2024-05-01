@@ -17,14 +17,14 @@ private:
 
 public:
     int main(int argc, char **argv);
-    Option option(char *arg);
+    [[nodiscard]] Option option(char *arg);
     void handleOption(Option opt, int argc, char **argv, int &i);
     void init();
-    bool run();
+    [[nodiscard]] bool run();
 
-    const Test::TestDirector *testDirector() const;
+    [[nodiscard]] const Test::TestDirector *testDirector() const;
 
-    static KSystem &Instance();
+    [[nodiscard]] static KSystem &Instance();
 
 private:
     KSystem();

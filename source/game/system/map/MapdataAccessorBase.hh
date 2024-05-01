@@ -27,15 +27,15 @@ public:
         delete[] m_entries;
     }
 
-    T *get(u16 i) const {
+    [[nodiscard]] T *get(u16 i) const {
         return i < m_entryCount ? m_entries[i] : nullptr;
     }
 
-    TData *getData(u16 i) const {
+    [[nodiscard]] TData *getData(u16 i) const {
         return i < m_entryCount ? m_entries[i].data() : nullptr;
     }
 
-    u16 size() const {
+    [[nodiscard]] u16 size() const {
         return m_entryCount;
     }
 

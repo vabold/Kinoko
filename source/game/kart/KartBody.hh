@@ -11,7 +11,7 @@ public:
     KartBody(KartPhysics *physics);
     virtual ~KartBody() {}
 
-    virtual EGG::Matrix34f wheelMatrix(u16);
+    [[nodiscard]] virtual EGG::Matrix34f wheelMatrix(u16);
 
     void reset();
 
@@ -20,7 +20,7 @@ public:
     /// @endSetters
 
     /// @beginGetters
-    KartPhysics *physics() const;
+    [[nodiscard]] KartPhysics *physics() const;
     /// @endGetters
 
 protected:
@@ -39,7 +39,7 @@ public:
     KartBodyBike(KartPhysics *physics);
     ~KartBodyBike() override;
 
-    EGG::Matrix34f wheelMatrix(u16 wheelIdx) override;
+    [[nodiscard]] EGG::Matrix34f wheelMatrix(u16 wheelIdx) override;
 };
 
 class KartBodyQuacker : public KartBodyBike {
@@ -47,7 +47,7 @@ public:
     KartBodyQuacker(KartPhysics *physics);
     ~KartBodyQuacker() override;
 
-    EGG::Matrix34f wheelMatrix(u16 wheelIdx) override;
+    [[nodiscard]] EGG::Matrix34f wheelMatrix(u16 wheelIdx) override;
 };
 
 } // namespace Kart

@@ -130,14 +130,14 @@ public:
     /// @endSetters
 
     /// @beginGetters
-    const BSP &bsp() const;
-    const Stats &stats() const;
-    const BikeDisp &bikeDisp() const;
-    u8 playerIdx() const;
-    bool isBike() const;
-    bool isVehicleRelativeBike() const;
-    u16 suspCount() const;
-    u16 tireCount() const;
+    [[nodiscard]] const BSP &bsp() const;
+    [[nodiscard]] const Stats &stats() const;
+    [[nodiscard]] const BikeDisp &bikeDisp() const;
+    [[nodiscard]] u8 playerIdx() const;
+    [[nodiscard]] bool isBike() const;
+    [[nodiscard]] bool isVehicleRelativeBike() const;
+    [[nodiscard]] u16 suspCount() const;
+    [[nodiscard]] u16 tireCount() const;
     /// @endGetters
 
 private:

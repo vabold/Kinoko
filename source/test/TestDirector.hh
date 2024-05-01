@@ -32,15 +32,15 @@ public:
 
     void parseSuite(EGG::RamStream &stream);
     void init();
-    bool calc();
+    [[nodiscard]] bool calc();
     void test(const TestData &data);
     void writeTestOutput() const;
     bool popTestCase();
 
-    TestData findNextEntry();
-    const TestCase &testCase() const;
+    [[nodiscard]] TestData findNextEntry();
+    [[nodiscard]] const TestCase &testCase() const;
 
-    bool sync() const;
+    [[nodiscard]] bool sync() const;
 
 private:
     void readHeader();

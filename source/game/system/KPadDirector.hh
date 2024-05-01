@@ -15,13 +15,13 @@ public:
     void startGhostProxies();
     void endGhostProxies();
 
-    const KPadPlayer &playerInput() const;
+    [[nodiscard]] const KPadPlayer &playerInput() const;
 
     void setGhostPad(const u8 *inputs, bool driftIsAuto);
 
     static KPadDirector *CreateInstance();
     static void DestroyInstance();
-    static KPadDirector *Instance();
+    [[nodiscard]] static KPadDirector *Instance();
 
 private:
     KPadDirector();

@@ -19,7 +19,7 @@ public:
     /// @endSetters
 
     /// @beginGetters
-    KartSuspensionPhysics *suspPhysics();
+    [[nodiscard]] KartSuspensionPhysics *suspPhysics();
     /// @endGetters
 
 private:

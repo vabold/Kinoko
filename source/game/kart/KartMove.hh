@@ -17,7 +17,7 @@ public:
     virtual void calcWheelie() {}
     virtual void setTurnParams();
     virtual void init(bool b1, bool b2);
-    virtual f32 leanRot() const;
+    [[nodiscard]] virtual f32 leanRot() const;
 
     void setInitialPhysicsValues(const EGG::Vector3f &position, const EGG::Vector3f &angles);
     void setKartSpeedLimit();
@@ -41,9 +41,9 @@ public:
     void controlOutsideDriftAngle();
     void calcRotation();
     void calcVehicleSpeed();
-    f32 calcVehicleAcceleration() const;
+    [[nodiscard]] f32 calcVehicleAcceleration() const;
     void calcAcceleration();
-    f32 calcWallCollisionSpeedFactor(f32 &f1);
+    [[nodiscard]] f32 calcWallCollisionSpeedFactor(f32 &f1);
     void calcWallCollisionStart(f32 param_2);
     void calcStandstillBoostRot();
     void calcDive();
@@ -54,7 +54,7 @@ public:
     virtual void onHop() {}
     virtual void onWallCollision() {}
     virtual void calcMtCharge() {}
-    virtual f32 getWheelieSoftSpeedLimitBonus() const;
+    [[nodiscard]] virtual f32 getWheelieSoftSpeedLimitBonus() const;
     virtual bool canWheelie() const;
     virtual bool canHop() const;
 
@@ -84,21 +84,21 @@ public:
     /// @endSetters
 
     /// @beginGetters
-    s32 getAppliedHopStickX() const;
-    f32 softSpeedLimit() const;
-    f32 speed() const;
-    f32 acceleration() const;
-    const EGG::Vector3f &scale() const;
-    f32 hardSpeedLimit() const;
-    const EGG::Vector3f &smoothedUp() const;
-    const EGG::Vector3f &up() const;
-    f32 totalScale() const;
-    const EGG::Vector3f &dir() const;
-    const EGG::Vector3f &vel1Dir() const;
-    f32 speedRatioCapped() const;
-    u16 floorCollisionCount() const;
-    s32 hopStickX() const;
-    KartJump *jump() const;
+    [[nodiscard]] s32 getAppliedHopStickX() const;
+    [[nodiscard]] f32 softSpeedLimit() const;
+    [[nodiscard]] f32 speed() const;
+    [[nodiscard]] f32 acceleration() const;
+    [[nodiscard]] const EGG::Vector3f &scale() const;
+    [[nodiscard]] f32 hardSpeedLimit() const;
+    [[nodiscard]] const EGG::Vector3f &smoothedUp() const;
+    [[nodiscard]] const EGG::Vector3f &up() const;
+    [[nodiscard]] f32 totalScale() const;
+    [[nodiscard]] const EGG::Vector3f &dir() const;
+    [[nodiscard]] const EGG::Vector3f &vel1Dir() const;
+    [[nodiscard]] f32 speedRatioCapped() const;
+    [[nodiscard]] u16 floorCollisionCount() const;
+    [[nodiscard]] s32 hopStickX() const;
+    [[nodiscard]] KartJump *jump() const;
     /// @endGetters
 
 protected:
@@ -220,14 +220,14 @@ public:
     void calcMtCharge() override;
     void setTurnParams() override;
     void init(bool b1, bool b2) override;
-    f32 getWheelieSoftSpeedLimitBonus() const override;
-    f32 wheelieRotFactor() const;
+    [[nodiscard]] f32 getWheelieSoftSpeedLimitBonus() const override;
+    [[nodiscard]] f32 wheelieRotFactor() const;
 
     void tryStartWheelie();
 
     /// @beginGetters
-    f32 leanRot() const override;
-    bool canWheelie() const override;
+    [[nodiscard]] f32 leanRot() const override;
+    [[nodiscard]] bool canWheelie() const override;
     /// @endGetters
 
 private:

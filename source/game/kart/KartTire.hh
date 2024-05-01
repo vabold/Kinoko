@@ -17,7 +17,7 @@ public:
     void initBsp();
 
     /// @beginGetters
-    WheelPhysics *wheelPhysics();
+    [[nodiscard]] WheelPhysics *wheelPhysics();
     /// @endGetters
 
 protected:

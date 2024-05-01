@@ -30,8 +30,8 @@ public:
     void clearFile();
     void unmount();
 
-    bool isLoaded() const;
-    bool isRipped() const;
+    [[nodiscard]] bool isLoaded() const;
+    [[nodiscard]] bool isRipped() const;
 
 private:
     EGG::Archive *m_archive;
