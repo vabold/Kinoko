@@ -9,12 +9,12 @@
 
 #include "game/system/RaceManager.hh"
 
+#include <algorithm>
+
 namespace Kart {
 
 KartObjectProxy::KartObjectProxy() : m_accessor(nullptr) {
-    if (s_list) {
-        s_list->append(this);
-    }
+    s_proxyList.push_back(this);
 }
 
 KartObjectProxy::~KartObjectProxy() = default;
@@ -254,20 +254,16 @@ bool KartObjectProxy::hasFloorCollision(const WheelPhysics *wheelPhysics) const 
     return wheelPhysics->hitboxGroup()->collisionData().bFloor;
 }
 
-Abstract::List *KartObjectProxy::list() const {
-    return s_list;
-}
-
 void KartObjectProxy::apply(size_t idx) {
     m_accessor = KartObjectManager::Instance()->object(idx)->accessor();
 }
 
 void KartObjectProxy::ApplyAll(const KartAccessor *pointers) {
-    for (Abstract::Node *node = s_list->head(); node; node = s_list->getNext(node)) {
-        node->data<KartObjectProxy>()->m_accessor = pointers;
+    for (auto iter = s_proxyList.begin(); iter != s_proxyList.end(); ++iter) {
+        (*iter)->m_accessor = pointers;
     }
 }
 
-Abstract::List *KartObjectProxy::s_list = nullptr;
+std::list<KartObjectProxy *> KartObjectProxy::s_proxyList;
 
 } // namespace Kart
