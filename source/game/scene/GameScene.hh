@@ -2,8 +2,9 @@
 
 #include "game/system/MultiDvdArchive.hh"
 
-#include <abstract/List.hh>
 #include <egg/core/Scene.hh>
+
+#include <list>
 
 namespace Scene {
 
@@ -29,6 +30,8 @@ protected:
 
 private:
     struct Resource {
+        Resource(System::MultiDvdArchive *archive, s32 id);
+
         System::MultiDvdArchive *archive;
         s32 id;
     };
@@ -37,7 +40,7 @@ private:
     void deinitScene();
     void unmountResources();
 
-    Abstract::List m_resources;
+    std::list<Resource *> m_resources;
     int m_nextSceneId;
 };
 

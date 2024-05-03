@@ -4,8 +4,7 @@
 
 #include <egg/math/Matrix.hh>
 
-#include <abstract/List.hh>
-
+#include <list>
 #include <vector>
 
 namespace Render {
@@ -116,19 +115,15 @@ public:
     u16 tireCount() const;
     bool hasFloorCollision(const WheelPhysics *wheelPhysics) const;
 
-    Abstract::List *list() const;
-
 protected:
     void apply(size_t idx);
-
-    const KartAccessor *m_accessor;
 
 private:
     static void ApplyAll(const KartAccessor *pointers);
 
-    // Used to initialize multiple KartObjectProxy instances at once
-    // Lists are created on the stack in KartObject::Create
-    static Abstract::List *s_list;
+    const KartAccessor *m_accessor;
+
+    static std::list<KartObjectProxy *> s_proxyList;
 };
 
 } // namespace Kart

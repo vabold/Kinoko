@@ -89,8 +89,7 @@ void KartObject::createSub() {
 }
 
 void KartObject::createModel() {
-    Abstract::List list;
-    s_list = &list;
+    s_proxyList.clear();
 
     if (isBike()) {
         m_pointers.model = new Render::KartModelBike;
@@ -99,7 +98,6 @@ void KartObject::createModel() {
     }
 
     ApplyAll(&m_pointers);
-    s_list = nullptr;
 
     m_pointers.model->init();
 }
@@ -118,8 +116,7 @@ const KartAccessor *KartObject::accessor() const {
 }
 
 KartObject *KartObject::Create(Character character, Vehicle vehicle, u8 playerIdx) {
-    Abstract::List list;
-    s_list = &list;
+    s_proxyList.clear();
 
     KartParam *param = new KartParam(character, vehicle, playerIdx);
 
@@ -135,7 +132,6 @@ KartObject *KartObject::Create(Character character, Vehicle vehicle, u8 playerId
 
     // Applies a valid pointer to all of the proxies we create
     ApplyAll(&object->m_pointers);
-    s_list = nullptr;
 
     for (u16 i = 0; i < object->suspCount(); ++i) {
         object->suspension(i)->initPhysics();
@@ -175,5 +171,4 @@ void KartObjectBike::createTires() {
         sus->init(wheelIdx, wheelIdx);
     }
 }
-
 } // namespace Kart
