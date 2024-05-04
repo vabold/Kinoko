@@ -7,6 +7,53 @@ void CollisionDirector::checkCourseColNarrScLocal(f32 radius, const EGG::Vector3
     CourseColMgr::Instance()->scaledNarrowScopeLocal(1.0f, radius, nullptr, pos, mask);
 }
 
+// 8078f500
+bool CollisionDirector::checkSphereFull(f32 radius, const EGG::Vector3f &v0,
+        const EGG::Vector3f &v1, KCLTypeMask flags, CourseColMgr::CollisionInfo *pInfo,
+        KCLTypeMask *pFlagsOut, u32 /*start*/) {
+    if (pInfo) {
+        pInfo->bbox.min = EGG::Vector3f::zero;
+        pInfo->bbox.max = EGG::Vector3f::zero;
+        pInfo->_50 = -std::numeric_limits<f32>::min();
+        pInfo->wallDist = -std::numeric_limits<f32>::min();
+        pInfo->floorDist = -std::numeric_limits<f32>::min();
+        pInfo->perpendicularity = 0.0f;
+    }
+
+    if (pFlagsOut) {
+        *pFlagsOut = KCL_NONE;
+    }
+
+    CourseColMgr::NoBounceWallColInfo *noBounceInfo = CourseColMgr::Instance()->noBounceWallInfo();
+    if (noBounceInfo) {
+        noBounceInfo->bbox.setZero();
+        noBounceInfo->dist = FLT_MIN;
+    }
+
+    bool colliding = false;
+
+    if (flags &&
+            CourseColMgr::Instance()->checkSphereFull(1.0f, radius, nullptr, v0, v1, flags,
+                    pInfo, pFlagsOut)) {
+        colliding = true;
+    }
+
+    if (colliding) {
+        if (pInfo) {
+            pInfo->tangentOff = pInfo->bbox.min + pInfo->bbox.max;
+        }
+
+        if (noBounceInfo) {
+            noBounceInfo->tangentOff = noBounceInfo->bbox.min + noBounceInfo->bbox.max;
+        }
+    }
+
+    CourseColMgr::Instance()->clearNoBounceWallInfo();
+
+    return colliding;
+}
+
+// 8078f784
 bool CollisionDirector::checkSphereFullPush(f32 radius, const EGG::Vector3f &v0,
         const EGG::Vector3f &v1, KCLTypeMask flags, CourseColMgr::CollisionInfo *pInfo,
         KCLTypeMask *pFlagsOut, u32 /*param_8*/) {

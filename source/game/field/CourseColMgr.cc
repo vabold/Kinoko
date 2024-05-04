@@ -24,6 +24,24 @@ void CourseColMgr::scaledNarrowScopeLocal(f32 scale, f32 radius, KColData *data,
     data->narrowScopeLocal(pos / scale, radius / scale, mask);
 }
 
+bool CourseColMgr::checkSphereFull(f32 scalar, f32 radius, KColData *data, const EGG::Vector3f &v0,
+        const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *info,
+        KCLTypeMask *kcl_flags_out) {
+    if (!data) {
+        data = m_data;
+    }
+
+    m_kclScale = scalar;
+    EGG::Vector3f scaled_position = v0 / scalar;
+    EGG::Vector3f vStack88 = v1 / scalar;
+    data->lookupSphere(radius, scaled_position, vStack88, flags);
+
+    if (info) {
+        return doCheckWithFullInfo(data, &KColData::checkSphereCollision, info, kcl_flags_out);
+    }
+    return false; // doCheckMaskOnly(data, &KColData::checkSphereCollision, kcl_flags_out);
+}
+
 bool CourseColMgr::checkSphereFullPush(f32 scalar, f32 radius, KColData *data,
         const EGG::Vector3f &v0, const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *info,
         KCLTypeMask *kcl_flags_out) {
@@ -162,6 +180,45 @@ bool CourseColMgr::doCheckWithPartialInfoPush(KColData *data, CollisionCheckFunc
                 m_noBounceWallInfo->fnrm = fnrm;
             }
         }
+    }
+
+    m_localMtx = nullptr;
+
+    return hasCol;
+}
+
+bool CourseColMgr::doCheckWithFullInfo(KColData *data, CollisionCheckFunc collisionCheckFunc,
+        CollisionInfo *colInfo, KCLTypeMask *flagsOut) {
+    f32 dist;
+    EGG::Vector3f fnrm;
+    u16 attribute;
+    bool hasCol = false;
+
+    while ((data->*collisionCheckFunc)(&dist, &fnrm, &attribute)) {
+        dist *= m_kclScale;
+
+        if (m_noBounceWallInfo && ((attribute & KCL_SOFT_WALL_MASK) != 0)) {
+            if (m_localMtx) {
+                fnrm = m_localMtx->multVector33(fnrm);
+            }
+            EGG::Vector3f offset = fnrm * dist;
+            m_noBounceWallInfo->bbox.min = m_noBounceWallInfo->bbox.min.minimize(offset);
+            m_noBounceWallInfo->bbox.max = m_noBounceWallInfo->bbox.max.maximize(offset);
+            if (m_noBounceWallInfo->dist < dist) {
+                m_noBounceWallInfo->dist = dist;
+                m_noBounceWallInfo->fnrm = fnrm;
+            }
+        } else {
+            u32 kclAttributeTypeBit = KCL_ATTRIBUTE_TYPE_BIT(attribute);
+            if (flagsOut) {
+                *flagsOut |= kclAttributeTypeBit;
+            }
+            if (kclAttributeTypeBit & KCL_TYPE_SOLID_SURFACE) {
+                colInfo->update(dist, fnrm * dist, fnrm, kclAttributeTypeBit);
+            }
+        }
+
+        hasCol = true;
     }
 
     m_localMtx = nullptr;

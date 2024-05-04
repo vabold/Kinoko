@@ -44,6 +44,9 @@ public:
     void scaledNarrowScopeLocal(f32 scale, f32 radius, KColData *data, const EGG::Vector3f &pos,
             KCLTypeMask mask);
 
+    bool checkSphereFull(f32 scalar, f32 radius, KColData *data, const EGG::Vector3f &v0,
+            const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *info,
+            KCLTypeMask *kcl_flags_out);
     bool checkSphereFullPush(f32 scalar, f32 radius, KColData *data, const EGG::Vector3f &v0,
             const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *info,
             KCLTypeMask *kcl_flags_out);
@@ -72,6 +75,8 @@ private:
 
     bool doCheckWithPartialInfoPush(KColData *data, CollisionCheckFunc collisionCheckFunc,
             CollisionInfo *colInfo, KCLTypeMask *typeMask);
+    bool doCheckWithFullInfo(KColData *data, CollisionCheckFunc collisionCheckFunc,
+            CollisionInfo *colInfo, KCLTypeMask *flagsOut);
     bool doCheckWithFullInfoPush(KColData *data, CollisionCheckFunc collisionCheckFunc,
             CollisionInfo *colInfo, KCLTypeMask *flagsOut);
     bool doCheckMaskOnlyPush(KColData *data, CollisionCheckFunc collisionCheckFunc,
