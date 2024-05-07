@@ -1,6 +1,7 @@
 #include "CourseMap.hh"
 
 #include "game/system/map/MapdataFileAccessor.hh"
+#include "game/system/map/MapdataGeoObj.hh"
 #include "game/system/map/MapdataStageInfo.hh"
 #include "game/system/map/MapdataStartPoint.hh"
 
@@ -14,9 +15,11 @@ void CourseMap::init() {
             new MapdataFileAccessor(reinterpret_cast<const MapdataFileAccessor::SData *>(buffer));
 
     constexpr u32 START_POINT_SIGNATURE = 0x4b545054;
+    constexpr u32 GEO_OBJ_SIGNATURE = 0x474f424a;
     constexpr u32 STAGE_INFO_SIGNATURE = 0x53544749;
 
     m_startPoint = parseStartPoint(START_POINT_SIGNATURE);
+    m_geoObj = parseGeoObjs(GEO_OBJ_SIGNATURE);
     m_stageInfo = parseStageInfo(STAGE_INFO_SIGNATURE);
 
     MapdataStageInfo *stageInfo = getStageInfo();
@@ -57,12 +60,27 @@ MapdataStartPointAccessor *CourseMap::parseStartPoint(u32 sectionName) {
     return accessor;
 }
 
+MapdataGeoObjAccessor *CourseMap::parseGeoObjs(u32 sectionName) {
+    const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
+
+    MapdataGeoObjAccessor *accessor = nullptr;
+    if (sectionPtr) {
+        accessor = new MapdataGeoObjAccessor(sectionPtr);
+    }
+
+    return accessor;
+}
+
 MapdataStageInfo *CourseMap::getStageInfo() const {
     return m_stageInfo && m_stageInfo->size() != 0 ? m_stageInfo->get(0) : nullptr;
 }
 
 MapdataStartPoint *CourseMap::getStartPoint(u16 i) const {
     return m_startPoint && m_startPoint->size() != 0 ? m_startPoint->get(i) : nullptr;
+}
+
+MapdataGeoObj *CourseMap::getGeoObj(u16 i) const {
+    return m_geoObj && m_geoObj->size() != 0 ? m_geoObj->get(i) : nullptr;
 }
 
 u32 CourseMap::version() const {
@@ -89,6 +107,10 @@ f32 CourseMap::startTmp3() const {
     return m_startTmp3;
 }
 
+MapdataGeoObjAccessor *CourseMap::geoObj() const {
+    return m_geoObj;
+}
+
 CourseMap *CourseMap::CreateInstance() {
     assert(!s_instance);
     s_instance = new CourseMap;
@@ -106,12 +128,13 @@ CourseMap *CourseMap::Instance() {
 }
 
 CourseMap::CourseMap()
-    : m_course(nullptr), m_startPoint(nullptr), m_stageInfo(nullptr), m_startTmpAngle(0.0f),
+    : m_course(nullptr), m_startPoint(nullptr), m_geoObj(nullptr), m_stageInfo(nullptr), m_startTmpAngle(0.0f),
       m_startTmp0(0.0f), m_startTmp1(0.0f), m_startTmp2(0.0f), m_startTmp3(0.0f) {}
 
 CourseMap::~CourseMap() {
     delete m_course;
     delete m_startPoint;
+    delete m_geoObj;
     delete m_stageInfo;
 }
 

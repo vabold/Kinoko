@@ -27,13 +27,22 @@ public:
         enum class GameMode {
             Time_Trial = 2,
             Ghost_Race = 5,
+            LocalGameModeMax = 6,
         };
 
         void init();
 
+        inline bool isOnlineGameMode() const {
+            return GameMode::LocalGameModeMax < gameMode;
+        }
+        inline bool isInTimeTrials() const {
+            return gameMode == GameMode::Time_Trial || gameMode == GameMode::Ghost_Race;
+        }
+
         std::array<Player, 12> players;
         u8 playerCount;
         Course course;
+        GameMode gameMode;
     };
 
     void init();
