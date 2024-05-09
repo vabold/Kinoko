@@ -1,4 +1,9 @@
 {
+    "Logan rBC3 RTA WR": {
+        "rkgPath": "samples/rbc3-rta-1-55-715.rkg",
+        "krkgPath": "samples/rbc3-rta-1-55-715.krkg",
+        "targetFrame": 7347
+    },
     "Logan MH RTA WR": {
         "rkgPath": "samples/mh-rta-1-42-872.rkg",
         "krkgPath": "samples/mh-rta-1-42-872.krkg",

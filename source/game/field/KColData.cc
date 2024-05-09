@@ -343,7 +343,16 @@ bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::V
     const EGG::Vector3f fnrm = getNrm(prism.fnrm_i);
     f32 plane_dist = relativePos.ps_dot(fnrm);
     f32 dist_in_plane = m_radius - plane_dist;
-    if (dist_in_plane <= 0.0f || dist_in_plane >= m_prismThickness) {
+    if (dist_in_plane <= 0.0f) {
+        return false;
+    }
+
+    f32 typeDistance = m_prismThickness;
+    if (type == CollisionCheckType::Edge) {
+        typeDistance += m_radius;
+    }
+
+    if (dist_in_plane >= typeDistance) {
         return false;
     }
 

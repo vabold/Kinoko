@@ -7,6 +7,7 @@
 [![Vincent's rMR RTA WR](<https://vabold.github.io/Kinoko/Vincent rMR RTA WR.svg>)](https://www.youtube.com/watch?v=y7t4_xXuD2A)
 [![Sosis's rSL RTA WR](<https://vabold.github.io/Kinoko/Sosis rSL RTA WR.svg>)](https://www.youtube.com/watch?v=ahNGAaUzm6s)
 [![Logan's MH RTA WR](<https://vabold.github.io/Kinoko/Logan MH RTA WR.svg>)](https://www.youtube.com/watch?v=CellUlOYgnc)
+[![Logan's rBC3 RTA WR](<https://vabold.github.io/Kinoko/Logan rBC3 RTA WR.svg>)](https://www.youtube.com/watch?v=vSbSADDEzEs)
 
 Kinoko is a reimplementation of Mario Kart Wii's physics engine in C++. This project is a spiritual continuation of [stblr/Hanachan](https://github.com/stblr/Hanachan). Like Hanachan, the goal of this reimplementation is to reach perfectly accurate ghost replay.
 
