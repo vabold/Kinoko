@@ -443,9 +443,7 @@ bool KartMove::calcPreDrift() {
         }
     }
 
-    if (!state()->isHop() && state()->isSlipdriftCharge()) {
-        m_hopFrame = 0;
-    } else {
+    if (state()->isHop()) {
         if (m_hopStickX == 0) {
             if (state()->isStickRight()) {
                 m_hopStickX = -1;
@@ -456,6 +454,8 @@ bool KartMove::calcPreDrift() {
         if (m_hopFrame < 3) {
             ++m_hopFrame;
         }
+    } else if (state()->isSlipdriftCharge()) {
+        m_hopFrame = 0;
     }
 
     return state()->isHop() || state()->isSlipdriftCharge();

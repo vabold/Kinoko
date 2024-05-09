@@ -74,7 +74,7 @@ void KartCollide::FUN_80572F4C() {
 
     bool resetXZ = fVar1 > 0.0f && state()->isAirtimeOver20() && dynamics()->velocity().y < -50.0f;
 
-    FUN_805B72B8(0.01f, fVar1, resetXZ, true);
+    FUN_805B72B8(0.01f, fVar1, resetXZ, !state()->isJumpPadDisableYsusForce());
 }
 
 void KartCollide::FUN_805B72B8(f32 param_1, f32 param_2, bool lockXZ, bool addExtVelY) {
@@ -361,6 +361,7 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
 
     if (!!(*maskOut & BOOST_RAMP_MASK) &&
             colDirector->findClosestCollisionEntry(maskOut, BOOST_RAMP_MASK)) {
+        closestColEntry = colDirector->closestCollisionEntry();
         move()->setRampBoost(true);
         state()->setBoostRampType(KCL_VARIANT_TYPE(closestColEntry->attribute));
         m_rampBoost = true;
@@ -383,6 +384,7 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
     if (*maskOut & jumpPadMask && colDirector->findClosestCollisionEntry(maskOut, jumpPadMask)) {
         if (!state()->isTouchingGround() || !state()->isJumpPad()) {
             move()->setPadJump(true);
+            closestColEntry = colDirector->closestCollisionEntry();
             state()->setJumpPadVariant(KCL_VARIANT_TYPE(closestColEntry->attribute));
         }
         collisionData.bTrickable = true;
