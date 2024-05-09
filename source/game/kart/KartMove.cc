@@ -121,6 +121,7 @@ void KartMove::init(bool b1, bool b2) {
 
     m_jumpPadMinSpeed = 0.0f;
     m_jumpPadMaxSpeed = 0.0f;
+    m_jumpPadProperties = nullptr;
     m_rampBoost = 0;
 
     m_hopVelY = 0.0f;
@@ -881,13 +882,13 @@ void KartMove::tryStartJumpPad() {
 
     state()->setJumpPad(true);
     s32 jumpPadVariant = state()->jumpPadVariant();
-    const auto &jumpPadProperties = JUMP_PAD_PROPERTIES[jumpPadVariant];
+    m_jumpPadProperties = &JUMP_PAD_PROPERTIES[jumpPadVariant];
 
     if (jumpPadVariant != 4) {
         EGG::Vector3f extVel = dynamics()->extVel();
         EGG::Vector3f totalForce = dynamics()->totalForce();
 
-        extVel.y = jumpPadProperties.velY;
+        extVel.y = m_jumpPadProperties->velY;
         totalForce.y = 0.0f;
 
         dynamics()->setExtVel(extVel);
@@ -904,8 +905,8 @@ void KartMove::tryStartJumpPad() {
         }
     }
 
-    m_jumpPadMinSpeed = jumpPadProperties.minSpeed;
-    m_jumpPadMaxSpeed = jumpPadProperties.maxSpeed;
+    m_jumpPadMinSpeed = m_jumpPadProperties->minSpeed;
+    m_jumpPadMaxSpeed = m_jumpPadProperties->maxSpeed;
     m_speed = std::max(m_speed, m_jumpPadMinSpeed);
 }
 

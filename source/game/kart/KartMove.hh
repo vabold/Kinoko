@@ -142,6 +142,7 @@ protected:
     u32 m_nonZipperAirtime;
     f32 m_jumpPadMinSpeed;
     f32 m_jumpPadMaxSpeed;
+    const JumpPadProperties *m_jumpPadProperties;
     u16 m_rampBoost;
     f32 m_hopVelY;
     f32 m_hopPosY;

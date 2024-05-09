@@ -1,4 +1,9 @@
 {
+    "Vincent rMR RTA WR": {
+        "rkgPath": "samples/rmr-rta-1-41-193.rkg",
+        "krkgPath": "samples/rmr-rta-1-41-193.krkg",
+        "targetFrame": 6477
+    },
     "Kasey rSGB RTA WR": {
         "rkgPath": "samples/rsgb-rta-1-21-363.rkg",
         "krkgPath": "samples/rsgb-rta-1-21-363.krkg",
