@@ -1,4 +1,9 @@
 {
+    "Sosis rSL RTA WR": {
+        "rkgPath": "samples/rsl-rta-2-03-750.rkg",
+        "krkgPath": "samples/rsl-rta-2-03-750.krkg",
+        "targetFrame": 7829
+    },
     "Vincent rMR RTA WR": {
         "rkgPath": "samples/rmr-rta-1-41-193.rkg",
         "krkgPath": "samples/rmr-rta-1-41-193.krkg",

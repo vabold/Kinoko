@@ -117,9 +117,12 @@ f32 CollisionGroup::initHitboxes(const std::array<BSP::Hitbox, 16> &hitboxes) {
     }
 
     m_hitboxes = std::span<Hitbox>(new Hitbox[bspHitboxCount], bspHitboxCount);
+    u16 hitboxIdx = 0;
 
-    for (u16 hitboxIdx = 0; hitboxIdx < m_hitboxes.size(); ++hitboxIdx) {
-        m_hitboxes[hitboxIdx].setBspHitbox(&hitboxes[hitboxIdx]);
+    for (const auto &bspHitbox : hitboxes) {
+        if (parse<u16>(bspHitbox.enable)) {
+            m_hitboxes[hitboxIdx++].setBspHitbox(&bspHitbox);
+        }
     }
 
     return computeCollisionLimits();
