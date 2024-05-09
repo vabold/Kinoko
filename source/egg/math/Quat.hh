@@ -39,12 +39,15 @@ struct Quatf {
         return *this = *this * scalar;
     }
 
+    /// Though part of this is a vector cross/dot product, FP arithmetic is not associative or
+    /// commutative. It has to be done in this order.
     Quatf operator*(const Quatf &rhs) const {
-        Vector3f cross = v.cross(rhs.v);
-        Vector3f scaleLhs = v * rhs.w;
-        Vector3f scaleRhs = rhs.v * w;
+        f32 _w = w * rhs.w - v.x * rhs.v.x - v.y * rhs.v.y - v.z * rhs.v.z;
+        f32 _x = v.y * rhs.v.z + (v.x * rhs.w + w * rhs.v.x) - v.z * rhs.v.y;
+        f32 _y = v.z * rhs.v.x + (v.y * rhs.w + w * rhs.v.y) - v.x * rhs.v.z;
+        f32 _z = v.x * rhs.v.y + (v.z * rhs.w + w * rhs.v.z) - v.y * rhs.v.x;
 
-        return Quatf(w * rhs.w - v.dot(rhs.v), cross + scaleRhs + scaleLhs);
+        return Quatf(_w, _x, _y, _z);
     }
 
     Quatf &operator*=(const Quatf &q) {

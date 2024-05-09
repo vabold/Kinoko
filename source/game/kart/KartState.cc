@@ -133,7 +133,12 @@ void KartState::calcCollisions() {
                     static_cast<f32>(collide()->someSoftWallTimer());
             f32 nonSusp = collide()->suspBottomHeightNonSoftWall() /
                     static_cast<f32>(collide()->someNonSoftWallTimer());
-            m_bSoftWallDrift = (softSusp - nonSusp < 40.0f);
+
+            if (softSusp - nonSusp >= 40.0f) {
+                m_bSoftWallDrift = false;
+            } else {
+                softWallCollision = true;
+            }
         }
     }
 
