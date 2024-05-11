@@ -1,4 +1,9 @@
 {
+    "Kierio": {
+        "rkgPath": "samples/rmc3-kierio-test-3-24-416.rkg",
+        "krkgPath": "samples/rmc3-kierio-test-3-24-416.krkg",
+        "targetFrame": 12664
+    },
     "Logan rBC3 RTA WR": {
         "rkgPath": "samples/rbc3-rta-1-55-715.rkg",
         "krkgPath": "samples/rbc3-rta-1-55-715.krkg",
