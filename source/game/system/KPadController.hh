@@ -36,6 +36,7 @@ struct RaceInputState {
     bool item() const;
     bool drift() const;
     bool trickUp() const;
+    bool trickDown() const;
 
     u16 buttons;
     u16 buttonsRaw;

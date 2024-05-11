@@ -27,7 +27,7 @@
     "Kierio rMC3 Test": {
         "rkgPath": "samples/rmc3-kierio-test-3-24-416.rkg",
         "krkgPath": "samples/rmc3-kierio-test-3-24-416.krkg",
-        "targetFrame": 0
+        "targetFrame": 1897
     },
     "Luke rBC RTA WR": {
         "rkgPath": "samples/rbc-rta-2-30-459.rkg",
