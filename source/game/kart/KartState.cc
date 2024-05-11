@@ -35,6 +35,7 @@ KartState::KartState() {
     m_bAutoDrift = inputs()->driftIsAuto();
 
     m_airtime = 0;
+    m_startBoostIdx = 0;
 }
 
 void KartState::init() {
