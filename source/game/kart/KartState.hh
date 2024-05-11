@@ -21,6 +21,7 @@ public:
     bool isDrifting() const;
 
     bool isAccelerate() const;
+    bool isBrake() const;
     bool isDriftInput() const;
     bool isDriftManual() const;
     bool isHopStart() const;
@@ -47,6 +48,7 @@ public:
     bool isInATrick() const;
     bool isBoostOffroadInvincibility() const;
     bool isTrickRot() const;
+    bool isChargingSsmt() const;
     bool isTrickable() const;
     bool isWheelieRot() const;
     bool isJumpPadDisableYsusForce() const;
@@ -69,7 +71,9 @@ public:
     void clearBitfield3();
 
     void setAccelerate(bool isSet);
+    void setDriftInput(bool isSet);
     void setDriftManual(bool isSet);
+    void setHopStart(bool isSet);
     void setVehicleBodyFloorCollision(bool isSet);
     void setAllWheelsCollision(bool isSet);
     void setAnyWheelCollision(bool isSet);
@@ -86,6 +90,7 @@ public:
     void setJumpPad(bool isSet);
     void setBoostOffroadInvincibility(bool isSet);
     void setTrickRot(bool isSet);
+    void setChargingSsmt(bool isSet);
     void setTrickable(bool isSet);
     void setWheelieRot(bool isSet);
     void setJumpPadDisableYsusForce(bool isSet);
@@ -127,6 +132,7 @@ private:
     bool m_bInATrick;
     bool m_bBoostOffroadInvincibility;
     bool m_bTrickRot;
+    bool m_bChargingSsmt;
     bool m_bTrickable;
 
     bool m_bWheelieRot;

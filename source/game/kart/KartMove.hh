@@ -30,6 +30,7 @@ public:
     void calcOffroad();
     void calcBoost();
     void calcRampBoost();
+    void calcSsmt();
     bool calcPreDrift();
     void calcManualDrift();
     void startManualDrift();
@@ -41,6 +42,7 @@ public:
     void calcAcceleration();
     void calcStandstillBoostRot();
     void calcDive();
+    void calcSsmtStart();
     void calcHopPhysics();
     virtual void calcVehicleRotation(f32 /*turn*/) {}
     virtual void hop();
@@ -98,6 +100,13 @@ protected:
         ChargedSmt = 3,
     };
 
+    enum class DrivingDirection {
+        Forwards = 0,
+        Braking = 1,
+        WaitingForBackwards = 2,
+        Backwards = 3,
+    };
+
     struct JumpPadProperties {
         f32 minSpeed;
         f32 maxSpeed;
@@ -108,6 +117,7 @@ protected:
     f32 m_softSpeedLimit;
     f32 m_speed;
     f32 m_lastSpeed;
+    f32 m_processedSpeed;
     f32 m_hardSpeedLimit;
     f32 m_acceleration;
     f32 m_speedDragMultiplier;
@@ -134,6 +144,7 @@ protected:
     u16 m_mtCharge;
     KartBoost m_boost;
     s16 m_offroadInvincibility;
+    s16 m_ssmtCharge;
     f32 m_realTurn;
     f32 m_weightedTurn;
     EGG::Vector3f m_scale;
@@ -147,9 +158,14 @@ protected:
     f32 m_hopVelY;
     f32 m_hopPosY;
     f32 m_hopGravity;
+    DrivingDirection m_drivingDirection;
+    s16 m_backwardsAllowCounter;
+    // PadType
     bool m_bPadBoost;
     bool m_bRampBoost;
     bool m_bPadJump;
+    // Miscellaneous flags
+    bool m_bSsmtCharged;
     KartJump *m_jump;
     f32 m_rawTurn;
 };

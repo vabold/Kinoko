@@ -29,6 +29,7 @@ KartMove::KartMove() : m_smoothedUp(EGG::Vector3f::ey), m_scale(1.0f, 1.0f, 1.0f
     m_bPadBoost = false;
     m_bRampBoost = false;
     m_bPadJump = false;
+    m_bSsmtCharged = false;
     m_jump = nullptr;
 }
 
@@ -127,6 +128,7 @@ void KartMove::init(bool b1, bool b2) {
     m_hopVelY = 0.0f;
     m_hopPosY = 0.0f;
     m_hopGravity = 0.0f;
+    m_drivingDirection = DrivingDirection::Forwards;
     m_bPadBoost = false;
     m_bRampBoost = false;
     m_bPadJump = false;
@@ -177,6 +179,7 @@ void KartMove::setKartSpeedLimit() {
 
 void KartMove::calc() {
     dynamics()->resetInternalVelocity();
+    calcSsmtStart();
     calcTop();
     tryEndJumpPad();
     calcSpecialFloor();
@@ -191,6 +194,7 @@ void KartMove::calc() {
     }
 
     calcWheelie();
+    calcSsmt();
     calcBoost();
     calcMushroomBoost();
     calcOffroadInvincibility();
@@ -424,6 +428,28 @@ void KartMove::calcRampBoost() {
     }
 }
 
+void KartMove::calcSsmt() {
+    constexpr s16 MAX_SSMT_CHARGE = 75;
+    constexpr s16 SSMT_BOOST_FRAMES = 30;
+    if (state()->isChargingSsmt()) {
+        if (++m_ssmtCharge > MAX_SSMT_CHARGE) {
+            m_ssmtCharge = MAX_SSMT_CHARGE;
+            m_bSsmtCharged = true;
+        }
+    } else {
+        m_ssmtCharge = 0;
+        if (!m_bSsmtCharged) {
+            return;
+        }
+
+        if (state()->isAccelerate() && !state()->isBrake()) {
+            activateBoost(KartBoost::Type::AllMt, SSMT_BOOST_FRAMES);
+        }
+
+        m_bSsmtCharged = false;
+    }
+}
+
 bool KartMove::calcPreDrift() {
     if (!state()->isTouchingGround() && !state()->isHop() && !state()->isDriftManual()) {
         if (state()->isStickLeft() || state()->isStickRight()) {
@@ -556,25 +582,29 @@ void KartMove::calcRotation() {
     }
 
     turn *= m_realTurn;
-
-    if (state()->isHop() && m_hopPosY > 0.0f) {
-        turn *= 1.4f;
-    }
-
-    if (!drifting) {
-        if (EGG::Mathf::abs(m_speed) < 1.0f) {
-            turn = 0.0f;
+    if (state()->isChargingSsmt()) {
+        turn = m_realTurn * 0.04f;
+    } else {
+        if (state()->isHop() && m_hopPosY > 0.0f) {
+            turn *= 1.4f;
         }
 
-        if (m_speed >= 20.0f) {
-            turn *= 0.5f;
-            if (m_speed < 70.0f) {
-                turn += (1.0f - (m_speed - 20.0f) / 50.0f) * turn;
+        if (!drifting) {
+            if (EGG::Mathf::abs(m_speed) < 1.0f) {
+                turn = 0.0f;
             }
-        } else {
-            turn = (turn * 0.4f) + (m_speed / 20.0f) * (turn * 0.6f);
+
+            if (m_speed >= 20.0f) {
+                turn *= 0.5f;
+                if (m_speed < 70.0f) {
+                    turn += (1.0f - (m_speed - 20.0f) / 50.0f) * turn;
+                }
+            } else {
+                turn = (turn * 0.4f) + (m_speed / 20.0f) * (turn * 0.6f);
+            }
         }
     }
+
     if (!state()->isTouchingGround()) {
         if (state()->isRampBoost() && m_jump->isBoostRampEnabled()) {
             turn = 0.0f;
@@ -602,7 +632,7 @@ void KartMove::calcVehicleSpeed() {
     m_acceleration = 0.0f;
     m_speedDragMultiplier = 1.0f;
 
-    if (!state()->isTouchingGround()) {
+    if (!state()->isTouchingGround() || state()->isChargingSsmt()) {
         if (state()->isRampBoost() && state()->airtime() < 4) {
             m_acceleration = 7.0f;
         } else {
@@ -622,6 +652,18 @@ void KartMove::calcVehicleSpeed() {
         if (!state()->isJumpPad() && !state()->isRampBoost()) {
             if (state()->isAccelerate()) {
                 m_acceleration = calcVehicleAcceleration();
+            } else {
+                if (!state()->isBrake()) {
+                    m_speed *= m_speed > 0.0f ? 0.98f : 0.95f;
+                } else if (m_drivingDirection == DrivingDirection::Braking) {
+                    m_acceleration = -1.5f;
+                } else if (m_drivingDirection == DrivingDirection::WaitingForBackwards) {
+                    if (++m_backwardsAllowCounter > 15) {
+                        m_drivingDirection = DrivingDirection::Backwards;
+                    }
+                } else if (m_drivingDirection == DrivingDirection::Backwards) {
+                    m_acceleration = -2.0f;
+                }
             }
 
             if (!state()->isBoost() && !state()->isDriftManual() && !state()->isAutoDrift()) {
@@ -677,7 +719,28 @@ void KartMove::calcAcceleration() {
     constexpr f32 ROTATION_SCALAR_BOOST_RAMP = 4.0f;
 
     m_lastSpeed = m_speed;
+
+    if (m_acceleration < 0.0f) {
+        if (m_speed < -20.0f) {
+            m_acceleration = 0.0f;
+        } else {
+            if (m_speed + m_acceleration <= -20.0f) {
+                m_acceleration = -20.0f - m_speed;
+            }
+        }
+    }
+
     m_speed += m_acceleration;
+
+    if (state()->isChargingSsmt()) {
+        m_speed *= 0.8f;
+    } else {
+        if (m_drivingDirection == DrivingDirection::Braking && m_speed < 0.0f) {
+            m_speed = 0.0f;
+            m_drivingDirection = DrivingDirection::WaitingForBackwards;
+            m_backwardsAllowCounter = 0;
+        }
+    }
 
     f32 dVar17 = state()->isJumpPad() ? m_jumpPadMaxSpeed : m_baseSpeed;
     dVar17 *= (m_boost.multiplier() + getWheelieSoftSpeedLimitBonus()) * m_kclSpeedFactor;
@@ -705,6 +768,9 @@ void KartMove::calcAcceleration() {
     m_speedRatioCapped = std::min(1.0f, EGG::Mathf::abs(m_speed / m_baseSpeed));
 
     EGG::Vector3f crossVec = m_smoothedUp.cross(m_dir);
+    if (m_speed < 0.0f) {
+        crossVec = -crossVec;
+    }
 
     f32 rotationScalar = ROTATION_SCALAR_NORMAL;
     if (collide()->isRampBoost()) {
@@ -716,8 +782,24 @@ void KartMove::calcAcceleration() {
     EGG::Matrix34f local_90;
     local_90.setAxisRotation(rotationScalar * DEG2RAD, crossVec);
     m_vel1Dir = local_90.multVector33(m_vel1Dir);
+    m_processedSpeed = m_speed;
     EGG::Vector3f nextSpeed = m_speed * m_vel1Dir;
     dynamics()->setIntVel(dynamics()->intVel() + nextSpeed);
+
+    if (state()->isTouchingGround() && !state()->isDriftManual() && !state()->isHop()) {
+        if (state()->isBrake()) {
+            if (m_drivingDirection == DrivingDirection::Forwards) {
+                m_drivingDirection = m_processedSpeed > 5.0f ? DrivingDirection::Braking :
+                                                               DrivingDirection::Backwards;
+            }
+        } else {
+            if (m_processedSpeed >= 0.0f) {
+                m_drivingDirection = DrivingDirection::Forwards;
+            }
+        }
+    } else {
+        m_drivingDirection = DrivingDirection::Forwards;
+    }
 }
 
 void KartMove::calcStandstillBoostRot() {
@@ -727,7 +809,7 @@ void KartMove::calcStandstillBoostRot() {
     if (state()->isTouchingGround()) {
         if (System::RaceManager::Instance()->stage() == System::RaceManager::Stage::Countdown) {
             next = 0.015f * -state()->startBoostCharge();
-        } else {
+        } else if (!state()->isChargingSsmt()) {
             if (!state()->isJumpPad() && !state()->isRampBoost() && !state()->isSoftWallDrift()) {
                 f32 speedDiff = m_lastSpeed - m_speed;
                 scalar = std::min(3.0f, std::max(speedDiff, -3.0f));
@@ -742,6 +824,9 @@ void KartMove::calcStandstillBoostRot() {
                 }
                 scalar = 0.2f;
             }
+        } else {
+            constexpr s16 MAX_SSMT_CHARGE = 75;
+            next = 0.015f * (static_cast<f32>(m_ssmtCharge) / static_cast<f32>(MAX_SSMT_CHARGE));
         }
     }
 
@@ -801,6 +886,18 @@ void KartMove::calcDive() {
     } else {
         dynamics()->setGravity((0.2f * mult + 1.0f) * dynamics()->gravity());
     }
+}
+
+void KartMove::calcSsmtStart() {
+    if (EGG::Mathf::abs(m_speed) >= 10.0f || state()->isBoost() || state()->isRampBoost() ||
+            !state()->isAccelerate() || !state()->isBrake()) {
+        state()->setChargingSsmt(false);
+        return;
+    }
+
+    state()->setChargingSsmt(true);
+    state()->setHopStart(false);
+    state()->setDriftInput(false);
 }
 
 void KartMove::calcHopPhysics() {
@@ -1136,14 +1233,23 @@ void KartMoveBike::calcVehicleRotation(f32 turn) {
     constexpr f32 LEAN_ROT_MAX_DRIFT = 1.5f;
     constexpr f32 LEAN_ROT_MIN_DRIFT = 0.7f;
 
+    // TODO: Use 2c0 infra! This is a temporary measure
+    constexpr f32 SSMT_LEAN_ROT_INC = 1.6f;
+    constexpr f32 SSMT_LEAN_ROT_CAP = 0.9f;
+
     f32 leanRotInc = LEAN_ROT_INC_RACE;
     f32 leanRotCap = LEAN_ROT_CAP_RACE;
     const auto *raceManager = System::RaceManager::Instance();
 
-    if (!raceManager->isStageReached(System::RaceManager::Stage::Race) ||
-            EGG::Mathf::abs(m_speed) < 5.0f) {
-        leanRotInc = LEAN_ROT_INC_COUNTDOWN;
-        leanRotCap = LEAN_ROT_CAP_COUNTDOWN;
+    if (!state()->isChargingSsmt()) {
+        if (!raceManager->isStageReached(System::RaceManager::Stage::Race) ||
+                EGG::Mathf::abs(m_speed) < 5.0f) {
+            leanRotInc = LEAN_ROT_INC_COUNTDOWN;
+            leanRotCap = LEAN_ROT_CAP_COUNTDOWN;
+        }
+    } else {
+        leanRotInc = SSMT_LEAN_ROT_INC;
+        leanRotCap = SSMT_LEAN_ROT_CAP;
     }
 
     m_leanRotCap += 0.3f * (leanRotCap - m_leanRotCap);
