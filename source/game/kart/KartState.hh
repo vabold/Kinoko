@@ -29,7 +29,9 @@ public:
     void clearBitfield3();
 
     void setAccelerate(bool isSet);
+    void setDriftInput(bool isSet);
     void setDriftManual(bool isSet);
+    void setHopStart(bool isSet);
     void setVehicleBodyFloorCollision(bool isSet);
     void setAllWheelsCollision(bool isSet);
     void setAnyWheelCollision(bool isSet);
@@ -45,7 +47,9 @@ public:
     void setInATrick(bool isSet);
     void setJumpPad(bool isSet);
     void setBoostOffroadInvincibility(bool isSet);
+    void setDisableBackwardsAccel(bool isSet);
     void setTrickRot(bool isSet);
+    void setChargingSsmt(bool isSet);
     void setTrickable(bool isSet);
     void setWheelieRot(bool isSet);
     void setJumpPadDisableYsusForce(bool isSet);
@@ -59,6 +63,7 @@ public:
     /// @beginGetters
     bool isDrifting() const;
     bool isAccelerate() const;
+    bool isBrake() const;
     bool isDriftInput() const;
     bool isDriftManual() const;
     bool isHopStart() const;
@@ -84,7 +89,9 @@ public:
     bool isTrickStart() const;
     bool isInATrick() const;
     bool isBoostOffroadInvincibility() const;
+    bool isDisableBackwardsAccel() const;
     bool isTrickRot() const;
+    bool isChargingSsmt() const;
     bool isTrickable() const;
     bool isWheelieRot() const;
     bool isJumpPadDisableYsusForce() const;
@@ -143,7 +150,9 @@ private:
     bool m_bTrickStart;
     bool m_bInATrick;
     bool m_bBoostOffroadInvincibility; ///< Set if we should ignore offroad slowdown this frame.
+    bool m_bDisableBackwardsAccel;     ///< Enforces a 20f delay when reversing after charging SSMT.
     bool m_bTrickRot;
+    bool m_bChargingSsmt; ///< Tracks whether we are charging a stand-still mini-turbo.
     bool m_bTrickable;
     /// @}
 

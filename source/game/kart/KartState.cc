@@ -38,6 +38,7 @@ KartState::KartState() {
     m_bAutoDrift = inputs()->driftIsAuto();
 
     m_airtime = 0;
+    m_startBoostIdx = 0;
 }
 
 /// @addr{0x8059455C}
@@ -305,6 +306,10 @@ void KartState::calcHandleStartBoost() {
         }
     }
 
+    if (m_startBoostIdx <= 0) {
+        return;
+    }
+
     handleStartBoost(m_startBoostIdx);
     m_bChargeStartBoost = false;
 }
@@ -325,6 +330,10 @@ bool KartState::isDrifting() const {
 
 bool KartState::isAccelerate() const {
     return m_bAccelerate;
+}
+
+bool KartState::isBrake() const {
+    return m_bBrake;
 }
 
 bool KartState::isDriftInput() const {
@@ -427,8 +436,16 @@ bool KartState::isBoostOffroadInvincibility() const {
     return m_bBoostOffroadInvincibility;
 }
 
+bool KartState::isDisableBackwardsAccel() const {
+    return m_bDisableBackwardsAccel;
+}
+
 bool KartState::isTrickRot() const {
     return m_bTrickRot;
+}
+
+bool KartState::isChargingSsmt() const {
+    return m_bChargingSsmt;
 }
 
 bool KartState::isTrickable() const {
@@ -523,7 +540,9 @@ void KartState::clearBitfield1() {
     m_bTrickStart = false;
     m_bInATrick = false;
     m_bBoostOffroadInvincibility = false;
+    m_bDisableBackwardsAccel = false;
     m_bTrickRot = false;
+    m_bChargingSsmt = false;
     m_bTrickable = false;
 }
 
@@ -539,8 +558,16 @@ void KartState::setAccelerate(bool isSet) {
     m_bAccelerate = isSet;
 }
 
+void KartState::setDriftInput(bool isSet) {
+    m_bDriftInput = isSet;
+}
+
 void KartState::setDriftManual(bool isSet) {
     m_bDriftManual = isSet;
+}
+
+void KartState::setHopStart(bool isSet) {
+    m_bHopStart = isSet;
 }
 
 void KartState::setVehicleBodyFloorCollision(bool isSet) {
@@ -603,8 +630,16 @@ void KartState::setBoostOffroadInvincibility(bool isSet) {
     m_bBoostOffroadInvincibility = isSet;
 }
 
+void KartState::setDisableBackwardsAccel(bool isSet) {
+    m_bDisableBackwardsAccel = isSet;
+}
+
 void KartState::setTrickRot(bool isSet) {
     m_bTrickRot = isSet;
+}
+
+void KartState::setChargingSsmt(bool isSet) {
+    m_bChargingSsmt = isSet;
 }
 
 void KartState::setTrickable(bool isSet) {
