@@ -826,7 +826,7 @@ void KartMove::calcStandstillBoostRot() {
             }
         } else {
             constexpr s16 MAX_SSMT_CHARGE = 75;
-            next = 0.015f * (static_cast<f32>(m_ssmtCharge) / static_cast<f32>(MAX_SSMT_CHARGE));
+            next = 0.015f * (-static_cast<f32>(m_ssmtCharge) / static_cast<f32>(MAX_SSMT_CHARGE));
         }
     }
 
