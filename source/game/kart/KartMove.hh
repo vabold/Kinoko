@@ -30,6 +30,7 @@ public:
     void calcOffroad();
     void calcBoost();
     void calcRampBoost();
+    void calcDisableBackwardsAccel();
     void calcSsmt();
     bool calcPreDrift();
     void calcManualDrift();
@@ -145,6 +146,8 @@ protected:
     KartBoost m_boost;
     s16 m_offroadInvincibility;
     s16 m_ssmtCharge;
+    s16 m_ssmtLeewayTimer;
+    s16 m_ssmtDisableAccelTimer;
     f32 m_realTurn;
     f32 m_weightedTurn;
     EGG::Vector3f m_scale;
@@ -166,6 +169,7 @@ protected:
     bool m_bPadJump;
     // Miscellaneous flags
     bool m_bSsmtCharged;
+    bool m_bSsmtLeeway;
     KartJump *m_jump;
     f32 m_rawTurn;
 };
@@ -200,7 +204,7 @@ private:
     f32 m_wheelieRot;
     f32 m_maxWheelieRot;
     u32 m_wheelieFrames;
-    u16 m_wheelieCooldown;
+    s16 m_wheelieCooldown;
     f32 m_wheelieRotDec;
 };
 

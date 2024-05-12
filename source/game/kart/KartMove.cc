@@ -30,6 +30,7 @@ KartMove::KartMove() : m_smoothedUp(EGG::Vector3f::ey), m_scale(1.0f, 1.0f, 1.0f
     m_bRampBoost = false;
     m_bPadJump = false;
     m_bSsmtCharged = false;
+    m_bSsmtLeeway = false;
     m_jump = nullptr;
 }
 
@@ -110,6 +111,9 @@ void KartMove::init(bool b1, bool b2) {
     m_driftState = DriftState::NotDrifting;
     m_mtCharge = 0;
     m_offroadInvincibility = 0;
+    m_ssmtCharge = 0;
+    m_ssmtLeewayTimer = 0;
+    m_ssmtDisableAccelTimer = 0;
     m_nonZipperAirtime = 0;
     m_realTurn = 0.0f;
     m_weightedTurn = 0.0f;
@@ -428,13 +432,30 @@ void KartMove::calcRampBoost() {
     }
 }
 
+void KartMove::calcDisableBackwardsAccel() {
+    if (!state()->isDisableBackwardsAccel()) {
+        return;
+    }
+
+    if (--m_ssmtDisableAccelTimer < 0 || (!m_bSsmtLeeway && !state()->isBrake())) {
+        state()->setDisableBackwardsAccel(false);
+        m_ssmtDisableAccelTimer = 0;
+    }
+}
+
 void KartMove::calcSsmt() {
     constexpr s16 MAX_SSMT_CHARGE = 75;
     constexpr s16 SSMT_BOOST_FRAMES = 30;
+    constexpr s16 LEEWAY_FRAMES = 1;
+    constexpr s16 DISABLE_ACCEL_FRAMES = 20;
+
+    calcDisableBackwardsAccel();
+
     if (state()->isChargingSsmt()) {
         if (++m_ssmtCharge > MAX_SSMT_CHARGE) {
             m_ssmtCharge = MAX_SSMT_CHARGE;
             m_bSsmtCharged = true;
+            m_ssmtLeewayTimer = 0;
         }
     } else {
         m_ssmtCharge = 0;
@@ -442,11 +463,34 @@ void KartMove::calcSsmt() {
             return;
         }
 
-        if (state()->isAccelerate() && !state()->isBrake()) {
-            activateBoost(KartBoost::Type::AllMt, SSMT_BOOST_FRAMES);
+        if (m_bSsmtLeeway) {
+            if (--m_ssmtLeewayTimer < 0) {
+                m_ssmtLeewayTimer = 0;
+                m_bSsmtCharged = false;
+                m_bSsmtLeeway = false;
+                m_ssmtDisableAccelTimer = DISABLE_ACCEL_FRAMES;
+                state()->setDisableBackwardsAccel(true);
+            } else {
+                if (!state()->isAccelerate() && !state()->isBrake()) {
+                    activateBoost(KartBoost::Type::AllMt, SSMT_BOOST_FRAMES);
+                    m_ssmtLeewayTimer = 0;
+                    m_bSsmtCharged = false;
+                    m_bSsmtLeeway = false;
+                }
+            }
+        } else {
+            if (state()->isAccelerate() && !state()->isBrake()) {
+                activateBoost(KartBoost::Type::AllMt, SSMT_BOOST_FRAMES);
+                m_ssmtLeewayTimer = 0;
+                m_bSsmtCharged = false;
+                m_bSsmtLeeway = false;
+            } else {
+                m_ssmtLeewayTimer = LEEWAY_FRAMES;
+                m_bSsmtLeeway = true;
+                state()->setDisableBackwardsAccel(true);
+                m_ssmtDisableAccelTimer = LEEWAY_FRAMES;
+            }
         }
-
-        m_bSsmtCharged = false;
     }
 }
 
@@ -653,7 +697,7 @@ void KartMove::calcVehicleSpeed() {
             if (state()->isAccelerate()) {
                 m_acceleration = calcVehicleAcceleration();
             } else {
-                if (!state()->isBrake()) {
+                if (!state()->isBrake() || state()->isDisableBackwardsAccel()) {
                     m_speed *= m_speed > 0.0f ? 0.98f : 0.95f;
                 } else if (m_drivingDirection == DrivingDirection::Braking) {
                     m_acceleration = -1.5f;
@@ -1234,8 +1278,8 @@ void KartMoveBike::calcVehicleRotation(f32 turn) {
     constexpr f32 LEAN_ROT_MIN_DRIFT = 0.7f;
 
     // TODO: Use 2c0 infra! This is a temporary measure
-    constexpr f32 SSMT_LEAN_ROT_INC = 1.6f;
-    constexpr f32 SSMT_LEAN_ROT_CAP = 0.9f;
+    constexpr f32 SSMT_LEAN_ROT_INC = 0.15f;
+    constexpr f32 SSMT_LEAN_ROT_CAP = 1.3f;
 
     f32 leanRotInc = LEAN_ROT_INC_RACE;
     f32 leanRotCap = LEAN_ROT_CAP_RACE;
@@ -1444,6 +1488,7 @@ f32 KartMoveBike::wheelieRotFactor() const {
 
 // Also handles cancelling wheelies
 void KartMoveBike::tryStartWheelie() {
+    constexpr s16 COOLDOWN_FRAMES = 20;
     bool dpadUp = inputs()->currentState().trickUp();
 
     if (!state()->isWheelie()) {
@@ -1454,6 +1499,9 @@ void KartMoveBike::tryStartWheelie() {
 
             startWheelie();
         }
+    } else if (inputs()->currentState().trickDown() && m_wheelieCooldown <= 0) {
+        cancelWheelie();
+        m_wheelieCooldown = COOLDOWN_FRAMES;
     }
 }
 

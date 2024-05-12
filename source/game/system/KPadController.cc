@@ -143,6 +143,10 @@ bool RaceInputState::trickUp() const {
     return trick == Trick::Up;
 }
 
+bool RaceInputState::trickDown() const {
+    return trick == Trick::Down;
+}
+
 KPadGhostButtonsStream::KPadGhostButtonsStream()
     : currentSequence(std::numeric_limits<u32>::max()), state(2) {}
 

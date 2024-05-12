@@ -47,6 +47,7 @@ public:
     bool isTrickStart() const;
     bool isInATrick() const;
     bool isBoostOffroadInvincibility() const;
+    bool isDisableBackwardsAccel() const;
     bool isTrickRot() const;
     bool isChargingSsmt() const;
     bool isTrickable() const;
@@ -89,6 +90,7 @@ public:
     void setInATrick(bool isSet);
     void setJumpPad(bool isSet);
     void setBoostOffroadInvincibility(bool isSet);
+    void setDisableBackwardsAccel(bool isSet);
     void setTrickRot(bool isSet);
     void setChargingSsmt(bool isSet);
     void setTrickable(bool isSet);
@@ -131,6 +133,7 @@ private:
     bool m_bTrickStart;
     bool m_bInATrick;
     bool m_bBoostOffroadInvincibility;
+    bool m_bDisableBackwardsAccel;
     bool m_bTrickRot;
     bool m_bChargingSsmt;
     bool m_bTrickable;

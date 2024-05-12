@@ -408,6 +408,10 @@ bool KartState::isBoostOffroadInvincibility() const {
     return m_bBoostOffroadInvincibility;
 }
 
+bool KartState::isDisableBackwardsAccel() const {
+    return m_bDisableBackwardsAccel;
+}
+
 bool KartState::isTrickRot() const {
     return m_bTrickRot;
 }
@@ -506,6 +510,7 @@ void KartState::clearBitfield1() {
     m_bTrickStart = false;
     m_bInATrick = false;
     m_bBoostOffroadInvincibility = false;
+    m_bDisableBackwardsAccel = false;
     m_bTrickRot = false;
     m_bChargingSsmt = false;
     m_bTrickable = false;
@@ -592,6 +597,10 @@ void KartState::setInATrick(bool isSet) {
 
 void KartState::setBoostOffroadInvincibility(bool isSet) {
     m_bBoostOffroadInvincibility = isSet;
+}
+
+void KartState::setDisableBackwardsAccel(bool isSet) {
+    m_bDisableBackwardsAccel = isSet;
 }
 
 void KartState::setTrickRot(bool isSet) {
