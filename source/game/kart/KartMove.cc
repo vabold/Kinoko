@@ -625,6 +625,11 @@ void KartMove::calcRotation() {
         turn = param()->stats().handlingManualTightness;
     }
 
+    bool forwards = true;
+    if (state()->isBrake() && m_speed <= 0.0f) {
+        forwards = false;
+    }
+
     turn *= m_realTurn;
     if (state()->isChargingSsmt()) {
         turn = m_realTurn * 0.04f;
@@ -635,17 +640,26 @@ void KartMove::calcRotation() {
 
         if (!drifting) {
             if (EGG::Mathf::abs(m_speed) < 1.0f) {
-                turn = 0.0f;
-            }
-
-            if (m_speed >= 20.0f) {
-                turn *= 0.5f;
-                if (m_speed < 70.0f) {
-                    turn += (1.0f - (m_speed - 20.0f) / 50.0f) * turn;
+                if (!(state()->isHop() && m_hopPosY > 0.0f)) {
+                    turn = 0.0f;
+                    goto ABS_SPEED_EDGECASE;
                 }
-            } else {
-                turn = (turn * 0.4f) + (m_speed / 20.0f) * (turn * 0.6f);
             }
+            if (forwards) {
+                if (m_speed >= 20.0f) {
+                    turn *= 0.5f;
+                    if (m_speed < 70.0f) {
+                        turn += (1.0f - (m_speed - 20.0f) / 50.0f) * turn;
+                    }
+                } else {
+                    turn = (turn * 0.4f) + (m_speed / 20.0f) * (turn * 0.6f);
+                }
+            }
+        }
+
+    ABS_SPEED_EDGECASE:
+        if (!forwards) {
+            turn = -turn;
         }
     }
 
@@ -671,6 +685,10 @@ void KartMove::calcVehicleSpeed() {
         if (!state()->isDriftManual()) {
             m_speed += dynamics()->speedFix();
         }
+    }
+
+    if (m_speed < -20.0f) {
+        m_speed += 0.5f;
     }
 
     m_acceleration = 0.0f;
