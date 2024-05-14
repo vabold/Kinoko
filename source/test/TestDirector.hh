@@ -66,7 +66,7 @@ private:
                     m_frameCount);
         }
 
-        K_LOG("DESYNC! Frame: %d; Name: %s", m_currentFrame, name);
+        K_LOG("DESYNC! Name: %s", name);
         std::string s0 = std::to_string(t0);
         std::string s1 = std::to_string(t1);
         K_LOG("Expected: 0x%08X | %s", f2u(t0), s0.c_str());
