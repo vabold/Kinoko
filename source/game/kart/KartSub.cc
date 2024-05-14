@@ -150,11 +150,17 @@ void KartSub::calcPass1() {
     Field::CollisionDirector::Instance()->checkCourseColNarrScLocal(250.0f, pos(),
             KCL_TYPE_VEHICLE_INTERACTABLE, 0);
     collide()->findCollision();
+
+    const auto &colData = collisionData();
+    if (colData.bWall) {
+        collide()->setMovement(collide()->movement() + colData.movement);
+    }
+
     collide()->calcFloorEffect();
 
-    if (collisionData().bFloor) {
+    if (colData.bFloor) {
         // Update floor count
-        addFloor(collisionData(), false);
+        addFloor(colData, false);
     }
 
     EGG::Vector3f forward = fullRot().rotateVector(EGG::Vector3f::ez);

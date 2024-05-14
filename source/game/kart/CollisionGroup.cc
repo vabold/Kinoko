@@ -6,6 +6,7 @@ namespace Kart {
 void CollisionData::reset() {
     tangentOff.setZero();
     floorNrm.setZero();
+    wallNrm.setZero();
     vel.setZero();
     relPos.setZero();
     movement.setZero();
@@ -16,6 +17,7 @@ void CollisionData::reset() {
     intensity = 0.0f;
 
     bFloor = false;
+    bWall = false;
     bSoftWall = false;
     bTrickable = false;
 }

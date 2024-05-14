@@ -31,10 +31,12 @@ public:
     void setAccelerate(bool isSet);
     void setDriftInput(bool isSet);
     void setDriftManual(bool isSet);
+    void setWallCollision(bool isSet);
     void setHopStart(bool isSet);
     void setVehicleBodyFloorCollision(bool isSet);
     void setAllWheelsCollision(bool isSet);
     void setAnyWheelCollision(bool isSet);
+    void setWallCollisionStart(bool isSet);
     void setStickyRoad(bool isSet);
     void setTouchingGround(bool isSet);
     void setHop(bool isSet);
@@ -66,12 +68,14 @@ public:
     bool isBrake() const;
     bool isDriftInput() const;
     bool isDriftManual() const;
+    bool isWallCollision() const;
     bool isHopStart() const;
     bool isGroundStart() const;
     bool isVehicleBodyFloorCollision() const;
     bool isAnyWheelCollision() const;
     bool isAllWheelsCollision() const;
     bool isStickLeft() const;
+    bool isWallCollisionStart() const;
     bool isAirtimeOver20() const;
     bool isStickyRoad() const;
     bool isTouchingGround() const;
@@ -106,6 +110,7 @@ public:
     const EGG::Vector3f &top() const;
     const EGG::Vector3f &softWallSpeed() const;
     f32 startBoostCharge() const;
+    s16 wallBonkTimer() const;
     s16 trickableTimer() const;
     /// @endGetters
 
@@ -123,21 +128,23 @@ private:
     /// ghosts which could not have been created legitimately in the first place.
     bool m_bDriftInput;
     bool m_bDriftManual;               ///< Currently in a drift w/ manual.
+    bool m_bWallCollision;             ///< Set if we are colliding with a wall.
     bool m_bHopStart;                  ///< Set if @ref m_bDriftInput was toggled on this frame.
     bool m_bAccelerateStart;           ///< Set if @ref m_bAccelerate was toggled on this frame.
     bool m_bGroundStart;               ///< Set first frame landing from airtime.
     bool m_bVehicleBodyFloorCollision; ///< Set if the vehicle body is colliding with the floor.
     bool m_bAnyWheelCollision;         ///< Set when any wheel is touching floor collision.
     bool m_bAllWheelsCollision;        ///< Set when all wheels are touching floor collision.
-    bool m_bStickLeft;      ///< Set on left stick input. Mutually exclusive to @ref m_bStickRight.
-    bool m_bAirtimeOver20;  ///< Set after 20 frames of airtime, resets on landing.
-    bool m_bStickyRoad;     ///< Like the rBC stairs
-    bool m_bTouchingGround; ///< Set when any part of the vehicle is colliding with floor KCL.
-    bool m_bHop;            ///< Set while we are in a drift hop. Clears when we land.
-    bool m_bBoost;          ///< Set while in a boost.
-    bool m_bStickRight;     ///< Set on right stick input. Mutually exclusive to @ref m_bStickLeft.
-    bool m_bMushroomBoost;  ///< Set while we are in a mushroom boost.
-    bool m_bDriftAuto;      ///< Currently in a drift w/ automatic.
+    bool m_bStickLeft; ///< Set on left stick input. Mutually exclusive to @ref m_bStickRight.
+    bool m_bWallCollisionStart; ///< Set if we have just started colliding with a wall.
+    bool m_bAirtimeOver20;      ///< Set after 20 frames of airtime, resets on landing.
+    bool m_bStickyRoad;         ///< Like the rBC stairs
+    bool m_bTouchingGround;     ///< Set when any part of the vehicle is colliding with floor KCL.
+    bool m_bHop;                ///< Set while we are in a drift hop. Clears when we land.
+    bool m_bBoost;              ///< Set while in a boost.
+    bool m_bStickRight;    ///< Set on right stick input. Mutually exclusive to @ref m_bStickLeft.
+    bool m_bMushroomBoost; ///< Set while we are in a mushroom boost.
+    bool m_bDriftAuto;     ///< Currently in a drift w/ automatic.
     bool m_bSlipdriftCharge;
     bool m_bWheelie; ///< Set while we are in a wheelie (even during the countdown).
     bool m_bJumpPad;
@@ -188,6 +195,7 @@ private:
     f32 m_stickY;           ///< One of 15 discrete stick values from [-1.0, 1.0].
     f32 m_startBoostCharge; ///< 0-1 representation of start boost charge. Burnout if >0.95f.
     size_t m_startBoostIdx; ///< Used to map @ref m_startBoostCharge to a start boost duration.
+    s16 m_wallBonkTimer;    ///< 2f counter that stunts your speed after hitting a wall. @rename
     s16 m_trickableTimer;
 };
 

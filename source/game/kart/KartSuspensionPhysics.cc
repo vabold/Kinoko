@@ -84,7 +84,7 @@ void WheelPhysics::updateCollision(const EGG::Vector3f &bottom, const EGG::Vecto
     collide()->calcWheelCollision(m_wheelIdx, m_hitboxGroup, m_colVel, center, nextRadius);
     CollisionData &colData = m_hitboxGroup->collisionData();
 
-    if (colData.bFloor) {
+    if (colData.bFloor || colData.bWall) {
         m_pos += colData.tangentOff;
         if (colData.intensity > -1) {
             m_targetEffectiveRadius = m_bspWheel->wheelRadius - static_cast<f32>(colData.intensity);

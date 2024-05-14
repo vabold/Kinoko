@@ -102,6 +102,7 @@ public:
     const EGG::Matrix34f &pose() const;
     EGG::Vector3f bodyFront() const;
     EGG::Vector3f bodyForward() const;
+    EGG::Vector3f bodyUp() const;
 
     const EGG::Vector3f &componentXAxis() const;
     const EGG::Vector3f &componentYAxis() const;
