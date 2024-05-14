@@ -233,6 +233,13 @@ EGG::Vector3f KartObjectProxy::bodyForward() const {
     return EGG::Vector3f(mtx[0, 0], mtx[1, 0], mtx[2, 0]);
 }
 
+/// @addr{0x80590C6C}
+/// @brief Returns the second column of the rotation matrix, which is the "up" direction.
+EGG::Vector3f KartObjectProxy::bodyUp() const {
+    const EGG::Matrix34f &mtx = pose();
+    return EGG::Vector3f(mtx[0, 1], mtx[1, 1], mtx[2, 1]);
+}
+
 /// @addr{0x80590CBC}
 const EGG::Vector3f &KartObjectProxy::componentXAxis() const {
     return physics()->xAxis();

@@ -19,6 +19,7 @@ struct CollisionData {
 
     EGG::Vector3f tangentOff;
     EGG::Vector3f floorNrm;
+    EGG::Vector3f wallNrm;
     EGG::Vector3f noBounceWallNrm;
     EGG::Vector3f vel;
     EGG::Vector3f relPos;
@@ -30,6 +31,7 @@ struct CollisionData {
     s32 intensity;                        ///< The KCL flag's "wheel depth"
 
     bool bFloor; ///< Set if colliding with KCL which satisfies #KCL_TYPE_FLOOR
+    bool bWall;  ///< Set if colliding with KCL which satisfies #KCL_TYPE_WALL
     bool bSoftWall;
     bool bTrickable;
 };

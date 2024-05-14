@@ -43,6 +43,8 @@ public:
     void calcVehicleSpeed();
     f32 calcVehicleAcceleration() const;
     void calcAcceleration();
+    f32 calcWallCollisionSpeedFactor(f32 &f1);
+    void calcWallCollisionStart(f32 param_2);
     void calcStandstillBoostRot();
     void calcDive();
     void calcSsmtStart();
@@ -50,6 +52,7 @@ public:
     virtual void calcVehicleRotation(f32 /*turn*/) {}
     virtual void hop();
     virtual void onHop() {}
+    virtual void onWallCollision() {}
     virtual void calcMtCharge() {}
     virtual f32 getWheelieSoftSpeedLimitBonus() const;
     virtual bool canWheelie() const;
@@ -133,6 +136,7 @@ protected:
     EGG::Vector3f m_up;         ///< Vector perpendicular to the floor, pointing upwards.
     EGG::Vector3f m_landingDir;
     EGG::Vector3f m_dir;
+    EGG::Vector3f m_lastDir; ///< @ref m_speed from the previous frame but with signed magnitude.
     EGG::Vector3f m_vel1Dir;
     EGG::Vector3f m_dirDiff;
     bool m_hasLandingDir;
@@ -175,6 +179,7 @@ protected:
     bool m_bPadJump;
     bool m_bSsmtCharged; ///< Set after holding a stand-still mini-turbo for 75 frames.
     bool m_bSsmtLeeway;  ///< If set, activates SSMT when not pressing A or B.
+    bool m_bWallBounce;  ///< Set when our speed loss from wall collision is > 30.0f.
     KartJump *m_jump;
     f32 m_rawTurn; ///< Float in range [-1, 1]. Represents stick magnitude + direction.
 };
@@ -205,10 +210,13 @@ public:
     ~KartMoveBike();
 
     virtual void startWheelie();
+    virtual void cancelWheelie();
+
     void createSubsystems() override;
     void calcVehicleRotation(f32 /*turn*/) override;
     void calcWheelie() override;
     void onHop() override;
+    void onWallCollision() override;
     void calcMtCharge() override;
     void setTurnParams() override;
     void init(bool b1, bool b2) override;
@@ -216,7 +224,6 @@ public:
     f32 wheelieRotFactor() const;
 
     void tryStartWheelie();
-    void cancelWheelie();
 
     /// @beginGetters
     f32 leanRot() const override;

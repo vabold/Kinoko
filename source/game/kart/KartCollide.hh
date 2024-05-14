@@ -40,7 +40,7 @@ public:
             bool b1, bool b2, bool b3);
 
     bool FUN_805B6A9C(CollisionData &collisionData, const Hitbox &hitbox, EGG::BoundBox3f &minMax,
-            EGG::Vector3f &relPos, s32 &count, Field::KCLTypeMask &maskOut,
+            EGG::Vector3f &relPos, s32 &count, const Field::KCLTypeMask &maskOut,
             const Field::CourseColMgr::CollisionInfo &colInfo);
     void applyBodyCollision(CollisionData &collisionData, const EGG::Vector3f &movement,
             const EGG::Vector3f &posRel, s32 count);

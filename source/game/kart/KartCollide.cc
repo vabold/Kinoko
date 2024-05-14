@@ -58,6 +58,11 @@ void KartCollide::calcHitboxes() {
 void KartCollide::findCollision() {
     calcBodyCollision(move()->totalScale(), fullRot(), scale());
 
+    auto &colData = collisionData();
+    if (colData.bWall) {
+        colData.wallNrm.normalise();
+    }
+
     f32 fVar1;
     if (state()->isBoost()) {
         fVar1 = 0.0f;
@@ -99,11 +104,11 @@ void KartCollide::FUN_80572F4C() {
 void KartCollide::FUN_805B72B8(f32 param_1, f32 param_2, bool lockXZ, bool addExtVelY) {
     const auto &colData = collisionData();
 
-    if (!colData.bFloor) {
+    if (!colData.bFloor && !colData.bWall) {
         return;
     }
 
-    EGG::Vector3f collisionDir = colData.floorNrm;
+    EGG::Vector3f collisionDir = colData.floorNrm + colData.wallNrm;
     collisionDir.normalise();
 
     f32 directionalVelocity = colData.vel.dot(collisionDir);
@@ -544,9 +549,14 @@ void KartCollide::applySomeFloorMoment(f32 down, f32 rate, CollisionGroup *hitbo
 /// @addr{0x805B6A9C}
 /// @rename
 bool KartCollide::FUN_805B6A9C(CollisionData &collisionData, const Hitbox &hitbox,
-        EGG::BoundBox3f &minMax, EGG::Vector3f &relPos, s32 &count, Field::KCLTypeMask &maskOut,
-        const Field::CourseColMgr::CollisionInfo &colInfo) {
-    if (!!(maskOut & KCL_TYPE_FLOOR)) {
+        EGG::BoundBox3f &minMax, EGG::Vector3f &relPos, s32 &count,
+        const Field::KCLTypeMask &maskOut, const Field::CourseColMgr::CollisionInfo &colInfo) {
+    if (maskOut & KCL_TYPE_WALL) {
+        collisionData.wallNrm += colInfo.wallNrm;
+        collisionData.bWall = true;
+    }
+
+    if (maskOut & KCL_TYPE_FLOOR) {
         collisionData.floorNrm += colInfo.floorNrm;
         collisionData.bFloor = true;
     }
@@ -571,7 +581,7 @@ void KartCollide::applyBodyCollision(CollisionData &collisionData, const EGG::Ve
         const EGG::Vector3f &posRel, s32 count) {
     setPos(pos() + movement);
 
-    if (!collisionData.bFloor) {
+    if (!collisionData.bFloor && collisionData.bWall) {
         collisionData.movement = movement;
     }
 

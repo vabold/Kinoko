@@ -36,6 +36,7 @@ KartMove::KartMove() : m_smoothedUp(EGG::Vector3f::ey), m_scale(1.0f, 1.0f, 1.0f
     m_bPadJump = false;
     m_bSsmtCharged = false;
     m_bSsmtLeeway = false;
+    m_bWallBounce = false;
     m_jump = nullptr;
 }
 
@@ -83,6 +84,7 @@ void KartMove::calcTurn() {
 void KartMove::setTurnParams() {
     init(false, false);
     m_dir = bodyFront();
+    m_lastDir = m_dir;
     m_vel1Dir = m_dir;
     m_landingDir = m_dir;
 }
@@ -99,6 +101,7 @@ void KartMove::init(bool b1, bool b2) {
     m_up = EGG::Vector3f::ey;
     m_smoothedUp = EGG::Vector3f::ey;
     m_vel1Dir = EGG::Vector3f::ez;
+    m_lastDir = EGG::Vector3f::ez;
     m_dir = EGG::Vector3f::ez;
     m_landingDir = EGG::Vector3f::ez;
     m_dirDiff = EGG::Vector3f::zero;
@@ -147,6 +150,9 @@ void KartMove::init(bool b1, bool b2) {
     m_bPadBoost = false;
     m_bRampBoost = false;
     m_bPadJump = false;
+    m_bSsmtCharged = false;
+    m_bSsmtLeeway = false;
+    m_bWallBounce = false;
     m_jump->reset();
     m_rawTurn = 0.0f;
 }
@@ -724,7 +730,7 @@ void KartMove::calcRotation() {
 
         if (!drifting) {
             bool noTurn = false;
-            if (EGG::Mathf::abs(m_speed) < 1.0f) {
+            if (!state()->isWallCollision() && EGG::Mathf::abs(m_speed) < 1.0f) {
                 if (!(state()->isHop() && m_hopPosY > 0.0f)) {
                     turn = 0.0f;
                     noTurn = true;
@@ -769,8 +775,11 @@ void KartMove::calcRotation() {
 void KartMove::calcVehicleSpeed() {
     const auto *raceMgr = System::RaceManager::Instance();
     if (raceMgr->isStageReached(System::RaceManager::Stage::Race)) {
-        if (!state()->isDriftManual()) {
-            m_speed += dynamics()->speedFix();
+        f32 speedFix = dynamics()->speedFix();
+        if ((state()->isWallCollisionStart() || state()->wallBonkTimer() == 0 ||
+                    EGG::Mathf::abs(speedFix) >= 3.0f) &&
+                !state()->isDriftManual()) {
+            m_speed += speedFix;
         }
     }
 
@@ -905,8 +914,12 @@ void KartMove::calcAcceleration() {
         dVar17 = std::max(dVar17, 100.0f);
     }
 
-    if (m_softSpeedLimit > dVar17) {
-        // If not colliding with a wall
+    m_lastDir = (m_speed > 0.0f) ? 1.0f * m_dir : -1.0f * m_dir;
+
+    f32 local_c8 = 1.0f;
+    dVar17 *= calcWallCollisionSpeedFactor(local_c8);
+
+    if (!state()->isWallCollision()) {
         m_softSpeedLimit = std::max(m_softSpeedLimit - 3.0f, dVar17);
     } else {
         m_softSpeedLimit = dVar17;
@@ -919,6 +932,8 @@ void KartMove::calcAcceleration() {
     if (state()->isJumpPad()) {
         m_speed = std::max(m_speed, m_jumpPadMinSpeed);
     }
+
+    calcWallCollisionStart(local_c8);
 
     m_speedRatioCapped = std::min(1.0f, EGG::Mathf::abs(m_speed / m_baseSpeed));
 
@@ -957,6 +972,83 @@ void KartMove::calcAcceleration() {
     }
 }
 
+/// @addr{0x8057B108}
+/// @stage 2
+/// @brief Every frame, computes a speed scalar if we are colliding with a wall.
+f32 KartMove::calcWallCollisionSpeedFactor(f32 &f1) {
+    if (!state()->isWallCollision()) {
+        return 1.0f;
+    }
+
+    onWallCollision();
+
+    EGG::Vector3f wallNrm = collisionData().wallNrm;
+    if (wallNrm.y > 0.0f) {
+        wallNrm.y = 0.0f;
+        wallNrm.normalise();
+    }
+
+    f32 dot = m_lastDir.dot(wallNrm);
+
+    if (dot < 0.0f) {
+        f1 = std::max(0.0f, dot + 1.0f);
+        return std::min(1.0f, f1 * 0.4f);
+    }
+
+    return 1.0f;
+}
+
+/// @addr{0x8057B2A0}
+/// @stage 2
+/// @brief If we started to collide with a wall this frame, applies rotation.
+void KartMove::calcWallCollisionStart(f32 param_2) {
+    m_bWallBounce = false;
+
+    if (!state()->isWallCollisionStart()) {
+        return;
+    }
+
+    m_dir = bodyFront();
+    m_vel1Dir = m_dir;
+    m_landingDir = m_dir;
+
+    if (param_2 < 0.9f) {
+        f32 speedDiff = m_lastSpeed - m_speed;
+
+        if (speedDiff > 30.0f) {
+            m_bWallBounce = true;
+            const CollisionData &colData = collisionData();
+            EGG::Vector3f newPos = colData.relPos + pos();
+            f32 dot = -bodyUp().dot(colData.relPos) * 0.5f;
+            EGG::Vector3f scaledUp = dot * bodyUp();
+            newPos -= scaledUp;
+
+            speedDiff = std::min(60.0f, speedDiff);
+            EGG::Vector3f scaledWallNrm = speedDiff * colData.wallNrm;
+
+            auto projAndRej = scaledWallNrm.projAndRej(m_vel1Dir);
+            projAndRej.first *= 0.3f;
+            projAndRej.second *= 0.9f;
+
+            if (state()->isBoost()) {
+                projAndRej.first = EGG::Vector3f::zero;
+                projAndRej.second = EGG::Vector3f::zero;
+            }
+
+            if (bodyFront().dot(colData.wallNrm) > 0.0f) {
+                projAndRej.first = EGG::Vector3f::zero;
+            }
+            projAndRej.second *= 0.9f;
+
+            EGG::Vector3f projRejSum = projAndRej.first + projAndRej.second;
+            f32 bumpDeviation =
+                    state()->isTouchingGround() ? param()->stats().bumpDeviationLevel : 0.0f;
+
+            dynamics()->applyWrenchScaled(newPos, projRejSum, bumpDeviation);
+        }
+    }
+}
+
 /// @stage 1+
 /// @brief STAGE Computes the x-component of angular velocity based on the kart's speed.
 /// @addr{0x8057D1D4}
@@ -988,7 +1080,11 @@ void KartMove::calcStandstillBoostRot() {
         }
     }
 
-    m_standStillBoostRot += scalar * (next - m_standStillBoostRot);
+    if (m_bWallBounce) {
+        m_standStillBoostRot = isBike() ? next * 3.0f : next * 10.0f;
+    } else {
+        m_standStillBoostRot += scalar * (next - m_standStillBoostRot);
+    }
 }
 
 /// @stage 2
@@ -1407,6 +1503,14 @@ void KartMoveBike::startWheelie() {
     m_wheelieRotDec = 0.0f;
 }
 
+/// @addr{0x805883C4}
+/// @stage 1+
+/// @brief Clears the wheelie bit flag and resets the rotation decrement.
+void KartMoveBike::cancelWheelie() {
+    state()->setWheelie(false);
+    m_wheelieRotDec = 0.0f;
+}
+
 /// @addr{0x80587BB8}
 void KartMoveBike::createSubsystems() {
     m_jump = new KartJumpBike(this);
@@ -1589,7 +1693,10 @@ void KartMoveBike::calcWheelie() {
             EGG::Vector3f angVel2 = dynamics()->angVel2();
             angVel2.x -= m_wheelieRot * (1.0f - EGG::Mathf::abs(vel1DirUp));
             dynamics()->setAngVel2(angVel2);
+        } else {
+            cancelWheelie();
         }
+
         state()->setWheelieRot(true);
     } else {
         state()->setWheelieRot(false);
@@ -1606,6 +1713,12 @@ void KartMoveBike::onHop() {
         return;
     }
 
+    cancelWheelie();
+}
+
+/// @stage 2
+/// @brief Called when you collide with a wall. All it does for bikes is cancel wheelies.
+void KartMoveBike::onWallCollision() {
     cancelWheelie();
 }
 
@@ -1654,7 +1767,12 @@ void KartMoveBike::tryStartWheelie() {
 
     if (!state()->isWheelie()) {
         if (dpadUp && state()->isTouchingGround()) {
-            if (state()->isDriftManual() || state()->isHop() || state()->isDriftAuto()) {
+            if (state()->isDriftManual() || state()->isWallCollision() || state()->isHop() ||
+                    state()->isDriftAuto()) {
+                return;
+            }
+
+            if (m_wheelieCooldown > 0) {
                 return;
             }
 
@@ -1664,13 +1782,6 @@ void KartMoveBike::tryStartWheelie() {
         cancelWheelie();
         m_wheelieCooldown = COOLDOWN_FRAMES;
     }
-}
-
-/// @brief STAGE 1+ - Clears the wheelie bit flag and resets the rotation decrement.
-/// @addr{0x805883C4}
-void KartMoveBike::cancelWheelie() {
-    state()->setWheelie(false);
-    m_wheelieRotDec = 0.0f;
 }
 
 /// @addr{0x805896BC}

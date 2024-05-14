@@ -157,6 +157,19 @@ void KartDynamics::applySuspensionWrench(const EGG::Vector3f &p, const EGG::Vect
     m_totalTorque += torque;
 }
 
+/// @addr{0x805B5CE8}
+/// @stage 2
+/// @brief Applies a force linearly and rotationally to the kart.
+void KartDynamics::applyWrenchScaled(const EGG::Vector3f &p, const EGG::Vector3f &f, f32 scale) {
+    m_totalForce += f;
+
+    EGG::Vector3f invForceRot = m_fullRot.rotateVectorInv(f);
+    EGG::Vector3f relPos = p - m_pos;
+    EGG::Vector3f invPosRot = m_fullRot.rotateVectorInv(relPos);
+
+    m_totalTorque += invPosRot.cross(invForceRot) * scale;
+}
+
 void KartDynamics::setPos(const EGG::Vector3f &pos) {
     m_pos = pos;
 }
