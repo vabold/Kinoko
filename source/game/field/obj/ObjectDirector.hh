@@ -21,8 +21,8 @@ public:
     ObjectDirector();
     virtual ~ObjectDirector();
 
-    void CreateObjects(bool isMii);
-    void ConstructObject(System::MapdataGeoObj &obj);
+    void createObjects(bool isMii);
+    void constructObject(System::MapdataGeoObj &obj);
 
     const ObjFlow* objFlow() const;
 private:

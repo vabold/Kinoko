@@ -20,6 +20,7 @@ ObjDrivableHolder *ObjDrivableHolder::Instance() {
 
 ObjDrivableHolder::ObjDrivableHolder() {
     m_objs = new GeoObjectDrivable*[400];
+    m_count = 0;
 }
 
 ObjDrivableHolder::~ObjDrivableHolder() {
@@ -35,8 +36,8 @@ ObjDrivableHolder::~ObjDrivableHolder() {
 void ObjDrivableHolder::initObjs() {
     for (s32 i = 0; i < m_count; i++) {
         if (m_objs[i] != nullptr) {
-            m_objs[i]->setup();
-            m_objs[i]->update();
+            //m_objs[i]->setup();
+            //m_objs[i]->update();
         }
     }
 }

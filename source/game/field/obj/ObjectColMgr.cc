@@ -23,6 +23,14 @@ ObjectColMgr::~ObjectColMgr() {
     delete m_data;
 }
 
+void ObjectColMgr::setMtx(EGG::Matrix34f &val) {
+    m_mtx = val;
+    m_mtxInv = val.inverseTo();
+}
+void ObjectColMgr::setKCLScale(f32 val) {
+    m_kclScale = val;
+}
+
 EGG::Vector3f ObjectColMgr::getKclBboxLowWorld() {
     EGG::Vector3f out = m_data->bbox().min * m_kclScale;
     return m_mtx.ps_multVector(out);

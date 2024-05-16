@@ -1,6 +1,7 @@
 #include "RaceScene.hh"
 
 #include "game/field/CollisionDirector.hh"
+#include "game/field/obj/ObjectDirector.hh"
 #include "game/item/ItemDirector.hh"
 #include "game/kart/KartObjectManager.hh"
 #include "game/system/CourseMap.hh"
@@ -21,6 +22,7 @@ void RaceScene::createEngines() {
     Kart::KartObjectManager::CreateInstance();
     Field::CollisionDirector::CreateInstance();
     Item::ItemDirector::CreateInstance();
+    Field::ObjectDirector::CreateInstance();
 }
 
 void RaceScene::initEngines() {
@@ -40,6 +42,7 @@ void RaceScene::calcEngines() {
 void RaceScene::destroyEngines() {
     System::KPadDirector::Instance()->endGhostProxies();
     Kart::KartObjectManager::DestroyInstance();
+    Field::ObjectDirector::DestroyInstance();
     Field::CollisionDirector::DestroyInstance();
     Item::ItemDirector::DestroyInstance();
     System::RaceManager::DestroyInstance();

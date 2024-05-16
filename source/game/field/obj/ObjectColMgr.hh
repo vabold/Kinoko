@@ -14,6 +14,9 @@ public:
     ObjectColMgr(const char *filename);
     ~ObjectColMgr();
 
+    void setMtx(EGG::Matrix34f &val);
+    void setKCLScale(f32 val);
+
     EGG::Vector3f getKclBboxLowWorld();
     EGG::Vector3f getKclBboxHighWorld();
 private:

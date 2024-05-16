@@ -12,6 +12,7 @@ MapdataGeoObj::MapdataGeoObj(const SData *data) : m_rawData(data) {
 
 void MapdataGeoObj::read(EGG::Stream &stream) {
     m_id = stream.read_u16();
+    stream.skip(sizeof(u16));
     m_position.read(stream);
     m_rotation.read(stream);
     m_scale.read(stream);

@@ -48,7 +48,7 @@ KColData::KColData(const void *file) {
     m_prisms = reinterpret_cast<const KCollisionPrism *>(
             addOffset(m_prismData, sizeof(KCollisionPrism)));
     m_prismCount =
-            (reinterpret_cast<uintptr_t>(m_blockData) - reinterpret_cast<uintptr_t>(m_prisms + 1)) /
+            (reinterpret_cast<uintptr_t>(m_blockData) - reinterpret_cast<uintptr_t>(m_prisms)) /
             sizeof(KCollisionPrism);
 
     computeBBox();
@@ -88,7 +88,7 @@ void KColData::computeBBox() {
     m_bbox.max.set(-999999.0f);
     m_bbox.min.set(999999.0f);
 
-    for (size_t i = 0; i < m_prismCount; i++) {
+    for (size_t i = 1; i < m_prismCount; i++) {
         const KCollisionPrism prism = getPrism(i);
 
         const EGG::Vector3f fnrm = getNrm(prism.fnrm_i);

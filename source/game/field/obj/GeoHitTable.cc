@@ -13,8 +13,8 @@ GeoHitTable::GeoHitTable(const char* filename) {
     void* file = GeoHitTable::LoadFile(filename);
     EGG::RamStream header = EGG::RamStream(reinterpret_cast<u8*>(file), sizeof(GeoHitTableHeader));
 
-    m_objectCount = header.read_u32();
-    m_hitParameterCount = header.read_u32();
+    m_objectCount = header.read_u16();
+    m_hitParameterCount = header.read_u16();
     m_hitParametersArray = reinterpret_cast<void**>(new u8[m_objectCount * sizeof(void*)]);
 
     u32 hitParamsSize = m_hitParameterCount * sizeof(u16);
@@ -35,6 +35,8 @@ void* GeoHitTable::LoadFile(const char* filename) {
     return System::ResourceManager::Instance()->getFile(filename, nullptr, System::ArchiveId::Core);
 }
 
-GeoHitTable::~GeoHitTable() = default;
+GeoHitTable::~GeoHitTable() {
+    delete[] m_hitParametersArray;
+}
 
 } // namespace Field

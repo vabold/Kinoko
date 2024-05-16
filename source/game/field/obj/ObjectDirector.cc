@@ -1,5 +1,6 @@
 #include "game/field/obj/ObjectDirector.hh"
 #include "game/field/obj/ObjDrivableHolder.hh"
+#include "game/field/obj/objects/Mdush.hh"
 #include "game/system/CourseMap.hh"
 #include "game/system/RaceConfig.hh"
 #include <cstring>
@@ -46,6 +47,30 @@ ObjectDirector::ObjectDirector() {
 }
 
 ObjectDirector::~ObjectDirector() {
+    // destroying stuff the game doesn't normally destroy because i'm a decent human being
+    for (s32 i = 0; i < 5; i++) {
+        for (s32 j = 0; j < m_objArrays[i].m_count; j++) {
+            if (m_objArrays[i].m_array[j] != nullptr) {
+                delete m_objArrays[i].m_array[j];
+            }
+        }
+        delete[] m_objArrays[i].m_array;
+    }
+    
+    if (m_managedGroup != nullptr) {
+        delete m_managedGroup;
+    }
+
+    delete[] m_collisionScenarios;
+    delete[] _44;
+    delete[] m_objs;
+
+    delete m_getHitTableKartObj;
+    delete m_getHitTableKart;
+    delete m_getHitTableItemObj;
+    delete m_getHitTableItem;
+    delete m_objFlow;
+
     // more stuff here
 }
 
@@ -54,15 +79,16 @@ ObjectDirector *ObjectDirector::CreateInstance() {
         s_instance = new ObjectDirector;
     }
     ObjDrivableHolder::CreateInstance();
-    s_instance->CreateObjects(true);
+    s_instance->createObjects(true);
     // destroy some heap, and then
-    s_instance->CreateObjects(false);
+    s_instance->createObjects(false);
     // FUN_8088be00()
     return s_instance;
 }
 void ObjectDirector::DestroyInstance() {
     assert(s_instance);
     delete s_instance;
+    ObjDrivableHolder::DestroyInstance();
     // more stuff here
     s_instance = nullptr;
 }
@@ -70,7 +96,7 @@ ObjectDirector *ObjectDirector::Instance() {
     return s_instance;
 }
 
-void ObjectDirector::CreateObjects(bool isMii) {
+void ObjectDirector::createObjects(bool isMii) {
     // isMii will just create all mii-related objects, for now we don't care about those so let's not for now
     if (isMii) return;
 
@@ -86,16 +112,19 @@ void ObjectDirector::CreateObjects(bool isMii) {
     for (u32 i = 0; i < objCount; i++) {
         System::MapdataGeoObj* obj = System::CourseMap::Instance()->getGeoObj(i);
         // a bunch of objects have sorta custom handlers, we don't care rn though
-        ConstructObject(*obj);
+        constructObject(*obj);
     }
 }
 
-void ObjectDirector::ConstructObject(System::MapdataGeoObj &obj) {
-    u16 slot = m_objFlow->m_slots[obj.id()];
-    ObjAttrs* attrs = &m_objFlow->m_attrs[slot];
-    const char* name = attrs->name;
+void ObjectDirector::constructObject(System::MapdataGeoObj &obj) {
+    GeoObject* out = nullptr;
+
+    u16 slot = m_objFlow->slots(obj.id());
+    ObjAttrs* attrs = m_objFlow->attrs(slot);
+    const char* name = attrs->name();
     if (strcmp(name, "Mdush") == 0) {
-        
+        out = new Mdush(&obj);
+        out->init();
     }
 }
 

@@ -41,11 +41,11 @@ public:
 
     void init(const TData *start, u16 count) {
         if (count != 0) {
-            m_entryCount = count;
-            m_entries = new T *[count];
+            m_entryCount = parse<u16>(count);
+            m_entries = new T *[m_entryCount];
         }
 
-        for (u16 i = 0; i < count; ++i) {
+        for (u16 i = 0; i < m_entryCount; ++i) {
             m_entries[i] = new T(&start[i]);
         }
     }
