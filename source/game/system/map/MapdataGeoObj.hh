@@ -24,6 +24,9 @@ public:
     MapdataGeoObj(const SData *data);
 
     u16 id() const;
+    EGG::Vector3f position() const;
+    EGG::Vector3f rotation() const;
+    EGG::Vector3f scale() const;
 
     void read(EGG::Stream &stream);
 

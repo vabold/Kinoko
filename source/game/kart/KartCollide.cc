@@ -169,7 +169,7 @@ void KartCollide::calcBodyCollision(f32 totalScale, const EGG::Quatf &rot,
 
     EGG::Vector3f posRel;
     s32 count = 0;
-    Field::CourseColMgr::CollisionInfo colInfo;
+    Field::CollisionInfo colInfo;
     colInfo.bbox.setDirect(EGG::Vector3f::zero, EGG::Vector3f::zero);
     Field::KCLTypeMask maskOut;
     Field::CourseColMgr::NoBounceWallColInfo noBounceWallInfo;
@@ -265,7 +265,7 @@ void KartCollide::calcWheelCollision(u16 /*wheelIdx*/, CollisionGroup *hitboxGro
     hitboxGroup->resetCollision();
     firstHitbox.setWorldPos(center);
 
-    Field::CourseColMgr::CollisionInfo colInfo;
+    Field::CollisionInfo colInfo;
     colInfo.bbox.setZero();
     Field::KCLTypeMask kclOut;
     Field::CourseColMgr::NoBounceWallColInfo noBounceWallInfo;
@@ -310,17 +310,17 @@ void KartCollide::calcWheelCollision(u16 /*wheelIdx*/, CollisionGroup *hitboxGro
 }
 
 void KartCollide::processWheel(CollisionData &collisionData, Hitbox &hitbox,
-        Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut) {
+        Field::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut) {
     processFloor(collisionData, hitbox, colInfo, maskOut, true);
 }
 
 void KartCollide::processBody(CollisionData &collisionData, Hitbox &hitbox,
-        Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut) {
+        Field::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut) {
     processFloor(collisionData, hitbox, colInfo, maskOut, false);
 }
 
 void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
-        Field::CourseColMgr::CollisionInfo * /*colInfo*/, Field::KCLTypeMask *maskOut, bool wheel) {
+        Field::CollisionInfo * /*colInfo*/, Field::KCLTypeMask *maskOut, bool wheel) {
     constexpr Field::KCLTypeMask BOOST_RAMP_MASK = KCL_TYPE_BIT(COL_TYPE_BOOST_RAMP);
 
     if (collisionData.bSoftWall) {
@@ -474,7 +474,7 @@ void KartCollide::applySomeFloorMoment(f32 down, f32 rate, CollisionGroup *hitbo
 
 bool KartCollide::FUN_805B6A9C(CollisionData &collisionData, const Hitbox &hitbox,
         EGG::BoundBox3f &minMax, EGG::Vector3f &relPos, s32 &count, Field::KCLTypeMask &maskOut,
-        const Field::CourseColMgr::CollisionInfo &colInfo) {
+        const Field::CollisionInfo &colInfo) {
     if (!!(maskOut & KCL_TYPE_FLOOR)) {
         collisionData.floorNrm += colInfo.floorNrm;
         collisionData.bFloor = true;

@@ -58,7 +58,7 @@ public:
             const EGG::Vector3f &fnrm, const EGG::Vector3f &enrm3, const EGG::Vector3f &enrm);
 
     u16 prismCache(u32 idx) const;
-
+    EGG::BoundBox3f bbox() const;
 private:
     bool checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::Vector3f *fnrmOut,
             u16 *flagsOut, CollisionCheckType type);

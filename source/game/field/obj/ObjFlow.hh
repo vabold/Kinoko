@@ -28,6 +28,8 @@ public:
     virtual ~ObjFlow() = default;
 
     static void *LoadFile(const char *filename);
+
+    u16 getIdFromName(const char* name) const;
 private:
 };
 

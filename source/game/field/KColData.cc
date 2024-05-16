@@ -291,6 +291,10 @@ u16 KColData::prismCache(u32 idx) const {
     return m_prismCache[idx];
 }
 
+EGG::BoundBox3f KColData::bbox() const {
+    return m_bbox;
+}
+
 // This is a combination of the three collision checks in the base game.
 // The three checks vary only by a few if-statements, related to whether we are checking for:
 // 1. A collision with at least the triangle edge (0x807C0F00)

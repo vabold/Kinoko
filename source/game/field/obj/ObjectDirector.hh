@@ -22,7 +22,9 @@ public:
     virtual ~ObjectDirector();
 
     void CreateObjects(bool isMii);
-    void ConstructObject(System::MapdataGeoObj* pObj);
+    void ConstructObject(System::MapdataGeoObj &obj);
+
+    const ObjFlow* objFlow() const;
 private:
     static ObjectDirector *s_instance;
 

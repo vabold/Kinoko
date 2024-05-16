@@ -2,6 +2,7 @@
 #include "game/field/obj/ObjDrivableHolder.hh"
 #include "game/system/CourseMap.hh"
 #include "game/system/RaceConfig.hh"
+#include <cstring>
 
 namespace Field
 {
@@ -85,15 +86,21 @@ void ObjectDirector::CreateObjects(bool isMii) {
     for (u32 i = 0; i < objCount; i++) {
         System::MapdataGeoObj* obj = System::CourseMap::Instance()->getGeoObj(i);
         // a bunch of objects have sorta custom handlers, we don't care rn though
-        ConstructObject(obj);
+        ConstructObject(*obj);
     }
 }
 
-void ObjectDirector::ConstructObject(System::MapdataGeoObj* pObj) {
-    u16 slot = m_objFlow->m_slots[pObj->id()];
+void ObjectDirector::ConstructObject(System::MapdataGeoObj &obj) {
+    u16 slot = m_objFlow->m_slots[obj.id()];
     ObjAttrs* attrs = &m_objFlow->m_attrs[slot];
     const char* name = attrs->name;
-    // stay tuned
+    if (strcmp(name, "Mdush") == 0) {
+        
+    }
+}
+
+const ObjFlow* ObjectDirector::objFlow() const {
+    return m_objFlow;
 }
 
 ObjectDirector* ObjectDirector::s_instance = nullptr;
