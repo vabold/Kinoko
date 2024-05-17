@@ -241,7 +241,7 @@ void KartSuspensionPhysics::calcSuspension(const EGG::Vector3f &forward,
     fLinear.y += rotProj.y;
     fLinear.y = std::min(fLinear.y, param()->stats().maxNormalAcceleration);
 
-    if (dynamics()->extVel().y > 5.0f) {
+    if (dynamics()->extVel().y > 5.0f || state()->isJumpPadDisableYsusForce()) {
         fLinear.y = 0.0f;
     }
 

@@ -319,7 +319,7 @@ bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::V
     // The flag check occurs earlier than in the base game here. We don't want to do math if the tri
     // we're checking doesn't have matching flags.
     u32 attributeMask = KCL_ATTRIBUTE_TYPE_BIT(prism.attribute);
-    if ((attributeMask & m_typeMask) == 0) {
+    if (!(attributeMask & m_typeMask)) {
         return false;
     }
 
@@ -347,12 +347,21 @@ bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::V
     const EGG::Vector3f fnrm = getNrm(prism.fnrm_i);
     f32 plane_dist = relativePos.ps_dot(fnrm);
     f32 dist_in_plane = m_radius - plane_dist;
-    if (dist_in_plane <= 0.0f || dist_in_plane >= m_prismThickness) {
+    if (dist_in_plane <= 0.0f) {
+        return false;
+    }
+
+    f32 typeDistance = m_prismThickness;
+    if (type == CollisionCheckType::Edge) {
+        typeDistance += m_radius;
+    }
+
+    if (dist_in_plane >= typeDistance) {
         return false;
     }
 
     if (type == CollisionCheckType::Movement) {
-        if ((attributeMask & KCL_TYPE_DIRECTIONAL) != 0 && m_movement.dot(fnrm) > 0.0f) {
+        if (attributeMask & KCL_TYPE_DIRECTIONAL && m_movement.dot(fnrm) > 0.0f) {
             return false;
         }
     }

@@ -1,11 +1,11 @@
 #pragma once
 
 #include "game/kart/KartObjectProxy.hh"
-#include "game/system/KPADController.hh"
+#include "game/system/KPadController.hh"
 
 namespace Kart {
 
-enum class BoostRampVariant {
+enum class SurfaceVariant {
     DoubleFlipTrick = 0,
     SingleFlipTrick = 1,
     StuntTrick = 2,
@@ -31,6 +31,11 @@ public:
         f32 angleDiffMulDec;
     };
 
+    struct AngleProperties {
+        f32 targetAngle;
+        f32 rotAngle;
+    };
+
     KartJump(KartMove *move);
     virtual ~KartJump();
 
@@ -49,14 +54,14 @@ public:
     bool isBoostRampEnabled() const;
 
     TrickType type() const;
-    BoostRampVariant variant() const;
+    SurfaceVariant variant() const;
     s16 cooldown() const;
 
     void setBoostRampEnabled(bool isSet);
 
 protected:
     TrickType m_type;
-    BoostRampVariant m_variant;
+    SurfaceVariant m_variant;
     System::Trick m_nextTrick;
     f32 m_rotSign;
     TrickProperties m_properties;

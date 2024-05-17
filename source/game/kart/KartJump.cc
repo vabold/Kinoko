@@ -19,21 +19,27 @@ KartJump::KartJump(KartMove *move) : m_move(move) {
 KartJump::~KartJump() = default;
 
 void KartJump::setupProperties() {
-    static constexpr std::array<TrickProperties, 3> TRICK_PROPERTIES = {
-            {{11.0f, 1.5f, 0.9f, 0.0018f}, {14.0f, 1.5f, 0.9f, 0.0006f},
-                    {7.5f, 2.5f, 0.93f, 0.05f}}};
+    static constexpr std::array<TrickProperties, 3> TRICK_PROPERTIES = {{
+            {11.0f, 1.5f, 0.9f, 0.0018f},
+            {14.0f, 1.5f, 0.9f, 0.0006f},
+            {7.5f, 2.5f, 0.93f, 0.05f},
+    }};
 
-    static constexpr std::array<f32, 3> FINAL_ANGLES = {{360.0f, 720.0f, 180.0f}};
+    static constexpr std::array<f32, 3> FINAL_ANGLES = {{
+            360.0f,
+            720.0f,
+            180.0f,
+    }};
 
-    if (m_variant == BoostRampVariant::SingleFlipTrick) {
+    if (m_variant == SurfaceVariant::SingleFlipTrick) {
         m_properties = TRICK_PROPERTIES[0];
         m_finalAngle = FINAL_ANGLES[0];
-    } else if (m_variant == BoostRampVariant::DoubleFlipTrick) {
+    } else if (m_variant == SurfaceVariant::StuntTrick) {
         m_properties = TRICK_PROPERTIES[1];
         m_finalAngle = FINAL_ANGLES[1];
     } else if (m_type == TrickType::BikeSideStuntTrick) {
         m_properties = TRICK_PROPERTIES[2];
-        m_finalAngle = FINAL_ANGLES[0];
+        m_finalAngle = FINAL_ANGLES[2];
     }
 
     m_angleDelta = m_properties.initialAngleDiff;
@@ -52,7 +58,15 @@ void KartJump::tryStart(const EGG::Vector3f &left) {
     }
 
     if (m_move->speedRatioCapped() > 0.5f) {
-        m_variant = static_cast<BoostRampVariant>(state()->boostRampType());
+        s32 boostRampType = state()->boostRampType();
+
+        if (boostRampType == 0) {
+            m_variant = SurfaceVariant::StuntTrick;
+        } else if (boostRampType == 1) {
+            m_variant = SurfaceVariant::SingleFlipTrick;
+        } else {
+            m_variant = SurfaceVariant::DoubleFlipTrick;
+        }
 
         start(left);
     }
@@ -61,8 +75,7 @@ void KartJump::tryStart(const EGG::Vector3f &left) {
 }
 
 void KartJump::calc() {
-    --m_cooldown;
-    m_cooldown = std::max(0, static_cast<s32>(m_cooldown));
+    m_cooldown = std::max(0, m_cooldown - 1);
 
     if (state()->isTrickRot()) {
         calcRot();
@@ -87,8 +100,7 @@ void KartJump::calcInput() {
     u32 airtime = state()->airtime();
     if (airtime == 0 || m_nextAllowTimer < 1 || airtime > 10 ||
             (!state()->isTrickable() && state()->boostRampType() < 0) || someFlagCheck()) {
-        --m_nextAllowTimer;
-        m_nextAllowTimer = std::max(0, static_cast<s32>(m_nextAllowTimer));
+        m_nextAllowTimer = std::max(0, m_nextAllowTimer - 1);
     } else {
         if (airtime > 2) {
             state()->setTrickStart(true);
@@ -113,10 +125,23 @@ void KartJump::end() {
 }
 
 void KartJump::setAngle(const EGG::Vector3f &left) {
-    static constexpr std::array<std::array<std::array<f32, 2>, 3>, 3> ANGLE_PROPERTIES = {
-            {{{{{40.0f, 15.0f}}, {{45.0f, 20.0f}}, {{45.0f, 20.0f}}}},
-                    {{{{36.0f, 13.0f}}, {{42.0f, 18.0f}}, {{42.0f, 18.0f}}}},
-                    {{{{32.0f, 11.0f}}, {{39.0f, 16.0f}}, {{16.0f, 1.0f}}}}}};
+    static constexpr std::array<std::array<AngleProperties, 3>, 3> ANGLE_PROPERTIES = {{
+            {{
+                    {40.0f, 15.0f},
+                    {45.0f, 20.0f},
+                    {45.0f, 20.0f},
+            }},
+            {{
+                    {36.0f, 13.0f},
+                    {42.0f, 18.0f},
+                    {42.0f, 18.0f},
+            }},
+            {{
+                    {32.0f, 11.0f},
+                    {39.0f, 16.0f},
+                    {16.0f, 1.0f},
+            }},
+    }};
 
     f32 vel1YDot = m_move->vel1Dir().dot(EGG::Vector3f::ey);
     EGG::Vector3f vel1YCross = m_move->vel1Dir().cross(EGG::Vector3f::ey);
@@ -124,13 +149,13 @@ void KartJump::setAngle(const EGG::Vector3f &left) {
     f32 pitch = EGG::Mathf::abs(EGG::Mathf::atan2(vel1YCrossMag, vel1YDot));
     f32 angle = 90.0f - (pitch * RAD2DEG);
     u32 weightClass = static_cast<u32>(param()->stats().weightClass);
-    f32 targetAngle = ANGLE_PROPERTIES[weightClass][static_cast<u32>(m_variant)][0];
+    f32 targetAngle = ANGLE_PROPERTIES[weightClass][static_cast<u32>(m_variant)].targetAngle;
 
-    if (angle > targetAngle) {
+    if (state()->isJumpPad() || angle > targetAngle) {
         return;
     }
 
-    f32 rotAngle = ANGLE_PROPERTIES[weightClass][static_cast<u32>(m_variant)][1];
+    f32 rotAngle = ANGLE_PROPERTIES[weightClass][static_cast<u32>(m_variant)].rotAngle;
 
     if (angle + rotAngle > targetAngle) {
         rotAngle = targetAngle - angle;
@@ -150,7 +175,7 @@ TrickType KartJump::type() const {
     return m_type;
 }
 
-BoostRampVariant KartJump::variant() const {
+SurfaceVariant KartJump::variant() const {
     return m_variant;
 }
 
@@ -208,14 +233,14 @@ void KartJumpBike::start(const EGG::Vector3f &left) {
     setAngle(left);
     state()->setInATrick(true);
     m_cooldown = 5;
-    KartMoveBike *moveBike = reinterpret_cast<KartMoveBike *>(m_move);
+    KartMoveBike *moveBike = static_cast<KartMoveBike *>(m_move);
     moveBike->cancelWheelie();
 }
 
 void KartJumpBike::init() {
     constexpr f32 DOUBLE_FLIP_TRICK_FINAL_ANGLE = 180.0f;
 
-    if (m_variant == BoostRampVariant::DoubleFlipTrick) {
+    if (m_variant == SurfaceVariant::DoubleFlipTrick) {
         if (m_nextTrick < System::Trick::Left) {
             return;
         }

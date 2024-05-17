@@ -23,6 +23,7 @@ void KartCollide::init() {
     m_rampBoost = false;
     m_offRoad = false;
     m_groundBoostPanelOrRamp = false;
+    m_trickable = false;
     m_notTrickable = false;
     m_smoothedBack = 0.0f;
     m_suspBottomHeightNonSoftWall = 0.0f;
@@ -71,12 +72,9 @@ void KartCollide::FUN_80572F4C() {
         fVar1 = 0.05f;
     }
 
-    bool resetXZ = false;
-    if (fVar1 > 0.0f && state()->isAirtimeOver20() && dynamics()->velocity().y < -50.0f) {
-        resetXZ = true;
-    }
+    bool resetXZ = fVar1 > 0.0f && state()->isAirtimeOver20() && dynamics()->velocity().y < -50.0f;
 
-    FUN_805B72B8(0.01f, fVar1, resetXZ, true);
+    FUN_805B72B8(0.01f, fVar1, resetXZ, !state()->isJumpPadDisableYsusForce());
 }
 
 void KartCollide::FUN_805B72B8(f32 param_1, f32 param_2, bool lockXZ, bool addExtVelY) {
@@ -220,6 +218,7 @@ void KartCollide::calcFloorEffect() {
     m_suspBottomHeightNonSoftWall = 0.0f;
     m_rampBoost = false;
     m_offRoad = false;
+    m_trickable = false;
     m_notTrickable = false;
     m_suspBottomHeightSoftWall = 0.0f;
     m_someNonSoftWallTimer = 0;
@@ -285,7 +284,7 @@ void KartCollide::calcWheelCollision(u16 /*wheelIdx*/, CollisionGroup *hitboxGro
 
     collisionData.tangentOff = colInfo.tangentOff;
 
-    if (noBounceWallInfo.dist > FLT_MIN) {
+    if (noBounceWallInfo.dist > std::numeric_limits<f32>::min()) {
         collisionData.tangentOff += noBounceWallInfo.tangentOff;
         collisionData.noBounceWallNrm = noBounceWallInfo.fnrm;
         collisionData.bSoftWall = true;
@@ -343,6 +342,9 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
     u16 attribute = closestColEntry->attribute;
     if (!(attribute & 0x2000)) {
         m_notTrickable = true;
+    } else {
+        collisionData.bTrickable = true;
+        m_trickable = true;
     }
 
     collisionData.speedFactor = std::min(collisionData.speedFactor,
@@ -359,6 +361,7 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
 
     if (!!(*maskOut & BOOST_RAMP_MASK) &&
             colDirector->findClosestCollisionEntry(maskOut, BOOST_RAMP_MASK)) {
+        closestColEntry = colDirector->closestCollisionEntry();
         move()->setRampBoost(true);
         state()->setBoostRampType(KCL_VARIANT_TYPE(closestColEntry->attribute));
         m_rampBoost = true;
@@ -375,6 +378,16 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
 
     if (*maskOut & KCL_TYPE_BIT(COL_TYPE_STICKY_ROAD)) {
         state()->setStickyRoad(true);
+    }
+
+    Field::KCLTypeMask jumpPadMask = KCL_TYPE_BIT(COL_TYPE_JUMP_PAD);
+    if (*maskOut & jumpPadMask && colDirector->findClosestCollisionEntry(maskOut, jumpPadMask)) {
+        if (!state()->isTouchingGround() || !state()->isJumpPad()) {
+            move()->setPadJump(true);
+            closestColEntry = colDirector->closestCollisionEntry();
+            state()->setJumpPadVariant(KCL_VARIANT_TYPE(closestColEntry->attribute));
+        }
+        collisionData.bTrickable = true;
     }
 }
 
@@ -552,6 +565,10 @@ u16 KartCollide::someNonSoftWallTimer() const {
 
 bool KartCollide::isRampBoost() const {
     return m_rampBoost;
+}
+
+bool KartCollide::isNotTrickable() const {
+    return m_notTrickable;
 }
 
 void KartCollide::setMovement(const EGG::Vector3f &v) {

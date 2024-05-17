@@ -1,13 +1,19 @@
 #include "Archive.hh"
 
+#include <algorithm>
+#include <cstddef>
+
 namespace EGG {
 
 Archive::~Archive() {
-    s_archiveList.erase(s_archiveList.begin() + m_vectorIdx);
+    auto iter = std::find(s_archiveList.begin(), s_archiveList.end(), this);
+    if (iter != s_archiveList.end()) {
+        s_archiveList.erase(iter);
+    }
 }
 
 void Archive::unmount() {
-    if (--m_refCount == 0) {
+    if (--m_refCount <= 0) {
         delete this;
     }
 }
@@ -16,41 +22,40 @@ s32 Archive::convertPathToEntryId(const char *path) const {
     return m_handle.convertPathToEntryId(path);
 }
 
-void *Archive::getFile(s32 entryId, Abstract::ArchiveHandle::FileInfo &info) const {
+void *Archive::getFileFast(s32 entryId, Abstract::ArchiveHandle::FileInfo &info) const {
     m_handle.open(entryId, info);
     return m_handle.getFileAddress(info);
 }
 
-Archive *Archive::Mount(void *archiveStart) {
+Archive *Archive::FindArchive(void *archiveStart) {
     assert(archiveStart);
-    Archive *archive = nullptr;
 
-    // Check if archive already exists
-    if (!s_archiveList.empty()) {
-        for (size_t i = 0; i < s_archiveList.size(); i++) {
-            if (!s_archiveList[i]) {
-                continue;
-            }
-
-            if (s_archiveList[i]->m_handle.startAddress() == archiveStart) {
-                archive = s_archiveList[i];
-                break;
-            }
+    for (auto iter = s_archiveList.begin(); iter != s_archiveList.end(); ++iter) {
+        if ((*iter)->m_handle.startAddress() == archiveStart) {
+            return *iter;
         }
     }
 
-    if (archive) {
+    return nullptr;
+}
+
+Archive *Archive::Mount(void *archiveStart) {
+    Archive *archive = FindArchive(archiveStart);
+
+    if (!archive) {
+        // Create a new archive and add it to the list
+        archive = new Archive(archiveStart);
+        s_archiveList.push_back(archive);
+    } else {
         // It already exists, increase the reference count
         archive->m_refCount++;
-    } else {
-        // Create a new archive and add it to the vector
-        archive = new Archive(archiveStart, s_archiveList.size());
-        s_archiveList.push_back(archive);
     }
 
     return archive;
 }
 
-Archive::Archive(void *archiveStart, size_t idx) : m_handle(archiveStart), m_vectorIdx(idx) {}
+Archive::Archive(void *archiveStart) : m_handle(archiveStart) {}
+
+std::list<Archive *> Archive::s_archiveList;
 
 } // namespace EGG

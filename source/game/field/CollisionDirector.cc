@@ -7,7 +7,7 @@ void CollisionDirector::checkCourseColNarrScLocal(f32 radius, const EGG::Vector3
     CourseColMgr::Instance()->scaledNarrowScopeLocal(1.0f, radius, nullptr, pos, mask);
 }
 
-// 8078f500
+// 0x8078F500
 bool CollisionDirector::checkSphereFull(f32 radius, const EGG::Vector3f &v0,
         const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *pInfo,
         KCLTypeMask *pFlagsOut, u32 /*start*/) {
@@ -24,17 +24,17 @@ bool CollisionDirector::checkSphereFull(f32 radius, const EGG::Vector3f &v0,
         *pFlagsOut = KCL_NONE;
     }
 
-    CourseColMgr::NoBounceWallColInfo *noBounceInfo = CourseColMgr::Instance()->noBounceWallInfo();
+    auto *courseColMgr = CourseColMgr::Instance();
+    auto *noBounceInfo = courseColMgr->noBounceWallInfo();
     if (noBounceInfo) {
         noBounceInfo->bbox.setZero();
-        noBounceInfo->dist = FLT_MIN;
+        noBounceInfo->dist = std::numeric_limits<f32>::min();
     }
 
     bool colliding = false;
 
     if (flags &&
-            CourseColMgr::Instance()->checkSphereFull(1.0f, radius, nullptr, v0, v1, flags,
-                    pInfo, pFlagsOut)) {
+            courseColMgr->checkSphereFull(1.0f, radius, nullptr, v0, v1, flags, pInfo, pFlagsOut)) {
         colliding = true;
     }
 
@@ -48,12 +48,12 @@ bool CollisionDirector::checkSphereFull(f32 radius, const EGG::Vector3f &v0,
         }
     }
 
-    CourseColMgr::Instance()->clearNoBounceWallInfo();
+    courseColMgr->clearNoBounceWallInfo();
 
     return colliding;
 }
 
-// 8078f784
+// 0x8078F784
 bool CollisionDirector::checkSphereFullPush(f32 radius, const EGG::Vector3f &v0,
         const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *pInfo,
         KCLTypeMask *pFlagsOut, u32 /*param_8*/) {
@@ -70,17 +70,18 @@ bool CollisionDirector::checkSphereFullPush(f32 radius, const EGG::Vector3f &v0,
         resetCollisionEntries(pFlagsOut);
     }
 
-    CourseColMgr::NoBounceWallColInfo *noBounceInfo = CourseColMgr::Instance()->noBounceWallInfo();
+    auto *courseColMgr = CourseColMgr::Instance();
+    auto *noBounceInfo = courseColMgr->noBounceWallInfo();
     if (noBounceInfo) {
         noBounceInfo->bbox.setZero();
-        noBounceInfo->dist = FLT_MIN;
+        noBounceInfo->dist = std::numeric_limits<f32>::min();
     }
 
     bool colliding = false;
 
     if (flags &&
-            CourseColMgr::Instance()->checkSphereFullPush(1.0f, radius, nullptr, v0, v1, flags,
-                    pInfo, pFlagsOut)) {
+            courseColMgr->checkSphereFullPush(1.0f, radius, nullptr, v0, v1, flags, pInfo,
+                    pFlagsOut)) {
         colliding = true;
     }
 
@@ -94,7 +95,7 @@ bool CollisionDirector::checkSphereFullPush(f32 radius, const EGG::Vector3f &v0,
         }
     }
 
-    CourseColMgr::Instance()->clearNoBounceWallInfo();
+    courseColMgr->clearNoBounceWallInfo();
 
     return colliding;
 }
@@ -110,16 +111,17 @@ bool CollisionDirector::checkSphereCachedPartialPush(const EGG::Vector3f &pos,
         resetCollisionEntries(typeMaskOut);
     }
 
-    CourseColMgr::NoBounceWallColInfo *noBounceInfo = CourseColMgr::Instance()->noBounceWallInfo();
+    auto *courseColMgr = CourseColMgr::Instance();
+    auto *noBounceInfo = courseColMgr->noBounceWallInfo();
     if (noBounceInfo) {
         noBounceInfo->bbox.setZero();
-        noBounceInfo->dist = FLT_MIN;
+        noBounceInfo->dist = std::numeric_limits<f32>::min();
     }
 
-    bool hasCourseCol = CourseColMgr::Instance()->checkSphereCachedPartialPush(nullptr, pos,
-            prevPos, typeMask, colInfo, typeMaskOut, 1.0f, radius);
+    bool hasCourseCol = courseColMgr->checkSphereCachedPartialPush(nullptr, pos, prevPos, typeMask,
+            colInfo, typeMaskOut, 1.0f, radius);
 
-    CourseColMgr::Instance()->clearNoBounceWallInfo();
+    courseColMgr->clearNoBounceWallInfo();
 
     return hasCourseCol;
 }
@@ -140,14 +142,15 @@ bool CollisionDirector::checkSphereCachedFullPush(const EGG::Vector3f &pos,
         resetCollisionEntries(typeMaskOut);
     }
 
-    CourseColMgr::NoBounceWallColInfo *info = CourseColMgr::Instance()->noBounceWallInfo();
+    auto *courseColMgr = CourseColMgr::Instance();
+    auto *info = courseColMgr->noBounceWallInfo();
     if (info) {
         info->bbox.setZero();
-        info->dist = FLT_MIN;
+        info->dist = std::numeric_limits<f32>::min();
     }
 
-    bool hasCourseCol = CourseColMgr::Instance()->checkSphereCachedFullPush(nullptr, pos, prevPos,
-            typeMask, colInfo, typeMaskOut, 1.0f, radius);
+    bool hasCourseCol = courseColMgr->checkSphereCachedFullPush(nullptr, pos, prevPos, typeMask,
+            colInfo, typeMaskOut, 1.0f, radius);
 
     if (hasCourseCol) {
         if (colInfo) {
@@ -159,7 +162,7 @@ bool CollisionDirector::checkSphereCachedFullPush(const EGG::Vector3f &pos,
         }
     }
 
-    CourseColMgr::Instance()->clearNoBounceWallInfo();
+    courseColMgr->clearNoBounceWallInfo();
 
     return hasCourseCol;
 }

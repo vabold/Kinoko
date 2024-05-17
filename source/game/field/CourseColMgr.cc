@@ -157,12 +157,12 @@ bool CourseColMgr::doCheckWithPartialInfoPush(KColData *data, CollisionCheckFunc
     while ((data->*collisionCheckFunc)(&dist, &fnrm, &attribute)) {
         dist *= m_kclScale;
 
-        if (!m_noBounceWallInfo || ((attribute & KCL_SOFT_WALL_MASK) == 0)) {
+        if (!m_noBounceWallInfo || !(attribute & KCL_SOFT_WALL_MASK)) {
             u32 flags = KCL_ATTRIBUTE_TYPE_BIT(attribute);
             if (typeMask) {
                 CollisionDirector::Instance()->pushCollisionEntry(dist, typeMask, flags, attribute);
             }
-            if ((flags & KCL_TYPE_SOLID_SURFACE) != 0) {
+            if (flags & KCL_TYPE_SOLID_SURFACE) {
                 EGG::Vector3f offset = fnrm * dist;
                 colInfo->bbox.min = colInfo->bbox.min.minimize(offset);
                 colInfo->bbox.max = colInfo->bbox.max.maximize(offset);
@@ -197,7 +197,7 @@ bool CourseColMgr::doCheckWithFullInfo(KColData *data, CollisionCheckFunc collis
     while ((data->*collisionCheckFunc)(&dist, &fnrm, &attribute)) {
         dist *= m_kclScale;
 
-        if (m_noBounceWallInfo && ((attribute & KCL_SOFT_WALL_MASK) != 0)) {
+        if (m_noBounceWallInfo && attribute & KCL_SOFT_WALL_MASK) {
             if (m_localMtx) {
                 fnrm = m_localMtx->multVector33(fnrm);
             }
@@ -236,7 +236,7 @@ bool CourseColMgr::doCheckWithFullInfoPush(KColData *data, CollisionCheckFunc co
     while ((data->*collisionCheckFunc)(&dist, &fnrm, &attribute)) {
         dist *= m_kclScale;
 
-        if (m_noBounceWallInfo && ((attribute & KCL_SOFT_WALL_MASK) != 0)) {
+        if (m_noBounceWallInfo && attribute & KCL_SOFT_WALL_MASK) {
             if (m_localMtx) {
                 fnrm = m_localMtx->multVector33(fnrm);
             }
@@ -275,7 +275,7 @@ bool CourseColMgr::doCheckMaskOnlyPush(KColData *data, CollisionCheckFunc collis
     while ((data->*collisionCheckFunc)(&dist, nullptr, &attribute)) {
         KCLTypeMask mask = KCL_ATTRIBUTE_TYPE_BIT(attribute);
 
-        if ((!m_noBounceWallInfo || ((attribute & KCL_SOFT_WALL_MASK) == 0)) && typeMaskOut) {
+        if ((!m_noBounceWallInfo || !(attribute & KCL_SOFT_WALL_MASK)) && typeMaskOut) {
             CollisionDirector::Instance()->pushCollisionEntry(dist, typeMaskOut, mask, attribute);
         }
         hasCol = true;
