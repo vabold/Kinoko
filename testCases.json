@@ -1,4 +1,9 @@
 {
+    "Sosis MMM RTA WR": {
+        "rkgPath": "samples/mmm-rta-1-15-273.rkg",
+        "krkgPath": "samples/mmm-rta-1-15-273.krkg",
+        "targetFrame": 4923
+    },
     "Logan rBC3 RTA WR": {
         "rkgPath": "samples/rbc3-rta-1-55-715.rkg",
         "krkgPath": "samples/rbc3-rta-1-55-715.krkg",
