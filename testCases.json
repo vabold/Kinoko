@@ -1,4 +1,9 @@
 {
+    "Kasey rPG RTA WR": {
+        "rkgPath": "samples/rpg-rta-1-58-890.rkg",
+        "krkgPath": "samples/rpg-rta-1-58-890.krkg",
+        "targetFrame": 7538
+    },
     "Sosis MMM RTA WR": {
         "rkgPath": "samples/mmm-rta-1-15-273.rkg",
         "krkgPath": "samples/mmm-rta-1-15-273.krkg",
