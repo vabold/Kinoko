@@ -4,6 +4,7 @@ on: [push, pull_request_target]
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -15,18 +16,19 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: "refs/pull/${{ github.event.number }}/merge"
-      - name: Install ninja
-        run: sudo apt install ninja-build
-      - name: Install Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-      - name: Configure G++ version
+      - name: Install packages
         run: |
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+          sudo apt-get update -y
+          sudo apt-get install -y ninja-build gcc-13 g++-13
           sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 10
           sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-13 10
           sudo update-alternatives --set gcc "/usr/bin/gcc-13"
           sudo update-alternatives --set g++ "/usr/bin/g++-13"
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
       - name: Configure ninja
         run: ./configure.py
       - name: Compile
@@ -70,6 +72,11 @@ jobs:
         run: curl -L -o Runtime.tar.gz ${{ secrets.RUNTIME_DEPENDENCIES }}
       - name: Extract dependencies
         run: tar -xzf Runtime.tar.gz -C out
+      - name: Install packages
+        run: |
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+          sudo apt-get update -y
+          sudo apt-get install -y libstdc++6
       - name: Run Kinoko
         run: cd out && chmod u+x ./kinoko && ./kinoko -s testCases.bin
       - name: Upload output
