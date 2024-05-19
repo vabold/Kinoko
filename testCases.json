@@ -9,9 +9,9 @@
         "krkgPath": "samples/mh-rta-1-42-872.krkg",
         "targetFrame": 6578
     },
-    "Sosis rSL RTA WR": {
-        "rkgPath": "samples/rsl-rta-2-03-750.rkg",
-        "krkgPath": "samples/rsl-rta-2-03-750.krkg",
+    "Sosis rSL NG RTA WR": {
+        "rkgPath": "samples/rsl-ng-rta-2-03-750.rkg",
+        "krkgPath": "samples/rsl-ng-rta-2-03-750.krkg",
         "targetFrame": 7829
     },
     "Vincent rMR RTA WR": {
@@ -19,9 +19,9 @@
         "krkgPath": "samples/rmr-rta-1-41-193.krkg",
         "targetFrame": 6477
     },
-    "Kasey rSGB RTA WR": {
-        "rkgPath": "samples/rsgb-rta-1-21-363.rkg",
-        "krkgPath": "samples/rsgb-rta-1-21-363.krkg",
+    "Kasey rSGB NG RTA WR": {
+        "rkgPath": "samples/rsgb-ng-rta-1-21-363.rkg",
+        "krkgPath": "samples/rsgb-ng-rta-1-21-363.krkg",
         "targetFrame": 5288
     },
     "Kierio rMC3 Test": {
@@ -29,9 +29,9 @@
         "krkgPath": "samples/rmc3-kierio-test-3-24-416.krkg",
         "targetFrame": 3470
     },
-    "Luke rBC RTA WR": {
-        "rkgPath": "samples/rbc-rta-2-30-459.rkg",
-        "krkgPath": "samples/rbc-rta-2-30-459.krkg",
+    "Luke rBC NG RTA WR": {
+        "rkgPath": "samples/rbc-ng-rta-2-30-459.rkg",
+        "krkgPath": "samples/rbc-ng-rta-2-30-459.krkg",
         "targetFrame": 9430
     },
     "Luke rMC3 RTA WR": {
