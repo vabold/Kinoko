@@ -1,15 +1,8 @@
 # Kinoko
 
-[![Luke's rMC3 RTA WR](<https://vabold.github.io/Kinoko/Luke rMC3 RTA WR.svg>)](https://www.youtube.com/watch?v=6H6UnSDPPdI)
-[![Kasey's LC RTA WR](<https://vabold.github.io/Kinoko/Kasey LC RTA WR.svg>)](https://www.youtube.com/watch?v=HPcvNS8QFVI)
-[![Luke's rBC NG RTA WR](<https://vabold.github.io/Kinoko/Luke rBC NG RTA WR.svg>)](https://www.youtube.com/watch?v=twZes-RI6Sc)
-[![Kasey's rSGB NG RTA WR](<https://vabold.github.io/Kinoko/Kasey rSGB NG RTA WR.svg>)](https://www.youtube.com/watch?v=SjXUPXT8n8g)
-[![Vincent's rMR RTA WR](<https://vabold.github.io/Kinoko/Vincent rMR RTA WR.svg>)](https://www.youtube.com/watch?v=y7t4_xXuD2A)
-[![Sosis's rSL NG RTA WR](<https://vabold.github.io/Kinoko/Sosis rSL NG RTA WR.svg>)](https://www.youtube.com/watch?v=ahNGAaUzm6s)
-[![Logan's MH RTA WR](<https://vabold.github.io/Kinoko/Logan MH RTA WR.svg>)](https://www.youtube.com/watch?v=CellUlOYgnc)
-[![Logan's rBC3 RTA WR](<https://vabold.github.io/Kinoko/Logan rBC3 RTA WR.svg>)](https://www.youtube.com/watch?v=vSbSADDEzEs)
-
 Kinoko is a reimplementation of Mario Kart Wii's physics engine in C++. This project is a spiritual continuation of [stblr/Hanachan](https://github.com/stblr/Hanachan). Like Hanachan, the goal of this reimplementation is to reach perfectly accurate ghost replay.
+
+To see the current list of test cases and progress, visit [STATUS.md](STATUS.md).
 
 ## Building
 
