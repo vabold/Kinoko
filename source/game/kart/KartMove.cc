@@ -175,7 +175,7 @@ void KartMove::setInitialPhysicsValues(const EGG::Vector3f &position, const EGG:
             EGG::Vector3f::inf, KCL_ANY, &info, &kcl_flags, 0);
 
     if (bColliding && (kcl_flags & KCL_TYPE_FLOOR)) {
-        newPos += info.tangentOff + (info.floorNrm * -100.0f);
+        newPos = newPos + info.tangentOff + (info.floorNrm * -100.0f);
         newPos += info.floorNrm * bsp().initialYPos;
     }
 
@@ -189,6 +189,7 @@ void KartMove::setInitialPhysicsValues(const EGG::Vector3f &position, const EGG:
 
     m_landingDir = bodyFront();
     m_dir = bodyFront();
+    m_up = bodyUp();
     dynamics()->setTop(m_up);
 
     for (u16 tireIdx = 0; tireIdx < suspCount(); ++tireIdx) {
