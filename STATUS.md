@@ -15,7 +15,7 @@ Test Case                                                 | Frames      |     | 
 [`dks-rta-1-44-568`](https://youtu.be/b9hacHlifcw)        | 620 / 6679  | ❌ | Cannon
 [`wgm-rta-0-31-678`](https://youtu.be/VVFXP639DRY)        | 563 / 2310  | ❌ | KMP
 [`wgm-ng-rta-1-49-934`](https://youtu.be/NbhzA2rtZ2A)     | 1099 / 7001 | ❌ | Sticky road wheelie drop
-[`dc-rta-1-28-321`](https://youtu.be/Rs5AK3iHVno)         | 804 / 5705  | ❌ | Missing sink depth scalar
+[`dc-rta-1-28-321`](https://youtu.be/Rs5AK3iHVno)         | 1059 / 5705 | ❌ | KMP
 [`kc-rta-1-55-250`](https://youtu.be/Elb5K7woV20)         | 632 / 7320  | ❌ | Boost ramp associativity
 [`kc-ng-rta-2-17-176`](https://youtu.be/UgSQj6RpDYM)      | 644 / 8634  | ❌ | Boost ramp
 [`mt-rta-1-33-239`](https://youtu.be/FX89203m2iE)         | 747 / 6000  | ❌ | Weak wall
