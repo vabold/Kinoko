@@ -23,7 +23,7 @@ u8 MapdataStageInfo::translationMode() const {
 MapdataStageInfoAccessor::MapdataStageInfoAccessor(const MapSectionHeader *header)
     : MapdataAccessorBase<MapdataStageInfo, MapdataStageInfo::SData>(header) {
     init(reinterpret_cast<const MapdataStageInfo::SData *>(m_sectionHeader + 1),
-            m_sectionHeader->count);
+            parse<u16>(m_sectionHeader->count));
 }
 
 MapdataStageInfoAccessor::~MapdataStageInfoAccessor() = default;
