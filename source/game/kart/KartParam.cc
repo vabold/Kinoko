@@ -34,6 +34,10 @@ bool KartParam::isBike() const {
     return m_isBike;
 }
 
+bool KartParam::isVehicleRelativeBike() const {
+    return stats().body == Stats::Body::Vehicle_Relative_Bike;
+}
+
 u16 KartParam::suspCount() const {
     return m_suspCount;
 }
