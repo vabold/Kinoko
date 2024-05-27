@@ -105,7 +105,7 @@ MapdataStartPointAccessor::MapdataStartPointAccessor(const MapSectionHeader *hea
     : MapdataAccessorBase<MapdataStartPoint, MapdataStartPoint::SData>(header) {
     if (CourseMap::Instance()->version() > 1830) {
         init(reinterpret_cast<const MapdataStartPoint::SData *>(m_sectionHeader + 1),
-                m_sectionHeader->count);
+                parse<u16>(m_sectionHeader->count));
     } else {
         init(reinterpret_cast<const MapdataStartPoint::SData *>(
                      reinterpret_cast<const u8 *>(m_sectionHeader + 4)),
