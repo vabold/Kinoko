@@ -7,6 +7,7 @@
 namespace Field
 {
 
+/// @brief Structure regrouping information on a particular collision
 struct CollisionInfo {
     EGG::BoundBox3f bbox;
     EGG::Vector3f tangentOff;

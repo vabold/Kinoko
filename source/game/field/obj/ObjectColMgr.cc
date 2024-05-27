@@ -16,9 +16,11 @@ ObjectColMgr::ObjectColMgr(const char *filename) : m_kclScale(1.0f) {
     m_data = new KColData(file);
     m_mtx = EGG::Matrix34f::ident;
     m_mtxInv = EGG::Matrix34f::ident;
+    m_kclScale = 1.0f;
     _68 = EGG::Vector3f::zero;
 }
 
+/// @addr 0x807c4d6c
 ObjectColMgr::~ObjectColMgr() {
     delete m_data;
 }
