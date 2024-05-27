@@ -149,7 +149,11 @@ KartObjectBike::KartObjectBike(KartParam *param) : KartObject(param) {}
 KartObjectBike::~KartObjectBike() = default;
 
 KartBody *KartObjectBike::createBody(KartPhysics *physics) {
-    return new KartBodyBike(physics);
+    if (m_pointers.param->isVehicleRelativeBike()) {
+        return new KartBodyQuacker(physics);
+    } else {
+        return new KartBodyBike(physics);
+    }
 }
 
 void KartObjectBike::createTires() {

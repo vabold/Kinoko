@@ -120,6 +120,7 @@ public:
     const BikeDisp &bikeDisp() const;
     u8 playerIdx() const;
     bool isBike() const;
+    bool isVehicleRelativeBike() const;
     u16 suspCount() const;
     u16 tireCount() const;
 

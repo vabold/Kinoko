@@ -61,4 +61,14 @@ EGG::Matrix34f KartBodyBike::wheelMatrix(u16 wheelIdx) {
     return mat;
 }
 
+KartBodyQuacker::KartBodyQuacker(KartPhysics *physics) : KartBodyBike(physics) {}
+
+KartBodyQuacker::~KartBodyQuacker() = default;
+
+EGG::Matrix34f KartBodyQuacker::wheelMatrix(u16 /* wheelIdx */) {
+    EGG::Matrix34f mat;
+    mat.makeQT(fullRot(), pos());
+    return mat;
+}
+
 } // namespace Kart
