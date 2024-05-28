@@ -19,20 +19,21 @@ public:
 
     void updateMatrix();
 
-    //virtual void update();
-    virtual void init() = 0;
     virtual u16 id() const;
     virtual const char* name() const;
     virtual const char* resources() const;
     virtual u32 directorIndex() const;
+    virtual EGG::Vector3f position() const;
+
     virtual void setDirectorIndex(s32 val);
+    virtual void update();
+    virtual void init() = 0;
     virtual void loadCollision() = 0;
-    //virtual void updateCollision();
+    virtual void updateCollision() = 0;
     //virtual void unregisterCollision();
     //virtual void disableCollision();
     //virtual void enableCollision();
-    virtual EGG::Vector3f getPosition() const;
-    virtual f32 calcCollisionRadius() = 0;
+    virtual f32 calcCollisionRadius();
 protected:
     u16 m_type;
     u16 m_flags;
@@ -95,8 +96,7 @@ public:
     GeoObjectKCL(System::MapdataGeoObj* pMapDataGeoObj);
     virtual ~GeoObjectKCL();
 
-    f32 calcCollisionRadius();// override;
-
+    f32 calcCollisionRadius() override;
     void loadCollision() override;
 
     void initCollision() override;

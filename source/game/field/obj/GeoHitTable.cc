@@ -4,6 +4,7 @@
 
 namespace Field {
 
+/// @addr{0x807F9278}
 GeoHitTable::GeoHitTable(const char* filename) {
     constexpr int OFFSET_HITPARAMS = 8;
     auto atOffset = [](void* buffer, u32 offset) -> void* {
@@ -15,7 +16,7 @@ GeoHitTable::GeoHitTable(const char* filename) {
 
     m_objectCount = header.read_u16();
     m_hitParameterCount = header.read_u16();
-    m_hitParametersArray = reinterpret_cast<void**>(new u8[m_objectCount * sizeof(void*)]);
+    m_hitParametersArray = reinterpret_cast<void**>(operator new[](m_objectCount * sizeof(void*)));
 
     u32 hitParamsSize = m_hitParameterCount * sizeof(u16);
     u32 entrySize = sizeof(u16) + hitParamsSize; // add id
@@ -35,6 +36,7 @@ void* GeoHitTable::LoadFile(const char* filename) {
     return System::ResourceManager::Instance()->getFile(filename, nullptr, System::ArchiveId::Core);
 }
 
+/// @addr{0x807F9348}
 GeoHitTable::~GeoHitTable() {
     delete[] m_hitParametersArray;
 }

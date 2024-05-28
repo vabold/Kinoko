@@ -58,6 +58,19 @@ GeoObject::GeoObject(const char* name, EGG::Vector3f &position, EGG::Vector3f &r
 
 GeoObject::~GeoObject() = default;
 
+void GeoObject::updateMatrix() {
+    if (m_bMatrixShouldUpdateRT) {
+        m_transformationMatrix.makeRT(m_rot, m_pos);
+        m_bMatrixShouldUpdatePosition = false;
+        m_bMatrixShouldUpdateRT = false;
+    } else if (m_bMatrixShouldUpdatePosition) {
+        m_transformationMatrix[0, 3] = m_pos.x;
+        m_transformationMatrix[1, 3] = m_pos.y;
+        m_transformationMatrix[2, 3] = m_pos.z;
+    }
+    m_flags |= 4;
+}
+
 u16 GeoObject::id() const {
     return m_id;
 }
@@ -72,25 +85,15 @@ const char* GeoObject::resources() const {
 u32 GeoObject::directorIndex() const {
     return m_directorIndex;
 }
+EGG::Vector3f GeoObject::position() const {
+    return m_pos;
+}
 void GeoObject::setDirectorIndex(s32 val) {
     m_directorIndex = val;
 }
 
-void GeoObject::updateMatrix() {
-    if (m_bMatrixShouldUpdateRT) {
-        m_transformationMatrix.makeRT(m_rot, m_pos);
-        m_bMatrixShouldUpdatePosition = false;
-        m_bMatrixShouldUpdateRT = false;
-    } else if (m_bMatrixShouldUpdatePosition) {
-        m_transformationMatrix[0, 3] = m_pos.x;
-        m_transformationMatrix[1, 3] = m_pos.y;
-        m_transformationMatrix[2, 3] = m_pos.z;
-    }
-    m_flags |= 4;
-}
-
-EGG::Vector3f GeoObject::getPosition() const {
-    return m_pos;
+f32 GeoObject::calcCollisionRadius() {
+    return 100.0f;
 }
 
 
@@ -110,6 +113,7 @@ void GeoObjectDrivable::init() {
 void GeoObjectDrivable::registerBoxColUnit(f32 /*radius*/) {
 
 }
+
 
 GeoObjectKCL::GeoObjectKCL(System::MapdataGeoObj* pMapDataGeoObj) : GeoObjectDrivable(pMapDataGeoObj) {
 

@@ -8,6 +8,7 @@
 namespace Field
 {
 
+/// @addr{0x8082A38C}
 ObjectDirector::ObjectDirector() {
     // more stuff here
     m_objFlow = new ObjFlow("ObjFlow.bin");
