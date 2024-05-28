@@ -69,7 +69,6 @@ public:
     void setFloorCollisionCount(u16 count);
     void setKCLWheelSpeedFactor(f32 val);
     void setKCLWheelRotFactor(f32 val);
-    void setRampBoost(bool isSet);
     void setPadBoost(bool isSet);
     void setRampBoost(bool isSet);
     void setPadJump(bool isSet);

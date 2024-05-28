@@ -22,11 +22,17 @@ public:
     virtual u16 id() const;
     virtual const char* name() const;
     virtual const char* resources() const;
-    virtual u32 directorIndex() const;
     virtual EGG::Vector3f position() const;
 
+    /// @begingetters
+    virtual u32 directorIndex() const;
+    /// @endgetters
+    
+    /// @beginsetters
     virtual void setDirectorIndex(s32 val);
-    virtual void update();
+    /// @endsetters
+
+    virtual void calc();
     virtual void init() = 0;
     virtual void loadCollision() = 0;
     virtual void updateCollision() = 0;
@@ -35,10 +41,15 @@ public:
     //virtual void enableCollision();
     virtual f32 calcCollisionRadius();
 protected:
+    /// @brief Some unknown type, most likely part of an enum. 1 for item boxes, 2 for GeoObjectDrivable and its derived classes, 0 for everything else
     u16 m_type;
-    u16 m_flags;
+    
+    /// @brief Part of a bitfield. When set, it states that on the next Update call, this object will update its transformation matrix with its current position.
     bool m_bMatrixShouldUpdatePosition; // flag 0x1
-    bool m_bMatrixShouldUpdateRT; // flag 0x2
+    
+    /// @brief Part of a bitfield. When set, it states that on the next Update call, this object will update its transformation matrix with its current position and rotation.
+    bool m_bMatrixShouldMakeRT; // flag 0x2
+    
     EGG::Vector3f m_pos;
     EGG::Vector3f m_scale;
     EGG::Vector3f m_rot;
