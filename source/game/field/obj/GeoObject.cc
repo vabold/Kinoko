@@ -96,7 +96,7 @@ void GeoObject::setDirectorIndex(s32 val) {
 }
 
 void GeoObject::calc() {
-    
+
 }
 
 f32 GeoObject::calcCollisionRadius() {
@@ -127,14 +127,16 @@ GeoObjectKCL::GeoObjectKCL(System::MapdataGeoObj* pMapDataGeoObj) : GeoObjectDri
 
 }
 
-f32 GeoObjectKCL::calcCollisionRadius() {
-    return m_bboxHalfSideLength + colRadiusAdditionalLength();
-}
-
 void GeoObjectKCL::loadCollision() {
     char buffer[0x80];
     snprintf(buffer, 0x80, "%s.kcl", resources());
     m_objectColMgr = new ObjectColMgr(buffer);
+}
+void GeoObjectKCL::updateCollision() {
+    
+}
+f32 GeoObjectKCL::calcCollisionRadius() {
+    return m_bboxHalfSideLength + colRadiusAdditionalLength();
 }
 void GeoObjectKCL::initCollision() {
     EGG::Matrix34f &mtx = getUpdatedMatrix();

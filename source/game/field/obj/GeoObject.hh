@@ -107,8 +107,9 @@ public:
     GeoObjectKCL(System::MapdataGeoObj* pMapDataGeoObj);
     virtual ~GeoObjectKCL();
 
-    f32 calcCollisionRadius() override;
+    void updateCollision() override;
     void loadCollision() override;
+    f32 calcCollisionRadius() override;
 
     void initCollision() override;
     //bool checkPointPartial(EGG::Vector3f* pos, EGG::Vector3f* prevPos, KCLTypeMask flags, CollisionInfo* colInfo, KCLTypeMask* colMaskOut) override;
