@@ -1,6 +1,6 @@
 #include "game/field/obj/ObjFlow.hh"
 #include "game/system/ResourceManager.hh"
-#include <EGG/util/Stream.hh>
+#include <egg/util/Stream.hh>
 #include <cstring>
 namespace Field
 {
