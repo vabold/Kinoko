@@ -6,6 +6,7 @@
 
 namespace EGG {
 
+/// @brief Manages the scene stack and transitions between scenes.
 class SceneManager {
 public:
     /*----------*

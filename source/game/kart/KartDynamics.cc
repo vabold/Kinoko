@@ -4,6 +4,7 @@
 
 namespace Kart {
 
+/// @addr{0x805B4AF8}
 KartDynamics::KartDynamics() {
     m_angVel0Factor = 1.0f;
     m_inertiaTensor = EGG::Matrix34f::ident;
@@ -11,8 +12,10 @@ KartDynamics::KartDynamics() {
     init();
 }
 
+/// @addr{0x8059F6B8}
 KartDynamics::~KartDynamics() = default;
 
+/// @addr{0x805B4B54}
 void KartDynamics::init() {
     m_speedNorm = 0.0f;
     m_gravity = -1.0f;
@@ -29,6 +32,8 @@ void KartDynamics::resetInternalVelocity() {
     m_intVel.setZero();
 }
 
+/// @brief On init, takes elements from the kart's BSP and computes the moment of inertia tensor.
+/// @addr{0x805B4DC4}
 void KartDynamics::setBspParams(f32 rotSpeed, const EGG::Vector3f &m, const EGG::Vector3f &n,
         bool skipInertia) {
     constexpr f32 TWELFTH = 1.0f / 12.0f;
@@ -44,16 +49,21 @@ void KartDynamics::setBspParams(f32 rotSpeed, const EGG::Vector3f &m, const EGG:
     m_inertiaTensor[1, 1] = (m.z * m.z + m.x * m.x) * TWELFTH + n.z * n.z + n.x * n.x;
     m_inertiaTensor[2, 2] = (m.x * m.x + m.y * m.y) * TWELFTH + n.x * n.x + n.y * n.y;
 
-    m_invInertiaTensor = m_inertiaTensor.inverseTo();
+    m_invInertiaTensor = m_inertiaTensor.inverseTo33();
 }
 
+/// @stage All
+/// @brief Every frame, computes acceleration, velocity, position and rotation of the kart.
+/// @addr{0x805B5170}
+/// @param dt Delta time. It's always 1.0f.
+/// @param maxSpeed Always 120.0f.
 void KartDynamics::calc(f32 dt, f32 maxSpeed, bool /*air*/) {
     if (!m_noGravity) {
         m_totalForce.y += m_gravity;
     }
 
-    m_acceleration0 = m_totalForce;
-    m_extVel += m_acceleration0 * dt;
+    m_acceleration = m_totalForce;
+    m_extVel += m_acceleration * dt;
     m_extVel *= 0.998f;
     m_angVel0 *= 0.98f;
 
@@ -126,6 +136,13 @@ void KartDynamics::calc(f32 dt, f32 maxSpeed, bool /*air*/) {
     m_angVel2.setZero();
 }
 
+/// @stage All
+/// @brief Every frame, computes torque from linear motion and rotation.
+/// @addr{0x805B6150}
+/// @param p Position of the rigid body.
+/// @param Flinear Linear motion force
+/// @param Frot Rotational force
+/// @param ignoreX If true, no x-axis torque is applied (e.g. when in a wheelie)
 void KartDynamics::applySuspensionWrench(const EGG::Vector3f &p, const EGG::Vector3f &Flinear,
         const EGG::Vector3f &Frot, bool ignoreX) {
     m_totalForce.y += Flinear.y;
@@ -138,58 +155,6 @@ void KartDynamics::applySuspensionWrench(const EGG::Vector3f &p, const EGG::Vect
     }
     torque.y = 0.0f;
     m_totalTorque += torque;
-}
-
-const EGG::Matrix34f &KartDynamics::invInertiaTensor() const {
-    return m_invInertiaTensor;
-}
-
-f32 KartDynamics::angVel0Factor() const {
-    return m_angVel0Factor;
-}
-
-const EGG::Vector3f &KartDynamics::pos() const {
-    return m_pos;
-}
-
-const EGG::Vector3f &KartDynamics::velocity() const {
-    return m_velocity;
-}
-
-f32 KartDynamics::gravity() const {
-    return m_gravity;
-}
-
-const EGG::Vector3f &KartDynamics::intVel() const {
-    return m_intVel;
-}
-
-const EGG::Quatf &KartDynamics::mainRot() const {
-    return m_mainRot;
-}
-
-const EGG::Quatf &KartDynamics::fullRot() const {
-    return m_fullRot;
-}
-
-const EGG::Vector3f &KartDynamics::totalForce() const {
-    return m_totalForce;
-}
-
-const EGG::Vector3f &KartDynamics::extVel() const {
-    return m_extVel;
-}
-
-const EGG::Vector3f &KartDynamics::angVel0() const {
-    return m_angVel0;
-}
-
-const EGG::Vector3f &KartDynamics::angVel2() const {
-    return m_angVel2;
-}
-
-f32 KartDynamics::speedFix() const {
-    return m_speedFix;
 }
 
 void KartDynamics::setPos(const EGG::Vector3f &pos) {
@@ -252,14 +217,71 @@ void KartDynamics::setTop_(const EGG::Vector3f &v) {
     m_top_ = v;
 }
 
+const EGG::Matrix34f &KartDynamics::invInertiaTensor() const {
+    return m_invInertiaTensor;
+}
+
+f32 KartDynamics::angVel0Factor() const {
+    return m_angVel0Factor;
+}
+
+const EGG::Vector3f &KartDynamics::pos() const {
+    return m_pos;
+}
+
+const EGG::Vector3f &KartDynamics::velocity() const {
+    return m_velocity;
+}
+
+f32 KartDynamics::gravity() const {
+    return m_gravity;
+}
+
+const EGG::Vector3f &KartDynamics::intVel() const {
+    return m_intVel;
+}
+
+const EGG::Quatf &KartDynamics::mainRot() const {
+    return m_mainRot;
+}
+
+const EGG::Quatf &KartDynamics::fullRot() const {
+    return m_fullRot;
+}
+
+const EGG::Vector3f &KartDynamics::totalForce() const {
+    return m_totalForce;
+}
+
+const EGG::Vector3f &KartDynamics::extVel() const {
+    return m_extVel;
+}
+
+const EGG::Vector3f &KartDynamics::angVel0() const {
+    return m_angVel0;
+}
+
+const EGG::Vector3f &KartDynamics::angVel2() const {
+    return m_angVel2;
+}
+
+f32 KartDynamics::speedFix() const {
+    return m_speedFix;
+}
+
 KartDynamicsBike::KartDynamicsBike() = default;
 
+/// @addr{0x805B66E4}
 KartDynamicsBike::~KartDynamicsBike() = default;
 
+/// @addr{0x805B6438}
 void KartDynamicsBike::forceUpright() {
     m_angVel0.z = 0.0f;
 }
 
+/// @stage All
+/// @brief Stabilizes the bike by rotating towards the y-axis unit vector.
+/// @addr{0x805B6448}
 void KartDynamicsBike::stabilize() {
     EGG::Vector3f forward = m_top.cross(m_mainRot.rotateVector(EGG::Vector3f::ez)).cross(m_top);
     forward.normalise();

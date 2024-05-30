@@ -4,6 +4,7 @@
 
 namespace Scene {
 
+/// @brief The parent scene for all other scenes.
 class RootScene final : public EGG::Scene {
 public:
     RootScene();

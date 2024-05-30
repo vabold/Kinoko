@@ -5,6 +5,7 @@
 // TODO: for the love of god please find a better name this is not called a "U8" archive
 #define U8_SIGNATURE 0x55AA382D
 
+/// @brief An abstraction of components from the nw4r and RVL libraries.
 namespace Abstract {
 
 struct RawArchive {

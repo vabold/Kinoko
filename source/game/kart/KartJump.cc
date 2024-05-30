@@ -12,12 +12,15 @@
 
 namespace Kart {
 
+/// @addr{0x80575A44}
 KartJump::KartJump(KartMove *move) : m_move(move) {
     m_cooldown = 0;
 }
 
+/// @addr{0x80575AA8}
 KartJump::~KartJump() = default;
 
+/// @addr{0x80576460}
 void KartJump::setupProperties() {
     static constexpr std::array<TrickProperties, 3> TRICK_PROPERTIES = {{
             {11.0f, 1.5f, 0.9f, 0.0018f},
@@ -48,10 +51,12 @@ void KartJump::setupProperties() {
     m_angleDeltaFactor = 1.0f;
 }
 
+/// @addr{0x80575AE8}
 void KartJump::reset() {
     m_cooldown = 0;
 }
 
+/// @addr{0x80575D7C}
 void KartJump::tryStart(const EGG::Vector3f &left) {
     if (!state()->isTrickStart()) {
         return;
@@ -74,6 +79,7 @@ void KartJump::tryStart(const EGG::Vector3f &left) {
     state()->setTrickStart(false);
 }
 
+/// @addr{0x805763E4}
 void KartJump::calc() {
     m_cooldown = std::max(0, m_cooldown - 1);
 
@@ -87,6 +93,8 @@ void KartJump::calc() {
 bool KartJump::someFlagCheck() {
     return state()->isTrickStart() || state()->isInATrick();
 }
+
+/// @addr{0x80575B38}
 void KartJump::calcInput() {
     constexpr s16 TRICK_ALLOW_TIMER = 14;
 
@@ -114,6 +122,7 @@ void KartJump::calcInput() {
     }
 }
 
+/// @addr{0x805766B8}
 void KartJump::end() {
     if (state()->isTrickRot()) {
         physics()->composeDecayingRot(m_rot);
@@ -124,6 +133,7 @@ void KartJump::end() {
     m_boostRampEnabled = false;
 }
 
+/// @addr{0x80576230}
 void KartJump::setAngle(const EGG::Vector3f &left) {
     static constexpr std::array<std::array<AngleProperties, 3>, 3> ANGLE_PROPERTIES = {{
             {{
@@ -167,6 +177,10 @@ void KartJump::setAngle(const EGG::Vector3f &left) {
     m_move->setVel1Dir(m_move->dir());
 }
 
+void KartJump::setBoostRampEnabled(bool isSet) {
+    m_boostRampEnabled = isSet;
+}
+
 bool KartJump::isBoostRampEnabled() const {
     return m_boostRampEnabled;
 }
@@ -183,14 +197,12 @@ s16 KartJump::cooldown() const {
     return m_cooldown;
 }
 
-void KartJump::setBoostRampEnabled(bool isSet) {
-    m_boostRampEnabled = isSet;
-}
-
 KartJumpBike::KartJumpBike(KartMove *move) : KartJump(move) {}
 
+/// @addr{0x80576AFC}
 KartJumpBike::~KartJumpBike() = default;
 
+/// @addr{0x80576994}
 void KartJumpBike::calcRot() {
     /// @brief Computed using double precision, so we hard-code it.
     constexpr f32 PI_OVER_9 = 0.34906584f;
@@ -228,6 +240,7 @@ void KartJumpBike::calcRot() {
     physics()->composeStuntRot(m_rot);
 }
 
+/// @addr{0x80576758}
 void KartJumpBike::start(const EGG::Vector3f &left) {
     init();
     setAngle(left);
@@ -237,6 +250,7 @@ void KartJumpBike::start(const EGG::Vector3f &left) {
     moveBike->cancelWheelie();
 }
 
+/// @addr{0x8057689C}
 void KartJumpBike::init() {
     constexpr f32 DOUBLE_FLIP_TRICK_FINAL_ANGLE = 180.0f;
 

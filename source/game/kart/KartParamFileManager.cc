@@ -4,12 +4,15 @@
 
 namespace Kart {
 
+/// @addr{0x80591C9C}
 void KartParamFileManager::clear() {
     m_kartParam.clear();
     m_driverParam.clear();
     m_bikeDispParam.clear();
 }
 
+/// @addr{0x805919F4}
+/// @brief Loads and validates the kart parameter files.
 void KartParamFileManager::init() {
     m_kartParam.load("kartParam.bin");
     m_driverParam.load("driverParam.bin");
@@ -130,6 +133,7 @@ KartParamFileManager::KartParamFileManager() {
 
 KartParamFileManager::~KartParamFileManager() = default;
 
+/// @brief Performs a few checks to make sure the files were loaded successfully.
 bool KartParamFileManager::validate() const {
     // Validate kartParam.bin
     if (!m_kartParam.file || m_kartParam.size == 0) {

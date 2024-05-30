@@ -4,6 +4,7 @@
 
 namespace Scene {
 
+/// @brief Represents an instance of a race
 class RaceScene final : public GameScene {
 public:
     RaceScene();

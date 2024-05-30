@@ -9,6 +9,8 @@
 
 namespace Field {
 
+/// @brief Performs lookups for KCL triangles
+/// @nosubgrouping
 class KColData {
 public:
     enum class CollisionCheckType {
@@ -32,7 +34,6 @@ public:
     };
     static_assert(sizeof(KCollisionPrism) == 0x10);
 
-    KColData();
     KColData(const void *file);
 
     void narrowScopeLocal(const EGG::Vector3f &pos, f32 radius, KCLTypeMask mask);
@@ -54,11 +55,14 @@ public:
     EGG::Vector3f getNrm(u16 nrmIdx) const;
     KCollisionPrism getPrism(u16 prismIdx) const;
 
+    /// @beginGetters
+    u16 prismCache(u32 idx) const;
+    EGG::BoundBox3f bbox() const;
+    /// @endGetters
+
     static EGG::Vector3f GetVertex(f32 height, const EGG::Vector3f &vertex1,
             const EGG::Vector3f &fnrm, const EGG::Vector3f &enrm3, const EGG::Vector3f &enrm);
 
-    u16 prismCache(u32 idx) const;
-    EGG::BoundBox3f bbox() const;
 private:
     bool checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::Vector3f *fnrmOut,
             u16 *flagsOut, CollisionCheckType type);
@@ -70,13 +74,13 @@ private:
     const void *m_blockData;
     f32 m_prismThickness;
     EGG::Vector3f m_areaMinPos;
-    u32 m_areaXWidthMask;
-    u32 m_areaYWidthMask;
-    u32 m_areaZWidthMask;
-    u32 m_blockWidthShift;
-    u32 m_areaXBlocksShift;
-    u32 m_areaXYBlocksShift;
-    f32 m_sphereRadius;
+    u32 m_areaXWidthMask;    ///< The x dimension of the octree's bounding box. @see searchBlock.
+    u32 m_areaYWidthMask;    ///< The y dimension of the octree's bounding box. @see searchBlock.
+    u32 m_areaZWidthMask;    ///< The z dimension of the octree's bounding box. @see searchBlock.
+    u32 m_blockWidthShift;   ///< Used to initialize octree navigation. @see searchBlock.
+    u32 m_areaXBlocksShift;  ///< Used to initialize octree navigation. @see searchBlock.
+    u32 m_areaXYBlocksShift; ///< Used to initialize octree navigation. @see searchBlock.
+    f32 m_sphereRadius;      ///< Clamps the sphere we check collision against. @see searchBlock.
     EGG::Vector3f m_pos;
     EGG::Vector3f m_prevPos;
     EGG::Vector3f m_movement;

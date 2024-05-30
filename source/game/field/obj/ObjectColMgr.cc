@@ -28,7 +28,7 @@ ObjectColMgr::~ObjectColMgr() {
 
 void ObjectColMgr::setMtx(EGG::Matrix34f &val) {
     m_mtx = val;
-    m_mtxInv = val.inverseTo();
+    m_mtxInv = val.inverseTo33();
 }
 void ObjectColMgr::setKCLScale(f32 val) {
     m_kclScale = val;

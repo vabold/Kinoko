@@ -16,6 +16,15 @@ struct TestCase {
     u16 targetFrame;
 };
 
+/// @brief Maintains a set of test cases to check for desyncs.
+
+/// In its current state, the TestDirector takes in a span of data and parses it into a set of test
+/// cases. The data is generated via tools/generate_tests.py which itself reads from test cases
+/// defined in testCases.json. Each test case contains a name, an RKG file path, a KRKG file path,
+/// and the frame Kinoko should try to sync until. Each frame, the TestDirector will compare
+/// important datapoints against those defined in the KRKG. If a desync is detected, the
+/// TestDirector will log the desyncs from that frame, and move onto the next test case in the
+/// queue. After all test cases have been iterated, Kinoko will exit.
 class TestDirector {
 public:
     TestDirector(const std::span<u8> &suiteData);

@@ -2,6 +2,8 @@
 
 #include <Common.hh>
 
+/// @brief High-level handling for generic system operations, such as input reading, race
+/// configuration, and resource management.
 namespace System {
 
 class MapdataFileAccessor;
@@ -12,6 +14,9 @@ class MapdataStartPointAccessor;
 class MapdataGeoObj;
 class MapdataGeoObjAccessor;
 
+/// @brief Contains course metadata, notably the starting position.
+/// @addr{0x809BD6E8}
+/// @nosubgrouping
 class CourseMap {
 public:
     void init();
@@ -19,6 +24,7 @@ public:
     MapdataStartPointAccessor *parseStartPoint(u32 sectionName);
     MapdataGeoObjAccessor *parseGeoObjs(u32 sectionName);
 
+    /// @beginGetters
     MapdataStageInfo *getStageInfo() const;
     MapdataStartPoint *getStartPoint(u16 i) const;
     MapdataGeoObj *getGeoObj(u16 i) const;
@@ -28,6 +34,7 @@ public:
     f32 startTmp1() const;
     f32 startTmp2() const;
     f32 startTmp3() const;
+    /// @endGetters
 
     MapdataGeoObjAccessor *geoObj() const;
 
@@ -51,7 +58,7 @@ private:
     f32 m_startTmp2;
     f32 m_startTmp3;
 
-    static void *LoadFile(const char *filename);
+    static void *LoadFile(const char *filename); ///< @addr{0x809BD6E8}
 
     static CourseMap *s_instance;
 };

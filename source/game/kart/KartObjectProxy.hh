@@ -32,6 +32,7 @@ class KartSuspensionPhysics;
 class KartTire;
 class WheelPhysics;
 
+/// @brief Shared between classes who inherit KartObjectProxy so they can access one another.
 struct KartAccessor {
     KartParam *param;
     KartBody *body;
@@ -45,6 +46,8 @@ struct KartAccessor {
     std::vector<KartTire *> tires;
 };
 
+/// @brief Base class for most kart-related objects.
+/// @nosubgrouping
 class KartObjectProxy {
     friend class KartObject;
 
@@ -52,6 +55,12 @@ public:
     KartObjectProxy();
     ~KartObjectProxy();
 
+    /// @beginSetters
+    void setPos(const EGG::Vector3f &pos);
+    void setRot(const EGG::Quatf &q);
+    /// @endSetters
+
+    /// @beginGetters
     KartBody *body();
     const KartBody *body() const;
     KartCollide *collide();
@@ -98,9 +107,6 @@ public:
     const EGG::Vector3f &componentYAxis() const;
     const EGG::Vector3f &componentZAxis() const;
 
-    void setPos(const EGG::Vector3f &pos);
-    void setRot(const EGG::Quatf &q);
-
     const EGG::Vector3f &pos() const;
     const EGG::Quatf &fullRot() const;
     const EGG::Vector3f &extVel() const;
@@ -114,6 +120,7 @@ public:
     u16 suspCount() const;
     u16 tireCount() const;
     bool hasFloorCollision(const WheelPhysics *wheelPhysics) const;
+    /// @endGetters
 
 protected:
     void apply(size_t idx);
@@ -123,7 +130,7 @@ private:
 
     const KartAccessor *m_accessor;
 
-    static std::list<KartObjectProxy *> s_proxyList;
+    static std::list<KartObjectProxy *> s_proxyList; ///< List of all KartObjectProxy children.
 };
 
 } // namespace Kart

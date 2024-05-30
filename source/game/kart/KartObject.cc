@@ -12,10 +12,12 @@
 
 namespace Kart {
 
+/// @addr{0x8058DDBC}
 KartObject::KartObject(KartParam *param) {
     m_pointers.param = param;
 }
 
+/// @addr{0x8058DEF0}
 KartObject::~KartObject() {
     delete m_pointers.param;
     delete m_pointers.body;
@@ -31,10 +33,12 @@ KartObject::~KartObject() {
     }
 }
 
+/// @addr{0x8058E5F8}
 KartBody *KartObject::createBody(KartPhysics *physics) {
     return new KartBodyKart(physics);
 }
 
+/// @addr{0x8058E22C}
 void KartObject::init() {
     prepareTiresAndSuspensions();
     createSub();
@@ -47,10 +51,13 @@ void KartObject::init() {
     }
 }
 
+/// @addr{0x8058E188}
 void KartObject::initImpl() {
     sub()->init();
 }
 
+/// @brief Sets the initial position and rotation of the kart based off the current track.
+/// @addr{0x8058EE48}
 void KartObject::prepare() {
     EGG::Vector3f euler_angles_deg, position;
 
@@ -58,6 +65,7 @@ void KartObject::prepare() {
     move()->setInitialPhysicsValues(position, euler_angles_deg);
 }
 
+/// @addr{0x8058E804}
 void KartObject::prepareTiresAndSuspensions() {
     constexpr u16 LOCAL_20[4] = {2, 1, 1, 1};
     constexpr u16 LOCAL_28[4] = {2, 1, 1, 2};
@@ -83,11 +91,13 @@ void KartObject::prepareTiresAndSuspensions() {
     m_pointers.param->setSuspCount(wheelCount);
 }
 
+/// @addr{0x8058E724}
 void KartObject::createSub() {
     m_pointers.sub = new KartSub;
     m_pointers.sub->createSubsystems(m_pointers.param->isBike());
 }
 
+/// @addr{0x8058F820}
 void KartObject::createModel() {
     s_proxyList.clear();
 
@@ -102,10 +112,12 @@ void KartObject::createModel() {
     m_pointers.model->init();
 }
 
+/// @addr{0x8058EEB4}
 void KartObject::calcSub() {
     sub()->calcPass0();
 }
 
+/// @addr{0x8058EEBC}
 void KartObject::calc() {
     sub()->calcPass1();
     model()->calc();
@@ -115,6 +127,7 @@ const KartAccessor *KartObject::accessor() const {
     return &m_pointers;
 }
 
+/// @addr{0x8058F5B4}
 KartObject *KartObject::Create(Character character, Vehicle vehicle, u8 playerIdx) {
     s_proxyList.clear();
 
@@ -144,14 +157,22 @@ KartObject *KartObject::Create(Character character, Vehicle vehicle, u8 playerId
     return object;
 }
 
+/// @addr{0x8058F20C}
 KartObjectBike::KartObjectBike(KartParam *param) : KartObject(param) {}
 
+/// @addr{0x8058F8B0}
 KartObjectBike::~KartObjectBike() = default;
 
+/// @addr{0x8058F260}
 KartBody *KartObjectBike::createBody(KartPhysics *physics) {
-    return new KartBodyBike(physics);
+    if (m_pointers.param->isVehicleRelativeBike()) {
+        return new KartBodyQuacker(physics);
+    } else {
+        return new KartBodyBike(physics);
+    }
 }
 
+/// @addr{0x8058F2E8}
 void KartObjectBike::createTires() {
     for (u16 wheelIdx = 0; wheelIdx < m_pointers.param->suspCount(); ++wheelIdx) {
         KartSuspension *sus = nullptr;

@@ -5,23 +5,28 @@
 
 namespace Kart {
 
+/// @brief Determined by the KCL, this represents the variation of the trick that will be performed.
+/// @details This is also directly used to determine the duration of the trick boost.
 enum class SurfaceVariant {
-    DoubleFlipTrick = 0,
-    SingleFlipTrick = 1,
-    StuntTrick = 2,
+    DoubleFlipTrick = 0, ///< RR ramps before figure-8 and last turn.
+    SingleFlipTrick = 1, ///< BC starting ramp.
+    StuntTrick = 2,      ///< Think rMR ramp and pipe, MH after first turn, mushrooms, etc.
 };
 
+/// @brief Represents the type of trick that will be performed based on kart and player input.
+/// @details Some of these types are only available for bikes.
 enum class TrickType {
-    StuntTrickBasic = 0,
-    BikeFlipTrickNose = 1,
-    BikeFlipTrickTail = 2,
-    FlipTrickYLeft = 3,
-    FlipTrickYRight = 4,
-    KartFlipTrickZ = 5,
-    BikeSideStuntTrick = 6,
+    StuntTrickBasic = 0,    ///< An up/down @ref StuntTrick with kart/bike.
+    BikeFlipTrickNose = 1,  ///< An up trick with bike.
+    BikeFlipTrickTail = 2,  ///< A down trick with bike.
+    FlipTrickYLeft = 3,     ///< A left trick with kart/bike.
+    FlipTrickYRight = 4,    ///< A right trick with kart/bike.
+    KartFlipTrickZ = 5,     ///< An up/down trick with a kart.
+    BikeSideStuntTrick = 6, ///< A side @ref StuntTrick with a bike.
 };
 
 /// @brief Manages trick inputs and state.
+/// @nosubgrouping
 class KartJump : protected KartObjectProxy {
 public:
     struct TrickProperties {
@@ -51,13 +56,17 @@ public:
 
     void setAngle(const EGG::Vector3f &left);
 
+    /// @beginSetters
+    void setBoostRampEnabled(bool isSet);
+    /// @endSetters
+
+    /// @beginGetters
     bool isBoostRampEnabled() const;
 
     TrickType type() const;
     SurfaceVariant variant() const;
     s16 cooldown() const;
-
-    void setBoostRampEnabled(bool isSet);
+    /// @endGetters
 
 protected:
     TrickType m_type;

@@ -7,6 +7,8 @@
 
 namespace Kart {
 
+/// @brief Manages body+wheel collision and its influence on position/velocity/etc.
+/// @nosubgrouping
 class KartCollide : KartObjectProxy {
 public:
     KartCollide();
@@ -43,9 +45,13 @@ public:
     void applyBodyCollision(CollisionData &collisionData, const EGG::Vector3f &movement,
             const EGG::Vector3f &posRel, s32 count);
 
+    /// @beginSetters
     void setFloorColInfo(CollisionData &collisionData, const EGG::Vector3f &relPos,
             const EGG::Vector3f &vel, const EGG::Vector3f &floorNrm);
+    void setMovement(const EGG::Vector3f &v);
+    /// @endSetters
 
+    /// @beginGetters
     const EGG::Vector3f &movement() const;
     f32 suspBottomHeightSoftWall() const;
     u16 someSoftWallTimer() const;
@@ -54,8 +60,7 @@ public:
 
     bool isRampBoost() const;
     bool isNotTrickable() const;
-
-    void setMovement(const EGG::Vector3f &v);
+    /// @endGetters
 
 private:
     EGG::Vector3f m_movement;
@@ -66,7 +71,7 @@ private:
     u16 m_someNonSoftWallTimer;
 
     bool m_rampBoost;
-    bool m_offRoad;
+    bool m_offRoad; ///< @unused
     bool m_groundBoostPanelOrRamp;
     bool m_trickable;
     bool m_notTrickable;

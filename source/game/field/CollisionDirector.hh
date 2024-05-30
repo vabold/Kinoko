@@ -7,8 +7,12 @@
 
 #define COLLISION_ARR_LENGTH 0x40
 
+/// @brief Pertains to collision.
 namespace Field {
 
+/// @brief Manages the caching of colliding KCL triangles and exposes queries for collision checks.
+/// @addr{0x809C2F44}
+/// @nosubgrouping
 class CollisionDirector {
 public:
     struct CollisionEntry {
@@ -37,8 +41,11 @@ public:
     void resetCollisionEntries(KCLTypeMask *ptr);
     void pushCollisionEntry(f32 dist, KCLTypeMask *typeMask, KCLTypeMask kclTypeBit, u16 attribute);
 
-    const CollisionEntry *closestCollisionEntry() const;
     bool findClosestCollisionEntry(KCLTypeMask *typeMask, KCLTypeMask type);
+
+    /// @beginGetters
+    const CollisionEntry *closestCollisionEntry() const;
+    /// @endGetters
 
     static CollisionDirector *CreateInstance();
     static CollisionDirector *Instance();
@@ -52,7 +59,7 @@ private:
     std::array<CollisionEntry, COLLISION_ARR_LENGTH> m_entries;
     size_t m_collisionEntryCount;
 
-    static CollisionDirector *s_instance;
+    static CollisionDirector *s_instance; ///< @addr{0x809C2F44}
 };
 
 } // namespace Field

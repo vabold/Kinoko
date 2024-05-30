@@ -9,6 +9,7 @@
 
 namespace System {
 
+/// @addr{0x805127EC}
 void CourseMap::init() {
     void *buffer = LoadFile("course.kmp");
     m_course =
@@ -38,6 +39,7 @@ void CourseMap::init() {
     m_startTmp1 = 1200.0f;
 }
 
+/// @addr{0x80512D64}
 MapdataStageInfoAccessor *CourseMap::parseStageInfo(u32 sectionName) {
     const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
 
@@ -49,6 +51,7 @@ MapdataStageInfoAccessor *CourseMap::parseStageInfo(u32 sectionName) {
     return accessor;
 }
 
+/// @addr{0x80513F5C}
 MapdataStartPointAccessor *CourseMap::parseStartPoint(u32 sectionName) {
     const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
 
@@ -60,6 +63,7 @@ MapdataStartPointAccessor *CourseMap::parseStartPoint(u32 sectionName) {
     return accessor;
 }
 
+/// @addr{0x805134C8}
 MapdataGeoObjAccessor *CourseMap::parseGeoObjs(u32 sectionName) {
     const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
 
@@ -71,14 +75,17 @@ MapdataGeoObjAccessor *CourseMap::parseGeoObjs(u32 sectionName) {
     return accessor;
 }
 
+/// @addr{0x80518B78}
 MapdataStageInfo *CourseMap::getStageInfo() const {
     return m_stageInfo && m_stageInfo->size() != 0 ? m_stageInfo->get(0) : nullptr;
 }
 
+/// @addr{0x80514B30}
 MapdataStartPoint *CourseMap::getStartPoint(u16 i) const {
     return m_startPoint && m_startPoint->size() != 0 ? m_startPoint->get(i) : nullptr;
 }
 
+/// @addr{0x80514148} 
 MapdataGeoObj *CourseMap::getGeoObj(u16 i) const {
     return m_geoObj && m_geoObj->size() != 0 ? m_geoObj->get(i) : nullptr;
 }
@@ -111,12 +118,14 @@ MapdataGeoObjAccessor *CourseMap::geoObj() const {
     return m_geoObj;
 }
 
+/// @addr{0x80512694}
 CourseMap *CourseMap::CreateInstance() {
     assert(!s_instance);
     s_instance = new CourseMap;
     return s_instance;
 }
 
+/// @addr{0x8051271C}
 void CourseMap::DestroyInstance() {
     assert(s_instance);
     delete s_instance;
@@ -127,10 +136,12 @@ CourseMap *CourseMap::Instance() {
     return s_instance;
 }
 
+/// @addr{0x8051276C}
 CourseMap::CourseMap()
     : m_course(nullptr), m_startPoint(nullptr), m_geoObj(nullptr), m_stageInfo(nullptr), m_startTmpAngle(0.0f),
       m_startTmp0(0.0f), m_startTmp1(0.0f), m_startTmp2(0.0f), m_startTmp3(0.0f) {}
 
+/// @addr{0x805127AC}
 CourseMap::~CourseMap() {
     delete m_course;
     delete m_startPoint;
@@ -138,10 +149,11 @@ CourseMap::~CourseMap() {
     delete m_stageInfo;
 }
 
+/// @addr{0x80512C10}
 void *CourseMap::LoadFile(const char *filename) {
     return ResourceManager::Instance()->getFile(filename, nullptr, ArchiveId::Course);
 }
 
-CourseMap *CourseMap::s_instance = nullptr;
+CourseMap *CourseMap::s_instance = nullptr; ///< @addr{0x809BD6E8}
 
 } // namespace System

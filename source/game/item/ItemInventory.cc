@@ -6,6 +6,7 @@ ItemInventory::ItemInventory() = default;
 
 ItemInventory::~ItemInventory() = default;
 
+/// @addr{0x807BC940}
 void ItemInventory::setItem(ItemId id) {
     constexpr int MUSHROOM_COUNT = 3;
 
@@ -13,6 +14,7 @@ void ItemInventory::setItem(ItemId id) {
     m_currentCount = MUSHROOM_COUNT;
 }
 
+/// @addr{0x807BC97C}
 void ItemInventory::useItem(int count) {
     m_currentCount -= count;
     if (m_currentCount > 0) {

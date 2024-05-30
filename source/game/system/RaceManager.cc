@@ -6,9 +6,9 @@
 
 namespace System {
 
+/// @addr{0x805362DC}
+/// @todo When expanding to other gamemodes, we will need to pass the player index
 void RaceManager::findKartStartPoint(EGG::Vector3f &pos, EGG::Vector3f &angles) {
-    // For time trials and ghost race
-    // When expanding to other gamemodes, we will need the player index
     u32 placement = 1;
     u32 playerCount = 1;
     u32 startPointIdx = 0;
@@ -23,6 +23,7 @@ void RaceManager::findKartStartPoint(EGG::Vector3f &pos, EGG::Vector3f &angles) 
     }
 }
 
+/// @addr{0x805331B4}
 void RaceManager::calc() {
     constexpr u16 STAGE_INTRO_DURATION = 172;
 
@@ -46,11 +47,13 @@ void RaceManager::calc() {
     }
 }
 
+/// @addr{0x80536230}
 bool RaceManager::isStageReached(Stage stage) const {
     return static_cast<std::underlying_type_t<Stage>>(m_stage) >=
             static_cast<std::underlying_type_t<Stage>>(stage);
 }
 
+/// @addr{0x80533090}
 int RaceManager::getCountdownTimer() const {
     return STAGE_COUNTDOWN_DURATION - m_timer;
 }
@@ -63,6 +66,7 @@ RaceManager::Stage RaceManager::stage() const {
     return m_stage;
 }
 
+/// @addr{0x80532084}
 RaceManager *RaceManager::CreateInstance() {
     assert(!s_instance);
     s_instance = new RaceManager;
@@ -73,16 +77,20 @@ RaceManager *RaceManager::Instance() {
     return s_instance;
 }
 
+/// @addr{0x805320D4}
 void RaceManager::DestroyInstance() {
     assert(s_instance);
     delete s_instance;
     s_instance = nullptr;
 }
 
+/// @addr{0x805327A0}
 RaceManager::RaceManager() : m_stage(Stage::Intro), m_introTimer(0), m_timer(0) {}
 
+/// @addr{0x80532E3C}
 RaceManager::~RaceManager() = default;
 
+/// @addr{0x80533ED8}
 RaceManagerPlayer::RaceManagerPlayer() {
     m_inputs = &KPadDirector::Instance()->playerInput();
 }
@@ -91,6 +99,6 @@ const KPad *RaceManagerPlayer::inputs() const {
     return m_inputs;
 }
 
-RaceManager *RaceManager::s_instance = nullptr;
+RaceManager *RaceManager::s_instance = nullptr; ///< @addr{0x809BD730}
 
 } // namespace System

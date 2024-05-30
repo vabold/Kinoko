@@ -4,6 +4,7 @@ namespace EGG {
 
 class Scene;
 
+/// @brief Interface for creating and destroying scenes.
 class SceneCreator {
 public:
     virtual Scene *create(int sceneID) const = 0;

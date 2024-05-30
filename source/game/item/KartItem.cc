@@ -5,14 +5,19 @@
 
 namespace Item {
 
+/// @addr{0x8079754C}
 KartItem::KartItem() = default;
 
+/// @addr{0x8079951C}
 KartItem::~KartItem() = default;
 
+/// @addr{0x807976E0}
 void KartItem::init(size_t playerIdx) {
     apply(playerIdx);
 }
 
+/// @brief Calculates item activation based on the controller input state
+/// @addr{0x80797928}
 void KartItem::calc() {
     bool prevButton = m_bItemButtonHold;
     clearButtonFlags();
@@ -23,17 +28,10 @@ void KartItem::calc() {
         m_bItemButtonActivation = !prevButton;
     }
 
-    bool canUse = false;
-    if (m_bItemButtonActivation) {
-        canUse = true;
-        if (!System::RaceManager::Instance()->isStageReached(System::RaceManager::Stage::Race)) {
-            canUse = false;
-        }
-
-        if (m_inventory.id() == ItemId::NONE) {
-            canUse = false;
-        }
-    }
+    const auto *raceMgr = System::RaceManager::Instance();
+    bool canUse = m_bItemButtonActivation;
+    canUse = canUse && raceMgr->isStageReached(System::RaceManager::Stage::Race);
+    canUse = canUse && (m_inventory.id() != ItemId::NONE);
 
     if (canUse) {
         // For now, assume only time trials are valid and use a mushroom
@@ -41,22 +39,24 @@ void KartItem::calc() {
     }
 }
 
+/// @addr{0x8079864C}
 void KartItem::activateMushroom() {
     move()->activateMushroom();
 }
 
+/// @addr{0x807A9D3C}
 void KartItem::useMushroom() {
     activateMushroom();
     m_inventory.useItem(1);
 }
 
-ItemInventory &KartItem::inventory() {
-    return m_inventory;
-}
-
 void KartItem::clearButtonFlags() {
     m_bItemButtonHold = false;
     m_bItemButtonActivation = false;
+}
+
+ItemInventory &KartItem::inventory() {
+    return m_inventory;
 }
 
 } // namespace Item

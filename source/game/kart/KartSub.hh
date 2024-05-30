@@ -4,7 +4,9 @@
 
 namespace Kart {
 
-class KartSub : public KartObjectProxy {
+/// @brief Hosts a few classes and the high level per-frame calc functions.
+/// @nosubgrouping
+class KartSub : KartObjectProxy {
 public:
     KartSub();
     ~KartSub();
@@ -21,7 +23,9 @@ public:
     void addFloor(const CollisionData &, bool);
     void updateSuspOvertravel(const EGG::Vector3f &suspOvertravel);
 
+    /// @beginGetters
     f32 someScale();
+    /// @endGetters
 
 private:
     KartMove *m_move;
@@ -30,9 +34,9 @@ private:
     EGG::Vector3f m_maxSuspOvertravel;
     EGG::Vector3f m_minSuspOvertravel;
     u16 m_floorCollisionCount;
-    f32 m_someScale;
+    f32 m_someScale; /// @rename
 
-    static constexpr f32 DT = 1.0f;
+    static constexpr f32 DT = 1.0f; ///< Delta time.
 };
 
 } // namespace Kart

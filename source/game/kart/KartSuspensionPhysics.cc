@@ -10,22 +10,27 @@
 
 namespace Kart {
 
+/// @addr{0x8059940C}
 WheelPhysics::WheelPhysics(u16 wheelIdx, u16 bspWheelIdx)
     : m_wheelIdx(wheelIdx), m_bspWheelIdx(bspWheelIdx), m_bspWheel(nullptr) {}
 
+/// @addr{0x8059A9C4}
 WheelPhysics::~WheelPhysics() {
     delete m_hitboxGroup;
 }
 
+/// @addr{0x80599470}
 void WheelPhysics::init() {
     m_hitboxGroup = new CollisionGroup;
     m_hitboxGroup->createSingleHitbox(10.0f, EGG::Vector3f::zero);
 }
 
+/// @addr{0x805994D4}
 void WheelPhysics::initBsp() {
     m_bspWheel = &bsp().wheels[m_bspWheelIdx];
 }
 
+/// @addr{0x80599508}
 void WheelPhysics::reset() {
     m_pos.setZero();
     m_lastPos.setZero();
@@ -45,6 +50,7 @@ void WheelPhysics::reset() {
     }
 }
 
+/// @addr{0x80599AD0}
 void WheelPhysics::realign(const EGG::Vector3f &bottom, const EGG::Vector3f &vehicleMovement) {
     const EGG::Vector3f topmostPos = m_topmostPos + vehicleMovement;
     f32 scaledMaxTravel = m_bspWheel->maxTravel * sub()->someScale();
@@ -60,6 +66,7 @@ void WheelPhysics::realign(const EGG::Vector3f &bottom, const EGG::Vector3f &veh
     m_lastPosDiff = m_pos - topmostPos;
 }
 
+/// @addr{0x80599690}
 void WheelPhysics::updateCollision(const EGG::Vector3f &bottom, const EGG::Vector3f &topmostPos) {
     m_targetEffectiveRadius = m_bspWheel->wheelRadius;
     f32 nextRadius = m_bspWheel->sphereRadius;
@@ -100,6 +107,30 @@ void WheelPhysics::updateCollision(const EGG::Vector3f &bottom, const EGG::Vecto
     }
 }
 
+void WheelPhysics::setSuspTravel(f32 suspTravel) {
+    m_suspTravel = suspTravel;
+}
+
+void WheelPhysics::setPos(const EGG::Vector3f &pos) {
+    m_pos = pos;
+}
+
+void WheelPhysics::setLastPos(const EGG::Vector3f &pos) {
+    m_lastPos = pos;
+}
+
+void WheelPhysics::setLastPosDiff(const EGG::Vector3f &pos) {
+    m_lastPosDiff = pos;
+}
+
+void WheelPhysics::setWheelEdgePos(const EGG::Vector3f &pos) {
+    m_wheelEdgePos = pos;
+}
+
+void WheelPhysics::setColVel(const EGG::Vector3f &vec) {
+    m_colVel = vec;
+}
+
 const EGG::Vector3f &WheelPhysics::pos() const {
     return m_pos;
 }
@@ -136,46 +167,27 @@ f32 WheelPhysics::_74() const {
     return m_74;
 }
 
-void WheelPhysics::setSuspTravel(f32 suspTravel) {
-    m_suspTravel = suspTravel;
-}
-
-void WheelPhysics::setPos(const EGG::Vector3f &pos) {
-    m_pos = pos;
-}
-
-void WheelPhysics::setLastPos(const EGG::Vector3f &pos) {
-    m_lastPos = pos;
-}
-
-void WheelPhysics::setLastPosDiff(const EGG::Vector3f &pos) {
-    m_lastPosDiff = pos;
-}
-
-void WheelPhysics::setWheelEdgePos(const EGG::Vector3f &pos) {
-    m_wheelEdgePos = pos;
-}
-
-void WheelPhysics::setColVel(const EGG::Vector3f &vec) {
-    m_colVel = vec;
-}
-
+/// @addr{0x80599ED4}
 KartSuspensionPhysics::KartSuspensionPhysics(u16 wheelIdx, u16 bspWheelIdx)
     : m_tirePhysics(nullptr), m_bspWheelIdx(bspWheelIdx), m_wheelIdx(wheelIdx) {}
 
+/// @addr{0x8059AA04}
 KartSuspensionPhysics::~KartSuspensionPhysics() = default;
 
+/// @addr{0x80599FA0}
 void KartSuspensionPhysics::init() {
     m_tirePhysics = tire(m_wheelIdx)->wheelPhysics();
     m_bspWheel = &bsp().wheels[m_bspWheelIdx];
 }
 
+/// @addr{0x80599F54}
 void KartSuspensionPhysics::reset() {
     m_topmostPos.setZero();
     m_maxTravelScaled = 0.0f;
     m_bottomDir.setZero();
 }
 
+/// @addr{0x8059A02C}
 void KartSuspensionPhysics::setInitialState() {
     EGG::Vector3f rotatedRelPos = dynamics()->fullRot().rotateVector(m_bspWheel->relPosition);
     rotatedRelPos += pos();
@@ -192,6 +204,7 @@ void KartSuspensionPhysics::setInitialState() {
     m_topmostPos = rotatedRelPos;
 }
 
+/// @addr{0x8059A278}
 void KartSuspensionPhysics::calcCollision(f32 dt, const EGG::Vector3f &gravity,
         const EGG::Matrix34f &mat) {
     m_maxTravelScaled = m_bspWheel->maxTravel * sub()->someScale();
@@ -211,6 +224,9 @@ void KartSuspensionPhysics::calcCollision(f32 dt, const EGG::Vector3f &gravity,
     m_topmostPos = topmostPos;
 }
 
+/// @stage All
+/// @brief Calculates linear force and rotation from the kart's suspension.
+/// @addr{0x8059A574}
 void KartSuspensionPhysics::calcSuspension(const EGG::Vector3f &forward,
         const EGG::Vector3f &vehicleMovement) {
     EGG::Vector3f lastPosDiff = m_tirePhysics->lastPosDiff();

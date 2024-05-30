@@ -4,12 +4,14 @@
 
 namespace EGG {
 
+/// @addr{0x802145C0}
 BoundBox2f::BoundBox2f() {
     resetBound();
 }
 
 BoundBox2f::~BoundBox2f() = default;
 
+/// @addr{0x802145F0}
 void BoundBox2f::resetBound() {
     min.set(std::numeric_limits<f32>::max());
     max.set(-std::numeric_limits<f32>::max());

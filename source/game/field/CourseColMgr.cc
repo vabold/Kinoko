@@ -8,6 +8,7 @@
 
 namespace Field {
 
+/// @addr{0x807C28D8}
 void CourseColMgr::init() {
     // In the base game, this file is loaded in CollisionDirector::CreateInstance and passed into
     // this function. It's simpler to just keep it here.
@@ -15,6 +16,7 @@ void CourseColMgr::init() {
     m_data = new KColData(file);
 }
 
+/// @addr{0x807C293C}
 void CourseColMgr::scaledNarrowScopeLocal(f32 scale, f32 radius, KColData *data,
         const EGG::Vector3f &pos, KCLTypeMask mask) {
     if (!data) {
@@ -24,6 +26,7 @@ void CourseColMgr::scaledNarrowScopeLocal(f32 scale, f32 radius, KColData *data,
     data->narrowScopeLocal(pos / scale, radius / scale, mask);
 }
 
+/// @addr{0x807C3CF0}
 bool CourseColMgr::checkSphereFull(f32 scalar, f32 radius, KColData *data, const EGG::Vector3f &v0,
         const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *info,
         KCLTypeMask *kcl_flags_out) {
@@ -42,6 +45,7 @@ bool CourseColMgr::checkSphereFull(f32 scalar, f32 radius, KColData *data, const
     return false; // doCheckMaskOnly(data, &KColData::checkSphereCollision, kcl_flags_out);
 }
 
+/// @addr{0x807C3E84}
 bool CourseColMgr::checkSphereFullPush(f32 scalar, f32 radius, KColData *data,
         const EGG::Vector3f &v0, const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *info,
         KCLTypeMask *kcl_flags_out) {
@@ -60,6 +64,7 @@ bool CourseColMgr::checkSphereFullPush(f32 scalar, f32 radius, KColData *data,
     return doCheckMaskOnlyPush(data, &KColData::checkSphereCollision, kcl_flags_out);
 }
 
+/// @addr{0x807C47F0}
 bool CourseColMgr::checkSphereCachedPartialPush(KColData *data, const EGG::Vector3f &pos,
         const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CollisionInfo *colInfo,
         KCLTypeMask *typeMaskOut, f32 scale, f32 radius) {
@@ -83,6 +88,7 @@ bool CourseColMgr::checkSphereCachedPartialPush(KColData *data, const EGG::Vecto
     return doCheckMaskOnlyPush(data, &KColData::checkSphereCollision, typeMaskOut);
 }
 
+/// @addr{0x807C4B40}
 bool CourseColMgr::checkSphereCachedFullPush(KColData *data, const EGG::Vector3f &pos,
         const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CollisionInfo *colInfo,
         KCLTypeMask *typeMaskOut, f32 scale, f32 radius) {
@@ -118,17 +124,20 @@ CourseColMgr::NoBounceWallColInfo *CourseColMgr::noBounceWallInfo() const {
     return m_noBounceWallInfo;
 }
 
+/// @brief Loads a particular section of a .szs file
 void *CourseColMgr::LoadFile(const char *filename) {
     auto *resMgr = System::ResourceManager::Instance();
     return resMgr->getFile(filename, nullptr, System::ArchiveId::Course);
 }
 
+/// @addr{0x807C2824}
 CourseColMgr *CourseColMgr::CreateInstance() {
     assert(!s_instance);
     s_instance = new CourseColMgr;
     return s_instance;
 }
 
+/// @addr{0x807C2884}
 void CourseColMgr::DestroyInstance() {
     assert(s_instance);
     delete s_instance;
@@ -139,14 +148,17 @@ CourseColMgr *CourseColMgr::Instance() {
     return s_instance;
 }
 
+/// @addr{0x807C29E4}
 CourseColMgr::CourseColMgr()
     : m_data(nullptr), m_kclScale(1.0f), m_noBounceWallInfo(nullptr), m_localMtx(nullptr) {}
 
+/// @addr{0x807C2A04}
 CourseColMgr::~CourseColMgr() {
     assert(m_data);
     delete m_data;
 }
 
+/// @addr{0x807C2F18}
 bool CourseColMgr::doCheckWithPartialInfoPush(KColData *data, CollisionCheckFunc collisionCheckFunc,
         CollisionInfo *colInfo, KCLTypeMask *typeMask) {
     f32 dist;
@@ -187,6 +199,7 @@ bool CourseColMgr::doCheckWithPartialInfoPush(KColData *data, CollisionCheckFunc
     return hasCol;
 }
 
+/// @addr{0x807C3258}
 bool CourseColMgr::doCheckWithFullInfo(KColData *data, CollisionCheckFunc collisionCheckFunc,
         CollisionInfo *colInfo, KCLTypeMask *flagsOut) {
     f32 dist;
@@ -226,6 +239,7 @@ bool CourseColMgr::doCheckWithFullInfo(KColData *data, CollisionCheckFunc collis
     return hasCol;
 }
 
+/// @addr{0x807C36CC}
 bool CourseColMgr::doCheckWithFullInfoPush(KColData *data, CollisionCheckFunc collisionCheckFunc,
         CollisionInfo *colInfo, KCLTypeMask *flagsOut) {
     f32 dist;
@@ -284,6 +298,6 @@ bool CourseColMgr::doCheckMaskOnlyPush(KColData *data, CollisionCheckFunc collis
     return hasCol;
 }
 
-CourseColMgr *CourseColMgr::s_instance = nullptr;
+CourseColMgr *CourseColMgr::s_instance = nullptr; ///< @addr{0x809C3C10}
 
 } // namespace Field
