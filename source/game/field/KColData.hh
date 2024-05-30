@@ -57,6 +57,7 @@ public:
 
     /// @beginGetters
     u16 prismCache(u32 idx) const;
+    EGG::BoundBox3f bbox() const;
     /// @endGetters
 
     static EGG::Vector3f GetVertex(f32 height, const EGG::Vector3f &vertex1,

@@ -10,6 +10,7 @@
 #include "game/kart/KartSuspension.hh"
 
 #include "game/field/CollisionDirector.hh"
+#include "game/field/CollisionInfo.hh"
 #include "game/field/KCollisionTypes.hh"
 
 #include "game/system/RaceManager.hh"
@@ -168,7 +169,7 @@ void KartMove::setInitialPhysicsValues(const EGG::Vector3f &position, const EGG:
     EGG::Quatf quaternion;
     quaternion.setRPY(angles * DEG2RAD);
     EGG::Vector3f newPos = position;
-    Field::CourseColMgr::CollisionInfo info;
+    Field::CollisionInfo info;
     Field::KCLTypeMask kcl_flags = KCL_NONE;
 
     bool bColliding = Field::CollisionDirector::Instance()->checkSphereFullPush(100.0f, newPos,
@@ -414,7 +415,7 @@ void KartMove::calcStickyRoad() {
     EGG::Vector3f pos = dynamics()->pos();
     EGG::Vector3f vel = m_speed * m_vel1Dir;
     EGG::Vector3f down = -STICKY_RADIUS * componentYAxis();
-    Field::CourseColMgr::CollisionInfo colInfo;
+    Field::CollisionInfo colInfo;
     colInfo.bbox.setZero();
     Field::KCLTypeMask kcl_flags = KCL_NONE;
     bool stickyRoad = false;
