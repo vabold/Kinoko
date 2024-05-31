@@ -22,7 +22,7 @@
 // Credit: em-eight/mkw
 
 /// Computes the "Base Type" portion of the KCL flags. It's the lower 5 bits of the flag.
-#define KCL_ATTRIBUTE_TYPE(x) ((x)&0x1f)
+#define KCL_ATTRIBUTE_TYPE(x) ((x) & 0x1f)
 /// Converts an attribute to the type mask bitfield for that attribute. The game uses this method in
 /// order to create a mask that represents multiple KCL attributes.
 #define KCL_TYPE_BIT(x) (1 << (x))

@@ -26,13 +26,13 @@ void MapdataGeoObj::read(EGG::Stream &stream) {
 u16 MapdataGeoObj::id() const {
     return m_id;
 }
-EGG::Vector3f MapdataGeoObj::position() const {
+const EGG::Vector3f &MapdataGeoObj::position() const {
     return m_position;
 }
-EGG::Vector3f MapdataGeoObj::rotation() const {
+const EGG::Vector3f &MapdataGeoObj::rotation() const {
     return m_rotation;
 }
-EGG::Vector3f MapdataGeoObj::scale() const {
+const EGG::Vector3f &MapdataGeoObj::scale() const {
     return m_scale;
 }
 

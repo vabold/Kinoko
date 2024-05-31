@@ -14,20 +14,21 @@ struct ObjGroup {
 
 class ObjectDirector {
 public:
-    static ObjectDirector *CreateInstance();
-    static void DestroyInstance();
-    static ObjectDirector *Instance();
-    
     ObjectDirector();
     virtual ~ObjectDirector();
 
     void createObjects(bool isMii);
     void constructObject(System::MapdataGeoObj &obj);
 
-    const ObjFlow* objFlow() const;
-private:
-    static ObjectDirector *s_instance;
+    /// @beginGetters
+    const ObjFlow *objFlow() const;
+    /// @endGetters
 
+    static ObjectDirector *CreateInstance();
+    static void DestroyInstance();
+    static ObjectDirector *Instance();
+
+private:
     ObjFlow *m_objFlow;
     GeoHitTable *m_getHitTableItem;
     GeoHitTable *m_getHitTableItemObj;
@@ -35,14 +36,14 @@ private:
     GeoHitTable *m_getHitTableKartObj;
     GeoObjectArray m_objArrays[5];
     GeoObject **m_objs;
-    bool m_isOnlineGameMode;
-    bool m_isTimeTrials;
-    EGG::Vector3f* _44;
-    u8* m_collisionScenarios; // unknown
+    EGG::Vector3f *_44;
+    u8 *m_collisionScenarios; // unknown
     ObjGroup *m_managedGroup;
     bool m_hasSunDSOrWiggler = false;
     EGG::Matrix34f _64[4];
     float _124[4];
+
+    static ObjectDirector *s_instance;
 };
 
 } // namespace Field

@@ -7,12 +7,12 @@
 namespace System {
 
 class MapdataFileAccessor;
+class MapdataGeoObj;
+class MapdataGeoObjAccessor;
 class MapdataStageInfo;
 class MapdataStageInfoAccessor;
 class MapdataStartPoint;
 class MapdataStartPointAccessor;
-class MapdataGeoObj;
-class MapdataGeoObjAccessor;
 
 /// @brief Contains course metadata, notably the starting position.
 /// @addr{0x809BD6E8}
@@ -34,9 +34,8 @@ public:
     f32 startTmp1() const;
     f32 startTmp2() const;
     f32 startTmp3() const;
-    /// @endGetters
-
     MapdataGeoObjAccessor *geoObj() const;
+    /// @endGetters
 
     static CourseMap *CreateInstance();
     static void DestroyInstance();

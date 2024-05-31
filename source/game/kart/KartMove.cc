@@ -10,7 +10,6 @@
 #include "game/kart/KartSuspension.hh"
 
 #include "game/field/CollisionDirector.hh"
-#include "game/field/CollisionInfo.hh"
 #include "game/field/KCollisionTypes.hh"
 
 #include "game/system/RaceManager.hh"

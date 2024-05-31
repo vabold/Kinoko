@@ -1,7 +1,8 @@
 #include "Mdush.hh"
 
-namespace Field
-{
+namespace Field {
+
+Mdush::Mdush(System::MapdataGeoObj *pMapDataGeoObj) : GeoObjectKCL(pMapDataGeoObj) {}
 
 Mdush::~Mdush() = default;
 

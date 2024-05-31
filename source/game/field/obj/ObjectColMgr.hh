@@ -10,15 +10,17 @@ namespace Field {
 
 class ObjectColMgr {
 public:
-    static void *LoadFile(const char *filename);
     ObjectColMgr(const char *filename);
     ~ObjectColMgr();
 
     void setMtx(EGG::Matrix34f &val);
     void setKCLScale(f32 val);
 
-    EGG::Vector3f getKclBboxLowWorld();
-    EGG::Vector3f getKclBboxHighWorld();
+    const EGG::Vector3f &getKclBboxLowWorld() const;
+    const EGG::Vector3f &getKclBboxHighWorld() const;
+
+    static void *LoadFile(const char *filename);
+
 private:
     KColData *m_data;
     EGG::Matrix34f m_mtx;

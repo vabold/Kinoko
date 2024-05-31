@@ -2,8 +2,7 @@
 
 #include "game/field/KCollisionTypes.hh"
 
-namespace Field
-{
+namespace Field {
 
 void CollisionInfo::updateFloor(f32 dist, const EGG::Vector3f &fnrm) {
     if (dist > floorDist) {
@@ -19,8 +18,8 @@ void CollisionInfo::updateWall(f32 dist, const EGG::Vector3f &fnrm) {
     }
 }
 
-void CollisionInfo::update(f32 now_dist, const EGG::Vector3f &offset,
-        const EGG::Vector3f &fnrm, u32 kclAttributeTypeBit) {
+void CollisionInfo::update(f32 now_dist, const EGG::Vector3f &offset, const EGG::Vector3f &fnrm,
+        u32 kclAttributeTypeBit) {
     bbox.min = bbox.min.minimize(offset);
     bbox.max = bbox.max.maximize(offset);
 

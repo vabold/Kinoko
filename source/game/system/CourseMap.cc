@@ -85,7 +85,7 @@ MapdataStartPoint *CourseMap::getStartPoint(u16 i) const {
     return m_startPoint && m_startPoint->size() != 0 ? m_startPoint->get(i) : nullptr;
 }
 
-/// @addr{0x80514148} 
+/// @addr{0x80514148}
 MapdataGeoObj *CourseMap::getGeoObj(u16 i) const {
     return m_geoObj && m_geoObj->size() != 0 ? m_geoObj->get(i) : nullptr;
 }
@@ -138,8 +138,9 @@ CourseMap *CourseMap::Instance() {
 
 /// @addr{0x8051276C}
 CourseMap::CourseMap()
-    : m_course(nullptr), m_startPoint(nullptr), m_geoObj(nullptr), m_stageInfo(nullptr), m_startTmpAngle(0.0f),
-      m_startTmp0(0.0f), m_startTmp1(0.0f), m_startTmp2(0.0f), m_startTmp3(0.0f) {}
+    : m_course(nullptr), m_startPoint(nullptr), m_geoObj(nullptr), m_stageInfo(nullptr),
+      m_startTmpAngle(0.0f), m_startTmp0(0.0f), m_startTmp1(0.0f), m_startTmp2(0.0f),
+      m_startTmp3(0.0f) {}
 
 /// @addr{0x805127AC}
 CourseMap::~CourseMap() {

@@ -1,26 +1,27 @@
 #pragma once
-#include <Common.hh>
+
 #include "game/field/obj/GeoObject.hh"
 
 namespace Field {
 
 class ObjDrivableHolder {
 public:
-    static ObjDrivableHolder* CreateInstance();
-    static void DestroyInstance();
-    static ObjDrivableHolder* Instance();
-
     ObjDrivableHolder();
     virtual ~ObjDrivableHolder();
-    
+
     void initObjs();
     void update();
-    s32 push(GeoObjectDrivable* pObj);
-private:
-    static ObjDrivableHolder* s_instance;
+    s32 push(GeoObjectDrivable *pObj);
 
+    static ObjDrivableHolder *CreateInstance();
+    static void DestroyInstance();
+    static ObjDrivableHolder *Instance();
+
+private:
     u16 m_count;
-    GeoObjectDrivable** m_objs;
+    GeoObjectDrivable **m_objs;
+
+    static ObjDrivableHolder *s_instance;
 };
 
 } // namespace Field

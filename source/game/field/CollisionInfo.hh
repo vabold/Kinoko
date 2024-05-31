@@ -1,11 +1,8 @@
 #pragma once
-#include <Common.hh>
 
-#include "egg/math/BoundBox.hh"
-#include "egg/math/Vector.hh"
+#include <egg/math/BoundBox.hh>
 
-namespace Field
-{
+namespace Field {
 
 /// @brief Structure regrouping information on a particular collision
 struct CollisionInfo {

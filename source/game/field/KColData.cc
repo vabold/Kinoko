@@ -297,7 +297,7 @@ u16 KColData::prismCache(u32 idx) const {
     return m_prismCache[idx];
 }
 
-EGG::BoundBox3f KColData::bbox() const {
+const EGG::BoundBox3f &KColData::bbox() const {
     return m_bbox;
 }
 

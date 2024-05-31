@@ -10,8 +10,8 @@ void CollisionDirector::checkCourseColNarrScLocal(f32 radius, const EGG::Vector3
 
 /// @addr{0x8078F500}
 bool CollisionDirector::checkSphereFull(f32 radius, const EGG::Vector3f &v0,
-        const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *pInfo,
-        KCLTypeMask *pFlagsOut, u32 /*start*/) {
+        const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut,
+        u32 /*start*/) {
     if (pInfo) {
         pInfo->bbox.min = EGG::Vector3f::zero;
         pInfo->bbox.max = EGG::Vector3f::zero;
@@ -56,8 +56,8 @@ bool CollisionDirector::checkSphereFull(f32 radius, const EGG::Vector3f &v0,
 
 /// @addr{0x8078F784}
 bool CollisionDirector::checkSphereFullPush(f32 radius, const EGG::Vector3f &v0,
-        const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *pInfo,
-        KCLTypeMask *pFlagsOut, u32 /*param_8*/) {
+        const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut,
+        u32 /*param_8*/) {
     if (pInfo) {
         pInfo->bbox.setZero();
         pInfo->_50 = -std::numeric_limits<f32>::min();

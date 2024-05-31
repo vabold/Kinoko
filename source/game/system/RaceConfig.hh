@@ -37,9 +37,6 @@ public:
 
         void init();
 
-        inline bool isOnlineGameMode() const {
-            return GameMode::LocalGameModeMax < gameMode;
-        }
         inline bool isInTimeTrials() const {
             return gameMode == GameMode::Time_Trial || gameMode == GameMode::Ghost_Race;
         }

@@ -97,7 +97,7 @@ void WheelPhysics::updateCollision(const EGG::Vector3f &bottom, const EGG::Vecto
     m_topmostPos = topmostPos;
     m_wheelEdgePos = m_pos + m_effectiveRadius * move()->totalScale() * bottom;
     m_effectiveRadius += (m_targetEffectiveRadius - m_effectiveRadius) * 0.1f;
-    m_suspTravel = bottom.dot(m_pos - topmostPos); // m_pos wrong wheel 2
+    m_suspTravel = bottom.dot(m_pos - topmostPos);
 
     if (m_suspTravel < 0.0f) {
         m_74 = 1.0f;

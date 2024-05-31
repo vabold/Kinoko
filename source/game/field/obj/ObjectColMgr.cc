@@ -10,15 +10,13 @@ void *ObjectColMgr::LoadFile(const char *filename) {
 }
 
 /// @addr{0x807C4CE8}
-ObjectColMgr::ObjectColMgr(const char *filename) : m_kclScale(1.0f) {
-    // In the base game, this file is loaded in each GeoObjectKCL and passed into
-    // this function. It's simpler to just keep it here.
+/// @details In the base game, this file is loaded in each GeoObjectKCL and passed into
+/// this function. It's simpler to just keep it here.
+ObjectColMgr::ObjectColMgr(const char *filename)
+    : m_mtx(EGG::Matrix34f::ident), m_mtxInv(EGG::Matrix34f::ident), m_kclScale(1.0f),
+      _68(EGG::Vector3f::zero) {
     void *file = LoadFile(filename);
     m_data = new KColData(file);
-    m_mtx = EGG::Matrix34f::ident;
-    m_mtxInv = EGG::Matrix34f::ident;
-    m_kclScale = 1.0f;
-    _68 = EGG::Vector3f::zero;
 }
 
 /// @addr{0x807C4D6C}
@@ -35,13 +33,13 @@ void ObjectColMgr::setKCLScale(f32 val) {
 }
 
 /// @addr{0x807C4E4C}
-EGG::Vector3f ObjectColMgr::getKclBboxLowWorld() {
+const EGG::Vector3f &ObjectColMgr::getKclBboxLowWorld() const {
     EGG::Vector3f out = m_data->bbox().min * m_kclScale;
     return m_mtx.ps_multVector(out);
 }
 
 /// @addr{0x807C4E7C}
-EGG::Vector3f ObjectColMgr::getKclBboxHighWorld() {
+const EGG::Vector3f &ObjectColMgr::getKclBboxHighWorld() const {
     EGG::Vector3f out = m_data->bbox().max * m_kclScale;
     return m_mtx.ps_multVector(out);
 }
