@@ -13,7 +13,7 @@ public:
     KartObject(KartParam *param);
     virtual ~KartObject();
     [[nodiscard]] virtual KartBody *createBody(KartPhysics *physics);
-    virtual void createTires() {}
+    virtual void createTires();
 
     void init();
     void initImpl();

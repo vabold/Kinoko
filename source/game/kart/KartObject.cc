@@ -33,6 +33,46 @@ KartObject::~KartObject() {
     }
 }
 
+/// @addr{0x8058EA0C}
+void KartObject::createTires() {
+    constexpr u16 BSP_WHEEL_INDICES[8] = {0, 0, 1, 1, 2, 2, 3, 3};
+    constexpr KartSuspensionPhysics::TireType X_MIRRORED_TIRE[8] = {
+            KartSuspensionPhysics::TireType::Kart,
+            KartSuspensionPhysics::TireType::KartReflected,
+            KartSuspensionPhysics::TireType::Kart,
+            KartSuspensionPhysics::TireType::KartReflected,
+            KartSuspensionPhysics::TireType::Kart,
+            KartSuspensionPhysics::TireType::KartReflected,
+            KartSuspensionPhysics::TireType::Kart,
+            KartSuspensionPhysics::TireType::KartReflected,
+    };
+
+    auto bodyType = m_pointers.param->stats().body;
+    u32 tireCount = m_pointers.param->tireCount();
+
+    if (bodyType == KartParam::Stats::Body::Three_Wheel_Kart) {
+        tireCount = 4;
+    }
+
+    for (u16 wheelIdx = 0; wheelIdx < tireCount; ++wheelIdx) {
+        if (bodyType == KartParam::Stats::Body::Three_Wheel_Kart && wheelIdx == 0) {
+            continue;
+        }
+
+        u16 bspWheelIdx = BSP_WHEEL_INDICES[wheelIdx];
+        KartSuspensionPhysics::TireType tireType = X_MIRRORED_TIRE[wheelIdx];
+
+        KartSuspension *sus = new KartSuspension;
+        KartTire *tire = (bspWheelIdx == 0) ? new KartTireFront(tireType, bspWheelIdx) :
+                                              new KartTire(tireType, bspWheelIdx);
+
+        m_pointers.suspensions.push_back(sus);
+        m_pointers.tires.push_back(tire);
+
+        sus->init(wheelIdx, tireType, bspWheelIdx);
+    }
+}
+
 /// @addr{0x8058E5F8}
 KartBody *KartObject::createBody(KartPhysics *physics) {
     return new KartBodyKart(physics);
@@ -180,16 +220,16 @@ void KartObjectBike::createTires() {
 
         if (wheelIdx == 0 || wheelIdx == 2) {
             sus = new KartSuspensionFrontBike;
-            tire = new KartTireFrontBike(0);
+            tire = new KartTireFrontBike(KartSuspensionPhysics::TireType::Bike, 0);
         } else {
             sus = new KartSuspensionRearBike;
-            tire = new KartTireRearBike(1);
+            tire = new KartTireRearBike(KartSuspensionPhysics::TireType::Bike, 1);
         }
 
         m_pointers.suspensions.push_back(sus);
         m_pointers.tires.push_back(tire);
 
-        sus->init(wheelIdx, wheelIdx);
+        sus->init(wheelIdx, KartSuspensionPhysics::TireType::Bike, wheelIdx);
     }
 }
 } // namespace Kart

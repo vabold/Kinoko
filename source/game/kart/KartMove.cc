@@ -43,6 +43,11 @@ KartMove::KartMove() : m_smoothedUp(EGG::Vector3f::ey), m_scale(1.0f, 1.0f, 1.0f
 /// @addr{0x80587B78}
 KartMove::~KartMove() = default;
 
+/// @addr{0x8057821C}
+void KartMove::createSubsystems() {
+    m_jump = new KartJump(this);
+}
+
 /// @stage All
 /// @brief Each frame, looks at player input and kart stats. Saves turn-related info.
 /// @addr{0x8057A8B4}
@@ -82,11 +87,18 @@ void KartMove::calcTurn() {
 
 /// @addr{0x8057829C}
 void KartMove::setTurnParams() {
+    static constexpr std::array<DriftingParameters, 3> DRIFTING_PARAMS_ARRAY = {{
+            {10.0f, 0.5f, 0.5f, 1.0f},
+            {10.0f, 0.5f, 0.5f, 0.2f},
+            {10.0f, 0.22f, 0.5f, 0.2f},
+    }};
+
     init(false, false);
     m_dir = bodyFront();
     m_lastDir = m_dir;
     m_vel1Dir = m_dir;
     m_landingDir = m_dir;
+    m_driftingParams = &DRIFTING_PARAMS_ARRAY[static_cast<u32>(param()->stats().driftType)];
 }
 
 /// @addr{0x805784D4}
@@ -248,7 +260,7 @@ void KartMove::calcTop() {
         m_hasLandingDir = true;
     } else {
         if (state()->isHop() && m_hopPosY > 0.0f) {
-            stabilizationFactor = 0.22f;
+            stabilizationFactor = m_driftingParams->stabilizationFactor;
         } else if (state()->isTouchingGround()) {
             if (state()->trickableTimer() > 0 && inputTop.dot(m_dir) > 0.0f && m_speed > 50.0f &&
                     collide()->isNotTrickable()) {
@@ -1073,7 +1085,7 @@ void KartMove::calcStandstillBoostRot() {
                 } else {
                     next = (scalar * 0.15f) * 0.08f;
                 }
-                scalar = 0.2f;
+                scalar = m_driftingParams->boostRotFactor;
             }
         } else {
             constexpr s16 MAX_SSMT_CHARGE = 75;
@@ -1172,12 +1184,54 @@ void KartMove::calcHopPhysics() {
     }
 }
 
+/// @addr{0x8057CF0C}
+/// @brief Every frame, calculates rotation, EV, and angular velocity for the kart.
+void KartMove::calcVehicleRotation(f32 turn) {
+    f32 tiltMagnitude = 0.0f;
+
+    if (state()->isAnyWheelCollision()) {
+        EGG::Vector3f front = componentZAxis();
+        front = front.perpInPlane(m_up, true);
+        EGG::Vector3f frontSpeed = velocity().rej(front).perpInPlane(m_up, false);
+        f32 dot = frontSpeed.dot();
+
+        f32 magnitude = tiltMagnitude;
+        if (dot > FLT_EPSILON) {
+            magnitude = front.length();
+
+            if (front.z * frontSpeed.x - front.x * frontSpeed.z > 0.0f) {
+                magnitude = -magnitude;
+            }
+
+            tiltMagnitude = -1.0f;
+            if (-1.0f <= magnitude) {
+                tiltMagnitude = std::min(1.0f, magnitude);
+            }
+        }
+    } else if (!state()->isHop() || m_hopPosY <= 0.0f) {
+        EGG::Vector3f angVel0 = dynamics()->angVel0();
+        angVel0.z *= 0.98f;
+        dynamics()->setAngVel0(angVel0);
+    }
+
+    f32 lean = EGG::Mathf::abs(m_weightedTurn) * (tiltMagnitude * param()->stats().tilt);
+
+    calcStandstillBoostRot();
+
+    EGG::Vector3f angVel0 = dynamics()->angVel0();
+    angVel0.x += m_standStillBoostRot;
+    angVel0.z += lean;
+    dynamics()->setAngVel0(angVel0);
+
+    EGG::Vector3f angVel2 = dynamics()->angVel2();
+    angVel2.y += turn;
+    dynamics()->setAngVel2(angVel2);
+}
+
 /// @stage 2
 /// @brief Initializes hop information, resets upwards EV and clears upwards force.
 /// @addr{0x8057DA5C}
 void KartMove::hop() {
-    constexpr f32 INITIAL_HOP_VEL = 10.0f;
-
     state()->setHop(true);
     state()->setDriftManual(false);
     onHop();
@@ -1189,7 +1243,7 @@ void KartMove::hop() {
     m_hopFrame = 0;
     m_hopPosY = 0.0f;
     m_hopGravity = dynamics()->gravity();
-    m_hopVelY = INITIAL_HOP_VEL;
+    m_hopVelY = m_driftingParams->hopVelY;
 
     EGG::Vector3f extVel = dynamics()->extVel();
     extVel.y = 0.0f + m_hopVelY;

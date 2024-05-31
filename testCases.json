@@ -1,4 +1,9 @@
 {
+    "Flare RR NG RTA WR": {
+        "rkgPath": "samples/rr-ng-rta-2-24-281.rkg",
+        "krkgPath": "samples/rr-ng-rta-2-24-281.krkg",
+        "targetFrame": 467
+    },
     "Logan rMC NG RTA WR": {
         "rkgPath": "samples/rmc-ng-rta-1-30-272.rkg",
         "krkgPath": "samples/rmc-ng-rta-1-30-272.krkg",

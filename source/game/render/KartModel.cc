@@ -59,7 +59,7 @@ void KartModel::vf_1c() {
             dVar13 = m_isInsideDrift ? 5.0f : 20.0f;
         }
     } else {
-        K_PANIC("NOT IMPLEMENTED FOR KARTS YET");
+        dVar13 = 15.0f;
     }
 
     f32 dVar12 = 0.0f;
@@ -69,22 +69,16 @@ void KartModel::vf_1c() {
         dVar12 = -_58 * dVar13;
 
         if (m_somethingLeft) {
-            if (m_isInsideDrift) {
-                dVar12 += 5.0f;
-            } else {
-                dVar12 += 10.0f;
-            }
-        } else {
-            if (m_somethingRight) {
-                if (m_isInsideDrift) {
-                    dVar12 -= 5.0f;
-                } else {
-                    dVar12 -= 10.0f;
-                }
-            }
+            dVar12 += m_isInsideDrift ? 5.0f : 10.0f;
+        } else if (m_somethingRight) {
+            dVar12 -= m_isInsideDrift ? 5.0f : 10.0f;
         }
     } else {
-        K_PANIC("NOT IMPLEMENTED FOR KARTS YET");
+        if (!m_somethingLeft && m_somethingRight) {
+            dVar12 -= 5.0f;
+        } else {
+            dVar12 += 5.0f;
+        }
     }
 
     if (dVar12 <= _5c) {
