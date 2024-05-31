@@ -272,6 +272,10 @@ const EGG::Vector3f &KartObjectProxy::intVel() const {
     return dynamics()->intVel();
 }
 
+const EGG::Vector3f &KartObjectProxy::velocity() const {
+    return dynamics()->velocity();
+}
+
 /// @addr{0x80590CF8}
 f32 KartObjectProxy::speed() const {
     return move()->speed();

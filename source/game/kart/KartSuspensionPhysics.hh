@@ -65,7 +65,14 @@ private:
 /// @brief Physics for a single wheel's suspension.
 class KartSuspensionPhysics : KartObjectProxy {
 public:
-    KartSuspensionPhysics(u16 wheelIdx, u16 bspWheelIdx);
+    /// @brief Every other kart tire is a mirror of the first. Bikes do not leverage this.
+    enum class TireType {
+        Kart,
+        KartReflected,
+        Bike,
+    };
+
+    KartSuspensionPhysics(u16 wheelIdx, TireType TireType, u16 bspWheelIdx);
     ~KartSuspensionPhysics();
 
     void init();
@@ -79,6 +86,7 @@ public:
 private:
     const BSP::Wheel *m_bspWheel;
     WheelPhysics *m_tirePhysics;
+    TireType m_tireType;
     u16 m_bspWheelIdx;
     u16 m_wheelIdx;
     EGG::Vector3f m_topmostPos;

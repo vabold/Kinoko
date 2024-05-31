@@ -169,8 +169,9 @@ f32 WheelPhysics::_74() const {
 }
 
 /// @addr{0x80599ED4}
-KartSuspensionPhysics::KartSuspensionPhysics(u16 wheelIdx, u16 bspWheelIdx)
-    : m_tirePhysics(nullptr), m_bspWheelIdx(bspWheelIdx), m_wheelIdx(wheelIdx) {}
+KartSuspensionPhysics::KartSuspensionPhysics(u16 wheelIdx, TireType tireType, u16 bspWheelIdx)
+    : m_tirePhysics(nullptr), m_tireType(tireType), m_bspWheelIdx(bspWheelIdx),
+      m_wheelIdx(wheelIdx) {}
 
 /// @addr{0x8059AA04}
 KartSuspensionPhysics::~KartSuspensionPhysics() = default;
@@ -190,10 +191,13 @@ void KartSuspensionPhysics::reset() {
 
 /// @addr{0x8059A02C}
 void KartSuspensionPhysics::setInitialState() {
-    EGG::Vector3f rotatedRelPos = dynamics()->fullRot().rotateVector(m_bspWheel->relPosition);
-    rotatedRelPos += pos();
+    EGG::Vector3f relPos = m_bspWheel->relPosition;
+    if (m_tireType == TireType::KartReflected) {
+        relPos.x = -relPos.x;
+    }
 
-    EGG::Vector3f unitRotated = dynamics()->fullRot().rotateVector(-EGG::Vector3f::ey);
+    const EGG::Vector3f rotatedRelPos = dynamics()->fullRot().rotateVector(relPos) + pos();
+    const EGG::Vector3f unitRotated = dynamics()->fullRot().rotateVector(-EGG::Vector3f::ey);
 
     m_tirePhysics->setPos(rotatedRelPos + m_bspWheel->maxTravel * unitRotated);
     m_tirePhysics->setLastPos(rotatedRelPos + m_bspWheel->maxTravel * unitRotated);
@@ -209,7 +213,13 @@ void KartSuspensionPhysics::setInitialState() {
 void KartSuspensionPhysics::calcCollision(f32 dt, const EGG::Vector3f &gravity,
         const EGG::Matrix34f &mat) {
     m_maxTravelScaled = m_bspWheel->maxTravel * sub()->someScale();
-    EGG::Vector3f topmostPos = mat.ps_multVector(m_bspWheel->relPosition * scale());
+
+    EGG::Vector3f scaledRelPos = m_bspWheel->relPosition * scale();
+    if (m_tireType == TireType::KartReflected) {
+        scaledRelPos.x = -scaledRelPos.x;
+    }
+
+    const EGG::Vector3f topmostPos = mat.ps_multVector(scaledRelPos);
     EGG::Matrix34f mStack_60;
     EGG::Vector3f euler_angles(m_bspWheel->xRot * DEG2RAD, 0.0f, 0.0f);
     mStack_60.makeR(euler_angles);

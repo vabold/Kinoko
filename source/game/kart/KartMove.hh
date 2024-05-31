@@ -12,7 +12,7 @@ public:
     KartMove();
     virtual ~KartMove();
 
-    virtual void createSubsystems() {}
+    virtual void createSubsystems();
     virtual void calcTurn();
     virtual void calcWheelie() {}
     virtual void setTurnParams();
@@ -49,7 +49,7 @@ public:
     void calcDive();
     void calcSsmtStart();
     void calcHopPhysics();
-    virtual void calcVehicleRotation(f32 /*turn*/) {}
+    virtual void calcVehicleRotation(f32 turn);
     virtual void hop();
     virtual void onHop() {}
     virtual void onWallCollision() {}
@@ -124,6 +124,14 @@ protected:
         f32 velY;
     };
 
+    /// @brief Houses parameters that vary between the drift type (inward bike, outward bike, kart).
+    struct DriftingParameters {
+        f32 hopVelY;
+        f32 stabilizationFactor;
+        f32 _8;
+        f32 boostRotFactor;
+    };
+
     f32 m_baseSpeed;      ///< The speed associated with the current character/vehicle stats.
     f32 m_softSpeedLimit; ///< Base speed + boosts + wheelies, restricted to the hard speed limit.
     f32 m_speed;          ///< Current speed, restricted to the soft speed limit.
@@ -181,6 +189,7 @@ protected:
     bool m_bSsmtLeeway;  ///< If set, activates SSMT when not pressing A or B.
     bool m_bWallBounce;  ///< Set when our speed loss from wall collision is > 30.0f.
     KartJump *m_jump;
+    const DriftingParameters *m_driftingParams; ///< Drift-type-specific parameters.
     f32 m_rawTurn; ///< Float in range [-1, 1]. Represents stick magnitude + direction.
 };
 

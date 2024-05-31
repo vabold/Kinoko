@@ -11,8 +11,8 @@ KartSuspension::~KartSuspension() {
 }
 
 /// @addr{0x80598B60}
-void KartSuspension::init(u16 wheelIdx, u16 bspWheelIdx) {
-    m_physics = new KartSuspensionPhysics(wheelIdx, bspWheelIdx);
+void KartSuspension::init(u16 wheelIdx, KartSuspensionPhysics::TireType tireType, u16 bspWheelIdx) {
+    m_physics = new KartSuspensionPhysics(wheelIdx, tireType, bspWheelIdx);
 }
 
 /// @addr{0x80598BD4}

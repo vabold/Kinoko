@@ -15,7 +15,7 @@ public:
     virtual ~KartDynamics();
 
     virtual void forceUpright() {}
-    virtual void stabilize() {}
+    virtual void stabilize();
 
     void init();
     void resetInternalVelocity();

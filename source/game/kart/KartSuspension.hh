@@ -11,7 +11,7 @@ public:
     KartSuspension();
     virtual ~KartSuspension();
 
-    void init(u16 wheelIdx, u16 bspWheelIdx);
+    void init(u16 wheelIdx, KartSuspensionPhysics::TireType tireType, u16 bspWheelIdx);
     void initPhysics();
 
     /// @beginSetters

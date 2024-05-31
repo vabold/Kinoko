@@ -112,6 +112,7 @@ public:
     [[nodiscard]] const EGG::Quatf &fullRot() const;
     [[nodiscard]] const EGG::Vector3f &extVel() const;
     [[nodiscard]] const EGG::Vector3f &intVel() const;
+    [[nodiscard]] const EGG::Vector3f &velocity() const;
     [[nodiscard]] f32 speed() const;
     [[nodiscard]] f32 acceleration() const;
     [[nodiscard]] f32 softSpeedLimit() const;

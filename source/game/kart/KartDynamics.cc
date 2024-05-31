@@ -15,6 +15,19 @@ KartDynamics::KartDynamics() {
 /// @addr{0x8059F6B8}
 KartDynamics::~KartDynamics() = default;
 
+/// @addr{0x805B5B68}
+/// @brief Stabilizes the kart by rotating towards the y-axis unit vector.
+void KartDynamics::stabilize() {
+    EGG::Vector3f top = m_mainRot.rotateVector(EGG::Vector3f::ey);
+    if (EGG::Mathf::abs(top.dot(m_top)) >= 0.9999f) {
+        return;
+    }
+
+    EGG::Quatf q;
+    q.makeVectorRotation(top, m_top);
+    m_mainRot = m_mainRot.slerpTo(q.multSwap(m_mainRot), m_stabilizationFactor);
+}
+
 /// @addr{0x805B4B54}
 void KartDynamics::init() {
     m_speedNorm = 0.0f;
@@ -95,8 +108,8 @@ void KartDynamics::calc(f32 dt, f32 maxSpeed, bool /*air*/) {
     m_velocity *= m_speedNorm;
     m_pos += m_velocity;
 
-    EGG::Vector3f t1 = m_invInertiaTensor.multVector(m_totalTorque) * dt;
-    m_angVel0 += (t1 + m_invInertiaTensor.multVector(t1 + m_totalTorque) * dt) * 0.5f;
+    EGG::Vector3f t1 = m_invInertiaTensor.multVector33(m_totalTorque) * dt;
+    m_angVel0 += (t1 + m_invInertiaTensor.multVector33(t1 + m_totalTorque) * dt) * 0.5f;
 
     m_angVel0.x = std::min(0.4f, std::max(-0.4f, m_angVel0.x));
     m_angVel0.y = std::min(0.4f, std::max(-0.4f, m_angVel0.y)) * m_angVel0YFactor;
@@ -302,7 +315,7 @@ void KartDynamicsBike::stabilize() {
     local_4c.normalise();
 
     EGG::Vector3f top = m_mainRot.rotateVector(EGG::Vector3f::ey);
-    if (top.dot(local_4c) >= 0.9999f) {
+    if (EGG::Mathf::abs(top.dot(local_4c)) >= 0.9999f) {
         return;
     }
 
