@@ -16,8 +16,8 @@ public:
     void setMtx(EGG::Matrix34f &val);
     void setKCLScale(f32 val);
 
-    const EGG::Vector3f &getKclBboxLowWorld() const;
-    const EGG::Vector3f &getKclBboxHighWorld() const;
+    EGG::Vector3f getKclBboxLowWorld() const;
+    EGG::Vector3f getKclBboxHighWorld() const;
 
     static void *LoadFile(const char *filename);
 

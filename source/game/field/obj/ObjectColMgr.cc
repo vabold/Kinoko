@@ -33,13 +33,13 @@ void ObjectColMgr::setKCLScale(f32 val) {
 }
 
 /// @addr{0x807C4E4C}
-const EGG::Vector3f &ObjectColMgr::getKclBboxLowWorld() const {
+EGG::Vector3f ObjectColMgr::getKclBboxLowWorld() const {
     EGG::Vector3f out = m_data->bbox().min * m_kclScale;
     return m_mtx.ps_multVector(out);
 }
 
 /// @addr{0x807C4E7C}
-const EGG::Vector3f &ObjectColMgr::getKclBboxHighWorld() const {
+EGG::Vector3f ObjectColMgr::getKclBboxHighWorld() const {
     EGG::Vector3f out = m_data->bbox().max * m_kclScale;
     return m_mtx.ps_multVector(out);
 }
