@@ -1027,21 +1027,21 @@ void KartMove::calcWallCollisionStart(f32 param_2) {
             speedDiff = std::min(60.0f, speedDiff);
             EGG::Vector3f scaledWallNrm = speedDiff * colData.wallNrm;
 
-            auto projAndRej = scaledWallNrm.projAndRej(m_vel1Dir);
-            projAndRej.first *= 0.3f;
-            projAndRej.second *= 0.9f;
+            auto [proj, rej] = scaledWallNrm.projAndRej(m_vel1Dir);
+            proj *= 0.3f;
+            rej *= 0.9f;
 
             if (state()->isBoost()) {
-                projAndRej.first = EGG::Vector3f::zero;
-                projAndRej.second = EGG::Vector3f::zero;
+                proj = EGG::Vector3f::zero;
+                rej = EGG::Vector3f::zero;
             }
 
             if (bodyFront().dot(colData.wallNrm) > 0.0f) {
-                projAndRej.first = EGG::Vector3f::zero;
+                proj = EGG::Vector3f::zero;
             }
-            projAndRej.second *= 0.9f;
+            rej *= 0.9f;
 
-            EGG::Vector3f projRejSum = projAndRej.first + projAndRej.second;
+            EGG::Vector3f projRejSum = proj + rej;
             f32 bumpDeviation =
                     state()->isTouchingGround() ? param()->stats().bumpDeviationLevel : 0.0f;
 

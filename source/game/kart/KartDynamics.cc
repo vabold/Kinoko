@@ -73,9 +73,9 @@ void KartDynamics::calc(f32 dt, f32 maxSpeed, bool /*air*/) {
 
     if (FLT_EPSILON < playerBackHoriz.dot()) {
         playerBackHoriz.normalise();
-        const auto projAndRej = m_extVel.projAndRej(playerBackHoriz);
-        const EGG::Vector3f &speedBack = projAndRej.first;
-        m_extVel = projAndRej.second;
+        const auto [proj, rej] = m_extVel.projAndRej(playerBackHoriz);
+        const EGG::Vector3f &speedBack = proj;
+        m_extVel = rej;
 
         f32 norm = speedBack.dot();
         if (FLT_EPSILON < norm) {

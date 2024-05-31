@@ -487,10 +487,10 @@ void KartCollide::applySomeFloorMoment(f32 down, f32 rate, CollisionGroup *hitbo
     f32 speedDot = std::min(0.0f, speed.dot(crossVec));
     crossVec *= ((scalar * speedDot) / velDotFloorNrm);
 
-    auto projAndRej = crossVec.projAndRej(forward);
+    auto [proj, rej] = crossVec.projAndRej(forward);
 
-    f32 projNorm = projAndRej.first.length();
-    f32 rejNorm = projAndRej.second.length();
+    f32 projNorm = proj.length();
+    f32 rejNorm = rej.length();
     f32 projNorm_ = projNorm;
     f32 rejNorm_ = rejNorm;
 
@@ -510,13 +510,13 @@ void KartCollide::applySomeFloorMoment(f32 down, f32 rate, CollisionGroup *hitbo
         }
     }
 
-    projAndRej.first.normalise();
-    projAndRej.second.normalise();
+    proj.normalise();
+    rej.normalise();
 
-    projAndRej.first *= projNorm_;
-    projAndRej.second *= rejNorm_;
+    proj *= projNorm_;
+    rej *= rejNorm_;
 
-    EGG::Vector3f projRejSum = projAndRej.first + projAndRej.second;
+    EGG::Vector3f projRejSum = proj + rej;
     EGG::Vector3f projRejSumOrig = projRejSum;
 
     if (!b1) {
