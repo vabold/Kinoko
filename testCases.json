@@ -1,4 +1,9 @@
 {
+    "Logan rMC NG RTA WR": {
+        "rkgPath": "samples/rmc-ng-rta-1-30-272.rkg",
+        "krkgPath": "samples/rmc-ng-rta-1-30-272.krkg",
+        "targetFrame": 5822
+    },
     "Kasey rPG RTA WR": {
         "rkgPath": "samples/rpg-rta-1-58-890.rkg",
         "krkgPath": "samples/rpg-rta-1-58-890.krkg",
