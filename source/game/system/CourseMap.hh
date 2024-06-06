@@ -7,6 +7,8 @@
 namespace System {
 
 class MapdataFileAccessor;
+class MapdataGeoObj;
+class MapdataGeoObjAccessor;
 class MapdataStageInfo;
 class MapdataStageInfoAccessor;
 class MapdataStartPoint;
@@ -20,16 +22,19 @@ public:
     void init();
     MapdataStageInfoAccessor *parseStageInfo(u32 sectionName);
     MapdataStartPointAccessor *parseStartPoint(u32 sectionName);
+    MapdataGeoObjAccessor *parseGeoObjs(u32 sectionName);
 
     /// @beginGetters
     MapdataStageInfo *getStageInfo() const;
     MapdataStartPoint *getStartPoint(u16 i) const;
+    MapdataGeoObj *getGeoObj(u16 i) const;
     u32 version() const;
     f32 startTmpAngle() const;
     f32 startTmp0() const;
     f32 startTmp1() const;
     f32 startTmp2() const;
     f32 startTmp3() const;
+    MapdataGeoObjAccessor *geoObj() const;
     /// @endGetters
 
     static CourseMap *CreateInstance();
@@ -42,6 +47,7 @@ private:
 
     MapdataFileAccessor *m_course;
     MapdataStartPointAccessor *m_startPoint;
+    MapdataGeoObjAccessor *m_geoObj;
     MapdataStageInfoAccessor *m_stageInfo;
 
     // TODO: Better names

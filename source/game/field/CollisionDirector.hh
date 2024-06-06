@@ -1,5 +1,6 @@
 #pragma once
 
+#include "game/field/CollisionInfo.hh"
 #include "game/field/CourseColMgr.hh"
 
 #include <egg/math/Vector.hh>
@@ -24,18 +25,16 @@ public:
             u32 /*unused*/);
 
     bool checkSphereFull(f32 radius, const EGG::Vector3f &v0, const EGG::Vector3f &v1,
-            KCLTypeMask flags, CourseColMgr::CollisionInfo *pInfo, KCLTypeMask *pFlagsOut,
-            u32 /*start*/);
+            KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut, u32 /*start*/);
     bool checkSphereFullPush(f32 radius, const EGG::Vector3f &v0, const EGG::Vector3f &v1,
-            KCLTypeMask flags, CourseColMgr::CollisionInfo *pInfo, KCLTypeMask *pFlagsOut,
-            u32 /*start*/);
+            KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut, u32 /*start*/);
 
     bool checkSphereCachedPartialPush(const EGG::Vector3f &pos, const EGG::Vector3f &prevPos,
-            KCLTypeMask typeMask, CourseColMgr::CollisionInfo *colInfo, KCLTypeMask *typeMaskOut,
-            f32 radius, u32 start);
+            KCLTypeMask typeMask, CollisionInfo *colInfo, KCLTypeMask *typeMaskOut, f32 radius,
+            u32 start);
     bool checkSphereCachedFullPush(const EGG::Vector3f &pos, const EGG::Vector3f &prevPos,
-            KCLTypeMask typeMask, CourseColMgr::CollisionInfo *colInfo, KCLTypeMask *typeMaskOut,
-            f32 radius, u32 start);
+            KCLTypeMask typeMask, CollisionInfo *colInfo, KCLTypeMask *typeMaskOut, f32 radius,
+            u32 start);
 
     void resetCollisionEntries(KCLTypeMask *ptr);
     void pushCollisionEntry(f32 dist, KCLTypeMask *typeMask, KCLTypeMask kclTypeBit, u16 attribute);

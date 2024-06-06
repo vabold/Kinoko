@@ -56,6 +56,7 @@ public:
     KCollisionPrism getPrism(u16 prismIdx) const;
 
     /// @beginGetters
+    const EGG::BoundBox3f &bbox() const;
     u16 prismCache(u32 idx) const;
     /// @endGetters
 
