@@ -1,11 +1,12 @@
 #include "game/field/obj/ObjectDirector.hh"
 #include "game/field/obj/ObjDrivableHolder.hh"
-#include "game/field/obj/objects/Mdush.hh"
 #include "game/system/CourseMap.hh"
 #include "game/system/RaceConfig.hh"
 #include <cstring>
 
 namespace Field {
+
+class ObjectMdush;
 
 /// @addr{0x8082A38C}
 ObjectDirector::ObjectDirector() {

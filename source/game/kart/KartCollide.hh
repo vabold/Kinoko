@@ -28,12 +28,12 @@ public:
     void calcWheelCollision(u16 wheelIdx, CollisionGroup *hitboxGroup, const EGG::Vector3f &colVel,
             const EGG::Vector3f &center, f32 radius);
 
-    void processWheel(CollisionData &collisionData, Hitbox &hitbox,
-            Field::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut);
-    void processBody(CollisionData &collisionData, Hitbox &hitbox,
-            Field::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut);
-    void processFloor(CollisionData &collisionData, Hitbox &hitbox,
-            Field::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut, bool wheel);
+    void processWheel(CollisionData &collisionData, Hitbox &hitbox, Field::CollisionInfo *colInfo,
+            Field::KCLTypeMask *maskOut);
+    void processBody(CollisionData &collisionData, Hitbox &hitbox, Field::CollisionInfo *colInfo,
+            Field::KCLTypeMask *maskOut);
+    void processFloor(CollisionData &collisionData, Hitbox &hitbox, Field::CollisionInfo *colInfo,
+            Field::KCLTypeMask *maskOut, bool wheel);
 
     void applySomeFloorMoment(f32 down, f32 rate, CollisionGroup *hitboxGroup,
             const EGG::Vector3f &forward, const EGG::Vector3f &nextDir, const EGG::Vector3f &speed,
