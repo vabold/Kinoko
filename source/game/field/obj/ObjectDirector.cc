@@ -1,12 +1,11 @@
 #include "game/field/obj/ObjectDirector.hh"
 #include "game/field/obj/ObjDrivableHolder.hh"
+#include "game/field/obj/objects/ObjectMdush.hh"
 #include "game/system/CourseMap.hh"
 #include "game/system/RaceConfig.hh"
 #include <cstring>
 
 namespace Field {
-
-class ObjectMdush;
 
 /// @addr{0x8082A38C}
 ObjectDirector::ObjectDirector() {
@@ -123,8 +122,9 @@ void ObjectDirector::constructObject(System::MapdataGeoObj &obj) {
     ObjAttrs *attrs = m_objFlow->attrs(slot);
     const char *name = attrs->name();
 
+    // @todo Turn this into a switch statement possibly using an ID enum instead of the name
     if (strcmp(name, "Mdush") == 0) {
-        out = new Mdush(&obj);
+        out = new ObjectMdush(&obj);
         out->init();
     }
 }
