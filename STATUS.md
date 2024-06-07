@@ -4,7 +4,7 @@ Test Case                                                 | Frames      |     | 
 :-------------------------------------------------------- | :---------: | --- | :---------------------------
 [`lc-rta-1-08-733`](https://youtu.be/HPcvNS8QFVI)         | 4531 / 4531 | ✔️ |
 [`mmm-rta-1-15-273`](https://youtu.be/ozaXzEXFeHM)        | 4923 / 4923 | ✔️ |
-[`mg-rta-0-19-758`](https://youtu.be/ui01yrKCwa0)         | 616 / 1596  | ❌ | Unknown
+[`mg-rta-0-19-758`](https://youtu.be/ui01yrKCwa0)         | 628 / 1596  | ❌ | Mushroom
 [`mg-ng-rta-1-40-273`](https://youtu.be/8-0Xetey5xY)      | 878 / 6422  | ❌ | Mushroom
 [`tf-rta-1-44-178`](https://youtu.be/2XWFuncJAGk)         | 744 / 6656  | ❌ | Moving road
 [`tf-ng-rta-1-49-039`](https://youtu.be/mqQa_1Cq1bw)      | 690 / 6947  | ❌ | Moving road
@@ -28,7 +28,7 @@ Test Case                                                 | Frames      |     | 
 [`bc-rta-2-08-697`](https://youtu.be/1DEReKemoeI)         | 809 / 8126  | ❌ | KMP
 [`bc-ng-rta-2-20-001`](https://youtu.be/028nClzy7B4)      | 809 / 8803  | ❌ | KMP
 [`rr-rta-1-24-751`](https://youtu.be/dgNMHyFda14)         | 349 / 5491  | ❌ | Outward-drifting bike
-[`rr-ng-rta-2-24-281`](https://youtu.be/O-BtWWsq82o)      | 467 / 9060  | ❌ | Outward-drifting kart
+[`rr-ng-rta-2-24-281`](https://youtu.be/O-BtWWsq82o)      | 806 / 9060  | ❌ | Missing boost ramp check in calcTop
 [`rpb-rta-0-59-978`](https://youtu.be/Z-lVl-7B-So)        | 1079 / 4007 | ❌ | Moving water
 [`rpb-ng-rta-1-12-656`](https://youtu.be/LujU0kJx-hU)     | 2492 / 4767 | ❌ | Moving water
 [`ryf-rta-0-58-648`](https://youtu.be/3IKzbmawUbk)        | 584 / 3927  | ❌ | Water
@@ -39,7 +39,7 @@ Test Case                                                 | Frames      |     | 
 [`rsl-ng-rta-2-03-750`](https://youtu.be/ahNGAaUzm6s)     | 7829 / 7829 | ✔️ | 
 [`rsgb-rta-1-14-513`](https://youtu.be/lgfw-zswqIM)       | 356 / 4878  | ❌ | Outward-drifting bike
 [`rsgb-ng-rta-1-21-363`](https://youtu.be/SjXUPXT8n8g)    | 5288 / 5288 | ✔️ | 
-[`rds-rta-2-03-525`](https://youtu.be/a9Mnd2W7JXI)        | 1943 / 7816 | ❌ | Taildive slipdrift
+[`rds-rta-2-03-525`](https://youtu.be/a9Mnd2W7JXI)        | 2306 / 7816 | ❌ | Drawbridge
 [`rws-rta-1-31-987`](https://youtu.be/2rDSx5pgQ9A)        | 826 / 5925  | ❌ | HWG
 [`rws-ng-rta-1-48-193`](https://youtu.be/4PU4zpCU_q4)     | 770 / 6897  | ❌ | Unknown
 [`rdh-rta-1-30-425`](https://youtu.be/v5Qj0DnqVo0)        | 664 / 5832  | ❌ | Wall clip
