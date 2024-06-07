@@ -148,7 +148,9 @@ protected:
     EGG::Vector3f m_vel1Dir;
     EGG::Vector3f m_dirDiff;
     bool m_hasLandingDir;
+    f32 m_outsideDriftAngle; ///< The facing angle of an outward-drifting vehicle.
     f32 m_landingAngle;
+    EGG::Vector3f m_outsideDriftLastDir; ///< Used to compute the next @ref m_outsideDriftAngle.
     f32 m_speedRatioCapped; ///< The ratio between current speed and the player's base speed stat.
     f32 m_kclSpeedFactor;   ///< Float between 0-1 that scales the player's speed on offroad.
     f32 m_kclRotFactor; ///< Float between 0-1 that scales the player's turning radius on offroad.
@@ -157,11 +159,13 @@ protected:
     u16 m_floorCollisionCount; ///< The number of tires colliding with the floor.
     s32 m_hopStickX;        ///< A ternary for the direction of our hop, 0 if still neutral hopping.
     s32 m_hopFrame;         ///< A timer that can prevent subsequent hops until reset.
+    EGG::Vector3f m_hopUp;  ///< The up vector when hopping.
     EGG::Vector3f m_hopDir; ///< Used for outward drift. Tracks the forward vector of our rotation.
     f32 m_divingRot;        ///< Induces x-axis angular velocity based on up/down stick input.
     f32 m_standStillBoostRot;
     DriftState m_driftState;
-    u16 m_mtCharge; ///< A value between 0 and 270 representing current MT charge.
+    u16 m_mtCharge;          ///< A value between 0 and 270 representing current MT charge.
+    f32 m_outsideDriftBonus; ///< Added to angular velocity when outside drifting.
     KartBoost m_boost;
     s16 m_offroadInvincibility;  ///< How many frames until the player is affected by offroad.
     s16 m_ssmtCharge;            ///< Increments every frame up to 75 when charging stand-still MT.

@@ -98,6 +98,7 @@ void KartMove::setTurnParams() {
     m_lastDir = m_dir;
     m_vel1Dir = m_dir;
     m_landingDir = m_dir;
+    m_outsideDriftLastDir = m_dir;
     m_driftingParams = &DRIFTING_PARAMS_ARRAY[static_cast<u32>(param()->stats().driftType)];
 }
 
@@ -118,7 +119,9 @@ void KartMove::init(bool b1, bool b2) {
     m_landingDir = EGG::Vector3f::ez;
     m_dirDiff = EGG::Vector3f::zero;
     m_hasLandingDir = false;
+    m_outsideDriftAngle = 0.0f;
     m_landingAngle = 0.0f;
+    m_outsideDriftLastDir = EGG::Vector3f::ez;
     m_speedRatioCapped = 0.0f;
     m_kclSpeedFactor = 1.0f;
     m_kclRotFactor = 1.0f;
@@ -131,11 +134,13 @@ void KartMove::init(bool b1, bool b2) {
 
     m_hopStickX = 0;
     m_hopFrame = 0;
+    m_hopUp = EGG::Vector3f::ey;
     m_hopDir = EGG::Vector3f::ez;
     m_divingRot = 0.0f;
     m_standStillBoostRot = 0.0f;
     m_driftState = DriftState::NotDrifting;
     m_mtCharge = 0;
+    m_outsideDriftBonus = 0.0f;
     m_offroadInvincibility = 0;
     m_ssmtCharge = 0;
     m_ssmtLeewayTimer = 0;
@@ -360,7 +365,7 @@ void KartMove::calcDirs() {
         }
 
         EGG::Matrix34f mat;
-        mat.setAxisRotation(m_landingAngle * DEG2RAD, m_smoothedUp);
+        mat.setAxisRotation(DEG2RAD * (m_outsideDriftAngle + m_landingAngle), m_smoothedUp);
         EGG::Vector3f local_b8 = mat.multVector(local_88);
         local_b8 = local_b8.perpInPlane(m_smoothedUp, true);
 
@@ -634,6 +639,28 @@ void KartMove::resetDriftManual() {
 void KartMove::calcManualDrift() {
     bool isHopping = calcPreDrift();
 
+    const EGG::Vector3f rotZ = dynamics()->mainRot().rotateVector(EGG::Vector3f::ez);
+
+    if (!state()->isTouchingGround() &&
+            param()->stats().driftType != KartParam::Stats::DriftType::Inside_Drift_Bike &&
+            (state()->isDriftManual() || state()->isSlipdriftCharge())) {
+        const EGG::Vector3f up = dynamics()->mainRot().rotateVector(EGG::Vector3f::ey);
+        EGG::Vector3f driftRej = m_outsideDriftLastDir.rej(up);
+
+        if (driftRej.normalise() != 0.0f) {
+            f32 rejCrossDirMag = driftRej.cross(rotZ).length();
+            f32 angle = EGG::Mathf::atan2(rejCrossDirMag, driftRej.dot(rotZ));
+            f32 sign = 1.0f;
+            if ((rotZ.z * (rotZ.x - driftRej.x)) - (rotZ.x * (rotZ.z - driftRej.z)) > 0.0f) {
+                sign = -1.0f;
+            }
+
+            m_outsideDriftAngle += angle * RAD2DEG * sign;
+        }
+    }
+
+    m_outsideDriftLastDir = rotZ;
+
     // TODO: Is this backwards/inverted?
     if (((!state()->isHop() || m_hopFrame < 3) && !state()->isSlipdriftCharge()) ||
             !state()->isTouchingGround()) {
@@ -649,6 +676,13 @@ void KartMove::calcManualDrift() {
     if (!state()->isDriftManual()) {
         if (!isHopping && state()->isTouchingGround()) {
             resetDriftManual();
+
+            f32 driftAngleDecr = param()->stats().driftOutsideDecrement;
+            if (m_outsideDriftAngle > 0.0f) {
+                m_outsideDriftAngle = std::max(0.0f, m_outsideDriftAngle - driftAngleDecr);
+            } else if (m_outsideDriftAngle < 0.0f) {
+                m_outsideDriftAngle = std::min(0.0f, m_outsideDriftAngle + driftAngleDecr);
+            }
         }
     } else {
         if (!state()->isDriftInput() || !state()->isAccelerate()) {
@@ -664,6 +698,28 @@ void KartMove::calcManualDrift() {
 /// @brief Called when the player lands from a drift hop, or to start a slipdrift.
 /// @addr{0x8057E3F4}
 void KartMove::startManualDrift() {
+    constexpr f32 OUTSIDE_DRIFT_BONUS = 0.5f;
+
+    const auto &stats = param()->stats();
+
+    if (stats.driftType != KartParam::Stats::DriftType::Inside_Drift_Bike) {
+        f32 driftAngle = 0.0f;
+
+        if (state()->isHop()) {
+            const EGG::Vector3f rotZ = dynamics()->mainRot().rotateVector(EGG::Vector3f::ez);
+            EGG::Vector3f rotRej = rotZ.rej(m_hopUp);
+
+            if (rotRej.normalise() != 0.0f) {
+                const EGG::Vector3f hopCrossRot = m_hopDir.cross(rotRej);
+                driftAngle =
+                        EGG::Mathf::atan2(hopCrossRot.length(), m_hopDir.dot(rotRej)) * RAD2DEG;
+            }
+        }
+
+        m_outsideDriftAngle += driftAngle * static_cast<f32>(-m_hopStickX);
+        m_outsideDriftAngle = std::max(-60.0f, std::min(60.0f, m_outsideDriftAngle));
+    }
+
     state()->setHop(false);
     state()->setSlipdriftCharge(false);
 
@@ -678,6 +734,7 @@ void KartMove::startManualDrift() {
     state()->setDriftManual(true);
     state()->setHop(false);
     m_driftState = DriftState::ChargingMt;
+    m_outsideDriftBonus = OUTSIDE_DRIFT_BONUS * (m_speedRatioCapped * stats.driftManualTightness);
 }
 
 /// @stage 2
@@ -709,7 +766,25 @@ void KartMove::controlOutsideDriftAngle() {
     }
 
     if (param()->stats().driftType != KartParam::Stats::DriftType::Inside_Drift_Bike) {
-        K_PANIC("Not implemented yet!");
+        if (m_hopStickX == -1) {
+            f32 angle = m_outsideDriftAngle;
+            f32 targetAngle = param()->stats().driftOutsideTargetAngle;
+            if (angle > targetAngle) {
+                m_outsideDriftAngle = std::max(m_outsideDriftAngle - 2.0f, targetAngle);
+            } else if (angle < targetAngle) {
+                m_outsideDriftAngle += 150.0f * param()->stats().driftManualTightness;
+                m_outsideDriftAngle = std::min(m_outsideDriftAngle, targetAngle);
+            }
+        } else if (m_hopStickX == 1) {
+            f32 angle = m_outsideDriftAngle;
+            f32 targetAngle = -param()->stats().driftOutsideTargetAngle;
+            if (targetAngle > angle) {
+                m_outsideDriftAngle = std::min(m_outsideDriftAngle + 2.0f, targetAngle);
+            } else if (targetAngle < angle) {
+                m_outsideDriftAngle -= 150.0f * param()->stats().driftManualTightness;
+                m_outsideDriftAngle = std::max(m_outsideDriftAngle, targetAngle);
+            }
+        }
     }
 
     calcMtCharge();
@@ -726,6 +801,11 @@ void KartMove::calcRotation() {
         turn = param()->stats().driftManualTightness;
     } else {
         turn = param()->stats().handlingManualTightness;
+    }
+
+    if (drifting && param()->stats().driftType != KartParam::Stats::DriftType::Inside_Drift_Bike) {
+        m_outsideDriftBonus *= 0.99f;
+        turn += m_outsideDriftBonus;
     }
 
     bool forwards = true;
@@ -777,6 +857,14 @@ void KartMove::calcRotation() {
                 turn = std::max(0.0f, turn * (1.0f - (airtime - 30) * 0.025f));
             }
         }
+    }
+
+    const EGG::Vector3f forward = dynamics()->mainRot().rotateVector(EGG::Vector3f::ez);
+    f32 angle = EGG::Mathf::atan2(forward.cross(m_dir).length(), forward.dot(m_dir));
+    angle = EGG::Mathf::abs(angle) * RAD2DEG;
+
+    if (angle > 60.0f) {
+        turn *= std::max(0.0f, 1.0f - (angle - 60.0f) / 40.0f);
     }
 
     calcVehicleRotation(turn);
@@ -1021,6 +1109,7 @@ void KartMove::calcWallCollisionStart(f32 param_2) {
         return;
     }
 
+    m_outsideDriftAngle = 0.0f;
     m_dir = bodyFront();
     m_vel1Dir = m_dir;
     m_landingDir = m_dir;
@@ -1193,11 +1282,10 @@ void KartMove::calcVehicleRotation(f32 turn) {
         EGG::Vector3f front = componentZAxis();
         front = front.perpInPlane(m_up, true);
         EGG::Vector3f frontSpeed = velocity().rej(front).perpInPlane(m_up, false);
-        f32 dot = frontSpeed.dot();
-
         f32 magnitude = tiltMagnitude;
-        if (dot > FLT_EPSILON) {
-            magnitude = front.length();
+
+        if (frontSpeed.dot() > FLT_EPSILON) {
+            magnitude = frontSpeed.length();
 
             if (front.z * frontSpeed.x - front.x * frontSpeed.z > 0.0f) {
                 magnitude = -magnitude;
@@ -1226,6 +1314,8 @@ void KartMove::calcVehicleRotation(f32 turn) {
     EGG::Vector3f angVel2 = dynamics()->angVel2();
     angVel2.y += turn;
     dynamics()->setAngVel2(angVel2);
+
+    calcDive();
 }
 
 /// @stage 2
@@ -1236,6 +1326,7 @@ void KartMove::hop() {
     state()->setDriftManual(false);
     onHop();
 
+    m_hopUp = dynamics()->mainRot().rotateVector(EGG::Vector3f::ey);
     m_hopDir = dynamics()->mainRot().rotateVector(EGG::Vector3f::ez);
     m_driftState = DriftState::NotDrifting;
     m_mtCharge = 0;
@@ -1244,6 +1335,7 @@ void KartMove::hop() {
     m_hopPosY = 0.0f;
     m_hopGravity = dynamics()->gravity();
     m_hopVelY = m_driftingParams->hopVelY;
+    m_outsideDriftBonus = 0.0f;
 
     EGG::Vector3f extVel = dynamics()->extVel();
     extVel.y = 0.0f + m_hopVelY;
