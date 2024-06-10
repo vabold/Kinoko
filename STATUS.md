@@ -16,7 +16,7 @@ Test Case                                                 | Frames      |     | 
 [`wgm-rta-0-31-678`](https://youtu.be/VVFXP639DRY)        | 563 / 2310  | ❌ | KMP
 [`wgm-ng-rta-1-49-934`](https://youtu.be/NbhzA2rtZ2A)     | 1099 / 7001 | ❌ | Sticky road wheelie drop
 [`dc-rta-1-28-321`](https://youtu.be/Rs5AK3iHVno)         | 1059 / 5705 | ❌ | KMP
-[`kc-rta-1-55-250`](https://youtu.be/Elb5K7woV20)         | 632 / 7320  | ❌ | Boost ramp associativity
+[`kc-rta-1-55-250`](https://youtu.be/Elb5K7woV20)         | 640 / 7320  | ❌ | Boost ramp trick
 [`kc-ng-rta-2-17-176`](https://youtu.be/UgSQj6RpDYM)      | 644 / 8634  | ❌ | Boost ramp
 [`mt-rta-1-33-239`](https://youtu.be/FX89203m2iE)         | 747 / 6000  | ❌ | Weak wall
 [`mt-ng-rta-2-13-126`](https://youtu.be/igcHE0-OV0g)      | 836 / 8391  | ❌ | Cannon
@@ -28,7 +28,7 @@ Test Case                                                 | Frames      |     | 
 [`bc-rta-2-08-697`](https://youtu.be/1DEReKemoeI)         | 809 / 8126  | ❌ | KMP
 [`bc-ng-rta-2-20-001`](https://youtu.be/028nClzy7B4)      | 809 / 8803  | ❌ | KMP
 [`rr-rta-1-24-751`](https://youtu.be/dgNMHyFda14)         | 349 / 5491  | ❌ | Outward-drifting bike
-[`rr-ng-rta-2-24-281`](https://youtu.be/O-BtWWsq82o)      | 806 / 9060  | ❌ | Missing boost ramp check in calcTop
+[`rr-ng-rta-2-24-281`](https://youtu.be/O-BtWWsq82o)      | 1113 / 9060 | ❌ | SMT
 [`rpb-rta-0-59-978`](https://youtu.be/Z-lVl-7B-So)        | 1079 / 4007 | ❌ | Moving water
 [`rpb-ng-rta-1-12-656`](https://youtu.be/LujU0kJx-hU)     | 2492 / 4767 | ❌ | Moving water
 [`ryf-rta-0-58-648`](https://youtu.be/3IKzbmawUbk)        | 584 / 3927  | ❌ | Water
@@ -41,7 +41,7 @@ Test Case                                                 | Frames      |     | 
 [`rsgb-ng-rta-1-21-363`](https://youtu.be/SjXUPXT8n8g)    | 5288 / 5288 | ✔️ | 
 [`rds-rta-2-03-525`](https://youtu.be/a9Mnd2W7JXI)        | 2306 / 7816 | ❌ | Drawbridge
 [`rws-rta-1-31-987`](https://youtu.be/2rDSx5pgQ9A)        | 826 / 5925  | ❌ | HWG
-[`rws-ng-rta-1-48-193`](https://youtu.be/4PU4zpCU_q4)     | 770 / 6897  | ❌ | Unknown
+[`rws-ng-rta-1-48-193`](https://youtu.be/4PU4zpCU_q4)     | 1430 / 6897 | ❌ | Zipper
 [`rdh-rta-1-30-425`](https://youtu.be/v5Qj0DnqVo0)        | 664 / 5832  | ❌ | Wall clip
 [`rdh-ng-rta-1-34-237`](https://youtu.be/4Lp-ehOOiGo)     | 1476 / 6060 | ❌ | Trick landing
 [`rbc3-rta-1-55-715`](https://youtu.be/vSbSADDEzEs)       | 7347 / 7347 | ✔️ | 

@@ -189,9 +189,10 @@ protected:
     bool m_bPadBoost; ///< Caches whether the player is currently interacting with a boost pad.
     bool m_bRampBoost;
     bool m_bPadJump;
-    bool m_bSsmtCharged; ///< Set after holding a stand-still mini-turbo for 75 frames.
-    bool m_bSsmtLeeway;  ///< If set, activates SSMT when not pressing A or B.
-    bool m_bWallBounce;  ///< Set when our speed loss from wall collision is > 30.0f.
+    bool m_bSsmtCharged;      ///< Set after holding a stand-still mini-turbo for 75 frames.
+    bool m_bSsmtLeeway;       ///< If set, activates SSMT when not pressing A or B.
+    bool m_bTrickableSurface; ///< Set when driving on a trickable surface.
+    bool m_bWallBounce;       ///< Set when our speed loss from wall collision is > 30.0f.
     KartJump *m_jump;
     const DriftingParameters *m_driftingParams; ///< Drift-type-specific parameters.
     f32 m_rawTurn; ///< Float in range [-1, 1]. Represents stick magnitude + direction.
