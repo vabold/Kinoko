@@ -644,6 +644,10 @@ bool KartCollide::isRampBoost() const {
     return m_rampBoost;
 }
 
+bool KartCollide::isTrickable() const {
+    return m_trickable;
+}
+
 bool KartCollide::isNotTrickable() const {
     return m_notTrickable;
 }

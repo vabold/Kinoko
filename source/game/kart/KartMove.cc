@@ -36,6 +36,7 @@ KartMove::KartMove() : m_smoothedUp(EGG::Vector3f::ey), m_scale(1.0f, 1.0f, 1.0f
     m_bPadJump = false;
     m_bSsmtCharged = false;
     m_bSsmtLeeway = false;
+    m_bTrickableSurface = false;
     m_bWallBounce = false;
     m_jump = nullptr;
 }
@@ -169,6 +170,7 @@ void KartMove::init(bool b1, bool b2) {
     m_bPadJump = false;
     m_bSsmtCharged = false;
     m_bSsmtLeeway = false;
+    m_bTrickableSurface = false;
     m_bWallBounce = false;
     m_jump->reset();
     m_rawTurn = 0.0f;
@@ -267,8 +269,8 @@ void KartMove::calcTop() {
         if (state()->isHop() && m_hopPosY > 0.0f) {
             stabilizationFactor = m_driftingParams->stabilizationFactor;
         } else if (state()->isTouchingGround()) {
-            if (state()->trickableTimer() > 0 && inputTop.dot(m_dir) > 0.0f && m_speed > 50.0f &&
-                    collide()->isNotTrickable()) {
+            if ((m_bTrickableSurface || state()->trickableTimer() > 0) &&
+                    inputTop.dot(m_dir) > 0.0f && m_speed > 50.0f && collide()->isNotTrickable()) {
                 inputTop = m_up;
             } else {
                 m_up = inputTop;
@@ -276,7 +278,7 @@ void KartMove::calcTop() {
 
             f32 scalar = 0.8f;
 
-            if (!state()->isBoost() && !state()->isWheelie()) {
+            if (!state()->isBoost() && !state()->isRampBoost() && !state()->isWheelie()) {
                 f32 topDotZ = 0.8f - 6.0f * (EGG::Mathf::abs(inputTop.dot(componentZAxis())));
                 scalar = std::min(0.8f, std::max(0.3f, topDotZ));
             }
@@ -300,6 +302,7 @@ void KartMove::calcTop() {
     dynamics()->setStabilizationFactor(stabilizationFactor);
 
     m_nonZipperAirtime = state()->airtime();
+    m_bTrickableSurface = collide()->isTrickable();
 }
 
 /// @addr{0x8057D888}
@@ -1278,7 +1281,7 @@ void KartMove::calcHopPhysics() {
 void KartMove::calcVehicleRotation(f32 turn) {
     f32 tiltMagnitude = 0.0f;
 
-    if (state()->isAnyWheelCollision()) {
+    if (!state()->isSoftWallDrift() && state()->isAnyWheelCollision()) {
         EGG::Vector3f front = componentZAxis();
         front = front.perpInPlane(m_up, true);
         EGG::Vector3f frontSpeed = velocity().rej(front).perpInPlane(m_up, false);
