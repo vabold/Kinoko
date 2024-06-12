@@ -15,6 +15,9 @@ namespace Kart {
 /// @addr{0x80575A44}
 KartJump::KartJump(KartMove *move) : m_move(move) {
     m_cooldown = 0;
+
+    // The base game doesn't initialize this explicitly, since EGG::Heaps are memset to 0.
+    m_nextAllowTimer = 0;
 }
 
 /// @addr{0x80575AA8}

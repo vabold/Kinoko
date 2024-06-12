@@ -6,7 +6,9 @@
 namespace Item {
 
 /// @addr{0x8079754C}
-KartItem::KartItem() = default;
+KartItem::KartItem() {
+    clearButtonFlags();
+}
 
 /// @addr{0x8079951C}
 KartItem::~KartItem() = default;
