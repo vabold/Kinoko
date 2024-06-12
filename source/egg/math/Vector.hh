@@ -49,7 +49,8 @@ struct Vector2f {
 struct Vector3f {
     Vector3f(f32 x_, f32 y_, f32 z_);
     Vector3f();
-    ~Vector3f();
+    // NOTE: Defining the destructor in the header ensures the struct is trivially destructible
+    ~Vector3f() = default;
 
     inline void setZero() {
         set(0.0f);

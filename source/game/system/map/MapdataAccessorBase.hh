@@ -32,7 +32,7 @@ public:
     }
 
     [[nodiscard]] TData *getData(u16 i) const {
-        return i < m_entryCount ? m_entries[i].data() : nullptr;
+        return i < m_entryCount ? m_entries[i]->data() : nullptr;
     }
 
     [[nodiscard]] u16 size() const {
