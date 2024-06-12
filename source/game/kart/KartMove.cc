@@ -140,6 +140,7 @@ void KartMove::init(bool b1, bool b2) {
     m_divingRot = 0.0f;
     m_standStillBoostRot = 0.0f;
     m_driftState = DriftState::NotDrifting;
+    m_smtCharge = 0;
     m_mtCharge = 0;
     m_outsideDriftBonus = 0.0f;
     m_offroadInvincibility = 0;
@@ -633,6 +634,7 @@ void KartMove::resetDriftManual() {
     state()->setHop(false);
     state()->setDriftManual(false);
     m_driftState = DriftState::NotDrifting;
+    m_smtCharge = 0;
     m_mtCharge = 0;
 }
 
@@ -744,7 +746,9 @@ void KartMove::startManualDrift() {
 /// @brief Stops charging a mini-turbo, and applies boost if charged.
 /// @addr{0x80582F9C}
 void KartMove::releaseMt() {
-    if (m_driftState == DriftState::ChargingMt) {
+    constexpr f32 SMT_LENGTH_FACTOR = 3.0f;
+
+    if (m_driftState < DriftState::ChargedMt) {
         m_driftState = DriftState::NotDrifting;
         return;
     }
@@ -752,7 +756,7 @@ void KartMove::releaseMt() {
     u16 mtLength = param()->stats().miniTurbo;
 
     if (m_driftState == DriftState::ChargedSmt) {
-        K_PANIC("Not implemented yet");
+        mtLength *= SMT_LENGTH_FACTOR;
     }
 
     activateBoost(KartBoost::Type::AllMt, mtLength);
@@ -1322,6 +1326,61 @@ void KartMove::calcVehicleRotation(f32 turn) {
 }
 
 /// @stage 2
+/// @brief Every frame during a drift, calculates MT/SMT charge based on player input.
+/// @addr{0x8057EE50}
+void KartMove::calcMtCharge() {
+    // TODO: Some of these are shared between the base and derived class implementations.
+    constexpr u16 MAX_MT_CHARGE = 270;
+    constexpr u16 MAX_SMT_CHARGE = 300;
+    constexpr u16 BASE_MT_CHARGE = 2;
+    constexpr u16 BASE_SMT_CHARGE = 2;
+    constexpr f32 BONUS_CHARGE_STICK_THRESHOLD = 0.4f;
+    constexpr u16 EXTRA_MT_CHARGE = 3;
+
+    if (m_driftState == DriftState::ChargedSmt) {
+        return;
+    }
+
+    f32 stickX = state()->stickX();
+
+    if (m_driftState == DriftState::ChargingMt) {
+        m_mtCharge += BASE_MT_CHARGE;
+
+        if (-BONUS_CHARGE_STICK_THRESHOLD <= stickX) {
+            if (BONUS_CHARGE_STICK_THRESHOLD < stickX && m_hopStickX == -1) {
+                m_mtCharge += EXTRA_MT_CHARGE;
+            }
+        } else if (m_hopStickX != -1) {
+            m_mtCharge += EXTRA_MT_CHARGE;
+        }
+
+        if (m_mtCharge >= MAX_MT_CHARGE) {
+            m_mtCharge = MAX_MT_CHARGE;
+            m_driftState = DriftState::ChargingSmt;
+        }
+    }
+
+    if (m_driftState != DriftState::ChargingSmt) {
+        return;
+    }
+
+    m_smtCharge += BASE_SMT_CHARGE;
+
+    if (-BONUS_CHARGE_STICK_THRESHOLD <= stickX) {
+        if (BONUS_CHARGE_STICK_THRESHOLD < stickX && m_hopStickX == -1) {
+            m_smtCharge += EXTRA_MT_CHARGE;
+        }
+    } else if (m_hopStickX != -1) {
+        m_smtCharge += EXTRA_MT_CHARGE;
+    }
+
+    if (m_smtCharge >= MAX_SMT_CHARGE) {
+        m_smtCharge = MAX_SMT_CHARGE;
+        m_driftState = DriftState::ChargedSmt;
+    }
+}
+
+/// @stage 2
 /// @brief Initializes hop information, resets upwards EV and clears upwards force.
 /// @addr{0x8057DA5C}
 void KartMove::hop() {
@@ -1332,6 +1391,7 @@ void KartMove::hop() {
     m_hopUp = dynamics()->mainRot().rotateVector(EGG::Vector3f::ey);
     m_hopDir = dynamics()->mainRot().rotateVector(EGG::Vector3f::ez);
     m_driftState = DriftState::NotDrifting;
+    m_smtCharge = 0;
     m_mtCharge = 0;
     m_hopStickX = 0;
     m_hopFrame = 0;

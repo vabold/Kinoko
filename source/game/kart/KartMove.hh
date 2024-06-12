@@ -53,7 +53,7 @@ public:
     virtual void hop();
     virtual void onHop() {}
     virtual void onWallCollision() {}
-    virtual void calcMtCharge() {}
+    virtual void calcMtCharge();
     [[nodiscard]] virtual f32 getWheelieSoftSpeedLimitBonus() const;
     virtual bool canWheelie() const;
     virtual bool canHop() const;
@@ -165,6 +165,7 @@ protected:
     f32 m_standStillBoostRot;
     DriftState m_driftState;
     u16 m_mtCharge;          ///< A value between 0 and 270 representing current MT charge.
+    u16 m_smtCharge;         ///< A value between 0 and 300 representing current SMT charge.
     f32 m_outsideDriftBonus; ///< Added to angular velocity when outside drifting.
     KartBoost m_boost;
     s16 m_offroadInvincibility;  ///< How many frames until the player is affected by offroad.
