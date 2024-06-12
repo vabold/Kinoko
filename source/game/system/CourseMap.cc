@@ -1,5 +1,6 @@
 #include "CourseMap.hh"
 
+#include "game/system/map/MapdataCannonPoint.hh"
 #include "game/system/map/MapdataFileAccessor.hh"
 #include "game/system/map/MapdataStageInfo.hh"
 #include "game/system/map/MapdataStartPoint.hh"
@@ -14,9 +15,11 @@ void CourseMap::init() {
     m_course =
             new MapdataFileAccessor(reinterpret_cast<const MapdataFileAccessor::SData *>(buffer));
 
+    constexpr u32 CANNON_POINT_SIGNATURE = 0x434e5054;
     constexpr u32 START_POINT_SIGNATURE = 0x4b545054;
     constexpr u32 STAGE_INFO_SIGNATURE = 0x53544749;
 
+    m_cannonPoint = parseCannonPoint(CANNON_POINT_SIGNATURE);
     m_startPoint = parseStartPoint(START_POINT_SIGNATURE);
     m_stageInfo = parseStageInfo(STAGE_INFO_SIGNATURE);
 
@@ -34,6 +37,18 @@ void CourseMap::init() {
 
     m_startTmp0 = 800.0f;
     m_startTmp1 = 1200.0f;
+}
+
+/// @addr{0x80512FA4}
+MapdataCannonPointAccessor *CourseMap::parseCannonPoint(u32 sectionName) {
+    const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
+
+    MapdataCannonPointAccessor *accessor = nullptr;
+    if (sectionPtr) {
+        accessor = new MapdataCannonPointAccessor(sectionPtr);
+    }
+
+    return accessor;
 }
 
 /// @addr{0x80512D64}
@@ -58,6 +73,11 @@ MapdataStartPointAccessor *CourseMap::parseStartPoint(u32 sectionName) {
     }
 
     return accessor;
+}
+
+/// @addr{0x80518AF8}
+MapdataCannonPoint *CourseMap::getCannonPoint(u16 i) const {
+    return m_cannonPoint && m_cannonPoint->size() != 0 ? m_cannonPoint->get(i) : nullptr;
 }
 
 /// @addr{0x80518B78}
