@@ -96,10 +96,6 @@ EGG::RamStream KartParamFileManager::getHitboxStream(Vehicle vehicle) const {
 }
 
 EGG::RamStream KartParamFileManager::getBikeDispParamsStream(Vehicle vehicle) const {
-    if (vehicle < Vehicle::Standard_Bike_S && vehicle >= Vehicle::Max) {
-        K_PANIC("Uh oh.");
-    }
-
     // We need to index at the correct offset
     constexpr u32 KART_MAX = 18;
     s32 idx = static_cast<s32>(vehicle) - KART_MAX;
