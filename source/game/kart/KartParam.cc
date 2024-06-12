@@ -6,10 +6,12 @@ namespace Kart {
 
 KartParam::KartParam(Character character, Vehicle vehicle, u8 playerIdx) {
     initStats(character, vehicle);
-    initBikeDispParams(vehicle);
     initHitboxes(vehicle);
     m_playerIdx = playerIdx;
     m_isBike = vehicle >= Vehicle::Standard_Bike_S;
+    if (m_isBike) {
+        initBikeDispParams(vehicle);
+    }
 }
 
 KartParam::~KartParam() = default;

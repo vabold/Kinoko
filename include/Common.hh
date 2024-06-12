@@ -255,7 +255,7 @@ static constexpr WeightClass VehicleToWeight(Vehicle vehicle) {
     }
 }
 
-static constexpr char *COURSE_NAMES[59] = {
+static constexpr const char *COURSE_NAMES[59] = {
         "castle_course",
         "farm_course",
         "kinoko_course",
@@ -317,7 +317,7 @@ static constexpr char *COURSE_NAMES[59] = {
         "ending_demo",
 };
 
-static constexpr char *VEHICLE_NAMES[36] = {
+static constexpr const char *VEHICLE_NAMES[36] = {
         "sdf_kart",
         "mdf_kart",
         "ldf_kart",
@@ -384,7 +384,7 @@ concept IntegralType = std::is_integral_v<T>;
 
 template <typename T>
 concept ParseableType =
-        std::is_integral_v<T> || std::is_floating_point_v<T> && (sizeof(T) == 4 || sizeof(T) == 8);
+        std::is_integral_v<T> || (std::is_floating_point_v<T> && (sizeof(T) == 4 || sizeof(T) == 8));
 
 // Form data into integral value
 template <IntegralType T>
