@@ -149,6 +149,20 @@ void KartDynamics::calc(f32 dt, f32 maxSpeed, bool /*air*/) {
     m_angVel2.setZero();
 }
 
+/// @addr{0x805B4D24}
+void KartDynamics::reset() {
+    m_extVel.setZero();
+    m_acceleration.setZero();
+    m_angVel0.setZero();
+    m_movingObjVel.setZero();
+    m_angVel1.setZero();
+    m_movingRoadVel.setZero();
+    m_angVel2.setZero();
+    m_totalForce.setZero();
+    m_totalTorque.setZero();
+    m_intVel.setZero();
+}
+
 /// @stage All
 /// @brief Every frame, computes torque from linear motion and rotation.
 /// @addr{0x805B6150}
