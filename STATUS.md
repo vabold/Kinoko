@@ -28,7 +28,7 @@ Test Case                                                 | Frames      |     | 
 [`bc-rta-2-08-697`](https://youtu.be/1DEReKemoeI)         | 809 / 8126  | ❌ | KMP
 [`bc-ng-rta-2-20-001`](https://youtu.be/028nClzy7B4)      | 809 / 8803  | ❌ | KMP
 [`rr-rta-1-24-751`](https://youtu.be/dgNMHyFda14)         | 349 / 5491  | ❌ | Outward-drifting bike
-[`rr-ng-rta-2-24-281`](https://youtu.be/O-BtWWsq82o)      | 1113 / 9060 | ❌ | SMT
+[`rr-ng-rta-2-24-281`](https://youtu.be/O-BtWWsq82o)      | 1207 / 9060 | ❌ | KMP
 [`rpb-rta-0-59-978`](https://youtu.be/Z-lVl-7B-So)        | 1079 / 4007 | ❌ | Moving water
 [`rpb-ng-rta-1-12-656`](https://youtu.be/LujU0kJx-hU)     | 2492 / 4767 | ❌ | Moving water
 [`ryf-rta-0-58-648`](https://youtu.be/3IKzbmawUbk)        | 584 / 3927  | ❌ | Water
