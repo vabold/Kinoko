@@ -45,6 +45,8 @@ public:
     void setSlipdriftCharge(bool isSet);
     void setWheelie(bool isSet);
     void setRampBoost(bool isSet);
+    void setCannonStart(bool isSet);
+    void setInCannon(bool isSet);
     void setTrickStart(bool isSet);
     void setInATrick(bool isSet);
     void setJumpPad(bool isSet);
@@ -54,9 +56,11 @@ public:
     void setChargingSsmt(bool isSet);
     void setTrickable(bool isSet);
     void setWheelieRot(bool isSet);
+    void setSkipWheelCalc(bool isSet);
     void setJumpPadDisableYsusForce(bool isSet);
     void setSomethingWallCollision(bool isSet);
     void setSoftWallDrift(bool isSet);
+    void setCannonPointId(u16 val);
     void setBoostRampType(s32 val);
     void setJumpPadVariant(s32 val);
     void setTrickableTimer(s16 val);
@@ -90,6 +94,8 @@ public:
     [[nodiscard]] bool isWheelie() const;
     [[nodiscard]] bool isRampBoost() const;
     [[nodiscard]] bool isJumpPad() const;
+    [[nodiscard]] bool isCannonStart() const;
+    [[nodiscard]] bool isInCannon() const;
     [[nodiscard]] bool isTrickStart() const;
     [[nodiscard]] bool isInATrick() const;
     [[nodiscard]] bool isBoostOffroadInvincibility() const;
@@ -98,10 +104,12 @@ public:
     [[nodiscard]] bool isChargingSsmt() const;
     [[nodiscard]] bool isTrickable() const;
     [[nodiscard]] bool isWheelieRot() const;
+    [[nodiscard]] bool isSkipWheelCalc() const;
     [[nodiscard]] bool isJumpPadDisableYsusForce() const;
     [[nodiscard]] bool isUNK2() const;
     [[nodiscard]] bool isSomethingWallCollision() const;
     [[nodiscard]] bool isAutoDrift() const;
+    [[nodiscard]] u16 cannonPointId() const;
     [[nodiscard]] s32 boostRampType() const;
     [[nodiscard]] s32 jumpPadVariant() const;
     [[nodiscard]] f32 stickX() const;
@@ -154,6 +162,8 @@ private:
     /// @name bitfield1
     /// The bitfield at offset 0x8.
     /// @{
+    bool m_bCannonStart;
+    bool m_bInCannon;
     bool m_bTrickStart;
     bool m_bInATrick;
     bool m_bBoostOffroadInvincibility; ///< Set if we should ignore offroad slowdown this frame.
@@ -167,6 +177,7 @@ private:
     /// The bitfield at offset 0xC.
     /// @{
     bool m_bWheelieRot;
+    bool m_bSkipWheelCalc;
     bool m_bJumpPadDisableYsusForce;
     /// @}
 
@@ -189,6 +200,7 @@ private:
     EGG::Vector3f m_top;
     EGG::Vector3f m_softWallSpeed;
     s32 m_hwgTimer;
+    u16 m_cannonPointId;
     s32 m_boostRampType;
     s32 m_jumpPadVariant;
     f32 m_stickX;           ///< One of 15 discrete stick values from [-1.0, 1.0].

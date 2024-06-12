@@ -78,6 +78,14 @@ void KartSub::resetPhysics() {
 /// @details Handles the first-half of physics calculations. This includes input processing,
 /// subsequent position/speed updates, as well as responding to last frame's collisions.
 void KartSub::calcPass0() {
+    if (state()->isCannonStart()) {
+        physics()->hitboxGroup()->reset();
+        for (size_t i = 0; i < tireCount(); ++i) {
+            tirePhysics(i)->hitboxGroup()->reset();
+        }
+        move()->enterCannon();
+    }
+
     state()->calc();
     physics()->setPos(dynamics()->pos());
     physics()->setVelocity(dynamics()->velocity());
@@ -86,6 +94,13 @@ void KartSub::calcPass0() {
 
     state()->calcInput();
     move()->calc();
+
+    if (state()->isSkipWheelCalc()) {
+        for (size_t tireIdx = 0; tireIdx < tireCount(); ++tireIdx) {
+            tirePhysics(tireIdx)->setLastPos(pos());
+        }
+        return;
+    }
 
     if (state()->isSoftWallDrift()) {
         if (EGG::Mathf::abs(move()->speed()) > 15.0f || state()->isAirtimeOver20() ||
@@ -119,8 +134,10 @@ void KartSub::calcPass0() {
     f32 maxSpeed = move()->hardSpeedLimit();
     physics()->calc(DT, maxSpeed, scale(), !state()->isTouchingGround());
 
-    collide()->calcHitboxes();
-    collisionGroup()->setHitboxScale(move()->totalScale());
+    if (!state()->isInCannon()) {
+        collide()->calcHitboxes();
+        collisionGroup()->setHitboxScale(move()->totalScale());
+    }
 }
 
 /// @stage All
@@ -149,18 +166,20 @@ void KartSub::calcPass1() {
 
     Field::CollisionDirector::Instance()->checkCourseColNarrScLocal(250.0f, pos(),
             KCL_TYPE_VEHICLE_INTERACTABLE, 0);
-    collide()->findCollision();
 
-    const auto &colData = collisionData();
-    if (colData.bWall) {
-        collide()->setMovement(collide()->movement() + colData.movement);
-    }
+    if (!state()->isInCannon()) {
+        collide()->findCollision();
+        const auto &colData = collisionData();
+        if (colData.bWall) {
+            collide()->setMovement(collide()->movement() + colData.movement);
+        }
 
-    collide()->calcFloorEffect();
+        collide()->calcFloorEffect();
 
-    if (colData.bFloor) {
-        // Update floor count
-        addFloor(colData, false);
+        if (colData.bFloor) {
+            // Update floor count
+            addFloor(colData, false);
+        }
     }
 
     EGG::Vector3f forward = fullRot().rotateVector(EGG::Vector3f::ez);
@@ -183,43 +202,46 @@ void KartSub::calcPass1() {
         }
     }
 
-    EGG::Vector3f vehicleCompensation = m_maxSuspOvertravel + m_minSuspOvertravel;
-    dynamics()->setPos(dynamics()->pos() + vehicleCompensation);
+    if (!state()->isSkipWheelCalc()) {
+        EGG::Vector3f vehicleCompensation = m_maxSuspOvertravel + m_minSuspOvertravel;
+        dynamics()->setPos(dynamics()->pos() + vehicleCompensation);
 
-    if (!collisionData().bFloor) {
-        EGG::Vector3f relPos;
-        EGG::Vector3f vel;
-        EGG::Vector3f floorNrm;
-        u32 count = 0;
+        if (!collisionData().bFloor) {
+            EGG::Vector3f relPos;
+            EGG::Vector3f vel;
+            EGG::Vector3f floorNrm;
+            u32 count = 0;
 
-        for (u16 wheelIdx = 0; wheelIdx < tireCount(); ++wheelIdx) {
-            const WheelPhysics *wheelPhysics = tirePhysics(wheelIdx);
-            if (wheelPhysics->_74() == 0.0f) {
-                continue;
+            for (u16 wheelIdx = 0; wheelIdx < tireCount(); ++wheelIdx) {
+                const WheelPhysics *wheelPhysics = tirePhysics(wheelIdx);
+                if (wheelPhysics->_74() == 0.0f) {
+                    continue;
+                }
+
+                const CollisionData &colData = wheelPhysics->hitboxGroup()->collisionData();
+                relPos += colData.relPos;
+                vel += colData.vel;
+                floorNrm += colData.floorNrm;
+                ++count;
             }
 
-            const CollisionData &colData = wheelPhysics->hitboxGroup()->collisionData();
-            relPos += colData.relPos;
-            vel += colData.vel;
-            floorNrm += colData.floorNrm;
-            ++count;
+            if (count > 0) {
+                f32 scalar = (1.0f / static_cast<f32>(count));
+                floorNrm.normalise();
+
+                collide()->setFloorColInfo(collisionData(), relPos * scalar, vel * scalar,
+                        floorNrm);
+
+                collide()->FUN_80572F4C();
+            }
         }
 
-        if (count > 0) {
-            f32 scalar = (1.0f / static_cast<f32>(count));
-            floorNrm.normalise();
-
-            collide()->setFloorColInfo(collisionData(), relPos * scalar, vel * scalar, floorNrm);
-
-            collide()->FUN_80572F4C();
+        for (u16 wheelIdx = 0; wheelIdx < suspCount(); ++wheelIdx) {
+            suspensionPhysics(wheelIdx)->calcSuspension(forward, vehicleCompensation);
         }
-    }
 
-    for (u16 wheelIdx = 0; wheelIdx < suspCount(); ++wheelIdx) {
-        suspensionPhysics(wheelIdx)->calcSuspension(forward, vehicleCompensation);
+        move()->calcHopPhysics();
     }
-
-    move()->calcHopPhysics();
 
     move()->setKCLWheelSpeedFactor(speedFactor);
     move()->setKCLWheelRotFactor(handlingFactor);

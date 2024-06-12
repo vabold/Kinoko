@@ -69,30 +69,35 @@ void WheelPhysics::realign(const EGG::Vector3f &bottom, const EGG::Vector3f &veh
 /// @addr{0x80599690}
 void WheelPhysics::updateCollision(const EGG::Vector3f &bottom, const EGG::Vector3f &topmostPos) {
     m_targetEffectiveRadius = m_bspWheel->wheelRadius;
-    f32 nextRadius = m_bspWheel->sphereRadius;
-    f32 scalar = m_effectiveRadius * scale().y - nextRadius * move()->totalScale();
+    if (!state()->isSkipWheelCalc()) {
+        f32 nextRadius = m_bspWheel->sphereRadius;
+        f32 scalar = m_effectiveRadius * scale().y - nextRadius * move()->totalScale();
 
-    EGG::Vector3f center = m_pos + scalar * bottom;
-    scalar = 0.3f * (nextRadius * move()->leanRot()) * move()->totalScale();
-    center += scalar * bodyForward();
+        EGG::Vector3f center = m_pos + scalar * bottom;
+        scalar = 0.3f * (nextRadius * move()->leanRot()) * move()->totalScale();
+        center += scalar * bodyForward();
 
-    m_hitboxGroup->setHitboxScale(move()->totalScale());
-    if (state()->isUNK2()) {
-        m_hitboxGroup->hitbox(0).setLastPos(dynamics()->pos());
-    }
+        if (state()->isInCannon()) {
+            collisionData().reset();
+        } else {
+            m_hitboxGroup->setHitboxScale(move()->totalScale());
+            if (state()->isUNK2()) {
+                m_hitboxGroup->hitbox(0).setLastPos(dynamics()->pos());
+            }
 
-    collide()->calcWheelCollision(m_wheelIdx, m_hitboxGroup, m_colVel, center, nextRadius);
-    CollisionData &colData = m_hitboxGroup->collisionData();
+            collide()->calcWheelCollision(m_wheelIdx, m_hitboxGroup, m_colVel, center, nextRadius);
+            CollisionData &colData = m_hitboxGroup->collisionData();
 
-    if (colData.bFloor || colData.bWall) {
-        m_pos += colData.tangentOff;
-        if (colData.intensity > -1) {
-            m_targetEffectiveRadius =
-                    m_bspWheel->wheelRadius - 3.0f * static_cast<f32>(colData.intensity);
+            if (colData.bFloor || colData.bWall) {
+                m_pos += colData.tangentOff;
+                if (colData.intensity > -1) {
+                    m_targetEffectiveRadius =
+                            m_bspWheel->wheelRadius - 3.0f * static_cast<f32>(colData.intensity);
+                }
+            }
         }
+        m_hitboxGroup->hitbox(0).setLastPos(center);
     }
-
-    m_hitboxGroup->hitbox(0).setLastPos(center);
 
     m_topmostPos = topmostPos;
     m_wheelEdgePos = m_pos + m_effectiveRadius * move()->totalScale() * bottom;
@@ -230,9 +235,11 @@ void KartSuspensionPhysics::calcCollision(f32 dt, const EGG::Vector3f &gravity,
     m_tirePhysics->setSuspTravel(std::max(0.0f, std::min(m_maxTravelScaled, y_down)));
     m_tirePhysics->setColVel(dt * 10.0f * gravity);
     m_tirePhysics->setPos(topmostPos + m_tirePhysics->suspTravel() * m_bottomDir);
-    m_tirePhysics->updateCollision(m_bottomDir, topmostPos);
 
-    m_topmostPos = topmostPos;
+    if (!state()->isSkipWheelCalc()) {
+        m_tirePhysics->updateCollision(m_bottomDir, topmostPos);
+        m_topmostPos = topmostPos;
+    }
 }
 
 /// @stage All

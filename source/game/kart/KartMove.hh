@@ -37,6 +37,7 @@ public:
     bool calcPreDrift();
     void calcManualDrift();
     void startManualDrift();
+    void clearDrift();
     void releaseMt();
     void controlOutsideDriftAngle();
     void calcRotation();
@@ -71,6 +72,11 @@ public:
     void calcOffroadInvincibility();
     void calcMushroomBoost();
     void landTrick();
+
+    void enterCannon();
+    void calcCannon();
+    void calcRotCannon(const EGG::Vector3f &forward);
+    void exitCannon();
 
     /// @beginSetters
     void setDir(const EGG::Vector3f &v);
@@ -182,6 +188,11 @@ protected:
     f32 m_jumpPadMaxSpeed;
     const JumpPadProperties *m_jumpPadProperties;
     u16 m_rampBoost;
+    f32 m_cannonEntryOfsLength;
+    EGG::Vector3f m_cannonEntryPos;
+    EGG::Vector3f m_cannonEntryOfs;
+    EGG::Vector3f m_cannonOrthog;
+    EGG::Vector3f m_cannonProgress;
     f32 m_hopVelY;    ///< Relative velocity due to a hop. Starts at 10 and decreases with gravity.
     f32 m_hopPosY;    ///< Relative position as the result of a hop. Starts at 0.
     f32 m_hopGravity; ///< Always main gravity (-1.3f).
