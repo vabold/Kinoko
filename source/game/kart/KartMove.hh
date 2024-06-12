@@ -72,6 +72,12 @@ public:
     void calcMushroomBoost();
     void landTrick();
 
+    void enterCannon();
+    void calcCannon();
+    void calcRotCannon(const EGG::Vector3f &unk);
+    void exitCannon();
+    std::pair<EGG::Vector3f, EGG::Vector3f> cannonPosRot();
+
     /// @beginSetters
     void setDir(const EGG::Vector3f &v);
     void setVel1Dir(const EGG::Vector3f &v);
@@ -181,6 +187,20 @@ protected:
     f32 m_jumpPadMaxSpeed;
     const JumpPadProperties *m_jumpPadProperties;
     u16 m_rampBoost;
+    f32 m_cannonSmth;               ///< Couldn't tell ya what this is. Offset 0x1e0.
+    EGG::Vector3f m_cannonEntryPos; ///< Uhhhh... idk man this one's kinda weird. ok so, when you
+                                    ///< enter a cannon, your position goes here. so, its the
+                                    ///< position you had when you entered a cannon.
+    EGG::Vector3f m_cannonEntryOfs; ///< so i think this is how far you were from the the cannons
+                                    ///< canonical position when you entered it. does that make
+                                    ///< sense? ok so uhh.. when you enter a cannnon, your position
+                                    ///< minus the cannon's position goes here. see 0x80584c18 --
+                                    ///< 0x80584c30 WAIT maybe its  direction??? idk its used in the
+                                    ///< code in different ways, such that i am unable to ascertain
+                                    ///< its significance. hmmmmmmmmmmmmmm
+    EGG::Vector3f m_cannonOrthog;   ///< literally no idea
+    EGG::Vector3f m_cannonProgress; ///< not sure, but it cahnges while yuo're in a cannon. it
+                                    ///< doenst change otherwise.
     f32 m_hopVelY;    ///< Relative velocity due to a hop. Starts at 10 and decreases with gravity.
     f32 m_hopPosY;    ///< Relative position as the result of a hop. Starts at 0.
     f32 m_hopGravity; ///< Always main gravity (-1.3f).
@@ -233,7 +253,7 @@ public:
     void onWallCollision() override;
     void calcMtCharge() override;
     void setTurnParams() override;
-    void init(bool b1, bool b2) override;
+    void init(bool keepStatsForCannon, bool b2) override;
     [[nodiscard]] f32 getWheelieSoftSpeedLimitBonus() const override;
     [[nodiscard]] f32 wheelieRotFactor() const;
 
