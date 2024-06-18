@@ -5,3 +5,4 @@ out
 .vs
 .vscode
 *.szs
+statusTestCases.json
