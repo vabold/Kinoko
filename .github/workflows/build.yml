@@ -41,6 +41,7 @@ jobs:
             out
             samples
             tools
+            STATUS.md
   format:
     name: Format
     runs-on: ubuntu-22.04
@@ -84,6 +85,8 @@ jobs:
         with:
           name: Kinoko output
           path: out/results.txt
+      - name: Validate STATUS.md up-to-date
+        run: sudo python3 ./tools/status_check.py
 
   website:
     name: Generate website assets

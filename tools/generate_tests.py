@@ -9,11 +9,11 @@ class TestCase:
         self.krkgPath = str.encode("../"+value["krkgPath"]) + b'\x00'
         self.targetFrame = value["targetFrame"]
 
-def generate_tests():
+def generate_tests(filename = 'testCases.json'):
     # Parse test cases from JSON
     tests = []
 
-    with open('testCases.json') as f:
+    with open(filename) as f:
         data = json.load(f)
 
         for key, value in data.items():
