@@ -60,6 +60,7 @@ public:
     void setJumpPadDisableYsusForce(bool isSet);
     void setSomethingWallCollision(bool isSet);
     void setSoftWallDrift(bool isSet);
+    void setHWG(bool isSet);
     void setCannonPointId(u16 val);
     void setBoostRampType(s32 val);
     void setJumpPadVariant(s32 val);
@@ -72,6 +73,7 @@ public:
     [[nodiscard]] bool isBrake() const;
     [[nodiscard]] bool isDriftInput() const;
     [[nodiscard]] bool isDriftManual() const;
+    [[nodiscard]] bool isWall3Collision() const;
     [[nodiscard]] bool isWallCollision() const;
     [[nodiscard]] bool isHopStart() const;
     [[nodiscard]] bool isGroundStart() const;
@@ -85,6 +87,7 @@ public:
     [[nodiscard]] bool isTouchingGround() const;
     [[nodiscard]] bool isHop() const;
     [[nodiscard]] bool isSoftWallDrift() const;
+    [[nodiscard]] bool isHWG() const;
     [[nodiscard]] bool isChargeStartBoost() const;
     [[nodiscard]] bool isBoost() const;
     [[nodiscard]] bool isStickRight() const;
@@ -136,6 +139,7 @@ private:
     /// ghosts which could not have been created legitimately in the first place.
     bool m_bDriftInput;
     bool m_bDriftManual;               ///< Currently in a drift w/ manual.
+    bool m_bWall3Collision;            ///< Set when colliding with wall KCL #COL_TYPE_WALL_2
     bool m_bWallCollision;             ///< Set if we are colliding with a wall.
     bool m_bHopStart;                  ///< Set if @ref m_bDriftInput was toggled on this frame.
     bool m_bAccelerateStart;           ///< Set if @ref m_bAccelerate was toggled on this frame.
@@ -187,6 +191,7 @@ private:
     bool m_bUNK2;
     bool m_bSomethingWallCollision;
     bool m_bSoftWallDrift;
+    bool m_bHWG;              ///< Set when "Horizontal Wall Glitch" is active.
     bool m_bChargeStartBoost; ///< Like @ref m_bAccelerate but during countdown.
     /// @}
 

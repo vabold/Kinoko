@@ -102,16 +102,7 @@ void KartSub::calcPass0() {
         return;
     }
 
-    if (state()->isSoftWallDrift()) {
-        if (EGG::Mathf::abs(move()->speed()) > 15.0f || state()->isAirtimeOver20() ||
-                state()->isAllWheelsCollision()) {
-            state()->setSoftWallDrift(false);
-        } else if (state()->isTouchingGround()) {
-            if (componentXAxis().dot(EGG::Vector3f::ey) > 0.8f) {
-                state()->setSoftWallDrift(false);
-            }
-        }
-    }
+    tryEndHWG();
 
     dynamics()->setTop(move()->up());
 
@@ -151,12 +142,19 @@ void KartSub::calcPass1() {
     m_minSuspOvertravel.setZero();
 
     if (state()->isSomethingWallCollision()) {
-        f32 speedFactor = 5.0f;
         const EGG::Vector3f &softWallSpeed = state()->softWallSpeed();
-        EGG::Vector3f effectiveSpeed = softWallSpeed.perpInPlane(move()->smoothedUp(), true);
-        f32 speedDotUp = softWallSpeed.dot(move()->smoothedUp());
-        if (speedDotUp < 0.0f) {
-            speedFactor += -speedDotUp * 10.0f;
+        f32 speedFactor = 5.0f;
+        EGG::Vector3f effectiveSpeed;
+
+        if (state()->isHWG()) {
+            speedFactor = 10.0f;
+            effectiveSpeed = softWallSpeed;
+        } else {
+            effectiveSpeed = softWallSpeed.perpInPlane(move()->smoothedUp(), true);
+            f32 speedDotUp = softWallSpeed.dot(move()->smoothedUp());
+            if (speedDotUp < 0.0f) {
+                speedFactor += -speedDotUp * 10.0f;
+            }
         }
 
         effectiveSpeed *= speedFactor * scale().y;
@@ -170,7 +168,7 @@ void KartSub::calcPass1() {
     if (!state()->isInCannon()) {
         collide()->findCollision();
         const auto &colData = collisionData();
-        if (colData.bWall) {
+        if (colData.bWall || colData.bWall3) {
             collide()->setMovement(collide()->movement() + colData.movement);
         }
 
@@ -264,6 +262,26 @@ void KartSub::addFloor(const CollisionData &, bool) {
 void KartSub::updateSuspOvertravel(const EGG::Vector3f &suspOvertravel) {
     m_maxSuspOvertravel = m_maxSuspOvertravel.minimize(suspOvertravel);
     m_minSuspOvertravel = m_minSuspOvertravel.maximize(suspOvertravel);
+}
+
+/// @addr{0x80598744}
+void KartSub::tryEndHWG() {
+    if (state()->isSoftWallDrift()) {
+        if (EGG::Mathf::abs(move()->speed()) > 15.0f || state()->isAirtimeOver20() ||
+                state()->isAllWheelsCollision()) {
+            state()->setSoftWallDrift(false);
+        } else if (state()->isTouchingGround()) {
+            if (componentXAxis().dot(EGG::Vector3f::ey) > 0.8f) {
+                state()->setSoftWallDrift(false);
+            }
+        }
+    }
+
+    if (state()->isHWG() && !state()->isSomethingWallCollision()) {
+        if (!state()->isWallCollision() || state()->isAllWheelsCollision()) {
+            state()->setHWG(false);
+        }
+    }
 }
 
 f32 KartSub::someScale() {

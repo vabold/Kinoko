@@ -135,8 +135,9 @@ void KartState::calc() {
 /// top vector, given the floor normals of all colliding floor KCLs.
 void KartState::calcCollisions() {
     bool wasTouchingGround = m_bTouchingGround;
-    bool wasWallCollision = m_bWallCollision;
+    bool wasWallCollision = m_bWallCollision || m_bWall3Collision;
 
+    m_bWall3Collision = false;
     m_bWallCollision = false;
     m_bVehicleBodyFloorCollision = false;
     m_bAnyWheelCollision = false;
@@ -212,35 +213,46 @@ void KartState::calcCollisions() {
 
     m_wallBonkTimer = std::max(0, m_wallBonkTimer - 1);
 
-    if (colData.bWall) {
-        m_bWallCollision = true;
+    bool hwg = false;
+
+    if (colData.bWall || colData.bWall3) {
+        if (colData.bWall) {
+            m_bWallCollision = true;
+        }
+
+        if (colData.bWall3) {
+            m_bWall3Collision = true;
+        }
 
         if (!wasWallCollision) {
             m_bWallCollisionStart = true;
         }
 
         m_wallBonkTimer = 2;
-    }
 
-    if (m_hwgTimer == 0 && colData.movement.y > 1.0f) {
-        EGG::Vector3f movement = colData.movement;
-        movement.normalise();
+        if (m_hwgTimer == 0 && colData.movement.y > 1.0f) {
+            EGG::Vector3f movement = colData.movement;
+            movement.normalise();
 
-        if (movement.dot(EGG::Vector3f::ey) > 0.8f &&
-                colData.floorNrm.dot(EGG::Vector3f::ey) > 0.85f &&
-                movement.x * colData.wallNrm.x + movement.z * colData.wallNrm.z < 0.0f) {
-            colData.wallNrm.y = 0.0f;
-            colData.wallNrm.normalise();
-            wallNrm = colData.wallNrm;
+            if (movement.dot(EGG::Vector3f::ey) > 0.8f &&
+                    colData.wallNrm.dot(EGG::Vector3f::ey) > 0.85f &&
+                    (movement.x * colData.wallNrm.x + movement.z * colData.wallNrm.z < 0.0f ||
+                            collide()->colPerpendicularity() >= 1.0f)) {
+                colData.wallNrm.y = 0.0f;
+                colData.wallNrm.normalise();
+                wallNrm = colData.wallNrm;
 
-            if (wallNrm.length() < 0.05f) {
-                wallNrm = movement;
-                wallNrm.y = 0.0f;
+                if (wallNrm.length() < 0.05f) {
+                    wallNrm = movement;
+                    wallNrm.y = 0.0f;
+                }
+
+                hwg = true;
             }
         }
     }
 
-    if (softWallCount > 0) {
+    if (softWallCount > 0 || hwg) {
         m_bUNK2 = true;
         m_softWallSpeed = wallNrm;
         m_softWallSpeed.normalise();
@@ -248,9 +260,17 @@ void KartState::calcCollisions() {
             m_bSoftWallDrift = true;
         }
 
-        if (hitboxGroupSoftWallCollision || isBike()) {
+        if (hwg) {
+            m_bHWG = true;
+        }
+
+        if (hitboxGroupSoftWallCollision || hwg || isBike()) {
             m_bSomethingWallCollision = true;
             m_hwgTimer = 10;
+
+            if (hwg) {
+                m_hwgTimer *= 2;
+            }
         }
     }
 
@@ -365,6 +385,10 @@ bool KartState::isDriftManual() const {
     return m_bDriftManual;
 }
 
+bool KartState::isWall3Collision() const {
+    return m_bWall3Collision;
+}
+
 bool KartState::isWallCollision() const {
     return m_bWallCollision;
 }
@@ -415,6 +439,10 @@ bool KartState::isHop() const {
 
 bool KartState::isSoftWallDrift() const {
     return m_bSoftWallDrift;
+}
+
+bool KartState::isHWG() const {
+    return m_bHWG;
 }
 
 bool KartState::isChargeStartBoost() const {
@@ -563,6 +591,7 @@ void KartState::clearBitfield0() {
     m_bBrake = false;
     m_bDriftInput = false;
     m_bDriftManual = false;
+    m_bWall3Collision = false;
     m_bWallCollision = false;
     m_bHopStart = false;
     m_bAccelerateStart = false;
@@ -604,6 +633,7 @@ void KartState::clearBitfield3() {
     m_bUNK2 = false;
     m_bSomethingWallCollision = false;
     m_bSoftWallDrift = false;
+    m_bHWG = false;
     m_bChargeStartBoost = false;
 }
 
@@ -733,6 +763,10 @@ void KartState::setSomethingWallCollision(bool isSet) {
 
 void KartState::setSoftWallDrift(bool isSet) {
     m_bSoftWallDrift = isSet;
+}
+
+void KartState::setHWG(bool isSet) {
+    m_bHWG = isSet;
 }
 
 void KartState::setCannonPointId(u16 val) {

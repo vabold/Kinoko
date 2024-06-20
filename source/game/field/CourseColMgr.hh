@@ -54,6 +54,9 @@ public:
             const EGG::Vector3f &v0, const EGG::Vector3f &v1, KCLTypeMask flags,
             CollisionInfo *info, KCLTypeMask *kcl_flags_out);
 
+    [[nodiscard]] bool checkSphereCachedPartial(KColData *data, const EGG::Vector3f &pos,
+            const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CollisionInfo *colInfo,
+            KCLTypeMask *typeMaskOut, f32 scale, f32 radius);
     [[nodiscard]] bool checkSphereCachedPartialPush(KColData *data, const EGG::Vector3f &pos,
             const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CollisionInfo *colInfo,
             KCLTypeMask *typeMaskOut, f32 scale, f32 radius);
@@ -80,6 +83,8 @@ private:
     CourseColMgr();
     ~CourseColMgr();
 
+    [[nodiscard]] bool doCheckWithPartialInfo(KColData *data, CollisionCheckFunc collisionCheckFunc,
+            CollisionInfo *colInfo, KCLTypeMask *typeMask);
     [[nodiscard]] bool doCheckWithPartialInfoPush(KColData *data,
             CollisionCheckFunc collisionCheckFunc, CollisionInfo *colInfo, KCLTypeMask *typeMask);
     [[nodiscard]] bool doCheckWithFullInfo(KColData *data, CollisionCheckFunc collisionCheckFunc,
