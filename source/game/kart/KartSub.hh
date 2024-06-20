@@ -22,6 +22,7 @@ public:
     void calcPass1();
     void addFloor(const CollisionData &, bool);
     void updateSuspOvertravel(const EGG::Vector3f &suspOvertravel);
+    void tryEndHWG();
 
     /// @beginGetters
     [[nodiscard]] f32 someScale();

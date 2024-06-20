@@ -29,9 +29,11 @@ struct CollisionData {
     Field::KCLTypeMask closestFloorFlags; ///< The KCL flag's @ref KColType.
     u32 closestFloorSettings;             ///< The KCL flag's "variant"
     s32 intensity;                        ///< The KCL flag's "wheel depth"
+    f32 colPerpendicularity;
 
     bool bFloor; ///< Set if colliding with KCL which satisfies #KCL_TYPE_FLOOR
     bool bWall;  ///< Set if colliding with KCL which satisfies #KCL_TYPE_WALL
+    bool bWall3; ///< Set if colliding with #COL_TYPE_WALL_2
     bool bSoftWall;
     bool bTrickable;
 };

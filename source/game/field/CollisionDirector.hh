@@ -30,6 +30,9 @@ public:
             const EGG::Vector3f &v1, KCLTypeMask flags, CourseColMgr::CollisionInfo *pInfo,
             KCLTypeMask *pFlagsOut, u32 /*start*/);
 
+    [[nodiscard]] bool checkSphereCachedPartial(const EGG::Vector3f &pos,
+            const EGG::Vector3f &prevPos, KCLTypeMask typeMask,
+            CourseColMgr::CollisionInfo *colInfo, KCLTypeMask *typeMaskOut, f32 radius);
     [[nodiscard]] bool checkSphereCachedPartialPush(const EGG::Vector3f &pos,
             const EGG::Vector3f &prevPos, KCLTypeMask typeMask,
             CourseColMgr::CollisionInfo *colInfo, KCLTypeMask *typeMaskOut, f32 radius, u32 start);

@@ -1073,7 +1073,7 @@ void KartMove::calcAcceleration() {
     f32 local_c8 = 1.0f;
     dVar17 *= calcWallCollisionSpeedFactor(local_c8);
 
-    if (!state()->isWallCollision()) {
+    if (!state()->isWallCollision() && !state()->isWall3Collision()) {
         m_softSpeedLimit = std::max(m_softSpeedLimit - 3.0f, dVar17);
     } else {
         m_softSpeedLimit = dVar17;
@@ -1130,7 +1130,7 @@ void KartMove::calcAcceleration() {
 /// @stage 2
 /// @brief Every frame, computes a speed scalar if we are colliding with a wall.
 f32 KartMove::calcWallCollisionSpeedFactor(f32 &f1) {
-    if (!state()->isWallCollision()) {
+    if (!state()->isWallCollision() && !state()->isWall3Collision()) {
         return 1.0f;
     }
 
@@ -1146,7 +1146,9 @@ f32 KartMove::calcWallCollisionSpeedFactor(f32 &f1) {
 
     if (dot < 0.0f) {
         f1 = std::max(0.0f, dot + 1.0f);
-        return std::min(1.0f, f1 * 0.4f);
+        f1 *= !state()->isWallCollision() ? 0.7f : 0.4f;
+
+        return std::min(1.0f, f1);
     }
 
     return 1.0f;
@@ -1929,7 +1931,7 @@ void KartMoveBike::calcVehicleRotation(f32 turn) {
     f32 leanRotMax = m_leanRotCap;
 
     if (state()->isWheelie() || state()->isAirtimeOver20() || state()->isSoftWallDrift() ||
-            state()->isSomethingWallCollision() || state()->isCannonStart() ||
+            state()->isSomethingWallCollision() || state()->isHWG() || state()->isCannonStart() ||
             state()->isInCannon()) {
         m_leanRot *= m_turningParams->leanRotDecayFactor;
     } else if (!state()->isDrifting()) {
