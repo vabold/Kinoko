@@ -1,4 +1,5 @@
 #include "KartPhysics.hh"
+#include <egg/math/Quat.hh>
 
 namespace Kart {
 
@@ -84,6 +85,12 @@ void KartPhysics::composeStuntRot(const EGG::Quatf &rot) {
 /// @addr{0x8059FDD0}
 void KartPhysics::composeDecayingRot(const EGG::Quatf &rot) {
     m_decayingStuntRot *= rot;
+}
+
+/// @addr{0x805A0410}
+void KartPhysics::clearDecayingRot() {
+    m_decayingStuntRot = EGG::Quatf::ident;
+    m_decayingExtraRot = EGG::Quatf::ident;
 }
 
 KartDynamics *KartPhysics::dynamics() {

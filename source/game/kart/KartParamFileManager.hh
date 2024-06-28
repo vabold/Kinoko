@@ -24,7 +24,7 @@ private:
     template <typename T>
     struct ParamFile {
         u32 count;
-        T params[];
+        T *params;
     };
 
     struct FileInfo {

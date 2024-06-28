@@ -5,6 +5,7 @@
 #include "game/kart/KartState.hh"
 
 #include "game/field/CollisionDirector.hh"
+#include "game/field/KCollisionTypes.hh"
 
 #include <egg/math/Math.hh>
 
@@ -360,6 +361,12 @@ void KartCollide::processWheel(CollisionData &collisionData, Hitbox &hitbox,
 void KartCollide::processBody(CollisionData &collisionData, Hitbox &hitbox,
         Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut) {
     processFloor(collisionData, hitbox, colInfo, maskOut, false);
+    const auto colDirector = Field::CollisionDirector::Instance();
+    if (colDirector->findClosestCollisionEntry(maskOut, KCL_TYPE_BIT(COL_TYPE_CANNON_TRIGGER))) {
+        state()->setCannonPointId(
+                KCL_VARIANT_TYPE(colDirector->closestCollisionEntry()->attribute));
+        state()->setCannonStart(true);
+    }
 }
 
 /// @stage All

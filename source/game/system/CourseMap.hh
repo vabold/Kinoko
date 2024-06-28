@@ -11,6 +11,8 @@ class MapdataStageInfo;
 class MapdataStageInfoAccessor;
 class MapdataStartPoint;
 class MapdataStartPointAccessor;
+class MapdataCannonPoint;
+class MapdataCannonPointAccessor;
 
 /// @brief Contains course metadata, notably the starting position.
 /// @addr{0x809BD6E8}
@@ -18,10 +20,12 @@ class MapdataStartPointAccessor;
 class CourseMap {
 public:
     void init();
+    [[nodiscard]] MapdataCannonPointAccessor *parseCannonPoint(u32 sectionName);
     [[nodiscard]] MapdataStageInfoAccessor *parseStageInfo(u32 sectionName);
     [[nodiscard]] MapdataStartPointAccessor *parseStartPoint(u32 sectionName);
 
     /// @beginGetters
+    [[nodiscard]] MapdataCannonPoint *getCannonPoint(u16 i) const;
     [[nodiscard]] MapdataStageInfo *getStageInfo() const;
     [[nodiscard]] MapdataStartPoint *getStartPoint(u16 i) const;
     [[nodiscard]] u32 version() const;
@@ -40,6 +44,7 @@ private:
     CourseMap();
     ~CourseMap();
 
+    MapdataCannonPointAccessor *m_cannonPoint;
     MapdataFileAccessor *m_course;
     MapdataStartPointAccessor *m_startPoint;
     MapdataStageInfoAccessor *m_stageInfo;
