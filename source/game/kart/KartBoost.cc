@@ -75,6 +75,19 @@ bool KartBoost::calc() {
     return m_multiplier > 1.0f || m_speedLimit > 0.0f;
 }
 
+/// @addr{0x80588D74}
+void KartBoost::reset() {
+    m_timers.fill(0);
+    m_multiplier = 1.0f;
+    m_acceleration = 1.0f;
+    m_speedLimit = -1.0f;
+}
+
+/// @addr{0x80588E18}
+void KartBoost::resetActive() {
+    m_active.fill(false);
+}
+
 f32 KartBoost::multiplier() const {
     return m_multiplier;
 }

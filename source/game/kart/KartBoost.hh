@@ -20,6 +20,8 @@ public:
 
     [[nodiscard]] bool activate(Type type, s16 frames);
     [[nodiscard]] bool calc();
+    void reset();
+    void resetActive();
 
     /// @beginGetters
     [[nodiscard]] f32 multiplier() const;
