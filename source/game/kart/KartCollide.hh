@@ -25,6 +25,10 @@ public:
     void calcBodyCollision(f32 totalScale, const EGG::Quatf &rot, const EGG::Vector3f &scale);
     void calcFloorEffect();
     void calcTriggers(Field::KCLTypeMask *mask, const EGG::Vector3f &pos, bool twoPoint);
+    void handleTriggers(Field::KCLTypeMask *mask);
+    void calcFallBoundary(Field::KCLTypeMask *mask, bool shortBoundary);
+    void activateOob(bool detachCamera, Field::KCLTypeMask *mask, bool somethingCPU,
+            bool somethingBullet);
     void calcWheelCollision(u16 wheelIdx, CollisionGroup *hitboxGroup, const EGG::Vector3f &colVel,
             const EGG::Vector3f &center, f32 radius);
     void calcSideCollision(CollisionData &collisionData, Hitbox &hitbox,
@@ -69,6 +73,7 @@ public:
 
 private:
     EGG::Vector3f m_movement;
+    s16 m_respawnTimer;
     f32 m_smoothedBack; // 0x50
     f32 m_suspBottomHeightSoftWall;
     u16 m_someSoftWallTimer;

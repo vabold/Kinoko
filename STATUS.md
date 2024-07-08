@@ -35,7 +35,7 @@ Test Case                                                 | Frames      |     | 
 [`rgv2-rta-0-49-992`](https://youtu.be/T7OVqaNUbzI)       | 663 / 3408  | ❌ | KMP
 [`rgv2-ng-rta-0-52-746`](https://youtu.be/jWRsMWo-55g)    | 3399 / 3573 | ❌ | KMP
 [`rmr-rta-1-41-193`](https://youtu.be/y7t4_xXuD2A)        | 6477 / 6477 | ✔️ |
-[`rsl-rta-1-12-225`](https://youtu.be/3p8yV_jjQ4o)        | 4113 / 4741 | ❌ | Respawn
+[`rsl-rta-1-12-225`](https://youtu.be/3p8yV_jjQ4o)        | 4242 / 4741 | ❌ | Respawn position
 [`rsl-ng-rta-2-03-750`](https://youtu.be/ahNGAaUzm6s)     | 7829 / 7829 | ✔️ |
 [`rsgb-rta-1-14-513`](https://youtu.be/lgfw-zswqIM)       | 355 / 4878  | ❌ | Outward-drifting bike
 [`rsgb-ng-rta-1-21-363`](https://youtu.be/SjXUPXT8n8g)    | 5288 / 5288 | ✔️ |

@@ -31,6 +31,7 @@ public:
     void setAccelerate(bool isSet);
     void setDriftInput(bool isSet);
     void setDriftManual(bool isSet);
+    void setBeforeRespawn(bool isSet);
     void setWallCollision(bool isSet);
     void setHopStart(bool isSet);
     void setVehicleBodyFloorCollision(bool isSet);
@@ -73,6 +74,7 @@ public:
     [[nodiscard]] bool isBrake() const;
     [[nodiscard]] bool isDriftInput() const;
     [[nodiscard]] bool isDriftManual() const;
+    [[nodiscard]] bool isBeforeRespawn() const;
     [[nodiscard]] bool isWall3Collision() const;
     [[nodiscard]] bool isWallCollision() const;
     [[nodiscard]] bool isHopStart() const;
@@ -139,6 +141,7 @@ private:
     /// ghosts which could not have been created legitimately in the first place.
     bool m_bDriftInput;
     bool m_bDriftManual;               ///< Currently in a drift w/ manual.
+    bool m_bBeforeRespawn;             ///< Set on respawn collision, cleared on position snap.
     bool m_bWall3Collision;            ///< Set when colliding with wall KCL #COL_TYPE_WALL_2
     bool m_bWallCollision;             ///< Set if we are colliding with a wall.
     bool m_bHopStart;                  ///< Set if @ref m_bDriftInput was toggled on this frame.
