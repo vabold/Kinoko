@@ -28,6 +28,7 @@ void KartCollide::init() {
     m_groundBoostPanelOrRamp = false;
     m_trickable = false;
     m_notTrickable = false;
+    m_respawnTimer = 0;
     m_smoothedBack = 0.0f;
     m_suspBottomHeightNonSoftWall = 0.0f;
     m_suspBottomHeightSoftWall = 0.0f;
@@ -280,13 +281,49 @@ void KartCollide::calcTriggers(Field::KCLTypeMask *mask, const EGG::Vector3f &po
     bool collide = Field::CollisionDirector::Instance()->checkSphereCachedPartialPush(scaledPos, v1,
             typeMask, nullptr, mask, fVar1, 0);
 
-    if (!collide || twoPoint) {
+    if (!collide) {
         return;
     }
 
-    if (*mask & KCL_TYPE_FLOOR) {
+    if (twoPoint) {
+        handleTriggers(mask);
+    } else if (*mask & KCL_TYPE_FLOOR) {
         Field::CollisionDirector::Instance()->findClosestCollisionEntry(mask, KCL_TYPE_FLOOR);
     }
+}
+
+/// @addr{0x8056F510}
+void KartCollide::handleTriggers(Field::KCLTypeMask *mask) {
+    calcFallBoundary(mask, false);
+}
+
+/// @addr{0x80571D98}
+void KartCollide::calcFallBoundary(Field::KCLTypeMask *mask, bool /*shortBoundary*/) {
+    if (!(*mask & KCL_TYPE_BIT(COL_TYPE_FALL_BOUNDARY))) {
+        return;
+    }
+
+    auto *colDir = Field::CollisionDirector::Instance();
+    if (!colDir->findClosestCollisionEntry(mask, KCL_TYPE_BIT(COL_TYPE_FALL_BOUNDARY))) {
+        return;
+    }
+
+    activateOob(false, mask, false, false);
+}
+
+/// @addr{0x80573B00}
+void KartCollide::activateOob(bool /*detachCamera*/, Field::KCLTypeMask * /*mask*/,
+        bool /*somethingCPU*/, bool /*somethingBullet*/) {
+    constexpr s16 RESPAWN_TIME = 130;
+
+    if (state()->isBeforeRespawn()) {
+        return;
+    }
+
+    move()->initOob();
+
+    m_respawnTimer = RESPAWN_TIME;
+    state()->setBeforeRespawn(true);
 }
 
 /// @stage All

@@ -76,7 +76,7 @@ void KartState::reset() {
 void KartState::calcInput() {
     const auto *raceMgr = System::RaceManager::Instance();
     if (raceMgr->isStageReached(System::RaceManager::Stage::Race)) {
-        if (!state()->isCannonStart() && !state()->isInCannon()) {
+        if (!state()->isBeforeRespawn() && !state()->isCannonStart() && !state()->isInCannon()) {
             const auto &currentState = inputs()->currentState();
             const auto &lastState = inputs()->lastState();
             m_stickX = currentState.stick.x;
@@ -385,6 +385,10 @@ bool KartState::isDriftManual() const {
     return m_bDriftManual;
 }
 
+bool KartState::isBeforeRespawn() const {
+    return m_bBeforeRespawn;
+}
+
 bool KartState::isWall3Collision() const {
     return m_bWall3Collision;
 }
@@ -591,6 +595,7 @@ void KartState::clearBitfield0() {
     m_bBrake = false;
     m_bDriftInput = false;
     m_bDriftManual = false;
+    m_bBeforeRespawn = false;
     m_bWall3Collision = false;
     m_bWallCollision = false;
     m_bHopStart = false;
@@ -647,6 +652,10 @@ void KartState::setDriftInput(bool isSet) {
 
 void KartState::setDriftManual(bool isSet) {
     m_bDriftManual = isSet;
+}
+
+void KartState::setBeforeRespawn(bool isSet) {
+    m_bBeforeRespawn = isSet;
 }
 
 void KartState::setWallCollision(bool isSet) {

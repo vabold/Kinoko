@@ -75,6 +75,10 @@ void KartMove::calcTurn() {
     m_realTurn = 0.0f;
     m_rawTurn = 0.0f;
 
+    if (state()->isBeforeRespawn()) {
+        return;
+    }
+
     if (!state()->isHop() || m_hopStickX == 0) {
         m_rawTurn = -state()->stickX();
         if (state()->isAirtimeOver20()) {
@@ -684,6 +688,39 @@ void KartMove::clearDrift() {
     state()->setDriftManual(false);
 }
 
+/// @addr{0x80582DB4}
+void KartMove::clearJumpPad() {
+    m_jumpPadMinSpeed = 0.0f;
+    state()->setJumpPad(false);
+}
+
+/// @addr{0x80582DD8}
+void KartMove::clearRampBoost() {
+    m_rampBoost = 0;
+    state()->setRampBoost(false);
+}
+
+/// @addr{0x80582D94}
+void KartMove::clearBoost() {
+    m_boost.resetActive();
+    state()->setBoost(false);
+}
+
+/// @addr{0x80582F58}
+void KartMove::clearSsmt() {
+    m_ssmtCharge = 0;
+    m_ssmtLeewayTimer = 0;
+    m_ssmtDisableAccelTimer = 0;
+    m_bSsmtCharged = false;
+    m_bSsmtLeeway = false;
+}
+
+/// @addr{0x80582F7C}
+void KartMove::clearOffroadInvincibility() {
+    m_offroadInvincibility = 0;
+    state()->setBoostOffroadInvincibility(false);
+}
+
 /// @stage 2
 /// @brief Each frame, handles hopping, drifting, and mini-turbos.
 /// @addr{0x8057DC44}
@@ -805,7 +842,9 @@ void KartMove::releaseMt() {
         mtLength *= SMT_LENGTH_FACTOR;
     }
 
-    activateBoost(KartBoost::Type::AllMt, mtLength);
+    if (!state()->isBeforeRespawn()) {
+        activateBoost(KartBoost::Type::AllMt, mtLength);
+    }
 
     m_driftState = DriftState::NotDrifting;
 }
@@ -1035,6 +1074,7 @@ void KartMove::calcAcceleration() {
     constexpr f32 ROTATION_SCALAR_NORMAL = 0.5f;
     constexpr f32 ROTATION_SCALAR_MIDAIR = 0.2f;
     constexpr f32 ROTATION_SCALAR_BOOST_RAMP = 4.0f;
+    constexpr f32 OOB_SLOWDOWN_RATE = 0.95f;
 
     m_lastSpeed = m_speed;
 
@@ -1050,13 +1090,17 @@ void KartMove::calcAcceleration() {
 
     m_speed += m_acceleration;
 
-    if (state()->isChargingSsmt()) {
-        m_speed *= 0.8f;
+    if (state()->isBeforeRespawn()) {
+        m_speed *= OOB_SLOWDOWN_RATE;
     } else {
-        if (m_drivingDirection == DrivingDirection::Braking && m_speed < 0.0f) {
-            m_speed = 0.0f;
-            m_drivingDirection = DrivingDirection::WaitingForBackwards;
-            m_backwardsAllowCounter = 0;
+        if (state()->isChargingSsmt()) {
+            m_speed *= 0.8f;
+        } else {
+            if (m_drivingDirection == DrivingDirection::Braking && m_speed < 0.0f) {
+                m_speed = 0.0f;
+                m_drivingDirection = DrivingDirection::WaitingForBackwards;
+                m_backwardsAllowCounter = 0;
+            }
         }
     }
 
@@ -1482,6 +1526,10 @@ bool KartMove::canHop() const {
 void KartMove::tryStartBoostPanel() {
     constexpr s16 BOOST_PANEL_DURATION = 60;
 
+    if (state()->isBeforeRespawn()) {
+        return;
+    }
+
     activateBoost(KartBoost::Type::MushroomAndBoostPanel, BOOST_PANEL_DURATION);
     setOffroadInvincibility(BOOST_PANEL_DURATION);
 }
@@ -1491,6 +1539,10 @@ void KartMove::tryStartBoostPanel() {
 /// @addr{Inlined at 0x80587590}
 void KartMove::tryStartBoostRamp() {
     constexpr s16 BOOST_RAMP_DURATION = 60;
+
+    if (state()->isBeforeRespawn()) {
+        return;
+    }
 
     state()->setRampBoost(true);
     m_rampBoost = BOOST_RAMP_DURATION;
@@ -1511,6 +1563,10 @@ void KartMove::tryStartJumpPad() {
             {55.0f, 55.0f, 35.0f},
             {56.0f, 56.0f, 50.0f},
     }};
+
+    if (state()->isBeforeRespawn()) {
+        return;
+    }
 
     state()->setJumpPad(true);
     s32 jumpPadVariant = state()->jumpPadVariant();
@@ -1570,6 +1626,11 @@ void KartMove::applyStartBoost(s16 frames) {
 /// @addr{0x8057F3D8}
 void KartMove::activateMushroom() {
     constexpr s16 MUSHROOM_DURATION = 90;
+
+    if (state()->isBeforeRespawn()) {
+        return;
+    }
+
     activateBoost(KartBoost::Type::MushroomAndBoostPanel, MUSHROOM_DURATION);
 
     m_mushroomBoostTimer = MUSHROOM_DURATION;
@@ -1631,6 +1692,10 @@ void KartMove::landTrick() {
             95,
     }};
 
+    if (state()->isBeforeRespawn()) {
+        return;
+    }
+
     s16 duration;
     if (isBike()) {
         duration = BIKE_TRICK_BOOST_DURATION[static_cast<u32>(m_jump->variant())];
@@ -1649,15 +1714,9 @@ void KartMove::enterCannon() {
     state()->setBoost(false);
 
     cancelJumpPad();
-    m_rampBoost = 0;
-    state()->setRampBoost(false);
-    m_ssmtCharge = 0;
-    m_ssmtLeewayTimer = 0;
-    m_ssmtDisableAccelTimer = 0;
-    m_bSsmtCharged = false;
-    m_bSsmtLeeway = false;
-    m_offroadInvincibility = 0;
-    state()->setBoostOffroadInvincibility(false);
+    clearRampBoost();
+    clearSsmt();
+    clearOffroadInvincibility();
 
     dynamics()->reset();
 
@@ -1930,9 +1989,9 @@ void KartMoveBike::calcVehicleRotation(f32 turn) {
     f32 leanRotMin = -m_leanRotCap;
     f32 leanRotMax = m_leanRotCap;
 
-    if (state()->isWheelie() || state()->isAirtimeOver20() || state()->isSoftWallDrift() ||
-            state()->isSomethingWallCollision() || state()->isHWG() || state()->isCannonStart() ||
-            state()->isInCannon()) {
+    if (state()->isBeforeRespawn() || state()->isWheelie() || state()->isAirtimeOver20() ||
+            state()->isSoftWallDrift() || state()->isSomethingWallCollision() || state()->isHWG() ||
+            state()->isCannonStart() || state()->isInCannon()) {
         m_leanRot *= m_turningParams->leanRotDecayFactor;
     } else if (!state()->isDrifting()) {
         if (stickX <= 0.2f) {
@@ -2139,6 +2198,16 @@ void KartMoveBike::calcMtCharge() {
         m_mtCharge = MAX_MT_CHARGE;
         m_driftState = DriftState::ChargedMt;
     }
+}
+
+/// @addr{0x80588B58}
+void KartMoveBike::initOob() {
+    clearBoost();
+    clearJumpPad();
+    clearRampBoost();
+    clearSsmt();
+    clearOffroadInvincibility();
+    cancelWheelie();
 }
 
 /// @addr{0x80588860}

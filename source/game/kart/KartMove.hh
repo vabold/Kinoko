@@ -38,6 +38,11 @@ public:
     void calcManualDrift();
     void startManualDrift();
     void clearDrift();
+    void clearJumpPad();
+    void clearRampBoost();
+    void clearBoost();
+    void clearSsmt();
+    void clearOffroadInvincibility();
     void releaseMt();
     void controlOutsideDriftAngle();
     void calcRotation();
@@ -55,6 +60,7 @@ public:
     virtual void onHop() {}
     virtual void onWallCollision() {}
     virtual void calcMtCharge();
+    virtual void initOob() {}
     [[nodiscard]] virtual f32 getWheelieSoftSpeedLimitBonus() const;
     virtual bool canWheelie() const;
     virtual bool canHop() const;
@@ -244,6 +250,7 @@ public:
     void onHop() override;
     void onWallCollision() override;
     void calcMtCharge() override;
+    void initOob() override;
     void setTurnParams() override;
     void init(bool b1, bool b2) override;
     [[nodiscard]] f32 getWheelieSoftSpeedLimitBonus() const override;
