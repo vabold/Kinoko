@@ -394,6 +394,7 @@ void KartMove::calcDirs() {
     EGG::Vector3f right = dynamics()->mainRot().rotateVector(EGG::Vector3f::ex);
     EGG::Vector3f local_88 = right.cross(m_smoothedUp);
     local_88.normalise();
+    m_bLaunchBoost = true;
 
     if (!state()->isInATrick() &&
             (state()->isTouchingGround() || !state()->isRampBoost() ||
@@ -428,6 +429,7 @@ void KartMove::calcDirs() {
         }
 
         m_vel1Dir = m_dir.perpInPlane(m_smoothedUp, true);
+        m_bLaunchBoost = false;
     } else {
         m_vel1Dir = m_dir;
     }
@@ -733,7 +735,7 @@ void KartMove::calcManualDrift() {
 
     if (!state()->isTouchingGround() &&
             param()->stats().driftType != KartParam::Stats::DriftType::Inside_Drift_Bike &&
-            (state()->isDriftManual() || state()->isSlipdriftCharge())) {
+            (state()->isDriftManual() || state()->isSlipdriftCharge()) && m_bLaunchBoost) {
         const EGG::Vector3f up = dynamics()->mainRot().rotateVector(EGG::Vector3f::ey);
         EGG::Vector3f driftRej = m_outsideDriftLastDir.rej(up);
 
@@ -2081,7 +2083,11 @@ void KartMoveBike::setTurnParams() {
 
     KartMove::setTurnParams();
 
-    m_turningParams = &TURNING_PARAMS_ARRAY[1];
+    if (param()->stats().driftType == KartParam::Stats::DriftType::Outside_Drift_Bike) {
+        m_turningParams = &TURNING_PARAMS_ARRAY[0];
+    } else if (param()->stats().driftType == KartParam::Stats::DriftType::Inside_Drift_Bike) {
+        m_turningParams = &TURNING_PARAMS_ARRAY[1];
+    }
 
     if (System::RaceManager::Instance()->isStageReached(System::RaceManager::Stage::Race)) {
         m_leanRotInc = LEAN_ROT_INC_RACE;

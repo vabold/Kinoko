@@ -26,6 +26,7 @@ void KartModel::vf_1c() {
     f32 xStick = inputs()->currentState().stick.x;
     f32 fVar2 = 0.1f;
 
+    f32 local_f31 = _58;
     if (xStick <= 0.2f) {
         if (xStick < -0.2f) {
             _58 -= fVar2;
@@ -38,7 +39,7 @@ void KartModel::vf_1c() {
 
     _54 += fVar2 * (xStick - _54);
 
-    if (_58 < -_54 || _54 < _58) {
+    if (local_f31 < -_54 || _54 < local_f31) {
         if (-_54 <= _58) {
             if (_54 < _58) {
                 _58 -= 0.1f;
@@ -57,6 +58,8 @@ void KartModel::vf_1c() {
     if (isBike()) {
         if (state()->isDrifting()) {
             dVar13 = m_isInsideDrift ? 5.0f : 20.0f;
+        } else {
+            dVar13 = 15.0f;
         }
     } else {
         dVar13 = 15.0f;
@@ -108,19 +111,17 @@ void KartModel::FUN_807CB198() {
     m_somethingRight = false;
     m_somethingLeft = false;
 
-    if (!state()->isDrifting()) {
-        // Unimplemented kart-related stuff
-        if (state()->isStickLeft() || state()->isStickRight()) {
-            if (move()->hopStickX() == 1) {
-                m_somethingLeft = true;
+    bool turnInput = state()->isStickLeft() || state()->isStickRight();
+    if (state()->isDrifting() || (state()->isChargingSsmt() && turnInput)) {
+        if (move()->hopStickX() == 1) {
+            m_somethingLeft = true;
+        } else {
+            if (move()->hopStickX() == -1) {
+                m_somethingRight = true;
+            } else if (!state()->isStickLeft()) {
+                m_somethingRight = true;
             } else {
-                if (move()->hopStickX() == -1) {
-                    m_somethingRight = true;
-                } else if (!state()->isStickLeft()) {
-                    m_somethingRight = true;
-                } else {
-                    m_somethingLeft = true;
-                }
+                m_somethingLeft = true;
             }
         }
     }

@@ -204,6 +204,7 @@ protected:
     f32 m_hopGravity; ///< Always main gravity (-1.3f).
     DrivingDirection m_drivingDirection; ///< Current state of driver's direction.
     s16 m_backwardsAllowCounter;         ///< Tracks the 15f delay before reversing.
+    bool m_bLaunchBoost;
     bool m_bPadBoost; ///< Caches whether the player is currently interacting with a boost pad.
     bool m_bRampBoost;
     bool m_bPadJump;
