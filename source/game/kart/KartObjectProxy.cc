@@ -3,11 +3,16 @@
 #include "game/kart/CollisionGroup.hh"
 #include "game/kart/KartObject.hh"
 #include "game/kart/KartObjectManager.hh"
+#include "game/kart/KartState.hh"
 #include "game/kart/KartSub.hh"
 #include "game/kart/KartSuspension.hh"
 #include "game/kart/KartTire.hh"
 
+#include "game/system/CourseMap.hh"
 #include "game/system/RaceManager.hh"
+#include "game/system/map/MapdataCannonPoint.hh"
+
+#include <egg/math/Math.hh>
 
 #include <algorithm>
 
@@ -315,6 +320,22 @@ u16 KartObjectProxy::tireCount() const {
 /// @addr{0x80590338}
 bool KartObjectProxy::hasFloorCollision(const WheelPhysics *wheelPhysics) const {
     return wheelPhysics->hitboxGroup()->collisionData().bFloor;
+}
+
+/// @addr{0x8058539C}
+std::pair<EGG::Vector3f, EGG::Vector3f> KartObjectProxy::getCannonPosRot() {
+    auto *cannon = System::CourseMap::Instance()->getCannonPoint(state()->cannonPointId());
+    const EGG::Vector3f &cannonPos = cannon->pos();
+    EGG::Vector3f cannonRot = cannon->rot();
+    EGG::Vector3f radRot = cannon->rot() * DEG2RAD;
+    EGG::Matrix34f rotMat;
+    rotMat.makeR(radRot);
+    cannonRot = rotMat.multVector33(EGG::Vector3f::ez);
+    EGG::Vector3f distance_to_cannon = this->pos() - cannonPos;
+    distance_to_cannon.y = 0.0f;
+    EGG::Vector3f local60 = EGG::Vector3f::ey.cross(cannonRot);
+    f32 temp0 = local60.dot(distance_to_cannon);
+    return std::pair(cannonPos + local60 * temp0, cannonRot);
 }
 
 /// @addr{0x805901D0}

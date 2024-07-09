@@ -31,7 +31,10 @@ public:
     void makeRT(const Vector3f &r, const Vector3f &t);
     void makeR(const Vector3f &r);
     void makeZero();
+    void makeOrthonormalBasis(const Vector3f &v0, const Vector3f &v1);
     void setAxisRotation(f32 angle, const Vector3f &axis);
+    void mulRow33(size_t rowIdx, const Vector3f &row);
+    void setBase(size_t col, const Vector3f &base);
 
     [[nodiscard]] Matrix34f multiplyTo(const Matrix34f &rhs) const;
     [[nodiscard]] Vector3f multVector(const Vector3f &vec) const;

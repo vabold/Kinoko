@@ -147,12 +147,44 @@ void Matrix34f::makeZero() {
     *this = Matrix34f::zero;
 }
 
+/// @addr{0x805AE7B4}
+/// @brief Sets a 3x3 orthonormal basis for a local coordinate system.
+/// @details In a vector's orthogonal space, there are infinitely many vector pairs orthogonal to
+/// each other. To specify a particular pair and create a local coordinate system, a reference up
+/// vector from an existing coordinate system is provided.
+/// @param forward The forward axis of the local coordinate system.
+/// @param up The reference up axis from an existing coordinate system.
+void Matrix34f::makeOrthonormalBasis(const Vector3f &forward, const Vector3f &up) {
+    Vector3f x = up.cross(forward);
+    x.normalise();
+    Vector3f y = forward.cross(x);
+    y.normalise();
+
+    setBase(0, x);
+    setBase(1, y);
+    setBase(2, forward);
+}
+
 /// @addr{0x802303BC}
 /// @brief Rotates the matrix about an axis.
 void Matrix34f::setAxisRotation(f32 angle, const EGG::Vector3f &axis) {
     EGG::Quatf q;
     q.setAxisRotation(angle, axis);
     makeQ(q);
+}
+
+/// @brief Multiplies one row of a 3x3 matrix by a vector.
+void Matrix34f::mulRow33(size_t rowIdx, const Vector3f &row) {
+    mtx[rowIdx][0] *= row.x;
+    mtx[rowIdx][1] *= row.y;
+    mtx[rowIdx][2] *= row.z;
+}
+
+/// @brief Sets one column of a matrix.
+void Matrix34f::setBase(size_t col, const Vector3f &base) {
+    mtx[0][col] = base.x;
+    mtx[1][col] = base.y;
+    mtx[2][col] = base.z;
 }
 
 /// @addr{0x80230410}

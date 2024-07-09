@@ -31,6 +31,7 @@ KartState::KartState() {
     clearBitfield1();
 
     m_bWheelieRot = false;
+    m_bSkipWheelCalc = false;
     m_bJumpPadDisableYsusForce = false;
 
     clearBitfield3();
@@ -38,6 +39,7 @@ KartState::KartState() {
     m_bAutoDrift = inputs()->driftIsAuto();
 
     m_airtime = 0;
+    m_cannonPointId = 0;
     m_startBoostIdx = 0;
 }
 
@@ -51,6 +53,7 @@ void KartState::reset() {
     clearBitfield3();
 
     m_bWheelieRot = false;
+    m_bSkipWheelCalc = false;
     m_bJumpPadDisableYsusForce = false;
 
     clearBitfield1();
@@ -73,23 +76,25 @@ void KartState::reset() {
 void KartState::calcInput() {
     const auto *raceMgr = System::RaceManager::Instance();
     if (raceMgr->isStageReached(System::RaceManager::Stage::Race)) {
-        const auto &currentState = inputs()->currentState();
-        const auto &lastState = inputs()->lastState();
-        m_stickX = currentState.stick.x;
-        m_stickY = currentState.stick.y;
+        if (!state()->isCannonStart() && !state()->isInCannon()) {
+            const auto &currentState = inputs()->currentState();
+            const auto &lastState = inputs()->lastState();
+            m_stickX = currentState.stick.x;
+            m_stickY = currentState.stick.y;
 
-        if (m_stickX < 0.0f) {
-            m_bStickLeft = true;
-        } else if (m_stickX > 0.0f) {
-            m_bStickRight = true;
-        }
+            if (m_stickX < 0.0f) {
+                m_bStickLeft = true;
+            } else if (m_stickX > 0.0f) {
+                m_bStickRight = true;
+            }
 
-        m_bAccelerate = currentState.accelerate();
-        m_bAccelerateStart = m_bAccelerate && !lastState.accelerate();
-        m_bBrake = currentState.brake();
-        if (!m_bAutoDrift) {
-            m_bDriftInput = currentState.drift();
-            m_bHopStart = m_bDriftInput && !lastState.drift();
+            m_bAccelerate = currentState.accelerate();
+            m_bAccelerateStart = m_bAccelerate && !lastState.accelerate();
+            m_bBrake = currentState.brake();
+            if (!m_bAutoDrift) {
+                m_bDriftInput = currentState.drift();
+                m_bHopStart = m_bDriftInput && !lastState.drift();
+            }
         }
 
         calcHandleStartBoost();
@@ -448,6 +453,14 @@ bool KartState::isRampBoost() const {
     return m_bRampBoost;
 }
 
+bool KartState::isCannonStart() const {
+    return m_bCannonStart;
+}
+
+bool KartState::isInCannon() const {
+    return m_bInCannon;
+}
+
 bool KartState::isTrickStart() const {
     return m_bTrickStart;
 }
@@ -484,6 +497,10 @@ bool KartState::isJumpPadDisableYsusForce() const {
     return m_bJumpPadDisableYsusForce;
 }
 
+bool KartState::isSkipWheelCalc() const {
+    return m_bSkipWheelCalc;
+}
+
 bool KartState::isUNK2() const {
     return m_bUNK2;
 }
@@ -494,6 +511,10 @@ bool KartState::isSomethingWallCollision() const {
 
 bool KartState::isAutoDrift() const {
     return m_bAutoDrift;
+}
+
+u16 KartState::cannonPointId() const {
+    return m_cannonPointId;
 }
 
 s32 KartState::boostRampType() const {
@@ -567,6 +588,8 @@ void KartState::clearBitfield0() {
 
 /// @brief Helper function to clear all bit flags at 0x8-0xB in KartState.
 void KartState::clearBitfield1() {
+    m_bCannonStart = false;
+    m_bInCannon = false;
     m_bTrickStart = false;
     m_bInATrick = false;
     m_bBoostOffroadInvincibility = false;
@@ -656,6 +679,14 @@ void KartState::setRampBoost(bool isSet) {
     m_bRampBoost = isSet;
 }
 
+void KartState::setCannonStart(bool isSet) {
+    m_bCannonStart = isSet;
+}
+
+void KartState::setInCannon(bool isSet) {
+    m_bInCannon = isSet;
+}
+
 void KartState::setTrickStart(bool isSet) {
     m_bTrickStart = isSet;
 }
@@ -688,6 +719,10 @@ void KartState::setWheelieRot(bool isSet) {
     m_bWheelieRot = isSet;
 }
 
+void KartState::setSkipWheelCalc(bool isSet) {
+    m_bSkipWheelCalc = isSet;
+}
+
 void KartState::setJumpPadDisableYsusForce(bool isSet) {
     m_bJumpPadDisableYsusForce = isSet;
 }
@@ -698,6 +733,10 @@ void KartState::setSomethingWallCollision(bool isSet) {
 
 void KartState::setSoftWallDrift(bool isSet) {
     m_bSoftWallDrift = isSet;
+}
+
+void KartState::setCannonPointId(u16 val) {
+    m_cannonPointId = val;
 }
 
 void KartState::setBoostRampType(s32 val) {

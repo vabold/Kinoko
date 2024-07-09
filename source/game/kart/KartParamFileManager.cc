@@ -96,7 +96,7 @@ EGG::RamStream KartParamFileManager::getHitboxStream(Vehicle vehicle) const {
 }
 
 EGG::RamStream KartParamFileManager::getBikeDispParamsStream(Vehicle vehicle) const {
-    if (vehicle < Vehicle::Standard_Bike_S && vehicle >= Vehicle::Max) {
+    if (vehicle < Vehicle::Standard_Bike_S || vehicle >= Vehicle::Max) {
         K_PANIC("Uh oh.");
     }
 

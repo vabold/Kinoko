@@ -26,6 +26,7 @@ public:
     void set_fc(f32 val);
     void composeStuntRot(const EGG::Quatf &rot);
     void composeDecayingRot(const EGG::Quatf &rot);
+    void clearDecayingRot();
     /// @endSetters
 
     /// @beginGetters

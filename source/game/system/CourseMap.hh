@@ -6,6 +6,8 @@
 /// configuration, and resource management.
 namespace System {
 
+class MapdataCannonPoint;
+class MapdataCannonPointAccessor;
 class MapdataFileAccessor;
 class MapdataStageInfo;
 class MapdataStageInfoAccessor;
@@ -18,10 +20,12 @@ class MapdataStartPointAccessor;
 class CourseMap {
 public:
     void init();
+    [[nodiscard]] MapdataCannonPointAccessor *parseCannonPoint(u32 sectionName);
     [[nodiscard]] MapdataStageInfoAccessor *parseStageInfo(u32 sectionName);
     [[nodiscard]] MapdataStartPointAccessor *parseStartPoint(u32 sectionName);
 
     /// @beginGetters
+    [[nodiscard]] MapdataCannonPoint *getCannonPoint(u16 i) const;
     [[nodiscard]] MapdataStageInfo *getStageInfo() const;
     [[nodiscard]] MapdataStartPoint *getStartPoint(u16 i) const;
     [[nodiscard]] u32 version() const;
@@ -42,6 +46,7 @@ private:
 
     MapdataFileAccessor *m_course;
     MapdataStartPointAccessor *m_startPoint;
+    MapdataCannonPointAccessor *m_cannonPoint;
     MapdataStageInfoAccessor *m_stageInfo;
 
     // TODO: Better names

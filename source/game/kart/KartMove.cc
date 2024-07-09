@@ -12,12 +12,27 @@
 #include "game/field/CollisionDirector.hh"
 #include "game/field/KCollisionTypes.hh"
 
+#include "game/system/CourseMap.hh"
 #include "game/system/RaceManager.hh"
+#include "game/system/map/MapdataCannonPoint.hh"
 
 #include <egg/math/Math.hh>
 #include <egg/math/Quat.hh>
 
 namespace Kart {
+
+struct CannonParameter {
+    f32 speed;
+    f32 height;
+    f32 decelFactor;
+    f32 endDecel;
+};
+
+static constexpr std::array<CannonParameter, 3> CANNON_PARAMETERS = {{
+        {500.0f, 0.0f, 6000.0f, -1.0f},
+        {500.0f, 5000.0f, 6000.0f, -1.0f},
+        {120.0f, 2000.0f, 1000.0f, 45.0f},
+}};
 
 /// @brief Rate at which the kart's leaning rotation increases during the race
 static constexpr f32 LEAN_ROT_INC_RACE = 0.1f;
@@ -53,6 +68,10 @@ void KartMove::createSubsystems() {
 /// @brief Each frame, looks at player input and kart stats. Saves turn-related info.
 /// @addr{0x8057A8B4}
 void KartMove::calcTurn() {
+    if (state()->isCannonStart() || state()->isInCannon()) {
+        return;
+    }
+
     m_realTurn = 0.0f;
     m_rawTurn = 0.0f;
 
@@ -143,6 +162,7 @@ void KartMove::init(bool b1, bool b2) {
     m_smtCharge = 0;
     m_mtCharge = 0;
     m_outsideDriftBonus = 0.0f;
+    m_boost.reset();
     m_offroadInvincibility = 0;
     m_ssmtCharge = 0;
     m_ssmtLeewayTimer = 0;
@@ -161,6 +181,12 @@ void KartMove::init(bool b1, bool b2) {
     m_jumpPadMaxSpeed = 0.0f;
     m_jumpPadProperties = nullptr;
     m_rampBoost = 0;
+
+    m_cannonEntryOfsLength = 0.0f;
+    m_cannonEntryPos.setZero();
+    m_cannonEntryOfs.setZero();
+    m_cannonOrthog.setZero();
+    m_cannonProgress.setZero();
 
     m_hopVelY = 0.0f;
     m_hopPosY = 0.0f;
@@ -248,6 +274,11 @@ void KartMove::calc() {
     calcSsmt();
     calcBoost();
     calcMushroomBoost();
+
+    if (state()->isInCannon()) {
+        calcCannon();
+    }
+
     calcOffroadInvincibility();
     calcVehicleSpeed();
     calcAcceleration();
@@ -636,6 +667,21 @@ void KartMove::resetDriftManual() {
     m_driftState = DriftState::NotDrifting;
     m_smtCharge = 0;
     m_mtCharge = 0;
+}
+
+/// @stage 2
+/// @addr{0x8057E348}
+void KartMove::clearDrift() {
+    m_outsideDriftAngle = 0.0f;
+    m_hopStickX = 0;
+    m_hopFrame = 0;
+    m_driftState = DriftState::NotDrifting;
+    m_smtCharge = 0;
+    m_mtCharge = 0;
+    m_outsideDriftBonus = 0.0f;
+    state()->setHop(false);
+    state()->setSlipdriftCharge(false);
+    state()->setDriftManual(false);
 }
 
 /// @stage 2
@@ -1204,7 +1250,7 @@ void KartMove::calcDive() {
 
     m_divingRot *= 0.96f;
 
-    if (state()->isTouchingGround()) {
+    if (state()->isTouchingGround() || state()->isCannonStart() || state()->isInCannon()) {
         return;
     }
 
@@ -1593,6 +1639,135 @@ void KartMove::landTrick() {
     activateBoost(KartBoost::Type::TrickAndZipper, duration);
 }
 
+/// @addr{0x8058498C}
+void KartMove::enterCannon() {
+    init(true, true);
+    physics()->clearDecayingRot();
+    m_boost.resetActive();
+    state()->setBoost(false);
+
+    cancelJumpPad();
+    m_rampBoost = 0;
+    state()->setRampBoost(false);
+    m_ssmtCharge = 0;
+    m_ssmtLeewayTimer = 0;
+    m_ssmtDisableAccelTimer = 0;
+    m_bSsmtCharged = false;
+    m_bSsmtLeeway = false;
+    m_offroadInvincibility = 0;
+    state()->setBoostOffroadInvincibility(false);
+
+    dynamics()->reset();
+
+    clearDrift();
+    state()->setHop(false);
+    state()->setInCannon(true);
+    state()->setSkipWheelCalc(true);
+    state()->setCannonStart(false);
+
+    const auto [cannonPos, cannonDir] = getCannonPosRot();
+    m_cannonEntryPos = pos();
+    m_cannonEntryOfs = cannonPos - pos();
+    m_cannonEntryOfsLength = m_cannonEntryOfs.normalise();
+    m_cannonEntryOfs.normalise();
+    m_dir = m_cannonEntryOfs;
+    m_vel1Dir = m_cannonEntryOfs;
+    m_cannonOrthog = EGG::Vector3f::ey.perpInPlane(m_cannonEntryOfs, true);
+    m_cannonProgress.setZero();
+}
+
+/// @addr{0x80584D58}
+void KartMove::calcCannon() {
+    auto [cannonPos, cannonDir] = getCannonPosRot();
+    EGG::Vector3f forwardXZ = cannonPos - m_cannonEntryPos - m_cannonProgress;
+    EGG::Vector3f forward = forwardXZ;
+    f32 forwardLength = forward.normalise();
+    forwardXZ.y = 0;
+    forwardXZ.normalise();
+    EGG::Vector3f local94 = m_cannonEntryOfs;
+    local94.y = 0;
+    local94.normalise();
+    m_speedRatioCapped = 1.0f;
+    EGG::Matrix34f cannonOrientation;
+    cannonOrientation.makeOrthonormalBasis(forward, EGG::Vector3f::ey);
+    EGG::Vector3f up = cannonOrientation.multVector33(EGG::Vector3f::ey);
+    m_smoothedUp = up;
+    m_up = up;
+
+    if (forwardLength < 30.0f || local94.dot(forwardXZ) <= 0.0f) {
+        exitCannon();
+        return;
+    }
+    m_speed = m_baseSpeed;
+    const auto *cannonPoint =
+            System::CourseMap::Instance()->getCannonPoint(state()->cannonPointId());
+    size_t cannonParameterIdx = std::max<size_t>(0, cannonPoint->parameterIdx());
+    assert(cannonParameterIdx < CANNON_PARAMETERS.size());
+    const auto &cannonParams = CANNON_PARAMETERS[cannonParameterIdx];
+    f32 newSpeed = cannonParams.speed;
+    if (forwardLength < cannonParams.decelFactor) {
+        f32 factor = std::max(0.0f, forwardLength / cannonParams.decelFactor);
+
+        newSpeed = cannonParams.endDecel;
+        if (newSpeed <= 0.0f) {
+            newSpeed = m_baseSpeed;
+        }
+
+        newSpeed += factor * (cannonParams.speed - newSpeed);
+        if (cannonParams.endDecel > 0.0f) {
+            m_speed = std::min(newSpeed, m_speed);
+        }
+    }
+
+    m_cannonProgress += m_cannonEntryOfs * newSpeed;
+
+    EGG::Vector3f newPos = EGG::Vector3f::zero;
+    if (cannonParams.height > 0.0f) {
+        f32 fVar9 = EGG::Mathf::SinFIdx(
+                (1.0f - (forwardLength / m_cannonEntryOfsLength)) * 180.0f * DEG2FIDX);
+        newPos = fVar9 * cannonParams.height * m_cannonOrthog;
+    }
+
+    dynamics()->setPos(m_cannonEntryPos + m_cannonProgress + newPos);
+    m_dir = m_cannonEntryOfs;
+    m_vel1Dir = m_cannonEntryOfs;
+
+    calcRotCannon(forward);
+
+    dynamics()->setExtVel(EGG::Vector3f::zero);
+}
+
+/// @addr{0x805855BC}
+void KartMove::calcRotCannon(const EGG::Vector3f &forward) {
+    EGG::Vector3f local48 = forward;
+    local48.normalise();
+    EGG::Vector3f local54 = bodyFront();
+    EGG::Vector3f local60 = local54 + ((local48 - local54) * 0.3f);
+    local54.normalise();
+    local60.normalise();
+    // also local70, localA8
+    EGG::Quatf local80;
+    local80.makeVectorRotation(local54, local60);
+    local80 *= dynamics()->fullRot();
+    local80.normalise();
+    EGG::Quatf localB8;
+    localB8.makeVectorRotation(local80.rotateVector(EGG::Vector3f::ey), smoothedUp());
+    EGG::Quatf newRot = local80.slerpTo(localB8.multSwap(local80), 0.3f);
+    dynamics()->setFullRot(newRot);
+    dynamics()->setMainRot(newRot);
+}
+
+/// @addr{0x805852C8}
+void KartMove::exitCannon() {
+    if (!state()->isInCannon()) {
+        return;
+    }
+
+    state()->setInCannon(false);
+    state()->setSkipWheelCalc(false);
+    dynamics()->setIntVel(m_cannonEntryOfs * m_speed);
+}
+
 void KartMove::setDir(const EGG::Vector3f &v) {
     m_dir = v;
 }
@@ -1754,7 +1929,8 @@ void KartMoveBike::calcVehicleRotation(f32 turn) {
     f32 leanRotMax = m_leanRotCap;
 
     if (state()->isWheelie() || state()->isAirtimeOver20() || state()->isSoftWallDrift() ||
-            state()->isSomethingWallCollision()) {
+            state()->isSomethingWallCollision() || state()->isCannonStart() ||
+            state()->isInCannon()) {
         m_leanRot *= m_turningParams->leanRotDecayFactor;
     } else if (!state()->isDrifting()) {
         if (stickX <= 0.2f) {
@@ -1858,6 +2034,7 @@ void KartMoveBike::init(bool b1, bool b2) {
     m_leanRotInc = 0.0f;
     m_wheelieRot = 0.0f;
     m_maxWheelieRot = 0.0f;
+    m_wheelieFrames = 0;
     m_wheelieCooldown = 0;
 }
 
