@@ -27,7 +27,7 @@ Test Case                                                 | Frames      |     | 
 [`mh-rta-1-42-872`](https://youtu.be/CellUlOYgnc)         | 6578 / 6578 | ✔️ |
 [`bc-rta-2-08-697`](https://youtu.be/1DEReKemoeI)         | 808 / 8126  | ❌ | KMP
 [`bc-ng-rta-2-20-001`](https://youtu.be/028nClzy7B4)      | 808 / 8803  | ❌ | KMP
-[`rr-rta-1-24-751`](https://youtu.be/dgNMHyFda14)         | 348 / 5491  | ❌ | Outward-drifting bike
+[`rr-rta-1-24-751`](https://youtu.be/dgNMHyFda14)         | 537 / 5491  | ❌ | No acceleration
 [`rr-ng-rta-2-24-281`](https://youtu.be/O-BtWWsq82o)      | 1207 / 9060 | ❌ | KMP
 [`rpb-rta-0-59-978`](https://youtu.be/Z-lVl-7B-So)        | 1078 / 4007 | ❌ | Moving water
 [`rpb-ng-rta-1-12-656`](https://youtu.be/LujU0kJx-hU)     | 2491 / 4767 | ❌ | Moving water
@@ -37,7 +37,7 @@ Test Case                                                 | Frames      |     | 
 [`rmr-rta-1-41-193`](https://youtu.be/y7t4_xXuD2A)        | 6477 / 6477 | ✔️ |
 [`rsl-rta-1-12-225`](https://youtu.be/3p8yV_jjQ4o)        | 4242 / 4741 | ❌ | Respawn position
 [`rsl-ng-rta-2-03-750`](https://youtu.be/ahNGAaUzm6s)     | 7829 / 7829 | ✔️ |
-[`rsgb-rta-1-14-513`](https://youtu.be/lgfw-zswqIM)       | 355 / 4878  | ❌ | Outward-drifting bike
+[`rsgb-rta-1-14-513`](https://youtu.be/lgfw-zswqIM)       | 3944 / 4878 | ❌ | Cancelled MT
 [`rsgb-ng-rta-1-21-363`](https://youtu.be/SjXUPXT8n8g)    | 5288 / 5288 | ✔️ |
 [`rds-rta-2-03-525`](https://youtu.be/a9Mnd2W7JXI)        | 2306 / 7816 | ❌ | Drawbridge
 [`rws-rta-1-31-987`](https://youtu.be/2rDSx5pgQ9A)        | 1297 / 5925 | ❌ | Zipper
@@ -46,7 +46,7 @@ Test Case                                                 | Frames      |     | 
 [`rdh-ng-rta-1-34-237`](https://youtu.be/4Lp-ehOOiGo)     | 6060 / 6060 | ✔️ |
 [`rbc3-rta-1-55-715`](https://youtu.be/vSbSADDEzEs)       | 7347 / 7347 | ✔️ |
 [`rbc3-ng-rta-2-16-183`](https://youtu.be/xZwlaonIBws)    | 2006 / 8574 | ❌ | KMP
-[`rdkjp-rta-0-40-105`](https://youtu.be/bkinW1UZK6M)      | 580 / 2815  | ❌ | Offroad rotation
+[`rdkjp-rta-0-40-105`](https://youtu.be/bkinW1UZK6M)      | 580 / 2815  | ❌ | No acceleration
 [`rdkjp-ng-rta-2-09-321`](https://youtu.be/WRXMrAUnOLo)   | 904 / 8163  | ❌ | Wall bonk spin drift
 [`rdkjp-nosc-rta-2-10-546`](https://youtu.be/ovFBMmhFioA) | 8236 / 8236 | ✔️ |
 [`rmc-rta-1-29-945`](https://youtu.be/QwWEFaiOquI)        | 1425 / 5803 | ❌ | Land from spindrift bonk
