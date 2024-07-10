@@ -12,7 +12,7 @@ Test Case                                                 | Frames      |     | 
 [`mc-ng-rta-1-20-357`](https://youtu.be/kG8PvG8K1ZA)      | 1222 / 4228 | ❌ | KMP
 [`cm-rta-0-25-145`](https://youtu.be/F_RUQVghmuA)         | 1919 / 1919 | ✔️ |
 [`cm-ng-rta-1-55-264`](https://youtu.be/XxKG3IYWduE)      | 651 / 7320  | ❌ | KMP
-[`dks-rta-1-44-568`](https://youtu.be/b9hacHlifcw)        | 960 / 6679  | ❌ | Landing out of cannon
+[`dks-rta-1-44-568`](https://youtu.be/b9hacHlifcw)        | 1049 / 6679 | ❌ | Zipper
 [`wgm-rta-0-31-678`](https://youtu.be/VVFXP639DRY)        | 562 / 2310  | ❌ | KMP
 [`wgm-ng-rta-1-49-934`](https://youtu.be/NbhzA2rtZ2A)     | 7001 / 7001 | ✔️ |
 [`dc-rta-1-28-321`](https://youtu.be/Rs5AK3iHVno)         | 1058 / 5705 | ❌ | KMP
@@ -23,7 +23,7 @@ Test Case                                                 | Frames      |     | 
 [`gv-rta-0-15-425`](https://youtu.be/bB0oUzdCHTA)         | 487 / 1336  | ❌ | KMP?
 [`gv-ng-rta-1-32-914`](https://youtu.be/J55Fo2ZMz9M)      | 570 / 5981  | ❌ | KMP?
 [`gv-nosc-rta-1-50-927`](https://youtu.be/R7oK3U7iZrk)    | 567 / 7060  | ❌ | KMP?
-[`ddr-rta-1-46-400`](https://youtu.be/nVcVbd4n3yM)        | 493 / 6789  | ❌ | Sand drift?
+[`ddr-rta-1-46-400`](https://youtu.be/nVcVbd4n3yM)        | 1559 / 6789 | ❌ | Zipper
 [`mh-rta-1-42-872`](https://youtu.be/CellUlOYgnc)         | 6578 / 6578 | ✔️ |
 [`bc-rta-2-08-697`](https://youtu.be/1DEReKemoeI)         | 808 / 8126  | ❌ | KMP
 [`bc-ng-rta-2-20-001`](https://youtu.be/028nClzy7B4)      | 808 / 8803  | ❌ | KMP
@@ -42,8 +42,8 @@ Test Case                                                 | Frames      |     | 
 [`rds-rta-2-03-525`](https://youtu.be/a9Mnd2W7JXI)        | 2306 / 7816 | ❌ | Drawbridge
 [`rws-rta-1-31-987`](https://youtu.be/2rDSx5pgQ9A)        | 1297 / 5925 | ❌ | Zipper
 [`rws-ng-rta-1-48-193`](https://youtu.be/4PU4zpCU_q4)     | 1430 / 6897 | ❌ | Zipper
-[`rdh-rta-1-30-425`](https://youtu.be/v5Qj0DnqVo0)        | 663 / 5832  | ❌ | Wall clip
-[`rdh-ng-rta-1-34-237`](https://youtu.be/4Lp-ehOOiGo)     | 1475 / 6060 | ❌ | Trick landing
+[`rdh-rta-1-30-425`](https://youtu.be/v5Qj0DnqVo0)        | 5832 / 5832 | ✔️ |
+[`rdh-ng-rta-1-34-237`](https://youtu.be/4Lp-ehOOiGo)     | 6060 / 6060 | ✔️ |
 [`rbc3-rta-1-55-715`](https://youtu.be/vSbSADDEzEs)       | 7347 / 7347 | ✔️ |
 [`rbc3-ng-rta-2-16-183`](https://youtu.be/xZwlaonIBws)    | 2006 / 8574 | ❌ | KMP
 [`rdkjp-rta-0-40-105`](https://youtu.be/bkinW1UZK6M)      | 580 / 2815  | ❌ | Offroad rotation

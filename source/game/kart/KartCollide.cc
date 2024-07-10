@@ -1,5 +1,6 @@
 #include "KartCollide.hh"
 
+#include "game/kart/KartBody.hh"
 #include "game/kart/KartMove.hh"
 #include "game/kart/KartPhysics.hh"
 #include "game/kart/KartState.hh"
@@ -51,14 +52,15 @@ void KartCollide::resetHitboxes() {
 void KartCollide::calcHitboxes() {
     CollisionGroup *hitboxGroup = physics()->hitboxGroup();
     for (u16 idx = 0; idx < hitboxGroup->hitboxCount(); ++idx) {
-        hitboxGroup->hitbox(idx).calc(move()->totalScale(), 0.0f, scale(), fullRot(), pos());
+        hitboxGroup->hitbox(idx).calc(move()->totalScale(), body()->sinkDepth(), scale(), fullRot(),
+                pos());
     }
 }
 
 /// @stage All
 /// @addr{0x80572C20}
 void KartCollide::findCollision() {
-    calcBodyCollision(move()->totalScale(), fullRot(), scale());
+    calcBodyCollision(move()->totalScale(), body()->sinkDepth(), fullRot(), scale());
 
     auto &colData = collisionData();
     if (colData.bWall || colData.bWall3) {
@@ -191,7 +193,7 @@ void KartCollide::FUN_805B72B8(f32 param_1, f32 param_2, bool lockXZ, bool addEx
 /// @param totalScale
 /// @param rot
 /// @param scale
-void KartCollide::calcBodyCollision(f32 totalScale, const EGG::Quatf &rot,
+void KartCollide::calcBodyCollision(f32 totalScale, f32 sinkDepth, const EGG::Quatf &rot,
         const EGG::Vector3f &scale) {
     CollisionGroup *hitboxGroup = physics()->hitboxGroup();
     CollisionData &collisionData = hitboxGroup->collisionData();
@@ -216,7 +218,7 @@ void KartCollide::calcBodyCollision(f32 totalScale, const EGG::Quatf &rot,
             Field::CourseColMgr::Instance()->setNoBounceWallInfo(&noBounceWallInfo);
         }
 
-        hitbox.calc(totalScale, 0.0f, scale, rot, pos());
+        hitbox.calc(totalScale, sinkDepth, scale, rot, pos());
 
         if (Field::CollisionDirector::Instance()->checkSphereCachedFullPush(hitbox.worldPos(),
                     hitbox.lastPos(), flags, &colInfo, &maskOut, hitbox.radius(), 0)) {

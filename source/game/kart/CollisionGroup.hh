@@ -48,7 +48,7 @@ public:
     Hitbox();
     ~Hitbox();
 
-    void calc(f32 param_1, f32 totalScale, const EGG::Vector3f &scale, const EGG::Quatf &rot,
+    void calc(f32 totalScale, f32 sinkDepth, const EGG::Vector3f &scale, const EGG::Quatf &rot,
             const EGG::Vector3f &pos);
 
     /// @beginSetters

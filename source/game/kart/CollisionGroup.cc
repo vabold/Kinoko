@@ -38,15 +38,15 @@ Hitbox::~Hitbox() {
 
 /// @brief Calculates the position of a given hitbox, both relative to the player and world
 /// @addr{0x805B7FBC}
-void Hitbox::calc(f32 param_1, f32 totalScale, const EGG::Vector3f &scale, const EGG::Quatf &rot,
+void Hitbox::calc(f32 totalScale, f32 sinkDepth, const EGG::Vector3f &scale, const EGG::Quatf &rot,
         const EGG::Vector3f &pos) {
     f32 fVar1 = 0.0f;
-    if (scale.y < param_1) {
-        fVar1 = (param_1 - scale.y) * m_bspHitbox->radius;
+    if (scale.y < totalScale) {
+        fVar1 = (totalScale - scale.y) * m_bspHitbox->radius;
     }
 
     EGG::Vector3f scaledPos = m_bspHitbox->position * scale;
-    scaledPos.y = (m_bspHitbox->position.y + totalScale) * scale.y + fVar1;
+    scaledPos.y = (m_bspHitbox->position.y + sinkDepth) * scale.y + fVar1;
 
     m_relPos = rot.rotateVector(scaledPos);
     m_worldPos = m_relPos + pos;
