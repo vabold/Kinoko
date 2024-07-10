@@ -183,11 +183,14 @@ void KartSub::calcPass1() {
 
     m_sideCollisionTimer = std::max(m_sideCollisionTimer - 1, 0);
 
+    body()->calcSinkDepth();
+
     Field::CollisionDirector::Instance()->checkCourseColNarrScLocal(250.0f, pos(),
             KCL_TYPE_VEHICLE_INTERACTABLE, 0);
 
     if (!state()->isInCannon()) {
         collide()->findCollision();
+        body()->calcTargetSinkDepth();
         const auto &colData = collisionData();
         if (colData.bWall || colData.bWall3) {
             collide()->setMovement(collide()->movement() + colData.movement);

@@ -7,6 +7,8 @@ namespace Kart {
 /// @addr{0x8056C394}
 KartBody::KartBody(KartPhysics *physics) : m_physics(physics) {
     m_anAngle = 0.0f;
+    m_sinkDepth = 0.0f;
+    m_targetSinkDepth = 0.0f;
 }
 
 /// @addr{0x8056C604}
@@ -21,6 +23,23 @@ EGG::Matrix34f KartBody::wheelMatrix(u16) {
 void KartBody::reset() {
     m_physics->reset();
     m_anAngle = 0.0f;
+    m_sinkDepth = 0.0f;
+    m_targetSinkDepth = 0.0f;
+}
+
+/// @addr{0x8056C9C4}
+void KartBody::calcSinkDepth() {
+    m_sinkDepth += (m_targetSinkDepth - m_sinkDepth) * 0.1f;
+}
+
+/// @addr{0x8056C950}
+void KartBody::trySetTargetSinkDepth(f32 val) {
+    m_targetSinkDepth = std::max(val, m_targetSinkDepth);
+}
+
+/// @addr{0x8056C964}
+void KartBody::calcTargetSinkDepth() {
+    m_targetSinkDepth = 3.0f * static_cast<f32>(collisionData().intensity);
 }
 
 void KartBody::setAngle(f32 val) {
@@ -29,6 +48,10 @@ void KartBody::setAngle(f32 val) {
 
 KartPhysics *KartBody::physics() const {
     return m_physics;
+}
+
+f32 KartBody::sinkDepth() const {
+    return m_sinkDepth;
 }
 
 /// @addr{0x8056CCC0}

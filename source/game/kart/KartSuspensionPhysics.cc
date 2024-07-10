@@ -1,5 +1,6 @@
 #include "KartSuspensionPhysics.hh"
 
+#include "game/kart/KartBody.hh"
 #include "game/kart/KartCollide.hh"
 #include "game/kart/KartDynamics.hh"
 #include "game/kart/KartState.hh"
@@ -91,8 +92,9 @@ void WheelPhysics::updateCollision(const EGG::Vector3f &bottom, const EGG::Vecto
             if (colData.bFloor || colData.bWall || colData.bWall3) {
                 m_pos += colData.tangentOff;
                 if (colData.intensity > -1) {
-                    m_targetEffectiveRadius =
-                            m_bspWheel->wheelRadius - 3.0f * static_cast<f32>(colData.intensity);
+                    f32 sinkDepth = 3.0f * static_cast<f32>(colData.intensity);
+                    m_targetEffectiveRadius = m_bspWheel->wheelRadius - sinkDepth;
+                    body()->trySetTargetSinkDepth(sinkDepth);
                 }
             }
         }

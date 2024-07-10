@@ -14,6 +14,9 @@ public:
     [[nodiscard]] virtual EGG::Matrix34f wheelMatrix(u16);
 
     void reset();
+    void calcSinkDepth();
+    void trySetTargetSinkDepth(f32 val);
+    void calcTargetSinkDepth();
 
     /// @beginSetters
     void setAngle(f32 val);
@@ -21,11 +24,14 @@ public:
 
     /// @beginGetters
     [[nodiscard]] KartPhysics *physics() const;
+    [[nodiscard]] f32 sinkDepth() const;
     /// @endGetters
 
 protected:
     KartPhysics *m_physics;
-    f32 m_anAngle; ///< @rename
+    f32 m_anAngle;   ///< @rename
+    f32 m_sinkDepth; ///< Vehicle offset applied downward into collision
+    f32 m_targetSinkDepth;
 };
 
 class KartBodyKart : public KartBody {
