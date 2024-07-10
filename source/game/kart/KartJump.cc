@@ -152,7 +152,7 @@ void KartJump::setAngle(const EGG::Vector3f &left) {
             {{
                     {32.0f, 11.0f},
                     {39.0f, 16.0f},
-                    {16.0f, 1.0f},
+                    {39.0f, 16.0f},
             }},
     }};
 

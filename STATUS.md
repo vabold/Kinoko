@@ -14,10 +14,10 @@ Test Case                                                 | Frames      |     | 
 [`cm-ng-rta-1-55-264`](https://youtu.be/XxKG3IYWduE)      | 651 / 7320  | ❌ | KMP
 [`dks-rta-1-44-568`](https://youtu.be/b9hacHlifcw)        | 960 / 6679  | ❌ | Landing out of cannon
 [`wgm-rta-0-31-678`](https://youtu.be/VVFXP639DRY)        | 562 / 2310  | ❌ | KMP
-[`wgm-ng-rta-1-49-934`](https://youtu.be/NbhzA2rtZ2A)     | 1098 / 7001 | ❌ | Sticky road wheelie drop
+[`wgm-ng-rta-1-49-934`](https://youtu.be/NbhzA2rtZ2A)     | 7001 / 7001 | ✔️ |
 [`dc-rta-1-28-321`](https://youtu.be/Rs5AK3iHVno)         | 1058 / 5705 | ❌ | KMP
-[`kc-rta-1-55-250`](https://youtu.be/Elb5K7woV20)         | 640 / 7320  | ❌ | Boost ramp trick
-[`kc-ng-rta-2-17-176`](https://youtu.be/UgSQj6RpDYM)      | 643 / 8634  | ❌ | Boost ramp
+[`kc-rta-1-55-250`](https://youtu.be/Elb5K7woV20)         | 1520 / 7320 | ❌ | Moving water
+[`kc-ng-rta-2-17-176`](https://youtu.be/UgSQj6RpDYM)      | 1424 / 8634 | ❌ | Moving water
 [`mt-rta-1-33-239`](https://youtu.be/FX89203m2iE)         | 764 / 6000  | ❌ | Offroad slowdown mid-air
 [`mt-ng-rta-2-13-126`](https://youtu.be/igcHE0-OV0g)      | 1199 / 8391 | ❌ | Reject road
 [`gv-rta-0-15-425`](https://youtu.be/bB0oUzdCHTA)         | 487 / 1336  | ❌ | KMP?
