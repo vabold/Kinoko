@@ -1701,7 +1701,7 @@ void KartMove::calcCannon() {
     m_speed = m_baseSpeed;
     const auto *cannonPoint =
             System::CourseMap::Instance()->getCannonPoint(state()->cannonPointId());
-    size_t cannonParameterIdx = std::max<size_t>(0, cannonPoint->parameterIdx());
+    size_t cannonParameterIdx = std::max<s16>(0, cannonPoint->parameterIdx());
     assert(cannonParameterIdx < CANNON_PARAMETERS.size());
     const auto &cannonParams = CANNON_PARAMETERS[cannonParameterIdx];
     f32 newSpeed = cannonParams.speed;
