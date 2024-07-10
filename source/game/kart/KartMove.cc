@@ -461,9 +461,11 @@ void KartMove::calcDirs() {
 /// @addr{0x80583B88}
 void KartMove::calcStickyRoad() {
     constexpr f32 STICKY_RADIUS = 200.0f;
-    constexpr Field::KCLTypeMask STICKY_MASK = KCL_TYPE_BIT(COL_TYPE_STICKY_ROAD);
+    constexpr Field::KCLTypeMask STICKY_MASK =
+            KCL_TYPE_BIT(COL_TYPE_STICKY_ROAD) | KCL_TYPE_BIT(COL_TYPE_MOVING_WATER);
 
-    if (!state()->isStickyRoad() || EGG::Mathf::abs(m_speed) <= 20.0f) {
+    if ((!state()->isStickyRoad() && !collide()->isTrickable()) ||
+            EGG::Mathf::abs(m_speed) <= 20.0f) {
         return;
     }
 
