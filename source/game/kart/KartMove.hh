@@ -47,6 +47,7 @@ public:
     void controlOutsideDriftAngle();
     void calcRotation();
     void calcVehicleSpeed();
+    void calcDeceleration();
     [[nodiscard]] f32 calcVehicleAcceleration() const;
     void calcAcceleration();
     [[nodiscard]] f32 calcWallCollisionSpeedFactor(f32 &f1);

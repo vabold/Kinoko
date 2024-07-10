@@ -27,7 +27,7 @@ Test Case                                                 | Frames      |     | 
 [`mh-rta-1-42-872`](https://youtu.be/CellUlOYgnc)         | 6578 / 6578 | ✔️ |
 [`bc-rta-2-08-697`](https://youtu.be/1DEReKemoeI)         | 808 / 8126  | ❌ | KMP
 [`bc-ng-rta-2-20-001`](https://youtu.be/028nClzy7B4)      | 808 / 8803  | ❌ | KMP
-[`rr-rta-1-24-751`](https://youtu.be/dgNMHyFda14)         | 537 / 5491  | ❌ | No acceleration
+[`rr-rta-1-24-751`](https://youtu.be/dgNMHyFda14)         | 3194 / 5491 | ❌ | KMP
 [`rr-ng-rta-2-24-281`](https://youtu.be/O-BtWWsq82o)      | 1207 / 9060 | ❌ | KMP
 [`rpb-rta-0-59-978`](https://youtu.be/Z-lVl-7B-So)        | 1078 / 4007 | ❌ | Moving water
 [`rpb-ng-rta-1-12-656`](https://youtu.be/LujU0kJx-hU)     | 2491 / 4767 | ❌ | Moving water
@@ -46,10 +46,10 @@ Test Case                                                 | Frames      |     | 
 [`rdh-ng-rta-1-34-237`](https://youtu.be/4Lp-ehOOiGo)     | 6060 / 6060 | ✔️ |
 [`rbc3-rta-1-55-715`](https://youtu.be/vSbSADDEzEs)       | 7347 / 7347 | ✔️ |
 [`rbc3-ng-rta-2-16-183`](https://youtu.be/xZwlaonIBws)    | 2006 / 8574 | ❌ | KMP
-[`rdkjp-rta-0-40-105`](https://youtu.be/bkinW1UZK6M)      | 580 / 2815  | ❌ | No acceleration
+[`rdkjp-rta-0-40-105`](https://youtu.be/bkinW1UZK6M)      | 800 / 2815  | ❌ | KMP tree wall clip
 [`rdkjp-ng-rta-2-09-321`](https://youtu.be/WRXMrAUnOLo)   | 904 / 8163  | ❌ | Wall bonk spin drift
 [`rdkjp-nosc-rta-2-10-546`](https://youtu.be/ovFBMmhFioA) | 8236 / 8236 | ✔️ |
-[`rmc-rta-1-29-945`](https://youtu.be/QwWEFaiOquI)        | 1425 / 5803 | ❌ | Land from spindrift bonk
+[`rmc-rta-1-29-945`](https://youtu.be/QwWEFaiOquI)        | 5803 / 5803 | ✔️ |
 [`rmc-ng-rta-1-30-272`](https://youtu.be/HSatgyRolcI)     | 5822 / 5822 | ✔️ |
 [`rmc3-rta-1-17-843`](https://youtu.be/6H6UnSDPPdI)       | 5077 / 5077 | ✔️ |
 [`rpg-rta-1-58-890`](https://youtu.be/vu0vpmTmcbg)        | 7538 / 7538 | ✔️ |

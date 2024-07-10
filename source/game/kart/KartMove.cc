@@ -1036,6 +1036,19 @@ void KartMove::calcVehicleSpeed() {
 }
 
 /// @stage 2
+/// @addr{0x8057B028}
+void KartMove::calcDeceleration() {
+    f32 vel = 0.0f;
+    f32 initialVel = 1.0f - m_smoothedUp.y;
+    if (EGG::Mathf::abs(m_speed) < 30.0f && m_smoothedUp.y > 0.0f && initialVel > 0.0f) {
+        initialVel = std::min(initialVel * 2.0f, 2.0f);
+        vel += initialVel;
+        vel *= std::min(0.5f, std::max(-0.5f, -bodyFront().y));
+    }
+    m_speed += vel;
+}
+
+/// @stage 2
 /// @brief Every frame, computes acceleration based off the character/vehicle stats.
 /// @addr{0x8057B868}
 f32 KartMove::calcVehicleAcceleration() const {
@@ -1158,6 +1171,13 @@ void KartMove::calcAcceleration() {
     local_90.setAxisRotation(rotationScalar * DEG2RAD, crossVec);
     m_vel1Dir = local_90.multVector33(m_vel1Dir);
     m_processedSpeed = m_speed;
+
+    const auto *raceMgr = System::RaceManager::Instance();
+    if (state()->isTouchingGround() && !state()->isAccelerate() &&
+            raceMgr->isStageReached(System::RaceManager::Stage::Race)) {
+        calcDeceleration();
+    }
+    
     EGG::Vector3f nextSpeed = m_speed * m_vel1Dir;
     nextSpeed.y = std::min(TERMINAL_VELOCITY, nextSpeed.y);
     dynamics()->setIntVel(dynamics()->intVel() + nextSpeed);
