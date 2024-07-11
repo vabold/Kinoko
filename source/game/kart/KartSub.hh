@@ -35,7 +35,9 @@ private:
     EGG::Vector3f m_maxSuspOvertravel;
     EGG::Vector3f m_minSuspOvertravel;
     u16 m_floorCollisionCount;
-    f32 m_someScale; /// @rename
+    s16 m_sideCollisionTimer;  ///< Number of frames to apply movement from wall collision.
+    f32 m_colPerpendicularity; ///< Dot product between floor and colliding wall normals.
+    f32 m_someScale;           /// @rename
 
     static constexpr f32 DT = 1.0f; ///< Delta time.
 };

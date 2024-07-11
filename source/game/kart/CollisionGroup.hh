@@ -36,6 +36,8 @@ struct CollisionData {
     bool bWall3; ///< Set if colliding with #COL_TYPE_WALL_2
     bool bSoftWall;
     bool bTrickable;
+    bool bWallAtLeftCloser;
+    bool bWallAtRightCloser;
 };
 
 /// @brief Represents a hitbox for the kart body or a wheel.

@@ -67,6 +67,7 @@ void KartSub::resetPhysics() {
         tirePhysics(tireIdx)->reset();
     }
     m_move->setKartSpeedLimit();
+    m_sideCollisionTimer = 0;
     m_someScale = 1.0f;
     m_maxSuspOvertravel.setZero();
     m_minSuspOvertravel.setZero();
@@ -137,6 +138,8 @@ void KartSub::calcPass0() {
 /// Handles the second-half of physics calculations. This mainly includes
 /// collision detection, as well as suspension physics.
 void KartSub::calcPass1() {
+    constexpr s16 SIDE_COLLISION_TIME = 5;
+
     m_floorCollisionCount = 0;
     m_maxSuspOvertravel.setZero();
     m_minSuspOvertravel.setZero();
@@ -161,6 +164,24 @@ void KartSub::calcPass1() {
         setPos(pos() + effectiveSpeed);
         collide()->setMovement(collide()->movement() + effectiveSpeed);
     }
+
+    const auto &colData = collisionData();
+    if (colData.bWallAtLeftCloser || colData.bWallAtRightCloser || m_sideCollisionTimer > 0) {
+        EGG::Vector3f right = dynamics()->mainRot().rotateVector(EGG::Vector3f::ex);
+
+        if (colData.bWallAtLeftCloser || colData.bWallAtRightCloser) {
+            f32 sign = colData.bWallAtRightCloser ? 1.0f : -1.0f;
+            m_colPerpendicularity = sign * colData.colPerpendicularity;
+            m_sideCollisionTimer = SIDE_COLLISION_TIME;
+        }
+
+        EGG::Vector3f colPerpBounceDir = 2.0f * m_colPerpendicularity * scale().x * right;
+        colPerpBounceDir.y = 0.0f;
+        setPos(pos() + colPerpBounceDir);
+        collide()->setMovement(collide()->movement() + colPerpBounceDir);
+    }
+
+    m_sideCollisionTimer = std::max(m_sideCollisionTimer - 1, 0);
 
     Field::CollisionDirector::Instance()->checkCourseColNarrScLocal(250.0f, pos(),
             KCL_TYPE_VEHICLE_INTERACTABLE, 0);

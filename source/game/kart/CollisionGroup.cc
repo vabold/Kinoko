@@ -22,6 +22,8 @@ void CollisionData::reset() {
     bWall3 = false;
     bSoftWall = false;
     bTrickable = false;
+    bWallAtLeftCloser = false;
+    bWallAtRightCloser = false;
 }
 
 /// @addr{0x805B7F48}

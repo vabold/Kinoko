@@ -8,7 +8,7 @@ Test Case                                                 | Frames      |     | 
 [`mg-ng-rta-1-40-273`](https://youtu.be/8-0Xetey5xY)      | 877 / 6422  | ❌ | Mushroom
 [`tf-rta-1-44-178`](https://youtu.be/2XWFuncJAGk)         | 743 / 6656  | ❌ | Moving road
 [`tf-ng-rta-1-49-039`](https://youtu.be/mqQa_1Cq1bw)      | 689 / 6947  | ❌ | Moving road
-[`mc-rta-0-46-553`](https://youtu.be/1F2xfHYrkXM)         | 633 / 3202  | ❌ | Side collision
+[`mc-rta-0-46-553`](https://youtu.be/1F2xfHYrkXM)         | 686 / 3202  | ❌ | KMP
 [`mc-ng-rta-1-20-357`](https://youtu.be/kG8PvG8K1ZA)      | 1222 / 4228 | ❌ | KMP
 [`cm-rta-0-25-145`](https://youtu.be/F_RUQVghmuA)         | 1919 / 1919 | ✔️ |
 [`cm-ng-rta-1-55-264`](https://youtu.be/XxKG3IYWduE)      | 651 / 7320  | ❌ | KMP
@@ -35,12 +35,12 @@ Test Case                                                 | Frames      |     | 
 [`rgv2-rta-0-49-992`](https://youtu.be/T7OVqaNUbzI)       | 663 / 3408  | ❌ | KMP
 [`rgv2-ng-rta-0-52-746`](https://youtu.be/jWRsMWo-55g)    | 3399 / 3573 | ❌ | KMP
 [`rmr-rta-1-41-193`](https://youtu.be/y7t4_xXuD2A)        | 6477 / 6477 | ✔️ |
-[`rsl-rta-1-12-225`](https://youtu.be/3p8yV_jjQ4o)        | 708 / 4741  | ❌ | Side collision
+[`rsl-rta-1-12-225`](https://youtu.be/3p8yV_jjQ4o)        | 4113 / 4741 | ❌ | Respawn
 [`rsl-ng-rta-2-03-750`](https://youtu.be/ahNGAaUzm6s)     | 7829 / 7829 | ✔️ |
 [`rsgb-rta-1-14-513`](https://youtu.be/lgfw-zswqIM)       | 355 / 4878  | ❌ | Outward-drifting bike
 [`rsgb-ng-rta-1-21-363`](https://youtu.be/SjXUPXT8n8g)    | 5288 / 5288 | ✔️ |
 [`rds-rta-2-03-525`](https://youtu.be/a9Mnd2W7JXI)        | 2306 / 7816 | ❌ | Drawbridge
-[`rws-rta-1-31-987`](https://youtu.be/2rDSx5pgQ9A)        | 825 / 5925  | ❌ | Side collisions
+[`rws-rta-1-31-987`](https://youtu.be/2rDSx5pgQ9A)        | 1297 / 5925 | ❌ | Zipper
 [`rws-ng-rta-1-48-193`](https://youtu.be/4PU4zpCU_q4)     | 1430 / 6897 | ❌ | Zipper
 [`rdh-rta-1-30-425`](https://youtu.be/v5Qj0DnqVo0)        | 663 / 5832  | ❌ | Wall clip
 [`rdh-ng-rta-1-34-237`](https://youtu.be/4Lp-ehOOiGo)     | 1475 / 6060 | ❌ | Trick landing
