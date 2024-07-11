@@ -351,13 +351,55 @@ void KartCollide::calcWheelCollision(u16 /*wheelIdx*/, CollisionGroup *hitboxGro
 
 /// @stage 2
 /// @addr{0x8056F26C}
-void KartCollide::calcSideCollision(CollisionData & /*collisionData*/, Hitbox & /*hitbox*/,
+void KartCollide::calcSideCollision(CollisionData &collisionData, Hitbox &hitbox,
         Field::CourseColMgr::CollisionInfo *colInfo) {
     if (colInfo->perpendicularity <= 0.0f) {
         return;
     }
 
     m_colPerpendicularity = std::max(m_colPerpendicularity, colInfo->perpendicularity);
+
+    if (collisionData.bWallAtLeftCloser || collisionData.bWallAtRightCloser) {
+        return;
+    }
+
+    f32 bspPosX = hitbox.bspHitbox()->position.x;
+    if (EGG::Mathf::abs(bspPosX) > 10.0f) {
+        if (bspPosX > 0.0f) {
+            collisionData.bWallAtLeftCloser = true;
+        } else {
+            collisionData.bWallAtRightCloser = true;
+        }
+
+        collisionData.colPerpendicularity = colInfo->perpendicularity;
+
+        return;
+    }
+
+    EGG::Vector3f right = dynamics()->mainRot().rotateVector(EGG::Vector3f::ex);
+    std::array<f32, 2> tangents = {0.0f, 0.0f};
+
+    // The loop is just to do left/right wall
+    for (size_t i = 0; i < tangents.size(); ++i) {
+        f32 sign = i == 1 ? -1.0f : 1.0f;
+        f32 effectiveRadius = sign * hitbox.radius();
+        EGG::Vector3f effectivePos = hitbox.worldPos() + effectiveRadius * right;
+        Field::CourseColMgr::CollisionInfo tempColInfo;
+
+        if (Field::CollisionDirector::Instance()->checkSphereCachedPartial(effectivePos,
+                    hitbox.lastPos(), KCL_TYPE_DRIVER_WALL, &tempColInfo, nullptr,
+                    hitbox.radius())) {
+            tangents[i] = colInfo->tangentOff.dot();
+        }
+    }
+
+    if (tangents[0] > tangents[1]) {
+        collisionData.bWallAtLeftCloser = true;
+        collisionData.colPerpendicularity = colInfo->perpendicularity;
+    } else if (tangents[1] > tangents[0]) {
+        collisionData.bWallAtRightCloser = true;
+        collisionData.colPerpendicularity = colInfo->perpendicularity;
+    }
 }
 
 /// @stage All
