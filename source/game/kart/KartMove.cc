@@ -985,7 +985,9 @@ void KartMove::calcVehicleSpeed() {
     m_acceleration = 0.0f;
     m_speedDragMultiplier = 1.0f;
 
-    if (!state()->isTouchingGround() || state()->isChargingSsmt()) {
+    if ((state()->isSomethingWallCollision() && state()->isTouchingGround() &&
+                !state()->isAnyWheelCollision()) ||
+            !state()->isTouchingGround() || state()->isChargingSsmt()) {
         if (state()->isRampBoost() && state()->airtime() < 4) {
             m_acceleration = 7.0f;
         } else {

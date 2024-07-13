@@ -55,5 +55,5 @@ Test Case                                                 | Frames      |     | 
 [`rpg-rta-1-58-890`](https://youtu.be/vu0vpmTmcbg)        | 7538 / 7538 | ✔️ |
 [`rdkm-rta-1-58-133`](https://youtu.be/s3uqTaxr_4A)       | 2094 / 7492 | ❌ | Zipper
 [`rdkm-ng-rta-2-04-775`](https://youtu.be/jk5NIcHWQ-Y)    | 2397 / 7890 | ❌ | Cancelled MT
-[`rbc-rta-2-17-997`](https://youtu.be/6Wri7nBtZMk)        | 465 / 8683  | ❌ | Unknown
+[`rbc-rta-2-17-997`](https://youtu.be/6Wri7nBtZMk)        | 711 / 8683  | ❌ | Unknown
 [`rbc-ng-rta-2-30-459`](https://youtu.be/twZes-RI6Sc)     | 9430 / 9430 | ✔️ |
