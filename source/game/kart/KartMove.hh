@@ -65,6 +65,7 @@ public:
     [[nodiscard]] virtual f32 getWheelieSoftSpeedLimitBonus() const;
     virtual bool canWheelie() const;
     virtual bool canHop() const;
+    bool canStartDrift() const;
 
     void tryStartBoostPanel();
     void tryStartBoostRamp();

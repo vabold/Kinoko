@@ -777,7 +777,8 @@ void KartMove::calcManualDrift() {
             }
         }
     } else {
-        if (!state()->isDriftInput() || !state()->isAccelerate()) {
+        if (!state()->isDriftInput() || !state()->isAccelerate() || state()->isWall3Collision() ||
+                state()->isWallCollision() || !canStartDrift()) {
             releaseMt();
             resetDriftManual();
         } else {
@@ -1550,6 +1551,13 @@ bool KartMove::canHop() const {
     return true;
 }
 
+/// @addr{0x8057EA94}
+bool KartMove::canStartDrift() const {
+    constexpr f32 MINIMUM_DRIFT_THRESOLD = 0.55f;
+
+    return m_speed > MINIMUM_DRIFT_THRESOLD * m_baseSpeed;
+}
+
 /// @addr{Inlined at 0x80587590}
 void KartMove::tryStartBoostPanel() {
     constexpr s16 BOOST_PANEL_DURATION = 60;
@@ -1893,13 +1901,7 @@ void KartMove::setPadJump(bool isSet) {
 /// @addr{0x8057EFF8}
 /// @return 0.0f if we are too slow to drift, otherwise the hop direction.
 s32 KartMove::getAppliedHopStickX() const {
-    constexpr f32 MIN_DRIFT_THRESHOLD = 0.55f;
-
-    if (MIN_DRIFT_THRESHOLD * m_baseSpeed > m_speed) {
-        return 0;
-    }
-
-    return m_hopStickX;
+    return canStartDrift() ? m_hopStickX : 0;
 }
 
 f32 KartMove::softSpeedLimit() const {
