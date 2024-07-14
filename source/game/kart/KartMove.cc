@@ -835,7 +835,7 @@ void KartMove::startManualDrift() {
 void KartMove::releaseMt() {
     constexpr f32 SMT_LENGTH_FACTOR = 3.0f;
 
-    if (m_driftState < DriftState::ChargedMt) {
+    if (m_driftState < DriftState::ChargedMt || state()->isBrake()) {
         m_driftState = DriftState::NotDrifting;
         return;
     }
