@@ -257,6 +257,10 @@ void KartDynamics::setTop_(const EGG::Vector3f &v) {
     m_top_ = v;
 }
 
+void KartDynamics::setForceUpright(bool isSet) {
+    m_forceUpright = isSet;
+}
+
 const EGG::Matrix34f &KartDynamics::invInertiaTensor() const {
     return m_invInertiaTensor;
 }
