@@ -37,10 +37,10 @@ Test Case                                                 | Frames      |     | 
 [`rmr-rta-1-41-193`](https://youtu.be/y7t4_xXuD2A)        | 6477 / 6477 | ✔️ |
 [`rsl-rta-1-12-225`](https://youtu.be/3p8yV_jjQ4o)        | 4242 / 4741 | ❌ | Respawn position
 [`rsl-ng-rta-2-03-750`](https://youtu.be/ahNGAaUzm6s)     | 7829 / 7829 | ✔️ |
-[`rsgb-rta-1-14-513`](https://youtu.be/lgfw-zswqIM)       | 3944 / 4878 | ❌ | Cancelled MT
+[`rsgb-rta-1-14-513`](https://youtu.be/lgfw-zswqIM)       | 4286 / 4878 | ❌ | Respawn position
 [`rsgb-ng-rta-1-21-363`](https://youtu.be/SjXUPXT8n8g)    | 5288 / 5288 | ✔️ |
 [`rds-rta-2-03-525`](https://youtu.be/a9Mnd2W7JXI)        | 2306 / 7816 | ❌ | Drawbridge
-[`rws-rta-1-31-987`](https://youtu.be/2rDSx5pgQ9A)        | 1297 / 5925 | ❌ | Zipper
+[`rws-rta-1-31-987`](https://youtu.be/2rDSx5pgQ9A)        | 3077 / 5925 | ❌ | Zipper
 [`rws-ng-rta-1-48-193`](https://youtu.be/4PU4zpCU_q4)     | 1430 / 6897 | ❌ | Zipper
 [`rdh-rta-1-30-425`](https://youtu.be/v5Qj0DnqVo0)        | 5832 / 5832 | ✔️ |
 [`rdh-ng-rta-1-34-237`](https://youtu.be/4Lp-ehOOiGo)     | 6060 / 6060 | ✔️ |
@@ -54,6 +54,6 @@ Test Case                                                 | Frames      |     | 
 [`rmc3-rta-1-17-843`](https://youtu.be/6H6UnSDPPdI)       | 5077 / 5077 | ✔️ |
 [`rpg-rta-1-58-890`](https://youtu.be/vu0vpmTmcbg)        | 7538 / 7538 | ✔️ |
 [`rdkm-rta-1-58-133`](https://youtu.be/s3uqTaxr_4A)       | 2094 / 7492 | ❌ | Zipper
-[`rdkm-ng-rta-2-04-775`](https://youtu.be/jk5NIcHWQ-Y)    | 2397 / 7890 | ❌ | Cancelled MT
+[`rdkm-ng-rta-2-04-775`](https://youtu.be/jk5NIcHWQ-Y)    | 2717 / 7890 | ❌ | KMP bridge object
 [`rbc-rta-2-17-997`](https://youtu.be/6Wri7nBtZMk)        | 711 / 8683  | ❌ | Unknown
 [`rbc-ng-rta-2-30-459`](https://youtu.be/twZes-RI6Sc)     | 9430 / 9430 | ✔️ |
