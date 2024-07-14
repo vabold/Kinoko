@@ -45,6 +45,7 @@ public:
     void setAngVel2(const EGG::Vector3f &v);
     void setAngVel0YFactor(f32 val);
     void setTop_(const EGG::Vector3f &v);
+    void setForceUpright(bool isSet);
     /// @endSetters
 
     /// @beginGetters

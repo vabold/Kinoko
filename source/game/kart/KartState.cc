@@ -2,6 +2,7 @@
 
 #include "game/kart/CollisionGroup.hh"
 #include "game/kart/KartCollide.hh"
+#include "game/kart/KartDynamics.hh"
 #include "game/kart/KartJump.hh"
 #include "game/kart/KartMove.hh"
 
@@ -256,7 +257,7 @@ void KartState::calcCollisions() {
         m_bUNK2 = true;
         m_softWallSpeed = wallNrm;
         m_softWallSpeed.normalise();
-        if (!m_bHop) {
+        if (softWallCount > 0 && !m_bHop) {
             m_bSoftWallDrift = true;
         }
 
@@ -298,6 +299,7 @@ void KartState::calcCollisions() {
 
         if (m_bInATrick && jump()->cooldown() == 0) {
             move()->landTrick();
+            dynamics()->setForceUpright(true);
             jump()->end();
         }
 

@@ -306,6 +306,8 @@ void KartSub::tryEndHWG() {
             state()->setHWG(false);
         }
     }
+
+    dynamics()->setForceUpright(!state()->isSoftWallDrift());
 }
 
 f32 KartSub::someScale() {
