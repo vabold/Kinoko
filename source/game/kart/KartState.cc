@@ -116,14 +116,21 @@ void KartState::calcInput() {
 /// @brief Every frame, resets the input state and saves collision-related bit flags.
 /// @addr{0x8059474C}
 void KartState::calc() {
+    m_bAccelerate = false;
+    m_bBrake = false;
+    m_bDriftInput = false;
+    m_bHopStart = false;
+    m_bAccelerateStart = false;
+    m_bGroundStart = false;
     m_bStickLeft = false;
     m_bWallCollisionStart = false;
     m_bStickRight = false;
-    m_bGroundStart = false;
+
     m_bJumpPadDisableYsusForce = false;
 
     m_stickY = 0.0f;
     m_stickX = 0.0f;
+
     calcCollisions();
 }
 

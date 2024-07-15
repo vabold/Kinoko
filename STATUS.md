@@ -18,7 +18,7 @@ Test Case                                                 | Frames      |     | 
 [`dc-rta-1-28-321`](https://youtu.be/Rs5AK3iHVno)         | 1058 / 5705 | ❌ | KMP
 [`kc-rta-1-55-250`](https://youtu.be/Elb5K7woV20)         | 1520 / 7320 | ❌ | Moving water
 [`kc-ng-rta-2-17-176`](https://youtu.be/UgSQj6RpDYM)      | 1424 / 8634 | ❌ | Moving water
-[`mt-rta-1-33-239`](https://youtu.be/FX89203m2iE)         | 1305 / 6000 | ❌ | Unknown
+[`mt-rta-1-33-239`](https://youtu.be/FX89203m2iE)         | 1971 / 6000 | ❌ | KMP
 [`mt-ng-rta-2-13-126`](https://youtu.be/igcHE0-OV0g)      | 1199 / 8391 | ❌ | Reject road
 [`gv-rta-0-15-425`](https://youtu.be/bB0oUzdCHTA)         | 487 / 1336  | ❌ | KMP?
 [`gv-ng-rta-1-32-914`](https://youtu.be/J55Fo2ZMz9M)      | 570 / 5981  | ❌ | KMP?
@@ -47,7 +47,7 @@ Test Case                                                 | Frames      |     | 
 [`rbc3-rta-1-55-715`](https://youtu.be/vSbSADDEzEs)       | 7347 / 7347 | ✔️ |
 [`rbc3-ng-rta-2-16-183`](https://youtu.be/xZwlaonIBws)    | 8574 / 8574 | ✔️ |
 [`rdkjp-rta-0-40-105`](https://youtu.be/bkinW1UZK6M)      | 800 / 2815  | ❌ | KMP tree wall clip
-[`rdkjp-ng-rta-2-09-321`](https://youtu.be/WRXMrAUnOLo)   | 1089 / 8163 | ❌ | Boost panel hop
+[`rdkjp-ng-rta-2-09-321`](https://youtu.be/WRXMrAUnOLo)   | 8163 / 8163 | ✔️ |
 [`rdkjp-nosc-rta-2-10-546`](https://youtu.be/ovFBMmhFioA) | 8236 / 8236 | ✔️ |
 [`rmc-rta-1-29-945`](https://youtu.be/QwWEFaiOquI)        | 5803 / 5803 | ✔️ |
 [`rmc-ng-rta-1-30-272`](https://youtu.be/HSatgyRolcI)     | 5822 / 5822 | ✔️ |
