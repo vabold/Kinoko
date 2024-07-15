@@ -49,6 +49,7 @@ KartMove::KartMove() : m_smoothedUp(EGG::Vector3f::ey), m_scale(1.0f, 1.0f, 1.0f
     m_bPadBoost = false;
     m_bRampBoost = false;
     m_bPadJump = false;
+    m_bDriftReset = false;
     m_bSsmtCharged = false;
     m_bSsmtLeeway = false;
     m_bTrickableSurface = false;
@@ -199,6 +200,7 @@ void KartMove::init(bool b1, bool b2) {
     m_bPadBoost = false;
     m_bRampBoost = false;
     m_bPadJump = false;
+    m_bDriftReset = false;
     m_bSsmtCharged = false;
     m_bSsmtLeeway = false;
     m_bTrickableSurface = false;
@@ -680,6 +682,7 @@ void KartMove::resetDriftManual() {
 /// @stage 2
 /// @addr{0x8057E348}
 void KartMove::clearDrift() {
+    m_bDriftReset = false;
     m_outsideDriftAngle = 0.0f;
     m_hopStickX = 0;
     m_hopFrame = 0;
@@ -765,6 +768,8 @@ void KartMove::calcManualDrift() {
         isHopping = false;
     }
 
+    m_bDriftReset = false;
+
     if (!state()->isDriftManual()) {
         if (!isHopping && state()->isTouchingGround()) {
             resetDriftManual();
@@ -781,6 +786,7 @@ void KartMove::calcManualDrift() {
                 state()->isWallCollision() || !canStartDrift()) {
             releaseMt();
             resetDriftManual();
+            m_bDriftReset = true;
         } else {
             controlOutsideDriftAngle();
         }
@@ -1271,8 +1277,10 @@ void KartMove::calcWallCollisionStart(f32 param_2) {
             rej *= 0.9f;
 
             EGG::Vector3f projRejSum = proj + rej;
-            f32 bumpDeviation =
-                    state()->isTouchingGround() ? param()->stats().bumpDeviationLevel : 0.0f;
+            f32 bumpDeviation = 0.0f;
+            if (!m_bDriftReset && state()->isTouchingGround()) {
+                bumpDeviation = param()->stats().bumpDeviationLevel;
+            }
 
             dynamics()->applyWrenchScaled(newPos, projRejSum, bumpDeviation);
         }

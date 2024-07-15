@@ -210,6 +210,7 @@ protected:
     bool m_bPadBoost; ///< Caches whether the player is currently interacting with a boost pad.
     bool m_bRampBoost;
     bool m_bPadJump;
+    bool m_bDriftReset;       ///< Set when a wall bonk should cancel your drift.
     bool m_bSsmtCharged;      ///< Set after holding a stand-still mini-turbo for 75 frames.
     bool m_bSsmtLeeway;       ///< If set, activates SSMT when not pressing A or B.
     bool m_bTrickableSurface; ///< Set when driving on a trickable surface.
