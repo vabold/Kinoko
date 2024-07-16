@@ -88,7 +88,7 @@ typedef enum {
                     ~KCL_TYPE_BIT(COL_TYPE_EFFECT_TRIGGER) & \
                     ~KCL_TYPE_BIT(COL_TYPE_ITEM_STATE_MODIFIER)))
 
-/// 0x20E80FFF - Any KCL that the player can drive on.
+/// 0x20E80FFF - Any KCL that the player or items can drive/land on.
 #define KCL_TYPE_FLOOR \
     (KCL_TYPE_BIT(COL_TYPE_ROAD) | KCL_TYPE_BIT(COL_TYPE_SLIPPERY_ROAD) | \
             KCL_TYPE_BIT(COL_TYPE_WEAK_OFF_ROAD) | KCL_TYPE_BIT(COL_TYPE_OFF_ROAD) | \
@@ -99,6 +99,9 @@ typedef enum {
             KCL_TYPE_BIT(COL_TYPE_HALFPIPE_RAMP) | KCL_TYPE_BIT(COL_TYPE_MOVING_ROAD) | \
             KCL_TYPE_BIT(COL_TYPE_STICKY_ROAD) | KCL_TYPE_BIT(COL_TYPE_ROAD2) | \
             KCL_TYPE_BIT(COL_TYPE_ROTATING_ROAD))
+
+/// 0x20E80DFF - Any KCL that the player can drive on.
+#define KCL_TYPE_DRIVER_FLOOR (KCL_TYPE_FLOOR & ~KCL_TYPE_BIT(COL_TYPE_ITEM_ROAD))
 
 /// 0xD010F000
 #define KCL_TYPE_WALL \
@@ -140,6 +143,12 @@ typedef enum {
 /// 0xEAFABDFF
 #define KCL_TYPE_DRIVER_SOLID_SURFACE \
     (KCL_TYPE_VEHICLE_COLLIDEABLE | KCL_TYPE_BIT(COL_TYPE_CANNON_TRIGGER))
+
+/// 0xB0E82DFF
+#define KCL_TYPE_B0E82DFF \
+    (KCL_TYPE_DRIVER_FLOOR | KCL_TYPE_BIT(COL_TYPE_HALFPIPE_INVISIBLE_WALL) | \
+            KCL_TYPE_BIT(COL_TYPE_INVISIBLE_WALL) | \
+            KCL_TYPE_BIT(COL_TYPE_INVISIBLE_WALL2) & ~KCL_TYPE_BIT(COL_TYPE_ITEM_ROAD))
 
 namespace Field {
 /// @brief The header of the KCL file format. It is 0x3C bytes long (for Mario %Kart Wii).
