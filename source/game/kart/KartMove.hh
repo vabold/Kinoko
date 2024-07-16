@@ -2,6 +2,7 @@
 
 #include "game/kart/KartBoost.hh"
 #include "game/kart/KartObjectProxy.hh"
+#include "game/kart/KartReject.hh"
 
 #include <egg/core/BitFlag.hh>
 
@@ -66,6 +67,7 @@ public:
     void calcDive();
     void calcSsmtStart();
     void calcHopPhysics();
+    void calcRejectRoad();
     virtual void calcVehicleRotation(f32 turn);
     virtual void hop();
     virtual void onHop() {}
@@ -97,6 +99,8 @@ public:
     void exitCannon();
 
     /// @beginSetters
+    void setSmoothedUp(const EGG::Vector3f &v);
+    void setUp(const EGG::Vector3f &v);
     void setDir(const EGG::Vector3f &v);
     void setVel1Dir(const EGG::Vector3f &v);
     void setFloorCollisionCount(u16 count);
@@ -115,8 +119,10 @@ public:
     [[nodiscard]] const EGG::Vector3f &up() const;
     [[nodiscard]] f32 totalScale() const;
     [[nodiscard]] const EGG::Vector3f &dir() const;
+    [[nodiscard]] const EGG::Vector3f &lastDir() const;
     [[nodiscard]] const EGG::Vector3f &vel1Dir() const;
     [[nodiscard]] f32 speedRatioCapped() const;
+    [[nodiscard]] f32 speedRatio() const;
     [[nodiscard]] u16 floorCollisionCount() const;
     [[nodiscard]] s32 hopStickX() const;
     [[nodiscard]] PadType &padType();
@@ -183,9 +189,10 @@ protected:
     f32 m_outsideDriftAngle; ///< The facing angle of an outward-drifting vehicle.
     f32 m_landingAngle;
     EGG::Vector3f m_outsideDriftLastDir; ///< Used to compute the next @ref m_outsideDriftAngle.
-    f32 m_speedRatioCapped; ///< The ratio between current speed and the player's base speed stat.
-    f32 m_kclSpeedFactor;   ///< Float between 0-1 that scales the player's speed on offroad.
-    f32 m_kclRotFactor; ///< Float between 0-1 that scales the player's turning radius on offroad.
+    f32 m_speedRatioCapped;              ///< @ref m_speedRatio but capped at 1.0f.
+    f32 m_speedRatio;     ///< The ratio between current speed and the player's base speed stat.
+    f32 m_kclSpeedFactor; ///< Float between 0-1 that scales the player's speed on offroad.
+    f32 m_kclRotFactor;   ///< Float between 0-1 that scales the player's turning radius on offroad.
     f32 m_kclWheelSpeedFactor; ///< The slowest speed multiplier of each wheel's floor collision.
     f32 m_kclWheelRotFactor;   ///< The slowest rotation multiplier of each wheel's floor collision.
     u16 m_floorCollisionCount; ///< The number of tires colliding with the floor.
@@ -200,6 +207,7 @@ protected:
     u16 m_smtCharge;         ///< A value between 0 and 300 representing current SMT charge.
     f32 m_outsideDriftBonus; ///< Added to angular velocity when outside drifting.
     KartBoost m_boost;
+    KartReject m_reject;
     s16 m_offroadInvincibility;  ///< How many frames until the player is affected by offroad.
     s16 m_ssmtCharge;            ///< Increments every frame up to 75 when charging stand-still MT.
     s16 m_ssmtLeewayTimer;       ///< Frames to forgive letting go of A before clearing SSMT charge.

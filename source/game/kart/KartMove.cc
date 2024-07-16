@@ -141,6 +141,7 @@ void KartMove::init(bool b1, bool b2) {
     m_outsideDriftAngle = 0.0f;
     m_landingAngle = 0.0f;
     m_outsideDriftLastDir = EGG::Vector3f::ez;
+    m_speedRatio = 0.0f;
     m_speedRatioCapped = 0.0f;
     m_kclSpeedFactor = 1.0f;
     m_kclRotFactor = 1.0f;
@@ -162,6 +163,7 @@ void KartMove::init(bool b1, bool b2) {
     m_mtCharge = 0;
     m_outsideDriftBonus = 0.0f;
     m_boost.reset();
+    m_reject.reset();
     m_offroadInvincibility = 0;
     m_ssmtCharge = 0;
     m_ssmtLeewayTimer = 0;
@@ -769,7 +771,8 @@ void KartMove::calcManualDrift() {
             }
         }
     } else {
-        if (!state()->isDriftInput() || !state()->isAccelerate() || state()->isWall3Collision() ||
+        if (!state()->isDriftInput() || !state()->isAccelerate() ||
+                state()->isRejectRoadTrigger() || state()->isWall3Collision() ||
                 state()->isWallCollision() || !canStartDrift()) {
             releaseMt();
             resetDriftManual();
@@ -1147,7 +1150,8 @@ void KartMove::calcAcceleration() {
 
     calcWallCollisionStart(local_c8);
 
-    m_speedRatioCapped = std::min(1.0f, EGG::Mathf::abs(m_speed / m_baseSpeed));
+    m_speedRatio = EGG::Mathf::abs(m_speed / m_baseSpeed);
+    m_speedRatioCapped = std::min(1.0f, m_speedRatio);
 
     EGG::Vector3f crossVec = m_smoothedUp.cross(m_dir);
     if (m_speed < 0.0f) {
@@ -1394,6 +1398,11 @@ void KartMove::calcHopPhysics() {
         m_hopPosY = 0.0f;
         m_hopVelY = 0.0f;
     }
+}
+
+/// @addr{0x80579960}
+void KartMove::calcRejectRoad() {
+    m_reject.calcRejectRoad();
 }
 
 /// @addr{0x8057CF0C}
@@ -1780,6 +1789,7 @@ void KartMove::calcCannon() {
     local94.y = 0;
     local94.normalise();
     m_speedRatioCapped = 1.0f;
+    m_speedRatio = 1.5f;
     EGG::Matrix34f cannonOrientation;
     cannonOrientation.makeOrthonormalBasis(forward, EGG::Vector3f::ey);
     EGG::Vector3f up = cannonOrientation.multVector33(EGG::Vector3f::ey);
@@ -1860,6 +1870,14 @@ void KartMove::exitCannon() {
     dynamics()->setIntVel(m_cannonEntryOfs * m_speed);
 }
 
+void KartMove::setSmoothedUp(const EGG::Vector3f &v) {
+    m_smoothedUp = v;
+}
+
+void KartMove::setUp(const EGG::Vector3f &v) {
+    m_up = v;
+}
+
 void KartMove::setDir(const EGG::Vector3f &v) {
     m_dir = v;
 }
@@ -1923,12 +1941,20 @@ const EGG::Vector3f &KartMove::dir() const {
     return m_dir;
 }
 
+const EGG::Vector3f &KartMove::lastDir() const {
+    return m_lastDir;
+}
+
 const EGG::Vector3f &KartMove::vel1Dir() const {
     return m_vel1Dir;
 }
 
 f32 KartMove::speedRatioCapped() const {
     return m_speedRatioCapped;
+}
+
+f32 KartMove::speedRatio() const {
+    return m_speedRatio;
 }
 
 u16 KartMove::floorCollisionCount() const {
@@ -2006,9 +2032,10 @@ void KartMoveBike::calcVehicleRotation(f32 turn) {
     f32 leanRotMin = -m_leanRotCap;
     f32 leanRotMax = m_leanRotCap;
 
-    if (state()->isBeforeRespawn() || state()->isWheelie() || state()->isAirtimeOver20() ||
-            state()->isSoftWallDrift() || state()->isSomethingWallCollision() || state()->isHWG() ||
-            state()->isCannonStart() || state()->isInCannon()) {
+    if (state()->isBeforeRespawn() || state()->isWheelie() || state()->isRejectRoadTrigger() ||
+            state()->isAirtimeOver20() || state()->isSoftWallDrift() ||
+            state()->isSomethingWallCollision() || state()->isHWG() || state()->isCannonStart() ||
+            state()->isInCannon()) {
         m_leanRot *= m_turningParams->leanRotDecayFactor;
     } else if (!state()->isDrifting()) {
         if (stickX <= 0.2f) {
@@ -2073,10 +2100,15 @@ void KartMoveBike::calcVehicleRotation(f32 turn) {
     f32 scalar = (m_speed >= 0.0f) ? m_speedRatioCapped * 2.0f : 0.0f;
     scalar = std::min(1.0f, scalar);
 
-    EGG::Vector3f top = scalar * m_up + (1.0f - scalar) * EGG::Vector3f::ey;
-    if (std::numeric_limits<f32>::epsilon() < top.dot()) {
-        top.normalise();
+    EGG::Vector3f top = m_up;
+
+    if (!state()->isRejectRoad()) {
+        top = scalar * m_up + (1.0f - scalar) * EGG::Vector3f::ey;
+        if (std::numeric_limits<f32>::epsilon() < top.dot()) {
+            top.normalise();
+        }
     }
+
     dynamics()->setTop_(top);
 }
 

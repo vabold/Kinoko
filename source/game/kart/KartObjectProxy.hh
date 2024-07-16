@@ -123,6 +123,7 @@ public:
     [[nodiscard]] u16 tireCount() const;
     [[nodiscard]] bool hasFloorCollision(const WheelPhysics *wheelPhysics) const;
     [[nodiscard]] std::pair<EGG::Vector3f, EGG::Vector3f> getCannonPosRot();
+    [[nodiscard]] f32 speedRatio() const;
 
     [[nodiscard]] static std::list<KartObjectProxy *> &proxyList();
     /// @endGetters

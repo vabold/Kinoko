@@ -22,6 +22,7 @@ public:
     void calcStartBoost();
     void calcHandleStartBoost();
     void handleStartBoost(size_t idx);
+    void resetEjection();
 
     /// @beginSetters
     void clearBitfield0();
@@ -55,6 +56,8 @@ public:
     void setDisableBackwardsAccel(bool isSet);
     void setTrickRot(bool isSet);
     void setChargingSsmt(bool isSet);
+    void setRejectRoad(bool isSet);
+    void setRejectRoadTrigger(bool isSet);
     void setTrickable(bool isSet);
     void setWheelieRot(bool isSet);
     void setSkipWheelCalc(bool isSet);
@@ -107,6 +110,8 @@ public:
     [[nodiscard]] bool isDisableBackwardsAccel() const;
     [[nodiscard]] bool isTrickRot() const;
     [[nodiscard]] bool isChargingSsmt() const;
+    [[nodiscard]] bool isRejectRoad() const;
+    [[nodiscard]] bool isRejectRoadTrigger() const;
     [[nodiscard]] bool isTrickable() const;
     [[nodiscard]] bool isWheelieRot() const;
     [[nodiscard]] bool isSkipWheelCalc() const;
@@ -176,7 +181,9 @@ private:
     bool m_bBoostOffroadInvincibility; ///< Set if we should ignore offroad slowdown this frame.
     bool m_bDisableBackwardsAccel;     ///< Enforces a 20f delay when reversing after charging SSMT.
     bool m_bTrickRot;
-    bool m_bChargingSsmt; ///< Tracks whether we are charging a stand-still mini-turbo.
+    bool m_bChargingSsmt;      ///< Tracks whether we are charging a stand-still mini-turbo.
+    bool m_bRejectRoad;        ///< Collision which causes a change in the player's pos and rot.
+    bool m_bRejectRoadTrigger; ///< e.g. DK Summit ending, and Maple Treeway side walls.
     bool m_bTrickable;
     /// @}
 
