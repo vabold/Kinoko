@@ -338,6 +338,11 @@ std::pair<EGG::Vector3f, EGG::Vector3f> KartObjectProxy::getCannonPosRot() {
     return std::pair(cannonPos + local60 * temp0, cannonRot);
 }
 
+/// @addr{0x80590DD0}
+f32 KartObjectProxy::speedRatio() const {
+    return move()->speedRatio();
+}
+
 std::list<KartObjectProxy *> &KartObjectProxy::proxyList() {
     return s_proxyList;
 }

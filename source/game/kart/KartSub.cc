@@ -126,6 +126,8 @@ void KartSub::calcPass0() {
     f32 maxSpeed = move()->hardSpeedLimit();
     physics()->calc(DT, maxSpeed, scale(), !state()->isTouchingGround());
 
+    move()->calcRejectRoad();
+
     if (!state()->isInCannon()) {
         collide()->calcHitboxes();
         collisionGroup()->setHitboxScale(move()->totalScale());
@@ -139,6 +141,8 @@ void KartSub::calcPass0() {
 /// collision detection, as well as suspension physics.
 void KartSub::calcPass1() {
     constexpr s16 SIDE_COLLISION_TIME = 5;
+
+    state()->resetEjection();
 
     m_floorCollisionCount = 0;
     m_maxSuspOvertravel.setZero();

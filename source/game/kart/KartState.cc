@@ -83,10 +83,12 @@ void KartState::calcInput() {
             m_stickX = currentState.stick.x;
             m_stickY = currentState.stick.y;
 
-            if (m_stickX < 0.0f) {
-                m_bStickLeft = true;
-            } else if (m_stickX > 0.0f) {
-                m_bStickRight = true;
+            if (!state()->isRejectRoadTrigger()) {
+                if (m_stickX < 0.0f) {
+                    m_bStickLeft = true;
+                } else if (m_stickX > 0.0f) {
+                    m_bStickRight = true;
+                }
             }
 
             m_bAccelerate = currentState.accelerate();
@@ -374,6 +376,12 @@ void KartState::handleStartBoost(size_t idx) {
     move()->applyStartBoost(START_BOOST_ENTRIES[idx].frames);
 }
 
+/// @brief Resets certain bitfields pertaining to ejections (reject road, half pipe zippers, etc.)
+/// @addr{0x805958F0}
+void KartState::resetEjection() {
+    m_bRejectRoad = false;
+}
+
 bool KartState::isDrifting() const {
     return m_bDriftManual || m_bDriftAuto;
 }
@@ -526,6 +534,14 @@ bool KartState::isChargingSsmt() const {
     return m_bChargingSsmt;
 }
 
+bool KartState::isRejectRoad() const {
+    return m_bRejectRoad;
+}
+
+bool KartState::isRejectRoadTrigger() const {
+    return m_bRejectRoadTrigger;
+}
+
 bool KartState::isTrickable() const {
     return m_bTrickable;
 }
@@ -639,6 +655,8 @@ void KartState::clearBitfield1() {
     m_bDisableBackwardsAccel = false;
     m_bTrickRot = false;
     m_bChargingSsmt = false;
+    m_bRejectRoad = false;
+    m_bRejectRoadTrigger = false;
     m_bTrickable = false;
 }
 
@@ -757,6 +775,14 @@ void KartState::setTrickRot(bool isSet) {
 
 void KartState::setChargingSsmt(bool isSet) {
     m_bChargingSsmt = isSet;
+}
+
+void KartState::setRejectRoad(bool isSet) {
+    m_bRejectRoad = isSet;
+}
+
+void KartState::setRejectRoadTrigger(bool isSet) {
+    m_bRejectRoadTrigger = isSet;
 }
 
 void KartState::setTrickable(bool isSet) {
