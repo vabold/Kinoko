@@ -2,6 +2,7 @@
 
 #include "game/system/map/MapdataCannonPoint.hh"
 #include "game/system/map/MapdataFileAccessor.hh"
+#include "game/system/map/MapdataGeoObj.hh"
 #include "game/system/map/MapdataStageInfo.hh"
 #include "game/system/map/MapdataStartPoint.hh"
 
@@ -16,11 +17,13 @@ void CourseMap::init() {
             new MapdataFileAccessor(reinterpret_cast<const MapdataFileAccessor::SData *>(buffer));
 
     constexpr u32 CANNON_POINT_SIGNATURE = 0x434e5054;
+    constexpr u32 GEO_OBJ_SIGNATURE = 0x474f424a;
     constexpr u32 START_POINT_SIGNATURE = 0x4b545054;
     constexpr u32 STAGE_INFO_SIGNATURE = 0x53544749;
 
-    m_cannonPoint = parseCannonPoint(CANNON_POINT_SIGNATURE);
     m_startPoint = parseStartPoint(START_POINT_SIGNATURE);
+    m_geoObj = parseGeoObj(GEO_OBJ_SIGNATURE);
+    m_cannonPoint = parseCannonPoint(CANNON_POINT_SIGNATURE);
     m_stageInfo = parseStageInfo(STAGE_INFO_SIGNATURE);
 
     MapdataStageInfo *stageInfo = getStageInfo();
@@ -46,6 +49,18 @@ MapdataCannonPointAccessor *CourseMap::parseCannonPoint(u32 sectionName) {
     MapdataCannonPointAccessor *accessor = nullptr;
     if (sectionPtr) {
         accessor = new MapdataCannonPointAccessor(sectionPtr);
+    }
+
+    return accessor;
+}
+
+/// @addr{0x805134C8}
+MapdataGeoObjAccessor *CourseMap::parseGeoObj(u32 sectionName) {
+    const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
+
+    MapdataGeoObjAccessor *accessor = nullptr;
+    if (sectionPtr) {
+        accessor = new MapdataGeoObjAccessor(sectionPtr);
     }
 
     return accessor;
@@ -80,6 +95,11 @@ MapdataCannonPoint *CourseMap::getCannonPoint(u16 i) const {
     return m_cannonPoint && m_cannonPoint->size() != 0 ? m_cannonPoint->get(i) : nullptr;
 }
 
+/// @addr{0x80514148}
+MapdataGeoObj *CourseMap::getGeoObj(u16 i) const {
+    return i < getGeoObjCount() ? m_geoObj->get(i) : nullptr;
+}
+
 /// @addr{0x80518B78}
 MapdataStageInfo *CourseMap::getStageInfo() const {
     return m_stageInfo && m_stageInfo->size() != 0 ? m_stageInfo->get(0) : nullptr;
@@ -88,6 +108,10 @@ MapdataStageInfo *CourseMap::getStageInfo() const {
 /// @addr{0x80514B30}
 MapdataStartPoint *CourseMap::getStartPoint(u16 i) const {
     return m_startPoint && m_startPoint->size() != 0 ? m_startPoint->get(i) : nullptr;
+}
+
+u16 CourseMap::getGeoObjCount() const {
+    return m_geoObj ? m_geoObj->size() : 0;
 }
 
 u32 CourseMap::version() const {
