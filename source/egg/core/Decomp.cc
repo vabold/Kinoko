@@ -42,6 +42,10 @@ s32 DecodeSZS(const u8 *src, u8 *dst) {
             s32 runLen = ((distToDest >> 12) == 0) ? src[srcIdx++] + 0x12 : (distToDest >> 12) + 2;
 
             for (; runLen > 0; runLen--, destIdx++, runSrcIdx++) {
+                if (destIdx >= expandSize) {
+                    K_PANIC("FATAL: Malformed compressed SZS data.");
+                }
+
                 dst[destIdx] = dst[runSrcIdx - 1];
             }
         }
