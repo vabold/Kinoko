@@ -1079,6 +1079,7 @@ void KartMove::calcAcceleration() {
     constexpr f32 ROTATION_SCALAR_MIDAIR = 0.2f;
     constexpr f32 ROTATION_SCALAR_BOOST_RAMP = 4.0f;
     constexpr f32 OOB_SLOWDOWN_RATE = 0.95f;
+    constexpr f32 TERMINAL_VELOCITY = 90.0f;
 
     m_lastSpeed = m_speed;
 
@@ -1156,6 +1157,7 @@ void KartMove::calcAcceleration() {
     m_vel1Dir = local_90.multVector33(m_vel1Dir);
     m_processedSpeed = m_speed;
     EGG::Vector3f nextSpeed = m_speed * m_vel1Dir;
+    nextSpeed.y = std::min(TERMINAL_VELOCITY, nextSpeed.y);
     dynamics()->setIntVel(dynamics()->intVel() + nextSpeed);
 
     if (state()->isTouchingGround() && !state()->isDriftManual() && !state()->isHop()) {
