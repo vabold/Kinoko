@@ -123,6 +123,7 @@ public:
     [[nodiscard]] const EGG::Vector3f &componentZAxis() const;
 
     [[nodiscard]] const EGG::Vector3f &pos() const;
+    [[nodiscard]] const EGG::Vector3f &prevPos() const;
     [[nodiscard]] const EGG::Quatf &fullRot() const;
     [[nodiscard]] const EGG::Vector3f &extVel() const;
     [[nodiscard]] const EGG::Vector3f &intVel() const;

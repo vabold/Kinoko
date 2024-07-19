@@ -85,18 +85,7 @@ void KartCollide::findCollision() {
         colData.wallNrm.normalise();
     }
 
-    f32 fVar1;
-    if (state()->isBoost()) {
-        fVar1 = 0.0f;
-    } else {
-        fVar1 = 0.05f;
-    }
-
-    f32 dVar14 = fVar1;
-    fVar1 = 0.01f;
-    bool resetXZ = dVar14 > 0.0f && state()->isAirtimeOver20() && dynamics()->velocity().y < -50.0f;
-
-    FUN_805B72B8(fVar1, dVar14, resetXZ, true);
+    FUN_80572F4C();
 }
 
 /// @stage 2
@@ -105,7 +94,7 @@ void KartCollide::findCollision() {
 void KartCollide::FUN_80572F4C() {
     f32 fVar1;
 
-    if (state()->isBoost()) {
+    if (state()->isBoost() || state()->isOverZipper() || state()->isHalfPipeRamp()) {
         fVar1 = 0.0f;
     } else {
         fVar1 = 0.05f;
@@ -636,6 +625,12 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
 
     if (*maskOut & KCL_TYPE_BIT(COL_TYPE_STICKY_ROAD)) {
         state()->setStickyRoad(true);
+    }
+
+    Field::KCLTypeMask halfPipeRampMask = KCL_TYPE_BIT(COL_TYPE_HALFPIPE_RAMP);
+    if (*maskOut & halfPipeRampMask &&
+            colDirector->findClosestCollisionEntry(maskOut, halfPipeRampMask)) {
+        state()->setHalfPipeRamp(true);
     }
 
     Field::KCLTypeMask jumpPadMask = KCL_TYPE_BIT(COL_TYPE_JUMP_PAD);
