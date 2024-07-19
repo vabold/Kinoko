@@ -13,7 +13,7 @@ Test Case                                                 | Frames      |     | 
 [`cm-rta-0-25-145`](https://youtu.be/F_RUQVghmuA)         | 1919 / 1919 | ✔️ |
 [`cm-ng-rta-1-55-264`](https://youtu.be/XxKG3IYWduE)      | 651 / 7320  | ❌ | KMP
 [`dks-rta-1-44-568`](https://youtu.be/b9hacHlifcw)        | 1049 / 6679 | ❌ | Zipper
-[`wgm-rta-0-31-678`](https://youtu.be/VVFXP639DRY)        | 562 / 2310  | ❌ | KMP
+[`wgm-rta-0-31-678`](https://youtu.be/VVFXP639DRY)        | 2310 / 2310 | ✔️ |
 [`wgm-ng-rta-1-49-934`](https://youtu.be/NbhzA2rtZ2A)     | 7001 / 7001 | ✔️ |
 [`dc-rta-1-28-321`](https://youtu.be/Rs5AK3iHVno)         | 1058 / 5705 | ❌ | KMP
 [`kc-rta-1-55-250`](https://youtu.be/Elb5K7woV20)         | 1520 / 7320 | ❌ | Moving water
