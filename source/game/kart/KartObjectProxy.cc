@@ -285,6 +285,11 @@ const EGG::Vector3f &KartObjectProxy::pos() const {
     return dynamics()->pos();
 }
 
+/// @addr{0x80590224}
+const EGG::Vector3f &KartObjectProxy::prevPos() const {
+    return physics()->pos();
+}
+
 const EGG::Quatf &KartObjectProxy::fullRot() const {
     return dynamics()->fullRot();
 }

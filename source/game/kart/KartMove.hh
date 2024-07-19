@@ -1,8 +1,11 @@
 #pragma once
 
 #include "game/kart/KartBoost.hh"
+#include "game/kart/KartHalfPipe.hh"
 #include "game/kart/KartObjectProxy.hh"
 #include "game/kart/KartReject.hh"
+
+#include "game/field/CourseColMgr.hh"
 
 #include <egg/core/BitFlag.hh>
 
@@ -68,6 +71,10 @@ public:
     void calcSsmtStart();
     void calcHopPhysics();
     void calcRejectRoad();
+    bool calcZipperCollision(f32 radius, f32 scale, EGG::Vector3f &pos, EGG::Vector3f &upLocal,
+            const EGG::Vector3f &prevPos, Field::CourseColMgr::CollisionInfo *colInfo,
+            Field::KCLTypeMask *maskOut, Field::KCLTypeMask flags) const;
+    f32 calcSlerpRate(f32 scale, const EGG::Quatf &from, const EGG::Quatf &to) const;
     virtual void calcVehicleRotation(f32 turn);
     virtual void hop();
     virtual void onHop() {}
@@ -127,8 +134,10 @@ public:
     [[nodiscard]] f32 speedRatio() const;
     [[nodiscard]] u16 floorCollisionCount() const;
     [[nodiscard]] s32 hopStickX() const;
+    [[nodiscard]] f32 hopPosY() const;
     [[nodiscard]] PadType &padType();
     [[nodiscard]] KartJump *jump() const;
+    [[nodiscard]] KartHalfPipe *halfPipe() const;
     /// @endGetters
 
 protected:
@@ -238,6 +247,7 @@ protected:
     PadType m_padType;
     Flags m_flags;
     KartJump *m_jump;
+    KartHalfPipe *m_halfPipe;                   ///< Pertains to zipper physics.
     const DriftingParameters *m_driftingParams; ///< Drift-type-specific parameters.
     f32 m_rawTurn; ///< Float in range [-1, 1]. Represents stick magnitude + direction.
 };

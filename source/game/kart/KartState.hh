@@ -18,6 +18,7 @@ public:
 
     void calcInput();
     void calc();
+    void resetFlags();
     void calcCollisions();
     void calcStartBoost();
     void calcHandleStartBoost();
@@ -53,7 +54,10 @@ public:
     void setInATrick(bool isSet);
     void setJumpPad(bool isSet);
     void setBoostOffroadInvincibility(bool isSet);
+    void setHalfPipeRamp(bool isSet);
+    void setOverZipper(bool isSet);
     void setDisableBackwardsAccel(bool isSet);
+    void setZipperStick(bool isSet);
     void setTrickRot(bool isSet);
     void setChargingSsmt(bool isSet);
     void setRejectRoad(bool isSet);
@@ -95,6 +99,7 @@ public:
     [[nodiscard]] bool isHWG() const;
     [[nodiscard]] bool isChargeStartBoost() const;
     [[nodiscard]] bool isBoost() const;
+    [[nodiscard]] bool isAirStart() const;
     [[nodiscard]] bool isStickRight() const;
     [[nodiscard]] bool isMushroomBoost() const;
     [[nodiscard]] bool isDriftAuto() const;
@@ -107,7 +112,10 @@ public:
     [[nodiscard]] bool isTrickStart() const;
     [[nodiscard]] bool isInATrick() const;
     [[nodiscard]] bool isBoostOffroadInvincibility() const;
+    [[nodiscard]] bool isHalfPipeRamp() const;
+    [[nodiscard]] bool isOverZipper() const;
     [[nodiscard]] bool isDisableBackwardsAccel() const;
+    [[nodiscard]] bool isZipperStick() const;
     [[nodiscard]] bool isTrickRot() const;
     [[nodiscard]] bool isChargingSsmt() const;
     [[nodiscard]] bool isRejectRoad() const;
@@ -162,6 +170,7 @@ private:
     bool m_bTouchingGround;     ///< Set when any part of the vehicle is colliding with floor KCL.
     bool m_bHop;                ///< Set while we are in a drift hop. Clears when we land.
     bool m_bBoost;              ///< Set while in a boost.
+    bool m_bAirStart;
     bool m_bStickRight;    ///< Set on right stick input. Mutually exclusive to @ref m_bStickLeft.
     bool m_bMushroomBoost; ///< Set while we are in a mushroom boost.
     bool m_bDriftAuto;     ///< Currently in a drift w/ automatic.
@@ -179,7 +188,10 @@ private:
     bool m_bTrickStart;
     bool m_bInATrick;
     bool m_bBoostOffroadInvincibility; ///< Set if we should ignore offroad slowdown this frame.
+    bool m_bHalfPipeRamp;              ///< Set while colliding with zipper KCL.
+    bool m_bOverZipper;                ///< Set while mid-air from a zipper.
     bool m_bDisableBackwardsAccel;     ///< Enforces a 20f delay when reversing after charging SSMT.
+    bool m_bZipperStick;               ///< Set while mid-air and still influenced by the zipper.
     bool m_bTrickRot;
     bool m_bChargingSsmt;      ///< Tracks whether we are charging a stand-still mini-turbo.
     bool m_bRejectRoad;        ///< Collision which causes a change in the player's pos and rot.
