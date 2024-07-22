@@ -54,6 +54,7 @@ public:
     void clearDrift();
     void clearJumpPad();
     void clearRampBoost();
+    void clearZipperBoost();
     void clearBoost();
     void clearSsmt();
     void clearOffroadInvincibility();
@@ -95,9 +96,11 @@ public:
     void activateBoost(KartBoost::Type type, s16 frames);
     void applyStartBoost(s16 frames);
     void activateMushroom();
+    void activateZipperBoost();
     void setOffroadInvincibility(s16 timer);
     void calcOffroadInvincibility();
     void calcMushroomBoost();
+    void calcZipperBoost();
     void landTrick();
 
     void enterCannon();
@@ -218,6 +221,8 @@ protected:
     u16 m_smtCharge;         ///< A value between 0 and 300 representing current SMT charge.
     f32 m_outsideDriftBonus; ///< Added to angular velocity when outside drifting.
     KartBoost m_boost;
+    s16 m_zipperBoostTimer;
+    s16 m_zipperBoostMax;
     KartReject m_reject;
     s16 m_offroadInvincibility;  ///< How many frames until the player is affected by offroad.
     s16 m_ssmtCharge;            ///< Increments every frame up to 75 when charging stand-still MT.

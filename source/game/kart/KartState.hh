@@ -57,6 +57,7 @@ public:
     void setHalfPipeRamp(bool isSet);
     void setOverZipper(bool isSet);
     void setDisableBackwardsAccel(bool isSet);
+    void setZipperBoost(bool isSet);
     void setZipperStick(bool isSet);
     void setTrickRot(bool isSet);
     void setChargingSsmt(bool isSet);
@@ -115,6 +116,7 @@ public:
     [[nodiscard]] bool isHalfPipeRamp() const;
     [[nodiscard]] bool isOverZipper() const;
     [[nodiscard]] bool isDisableBackwardsAccel() const;
+    [[nodiscard]] bool isZipperBoost() const;
     [[nodiscard]] bool isZipperStick() const;
     [[nodiscard]] bool isTrickRot() const;
     [[nodiscard]] bool isChargingSsmt() const;
@@ -191,6 +193,7 @@ private:
     bool m_bHalfPipeRamp;              ///< Set while colliding with zipper KCL.
     bool m_bOverZipper;                ///< Set while mid-air from a zipper.
     bool m_bDisableBackwardsAccel;     ///< Enforces a 20f delay when reversing after charging SSMT.
+    bool m_bZipperBoost;               ///< Set when boosting after landing from a zipper.
     bool m_bZipperStick;               ///< Set while mid-air and still influenced by the zipper.
     bool m_bTrickRot;
     bool m_bChargingSsmt;      ///< Tracks whether we are charging a stand-still mini-turbo.

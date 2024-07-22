@@ -220,6 +220,10 @@ void KartState::calcCollisions() {
         m_bVehicleBodyFloorCollision = true;
         m_top += colData.floorNrm;
         trickable = trickable || colData.bTrickable;
+
+        if (state()->isOverZipper()) {
+            halfPipe()->end(true);
+        }
     }
 
     bool hitboxGroupSoftWallCollision = false;
@@ -551,6 +555,10 @@ bool KartState::isDisableBackwardsAccel() const {
     return m_bDisableBackwardsAccel;
 }
 
+bool KartState::isZipperBoost() const {
+    return m_bZipperBoost;
+}
+
 bool KartState::isZipperStick() const {
     return m_bZipperStick;
 }
@@ -685,6 +693,7 @@ void KartState::clearBitfield1() {
     m_bHalfPipeRamp = false;
     m_bOverZipper = false;
     m_bDisableBackwardsAccel = false;
+    m_bZipperBoost = false;
     m_bZipperStick = false;
     m_bTrickRot = false;
     m_bChargingSsmt = false;
@@ -808,6 +817,10 @@ void KartState::setOverZipper(bool isSet) {
 
 void KartState::setDisableBackwardsAccel(bool isSet) {
     m_bDisableBackwardsAccel = isSet;
+}
+
+void KartState::setZipperBoost(bool isSet) {
+    m_bZipperBoost = isSet;
 }
 
 void KartState::setZipperStick(bool isSet) {
