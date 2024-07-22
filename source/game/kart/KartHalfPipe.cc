@@ -33,7 +33,7 @@ void KartHalfPipe::calc() {
 
     bool isLanding = state()->isHalfPipeRamp() && m_timer <= 0;
 
-    if (m_touchingZipper && state()->isAirStart() && velocity().y > 0.0f) {
+    if (m_touchingZipper && state()->isAirStart()) {
         dynamics()->setExtVel(EGG::Vector3f::zero);
         state()->setOverZipper(true);
 
@@ -143,6 +143,21 @@ void KartHalfPipe::calcLanding(bool) {
     if (state()->isOverZipper()) {
         state()->setZipperStick(false);
     }
+}
+
+/// @addr{0x805758E4}
+void KartHalfPipe::end(bool boost) {
+    if (state()->isOverZipper()) {
+        if (state()->airtime() > 5 && boost) {
+            move()->activateZipperBoost();
+        }
+
+        move()->setDir(mainRot().rotateVector(EGG::Vector3f::ez));
+        move()->setVel1Dir(move()->dir());
+    }
+
+    state()->setOverZipper(false);
+    state()->setZipperStick(false);
 }
 
 } // namespace Kart

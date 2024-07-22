@@ -14,6 +14,7 @@ public:
     void reset();
     void calc();
     void calcLanding(bool);
+    void end(bool boost);
 
     /// @addr{0x80574108}
     static consteval f32 TerminalVelocity() {

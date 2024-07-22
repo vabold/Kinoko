@@ -12,7 +12,7 @@ Test Case                                                 | Frames      |     | 
 [`mc-ng-rta-1-20-357`](https://youtu.be/kG8PvG8K1ZA)      | 1222 / 4228 | ❌ | KMP
 [`cm-rta-0-25-145`](https://youtu.be/F_RUQVghmuA)         | 1919 / 1919 | ✔️ |
 [`cm-ng-rta-1-55-264`](https://youtu.be/XxKG3IYWduE)      | 651 / 7320  | ❌ | KMP
-[`dks-rta-1-44-568`](https://youtu.be/b9hacHlifcw)        | 1147 / 6679 | ❌ | Zipper landing boost
+[`dks-rta-1-44-568`](https://youtu.be/b9hacHlifcw)        | 2056 / 6679 | ❌ | Zipper stick physics
 [`wgm-rta-0-31-678`](https://youtu.be/VVFXP639DRY)        | 2310 / 2310 | ✔️ |
 [`wgm-ng-rta-1-49-934`](https://youtu.be/NbhzA2rtZ2A)     | 7001 / 7001 | ✔️ |
 [`dc-rta-1-28-321`](https://youtu.be/Rs5AK3iHVno)         | 1058 / 5705 | ❌ | KMP
@@ -53,7 +53,7 @@ Test Case                                                 | Frames      |     | 
 [`rmc-ng-rta-1-30-272`](https://youtu.be/HSatgyRolcI)     | 5822 / 5822 | ✔️ |
 [`rmc3-rta-1-17-843`](https://youtu.be/6H6UnSDPPdI)       | 5077 / 5077 | ✔️ |
 [`rpg-rta-1-58-890`](https://youtu.be/vu0vpmTmcbg)        | 7538 / 7538 | ✔️ |
-[`rdkm-rta-1-58-133`](https://youtu.be/s3uqTaxr_4A)       | 2094 / 7492 | ❌ | Zipper
+[`rdkm-rta-1-58-133`](https://youtu.be/s3uqTaxr_4A)       | 2544 / 7492 | ❌ | KMP bridge object
 [`rdkm-ng-rta-2-04-775`](https://youtu.be/jk5NIcHWQ-Y)    | 2717 / 7890 | ❌ | KMP bridge object
 [`rbc-rta-2-17-997`](https://youtu.be/6Wri7nBtZMk)        | 1168 / 8683 | ❌ | Respawn position
 [`rbc-ng-rta-2-30-459`](https://youtu.be/twZes-RI6Sc)     | 9430 / 9430 | ✔️ |
