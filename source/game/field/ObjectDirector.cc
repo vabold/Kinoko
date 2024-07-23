@@ -51,6 +51,11 @@ void ObjectDirector::createObjects() {
             continue;
         }
 
+        // Prevent construction of objects with disabled or no collision
+        if (IsObjectBlacklisted(pObj->id())) {
+            continue;
+        }
+
         m_objects.push_back(createObject(*pObj));
     }
 }
