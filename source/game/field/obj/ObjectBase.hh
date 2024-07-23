@@ -1,14 +1,15 @@
 #pragma once
 
-#include "game/field/ObjectId.hh"
+#include "game/field/obj/ObjectId.hh"
 
 #include "game/system/map/MapdataGeoObj.hh"
 
 namespace Field {
 
-class Object {
+class ObjectBase {
 public:
-    Object(const System::MapdataGeoObj &params);
+    ObjectBase(const System::MapdataGeoObj &params);
+    virtual ~ObjectBase();
 
 protected:
     ObjectId m_id;
