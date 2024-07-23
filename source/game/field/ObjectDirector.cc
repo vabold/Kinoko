@@ -1,7 +1,8 @@
 #include "ObjectDirector.hh"
 
+#include "game/field/obj/ObjectRegistry.hh"
+
 #include "game/system/CourseMap.hh"
-#include "game/system/map/MapdataGeoObj.hh"
 
 namespace Field {
 
@@ -61,8 +62,16 @@ void ObjectDirector::createObjects() {
 }
 
 /// @addr{0x80821E14}
-Object *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
-    return new Object(params);
+ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
+    ObjectId id = static_cast<ObjectId>(params.id());
+    switch (id) {
+    case ObjectId::DokanSFC:
+        return new ObjectDokan(params);
+    case ObjectId::OilSFC:
+        return new ObjectOilSFC(params);
+    default:
+        return new ObjectNoImpl(params);
+    }
 }
 
 ObjectDirector *ObjectDirector::s_instance = nullptr; ///< @addr{0x809C4330}

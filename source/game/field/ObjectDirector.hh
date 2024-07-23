@@ -1,6 +1,6 @@
 #pragma once
 
-#include "game/field/Object.hh"
+#include "game/field/obj/ObjectBase.hh"
 
 #include <vector>
 
@@ -17,9 +17,9 @@ private:
     ~ObjectDirector();
 
     void createObjects();
-    Object *createObject(const System::MapdataGeoObj &params);
+    ObjectBase *createObject(const System::MapdataGeoObj &params);
 
-    std::vector<Object *> m_objects;
+    std::vector<ObjectBase *> m_objects;
 
     static ObjectDirector *s_instance;
 };
