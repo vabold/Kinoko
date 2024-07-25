@@ -971,25 +971,27 @@ void KartMove::calcRotation() {
         }
     }
 
-    if (!state()->isTouchingGround()) {
-        if (state()->isRampBoost() && m_jump->isBoostRampEnabled()) {
-            turn = 0.0f;
-        } else {
-            u32 airtime = state()->airtime();
-            if (airtime >= 70) {
+    if (!state()->isZipperTrick()) {
+        if (!state()->isTouchingGround()) {
+            if (state()->isRampBoost() && m_jump->isBoostRampEnabled()) {
                 turn = 0.0f;
-            } else if (airtime >= 30) {
-                turn = std::max(0.0f, turn * (1.0f - (airtime - 30) * 0.025f));
+            } else {
+                u32 airtime = state()->airtime();
+                if (airtime >= 70) {
+                    turn = 0.0f;
+                } else if (airtime >= 30) {
+                    turn = std::max(0.0f, turn * (1.0f - (airtime - 30) * 0.025f));
+                }
             }
         }
-    }
 
-    const EGG::Vector3f forward = dynamics()->mainRot().rotateVector(EGG::Vector3f::ez);
-    f32 angle = EGG::Mathf::atan2(forward.cross(m_dir).length(), forward.dot(m_dir));
-    angle = EGG::Mathf::abs(angle) * RAD2DEG;
+        const EGG::Vector3f forward = dynamics()->mainRot().rotateVector(EGG::Vector3f::ez);
+        f32 angle = EGG::Mathf::atan2(forward.cross(m_dir).length(), forward.dot(m_dir));
+        angle = EGG::Mathf::abs(angle) * RAD2DEG;
 
-    if (angle > 60.0f) {
-        turn *= std::max(0.0f, 1.0f - (angle - 60.0f) / 40.0f);
+        if (angle > 60.0f) {
+            turn *= std::max(0.0f, 1.0f - (angle - 60.0f) / 40.0f);
+        }
     }
 
     calcVehicleRotation(turn);
@@ -1744,16 +1746,18 @@ void KartMove::activateMushroom() {
 /// @addr{0x8057F96C}
 void KartMove::activateZipperBoost() {
     constexpr s16 BASE_DURATION = 50;
+    constexpr s16 TRICK_DURATION = 100;
 
     if (state()->isBeforeRespawn()) {
         return;
     }
 
-    activateBoost(KartBoost::Type::TrickAndZipper, BASE_DURATION);
+    s16 boostDuration = state()->isZipperTrick() ? TRICK_DURATION : BASE_DURATION;
+    activateBoost(KartBoost::Type::TrickAndZipper, boostDuration);
 
-    setOffroadInvincibility(BASE_DURATION);
+    setOffroadInvincibility(boostDuration);
     m_zipperBoostTimer = 0;
-    m_zipperBoostMax = BASE_DURATION;
+    m_zipperBoostMax = boostDuration;
     state()->setZipperBoost(true);
 }
 
