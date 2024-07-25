@@ -65,6 +65,7 @@ void KartState::reset() {
     m_hwgTimer = 0;
     m_boostRampType = -1;
     m_jumpPadVariant = -1;
+    m_halfPipeInvisibilityTimer = 0;
     m_startBoostCharge = 0.0f;
     m_stickX = 0.0f;
     m_wallBonkTimer = 0;
@@ -233,11 +234,14 @@ void KartState::calcCollisions() {
         wallNrm += colData.noBounceWallNrm;
     }
 
+    bool bVar3 = colData.bInvisibleWallOnly && m_halfPipeInvisibilityTimer > 0;
+    m_halfPipeInvisibilityTimer = std::max(0, m_halfPipeInvisibilityTimer - 1);
+
     m_wallBonkTimer = std::max(0, m_wallBonkTimer - 1);
 
     bool hwg = false;
 
-    if (colData.bWall || colData.bWall3) {
+    if ((colData.bWall || colData.bWall3) && !bVar3) {
         if (colData.bWall) {
             m_bWallCollision = true;
         }
@@ -311,6 +315,10 @@ void KartState::calcCollisions() {
         m_top.normalise();
 
         m_bTouchingGround = true;
+
+        if (state()->isOverZipper()) {
+            halfPipe()->end(true);
+        }
 
         if (trickable) {
             m_trickableTimer = 3;
@@ -559,6 +567,10 @@ bool KartState::isZipperBoost() const {
     return m_bZipperBoost;
 }
 
+bool KartState::isZipperTrick() const {
+    return m_bZipperTrick;
+}
+
 bool KartState::isZipperStick() const {
     return m_bZipperStick;
 }
@@ -695,6 +707,7 @@ void KartState::clearBitfield1() {
     m_bDisableBackwardsAccel = false;
     m_bZipperBoost = false;
     m_bZipperStick = false;
+    m_bZipperTrick = false;
     m_bTrickRot = false;
     m_bChargingSsmt = false;
     m_bRejectRoad = false;
@@ -827,6 +840,10 @@ void KartState::setZipperStick(bool isSet) {
     m_bZipperStick = isSet;
 }
 
+void KartState::setZipperTrick(bool isSet) {
+    m_bZipperTrick = isSet;
+}
+
 void KartState::setTrickRot(bool isSet) {
     m_bTrickRot = isSet;
 }
@@ -881,6 +898,10 @@ void KartState::setBoostRampType(s32 val) {
 
 void KartState::setJumpPadVariant(s32 val) {
     m_jumpPadVariant = val;
+}
+
+void KartState::setHalfPipeInvisibilityTimer(s16 val) {
+    m_halfPipeInvisibilityTimer = val;
 }
 
 void KartState::setTrickableTimer(s16 val) {

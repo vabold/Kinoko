@@ -34,6 +34,7 @@ struct CollisionData {
     bool bFloor; ///< Set if colliding with KCL which satisfies #KCL_TYPE_FLOOR
     bool bWall;  ///< Set if colliding with KCL which satisfies #KCL_TYPE_WALL
     bool bWall3; ///< Set if colliding with #COL_TYPE_WALL_2
+    bool bInvisibleWallOnly;
     bool bSoftWall;
     bool bTrickable;
     bool bWallAtLeftCloser;
