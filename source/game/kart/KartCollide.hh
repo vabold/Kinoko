@@ -75,6 +75,7 @@ public:
     void calcTriggers(Field::KCLTypeMask *mask, const EGG::Vector3f &pos, bool twoPoint);
     void handleTriggers(Field::KCLTypeMask *mask);
     void calcFallBoundary(Field::KCLTypeMask *mask, bool shortBoundary);
+    void calcBeforeRespawn();
     void activateOob(bool detachCamera, Field::KCLTypeMask *mask, bool somethingCPU,
             bool somethingBullet);
     void calcWheelCollision(u16 wheelIdx, CollisionGroup *hitboxGroup, const EGG::Vector3f &colVel,

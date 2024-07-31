@@ -317,6 +317,13 @@ void KartCollide::calcFallBoundary(Field::KCLTypeMask *mask, bool /*shortBoundar
     activateOob(false, mask, false, false);
 }
 
+/// @addr{0x80573ED4}
+void KartCollide::calcBeforeRespawn() {
+    if (pos().y < 0.0f) {
+        activateOob(true, nullptr, false, false);
+    }
+}
+
 /// @addr{0x80573B00}
 void KartCollide::activateOob(bool /*detachCamera*/, Field::KCLTypeMask * /*mask*/,
         bool /*somethingCPU*/, bool /*somethingBullet*/) {
