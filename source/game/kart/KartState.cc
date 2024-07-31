@@ -122,6 +122,8 @@ void KartState::calcInput() {
 void KartState::calc() {
     resetFlags();
 
+    collide()->calcBeforeRespawn();
+
     calcCollisions();
     collide()->calcBoundingRadius();
 }
