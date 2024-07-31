@@ -5,6 +5,7 @@
 #include "game/system/map/MapdataCheckPoint.hh"
 #include "game/system/map/MapdataFileAccessor.hh"
 #include "game/system/map/MapdataGeoObj.hh"
+#include "game/system/map/MapdataJugemPoint.hh"
 #include "game/system/map/MapdataStageInfo.hh"
 #include "game/system/map/MapdataStartPoint.hh"
 
@@ -22,6 +23,7 @@ void CourseMap::init() {
     constexpr u32 CHECK_PATH_SIGNATURE = 0x434b5048;
     constexpr u32 CHECK_POINT_SIGNATURE = 0x434b5054;
     constexpr u32 GEO_OBJ_SIGNATURE = 0x474f424a;
+    constexpr u32 JUGEM_POINT_SIGNATURE = 0x4a475054;
     constexpr u32 START_POINT_SIGNATURE = 0x4b545054;
     constexpr u32 STAGE_INFO_SIGNATURE = 0x53544749;
 
@@ -29,6 +31,7 @@ void CourseMap::init() {
     m_checkPath = parseCheckPath(CHECK_PATH_SIGNATURE);
     m_checkPoint = parseCheckPoint(CHECK_POINT_SIGNATURE);
     m_geoObj = parseGeoObj(GEO_OBJ_SIGNATURE);
+    m_jugemPoint = parseJugemPoint(JUGEM_POINT_SIGNATURE);
     m_cannonPoint = parseCannonPoint(CANNON_POINT_SIGNATURE);
     m_stageInfo = parseStageInfo(STAGE_INFO_SIGNATURE);
 
@@ -91,6 +94,18 @@ MapdataGeoObjAccessor *CourseMap::parseGeoObj(u32 sectionName) const {
     MapdataGeoObjAccessor *accessor = nullptr;
     if (sectionPtr) {
         accessor = new MapdataGeoObjAccessor(sectionPtr);
+    }
+
+    return accessor;
+}
+
+/// @addr{0x805130C4}
+MapdataJugemPointAccessor *CourseMap::parseJugemPoint(u32 sectionName) {
+    const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
+
+    MapdataJugemPointAccessor *accessor = nullptr;
+    if (sectionPtr) {
+        accessor = new MapdataJugemPointAccessor(sectionPtr);
     }
 
     return accessor;

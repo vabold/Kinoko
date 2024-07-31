@@ -15,6 +15,8 @@ class MapdataCheckPointAccessor;
 class MapdataFileAccessor;
 class MapdataGeoObj;
 class MapdataGeoObjAccessor;
+class MapdataJugemPoint;
+class MapdataJugemPointAccessor;
 class MapdataStageInfo;
 class MapdataStageInfoAccessor;
 class MapdataStartPoint;
@@ -30,6 +32,7 @@ public:
     [[nodiscard]] MapdataCheckPathAccessor *parseCheckPath(u32 sectionName) const;
     [[nodiscard]] MapdataCheckPointAccessor *parseCheckPoint(u32 sectionName) const;
     [[nodiscard]] MapdataGeoObjAccessor *parseGeoObj(u32 sectionName) const;
+    [[nodiscard]] MapdataJugemPointAccessor *parseJugemPoint(u32 sectionName);
     [[nodiscard]] MapdataStageInfoAccessor *parseStageInfo(u32 sectionName) const;
     [[nodiscard]] MapdataStartPointAccessor *parseStartPoint(u32 sectionName) const;
 
@@ -63,6 +66,7 @@ private:
     MapdataCheckPathAccessor *m_checkPath;
     MapdataCheckPointAccessor *m_checkPoint;
     MapdataGeoObjAccessor *m_geoObj;
+    MapdataJugemPointAccessor *m_jugemPoint;
     MapdataCannonPointAccessor *m_cannonPoint;
     MapdataStageInfoAccessor *m_stageInfo;
 
