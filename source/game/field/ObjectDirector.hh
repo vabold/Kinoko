@@ -1,5 +1,6 @@
 #pragma once
 
+#include "game/field/ObjectFlowTable.hh"
 #include "game/field/obj/ObjectBase.hh"
 
 #include <vector>
@@ -20,6 +21,7 @@ private:
     ObjectBase *createObject(const System::MapdataGeoObj &params);
 
     std::vector<ObjectBase *> m_objects;
+    ObjectFlowTable m_flowTable;
 
     static ObjectDirector *s_instance;
 };
