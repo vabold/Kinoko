@@ -28,7 +28,7 @@ ObjectDirector *ObjectDirector::Instance() {
 }
 
 /// @addr{0x8082A38C}
-ObjectDirector::ObjectDirector() = default;
+ObjectDirector::ObjectDirector() : m_flowTable("ObjFlow.bin") {}
 
 /// @addr{0x8082A694}
 ObjectDirector::~ObjectDirector() {
