@@ -34,15 +34,6 @@ static constexpr std::array<CannonParameter, 3> CANNON_PARAMETERS = {{
         {120.0f, 2000.0f, 1000.0f, 45.0f},
 }};
 
-/// @brief Rate at which the kart's leaning rotation increases during the race
-static constexpr f32 LEAN_ROT_INC_RACE = 0.1f;
-/// @brief Max leaning rotation during the race
-static constexpr f32 LEAN_ROT_CAP_RACE = 1.0f;
-/// @brief Rate at which the kart's leaning rotation increases during the countdown
-static constexpr f32 LEAN_ROT_INC_COUNTDOWN = 0.08f;
-/// @brief Max leaning rotation during the countdown
-static constexpr f32 LEAN_ROT_CAP_COUNTDOWN = 0.6f;
-
 /// @addr{0x80577FC4}
 KartMove::KartMove() : m_smoothedUp(EGG::Vector3f::ey), m_scale(1.0f, 1.0f, 1.0f) {
     m_totalScale = 1.0f;
@@ -2252,11 +2243,11 @@ void KartMoveBike::setTurnParams() {
     }
 
     if (System::RaceManager::Instance()->isStageReached(System::RaceManager::Stage::Race)) {
-        m_leanRotInc = LEAN_ROT_INC_RACE;
-        m_leanRotCap = LEAN_ROT_CAP_RACE;
+        m_leanRotInc = m_turningParams->leanRotIncRace;
+        m_leanRotCap = m_turningParams->leanRotCapRace;
     } else {
-        m_leanRotInc = LEAN_ROT_INC_COUNTDOWN;
-        m_leanRotCap = LEAN_ROT_CAP_COUNTDOWN;
+        m_leanRotInc = m_turningParams->leanRotIncCountdown;
+        m_leanRotCap = m_turningParams->leanRotCapCountdown;
     }
 }
 
