@@ -413,7 +413,7 @@ void KartMove::calcDirs() {
 
         EGG::Vector3f dirDiff = local_b8 - m_dir;
 
-        if (dirDiff.dot() <= FLT_EPSILON) {
+        if (dirDiff.dot() <= std::numeric_limits<f32>::epsilon()) {
             m_dir = local_b8;
             m_dirDiff.setZero();
         } else {
@@ -1420,7 +1420,7 @@ void KartMove::calcVehicleRotation(f32 turn) {
         EGG::Vector3f frontSpeed = velocity().rej(front).perpInPlane(m_up, false);
         f32 magnitude = tiltMagnitude;
 
-        if (frontSpeed.dot() > FLT_EPSILON) {
+        if (frontSpeed.dot() > std::numeric_limits<f32>::epsilon()) {
             magnitude = frontSpeed.length();
 
             if (front.z * frontSpeed.x - front.x * frontSpeed.z > 0.0f) {
@@ -2095,7 +2095,7 @@ void KartMoveBike::calcVehicleRotation(f32 turn) {
     scalar = std::min(1.0f, scalar);
 
     EGG::Vector3f top = scalar * m_up + (1.0f - scalar) * EGG::Vector3f::ey;
-    if (FLT_EPSILON < top.dot()) {
+    if (std::numeric_limits<f32>::epsilon() < top.dot()) {
         top.normalise();
     }
     dynamics()->setTop_(top);

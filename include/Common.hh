@@ -4,10 +4,7 @@
 #pragma once
 
 #include <array>
-#include <bit>
 #include <cassert>
-#include <cfloat>
-#include <concepts>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -375,7 +372,7 @@ static constexpr const char *VEHICLE_NAMES[36] = {
         exit(1); \
     } while (0)
 
-static_assert(FLT_EPSILON == 1.0f / 8388608.0f);
+static_assert(std::numeric_limits<f32>::epsilon() == 1.0f / 8388608.0f);
 static_assert(
         std::endian::native == std::endian::big || std::endian::native == std::endian::little);
 

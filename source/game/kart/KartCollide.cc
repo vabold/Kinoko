@@ -608,7 +608,7 @@ void KartCollide::applySomeFloorMoment(f32 down, f32 rate, CollisionGroup *hitbo
     crossVec = colData.floorNrm.cross(negSpeed);
     crossVec = crossVec.cross(colData.floorNrm);
 
-    if (FLT_EPSILON >= crossVec.dot()) {
+    if (std::numeric_limits<f32>::epsilon() >= crossVec.dot()) {
         return;
     }
 
