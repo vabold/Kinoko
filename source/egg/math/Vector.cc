@@ -23,7 +23,7 @@ f32 Vector2f::dot() const {
 }
 
 f32 Vector2f::length() const {
-    return dot() > FLT_EPSILON ? Mathf::sqrt(dot()) : 0.0f;
+    return dot() > std::numeric_limits<f32>::epsilon() ? Mathf::sqrt(dot()) : 0.0f;
 }
 
 /// @addr{0x80243A00}
@@ -80,7 +80,7 @@ f32 Vector3f::length() const {
 /// @return (optional) The length of the vector before normalisation.
 f32 Vector3f::normalise() {
     f32 len = length();
-    if (FLT_EPSILON < dot()) {
+    if (std::numeric_limits<f32>::epsilon() < dot()) {
         *this = *this * (1.0f / len);
     }
 

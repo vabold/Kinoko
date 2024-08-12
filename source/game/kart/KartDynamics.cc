@@ -84,14 +84,14 @@ void KartDynamics::calc(f32 dt, f32 maxSpeed, bool /*air*/) {
     EGG::Vector3f playerBackHoriz = playerBack;
     playerBackHoriz.y = 0.0f;
 
-    if (FLT_EPSILON < playerBackHoriz.dot()) {
+    if (std::numeric_limits<f32>::epsilon() < playerBackHoriz.dot()) {
         playerBackHoriz.normalise();
         const auto [proj, rej] = m_extVel.projAndRej(playerBackHoriz);
         const EGG::Vector3f &speedBack = proj;
         m_extVel = rej;
 
         f32 norm = speedBack.dot();
-        if (FLT_EPSILON < norm) {
+        if (std::numeric_limits<f32>::epsilon() < norm) {
             norm = EGG::Mathf::sqrt(norm);
         } else {
             norm = 0.0f;
@@ -121,10 +121,10 @@ void KartDynamics::calc(f32 dt, f32 maxSpeed, bool /*air*/) {
 
     EGG::Vector3f angVelSum = m_angVel2 + m_angVel1 + m_angVel0Factor * m_angVel0;
 
-    if (FLT_EPSILON < angVelSum.dot()) {
+    if (std::numeric_limits<f32>::epsilon() < angVelSum.dot()) {
         m_mainRot += m_mainRot.multSwap(angVelSum) * (dt * 0.5f);
 
-        if (EGG::Mathf::abs(m_mainRot.dot()) < FLT_EPSILON) {
+        if (EGG::Mathf::abs(m_mainRot.dot()) < std::numeric_limits<f32>::epsilon()) {
             m_mainRot = EGG::Quatf::ident;
         } else {
             m_mainRot.normalise();
@@ -135,7 +135,7 @@ void KartDynamics::calc(f32 dt, f32 maxSpeed, bool /*air*/) {
         stabilize();
     }
 
-    if (EGG::Mathf::abs(m_mainRot.dot()) < FLT_EPSILON) {
+    if (EGG::Mathf::abs(m_mainRot.dot()) < std::numeric_limits<f32>::epsilon()) {
         m_mainRot = EGG::Quatf::ident;
     } else {
         m_mainRot.normalise();

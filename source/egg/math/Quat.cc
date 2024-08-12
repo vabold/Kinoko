@@ -31,7 +31,7 @@ void Quatf::setRPY(const Vector3f &rpy) {
 /// @addr{0x8023A168}
 /// @brief Scales the quaternion to a unit length.
 void Quatf::normalise() {
-    f32 len = dot() > FLT_EPSILON ? Mathf::sqrt(dot()) : 0.0f;
+    f32 len = dot() > std::numeric_limits<f32>::epsilon() ? Mathf::sqrt(dot()) : 0.0f;
 
     if (len != 0.0f) {
         f32 inv = 1.0f / len;
@@ -46,7 +46,7 @@ void Quatf::makeVectorRotation(const Vector3f &from, const Vector3f &to) {
     f32 t0 = std::max(0.0f, (from.dot(to) + 1) * 2.0f);
     t0 = Mathf::sqrt(t0);
 
-    if (t0 <= FLT_EPSILON) {
+    if (t0 <= std::numeric_limits<f32>::epsilon()) {
         *this = Quatf::ident;
     } else {
         const f32 inv = 1.0f / t0;
