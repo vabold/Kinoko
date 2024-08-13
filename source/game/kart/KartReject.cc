@@ -59,28 +59,30 @@ void KartReject::calcRejectRoad() {
 
         state()->setHop(false);
 
-        if (!calcRejection()) {
+        if (!state()->isNoSparkInvisibleWall() && !calcRejection()) {
             state()->setRejectRoadTrigger(false);
         }
-    } else {
-        if (!state()->isRejectRoad()) {
-            return;
-        }
 
-        EGG::Vector3f upXZ = move()->up();
-        upXZ.y = 0.0f;
+        return;
+    }
 
-        if (upXZ.length() > 0.0f && speed() > 0.0f) {
-            upXZ.normalise();
-            EGG::Vector3f local_88 = move()->lastDir().perpInPlane(upXZ, true);
+    if (!state()->isRejectRoad()) {
+        return;
+    }
 
-            if (local_88.y > 0.0f) {
-                EGG::Vector3f upCross = EGG::Vector3f::ey.cross(local_88);
-                m_rejectSign = upCross.dot(move()->up()) > 0.0f ? 1.0f : -1.0f;
+    EGG::Vector3f upXZ = move()->up();
+    upXZ.y = 0.0f;
 
-                state()->setHop(false);
-                state()->setRejectRoadTrigger(true);
-            }
+    if (upXZ.length() > 0.0f && speed() > 0.0f) {
+        upXZ.normalise();
+        EGG::Vector3f local_88 = move()->lastDir().perpInPlane(upXZ, true);
+
+        if (local_88.y > 0.0f) {
+            EGG::Vector3f upCross = EGG::Vector3f::ey.cross(local_88);
+            m_rejectSign = upCross.dot(move()->up()) > 0.0f ? 1.0f : -1.0f;
+
+            state()->setHop(false);
+            state()->setRejectRoadTrigger(true);
         }
     }
 }
@@ -89,6 +91,7 @@ void KartReject::calcRejectRoad() {
 bool KartReject::calcRejection() {
     Field::CourseColMgr::CollisionInfo colInfo;
     Field::KCLTypeMask mask = KCL_NONE;
+    state()->setNoSparkInvisibleWall(false);
     EGG::Vector3f worldUpPos = dynamics()->pos() + bodyUp() * 100.0f;
     f32 posScalar = 100.0f;
     f32 radius = posScalar;
@@ -109,16 +112,31 @@ bool KartReject::calcRejection() {
 
         bool hasFloorCollision = false;
         bool hasRejectCollision = false;
+        bool hasInvisibleWallCollision = false;
         EGG::Vector3f tangentOff;
 
-        if (mask & KCL_TYPE_DRIVER_FLOOR) {
-            hasFloorCollision = colDir->findClosestCollisionEntry(&mask, KCL_TYPE_DRIVER_FLOOR);
+        if (mask & KCL_TYPE_INVISIBLE_WALL) {
+            hasInvisibleWallCollision =
+                    colDir->findClosestCollisionEntry(&mask, KCL_TYPE_INVISIBLE_WALL);
         }
 
         const auto *closestColEntry = colDir->closestCollisionEntry();
-        if (hasFloorCollision && closestColEntry->attribute & 0x4000) {
+        if (hasInvisibleWallCollision && KCL_VARIANT_TYPE(closestColEntry->attribute) == 0) {
             hasRejectCollision = true;
-            tangentOff = colInfo.floorNrm;
+            tangentOff = colInfo.wallNrm;
+            state()->setNoSparkInvisibleWall(true);
+        } else {
+            if (!(mask & KCL_TYPE_DRIVER_FLOOR)) {
+                hasFloorCollision = false;
+            } else {
+                hasFloorCollision = colDir->findClosestCollisionEntry(&mask, KCL_TYPE_DRIVER_FLOOR);
+            }
+
+            closestColEntry = colDir->closestCollisionEntry();
+            if (hasFloorCollision && closestColEntry->attribute & 0x4000) {
+                hasRejectCollision = true;
+                tangentOff = colInfo.floorNrm;
+            }
         }
 
         if (!hasRejectCollision) {
@@ -130,7 +148,7 @@ bool KartReject::calcRejection() {
         move()->setSmoothedUp(move()->up());
 
         bool bVar15 = tangentOff.dot(EGG::Vector3f::ey) < -0.17f;
-        if (bVar15 || extVel().y < 0.0f) {
+        if (bVar15 || extVel().y < 0.0f || state()->isNoSparkInvisibleWall()) {
             radius = -radius;
             colInfo.tangentOff += worldPos;
 
@@ -139,7 +157,9 @@ bool KartReject::calcRejection() {
             speedScalar = std::min(1.0f, std::max(0.0f, speedScalar));
 
             EGG::Vector3f posOffset =
-                    (colInfo.tangentOff + radius * tangentOff + yOffset * tangentOff) - pos();
+                    colInfo.tangentOff + radius * tangentOff + yOffset * tangentOff;
+            posOffset.y += move()->hopPosY();
+            posOffset -= pos();
             setPos(pos() + posOffset * speedScalar);
         }
 

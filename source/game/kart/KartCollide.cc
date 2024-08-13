@@ -94,7 +94,8 @@ void KartCollide::findCollision() {
 void KartCollide::FUN_80572F4C() {
     f32 fVar1;
 
-    if (state()->isBoost() || state()->isOverZipper() || state()->isHalfPipeRamp()) {
+    if (state()->isBoost() || state()->isOverZipper() || state()->isNoSparkInvisibleWall() ||
+            state()->isHalfPipeRamp()) {
         fVar1 = 0.0f;
     } else {
         fVar1 = 0.05f;

@@ -30,11 +30,7 @@ static constexpr std::array<StartBoostEntry, 6> START_BOOST_ENTRIES = {{
 KartState::KartState() {
     clearBitfield0();
     clearBitfield1();
-
-    m_bWheelieRot = false;
-    m_bSkipWheelCalc = false;
-    m_bJumpPadDisableYsusForce = false;
-
+    clearBitfield2();
     clearBitfield3();
 
     m_bAutoDrift = inputs()->driftIsAuto();
@@ -52,11 +48,7 @@ void KartState::init() {
 /// @addr{0x80594594}
 void KartState::reset() {
     clearBitfield3();
-
-    m_bWheelieRot = false;
-    m_bSkipWheelCalc = false;
-    m_bJumpPadDisableYsusForce = false;
-
+    clearBitfield2();
     clearBitfield1();
     clearBitfield0();
 
@@ -609,6 +601,10 @@ bool KartState::isSkipWheelCalc() const {
     return m_bSkipWheelCalc;
 }
 
+bool KartState::isNoSparkInvisibleWall() const {
+    return m_bNoSparkInvisibleWall;
+}
+
 bool KartState::isUNK2() const {
     return m_bUNK2;
 }
@@ -715,6 +711,14 @@ void KartState::clearBitfield1() {
     m_bRejectRoad = false;
     m_bRejectRoadTrigger = false;
     m_bTrickable = false;
+}
+
+/// @brief Helper function to clear all bit flags at 0xC-0xF in KartState.
+void KartState::clearBitfield2() {
+    m_bWheelieRot = false;
+    m_bSkipWheelCalc = false;
+    m_bNoSparkInvisibleWall = false;
+    m_bJumpPadDisableYsusForce = false;
 }
 
 /// @brief Helper function to clear all bit flags at 0x10-0x13 in KartState.
@@ -872,6 +876,10 @@ void KartState::setWheelieRot(bool isSet) {
 
 void KartState::setSkipWheelCalc(bool isSet) {
     m_bSkipWheelCalc = isSet;
+}
+
+void KartState::setNoSparkInvisibleWall(bool isSet) {
+    m_bNoSparkInvisibleWall = isSet;
 }
 
 void KartState::setJumpPadDisableYsusForce(bool isSet) {
