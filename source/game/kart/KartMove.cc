@@ -391,9 +391,10 @@ void KartMove::calcDirs() {
     m_flags.setBit(eFlags::LaunchBoost);
 
     if (!state()->isInATrick() && !state()->isOverZipper() &&
-            (state()->isTouchingGround() || !state()->isRampBoost() ||
-                    !m_jump->isBoostRampEnabled()) &&
-            !state()->isJumpPad() && state()->airtime() <= 5) {
+            (((state()->isTouchingGround() || !state()->isRampBoost() ||
+                      !m_jump->isBoostRampEnabled()) &&
+                     !state()->isJumpPad() && state()->airtime() <= 5) ||
+                    state()->isNoSparkInvisibleWall())) {
         if (state()->isHop()) {
             local_88 = m_hopDir;
         }

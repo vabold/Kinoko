@@ -28,6 +28,7 @@ public:
     /// @beginSetters
     void clearBitfield0();
     void clearBitfield1();
+    void clearBitfield2();
     void clearBitfield3();
 
     void setAccelerate(bool isSet);
@@ -67,6 +68,7 @@ public:
     void setTrickable(bool isSet);
     void setWheelieRot(bool isSet);
     void setSkipWheelCalc(bool isSet);
+    void setNoSparkInvisibleWall(bool isSet);
     void setJumpPadDisableYsusForce(bool isSet);
     void setSomethingWallCollision(bool isSet);
     void setSoftWallDrift(bool isSet);
@@ -128,6 +130,7 @@ public:
     [[nodiscard]] bool isTrickable() const;
     [[nodiscard]] bool isWheelieRot() const;
     [[nodiscard]] bool isSkipWheelCalc() const;
+    [[nodiscard]] bool isNoSparkInvisibleWall() const;
     [[nodiscard]] bool isJumpPadDisableYsusForce() const;
     [[nodiscard]] bool isUNK2() const;
     [[nodiscard]] bool isSomethingWallCollision() const;
@@ -211,6 +214,7 @@ private:
     /// @{
     bool m_bWheelieRot;
     bool m_bSkipWheelCalc;
+    bool m_bNoSparkInvisibleWall;
     bool m_bJumpPadDisableYsusForce;
     /// @}
 
