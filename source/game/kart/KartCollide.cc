@@ -27,6 +27,7 @@ void KartCollide::init() {
     calcBoundingRadius();
     m_surfaceFlags.makeAllZero();
     m_respawnTimer = 0;
+    m_solidOobTimer = 0;
     m_smoothedBack = 0.0f;
     m_suspBottomHeightNonSoftWall = 0.0f;
     m_suspBottomHeightSoftWall = 0.0f;
@@ -258,8 +259,8 @@ void KartCollide::calcFloorEffect() {
     }
 
     m_suspBottomHeightNonSoftWall = 0.0f;
-    m_surfaceFlags.resetBit(eSurfaceFlags::BoostRamp, eSurfaceFlags::Offroad,
-            eSurfaceFlags::Trickable, eSurfaceFlags::NotTrickable);
+    m_surfaceFlags.resetBit(eSurfaceFlags::Wall, eSurfaceFlags::SolidOOB, eSurfaceFlags::BoostRamp,
+            eSurfaceFlags::Offroad, eSurfaceFlags::Trickable, eSurfaceFlags::NotTrickable);
     m_suspBottomHeightSoftWall = 0.0f;
     m_someNonSoftWallTimer = 0;
     m_someSoftWallTimer = 0;
@@ -267,8 +268,21 @@ void KartCollide::calcFloorEffect() {
     Field::KCLTypeMask mask = KCL_NONE;
     calcTriggers(&mask, pos(), false);
 
+    if (m_solidOobTimer >= 3 && m_surfaceFlags.onBit(eSurfaceFlags::SolidOOB) &&
+            m_surfaceFlags.offBit(eSurfaceFlags::Wall)) {
+        if (mask & KCL_TYPE_BIT(COL_TYPE_SOLID_OOB)) {
+            Field::CollisionDirector::Instance()->findClosestCollisionEntry(&mask,
+                    KCL_TYPE_BIT(COL_TYPE_SOLID_OOB));
+        }
+
+        activateOob(true, &mask, false, false);
+    }
+
     mask = KCL_NONE;
     calcTriggers(&mask, pos(), true);
+
+    m_solidOobTimer =
+            m_surfaceFlags.onBit(eSurfaceFlags::SolidOOB) ? std::min(3, m_solidOobTimer + 1) : 0;
 }
 
 /// @addr{0x805718D4}
@@ -294,8 +308,18 @@ void KartCollide::calcTriggers(Field::KCLTypeMask *mask, const EGG::Vector3f &po
 
     if (twoPoint) {
         handleTriggers(mask);
-    } else if (*mask & KCL_TYPE_FLOOR) {
-        Field::CollisionDirector::Instance()->findClosestCollisionEntry(mask, KCL_TYPE_FLOOR);
+    } else {
+        if (*mask & KCL_TYPE_FLOOR) {
+            Field::CollisionDirector::Instance()->findClosestCollisionEntry(mask, KCL_TYPE_FLOOR);
+        }
+
+        if (*mask & KCL_TYPE_WALL) {
+            m_surfaceFlags.setBit(eSurfaceFlags::Wall);
+        }
+
+        if (*mask & KCL_TYPE_BIT(COL_TYPE_SOLID_OOB)) {
+            m_surfaceFlags.setBit(eSurfaceFlags::SolidOOB);
+        }
     }
 }
 
