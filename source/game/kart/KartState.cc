@@ -225,7 +225,7 @@ void KartState::calcCollisions() {
     if (softWallCollision && colData.bSoftWall) {
         hitboxGroupSoftWallCollision = true;
         ++softWallCount;
-        wallNrm += colData.noBounceWallNrm;
+        wallNrm += colData.wallNrm;
     }
 
     bool bVar3 = colData.bInvisibleWallOnly && m_halfPipeInvisibilityTimer > 0;
