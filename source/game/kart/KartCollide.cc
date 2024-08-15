@@ -95,8 +95,8 @@ void KartCollide::findCollision() {
 void KartCollide::FUN_80572F4C() {
     f32 fVar1;
 
-    if (state()->isBoost() || state()->isOverZipper() || state()->isNoSparkInvisibleWall() ||
-            state()->isHalfPipeRamp()) {
+    if (state()->isBoost() || state()->isOverZipper() || state()->isHalfPipeInvisibleWall() ||
+            state()->isNoSparkInvisibleWall() || state()->isHalfPipeRamp()) {
         fVar1 = 0.0f;
     } else {
         fVar1 = 0.05f;
@@ -795,8 +795,12 @@ bool KartCollide::FUN_805B6A9C(CollisionData &collisionData, const Hitbox &hitbo
 
         collisionData.wallNrm += colInfo.wallNrm;
 
-        if ((maskOut & KCL_TYPE_ANY_INVISIBLE_WALL) && !(maskOut & KCL_TYPE_4010D000)) {
-            collisionData.bInvisibleWallOnly = true;
+        if (maskOut & KCL_TYPE_ANY_INVISIBLE_WALL) {
+            collisionData.bInvisibleWall = true;
+
+            if (!(maskOut & KCL_TYPE_4010D000)) {
+                collisionData.bInvisibleWallOnly = true;
+            }
         }
 
         if (maskOut & KCL_TYPE_BIT(COL_TYPE_WALL_2)) {

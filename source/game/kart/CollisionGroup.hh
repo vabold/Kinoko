@@ -31,9 +31,10 @@ struct CollisionData {
     s32 intensity;                        ///< The KCL flag's "wheel depth"
     f32 colPerpendicularity;
 
-    bool bFloor; ///< Set if colliding with KCL which satisfies #KCL_TYPE_FLOOR
-    bool bWall;  ///< Set if colliding with KCL which satisfies #KCL_TYPE_WALL
-    bool bWall3; ///< Set if colliding with #COL_TYPE_WALL_2
+    bool bFloor;         ///< Set if colliding with #KCL_TYPE_FLOOR
+    bool bWall;          ///< Set if colliding with #KCL_TYPE_WALL
+    bool bInvisibleWall; ///< Set if colliding with #KCL_TYPE_ANY_INVISIBLE_WALL
+    bool bWall3;         ///< Set if colliding with #COL_TYPE_WALL_2
     bool bInvisibleWallOnly;
     bool bSoftWall;
     bool bTrickable;

@@ -133,6 +133,8 @@ void KartState::resetFlags() {
     m_bAirStart = false;
     m_bStickRight = false;
 
+    m_bHalfPipeInvisibleWall = false;
+
     m_bJumpPadDisableYsusForce = false;
 
     m_stickY = 0.0f;
@@ -270,6 +272,10 @@ void KartState::calcCollisions() {
                 hwg = true;
             }
         }
+    }
+
+    if (colData.bInvisibleWall && state()->isHalfPipeRamp()) {
+        state()->setHalfPipeInvisibleWall(true);
     }
 
     if (softWallCount > 0 || hwg) {
@@ -553,6 +559,10 @@ bool KartState::isOverZipper() const {
     return m_bOverZipper;
 }
 
+bool KartState::isHalfPipeInvisibleWall() const {
+    return m_bHalfPipeInvisibleWall;
+}
+
 bool KartState::isDisableBackwardsAccel() const {
     return m_bDisableBackwardsAccel;
 }
@@ -702,6 +712,7 @@ void KartState::clearBitfield1() {
     m_bBoostOffroadInvincibility = false;
     m_bHalfPipeRamp = false;
     m_bOverZipper = false;
+    m_bHalfPipeInvisibleWall = false;
     m_bDisableBackwardsAccel = false;
     m_bZipperBoost = false;
     m_bZipperStick = false;
@@ -832,6 +843,10 @@ void KartState::setHalfPipeRamp(bool isSet) {
 
 void KartState::setOverZipper(bool isSet) {
     m_bOverZipper = isSet;
+}
+
+void KartState::setHalfPipeInvisibleWall(bool isSet) {
+    m_bHalfPipeInvisibleWall = isSet;
 }
 
 void KartState::setDisableBackwardsAccel(bool isSet) {
