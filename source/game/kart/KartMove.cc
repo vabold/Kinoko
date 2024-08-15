@@ -179,6 +179,8 @@ void KartMove::init(bool b1, bool b2) {
     m_jumpPadMaxSpeed = 0.0f;
     m_jumpPadProperties = nullptr;
     m_rampBoost = 0;
+    m_autoDriftAngle = 0.0f;
+    m_autoDriftStartFrameCounter = 0;
 
     m_cannonEntryOfsLength = 0.0f;
     m_cannonEntryPos.setZero();
@@ -267,6 +269,7 @@ void KartMove::calc() {
     calcRespawnBoost();
     calcSpecialFloor();
     m_jump->calc();
+    calcAutoDrift();
     calcDirs();
     calcStickyRoad();
     calcOffroad();
@@ -500,7 +503,8 @@ void KartMove::calcDirs() {
         }
 
         EGG::Matrix34f mat;
-        mat.setAxisRotation(DEG2RAD * (m_outsideDriftAngle + m_landingAngle), m_smoothedUp);
+        mat.setAxisRotation(DEG2RAD * (m_autoDriftAngle + m_outsideDriftAngle + m_landingAngle),
+                m_smoothedUp);
         EGG::Vector3f local_b8 = mat.multVector(local_88);
         local_b8 = local_b8.perpInPlane(m_smoothedUp, true);
 
@@ -792,6 +796,7 @@ void KartMove::clearDrift() {
     state()->setHop(false);
     state()->setSlipdriftCharge(false);
     state()->setDriftManual(false);
+    m_autoDriftStartFrameCounter = 0;
 }
 
 /// @addr{0x80582DB4}
@@ -830,6 +835,58 @@ void KartMove::clearSsmt() {
 void KartMove::clearOffroadInvincibility() {
     m_offroadInvincibility = 0;
     state()->setBoostOffroadInvincibility(false);
+}
+
+/// @stage 2
+/// @brief Each frame, handles automatic transmission drifting.
+/// @addr{0x8057E0DC}
+void KartMove::calcAutoDrift() {
+    constexpr s16 AUTO_DRIFT_START_DELAY = 12;
+
+    if (!state()->isAutoDrift()) {
+        return;
+    }
+
+    if (canStartDrift() && !state()->isOverZipper() && !state()->isHalfPipeRamp() &&
+            !state()->isWheelie() && EGG::Mathf::abs(state()->stickX()) > 0.85f) {
+        m_autoDriftStartFrameCounter =
+                std::min<s16>(AUTO_DRIFT_START_DELAY, m_autoDriftStartFrameCounter + 1);
+    } else {
+        m_autoDriftStartFrameCounter = 0;
+    }
+
+    if (m_autoDriftStartFrameCounter >= AUTO_DRIFT_START_DELAY) {
+        state()->setDriftAuto(true);
+
+        if (state()->isTouchingGround()) {
+            if (state()->stickX() < 0.0f) {
+                m_hopStickX = 1;
+                m_autoDriftAngle -= 30.0f * param()->stats().driftAutomaticTightness;
+
+            } else {
+                m_hopStickX = -1;
+                m_autoDriftAngle += 30.0f * param()->stats().driftAutomaticTightness;
+            }
+        }
+
+        f32 halfTarget = 0.5f * param()->stats().driftOutsideTargetAngle;
+        m_autoDriftAngle = std::min(halfTarget, std::max(-halfTarget, m_autoDriftAngle));
+    } else {
+        state()->setDriftAuto(false);
+        m_hopStickX = 0;
+
+        if (m_autoDriftAngle > 0.0f) {
+            m_autoDriftAngle =
+                    std::max(0.0f, m_autoDriftAngle - param()->stats().driftOutsideDecrement);
+        } else {
+            m_autoDriftAngle =
+                    std::min(0.0f, m_autoDriftAngle + param()->stats().driftOutsideDecrement);
+        }
+    }
+
+    EGG::Quatf angleAxis;
+    angleAxis.setAxisRotation(m_autoDriftAngle * DEG2RAD, m_up);
+    physics()->composeExtraRot(angleAxis);
 }
 
 /// @stage 2
@@ -1008,14 +1065,16 @@ void KartMove::controlOutsideDriftAngle() {
 void KartMove::calcRotation() {
     f32 turn;
     bool drifting = state()->isDrifting();
+    bool autoDrift = state()->isAutoDrift();
+    const auto &stats = param()->stats();
 
     if (drifting) {
-        turn = param()->stats().driftManualTightness;
+        turn = autoDrift ? stats.driftAutomaticTightness : stats.driftManualTightness;
     } else {
-        turn = param()->stats().handlingManualTightness;
+        turn = autoDrift ? stats.handlingAutomaticTightness : stats.handlingManualTightness;
     }
 
-    if (drifting && param()->stats().driftType != KartParam::Stats::DriftType::Inside_Drift_Bike) {
+    if (drifting && stats.driftType != KartParam::Stats::DriftType::Inside_Drift_Bike) {
         m_outsideDriftBonus *= 0.99f;
         turn += m_outsideDriftBonus;
     }
@@ -1060,6 +1119,13 @@ void KartMove::calcRotation() {
 
         if (state()->isZipperBoost() && !state()->isDriftManual()) {
             turn *= 2.0f;
+        }
+
+        f32 stickX = EGG::Mathf::abs(state()->stickX());
+        if (autoDrift && stickX > 0.3f) {
+            f32 stickScalar = (stickX - 0.3f) / 0.7f;
+            stickX = drifting ? 0.2f : 0.5f;
+            turn += stickScalar * (turn * stickX * m_speedRatioCapped);
         }
     }
 
@@ -2226,6 +2292,7 @@ void KartMoveBike::startWheelie() {
     m_maxWheelieRot = MAX_WHEELIE_ROTATION;
     m_wheelieCooldown = WHEELIE_COOLDOWN;
     m_wheelieRotDec = 0.0f;
+    m_autoHardStickXFrames = 0;
 }
 
 /// @addr{0x805883C4}
@@ -2234,6 +2301,7 @@ void KartMoveBike::startWheelie() {
 void KartMoveBike::cancelWheelie() {
     state()->setWheelie(false);
     m_wheelieRotDec = 0.0f;
+    m_autoHardStickXFrames = 0;
 }
 
 /// @addr{0x80587BB8}
@@ -2387,6 +2455,7 @@ void KartMoveBike::init(bool b1, bool b2) {
     m_maxWheelieRot = 0.0f;
     m_wheelieFrames = 0;
     m_wheelieCooldown = 0;
+    m_autoHardStickXFrames = 0;
 }
 
 /// @stage 2
@@ -2401,13 +2470,25 @@ f32 KartMoveBike::getWheelieSoftSpeedLimitBonus() const {
 /// @addr{0x805883F4}
 void KartMoveBike::calcWheelie() {
     constexpr u32 FAILED_WHEELIE_FRAMES = 15;
+    constexpr f32 AUTO_WHEELIE_CANCEL_STICK_THRESHOLD = 0.85f;
 
     tryStartWheelie();
     m_wheelieCooldown = std::max(0, m_wheelieCooldown - 1);
 
     if (state()->isWheelie()) {
+        bool cancelAutoWheelie = false;
+
+        if (!state()->isAutoDrift() ||
+                EGG::Mathf::abs(state()->stickX()) <= AUTO_WHEELIE_CANCEL_STICK_THRESHOLD) {
+            m_autoHardStickXFrames = 0;
+        } else {
+            if (++m_autoHardStickXFrames > 15) {
+                cancelAutoWheelie = true;
+            }
+        }
+
         ++m_wheelieFrames;
-        if (m_turningParams->maxWheelieFrames < m_wheelieFrames ||
+        if (m_turningParams->maxWheelieFrames < m_wheelieFrames || cancelAutoWheelie ||
                 (!canWheelie() && FAILED_WHEELIE_FRAMES <= m_wheelieFrames)) {
             cancelWheelie();
         } else {

@@ -83,6 +83,11 @@ void KartPhysics::composeStuntRot(const EGG::Quatf &rot) {
     m_instantaneousStuntRot *= rot;
 }
 
+/// @addr{0x8059FD0C}
+void KartPhysics::composeExtraRot(const EGG::Quatf &rot) {
+    m_instantaneousExtraRot *= rot;
+}
+
 /// @addr{0x8059FDD0}
 void KartPhysics::composeDecayingRot(const EGG::Quatf &rot) {
     m_decayingStuntRot *= rot;

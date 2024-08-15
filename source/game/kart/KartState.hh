@@ -47,6 +47,7 @@ public:
     void setBoost(bool isSet);
     void setMushroomBoost(bool isSet);
     void setSlipdriftCharge(bool isSet);
+    void setDriftAuto(bool isSet);
     void setWheelie(bool isSet);
     void setRampBoost(bool isSet);
     void setTriggerRespawn(bool isSet);
