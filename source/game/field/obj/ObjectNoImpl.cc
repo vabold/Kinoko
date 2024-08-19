@@ -6,4 +6,6 @@ ObjectNoImpl::ObjectNoImpl(const System::MapdataGeoObj &params) : ObjectBase(par
 
 ObjectNoImpl::~ObjectNoImpl() = default;
 
+void ObjectNoImpl::init() {}
+
 } // namespace Field
