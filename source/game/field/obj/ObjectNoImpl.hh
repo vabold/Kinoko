@@ -4,10 +4,12 @@
 
 namespace Field {
 
-class ObjectNoImpl : public ObjectBase {
+class ObjectNoImpl final : public ObjectBase {
 public:
     ObjectNoImpl(const System::MapdataGeoObj &params);
     ~ObjectNoImpl() override;
+
+    void init() override;
 };
 
 } // namespace Field

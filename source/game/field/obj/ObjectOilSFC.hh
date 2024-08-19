@@ -1,10 +1,10 @@
 #pragma once
 
-#include "game/field/obj/ObjectBase.hh"
+#include "game/field/obj/ObjectCollidable.hh"
 
 namespace Field {
 
-class ObjectOilSFC : public ObjectBase {
+class ObjectOilSFC final : public ObjectCollidable {
 public:
     ObjectOilSFC(const System::MapdataGeoObj &params);
     ~ObjectOilSFC() override;

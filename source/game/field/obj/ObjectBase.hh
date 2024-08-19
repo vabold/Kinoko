@@ -11,6 +11,8 @@ public:
     ObjectBase(const System::MapdataGeoObj &params);
     virtual ~ObjectBase();
 
+    virtual void init() = 0;
+
 protected:
     ObjectId m_id;
     EGG::Vector3f m_pos;

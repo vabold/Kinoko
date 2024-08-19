@@ -57,7 +57,9 @@ void ObjectDirector::createObjects() {
             continue;
         }
 
-        m_objects.push_back(createObject(*pObj));
+        ObjectBase *object = createObject(*pObj);
+        object->init();
+        m_objects.push_back(object);
     }
 }
 
