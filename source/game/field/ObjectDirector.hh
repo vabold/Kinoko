@@ -9,6 +9,8 @@ namespace Field {
 
 class ObjectDirector {
 public:
+    const ObjectFlowTable &flowTable() const;
+
     static ObjectDirector *CreateInstance();
     static void DestroyInstance();
     static ObjectDirector *Instance();

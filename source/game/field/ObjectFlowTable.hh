@@ -1,8 +1,18 @@
 #pragma once
 
-#include <Common.hh>
+#include "game/field/obj/ObjectId.hh"
 
 namespace Field {
+
+/// @brief Maps to SObjectCollisionSet::mode. Determines what type of collision an object has.
+enum class CollisionMode {
+    None = 0,
+    Sphere = 1,
+    Cylinder = 2,
+    Box = 3,
+    Ground = 4,
+    Original = 5,
+};
 
 /// @brief Structure of the ObjFlow.bin table entry. Contains dependencies and collision parameters.
 /// @details For now, we only care about the collision mode and parameters.
@@ -36,6 +46,9 @@ public:
     ObjectFlowTable(const char *filename);
     ~ObjectFlowTable();
 
+    const SObjectCollisionSet *set(s16 slot) const;
+    s16 slot(ObjectId id) const;
+
 private:
     struct SFile {
         s16 count;
@@ -43,8 +56,8 @@ private:
     };
 
     s16 m_count;
-    SObjectCollisionSet *m_sets;
-    s16 *m_slots;
+    const SObjectCollisionSet *m_sets;
+    const s16 *m_slots;
 };
 
 } // namespace Field

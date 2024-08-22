@@ -6,6 +6,10 @@
 
 namespace Field {
 
+const ObjectFlowTable &ObjectDirector::flowTable() const {
+    return m_flowTable;
+}
+
 /// @addr{0x8082A784}
 ObjectDirector *ObjectDirector::CreateInstance() {
     assert(!s_instance);
