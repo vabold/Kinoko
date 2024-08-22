@@ -1,7 +1,13 @@
 #pragma once
 
+#include <egg/math/Vector.hh>
+
 namespace Field {
 
-class ObjectCollisionBase {};
+class ObjectCollisionBase {
+public:
+    ObjectCollisionBase();
+    virtual ~ObjectCollisionBase();
+};
 
 } // namespace Field

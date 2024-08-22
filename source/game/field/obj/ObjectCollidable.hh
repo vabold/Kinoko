@@ -15,6 +15,7 @@ public:
 
 protected:
     virtual void createCollision();
+    virtual const EGG::Vector3f &collisionCenter() const;
 
     ObjectCollisionBase *m_collision;
 };
