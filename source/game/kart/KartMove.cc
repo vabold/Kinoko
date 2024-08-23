@@ -1425,9 +1425,8 @@ f32 KartMove::calcWallCollisionSpeedFactor(f32 &f1) {
 
     if (dot < 0.0f) {
         f1 = std::max(0.0f, dot + 1.0f);
-        f1 *= !state()->isWallCollision() ? 0.7f : 0.4f;
 
-        return std::min(1.0f, f1);
+        return std::min(1.0f, f1 * (state()->isWallCollision() ? 0.4f : 0.7f));
     }
 
     return 1.0f;
