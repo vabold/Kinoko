@@ -10,10 +10,10 @@ jobs:
     steps:
       - name: Checkout (Push)
         if: github.event_name == 'push'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Checkout (Pull Request)
         if: github.event_name == 'pull_request_target'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: "refs/pull/${{ github.event.number }}/merge"
       - name: Install packages
@@ -26,7 +26,7 @@ jobs:
           sudo update-alternatives --set gcc "/usr/bin/gcc-13"
           sudo update-alternatives --set g++ "/usr/bin/g++-13"
       - name: Install Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10"
       - name: Configure ninja
@@ -34,7 +34,7 @@ jobs:
       - name: Compile
         run: ninja
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Kinoko
           path: |
@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Download llvm
         run: wget https://apt.llvm.org/llvm.sh
       - name: Install clang-format
@@ -66,7 +66,7 @@ jobs:
     needs: build
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: Kinoko
       - name: Download dependencies
@@ -81,7 +81,7 @@ jobs:
       - name: Run Kinoko
         run: cd out && chmod u+x ./kinoko && ./kinoko -s testCases.bin
       - name: Upload output
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Kinoko output
           path: out/results.txt
@@ -97,13 +97,13 @@ jobs:
       pages: write
       id-token: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Download artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: Kinoko
       - name: Download output binary
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: Kinoko output
       - name: Calculate progression
