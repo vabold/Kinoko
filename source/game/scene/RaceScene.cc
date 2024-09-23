@@ -1,5 +1,6 @@
 #include "RaceScene.hh"
 
+#include "game/field/BoxColManager.hh"
 #include "game/field/CollisionDirector.hh"
 #include "game/field/ObjectDirector.hh"
 #include "game/item/ItemDirector.hh"
@@ -22,6 +23,7 @@ RaceScene::~RaceScene() = default;
 void RaceScene::createEngines() {
     System::CourseMap::CreateInstance()->init();
     System::RaceManager::CreateInstance();
+    Field::BoxColManager::CreateInstance();
     Kart::KartObjectManager::CreateInstance();
     Field::CollisionDirector::CreateInstance();
     Item::ItemDirector::CreateInstance();
@@ -42,6 +44,7 @@ void RaceScene::initEngines() {
 void RaceScene::calcEngines() {
     auto *raceMgr = System::RaceManager::Instance();
     raceMgr->calc();
+    Field::BoxColManager::Instance()->calc();
     // Field::ObjectDirector::Instance()->calc();
     Kart::KartObjectManager::Instance()->calc();
     Item::ItemDirector::Instance()->calc();
@@ -55,6 +58,7 @@ void RaceScene::destroyEngines() {
     Field::ObjectDirector::DestroyInstance();
     Field::CollisionDirector::DestroyInstance();
     Item::ItemDirector::DestroyInstance();
+    Field::BoxColManager::DestroyInstance();
     System::RaceManager::DestroyInstance();
     System::CourseMap::DestroyInstance();
 }
