@@ -7,7 +7,7 @@ namespace Item {
 
 /// @addr{0x8079754C}
 KartItem::KartItem() {
-    clearButtonFlags();
+    m_flags.makeAllZero();
 }
 
 /// @addr{0x8079951C}
@@ -21,17 +21,16 @@ void KartItem::init(size_t playerIdx) {
 /// @brief Calculates item activation based on the controller input state
 /// @addr{0x80797928}
 void KartItem::calc() {
-    bool prevButton = m_bItemButtonHold;
-    clearButtonFlags();
+    bool prevButton = m_flags.onBit(eFlags::ItemButtonHold);
+    m_flags.makeAllZero();
 
     const auto &currentInputs = inputs()->currentState();
     if (currentInputs.item()) {
-        m_bItemButtonHold = true;
-        m_bItemButtonActivation = !prevButton;
+        m_flags.setBit(eFlags::ItemButtonHold).changeBit(!prevButton, eFlags::ItemButtonActivation);
     }
 
     const auto *raceMgr = System::RaceManager::Instance();
-    bool canUse = m_bItemButtonActivation;
+    bool canUse = m_flags.onBit(eFlags::ItemButtonActivation);
     canUse = canUse && raceMgr->isStageReached(System::RaceManager::Stage::Race);
     canUse = canUse && (m_inventory.id() != ItemId::NONE);
 
@@ -50,11 +49,6 @@ void KartItem::activateMushroom() {
 void KartItem::useMushroom() {
     activateMushroom();
     m_inventory.useItem(1);
-}
-
-void KartItem::clearButtonFlags() {
-    m_bItemButtonHold = false;
-    m_bItemButtonActivation = false;
 }
 
 ItemInventory &KartItem::inventory() {

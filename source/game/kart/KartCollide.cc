@@ -13,10 +13,7 @@ namespace Kart {
 
 /// @addr{0x8056E56C}
 KartCollide::KartCollide() {
-    m_rampBoost = false;
-    m_offRoad = false;
-    m_groundBoostPanelOrRamp = false;
-    m_notTrickable = false;
+    m_surfaceFlags.makeAllZero();
 }
 
 /// @addr{0x80573FF0}
@@ -24,11 +21,7 @@ KartCollide::~KartCollide() = default;
 
 /// @addr{0x8056E624}
 void KartCollide::init() {
-    m_rampBoost = false;
-    m_offRoad = false;
-    m_groundBoostPanelOrRamp = false;
-    m_trickable = false;
-    m_notTrickable = false;
+    m_surfaceFlags.makeAllZero();
     m_respawnTimer = 0;
     m_smoothedBack = 0.0f;
     m_suspBottomHeightNonSoftWall = 0.0f;
@@ -246,15 +239,12 @@ void KartCollide::calcBodyCollision(f32 totalScale, f32 sinkDepth, const EGG::Qu
 /// @addr{0x80571634}
 void KartCollide::calcFloorEffect() {
     if (state()->isTouchingGround()) {
-        m_offRoad = true;
-        m_groundBoostPanelOrRamp = true;
+        m_surfaceFlags.setBit(eSurfaceFlags::Offroad, eSurfaceFlags::GroundBoostPanelOrRamp);
     }
 
     m_suspBottomHeightNonSoftWall = 0.0f;
-    m_rampBoost = false;
-    m_offRoad = false;
-    m_trickable = false;
-    m_notTrickable = false;
+    m_surfaceFlags.resetBit(eSurfaceFlags::BoostRamp, eSurfaceFlags::Offroad,
+            eSurfaceFlags::Trickable, eSurfaceFlags::NotTrickable);
     m_suspBottomHeightSoftWall = 0.0f;
     m_someNonSoftWallTimer = 0;
     m_someSoftWallTimer = 0;
@@ -520,10 +510,10 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
 
     u16 attribute = closestColEntry->attribute;
     if (!(attribute & 0x2000)) {
-        m_notTrickable = true;
+        m_surfaceFlags.setBit(eSurfaceFlags::NotTrickable);
     } else {
         collisionData.bTrickable = true;
-        m_trickable = true;
+        m_surfaceFlags.setBit(eSurfaceFlags::Trickable);
     }
 
     collisionData.speedFactor = std::min(collisionData.speedFactor,
@@ -535,19 +525,18 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
     collisionData.closestFloorSettings = KCL_VARIANT_TYPE(attribute);
 
     if (wheel && !!(*maskOut & KCL_TYPE_BIT(COL_TYPE_BOOST_PAD))) {
-        move()->setPadBoost(true);
+        move()->padType().setBit(KartMove::ePadType::BoostPanel);
     }
 
     if (!!(*maskOut & BOOST_RAMP_MASK) &&
             colDirector->findClosestCollisionEntry(maskOut, BOOST_RAMP_MASK)) {
         closestColEntry = colDirector->closestCollisionEntry();
-        move()->setRampBoost(true);
+        move()->padType().setBit(KartMove::ePadType::BoostRamp);
         state()->setBoostRampType(KCL_VARIANT_TYPE(closestColEntry->attribute));
-        m_rampBoost = true;
-        m_trickable = true;
+        m_surfaceFlags.setBit(eSurfaceFlags::BoostRamp, eSurfaceFlags::Trickable);
     } else {
         state()->setBoostRampType(-1);
-        m_notTrickable = true;
+        m_surfaceFlags.setBit(eSurfaceFlags::NotTrickable);
     }
 
     if (!collisionData.bSoftWall) {
@@ -562,7 +551,7 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
     Field::KCLTypeMask jumpPadMask = KCL_TYPE_BIT(COL_TYPE_JUMP_PAD);
     if (*maskOut & jumpPadMask && colDirector->findClosestCollisionEntry(maskOut, jumpPadMask)) {
         if (!state()->isTouchingGround() || !state()->isJumpPad()) {
-            move()->setPadJump(true);
+            move()->padType().setBit(KartMove::ePadType::JumpPad);
             closestColEntry = colDirector->closestCollisionEntry();
             state()->setJumpPadVariant(KCL_VARIANT_TYPE(closestColEntry->attribute));
         }
@@ -759,6 +748,10 @@ void KartCollide::setMovement(const EGG::Vector3f &v) {
     m_movement = v;
 }
 
+const KartCollide::SurfaceFlags &KartCollide::surfaceFlags() const {
+    return m_surfaceFlags;
+}
+
 const EGG::Vector3f &KartCollide::movement() const {
     return m_movement;
 }
@@ -781,18 +774,6 @@ u16 KartCollide::someNonSoftWallTimer() const {
 
 f32 KartCollide::colPerpendicularity() const {
     return m_colPerpendicularity;
-}
-
-bool KartCollide::isRampBoost() const {
-    return m_rampBoost;
-}
-
-bool KartCollide::isTrickable() const {
-    return m_trickable;
-}
-
-bool KartCollide::isNotTrickable() const {
-    return m_notTrickable;
 }
 
 } // namespace Kart
