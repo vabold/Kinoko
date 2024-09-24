@@ -46,14 +46,8 @@ static constexpr f32 LEAN_ROT_CAP_COUNTDOWN = 0.6f;
 /// @addr{0x80577FC4}
 KartMove::KartMove() : m_smoothedUp(EGG::Vector3f::ey), m_scale(1.0f, 1.0f, 1.0f) {
     m_totalScale = 1.0f;
-    m_bPadBoost = false;
-    m_bRampBoost = false;
-    m_bPadJump = false;
-    m_bDriftReset = false;
-    m_bSsmtCharged = false;
-    m_bSsmtLeeway = false;
-    m_bTrickableSurface = false;
-    m_bWallBounce = false;
+    m_padType.makeAllZero();
+    m_flags.makeAllZero();
     m_jump = nullptr;
 }
 
@@ -197,14 +191,8 @@ void KartMove::init(bool b1, bool b2) {
     m_hopPosY = 0.0f;
     m_hopGravity = 0.0f;
     m_drivingDirection = DrivingDirection::Forwards;
-    m_bPadBoost = false;
-    m_bRampBoost = false;
-    m_bPadJump = false;
-    m_bDriftReset = false;
-    m_bSsmtCharged = false;
-    m_bSsmtLeeway = false;
-    m_bTrickableSurface = false;
-    m_bWallBounce = false;
+    m_padType.makeAllZero();
+    m_flags.makeAllZero();
     m_jump->reset();
     m_rawTurn = 0.0f;
 }
@@ -307,8 +295,9 @@ void KartMove::calcTop() {
         if (state()->isHop() && m_hopPosY > 0.0f) {
             stabilizationFactor = m_driftingParams->stabilizationFactor;
         } else if (state()->isTouchingGround()) {
-            if ((m_bTrickableSurface || state()->trickableTimer() > 0) &&
-                    inputTop.dot(m_dir) > 0.0f && m_speed > 50.0f && collide()->isNotTrickable()) {
+            if ((m_flags.onBit(eFlags::TrickableSurface) || state()->trickableTimer() > 0) &&
+                    inputTop.dot(m_dir) > 0.0f && m_speed > 50.0f &&
+                    collide()->surfaceFlags().onBit(KartCollide::eSurfaceFlags::NotTrickable)) {
                 inputTop = m_up;
             } else {
                 m_up = inputTop;
@@ -329,7 +318,7 @@ void KartMove::calcTop() {
                 stabilizationFactor += std::min(0.2f, EGG::Mathf::abs(bodyDotFront) * 0.5f);
             }
 
-            if (collide()->isRampBoost()) {
+            if (collide()->surfaceFlags().onBit(KartCollide::eSurfaceFlags::BoostRamp)) {
                 stabilizationFactor = 0.4f;
             }
         } else {
@@ -340,7 +329,8 @@ void KartMove::calcTop() {
     dynamics()->setStabilizationFactor(stabilizationFactor);
 
     m_nonZipperAirtime = state()->airtime();
-    m_bTrickableSurface = collide()->isTrickable();
+    m_flags.changeBit(collide()->surfaceFlags().onBit(KartCollide::eSurfaceFlags::Trickable),
+            eFlags::TrickableSurface);
 }
 
 /// @addr{0x8057D888}
@@ -374,21 +364,19 @@ void KartMove::calcSpecialFloor() {
         return;
     }
 
-    if (m_bPadBoost) {
+    if (m_padType.onBit(ePadType::BoostPanel)) {
         tryStartBoostPanel();
     }
 
-    if (m_bRampBoost) {
+    if (m_padType.onBit(ePadType::BoostRamp)) {
         tryStartBoostRamp();
     }
 
-    if (m_bPadJump) {
+    if (m_padType.onBit(ePadType::JumpPad)) {
         tryStartJumpPad();
     }
 
-    m_bPadBoost = false;
-    m_bRampBoost = false;
-    m_bPadJump = false;
+    m_padType.makeAllZero();
 }
 
 /// @addr{0x8057A140}
@@ -396,7 +384,7 @@ void KartMove::calcDirs() {
     EGG::Vector3f right = dynamics()->mainRot().rotateVector(EGG::Vector3f::ex);
     EGG::Vector3f local_88 = right.cross(m_smoothedUp);
     local_88.normalise();
-    m_bLaunchBoost = true;
+    m_flags.setBit(eFlags::LaunchBoost);
 
     if (!state()->isInATrick() &&
             (state()->isTouchingGround() || !state()->isRampBoost() ||
@@ -431,7 +419,7 @@ void KartMove::calcDirs() {
         }
 
         m_vel1Dir = m_dir.perpInPlane(m_smoothedUp, true);
-        m_bLaunchBoost = false;
+        m_flags.resetBit(eFlags::LaunchBoost);
     } else {
         m_vel1Dir = m_dir;
     }
@@ -468,7 +456,8 @@ void KartMove::calcStickyRoad() {
     constexpr Field::KCLTypeMask STICKY_MASK =
             KCL_TYPE_BIT(COL_TYPE_STICKY_ROAD) | KCL_TYPE_BIT(COL_TYPE_MOVING_WATER);
 
-    if ((!state()->isStickyRoad() && !collide()->isTrickable()) ||
+    if ((!state()->isStickyRoad() &&
+                collide()->surfaceFlags().offBit(KartCollide::eSurfaceFlags::Trickable)) ||
             EGG::Mathf::abs(m_speed) <= 20.0f) {
         return;
     }
@@ -562,7 +551,8 @@ void KartMove::calcDisableBackwardsAccel() {
         return;
     }
 
-    if (--m_ssmtDisableAccelTimer < 0 || (!m_bSsmtLeeway && !state()->isBrake())) {
+    if (--m_ssmtDisableAccelTimer < 0 ||
+            (m_flags.offBit(eFlags::SsmtLeeway) && !state()->isBrake())) {
         state()->setDisableBackwardsAccel(false);
         m_ssmtDisableAccelTimer = 0;
     }
@@ -582,7 +572,7 @@ void KartMove::calcSsmt() {
     if (state()->isChargingSsmt()) {
         if (++m_ssmtCharge > MAX_SSMT_CHARGE) {
             m_ssmtCharge = MAX_SSMT_CHARGE;
-            m_bSsmtCharged = true;
+            m_flags.setBit(eFlags::SsmtCharged);
             m_ssmtLeewayTimer = 0;
         }
 
@@ -591,34 +581,31 @@ void KartMove::calcSsmt() {
 
     m_ssmtCharge = 0;
 
-    if (!m_bSsmtCharged) {
+    if (m_flags.offBit(eFlags::SsmtCharged)) {
         return;
     }
 
-    if (m_bSsmtLeeway) {
+    if (m_flags.onBit(eFlags::SsmtLeeway)) {
         if (--m_ssmtLeewayTimer < 0) {
             m_ssmtLeewayTimer = 0;
-            m_bSsmtCharged = false;
-            m_bSsmtLeeway = false;
+            m_flags.resetBit(eFlags::SsmtCharged, eFlags::SsmtLeeway);
             m_ssmtDisableAccelTimer = DISABLE_ACCEL_FRAMES;
             state()->setDisableBackwardsAccel(true);
         } else {
             if (!state()->isAccelerate() && !state()->isBrake()) {
                 activateBoost(KartBoost::Type::AllMt, SSMT_BOOST_FRAMES);
                 m_ssmtLeewayTimer = 0;
-                m_bSsmtCharged = false;
-                m_bSsmtLeeway = false;
+                m_flags.resetBit(eFlags::SsmtCharged, eFlags::SsmtLeeway);
             }
         }
     } else {
         if (state()->isAccelerate() && !state()->isBrake()) {
             activateBoost(KartBoost::Type::AllMt, SSMT_BOOST_FRAMES);
             m_ssmtLeewayTimer = 0;
-            m_bSsmtCharged = false;
-            m_bSsmtLeeway = false;
+            m_flags.resetBit(eFlags::SsmtCharged, eFlags::SsmtLeeway);
         } else {
             m_ssmtLeewayTimer = LEEWAY_FRAMES;
-            m_bSsmtLeeway = true;
+            m_flags.setBit(eFlags::SsmtLeeway);
             state()->setDisableBackwardsAccel(true);
             m_ssmtDisableAccelTimer = LEEWAY_FRAMES;
         }
@@ -682,7 +669,7 @@ void KartMove::resetDriftManual() {
 /// @stage 2
 /// @addr{0x8057E348}
 void KartMove::clearDrift() {
-    m_bDriftReset = false;
+    m_flags.resetBit(eFlags::DriftReset);
     m_outsideDriftAngle = 0.0f;
     m_hopStickX = 0;
     m_hopFrame = 0;
@@ -718,8 +705,7 @@ void KartMove::clearSsmt() {
     m_ssmtCharge = 0;
     m_ssmtLeewayTimer = 0;
     m_ssmtDisableAccelTimer = 0;
-    m_bSsmtCharged = false;
-    m_bSsmtLeeway = false;
+    m_flags.resetBit(eFlags::SsmtCharged, eFlags::SsmtLeeway);
 }
 
 /// @addr{0x80582F7C}
@@ -738,7 +724,8 @@ void KartMove::calcManualDrift() {
 
     if (!state()->isTouchingGround() &&
             param()->stats().driftType != KartParam::Stats::DriftType::Inside_Drift_Bike &&
-            (state()->isDriftManual() || state()->isSlipdriftCharge()) && m_bLaunchBoost) {
+            (state()->isDriftManual() || state()->isSlipdriftCharge()) &&
+            m_flags.onBit(eFlags::LaunchBoost)) {
         const EGG::Vector3f up = dynamics()->mainRot().rotateVector(EGG::Vector3f::ey);
         EGG::Vector3f driftRej = m_outsideDriftLastDir.rej(up);
 
@@ -768,7 +755,7 @@ void KartMove::calcManualDrift() {
         isHopping = false;
     }
 
-    m_bDriftReset = false;
+    m_flags.resetBit(eFlags::DriftReset);
 
     if (!state()->isDriftManual()) {
         if (!isHopping && state()->isTouchingGround()) {
@@ -786,7 +773,7 @@ void KartMove::calcManualDrift() {
                 state()->isWallCollision() || !canStartDrift()) {
             releaseMt();
             resetDriftManual();
-            m_bDriftReset = true;
+            m_flags.setBit(eFlags::DriftReset);
         } else {
             controlOutsideDriftAngle();
         }
@@ -1168,7 +1155,7 @@ void KartMove::calcAcceleration() {
     }
 
     f32 rotationScalar = ROTATION_SCALAR_NORMAL;
-    if (collide()->isRampBoost()) {
+    if (collide()->surfaceFlags().onBit(KartCollide::eSurfaceFlags::BoostRamp)) {
         rotationScalar = ROTATION_SCALAR_BOOST_RAMP;
     } else if (!state()->isTouchingGround()) {
         rotationScalar = ROTATION_SCALAR_MIDAIR;
@@ -1237,7 +1224,7 @@ f32 KartMove::calcWallCollisionSpeedFactor(f32 &f1) {
 /// @stage 2
 /// @brief If we started to collide with a wall this frame, applies rotation.
 void KartMove::calcWallCollisionStart(f32 param_2) {
-    m_bWallBounce = false;
+    m_flags.resetBit(eFlags::WallBounce);
 
     if (!state()->isWallCollisionStart()) {
         return;
@@ -1252,7 +1239,7 @@ void KartMove::calcWallCollisionStart(f32 param_2) {
         f32 speedDiff = m_lastSpeed - m_speed;
 
         if (speedDiff > 30.0f) {
-            m_bWallBounce = true;
+            m_flags.setBit(eFlags::WallBounce);
             const CollisionData &colData = collisionData();
             EGG::Vector3f newPos = colData.relPos + pos();
             f32 dot = -bodyUp().dot(colData.relPos) * 0.5f;
@@ -1278,7 +1265,7 @@ void KartMove::calcWallCollisionStart(f32 param_2) {
 
             EGG::Vector3f projRejSum = proj + rej;
             f32 bumpDeviation = 0.0f;
-            if (!m_bDriftReset && state()->isTouchingGround()) {
+            if (m_flags.offBit(eFlags::DriftReset) && state()->isTouchingGround()) {
                 bumpDeviation = param()->stats().bumpDeviationLevel;
             }
 
@@ -1318,7 +1305,7 @@ void KartMove::calcStandstillBoostRot() {
         }
     }
 
-    if (m_bWallBounce) {
+    if (m_flags.onBit(eFlags::WallBounce)) {
         m_standStillBoostRot = isBike() ? next * 3.0f : next * 10.0f;
     } else {
         m_standStillBoostRot += scalar * (next - m_standStillBoostRot);
@@ -1893,18 +1880,6 @@ void KartMove::setKCLWheelRotFactor(f32 val) {
     m_kclWheelRotFactor = val;
 }
 
-void KartMove::setPadBoost(bool isSet) {
-    m_bPadBoost = isSet;
-}
-
-void KartMove::setRampBoost(bool isSet) {
-    m_bRampBoost = isSet;
-}
-
-void KartMove::setPadJump(bool isSet) {
-    m_bPadJump = isSet;
-}
-
 /// @brief Factors in vehicle speed to retrieve our hop direction and magnitude.
 /// @addr{0x8057EFF8}
 /// @return 0.0f if we are too slow to drift, otherwise the hop direction.
@@ -1962,6 +1937,10 @@ u16 KartMove::floorCollisionCount() const {
 
 s32 KartMove::hopStickX() const {
     return m_hopStickX;
+}
+
+KartMove::PadType &KartMove::padType() {
+    return m_padType;
 }
 
 KartJump *KartMove::jump() const {

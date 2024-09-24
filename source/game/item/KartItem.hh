@@ -4,6 +4,8 @@
 
 #include "game/kart/KartObjectProxy.hh"
 
+#include <egg/core/BitFlag.hh>
+
 namespace Item {
 
 /// @brief State management for item usage
@@ -19,18 +21,18 @@ public:
     void activateMushroom();
     void useMushroom();
 
-    /// @beginSetters
-    void clearButtonFlags();
-    /// @endSetters
-
     /// @beginGetters
     [[nodiscard]] ItemInventory &inventory();
     /// @endGetters
 
 private:
-    bool m_bItemButtonHold;
-    bool m_bItemButtonActivation;
+    enum class eFlags {
+        ItemButtonHold = 12,
+        ItemButtonActivation = 14,
+    };
+    typedef EGG::TBitFlag<u16, eFlags> Flags;
 
+    Flags m_flags;
     ItemInventory m_inventory;
 };
 

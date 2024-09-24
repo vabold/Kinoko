@@ -3,7 +3,9 @@
 #include "game/kart/CollisionGroup.hh"
 #include "game/kart/KartObjectProxy.hh"
 
-#include <game/field/CourseColMgr.hh>
+#include "game/field/CourseColMgr.hh"
+
+#include <egg/core/BitFlag.hh>
 
 namespace Kart {
 
@@ -11,6 +13,15 @@ namespace Kart {
 /// @nosubgrouping
 class KartCollide : KartObjectProxy {
 public:
+    enum class eSurfaceFlags {
+        BoostRamp = 4,
+        Offroad = 6, ///< @unused
+        GroundBoostPanelOrRamp = 7,
+        Trickable = 11,
+        NotTrickable = 12,
+    };
+    typedef EGG::TBitFlag<u32, eSurfaceFlags> SurfaceFlags;
+
     KartCollide();
     ~KartCollide();
 
@@ -60,19 +71,17 @@ public:
     /// @endSetters
 
     /// @beginGetters
+    [[nodiscard]] const SurfaceFlags &surfaceFlags() const;
     [[nodiscard]] const EGG::Vector3f &movement() const;
     [[nodiscard]] f32 suspBottomHeightSoftWall() const;
     [[nodiscard]] u16 someSoftWallTimer() const;
     [[nodiscard]] f32 suspBottomHeightNonSoftWall() const;
     [[nodiscard]] u16 someNonSoftWallTimer() const;
     [[nodiscard]] f32 colPerpendicularity() const;
-
-    [[nodiscard]] bool isRampBoost() const;
-    [[nodiscard]] bool isTrickable() const;
-    [[nodiscard]] bool isNotTrickable() const;
     /// @endGetters
 
 private:
+    SurfaceFlags m_surfaceFlags;
     EGG::Vector3f m_movement;
     s16 m_respawnTimer;
     f32 m_smoothedBack; // 0x50
@@ -81,12 +90,6 @@ private:
     f32 m_suspBottomHeightNonSoftWall;
     u16 m_someNonSoftWallTimer;
     f32 m_colPerpendicularity;
-
-    bool m_rampBoost;
-    bool m_offRoad; ///< @unused
-    bool m_groundBoostPanelOrRamp;
-    bool m_trickable;
-    bool m_notTrickable;
 };
 
 } // namespace Kart

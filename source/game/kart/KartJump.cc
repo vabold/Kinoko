@@ -120,7 +120,8 @@ void KartJump::calcInput() {
             m_boostRampEnabled = true;
         }
     }
-    if (state()->isTouchingGround() && !collide()->isRampBoost()) {
+    if (state()->isTouchingGround() &&
+            collide()->surfaceFlags().offBit(KartCollide::eSurfaceFlags::BoostRamp)) {
         m_boostRampEnabled = false;
     }
 }
