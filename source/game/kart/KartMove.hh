@@ -3,12 +3,22 @@
 #include "game/kart/KartBoost.hh"
 #include "game/kart/KartObjectProxy.hh"
 
+#include <egg/core/BitFlag.hh>
+
 namespace Kart {
 
 /// @brief Responsible for reacting to player inputs and moving the kart.
 /// @nosubgrouping
 class KartMove : protected KartObjectProxy {
 public:
+    enum class ePadType {
+        BoostPanel = 0,
+        BoostRamp = 1,
+        JumpPad = 2,
+    };
+
+    typedef EGG::TBitFlag<u32, ePadType> PadType;
+
     KartMove();
     virtual ~KartMove();
 
@@ -92,9 +102,6 @@ public:
     void setFloorCollisionCount(u16 count);
     void setKCLWheelSpeedFactor(f32 val);
     void setKCLWheelRotFactor(f32 val);
-    void setPadBoost(bool isSet);
-    void setRampBoost(bool isSet);
-    void setPadJump(bool isSet);
     /// @endSetters
 
     /// @beginGetters
@@ -112,10 +119,21 @@ public:
     [[nodiscard]] f32 speedRatioCapped() const;
     [[nodiscard]] u16 floorCollisionCount() const;
     [[nodiscard]] s32 hopStickX() const;
+    [[nodiscard]] PadType &padType();
     [[nodiscard]] KartJump *jump() const;
     /// @endGetters
 
 protected:
+    enum class eFlags {
+        DriftReset = 1,  ///< Set when a wall bonk should cancel your drift.
+        SsmtCharged = 2, ///< Set after holding a stand-still mini-turbo for 75 frames.
+        LaunchBoost = 4,
+        SsmtLeeway = 5,       ///< If set, activates SSMT when not pressing A or B.
+        TrickableSurface = 6, ///< Set when driving on a trickable surface.
+        WallBounce = 8,       ///< Set when our speed loss from wall collision is > 30.0f.
+    };
+    typedef EGG::TBitFlag<u16, eFlags> Flags;
+
     enum class DriftState {
         NotDrifting = 0,
         ChargingMt = 1,
@@ -206,15 +224,8 @@ protected:
     f32 m_hopGravity; ///< Always main gravity (-1.3f).
     DrivingDirection m_drivingDirection; ///< Current state of driver's direction.
     s16 m_backwardsAllowCounter;         ///< Tracks the 15f delay before reversing.
-    bool m_bLaunchBoost;
-    bool m_bPadBoost; ///< Caches whether the player is currently interacting with a boost pad.
-    bool m_bRampBoost;
-    bool m_bPadJump;
-    bool m_bDriftReset;       ///< Set when a wall bonk should cancel your drift.
-    bool m_bSsmtCharged;      ///< Set after holding a stand-still mini-turbo for 75 frames.
-    bool m_bSsmtLeeway;       ///< If set, activates SSMT when not pressing A or B.
-    bool m_bTrickableSurface; ///< Set when driving on a trickable surface.
-    bool m_bWallBounce;       ///< Set when our speed loss from wall collision is > 30.0f.
+    PadType m_padType;
+    Flags m_flags;
     KartJump *m_jump;
     const DriftingParameters *m_driftingParams; ///< Drift-type-specific parameters.
     f32 m_rawTurn; ///< Float in range [-1, 1]. Represents stick magnitude + direction.
