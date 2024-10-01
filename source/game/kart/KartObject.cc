@@ -96,6 +96,7 @@ void KartObject::init() {
 
 /// @addr{0x8058E188}
 void KartObject::initImpl() {
+    sub()->initAABB(m_pointers, this);
     sub()->init();
     objectCollisionKart()->init(param()->playerIdx());
 }

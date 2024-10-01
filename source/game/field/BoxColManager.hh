@@ -3,6 +3,12 @@
 #include <egg/core/BitFlag.hh>
 #include <egg/math/Vector.hh>
 
+namespace Kart {
+
+class KartObject;
+
+} // namespace Kart
+
 namespace Field {
 
 /// @brief A bitfield that represents the state and type of a given BoxColUnit.
@@ -69,7 +75,7 @@ public:
     void resetIterators();
 
     [[nodiscard]] BoxColUnit *insertDriver(f32 radius, f32 maxSpeed, const EGG::Vector3f *pos,
-            bool alwaysRecalc, void *userData);
+            bool alwaysRecalc, Kart::KartObject *kartObject);
     [[nodiscard]] BoxColUnit *insertObject(f32 radius, f32 maxSpeed, const EGG::Vector3f *pos,
             bool alwaysRecalc, void *userData);
     [[nodiscard]] BoxColUnit *insertDrivable(f32 radius, f32 maxSpeed, const EGG::Vector3f *pos,

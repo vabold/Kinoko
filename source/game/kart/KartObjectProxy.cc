@@ -214,6 +214,16 @@ const Field::ObjectCollisionKart *KartObjectProxy::objectCollisionKart() const {
     return m_accessor->objectCollisionKart;
 }
 
+/// @addr{0x80591520}
+Field::BoxColUnit *KartObjectProxy::boxColUnit() {
+    return m_accessor->boxColUnit;
+}
+
+/// @addr{0x80591520}
+const Field::BoxColUnit *KartObjectProxy::boxColUnit() const {
+    return m_accessor->boxColUnit;
+}
+
 /// @addr{0x80590834}
 CollisionData &KartObjectProxy::collisionData(u16 tireIdx) {
     return tirePhysics(tireIdx)->hitboxGroup()->collisionData();
