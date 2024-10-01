@@ -9,6 +9,7 @@
 
 namespace Field {
 
+class BoxColUnit;
 class ObjectCollisionKart;
 
 } // namespace Field
@@ -51,6 +52,8 @@ struct KartAccessor {
 
     std::vector<KartSuspension *> suspensions;
     std::vector<KartTire *> tires;
+
+    Field::BoxColUnit *boxColUnit;
 };
 
 /// @brief Base class for most kart-related objects.
@@ -106,6 +109,8 @@ public:
     [[nodiscard]] const Render::KartModel *model() const;
     [[nodiscard]] Field::ObjectCollisionKart *objectCollisionKart();
     [[nodiscard]] const Field::ObjectCollisionKart *objectCollisionKart() const;
+    [[nodiscard]] Field::BoxColUnit *boxColUnit();
+    [[nodiscard]] const Field::BoxColUnit *boxColUnit() const;
 
     [[nodiscard]] const EGG::Vector3f &scale() const;
     [[nodiscard]] const EGG::Matrix34f &pose() const;

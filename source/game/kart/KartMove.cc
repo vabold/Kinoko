@@ -46,6 +46,7 @@ static constexpr f32 LEAN_ROT_CAP_COUNTDOWN = 0.6f;
 /// @addr{0x80577FC4}
 KartMove::KartMove() : m_smoothedUp(EGG::Vector3f::ey), m_scale(1.0f, 1.0f, 1.0f) {
     m_totalScale = 1.0f;
+    m_hitboxScale = 1.0f;
     m_padType.makeAllZero();
     m_flags.makeAllZero();
     m_jump = nullptr;
@@ -175,6 +176,7 @@ void KartMove::init(bool b1, bool b2) {
     if (!b1) {
         m_scale.set(1.0f);
         m_totalScale = 1.0f;
+        m_hitboxScale = 1.0f;
         m_mushroomBoostTimer = 0;
     }
 
@@ -1935,6 +1937,10 @@ const EGG::Vector3f &KartMove::up() const {
 
 f32 KartMove::totalScale() const {
     return m_totalScale;
+}
+
+f32 KartMove::hitboxScale() const {
+    return m_hitboxScale;
 }
 
 const EGG::Vector3f &KartMove::dir() const {

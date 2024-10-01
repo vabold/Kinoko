@@ -118,6 +118,7 @@ public:
     [[nodiscard]] const EGG::Vector3f &smoothedUp() const;
     [[nodiscard]] const EGG::Vector3f &up() const;
     [[nodiscard]] f32 totalScale() const;
+    [[nodiscard]] f32 hitboxScale() const;
     [[nodiscard]] const EGG::Vector3f &dir() const;
     [[nodiscard]] const EGG::Vector3f &lastDir() const;
     [[nodiscard]] const EGG::Vector3f &vel1Dir() const;
@@ -216,6 +217,7 @@ protected:
     f32 m_weightedTurn;    ///< Magnitude+direction of stick input, factoring in the kart's stats.
     EGG::Vector3f m_scale; ///< @unused Always 1.0f
     f32 m_totalScale;      ///< @unused Always 1.0f
+    f32 m_hitboxScale;
     u16 m_mushroomBoostTimer; ///< Number of frames until the mushroom boost runs out.
     u32 m_nonZipperAirtime;
     f32 m_jumpPadMinSpeed; ///< Snaps the player to a minimum speed when first touching a jump pad.

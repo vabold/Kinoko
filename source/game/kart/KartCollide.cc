@@ -13,6 +13,7 @@ namespace Kart {
 
 /// @addr{0x8056E56C}
 KartCollide::KartCollide() {
+    m_boundingRadius = 100.0f;
     m_surfaceFlags.makeAllZero();
 }
 
@@ -21,6 +22,7 @@ KartCollide::~KartCollide() = default;
 
 /// @addr{0x8056E624}
 void KartCollide::init() {
+    calcBoundingRadius();
     m_surfaceFlags.makeAllZero();
     m_respawnTimer = 0;
     m_smoothedBack = 0.0f;
@@ -431,6 +433,11 @@ void KartCollide::calcSideCollision(CollisionData &collisionData, Hitbox &hitbox
     }
 }
 
+/// @addr{0x8056E70C}
+void KartCollide::calcBoundingRadius() {
+    m_boundingRadius = collisionGroup()->boundingRadius() * move()->hitboxScale();
+}
+
 /// @stage All
 /// @brief Processes moving water and floor collision effects
 /// @addr{0x8056E8D4}
@@ -751,6 +758,10 @@ void KartCollide::setFloorColInfo(CollisionData &collisionData, const EGG::Vecto
 
 void KartCollide::setMovement(const EGG::Vector3f &v) {
     m_movement = v;
+}
+
+f32 KartCollide::boundingRadius() const {
+    return m_boundingRadius;
 }
 
 const KartCollide::SurfaceFlags &KartCollide::surfaceFlags() const {

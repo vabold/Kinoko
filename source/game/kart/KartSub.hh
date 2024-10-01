@@ -4,6 +4,8 @@
 
 namespace Kart {
 
+class KartObject;
+
 /// @brief Hosts a few classes and the high level per-frame calc functions.
 /// @nosubgrouping
 class KartSub : KartObjectProxy {
@@ -15,11 +17,13 @@ public:
     void copyPointers(KartAccessor &pointers);
 
     void init();
+    void initAABB(KartAccessor &accessor, KartObject *object);
     void initPhysicsValues();
     void resetPhysics();
 
     void calcPass0();
     void calcPass1();
+    void resizeAABB(f32 radiusScale);
     void addFloor(const CollisionData &, bool);
     void updateSuspOvertravel(const EGG::Vector3f &suspOvertravel);
     void tryEndHWG();

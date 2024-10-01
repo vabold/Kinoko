@@ -45,6 +45,7 @@ public:
             const EGG::Vector3f &center, f32 radius);
     void calcSideCollision(CollisionData &collisionData, Hitbox &hitbox,
             Field::CourseColMgr::CollisionInfo *colInfo);
+    void calcBoundingRadius();
 
     void processWheel(CollisionData &collisionData, Hitbox &hitbox,
             Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut);
@@ -71,6 +72,7 @@ public:
     /// @endSetters
 
     /// @beginGetters
+    [[nodiscard]] f32 boundingRadius() const;
     [[nodiscard]] const SurfaceFlags &surfaceFlags() const;
     [[nodiscard]] const EGG::Vector3f &movement() const;
     [[nodiscard]] f32 suspBottomHeightSoftWall() const;
@@ -81,6 +83,7 @@ public:
     /// @endGetters
 
 private:
+    f32 m_boundingRadius;
     SurfaceFlags m_surfaceFlags;
     EGG::Vector3f m_movement;
     s16 m_respawnTimer;

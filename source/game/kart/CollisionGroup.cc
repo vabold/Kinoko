@@ -223,6 +223,10 @@ void CollisionGroup::setHitboxScale(f32 scale) {
     }
 }
 
+f32 CollisionGroup::boundingRadius() const {
+    return m_boundingRadius;
+}
+
 Hitbox &CollisionGroup::hitbox(u16 hitboxIdx) {
     return m_hitboxes[hitboxIdx];
 }
