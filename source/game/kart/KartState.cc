@@ -132,6 +132,7 @@ void KartState::calc() {
     m_stickX = 0.0f;
 
     calcCollisions();
+    collide()->updateBbox();
 }
 
 /// @stage All

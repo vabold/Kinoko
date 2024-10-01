@@ -96,6 +96,7 @@ public:
     /// @endSetters
 
     /// @beginGetters
+    [[nodiscard]] f32 boundingRadius() const;
     [[nodiscard]] Hitbox &hitbox(u16 hitboxIdx);
     [[nodiscard]] u16 hitboxCount() const;
     [[nodiscard]] CollisionData &collisionData();
