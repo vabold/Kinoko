@@ -3,6 +3,7 @@
 #include "game/kart/KartBody.hh"
 #include "game/kart/KartCollide.hh"
 #include "game/kart/KartMove.hh"
+#include "game/kart/KartObject.hh"
 #include "game/kart/KartState.hh"
 #include "game/kart/KartSuspensionPhysics.hh"
 
@@ -48,6 +49,15 @@ void KartSub::init() {
     m_collide->init();
 }
 
+/// @addr{0x8059828C}
+void KartSub::initEntity(KartAccessor &accessor, KartObject *object) {
+    f32 radius = 25.0f + collide()->boundingRadius();
+    f32 hardSpeedLimit = move()->hardSpeedLimit();
+
+    accessor.boxColUnit = Field::BoxColManager::Instance()->insertDriver(radius, hardSpeedLimit,
+            &pos(), true, object);
+}
+
 /// @addr{0x80597934}
 void KartSub::initPhysicsValues() {
     physics()->updatePose();
@@ -67,6 +77,9 @@ void KartSub::resetPhysics() {
         tirePhysics(tireIdx)->reset();
     }
     m_move->setKartSpeedLimit();
+
+    updateCollisionAABB(1.0f);
+
     m_sideCollisionTimer = 0;
     m_someScale = 1.0f;
     m_maxSuspOvertravel.setZero();
@@ -143,6 +156,11 @@ void KartSub::calcPass1() {
     m_floorCollisionCount = 0;
     m_maxSuspOvertravel.setZero();
     m_minSuspOvertravel.setZero();
+
+    // The flag is really 0x1f, but we only care about objects.
+    Field::BoxColFlag flags;
+    flags.setBit(Field::eBoxColFlag::Drivable, Field::eBoxColFlag::Object);
+    boxColUnit()->search(flags);
 
     if (state()->isSomethingWallCollision()) {
         const EGG::Vector3f &softWallSpeed = state()->softWallSpeed();
@@ -275,6 +293,12 @@ void KartSub::calcPass1() {
     collide()->resetHitboxes();
 
     // calcRotation() is only ever used for gfx rendering, so skip
+}
+
+/// @addr{0x80598338}
+void KartSub::updateCollisionAABB(f32 radiusScale) {
+    f32 radius = radiusScale * collide()->boundingRadius();
+    boxColUnit()->resize(radius + 25.0f, move()->hardSpeedLimit());
 }
 
 /// @addr{0x805980D8}
