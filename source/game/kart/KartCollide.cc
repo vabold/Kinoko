@@ -521,6 +521,11 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
 
     collisionData.intensity = (attribute >> 0xb) & 3;
     collisionData.rotFactor += param()->stats().kclRot[KCL_ATTRIBUTE_TYPE(attribute)];
+
+    if (attribute & 0x4000) {
+        state()->setRejectRoad(true);
+    }
+
     collisionData.closestFloorFlags = closestColEntry->typeMask;
     collisionData.closestFloorSettings = KCL_VARIANT_TYPE(attribute);
 
