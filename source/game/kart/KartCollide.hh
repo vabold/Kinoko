@@ -32,28 +32,9 @@ public:
 
     void findCollision();
     void FUN_80572F4C();
-    void FUN_805B72B8(f32 param_1, f32 param_2, bool lockXZ, bool addExtVelY);
-    void calcBodyCollision(f32 totalScale, f32 sinkDepth, const EGG::Quatf &rot,
-            const EGG::Vector3f &scale);
     void calcFloorEffect();
-    void calcTriggers(Field::KCLTypeMask *mask, const EGG::Vector3f &pos, bool twoPoint);
-    void handleTriggers(Field::KCLTypeMask *mask);
-    void calcFallBoundary(Field::KCLTypeMask *mask, bool shortBoundary);
-    void activateOob(bool detachCamera, Field::KCLTypeMask *mask, bool somethingCPU,
-            bool somethingBullet);
     void calcWheelCollision(u16 wheelIdx, CollisionGroup *hitboxGroup, const EGG::Vector3f &colVel,
             const EGG::Vector3f &center, f32 radius);
-    void calcSideCollision(CollisionData &collisionData, Hitbox &hitbox,
-            Field::CourseColMgr::CollisionInfo *colInfo);
-
-    void processWheel(CollisionData &collisionData, Hitbox &hitbox,
-            Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut);
-    void processBody(CollisionData &collisionData, Hitbox &hitbox,
-            Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut);
-    [[nodiscard]] bool processWall(CollisionData &collisionData, Field::KCLTypeMask *maskOut);
-    void processFloor(CollisionData &collisionData, Hitbox &hitbox,
-            Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut, bool wheel);
-
     void applySomeFloorMoment(f32 down, f32 rate, CollisionGroup *hitboxGroup,
             const EGG::Vector3f &forward, const EGG::Vector3f &nextDir, const EGG::Vector3f &speed,
             bool b1, bool b2, bool b3);
@@ -81,6 +62,24 @@ public:
     /// @endGetters
 
 private:
+    void FUN_805B72B8(f32 param_1, f32 param_2, bool lockXZ, bool addExtVelY);
+    void calcBodyCollision(f32 totalScale, f32 sinkDepth, const EGG::Quatf &rot,
+            const EGG::Vector3f &scale);
+    void calcTriggers(Field::KCLTypeMask *mask, const EGG::Vector3f &pos, bool twoPoint);
+    void handleTriggers(Field::KCLTypeMask *mask);
+    void calcFallBoundary(Field::KCLTypeMask *mask, bool shortBoundary);
+    void activateOob(bool detachCamera, Field::KCLTypeMask *mask, bool somethingCPU,
+            bool somethingBullet);
+    void calcSideCollision(CollisionData &collisionData, Hitbox &hitbox,
+            Field::CourseColMgr::CollisionInfo *colInfo);
+    void processWheel(CollisionData &collisionData, Hitbox &hitbox,
+            Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut);
+    void processBody(CollisionData &collisionData, Hitbox &hitbox,
+            Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut);
+    [[nodiscard]] bool processWall(CollisionData &collisionData, Field::KCLTypeMask *maskOut);
+    void processFloor(CollisionData &collisionData, Hitbox &hitbox,
+            Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut, bool wheel);
+
     SurfaceFlags m_surfaceFlags;
     EGG::Vector3f m_movement;
     s16 m_respawnTimer;

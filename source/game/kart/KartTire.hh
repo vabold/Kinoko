@@ -11,8 +11,6 @@ public:
     KartTire(KartSuspensionPhysics::TireType tireType, u16 bspWheelIdx);
     virtual ~KartTire();
 
-    virtual void createPhysics(u16 tireIdx);
-
     void init(u16 tireIdx);
     void initBsp();
 
@@ -21,6 +19,8 @@ public:
     /// @endGetters
 
 protected:
+    virtual void createPhysics(u16 tireIdx);
+
     KartSuspensionPhysics::TireType m_tireType;
     u16 m_bspWheelIdx;
     WheelPhysics *m_wheelPhysics;
@@ -32,6 +32,7 @@ public:
     KartTireFront(KartSuspensionPhysics::TireType tireType, u16 bspWheelIdx);
     ~KartTireFront();
 
+private:
     void createPhysics(u16 tireIdx) override;
 };
 
@@ -41,6 +42,7 @@ public:
     KartTireFrontBike(KartSuspensionPhysics::TireType tireType, u16 bspWheelIdx);
     ~KartTireFrontBike();
 
+private:
     void createPhysics(u16 tireIdx) override;
 };
 
@@ -50,6 +52,7 @@ public:
     KartTireRearBike(KartSuspensionPhysics::TireType tireType, u16 bspWheelIdx);
     ~KartTireRearBike();
 
+private:
     void createPhysics(u16 tireIdx) override;
 };
 

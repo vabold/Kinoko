@@ -18,16 +18,8 @@ public:
 
     void calcInput();
     void calc();
-    void calcCollisions();
-    void calcStartBoost();
-    void calcHandleStartBoost();
-    void handleStartBoost(size_t idx);
 
     /// @beginSetters
-    void clearBitfield0();
-    void clearBitfield1();
-    void clearBitfield3();
-
     void setAccelerate(bool isSet);
     void setDriftInput(bool isSet);
     void setDriftManual(bool isSet);
@@ -128,6 +120,14 @@ public:
     /// @endGetters
 
 private:
+    void calcCollisions();
+    void calcStartBoost();
+    void calcHandleStartBoost();
+    void handleStartBoost(size_t idx);
+    void clearBitfield0();
+    void clearBitfield1();
+    void clearBitfield3();
+
     // Bits from the base game's bitfields are marked with prefix 'b'
 
     /// @name bitfield0

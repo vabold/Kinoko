@@ -11,11 +11,6 @@ KartTire::~KartTire() {
     delete m_wheelPhysics;
 }
 
-/// @addr{0x8059AB14}
-void KartTire::createPhysics(u16 tireIdx) {
-    m_wheelPhysics = new WheelPhysics(tireIdx, 1);
-}
-
 /// @addr{0x8059AAB0}
 void KartTire::init(u16 tireIdx) {
     createPhysics(tireIdx);
@@ -29,6 +24,11 @@ void KartTire::initBsp() {
 
 WheelPhysics *KartTire::wheelPhysics() {
     return m_wheelPhysics;
+}
+
+/// @addr{0x8059AB14}
+void KartTire::createPhysics(u16 tireIdx) {
+    m_wheelPhysics = new WheelPhysics(tireIdx, 1);
 }
 
 /// @addr{Inlined in 0x8058EA0C}

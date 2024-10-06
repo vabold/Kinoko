@@ -190,10 +190,6 @@ void KartParam::Stats::applyCharacterBonus(EGG::RamStream &stream) {
 BSP::BSP() = default;
 
 BSP::BSP(EGG::RamStream &stream) {
-    read(stream);
-}
-
-void BSP::read(EGG::RamStream &stream) {
     initialYPos = stream.read_f32();
 
     for (auto &hitbox : hitboxes) {

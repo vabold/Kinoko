@@ -23,67 +23,18 @@ public:
     virtual ~KartMove();
 
     virtual void createSubsystems();
-    virtual void calcTurn();
-    virtual void calcWheelie() {}
     virtual void setTurnParams();
     virtual void init(bool b1, bool b2);
     [[nodiscard]] virtual f32 leanRot() const;
 
     void setInitialPhysicsValues(const EGG::Vector3f &position, const EGG::Vector3f &angles);
     void setKartSpeedLimit();
-    void resetDriftManual();
 
     void calc();
-    void calcTop();
-    void calcAirtimeTop();
-    void calcSpecialFloor();
-    void calcDirs();
-    void calcStickyRoad();
-    void calcOffroad();
-    void calcBoost();
-    void calcRampBoost();
-    void calcDisableBackwardsAccel();
-    void calcSsmt();
-    bool calcPreDrift();
-    void calcManualDrift();
-    void startManualDrift();
-    void clearDrift();
-    void clearJumpPad();
-    void clearRampBoost();
-    void clearBoost();
-    void clearSsmt();
-    void clearOffroadInvincibility();
-    void releaseMt();
-    void controlOutsideDriftAngle();
-    void calcRotation();
-    void calcVehicleSpeed();
-    void calcDeceleration();
-    [[nodiscard]] f32 calcVehicleAcceleration() const;
-    void calcAcceleration();
-    [[nodiscard]] f32 calcWallCollisionSpeedFactor(f32 &f1);
-    void calcWallCollisionStart(f32 param_2);
-    void calcStandstillBoostRot();
-    void calcDive();
-    void calcSsmtStart();
     void calcHopPhysics();
-    virtual void calcVehicleRotation(f32 turn);
-    virtual void hop();
-    virtual void onHop() {}
-    virtual void onWallCollision() {}
-    virtual void calcMtCharge();
+
     virtual void initOob() {}
-    [[nodiscard]] virtual f32 getWheelieSoftSpeedLimitBonus() const;
-    virtual bool canWheelie() const;
-    virtual bool canHop() const;
-    bool canStartDrift() const;
 
-    void tryStartBoostPanel();
-    void tryStartBoostRamp();
-    void tryStartJumpPad();
-    void tryEndJumpPad();
-    void cancelJumpPad();
-
-    void activateBoost(KartBoost::Type type, s16 frames);
     void applyStartBoost(s16 frames);
     void activateMushroom();
     void setOffroadInvincibility(s16 timer);
@@ -164,6 +115,15 @@ protected:
         f32 boostRotFactor;
     };
 
+protected:
+    void clearRampBoost();
+    void clearBoost();
+    void clearSsmt();
+    void clearOffroadInvincibility();
+    void calcStandstillBoostRot();
+    void calcDive();
+    void cancelJumpPad();
+
     f32 m_baseSpeed;      ///< The speed associated with the current character/vehicle stats.
     f32 m_softSpeedLimit; ///< Base speed + boosts + wheelies, restricted to the hard speed limit.
     f32 m_speed;          ///< Current speed, restricted to the soft speed limit.
@@ -229,6 +189,50 @@ protected:
     KartJump *m_jump;
     const DriftingParameters *m_driftingParams; ///< Drift-type-specific parameters.
     f32 m_rawTurn; ///< Float in range [-1, 1]. Represents stick magnitude + direction.
+
+private:
+    virtual void calcTurn();
+    virtual void calcWheelie() {}
+    virtual void calcVehicleRotation(f32 turn);
+    virtual void hop();
+    virtual void onHop() {}
+    virtual void onWallCollision() {}
+    virtual void calcMtCharge();
+    [[nodiscard]] virtual f32 getWheelieSoftSpeedLimitBonus() const;
+    [[nodiscard]] virtual bool canWheelie() const;
+    [[nodiscard]] virtual bool canHop() const;
+
+    void resetDriftManual();
+    void calcTop();
+    void calcAirtimeTop();
+    void calcSpecialFloor();
+    void calcDirs();
+    void calcStickyRoad();
+    void calcOffroad();
+    void calcBoost();
+    void calcRampBoost();
+    void calcDisableBackwardsAccel();
+    void calcSsmt();
+    bool calcPreDrift();
+    void calcManualDrift();
+    void startManualDrift();
+    void clearDrift();
+    void releaseMt();
+    void controlOutsideDriftAngle();
+    void calcRotation();
+    void calcVehicleSpeed();
+    void calcDeceleration();
+    [[nodiscard]] f32 calcVehicleAcceleration() const;
+    void calcAcceleration();
+    [[nodiscard]] f32 calcWallCollisionSpeedFactor(f32 &f1);
+    void calcWallCollisionStart(f32 param_2);
+    void calcSsmtStart();
+    void tryStartBoostPanel();
+    void tryStartBoostRamp();
+    void tryStartJumpPad();
+    void tryEndJumpPad();
+    void activateBoost(KartBoost::Type type, s16 frames);
+    [[nodiscard]] bool canStartDrift() const;
 };
 
 /// @brief Responsible for reacting to player inputs and moving the bike.

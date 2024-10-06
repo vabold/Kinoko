@@ -149,38 +149,6 @@ f32 CollisionGroup::initHitboxes(const std::array<BSP::Hitbox, 16> &hitboxes) {
     return computeCollisionLimits();
 }
 
-/// @brief Sets the bounding radius
-/// @addr{0x805B883C}
-/// @return The furthest point of all the hitboxes' spheres
-f32 CollisionGroup::computeCollisionLimits() {
-    EGG::Vector3f max;
-
-    for (const auto &hitbox : m_hitboxes) {
-        const BSP::Hitbox *bspHitbox = hitbox.bspHitbox();
-
-        if (bspHitbox->enable == 0) {
-            continue;
-        }
-
-        max = max.maximize(bspHitbox->position.abs() + bspHitbox->radius);
-    }
-
-    // Get largest component of the vector
-    f32 maxComponent = max.z;
-
-    if (max.x <= max.y) {
-        if (max.z < max.y) {
-            maxComponent = max.y;
-        }
-    } else if (max.z < max.x) {
-        maxComponent = max.x;
-    }
-
-    m_boundingRadius = maxComponent;
-
-    return max.z * 0.5f;
-}
-
 /// @brief Creates a hitbox to represent a tire
 /// @addr{0x805B875C}
 /// @param radius The radius of the tire
@@ -237,6 +205,38 @@ CollisionData &CollisionGroup::collisionData() {
 
 const CollisionData &CollisionGroup::collisionData() const {
     return m_collisionData;
+}
+
+/// @brief Sets the bounding radius
+/// @addr{0x805B883C}
+/// @return The furthest point of all the hitboxes' spheres
+f32 CollisionGroup::computeCollisionLimits() {
+    EGG::Vector3f max;
+
+    for (const auto &hitbox : m_hitboxes) {
+        const BSP::Hitbox *bspHitbox = hitbox.bspHitbox();
+
+        if (bspHitbox->enable == 0) {
+            continue;
+        }
+
+        max = max.maximize(bspHitbox->position.abs() + bspHitbox->radius);
+    }
+
+    // Get largest component of the vector
+    f32 maxComponent = max.z;
+
+    if (max.x <= max.y) {
+        if (max.z < max.y) {
+            maxComponent = max.y;
+        }
+    } else if (max.z < max.x) {
+        maxComponent = max.x;
+    }
+
+    m_boundingRadius = maxComponent;
+
+    return max.z * 0.5f;
 }
 
 } // namespace Kart
