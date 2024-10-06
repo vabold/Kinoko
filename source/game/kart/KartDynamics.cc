@@ -15,19 +15,6 @@ KartDynamics::KartDynamics() {
 /// @addr{0x8059F6B8}
 KartDynamics::~KartDynamics() = default;
 
-/// @addr{0x805B5B68}
-/// @brief Stabilizes the kart by rotating towards the y-axis unit vector.
-void KartDynamics::stabilize() {
-    EGG::Vector3f top = m_mainRot.rotateVector(EGG::Vector3f::ey);
-    if (EGG::Mathf::abs(top.dot(m_top)) >= 0.9999f) {
-        return;
-    }
-
-    EGG::Quatf q;
-    q.makeVectorRotation(top, m_top);
-    m_mainRot = m_mainRot.slerpTo(q.multSwap(m_mainRot), m_stabilizationFactor);
-}
-
 /// @addr{0x805B4B54}
 void KartDynamics::init() {
     m_speedNorm = 0.0f;
@@ -150,6 +137,7 @@ void KartDynamics::calc(f32 dt, f32 maxSpeed, bool /*air*/) {
 }
 
 /// @addr{0x805B4D24}
+/// @unused
 void KartDynamics::reset() {
     m_extVel.setZero();
     m_acceleration.setZero();
@@ -311,6 +299,19 @@ const EGG::Vector3f &KartDynamics::angVel2() const {
 
 f32 KartDynamics::speedFix() const {
     return m_speedFix;
+}
+
+/// @addr{0x805B5B68}
+/// @brief Stabilizes the kart by rotating towards the y-axis unit vector.
+void KartDynamics::stabilize() {
+    EGG::Vector3f top = m_mainRot.rotateVector(EGG::Vector3f::ey);
+    if (EGG::Mathf::abs(top.dot(m_top)) >= 0.9999f) {
+        return;
+    }
+
+    EGG::Quatf q;
+    q.makeVectorRotation(top, m_top);
+    m_mainRot = m_mainRot.slerpTo(q.multSwap(m_mainRot), m_stabilizationFactor);
 }
 
 KartDynamicsBike::KartDynamicsBike() = default;

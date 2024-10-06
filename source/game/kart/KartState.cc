@@ -134,6 +134,230 @@ void KartState::calc() {
     calcCollisions();
 }
 
+bool KartState::isDrifting() const {
+    return m_bDriftManual || m_bDriftAuto;
+}
+
+bool KartState::isAccelerate() const {
+    return m_bAccelerate;
+}
+
+bool KartState::isBrake() const {
+    return m_bBrake;
+}
+
+bool KartState::isDriftInput() const {
+    return m_bDriftInput;
+}
+
+bool KartState::isDriftManual() const {
+    return m_bDriftManual;
+}
+
+bool KartState::isBeforeRespawn() const {
+    return m_bBeforeRespawn;
+}
+
+bool KartState::isWall3Collision() const {
+    return m_bWall3Collision;
+}
+
+bool KartState::isWallCollision() const {
+    return m_bWallCollision;
+}
+
+bool KartState::isHopStart() const {
+    return m_bHopStart;
+}
+
+bool KartState::isGroundStart() const {
+    return m_bGroundStart;
+}
+
+bool KartState::isVehicleBodyFloorCollision() const {
+    return m_bVehicleBodyFloorCollision;
+}
+
+bool KartState::isAnyWheelCollision() const {
+    return m_bAnyWheelCollision;
+}
+
+bool KartState::isAllWheelsCollision() const {
+    return m_bAllWheelsCollision;
+}
+
+bool KartState::isStickLeft() const {
+    return m_bStickLeft;
+}
+
+bool KartState::isWallCollisionStart() const {
+    return m_bWallCollisionStart;
+}
+
+bool KartState::isAirtimeOver20() const {
+    return m_bAirtimeOver20;
+}
+
+bool KartState::isStickyRoad() const {
+    return m_bStickyRoad;
+}
+
+bool KartState::isTouchingGround() const {
+    return m_bTouchingGround;
+}
+
+bool KartState::isHop() const {
+    return m_bHop;
+}
+
+bool KartState::isSoftWallDrift() const {
+    return m_bSoftWallDrift;
+}
+
+bool KartState::isHWG() const {
+    return m_bHWG;
+}
+
+bool KartState::isChargeStartBoost() const {
+    return m_bChargeStartBoost;
+}
+
+bool KartState::isBoost() const {
+    return m_bBoost;
+}
+
+bool KartState::isStickRight() const {
+    return m_bStickRight;
+}
+
+bool KartState::isMushroomBoost() const {
+    return m_bMushroomBoost;
+}
+
+bool KartState::isDriftAuto() const {
+    return m_bDriftAuto;
+}
+
+bool KartState::isSlipdriftCharge() const {
+    return m_bSlipdriftCharge;
+}
+
+bool KartState::isWheelie() const {
+    return m_bWheelie;
+}
+
+bool KartState::isJumpPad() const {
+    return m_bJumpPad;
+}
+
+bool KartState::isRampBoost() const {
+    return m_bRampBoost;
+}
+
+bool KartState::isCannonStart() const {
+    return m_bCannonStart;
+}
+
+bool KartState::isInCannon() const {
+    return m_bInCannon;
+}
+
+bool KartState::isTrickStart() const {
+    return m_bTrickStart;
+}
+
+bool KartState::isInATrick() const {
+    return m_bInATrick;
+}
+
+bool KartState::isBoostOffroadInvincibility() const {
+    return m_bBoostOffroadInvincibility;
+}
+
+bool KartState::isDisableBackwardsAccel() const {
+    return m_bDisableBackwardsAccel;
+}
+
+bool KartState::isTrickRot() const {
+    return m_bTrickRot;
+}
+
+bool KartState::isChargingSsmt() const {
+    return m_bChargingSsmt;
+}
+
+bool KartState::isTrickable() const {
+    return m_bTrickable;
+}
+
+bool KartState::isWheelieRot() const {
+    return m_bWheelieRot;
+}
+
+bool KartState::isJumpPadDisableYsusForce() const {
+    return m_bJumpPadDisableYsusForce;
+}
+
+bool KartState::isSkipWheelCalc() const {
+    return m_bSkipWheelCalc;
+}
+
+bool KartState::isUNK2() const {
+    return m_bUNK2;
+}
+
+bool KartState::isSomethingWallCollision() const {
+    return m_bSomethingWallCollision;
+}
+
+bool KartState::isAutoDrift() const {
+    return m_bAutoDrift;
+}
+
+u16 KartState::cannonPointId() const {
+    return m_cannonPointId;
+}
+
+s32 KartState::boostRampType() const {
+    return m_boostRampType;
+}
+
+s32 KartState::jumpPadVariant() const {
+    return m_jumpPadVariant;
+}
+
+f32 KartState::stickX() const {
+    return m_stickX;
+}
+
+f32 KartState::stickY() const {
+    return m_stickY;
+}
+
+u32 KartState::airtime() const {
+    return m_airtime;
+}
+
+const EGG::Vector3f &KartState::top() const {
+    return m_top;
+}
+
+const EGG::Vector3f &KartState::softWallSpeed() const {
+    return m_softWallSpeed;
+}
+
+f32 KartState::startBoostCharge() const {
+    return m_startBoostCharge;
+}
+
+s16 KartState::wallBonkTimer() const {
+    return m_wallBonkTimer;
+}
+
+s16 KartState::trickableTimer() const {
+    return m_trickableTimer;
+}
+
 /// @stage All
 /// @brief Each frame, checks for collision and saves relevant bit flags.
 /// @addr{0x80594BD4}
@@ -372,230 +596,6 @@ void KartState::handleStartBoost(size_t idx) {
         K_PANIC("More burnout RE required. See KartMoveSub264 function 0x805890b0.");
     }
     move()->applyStartBoost(START_BOOST_ENTRIES[idx].frames);
-}
-
-bool KartState::isDrifting() const {
-    return m_bDriftManual || m_bDriftAuto;
-}
-
-bool KartState::isAccelerate() const {
-    return m_bAccelerate;
-}
-
-bool KartState::isBrake() const {
-    return m_bBrake;
-}
-
-bool KartState::isDriftInput() const {
-    return m_bDriftInput;
-}
-
-bool KartState::isDriftManual() const {
-    return m_bDriftManual;
-}
-
-bool KartState::isBeforeRespawn() const {
-    return m_bBeforeRespawn;
-}
-
-bool KartState::isWall3Collision() const {
-    return m_bWall3Collision;
-}
-
-bool KartState::isWallCollision() const {
-    return m_bWallCollision;
-}
-
-bool KartState::isHopStart() const {
-    return m_bHopStart;
-}
-
-bool KartState::isGroundStart() const {
-    return m_bGroundStart;
-}
-
-bool KartState::isVehicleBodyFloorCollision() const {
-    return m_bVehicleBodyFloorCollision;
-}
-
-bool KartState::isAnyWheelCollision() const {
-    return m_bAnyWheelCollision;
-}
-
-bool KartState::isAllWheelsCollision() const {
-    return m_bAllWheelsCollision;
-}
-
-bool KartState::isStickLeft() const {
-    return m_bStickLeft;
-}
-
-bool KartState::isWallCollisionStart() const {
-    return m_bWallCollisionStart;
-}
-
-bool KartState::isAirtimeOver20() const {
-    return m_bAirtimeOver20;
-}
-
-bool KartState::isStickyRoad() const {
-    return m_bStickyRoad;
-}
-
-bool KartState::isTouchingGround() const {
-    return m_bTouchingGround;
-}
-
-bool KartState::isHop() const {
-    return m_bHop;
-}
-
-bool KartState::isSoftWallDrift() const {
-    return m_bSoftWallDrift;
-}
-
-bool KartState::isHWG() const {
-    return m_bHWG;
-}
-
-bool KartState::isChargeStartBoost() const {
-    return m_bChargeStartBoost;
-}
-
-bool KartState::isBoost() const {
-    return m_bBoost;
-}
-
-bool KartState::isStickRight() const {
-    return m_bStickRight;
-}
-
-bool KartState::isMushroomBoost() const {
-    return m_bMushroomBoost;
-}
-
-bool KartState::isDriftAuto() const {
-    return m_bDriftAuto;
-}
-
-bool KartState::isSlipdriftCharge() const {
-    return m_bSlipdriftCharge;
-}
-
-bool KartState::isWheelie() const {
-    return m_bWheelie;
-}
-
-bool KartState::isJumpPad() const {
-    return m_bJumpPad;
-}
-
-bool KartState::isRampBoost() const {
-    return m_bRampBoost;
-}
-
-bool KartState::isCannonStart() const {
-    return m_bCannonStart;
-}
-
-bool KartState::isInCannon() const {
-    return m_bInCannon;
-}
-
-bool KartState::isTrickStart() const {
-    return m_bTrickStart;
-}
-
-bool KartState::isInATrick() const {
-    return m_bInATrick;
-}
-
-bool KartState::isBoostOffroadInvincibility() const {
-    return m_bBoostOffroadInvincibility;
-}
-
-bool KartState::isDisableBackwardsAccel() const {
-    return m_bDisableBackwardsAccel;
-}
-
-bool KartState::isTrickRot() const {
-    return m_bTrickRot;
-}
-
-bool KartState::isChargingSsmt() const {
-    return m_bChargingSsmt;
-}
-
-bool KartState::isTrickable() const {
-    return m_bTrickable;
-}
-
-bool KartState::isWheelieRot() const {
-    return m_bWheelieRot;
-}
-
-bool KartState::isJumpPadDisableYsusForce() const {
-    return m_bJumpPadDisableYsusForce;
-}
-
-bool KartState::isSkipWheelCalc() const {
-    return m_bSkipWheelCalc;
-}
-
-bool KartState::isUNK2() const {
-    return m_bUNK2;
-}
-
-bool KartState::isSomethingWallCollision() const {
-    return m_bSomethingWallCollision;
-}
-
-bool KartState::isAutoDrift() const {
-    return m_bAutoDrift;
-}
-
-u16 KartState::cannonPointId() const {
-    return m_cannonPointId;
-}
-
-s32 KartState::boostRampType() const {
-    return m_boostRampType;
-}
-
-s32 KartState::jumpPadVariant() const {
-    return m_jumpPadVariant;
-}
-
-f32 KartState::stickX() const {
-    return m_stickX;
-}
-
-f32 KartState::stickY() const {
-    return m_stickY;
-}
-
-u32 KartState::airtime() const {
-    return m_airtime;
-}
-
-const EGG::Vector3f &KartState::top() const {
-    return m_top;
-}
-
-const EGG::Vector3f &KartState::softWallSpeed() const {
-    return m_softWallSpeed;
-}
-
-f32 KartState::startBoostCharge() const {
-    return m_startBoostCharge;
-}
-
-s16 KartState::wallBonkTimer() const {
-    return m_wallBonkTimer;
-}
-
-s16 KartState::trickableTimer() const {
-    return m_trickableTimer;
 }
 
 /// @brief Helper function to clear all bit flags at 0x4-0x7 in KartState.

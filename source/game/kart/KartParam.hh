@@ -33,8 +33,6 @@ struct BSP {
     BSP();
     BSP(EGG::RamStream &stream);
 
-    void read(EGG::RamStream &stream);
-
     f32 initialYPos;
     std::array<Hitbox, 16> hitboxes; ///< Array of vehicle hitboxes, not all of which are active.
     EGG::Vector3f cuboids[2];        ///< Mask cuboids for computing moment of inertia.

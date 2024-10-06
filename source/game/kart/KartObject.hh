@@ -12,8 +12,6 @@ class KartObject : public KartObjectProxy {
 public:
     KartObject(KartParam *param);
     virtual ~KartObject();
-    [[nodiscard]] virtual KartBody *createBody(KartPhysics *physics);
-    virtual void createTires();
 
     void init();
     void initImpl();
@@ -32,6 +30,10 @@ public:
 
 protected:
     KartAccessor m_pointers;
+
+private:
+    [[nodiscard]] virtual KartBody *createBody(KartPhysics *physics);
+    virtual void createTires();
 };
 
 /// @brief The highest level abstraction for a bike.
@@ -39,6 +41,8 @@ class KartObjectBike : public KartObject {
 public:
     KartObjectBike(KartParam *param);
     ~KartObjectBike() override;
+
+private:
     [[nodiscard]] KartBody *createBody(KartPhysics *physics) override;
     void createTires() override;
 };

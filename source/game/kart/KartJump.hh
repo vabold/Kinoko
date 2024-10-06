@@ -44,14 +44,9 @@ public:
     KartJump(KartMove *move);
     virtual ~KartJump();
 
-    virtual void calcRot() {}
-
-    void setupProperties();
     void reset();
     void tryStart(const EGG::Vector3f &left);
     void calc();
-    bool someFlagCheck();
-    void calcInput();
     void end();
 
     void setAngle(const EGG::Vector3f &left);
@@ -69,6 +64,12 @@ public:
     /// @endGetters
 
 protected:
+    virtual void calcRot() {}
+
+    void setupProperties();
+    bool someFlagCheck();
+    void calcInput();
+
     TrickType m_type;
     SurfaceVariant m_variant;
     System::Trick m_nextTrick;
@@ -96,9 +97,9 @@ public:
     KartJumpBike(KartMove *move);
     ~KartJumpBike();
 
+private:
     void calcRot() override;
 
-private:
     void start(const EGG::Vector3f &left) override;
     void init() override;
 };

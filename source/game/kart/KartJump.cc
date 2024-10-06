@@ -23,37 +23,6 @@ KartJump::KartJump(KartMove *move) : m_move(move) {
 /// @addr{0x80575AA8}
 KartJump::~KartJump() = default;
 
-/// @addr{0x80576460}
-void KartJump::setupProperties() {
-    static constexpr std::array<TrickProperties, 3> TRICK_PROPERTIES = {{
-            {11.0f, 1.5f, 0.9f, 0.0018f},
-            {14.0f, 1.5f, 0.9f, 0.0006f},
-            {7.5f, 2.5f, 0.93f, 0.05f},
-    }};
-
-    static constexpr std::array<f32, 3> FINAL_ANGLES = {{
-            360.0f,
-            720.0f,
-            180.0f,
-    }};
-
-    if (m_variant == SurfaceVariant::SingleFlipTrick) {
-        m_properties = TRICK_PROPERTIES[0];
-        m_finalAngle = FINAL_ANGLES[0];
-    } else if (m_variant == SurfaceVariant::StuntTrick) {
-        m_properties = TRICK_PROPERTIES[1];
-        m_finalAngle = FINAL_ANGLES[1];
-    } else if (m_type == TrickType::BikeSideStuntTrick) {
-        m_properties = TRICK_PROPERTIES[2];
-        m_finalAngle = FINAL_ANGLES[2];
-    }
-
-    m_angleDelta = m_properties.initialAngleDiff;
-    m_angleDeltaFactorDec = m_properties.angleDiffMulDec;
-    m_angle = 0.0f;
-    m_angleDeltaFactor = 1.0f;
-}
-
 /// @addr{0x80575AE8}
 void KartJump::reset() {
     m_cooldown = 0;
@@ -91,39 +60,6 @@ void KartJump::calc() {
     }
 
     calcInput();
-}
-
-bool KartJump::someFlagCheck() {
-    return state()->isTrickStart() || state()->isInATrick();
-}
-
-/// @addr{0x80575B38}
-void KartJump::calcInput() {
-    constexpr s16 TRICK_ALLOW_TIMER = 14;
-
-    System::Trick trick = inputs()->currentState().trick;
-
-    if (!someFlagCheck() && trick != System::Trick::None) {
-        m_nextTrick = trick;
-        m_nextAllowTimer = TRICK_ALLOW_TIMER;
-    }
-
-    u32 airtime = state()->airtime();
-    if (airtime == 0 || m_nextAllowTimer < 1 || airtime > 10 ||
-            (!state()->isTrickable() && state()->boostRampType() < 0) || someFlagCheck()) {
-        m_nextAllowTimer = std::max(0, m_nextAllowTimer - 1);
-    } else {
-        if (airtime > 2) {
-            state()->setTrickStart(true);
-        }
-        if (state()->isRampBoost()) {
-            m_boostRampEnabled = true;
-        }
-    }
-    if (state()->isTouchingGround() &&
-            collide()->surfaceFlags().offBit(KartCollide::eSurfaceFlags::BoostRamp)) {
-        m_boostRampEnabled = false;
-    }
 }
 
 /// @addr{0x805766B8}
@@ -199,6 +135,70 @@ SurfaceVariant KartJump::variant() const {
 
 s16 KartJump::cooldown() const {
     return m_cooldown;
+}
+
+/// @addr{0x80576460}
+void KartJump::setupProperties() {
+    static constexpr std::array<TrickProperties, 3> TRICK_PROPERTIES = {{
+            {11.0f, 1.5f, 0.9f, 0.0018f},
+            {14.0f, 1.5f, 0.9f, 0.0006f},
+            {7.5f, 2.5f, 0.93f, 0.05f},
+    }};
+
+    static constexpr std::array<f32, 3> FINAL_ANGLES = {{
+            360.0f,
+            720.0f,
+            180.0f,
+    }};
+
+    if (m_variant == SurfaceVariant::SingleFlipTrick) {
+        m_properties = TRICK_PROPERTIES[0];
+        m_finalAngle = FINAL_ANGLES[0];
+    } else if (m_variant == SurfaceVariant::StuntTrick) {
+        m_properties = TRICK_PROPERTIES[1];
+        m_finalAngle = FINAL_ANGLES[1];
+    } else if (m_type == TrickType::BikeSideStuntTrick) {
+        m_properties = TRICK_PROPERTIES[2];
+        m_finalAngle = FINAL_ANGLES[2];
+    }
+
+    m_angleDelta = m_properties.initialAngleDiff;
+    m_angleDeltaFactorDec = m_properties.angleDiffMulDec;
+    m_angle = 0.0f;
+    m_angleDeltaFactor = 1.0f;
+}
+
+bool KartJump::someFlagCheck() {
+    return state()->isTrickStart() || state()->isInATrick();
+}
+
+/// @addr{0x80575B38}
+void KartJump::calcInput() {
+    constexpr s16 TRICK_ALLOW_TIMER = 14;
+
+    System::Trick trick = inputs()->currentState().trick;
+
+    if (!someFlagCheck() && trick != System::Trick::None) {
+        m_nextTrick = trick;
+        m_nextAllowTimer = TRICK_ALLOW_TIMER;
+    }
+
+    u32 airtime = state()->airtime();
+    if (airtime == 0 || m_nextAllowTimer < 1 || airtime > 10 ||
+            (!state()->isTrickable() && state()->boostRampType() < 0) || someFlagCheck()) {
+        m_nextAllowTimer = std::max(0, m_nextAllowTimer - 1);
+    } else {
+        if (airtime > 2) {
+            state()->setTrickStart(true);
+        }
+        if (state()->isRampBoost()) {
+            m_boostRampEnabled = true;
+        }
+    }
+    if (state()->isTouchingGround() &&
+            collide()->surfaceFlags().offBit(KartCollide::eSurfaceFlags::BoostRamp)) {
+        m_boostRampEnabled = false;
+    }
 }
 
 KartJumpBike::KartJumpBike(KartMove *move) : KartJump(move) {}

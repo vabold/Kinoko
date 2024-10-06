@@ -86,7 +86,6 @@ public:
     ~CollisionGroup();
 
     [[nodiscard]] f32 initHitboxes(const std::array<BSP::Hitbox, 16> &hitboxes);
-    [[nodiscard]] f32 computeCollisionLimits();
     void createSingleHitbox(f32 radius, const EGG::Vector3f &relPos);
 
     /// @beginSetters
@@ -103,6 +102,8 @@ public:
     /// @endGetters
 
 private:
+    [[nodiscard]] f32 computeCollisionLimits();
+
     f32 m_boundingRadius;
     CollisionData m_collisionData;
     std::span<Hitbox> m_hitboxes;

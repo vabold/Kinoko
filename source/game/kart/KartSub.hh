@@ -16,19 +16,20 @@ public:
 
     void init();
     void initPhysicsValues();
-    void resetPhysics();
 
     void calcPass0();
     void calcPass1();
-    void addFloor(const CollisionData &, bool);
     void updateSuspOvertravel(const EGG::Vector3f &suspOvertravel);
-    void tryEndHWG();
 
     /// @beginGetters
     [[nodiscard]] f32 someScale();
     /// @endGetters
 
 private:
+    void resetPhysics();
+    void addFloor(const CollisionData &, bool);
+    void tryEndHWG();
+
     KartMove *m_move;
     KartCollide *m_collide;
     KartState *m_state;

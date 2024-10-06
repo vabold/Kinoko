@@ -54,25 +54,6 @@ void KartSub::initPhysicsValues() {
     collide()->resetHitboxes();
 }
 
-/// @addr{0x8059617C}
-void KartSub::resetPhysics() {
-    physics()->reset();
-    physics()->updatePose();
-    collide()->resetHitboxes();
-
-    for (u16 wheelIdx = 0; wheelIdx < suspCount(); ++wheelIdx) {
-        suspensionPhysics(wheelIdx)->reset();
-    }
-    for (u16 tireIdx = 0; tireIdx < tireCount(); ++tireIdx) {
-        tirePhysics(tireIdx)->reset();
-    }
-    m_move->setKartSpeedLimit();
-    m_sideCollisionTimer = 0;
-    m_someScale = 1.0f;
-    m_maxSuspOvertravel.setZero();
-    m_minSuspOvertravel.setZero();
-}
-
 /// @stage All
 /// @brief The first phase of physics computations on each frame.
 /// @addr{0x80596480}
@@ -277,15 +258,38 @@ void KartSub::calcPass1() {
     // calcRotation() is only ever used for gfx rendering, so skip
 }
 
-/// @addr{0x805980D8}
-void KartSub::addFloor(const CollisionData &, bool) {
-    ++m_floorCollisionCount;
-}
-
 /// @addr{0x805979EC}
 void KartSub::updateSuspOvertravel(const EGG::Vector3f &suspOvertravel) {
     m_maxSuspOvertravel = m_maxSuspOvertravel.minimize(suspOvertravel);
     m_minSuspOvertravel = m_minSuspOvertravel.maximize(suspOvertravel);
+}
+
+f32 KartSub::someScale() {
+    return m_someScale;
+}
+
+/// @addr{0x8059617C}
+void KartSub::resetPhysics() {
+    physics()->reset();
+    physics()->updatePose();
+    collide()->resetHitboxes();
+
+    for (u16 wheelIdx = 0; wheelIdx < suspCount(); ++wheelIdx) {
+        suspensionPhysics(wheelIdx)->reset();
+    }
+    for (u16 tireIdx = 0; tireIdx < tireCount(); ++tireIdx) {
+        tirePhysics(tireIdx)->reset();
+    }
+    m_move->setKartSpeedLimit();
+    m_sideCollisionTimer = 0;
+    m_someScale = 1.0f;
+    m_maxSuspOvertravel.setZero();
+    m_minSuspOvertravel.setZero();
+}
+
+/// @addr{0x805980D8}
+void KartSub::addFloor(const CollisionData &, bool) {
+    ++m_floorCollisionCount;
 }
 
 /// @addr{0x80598744}
@@ -308,10 +312,6 @@ void KartSub::tryEndHWG() {
     }
 
     dynamics()->setForceUpright(!state()->isSoftWallDrift());
-}
-
-f32 KartSub::someScale() {
-    return m_someScale;
 }
 
 } // namespace Kart

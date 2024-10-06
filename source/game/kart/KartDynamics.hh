@@ -14,9 +14,6 @@ public:
     KartDynamics();
     virtual ~KartDynamics();
 
-    virtual void forceUpright() {}
-    virtual void stabilize();
-
     void init();
     void resetInternalVelocity();
     void setBspParams(f32 rotSpeed, const EGG::Vector3f &m, const EGG::Vector3f &n,
@@ -65,6 +62,9 @@ public:
     /// @endGetters
 
 protected:
+    virtual void forceUpright() {}
+    virtual void stabilize();
+
     EGG::Matrix34f m_inertiaTensor;    ///< Resistance to rotational change, as a 3x3 matrix.
     EGG::Matrix34f m_invInertiaTensor; ///< The inverse of @ref m_inertiaTensor.
     f32 m_angVel0Factor;               ///< Scalar for damping angular velocity.
