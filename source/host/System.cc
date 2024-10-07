@@ -11,6 +11,8 @@ namespace Host {
 /// @brief The main entry point for the program.
 /// @addr{0x80008EF0}
 int KSystem::main(int argc, char **argv) {
+    EGG::Heap::initialize();
+
     if (argc < 2) {
         PANIC("Expected file argument");
     }

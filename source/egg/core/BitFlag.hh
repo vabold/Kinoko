@@ -1,6 +1,10 @@
 #pragma once
 
-#include <Common.hh>
+#include <Logger.hh>
+
+#include <cstddef>
+#include <limits>
+#include <type_traits>
 
 namespace EGG {
 
