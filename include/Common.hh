@@ -5,9 +5,10 @@
 
 #include <Logger.hh>
 
+#include <egg/core/Heap.hh>
+
 #include <array>
 #include <cassert>
-#include <cstdint>
 #include <limits>
 
 typedef int8_t s8;
