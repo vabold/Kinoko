@@ -140,14 +140,14 @@ f32 CourseMap::startTmp3() const {
 
 /// @addr{0x80512694}
 CourseMap *CourseMap::CreateInstance() {
-    assert(!s_instance);
+    ASSERT(!s_instance);
     s_instance = new CourseMap;
     return s_instance;
 }
 
 /// @addr{0x8051271C}
 void CourseMap::DestroyInstance() {
-    assert(s_instance);
+    ASSERT(s_instance);
     delete s_instance;
     s_instance = nullptr;
 }

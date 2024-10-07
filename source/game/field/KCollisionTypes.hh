@@ -158,7 +158,7 @@ struct KColHeader {
     u32 area_xy_blocks_shift;   ///< Used to initialize octree navigation. @see searchBlock.
     f32 sphere_radius;          ///< Clamps the sphere we check collision against. @see searchBlock.
 };
-static_assert(sizeof(KColHeader) == 0x3c);
+STATIC_ASSERT(sizeof(KColHeader) == 0x3c);
 
 typedef u32 KCLTypeMask;
 

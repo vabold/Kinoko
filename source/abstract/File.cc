@@ -14,7 +14,7 @@ u8 *Load(const char *path, size_t &size) {
     snprintf(filepath, sizeof(filepath), "./%s", path);
     std::ifstream file(filepath, std::ios::binary);
     if (!file) {
-        K_PANIC("File with provided path %s was not loaded correctly!", path);
+        PANIC("File with provided path %s was not loaded correctly!", path);
     }
 
     file.seekg(0, std::ios::end);

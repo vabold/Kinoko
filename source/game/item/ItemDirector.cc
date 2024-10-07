@@ -20,14 +20,14 @@ void ItemDirector::calc() {
 
 /// @addr{0x80799138}
 ItemDirector *ItemDirector::CreateInstance() {
-    assert(!s_instance);
+    ASSERT(!s_instance);
     s_instance = new ItemDirector;
     return s_instance;
 }
 
 /// @addr{0x80799188}
 void ItemDirector::DestroyInstance() {
-    assert(s_instance);
+    ASSERT(s_instance);
     delete s_instance;
     s_instance = nullptr;
 }

@@ -52,6 +52,7 @@ target_cflags = [
 ]
 
 debug_cflags = [
+    '-DBUILD_DEBUG',
     '-O0',
     '-ggdb',
 ]

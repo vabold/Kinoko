@@ -45,14 +45,14 @@ void RaceConfig::initControllers(const GhostFile &ghost) {
 
 /// @addr{0x8052FE58}
 RaceConfig *RaceConfig::CreateInstance() {
-    assert(!s_instance);
+    ASSERT(!s_instance);
     s_instance = new RaceConfig;
     return s_instance;
 }
 
 /// @addr{0x8052FFE8}
 void RaceConfig::DestroyInstance() {
-    assert(s_instance);
+    ASSERT(s_instance);
     delete s_instance;
     s_instance = nullptr;
 }

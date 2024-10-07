@@ -67,7 +67,7 @@ void MapdataStartPoint::findKartStartPoint(EGG::Vector3f &pos, EGG::Vector3f &an
 
     CourseMap *courseMap = CourseMap::Instance();
     const MapdataStageInfo *stageInfo = courseMap->getStageInfo();
-    assert(stageInfo);
+    ASSERT(stageInfo);
     int translationDirection = stageInfo->polePosition() == 1 ? -1 : 1;
 
     f32 cos = EGG::Mathf::CosFIdx(courseMap->startTmpAngle() * DEG2FIDX);

@@ -30,20 +30,20 @@ void KartObjectManager::calc() {
 
 /// @addr{0x80590100}
 KartObject *KartObjectManager::object(size_t i) const {
-    assert(i < m_count);
+    ASSERT(i < m_count);
     return m_objects[i];
 }
 
 /// @addr{0x8058FAA8}
 KartObjectManager *KartObjectManager::CreateInstance() {
-    assert(!s_instance);
+    ASSERT(!s_instance);
     s_instance = new KartObjectManager;
     return s_instance;
 }
 
 /// @addr{0x8058FAF8}
 void KartObjectManager::DestroyInstance() {
-    assert(s_instance);
+    ASSERT(s_instance);
     delete s_instance;
     s_instance = nullptr;
 }

@@ -18,7 +18,7 @@ void KartParamFileManager::init() {
     m_driverParam.load("driverParam.bin");
     m_bikeDispParam.load("bikePartsDispParam.bin");
     if (!validate()) {
-        K_PANIC("Parameter files could not be validated!");
+        PANIC("Parameter files could not be validated!");
     }
 }
 
@@ -54,7 +54,7 @@ EGG::RamStream KartParamFileManager::getDriverStream(Character character) const 
         break;
     default:
         if (character > Character::Rosalina) {
-            K_PANIC("Uh oh.");
+            PANIC("Uh oh.");
         }
 
         idx = static_cast<s32>(character);
@@ -62,7 +62,7 @@ EGG::RamStream KartParamFileManager::getDriverStream(Character character) const 
     }
 
     auto *file = reinterpret_cast<ParamFile<KartParam::Stats> *>(m_driverParam.file);
-    assert(file);
+    ASSERT(file);
     void *offset = &file->params[idx];
     u32 size = sizeof(KartParam::Stats);
     return EGG::RamStream(reinterpret_cast<u8 *>(offset), size);
@@ -70,12 +70,12 @@ EGG::RamStream KartParamFileManager::getDriverStream(Character character) const 
 
 EGG::RamStream KartParamFileManager::getVehicleStream(Vehicle vehicle) const {
     if (vehicle >= Vehicle::Max) {
-        K_PANIC("Uh oh.");
+        PANIC("Uh oh.");
     }
 
     s32 idx = static_cast<s32>(vehicle);
     auto *file = reinterpret_cast<ParamFile<KartParam::Stats> *>(m_kartParam.file);
-    assert(file);
+    ASSERT(file);
     void *offset = &file->params[idx];
     u32 size = sizeof(KartParam::Stats);
     return EGG::RamStream(reinterpret_cast<u8 *>(offset), size);
@@ -83,21 +83,21 @@ EGG::RamStream KartParamFileManager::getVehicleStream(Vehicle vehicle) const {
 
 EGG::RamStream KartParamFileManager::getHitboxStream(Vehicle vehicle) const {
     if (vehicle >= Vehicle::Max) {
-        K_PANIC("Uh oh.");
+        PANIC("Uh oh.");
     }
 
     auto *resourceManager = System::ResourceManager::Instance();
     size_t size;
 
     auto *file = resourceManager->getBsp(vehicle, &size);
-    assert(file);
-    assert(size == sizeof(BSP));
+    ASSERT(file);
+    ASSERT(size == sizeof(BSP));
     return EGG::RamStream(reinterpret_cast<u8 *>(file), size);
 }
 
 EGG::RamStream KartParamFileManager::getBikeDispParamsStream(Vehicle vehicle) const {
     if (vehicle < Vehicle::Standard_Bike_S || vehicle >= Vehicle::Max) {
-        K_PANIC("Uh oh.");
+        PANIC("Uh oh.");
     }
 
     // We need to index at the correct offset
@@ -105,20 +105,20 @@ EGG::RamStream KartParamFileManager::getBikeDispParamsStream(Vehicle vehicle) co
     s32 idx = static_cast<s32>(vehicle) - KART_MAX;
 
     auto *file = reinterpret_cast<ParamFile<KartParam::BikeDisp> *>(m_bikeDispParam.file);
-    assert(file);
+    ASSERT(file);
     void *offset = &file->params[idx];
     u32 size = sizeof(KartParam::BikeDisp);
     return EGG::RamStream(reinterpret_cast<u8 *>(offset), size);
 }
 
 KartParamFileManager *KartParamFileManager::CreateInstance() {
-    assert(!s_instance);
+    ASSERT(!s_instance);
     s_instance = new KartParamFileManager;
     return s_instance;
 }
 
 void KartParamFileManager::DestroyInstance() {
-    assert(s_instance);
+    ASSERT(s_instance);
     delete s_instance;
     s_instance = nullptr;
 }

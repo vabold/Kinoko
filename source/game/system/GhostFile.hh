@@ -73,7 +73,7 @@ private:
 
     u8 m_buffer[RKG_UNCOMPRESSED_FILE_SIZE];
 };
-static_assert(sizeof(RawGhostFile) == RKG_UNCOMPRESSED_FILE_SIZE);
+STATIC_ASSERT(sizeof(RawGhostFile) == RKG_UNCOMPRESSED_FILE_SIZE);
 
 /// @brief Parsed representation of a binary ghost file.
 /// @nosubgrouping

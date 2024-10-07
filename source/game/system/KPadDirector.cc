@@ -42,13 +42,13 @@ void KPadDirector::setGhostPad(const u8 *inputs, bool driftIsAuto) {
 
 /// @addr{0x8052313C}
 KPadDirector *KPadDirector::CreateInstance() {
-    assert(!s_instance);
+    ASSERT(!s_instance);
     return s_instance = new KPadDirector;
 }
 
 /// @addr{0x8052318C}
 void KPadDirector::DestroyInstance() {
-    assert(s_instance);
+    ASSERT(s_instance);
     delete s_instance;
     s_instance = nullptr;
 }

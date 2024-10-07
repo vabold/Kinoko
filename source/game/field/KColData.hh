@@ -32,7 +32,7 @@ public:
         u16 enrm3_i;
         u16 attribute;
     };
-    static_assert(sizeof(KCollisionPrism) == 0x10);
+    STATIC_ASSERT(sizeof(KCollisionPrism) == 0x10);
 
     KColData(const void *file);
 

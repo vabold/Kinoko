@@ -8,12 +8,12 @@ Stream::~Stream() = default;
 
 void Stream::skip(u32 count) {
     m_index += count;
-    assert(!eof());
+    ASSERT(!eof());
 }
 
 void Stream::jump(u32 index) {
     m_index = index;
-    assert(!eof());
+    ASSERT(!eof());
 }
 
 void Stream::setEndian(std::endian endian) {
@@ -94,7 +94,7 @@ bool RamStream::eof() {
 std::string RamStream::read_string() {
     std::string ret(reinterpret_cast<char *>(m_buffer + m_index));
     m_index += ret.size() + 1;
-    assert(!eof());
+    ASSERT(!eof());
     return ret;
 }
 
@@ -114,7 +114,7 @@ u8 *RamStream::data() {
 RamStream RamStream::split(u32 size) {
     RamStream stream = RamStream(m_buffer + m_index, size);
     m_index += size;
-    assert(!eof());
+    ASSERT(!eof());
 
     return stream;
 }

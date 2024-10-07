@@ -44,7 +44,7 @@ private:
         T val;
         read(&val, sizeof(val));
         m_index += sizeof(val);
-        assert(!eof());
+        ASSERT(!eof());
 
         return parse<T>(val, m_endian);
     }

@@ -67,14 +67,14 @@ class KinokoOutputValidator:
             desync_frame = self.get_test_case_frame_lower_bound()
             self.test_cases[name] = desync_frame
 
-    # e.g. Get "rr-ng-rta-2-24-281" from [TestDirector.cc:112] Test Case
+    # e.g. Get "rr-ng-rta-2-24-281" from [TestDirector.cc:112] REPORT: Test Case
     # Passed: rr-ng-rta-2-24-281 [1207 / 9060]
     def get_test_case_name(self) -> str:
-        return self.current_line.split(':')[2].split(' ')[1]
+        return self.current_line.split(':')[3].split(' ')[1]
 
-    # e.g. Get the "814" from [TestDirector.hh:55] Test Case Failed: rr-ng-rta-2-24-281 [814 / 9060]
+    # e.g. Get the "814" from [TestDirector.hh:55] REPORT: Test Case Failed: rr-ng-rta-2-24-281 [814 / 9060]
     def get_test_case_frame_lower_bound(self) -> int:
-        return int(self.current_line.split(':')[2].split('[')[1].split(' ')[0])
+        return int(self.current_line.split(':')[3].split('[')[1].split(' ')[0])
 
     def validate_test_case(self, test_case: TestCase) -> bool:
         desync_frame = self.test_cases[test_case.name]

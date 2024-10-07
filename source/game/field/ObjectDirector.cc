@@ -12,7 +12,7 @@ const ObjectFlowTable &ObjectDirector::flowTable() const {
 
 /// @addr{0x8082A784}
 ObjectDirector *ObjectDirector::CreateInstance() {
-    assert(!s_instance);
+    ASSERT(!s_instance);
     s_instance = new ObjectDirector;
 
     s_instance->createObjects();
@@ -22,7 +22,7 @@ ObjectDirector *ObjectDirector::CreateInstance() {
 
 /// @addr{0x8082A824}
 void ObjectDirector::DestroyInstance() {
-    assert(s_instance);
+    ASSERT(s_instance);
     delete s_instance;
     s_instance = nullptr;
 }
@@ -49,7 +49,7 @@ void ObjectDirector::createObjects() {
 
     for (size_t i = 0; i < objectCount; ++i) {
         const auto *pObj = courseMap->getGeoObj(i);
-        assert(pObj);
+        ASSERT(pObj);
 
         // Assume one player - if the presence flag isn't set, don't construct it
         if (!(pObj->presenceFlag() & 1)) {
