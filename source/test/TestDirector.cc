@@ -41,14 +41,14 @@ void TestDirector::parseSuite(EGG::RamStream &stream) {
     u16 testMinorVer = stream.read_u16();
 
     if (testMajorVer != SUITE_MAJOR_VER || testMinorVer > SUITE_MAX_MINOR_VER) {
-        K_PANIC("Version not supported! Provided file is %d.%d while Kinoko supports up to %d.%d",
+        PANIC("Version not supported! Provided file is %d.%d while Kinoko supports up to %d.%d",
                 testMajorVer, testMinorVer, SUITE_MAJOR_VER, SUITE_MAX_MINOR_VER);
     }
 
     for (u16 i = 0; i < numTestCases; ++i) {
         // Validate alignment
         if (stream.read_u32() != TEST_HEADER_SIGNATURE) {
-            K_PANIC("Invalid binary data for test case!");
+            PANIC("Invalid binary data for test case!");
         }
 
         u16 totalSize = stream.read_u16();
@@ -57,30 +57,30 @@ void TestDirector::parseSuite(EGG::RamStream &stream) {
         u16 nameLen = stream.read_u16();
         testCase.name = stream.read_string();
         if (nameLen != testCase.name.size() + 1) {
-            K_PANIC("Test case name length mismatch!");
+            PANIC("Test case name length mismatch!");
         }
 
         u16 rkgPathLen = stream.read_u16();
         testCase.rkgPath = stream.read_string();
         if (rkgPathLen != testCase.rkgPath.size() + 1) {
-            K_PANIC("Test case RKG Path length mismatch!");
+            PANIC("Test case RKG Path length mismatch!");
         }
 
         u16 krkgPathLen = stream.read_u16();
         testCase.krkgPath = stream.read_string();
         if (krkgPathLen != testCase.krkgPath.size() + 1) {
-            K_PANIC("Test case KRKG Path length mismatch!");
+            PANIC("Test case KRKG Path length mismatch!");
         }
 
         testCase.targetFrame = stream.read_u16();
 
         // Validate alignment
         if (stream.read_u32() != TEST_FOOTER_SIGNATURE) {
-            K_PANIC("Invalid binary data for test case!");
+            PANIC("Invalid binary data for test case!");
         }
 
         if (totalSize != sizeof(u16) * 4 + nameLen + rkgPathLen + krkgPathLen) {
-            K_PANIC("Unexpected bytes in test case");
+            PANIC("Unexpected bytes in test case");
         }
 
         m_testCases.push(testCase);
@@ -101,15 +101,16 @@ void TestDirector::init() {
 
     readHeader();
 
-    assert(m_stream.read_u32() == m_stream.index());
+    ASSERT(m_stream.read_u32() == m_stream.index());
 }
 
 bool TestDirector::calc() {
     // Check if we're out of frames
     u16 targetFrame = testCase().targetFrame;
-    assert(targetFrame <= m_frameCount);
+    ASSERT(targetFrame <= m_frameCount);
     if (++m_currentFrame > targetFrame) {
-        K_LOG("Test Case Passed: %s [%d / %d]", testCase().name.c_str(), targetFrame, m_frameCount);
+        REPORT("Test Case Passed: %s [%d / %d]", testCase().name.c_str(), targetFrame,
+                m_frameCount);
         return false;
     }
 
@@ -165,7 +166,7 @@ void TestDirector::writeTestOutput() const {
 // Also free the KRKG buffer for that test case.
 // Returns whether or not there are remaining test cases.
 bool TestDirector::popTestCase() {
-    assert(m_testCases.size() > 0);
+    ASSERT(m_testCases.size() > 0);
     m_testCases.pop();
     delete[] m_stream.data();
 
@@ -218,7 +219,7 @@ TestData TestDirector::findNextEntry() {
 }
 
 const TestCase &TestDirector::testCase() const {
-    assert(m_testCases.size() > 0);
+    ASSERT(m_testCases.size() > 0);
     return m_testCases.front();
 }
 
@@ -229,7 +230,7 @@ bool TestDirector::sync() const {
 void TestDirector::readHeader() {
     constexpr u32 KRKG_SIGNATURE = 0x4b524b47; // KRKG
 
-    assert(m_stream.read_u32() == KRKG_SIGNATURE);
+    ASSERT(m_stream.read_u32() == KRKG_SIGNATURE);
     m_stream.skip(2);
     m_frameCount = m_stream.read_u16();
     m_versionMajor = m_stream.read_u16();

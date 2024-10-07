@@ -38,7 +38,7 @@ void *Archive::getFileFast(s32 entryId, Abstract::ArchiveHandle::FileInfo &info)
 /// @param archiveStart The address of the archive to search for.
 /// @return The archive if it is already mounted, or nullptr if it is not.
 Archive *Archive::FindArchive(void *archiveStart) {
-    assert(archiveStart);
+    ASSERT(archiveStart);
 
     for (auto iter = s_archiveList.begin(); iter != s_archiveList.end(); ++iter) {
         if ((*iter)->m_handle.startAddress() == archiveStart) {

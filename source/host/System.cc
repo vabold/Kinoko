@@ -12,17 +12,17 @@ namespace Host {
 /// @addr{0x80008EF0}
 int KSystem::main(int argc, char **argv) {
     if (argc < 2) {
-        K_PANIC("Expected file argument");
+        PANIC("Expected file argument");
     }
 
     for (int i = 1; i < argc; ++i) {
         if (argv[i][0] != '-') {
-            K_PANIC("Invalid argument: %s", argv[i]);
+            PANIC("Invalid argument: %s", argv[i]);
         }
 
         Option opt = option(argv[i]);
         if (opt == Option::Invalid) {
-            K_PANIC("Invalid option %s", argv[i]);
+            PANIC("Invalid option %s", argv[i]);
         }
 
         handleOption(opt, argc, argv, i);
@@ -61,7 +61,7 @@ KSystem::Option KSystem::option(char *arg) {
     }
 
     if (strlen(arg) <= 2) {
-        K_PANIC("Invalid argument: %s", arg);
+        PANIC("Invalid argument: %s", arg);
     }
 
     if (strcmp(arg, "--suite") == 0) {
@@ -76,14 +76,14 @@ void KSystem::handleOption(Option opt, int argc, char **argv, int &i) {
     case Option::Suite: {
         // We expect another arg following the option
         if (argc - i < 2) {
-            K_PANIC("Expected argument after %s", argv[i]);
+            PANIC("Expected argument after %s", argv[i]);
         }
 
         size_t size;
         u8 *data = Abstract::File::Load(argv[++i], size);
 
         if (size == 0) {
-            K_PANIC("Failed to load suite data!");
+            PANIC("Failed to load suite data!");
         }
 
         m_suiteData = std::span<u8>(data, size);

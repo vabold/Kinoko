@@ -40,7 +40,7 @@ public:
         f32 dist;
         EGG::Vector3f fnrm;
     };
-    static_assert(sizeof(NoBounceWallColInfo) == 0x34);
+    STATIC_ASSERT(sizeof(NoBounceWallColInfo) == 0x34);
 
     void init();
 

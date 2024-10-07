@@ -30,7 +30,7 @@ void *ResourceManager::getBsp(Vehicle vehicle, size_t *size) {
 /// @addr{0x80540450}
 MultiDvdArchive *ResourceManager::load(s32 idx, const char *filename) {
     // Course has a dedicated load function, so we do not want it here
-    assert(idx != 1);
+    ASSERT(idx != 1);
 
     if (!filename) {
         filename = RESOURCE_PATHS[idx];
@@ -63,14 +63,14 @@ const char *ResourceManager::GetVehicleName(Vehicle vehicle) {
 
 /// @addr{0x8053FC4C}
 ResourceManager *ResourceManager::CreateInstance() {
-    assert(!s_instance);
+    ASSERT(!s_instance);
     s_instance = new ResourceManager;
     return s_instance;
 }
 
 /// @addr{0x8053FC9C}
 void ResourceManager::DestroyInstance() {
-    assert(s_instance);
+    ASSERT(s_instance);
     delete s_instance;
     s_instance = nullptr;
 }

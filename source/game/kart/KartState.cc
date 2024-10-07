@@ -369,7 +369,7 @@ void KartState::calcHandleStartBoost() {
 /// @param idx The index into the start boost entries array.
 void KartState::handleStartBoost(size_t idx) {
     if (m_startBoostIdx == std::numeric_limits<size_t>::max()) {
-        K_PANIC("More burnout RE required. See KartMoveSub264 function 0x805890b0.");
+        PANIC("More burnout RE required. See KartMoveSub264 function 0x805890b0.");
     }
     move()->applyStartBoost(START_BOOST_ENTRIES[idx].frames);
 }

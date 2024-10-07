@@ -39,7 +39,7 @@ struct SObjectCollisionSet {
     } params;
     u8 _72[0x74 - 0x72];
 };
-static_assert(sizeof(SObjectCollisionSet) == 0x74);
+STATIC_ASSERT(sizeof(SObjectCollisionSet) == 0x74);
 
 class ObjectFlowTable {
 public:

@@ -96,12 +96,12 @@ RawGhostFile &RawGhostFile::operator=(const u8 *rkg) {
 
 void RawGhostFile::init(const u8 *rkg) {
     if (!isValid(rkg)) {
-        K_PANIC("Invalid RKG header");
+        PANIC("Invalid RKG header");
     }
 
     if (compressed(rkg)) {
         if (!decompress(rkg)) {
-            K_PANIC("Failed to decompress RKG!");
+            PANIC("Failed to decompress RKG!");
         }
     } else {
         memcpy(m_buffer, rkg, RKG_UNCOMPRESSED_FILE_SIZE);
@@ -136,7 +136,7 @@ bool RawGhostFile::decompress(const u8 *rkg) {
 /// @todo Check lap times sum to race time?
 bool RawGhostFile::isValid(const u8 *rkg) const {
     if (strncmp(reinterpret_cast<const char *>(rkg), "RKGD", 4) != 0) {
-        K_PANIC("RKG header malformed");
+        PANIC("RKG header malformed");
         return false;
     }
 
@@ -160,13 +160,13 @@ bool RawGhostFile::isValid(const u8 *rkg) const {
     WeightClass vehicleWeight = VehicleToWeight(vehicle);
 
     if (charWeight == WeightClass::Invalid) {
-        K_PANIC("Invalid character weight class!");
+        PANIC("Invalid character weight class!");
     }
     if (vehicleWeight == WeightClass::Invalid) {
-        K_PANIC("Invalid vehicle weight class!");
+        PANIC("Invalid vehicle weight class!");
     }
     if (charWeight != vehicleWeight) {
-        K_PANIC("Character/Bike weight class mismatch!");
+        PANIC("Character/Bike weight class mismatch!");
     }
 
     return true;

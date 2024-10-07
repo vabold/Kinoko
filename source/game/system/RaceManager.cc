@@ -68,7 +68,7 @@ RaceManager::Stage RaceManager::stage() const {
 
 /// @addr{0x80532084}
 RaceManager *RaceManager::CreateInstance() {
-    assert(!s_instance);
+    ASSERT(!s_instance);
     s_instance = new RaceManager;
     return s_instance;
 }
@@ -79,7 +79,7 @@ RaceManager *RaceManager::Instance() {
 
 /// @addr{0x805320D4}
 void RaceManager::DestroyInstance() {
-    assert(s_instance);
+    ASSERT(s_instance);
     delete s_instance;
     s_instance = nullptr;
 }

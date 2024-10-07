@@ -255,7 +255,7 @@ const CollisionDirector::CollisionEntry *CollisionDirector::closestCollisionEntr
 
 /// @addr{0x8078DFE8}
 CollisionDirector *CollisionDirector::CreateInstance() {
-    assert(!s_instance);
+    ASSERT(!s_instance);
     s_instance = new CollisionDirector;
     return s_instance;
 }
@@ -266,7 +266,7 @@ CollisionDirector *CollisionDirector::Instance() {
 
 /// @addr{0x8078E124}
 void CollisionDirector::DestroyInstance() {
-    assert(s_instance);
+    ASSERT(s_instance);
     delete s_instance;
     s_instance = nullptr;
 }

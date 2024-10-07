@@ -156,14 +156,14 @@ void *CourseColMgr::LoadFile(const char *filename) {
 
 /// @addr{0x807C2824}
 CourseColMgr *CourseColMgr::CreateInstance() {
-    assert(!s_instance);
+    ASSERT(!s_instance);
     s_instance = new CourseColMgr;
     return s_instance;
 }
 
 /// @addr{0x807C2884}
 void CourseColMgr::DestroyInstance() {
-    assert(s_instance);
+    ASSERT(s_instance);
     delete s_instance;
     s_instance = nullptr;
 }
@@ -178,7 +178,7 @@ CourseColMgr::CourseColMgr()
 
 /// @addr{0x807C2A04}
 CourseColMgr::~CourseColMgr() {
-    assert(m_data);
+    ASSERT(m_data);
     delete m_data;
 }
 

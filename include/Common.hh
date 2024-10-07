@@ -3,11 +3,11 @@
 
 #pragma once
 
+#include <Logger.hh>
+
 #include <array>
 #include <cassert>
 #include <cstdint>
-#include <cstdio>
-#include <cstdlib>
 #include <limits>
 
 typedef int8_t s8;
@@ -353,27 +353,8 @@ static constexpr const char *VEHICLE_NAMES[36] = {
         "le_bike",
 };
 
-// CREDIT: MKW-SP
-// Hack required to print preprocessor macro
-#define K_TOSTRING(x) #x
-#define K_TOSTRING2(x) K_TOSTRING(x)
-
-// CREDIT: MKW-SP
-// Better console logging
-#define K_LOG(m, ...) \
-    do { \
-        printf("[" __FILE_NAME__ ":" K_TOSTRING2(__LINE__) "] " m "\n", ##__VA_ARGS__); \
-    } while (0)
-
-#define K_PANIC(m, ...) \
-    do { \
-        K_LOG(m, ##__VA_ARGS__); \
-        K_LOG("\aExiting with code 1..."); \
-        exit(1); \
-    } while (0)
-
-static_assert(std::numeric_limits<f32>::epsilon() == 1.0f / 8388608.0f);
-static_assert(
+STATIC_ASSERT(std::numeric_limits<f32>::epsilon() == 1.0f / 8388608.0f);
+STATIC_ASSERT(
         std::endian::native == std::endian::big || std::endian::native == std::endian::little);
 
 template <typename T>

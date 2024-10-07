@@ -14,7 +14,7 @@ struct BSP {
         u16 wallsOnly;
         u16 tireCollisionIdx;
     };
-    static_assert(sizeof(Hitbox) == 0x18);
+    STATIC_ASSERT(sizeof(Hitbox) == 0x18);
 
     /// @brief Info pertaining to the suspension, position, etc. of a wheel.
     struct Wheel {
@@ -28,7 +28,7 @@ struct BSP {
         f32 sphereRadius;
         u32 _28;
     };
-    static_assert(sizeof(Wheel) == 0x2c);
+    STATIC_ASSERT(sizeof(Wheel) == 0x2c);
 
     BSP();
     BSP(EGG::RamStream &stream);
@@ -44,7 +44,7 @@ struct BSP {
     f32 rumbleHeight; ///< Max vertical distance of the vehicle body's rumble animation.
     u16 rumbleSpeed;  ///< Speed of the vehicle body's rumble animation.
 };
-static_assert(sizeof(BSP) == 0x25c);
+STATIC_ASSERT(sizeof(BSP) == 0x25c);
 
 /// @brief Houses stats regarding a given character/vehicle combo.
 /// @nosubgrouping
@@ -61,7 +61,7 @@ public:
         EGG::Vector3f m_handleRot;
         u8 _24[0xb0 - 0x24];
     };
-    static_assert(sizeof(BikeDisp) == 0xB0);
+    STATIC_ASSERT(sizeof(BikeDisp) == 0xB0);
 
     /// @brief Various character/vehicle-related handling and speed stats.
     struct Stats {
@@ -119,7 +119,7 @@ public:
         f32 megaScale;
         f32 wheelDistance;
     };
-    static_assert(sizeof(Stats) == 0x18c);
+    STATIC_ASSERT(sizeof(Stats) == 0x18c);
 
     KartParam(Character character, Vehicle vehicle, u8 playerIdx);
     ~KartParam();

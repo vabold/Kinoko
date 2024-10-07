@@ -1,9 +1,6 @@
 #pragma once
 
-#include <cassert>
-#include <cstddef>
-#include <limits>
-#include <type_traits>
+#include <Common.hh>
 
 namespace EGG {
 
@@ -198,7 +195,7 @@ private:
     /// @details Validates that `e` is in the range of `T`.
     /// @param e Enum value representing the bit to set.
     constexpr void setBit_(E e) {
-        assert(static_cast<EI>(e) < MAX_CAPACITY);
+        ASSERT(static_cast<EI>(e) < MAX_CAPACITY);
         set(makeMask_(e));
     }
 
@@ -206,7 +203,7 @@ private:
     /// @details Validates that `e` is in the range of `T`.
     /// @param e Enum value representing the bit to reset.
     constexpr void resetBit_(E e) {
-        assert(static_cast<EI>(e) < MAX_CAPACITY);
+        ASSERT(static_cast<EI>(e) < MAX_CAPACITY);
         reset(makeMask_(e));
     }
 
@@ -215,7 +212,7 @@ private:
     /// @param on Determines whether to set or reset the bit.
     /// @param e Enum value respresenting the bit to change.
     constexpr void changeBit_(bool on, E e) {
-        assert(static_cast<EI>(e) < MAX_CAPACITY);
+        ASSERT(static_cast<EI>(e) < MAX_CAPACITY);
         change(on, makeMask_(e));
     }
 
@@ -223,7 +220,7 @@ private:
     /// @details Validates that `e` is in the range of `T`.
     /// @param e Enum value representing the bit to change.
     constexpr void toggleBit_(E e) {
-        assert(static_cast<EI>(e) < MAX_CAPACITY);
+        ASSERT(static_cast<EI>(e) < MAX_CAPACITY);
         changeBit_(offBit_(e), e);
     }
 
@@ -232,7 +229,7 @@ private:
     /// @param e Enum value representing the bit to change.
     /// @return True if the specified bit is on, otherwise false.
     [[nodiscard]] constexpr bool onBit_(E e) const {
-        assert(static_cast<EI>(e) < MAX_CAPACITY);
+        ASSERT(static_cast<EI>(e) < MAX_CAPACITY);
         return on(makeMask_(e));
     }
 
@@ -241,7 +238,7 @@ private:
     /// @param e Enum value representing the bit to change.
     /// @return True if the specified bit is off, otherwise false.
     [[nodiscard]] constexpr bool offBit_(E e) const {
-        assert(static_cast<EI>(e) < MAX_CAPACITY);
+        ASSERT(static_cast<EI>(e) < MAX_CAPACITY);
         return off(makeMask_(e));
     }
 
@@ -250,7 +247,7 @@ private:
     /// @param e
     /// @return The mask for the specified bit.
     [[nodiscard]] constexpr T makeMask_(E e) const {
-        assert(static_cast<EI>(e) < MAX_CAPACITY);
+        ASSERT(static_cast<EI>(e) < MAX_CAPACITY);
         return static_cast<T>(1) << static_cast<T>(e);
     }
 

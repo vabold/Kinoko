@@ -250,14 +250,14 @@ void BoxColManager::search(f32 radius, const EGG::Vector3f &pos, const BoxColFla
 
 /// @addr{0x807855DC}
 BoxColManager *BoxColManager::CreateInstance() {
-    assert(!s_instance);
+    ASSERT(!s_instance);
     s_instance = new BoxColManager;
     return s_instance;
 }
 
 /// @addr{0x8078562C}
 void BoxColManager::DestroyInstance() {
-    assert(s_instance);
+    ASSERT(s_instance);
     delete s_instance;
     s_instance = nullptr;
 }

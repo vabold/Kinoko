@@ -7,7 +7,7 @@ namespace Abstract {
 /// @addr{0x80124500}
 ArchiveHandle::ArchiveHandle(void *archiveStart) : m_startAddress(archiveStart) {
     RawArchive *rawArchive = reinterpret_cast<RawArchive *>(archiveStart);
-    assert(rawArchive->isValidSignature());
+    ASSERT(rawArchive->isValidSignature());
 
     m_nodesAddress = static_cast<u8 *>(archiveStart) + parse<u32>(rawArchive->nodesOffset);
     m_filesAddress = static_cast<u8 *>(archiveStart) + parse<u32>(rawArchive->filesOffset);

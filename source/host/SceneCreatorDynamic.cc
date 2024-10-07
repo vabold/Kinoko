@@ -21,7 +21,7 @@ EGG::Scene *SceneCreatorDynamic::create(SceneId sceneId) const {
     case SceneId::Race:
         return new Scene::RaceScene;
     default:
-        K_PANIC("Unreachable scene creation!");
+        PANIC("Unreachable scene creation!");
     }
 }
 
@@ -33,7 +33,7 @@ void SceneCreatorDynamic::destroy(SceneId sceneId) const {
         // The base game doesn't do anything, so we don't either
         break;
     default:
-        K_PANIC("Unreachable scene deletion!");
+        PANIC("Unreachable scene deletion!");
     }
 }
 
