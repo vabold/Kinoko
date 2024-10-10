@@ -5,6 +5,8 @@
 
 #include <Logger.hh>
 
+#include <egg/core/Heap.hh>
+
 #include <array>
 #include <cassert>
 #include <cstdint>
