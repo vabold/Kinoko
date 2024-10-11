@@ -53,8 +53,9 @@ RaceConfig *RaceConfig::CreateInstance() {
 /// @addr{0x8052FFE8}
 void RaceConfig::DestroyInstance() {
     ASSERT(s_instance);
-    delete s_instance;
+    auto *instance = s_instance;
     s_instance = nullptr;
+    delete instance;
 }
 
 RaceConfig *RaceConfig::Instance() {
@@ -65,7 +66,12 @@ RaceConfig *RaceConfig::Instance() {
 RaceConfig::RaceConfig() = default;
 
 /// @addr{0x80530038}
-RaceConfig::~RaceConfig() = default;
+RaceConfig::~RaceConfig() {
+    if (s_instance) {
+        s_instance = nullptr;
+        WARN("RaceConfig instance not explicitly handled!");
+    }
+}
 
 /// @addr{Inlined in 0x8052DD40}
 void RaceConfig::Scenario::init() {

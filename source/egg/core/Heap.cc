@@ -5,7 +5,7 @@ using namespace Abstract::Memory;
 namespace EGG {
 
 /// @addr{0x802296E8}
-Heap::Heap(MEMiHeapHead *handle) : m_handle(handle) {
+Heap::Heap(MEMiHeapHead *handle) : m_handle(handle), m_children() {
     if (!s_isHeapInitialized) {
         PANIC("Cannot create a heap before calling Heap::initalize");
     }
@@ -23,6 +23,16 @@ Heap::~Heap() {
     s_heapList.remove(this);
 }
 
+/// @addr{0x80229C5C}
+void Heap::dispose() {
+    for (auto *&node : m_children) {
+        node->~Disposer();
+        node = nullptr;
+    }
+
+    m_children.clear();
+}
+
 void Heap::disableAllocation() {
     m_flags.setBit(eFlags::Lock);
 }
@@ -33,6 +43,14 @@ void Heap::enableAllocation() {
 
 bool Heap::tstDisableAllocation() const {
     return m_flags.onBit(eFlags::Lock);
+}
+
+void Heap::appendDisposer(Disposer *disposer) {
+    m_children.push_back(disposer);
+}
+
+void Heap::removeDisposer(Disposer *disposer) {
+    m_children.remove(disposer);
 }
 
 Heap *Heap::becomeAllocatableHeap() {

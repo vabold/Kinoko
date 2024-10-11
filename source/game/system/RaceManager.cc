@@ -80,15 +80,21 @@ RaceManager *RaceManager::Instance() {
 /// @addr{0x805320D4}
 void RaceManager::DestroyInstance() {
     ASSERT(s_instance);
-    delete s_instance;
+    auto *instance = s_instance;
     s_instance = nullptr;
+    delete instance;
 }
 
 /// @addr{0x805327A0}
 RaceManager::RaceManager() : m_stage(Stage::Intro), m_introTimer(0), m_timer(0) {}
 
 /// @addr{0x80532E3C}
-RaceManager::~RaceManager() = default;
+RaceManager::~RaceManager() {
+    if (s_instance) {
+        s_instance = nullptr;
+        WARN("RaceManager instance not explicitly handled!");
+    }
+}
 
 /// @addr{0x80533ED8}
 RaceManagerPlayer::RaceManagerPlayer() {

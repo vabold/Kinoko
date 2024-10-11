@@ -1,7 +1,10 @@
 #pragma once
 
-#include "abstract/memory/HeapCommon.hh"
+#include "egg/core/Disposer.hh"
 
+#include <abstract/memory/HeapCommon.hh>
+
+#include <list>
 #include <new>
 
 namespace EGG {
@@ -10,7 +13,7 @@ class ExpHeap;
 
 /// @brief A high-level representation of a memory heap for managing dynamic memory allocation.
 /// Interface for allocating and freeing memory blocks.
-class Heap {
+class Heap : Disposer {
 public:
     enum class Kind {
         None,
@@ -21,7 +24,7 @@ public:
     };
 
     Heap(Abstract::Memory::MEMiHeapHead *handle);
-    virtual ~Heap();
+    ~Heap() override;
 
     virtual void destroy() = 0;
     virtual Kind getHeapKind() const = 0;
@@ -29,9 +32,14 @@ public:
     virtual void free(void *block) = 0;
     virtual u32 getAllocatableSize(s32 align = 4) const = 0;
 
+    void dispose();
+
     void disableAllocation();
     void enableAllocation();
     [[nodiscard]] bool tstDisableAllocation() const;
+
+    void appendDisposer(Disposer *disposer);
+    void removeDisposer(Disposer *disposer);
 
     Heap *becomeAllocatableHeap();
     Heap *becomeCurrentHeap();
@@ -73,6 +81,7 @@ protected:
     Heap *m_parentHeap;
     Flags m_flags;
     Abstract::Memory::MEMLink m_link;
+    std::list<Disposer *> m_children;
     const char *m_name;
 
     static Abstract::Memory::MEMList s_heapList;

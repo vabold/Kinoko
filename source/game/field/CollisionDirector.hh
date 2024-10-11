@@ -12,7 +12,7 @@ namespace Field {
 /// @brief Manages the caching of colliding KCL triangles and exposes queries for collision checks.
 /// @addr{0x809C2F44}
 /// @nosubgrouping
-class CollisionDirector {
+class CollisionDirector : EGG::Disposer {
 public:
     struct CollisionEntry {
         KCLTypeMask typeMask;
@@ -55,7 +55,7 @@ public:
 
 private:
     CollisionDirector();
-    ~CollisionDirector();
+    ~CollisionDirector() override;
 
     const CollisionEntry *m_closestCollisionEntry;
     std::array<CollisionEntry, COLLISION_ARR_LENGTH> m_entries;

@@ -7,7 +7,7 @@ namespace Kart {
 /// @brief Responsible for the lifecycle and calculation of KartObjects.
 /// @addr{0x809C18F8}
 /// @nosubgrouping
-class KartObjectManager {
+class KartObjectManager : EGG::Disposer {
 public:
     void init();
     void calc();
@@ -22,7 +22,7 @@ public:
 
 private:
     KartObjectManager();
-    ~KartObjectManager();
+    ~KartObjectManager() override;
 
     size_t m_count;
     KartObject **m_objects;

@@ -55,10 +55,10 @@ struct BoxColHighPoint {
 };
 
 /// @brief Spatial indexing manager for entities with dynamic collision.
-class BoxColManager {
+class BoxColManager : EGG::Disposer {
 public:
     BoxColManager();
-    ~BoxColManager();
+    ~BoxColManager() override;
 
     void clear();
     void calc();

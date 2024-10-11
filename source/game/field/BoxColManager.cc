@@ -65,7 +65,12 @@ BoxColManager::BoxColManager() {
 }
 
 /// @addr{0x807854E4}
-BoxColManager::~BoxColManager() = default;
+BoxColManager::~BoxColManager() {
+    if (s_instance) {
+        s_instance = nullptr;
+        WARN("BoxColManager instance not explicitly handled!");
+    }
+}
 
 /// @addr{0x8078597C}
 void BoxColManager::clear() {
@@ -258,8 +263,9 @@ BoxColManager *BoxColManager::CreateInstance() {
 /// @addr{0x8078562C}
 void BoxColManager::DestroyInstance() {
     ASSERT(s_instance);
-    delete s_instance;
+    auto *instance = s_instance;
     s_instance = nullptr;
+    delete instance;
 }
 
 BoxColManager *BoxColManager::Instance() {

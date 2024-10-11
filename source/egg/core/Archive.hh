@@ -4,12 +4,10 @@
 
 #include <abstract/Archive.hh>
 
-#include <list>
-
 /// @brief EGG core library
 namespace EGG {
 
-class Archive {
+class Archive : Disposer {
 public:
     ~Archive();
 

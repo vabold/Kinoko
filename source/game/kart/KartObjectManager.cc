@@ -44,8 +44,9 @@ KartObjectManager *KartObjectManager::CreateInstance() {
 /// @addr{0x8058FAF8}
 void KartObjectManager::DestroyInstance() {
     ASSERT(s_instance);
-    delete s_instance;
+    auto *instance = s_instance;
     s_instance = nullptr;
+    delete instance;
 }
 
 KartObjectManager *KartObjectManager::Instance() {
@@ -68,6 +69,11 @@ KartObjectManager::KartObjectManager() {
 
 /// @addr{0x8058FDD4}
 KartObjectManager::~KartObjectManager() {
+    if (s_instance) {
+        s_instance = nullptr;
+        WARN("KartObjectManager instance not explicitly handled!");
+    }
+
     KartParamFileManager::DestroyInstance();
 
     for (size_t i = 0; i < m_count; ++i) {

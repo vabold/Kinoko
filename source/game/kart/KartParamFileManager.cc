@@ -119,8 +119,9 @@ KartParamFileManager *KartParamFileManager::CreateInstance() {
 
 void KartParamFileManager::DestroyInstance() {
     ASSERT(s_instance);
-    delete s_instance;
+    auto *instance = s_instance;
     s_instance = nullptr;
+    delete instance;
 }
 
 KartParamFileManager *KartParamFileManager::Instance() {
@@ -131,7 +132,12 @@ KartParamFileManager::KartParamFileManager() {
     init();
 }
 
-KartParamFileManager::~KartParamFileManager() = default;
+KartParamFileManager::~KartParamFileManager() {
+    if (s_instance) {
+        s_instance = nullptr;
+        WARN("KartParamFileManager instance not explicitly handled!");
+    }
+}
 
 /// @brief Performs a few checks to make sure the files were loaded successfully.
 bool KartParamFileManager::validate() const {
