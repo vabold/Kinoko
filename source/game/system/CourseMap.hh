@@ -19,7 +19,7 @@ class MapdataStartPointAccessor;
 /// @brief Contains course metadata, notably the starting position.
 /// @addr{0x809BD6E8}
 /// @nosubgrouping
-class CourseMap {
+class CourseMap : EGG::Disposer {
 public:
     void init();
     [[nodiscard]] MapdataCannonPointAccessor *parseCannonPoint(u32 sectionName);
@@ -47,7 +47,7 @@ public:
 
 private:
     CourseMap();
-    ~CourseMap();
+    ~CourseMap() override;
 
     MapdataFileAccessor *m_course;
     MapdataStartPointAccessor *m_startPoint;

@@ -13,7 +13,7 @@ class SceneManager;
 /// as scenes destroy instances of classes used only during the scene lifetime.
 /// While this is not an abstract class, you'll never see an instance of this base class.
 /// @nosubgrouping
-class Scene {
+class Scene : Disposer {
 public:
     /*------------*
         Lifecycle

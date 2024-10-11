@@ -49,8 +49,9 @@ KPadDirector *KPadDirector::CreateInstance() {
 /// @addr{0x8052318C}
 void KPadDirector::DestroyInstance() {
     ASSERT(s_instance);
-    delete s_instance;
+    auto *instance = s_instance;
     s_instance = nullptr;
+    delete instance;
 }
 
 KPadDirector *KPadDirector::Instance() {
@@ -63,7 +64,12 @@ KPadDirector::KPadDirector() {
 }
 
 /// @addr{0x805231DC}
-KPadDirector::~KPadDirector() = default;
+KPadDirector::~KPadDirector() {
+    if (s_instance) {
+        s_instance = nullptr;
+        WARN("KPadDirector instance not explicitly handled!");
+    }
+}
 
 KPadDirector *KPadDirector::s_instance = nullptr; ///< @addr{0x809BD70C}
 

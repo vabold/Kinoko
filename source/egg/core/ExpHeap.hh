@@ -2,7 +2,7 @@
 
 #include "egg/core/Heap.hh"
 
-#include "abstract/memory/ExpHeap.hh"
+#include <abstract/memory/ExpHeap.hh>
 
 namespace EGG {
 

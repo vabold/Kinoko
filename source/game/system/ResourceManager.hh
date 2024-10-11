@@ -13,7 +13,7 @@ enum class ArchiveId {
 /// @brief Highest level abstraction for archive management and subsequent file retrieval.
 /// @details ResourceManager is responsible for loading and unloading archives. For example, it is
 /// used by Field::CourseColMgr to load the KCL collision file from a particular course archive.
-class ResourceManager {
+class ResourceManager : EGG::Disposer {
 public:
     void *getFile(const char *filename, size_t *size, ArchiveId id);
     void *getBsp(Vehicle vehicle, size_t *size);
@@ -29,7 +29,7 @@ public:
 
 private:
     ResourceManager();
-    ~ResourceManager();
+    ~ResourceManager() override;
 
     // 0: Core archive
     // 1: Course archive

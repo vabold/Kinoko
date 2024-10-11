@@ -267,8 +267,9 @@ CollisionDirector *CollisionDirector::Instance() {
 /// @addr{0x8078E124}
 void CollisionDirector::DestroyInstance() {
     ASSERT(s_instance);
-    delete s_instance;
+    auto *instance = s_instance;
     s_instance = nullptr;
+    delete instance;
 }
 
 /// @addr{0x8078E33C}
@@ -280,6 +281,11 @@ CollisionDirector::CollisionDirector() {
 
 /// @addr{0x8078E454}
 CollisionDirector::~CollisionDirector() {
+    if (s_instance) {
+        s_instance = nullptr;
+        WARN("CollisionDirector instance not explicitly handled!");
+    }
+
     CourseColMgr::DestroyInstance();
 }
 

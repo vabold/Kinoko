@@ -23,8 +23,9 @@ ObjectDirector *ObjectDirector::CreateInstance() {
 /// @addr{0x8082A824}
 void ObjectDirector::DestroyInstance() {
     ASSERT(s_instance);
-    delete s_instance;
+    auto *instance = s_instance;
     s_instance = nullptr;
+    delete instance;
 }
 
 ObjectDirector *ObjectDirector::Instance() {
@@ -36,6 +37,11 @@ ObjectDirector::ObjectDirector() : m_flowTable("ObjFlow.bin") {}
 
 /// @addr{0x8082A694}
 ObjectDirector::~ObjectDirector() {
+    if (s_instance) {
+        s_instance = nullptr;
+        WARN("ObjectDirector instance not explicitly handled!");
+    }
+
     for (auto *&obj : m_objects) {
         delete obj;
     }

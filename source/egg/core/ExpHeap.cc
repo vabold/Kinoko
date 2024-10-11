@@ -10,6 +10,7 @@ ExpHeap::ExpHeap(MEMiHeapHead *handle) : Heap(handle) {}
 
 /// @addr{0x802269A8}
 ExpHeap::~ExpHeap() {
+    dispose();
     dynamicCastHandleToExp()->destroy();
 }
 

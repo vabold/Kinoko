@@ -28,8 +28,9 @@ ItemDirector *ItemDirector::CreateInstance() {
 /// @addr{0x80799188}
 void ItemDirector::DestroyInstance() {
     ASSERT(s_instance);
-    delete s_instance;
+    auto *instance = s_instance;
     s_instance = nullptr;
+    delete instance;
 }
 
 ItemDirector *ItemDirector::Instance() {
@@ -48,6 +49,11 @@ ItemDirector::ItemDirector() {
 
 /// @addr{0x80798F9C}
 ItemDirector::~ItemDirector() {
+    if (s_instance) {
+        s_instance = nullptr;
+        WARN("ItemDirector instance not explicitly handled!");
+    }
+
     delete[] m_karts.data();
 }
 

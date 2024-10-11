@@ -24,7 +24,7 @@ private:
 /// race we're in, as that affects several things like acceleration. This class also retrieves the
 /// player start position from CourseMap and communicates it to the physics engine.
 /// @nosubgrouping
-class RaceManager {
+class RaceManager : EGG::Disposer {
 public:
     enum class Stage {
         Intro = 0,
@@ -52,7 +52,7 @@ public:
 
 private:
     RaceManager();
-    ~RaceManager();
+    ~RaceManager() override;
 
     RaceManagerPlayer m_player;
     Stage m_stage;

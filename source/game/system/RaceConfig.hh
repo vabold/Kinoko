@@ -12,7 +12,7 @@ namespace System {
 /// The menu scenario mostly pertains to character and vehicle selection in the menus prior to
 /// starting a race. In Kinoko, we don't have these menus, so we initialize the race directly
 /// through this class.
-class RaceConfig {
+class RaceConfig : EGG::Disposer {
 public:
     struct Player {
     public:
@@ -55,7 +55,7 @@ public:
 
 private:
     RaceConfig();
-    ~RaceConfig();
+    ~RaceConfig() override;
 
     Scenario m_raceScenario;
     RawGhostFile m_ghost;

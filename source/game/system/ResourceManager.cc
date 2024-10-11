@@ -71,8 +71,9 @@ ResourceManager *ResourceManager::CreateInstance() {
 /// @addr{0x8053FC9C}
 void ResourceManager::DestroyInstance() {
     ASSERT(s_instance);
-    delete s_instance;
+    auto *instance = s_instance;
     s_instance = nullptr;
+    delete instance;
 }
 
 ResourceManager *ResourceManager::Instance() {
@@ -88,7 +89,12 @@ ResourceManager::ResourceManager() {
 }
 
 /// @addr{0x8053FF1C}
-ResourceManager::~ResourceManager() = default;
+ResourceManager::~ResourceManager() {
+    if (s_instance) {
+        s_instance = nullptr;
+        WARN("ResourceManager instance not explicitly handled!");
+    }
+}
 
 /// @addr{Inlined in 0x8053FCEC}
 MultiDvdArchive *ResourceManager::Create(u8 i) {

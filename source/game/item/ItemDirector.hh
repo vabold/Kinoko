@@ -8,7 +8,7 @@
 namespace Item {
 
 /// @addr{0x809C3618}
-class ItemDirector {
+class ItemDirector : EGG::Disposer {
 public:
     void init();
     void calc();
@@ -19,7 +19,7 @@ public:
 
 private:
     ItemDirector();
-    ~ItemDirector();
+    ~ItemDirector() override;
 
     std::span<KartItem> m_karts;
 

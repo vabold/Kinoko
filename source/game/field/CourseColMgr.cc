@@ -164,8 +164,9 @@ CourseColMgr *CourseColMgr::CreateInstance() {
 /// @addr{0x807C2884}
 void CourseColMgr::DestroyInstance() {
     ASSERT(s_instance);
-    delete s_instance;
+    auto *instance = s_instance;
     s_instance = nullptr;
+    delete instance;
 }
 
 CourseColMgr *CourseColMgr::Instance() {
@@ -178,6 +179,11 @@ CourseColMgr::CourseColMgr()
 
 /// @addr{0x807C2A04}
 CourseColMgr::~CourseColMgr() {
+    if (s_instance) {
+        s_instance = nullptr;
+        WARN("CourseColMgr instance not explicitly handled!");
+    }
+
     ASSERT(m_data);
     delete m_data;
 }

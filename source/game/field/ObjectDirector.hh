@@ -7,7 +7,7 @@
 
 namespace Field {
 
-class ObjectDirector {
+class ObjectDirector : EGG::Disposer {
 public:
     const ObjectFlowTable &flowTable() const;
 
@@ -17,7 +17,7 @@ public:
 
 private:
     ObjectDirector();
-    ~ObjectDirector();
+    ~ObjectDirector() override;
 
     void createObjects();
     ObjectBase *createObject(const System::MapdataGeoObj &params);

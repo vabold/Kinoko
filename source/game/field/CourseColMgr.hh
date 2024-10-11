@@ -15,7 +15,7 @@ typedef bool (
 /// @brief Manager for course KCL interactions.
 /// @addr{0x809C3C10}
 /// @nosubgrouping
-class CourseColMgr {
+class CourseColMgr : EGG::Disposer {
 public:
     struct CollisionInfo {
         EGG::BoundBox3f bbox;
@@ -81,7 +81,7 @@ public:
 
 private:
     CourseColMgr();
-    ~CourseColMgr();
+    ~CourseColMgr() override;
 
     [[nodiscard]] bool doCheckWithPartialInfo(KColData *data, CollisionCheckFunc collisionCheckFunc,
             CollisionInfo *colInfo, KCLTypeMask *typeMask);

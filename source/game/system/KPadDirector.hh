@@ -6,7 +6,7 @@ namespace System {
 
 /// @brief The highest level abstraction for controller processing.
 /// @addr{0x809BD70C}
-class KPadDirector {
+class KPadDirector : EGG::Disposer {
 public:
     void calc();
     void calcPads();
@@ -25,7 +25,7 @@ public:
 
 private:
     KPadDirector();
-    ~KPadDirector();
+    ~KPadDirector() override;
 
     KPadPlayer m_playerInput;
     KPadGhostController *m_ghostController;

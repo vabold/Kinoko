@@ -148,8 +148,9 @@ CourseMap *CourseMap::CreateInstance() {
 /// @addr{0x8051271C}
 void CourseMap::DestroyInstance() {
     ASSERT(s_instance);
-    delete s_instance;
+    auto *instance = s_instance;
     s_instance = nullptr;
+    delete instance;
 }
 
 CourseMap *CourseMap::Instance() {
@@ -163,6 +164,11 @@ CourseMap::CourseMap()
 
 /// @addr{0x805127AC}
 CourseMap::~CourseMap() {
+    if (s_instance) {
+        s_instance = nullptr;
+        WARN("CourseMap instance not explicitly handled!");
+    }
+
     delete m_course;
     delete m_startPoint;
     delete m_stageInfo;
