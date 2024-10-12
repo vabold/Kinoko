@@ -136,12 +136,14 @@ void *Heap::alloc(size_t size, int align, Heap *pHeap) {
 
             constexpr f32 BYTES_TO_MBYTES = 1024.0f * 1024.0f;
             f32 heapSizeMB = static_cast<f32>(heapSize) / BYTES_TO_MBYTES;
+            f32 heapFreeSizeMB = static_cast<f32>(heapFreeSize) / BYTES_TO_MBYTES;
             f32 sizeMB = static_cast<f32>(size) / BYTES_TO_MBYTES;
 
-            WARN("HEAP ALLOC FAIL (%p, %s):\nFree bytes: %d (%.1fMBytes)\nAlloc bytes: %d "
+            WARN("HEAP ALLOC FAIL (%p, %s):\nTotal bytes: %d (%.1fMBytes)\nFree bytes: %d "
+                 "(%.1fMBytes)\nAlloc bytes: %d "
                  "(%.1fMBytes)\nAlign: %d",
-                    currentHeap, currentHeap->getName(), heapFreeSize, heapSizeMB, size, sizeMB,
-                    align);
+                    currentHeap, currentHeap->getName(), heapSize, heapSizeMB, heapFreeSize,
+                    heapFreeSizeMB, size, sizeMB, align);
         }
 
         return block;
