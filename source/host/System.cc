@@ -4,6 +4,8 @@
 
 #include <abstract/File.hh>
 
+#include <egg/core/ExpHeap.hh>
+
 #include <cstring>
 
 namespace Host {
@@ -11,7 +13,7 @@ namespace Host {
 /// @brief The main entry point for the program.
 /// @addr{0x80008EF0}
 int KSystem::main(int argc, char **argv) {
-    EGG::Heap::initialize();
+    initMemory();
 
     if (argc < 2) {
         PANIC("Expected file argument");
@@ -41,8 +43,10 @@ int KSystem::main(int argc, char **argv) {
             break;
         }
 
+        // TODO: Use a system heap! The test director currently has a dependency on the scene heap.
+        m_sceneMgr->destroyScene(m_sceneMgr->currentScene());
         m_testDirector->init();
-        m_sceneMgr->reinitCurrentScene();
+        m_sceneMgr->createScene(2, m_sceneMgr->currentScene());
     }
 
     // Shut down the RootScene
@@ -103,6 +107,26 @@ void KSystem::init() {
     delete[] m_suiteData.data();
 }
 
+/// @addr{0x80242504}
+/// @brief Creates a memory space and a heap from that memory space.
+/// @warning This must be called first, or any `new` calls will have a nullptr heap!
+/// @details In the base game, the initial memory space is provided by the OS arena.
+/// For local implementations, we request memory from the OS via malloc, as it's not overwritten.
+void KSystem::initMemory() {
+    constexpr size_t MEMORY_SPACE_SIZE = 0x1000000;
+    Abstract::Memory::MEMiHeapHead::OptFlag opt;
+    opt.setBit(Abstract::Memory::MEMiHeapHead::eOptFlag::ZeroFillAlloc);
+
+#ifdef BUILD_DEBUG
+    opt.setBit(Abstract::Memory::MEMiHeapHead::eOptFlag::DebugFillAlloc);
+#endif
+
+    m_memorySpace = malloc(MEMORY_SPACE_SIZE);
+    m_rootHeap = EGG::ExpHeap::create(m_memorySpace, MEMORY_SPACE_SIZE, opt);
+    m_rootHeap->setName("EGGRoot");
+    m_rootHeap->becomeCurrentHeap();
+}
+
 /// @brief The main loop of the program.
 /// @return Whether or not all test cases have passed.
 /// @addr{0x8000951C}
@@ -113,6 +137,10 @@ bool KSystem::run() {
 
     m_testDirector->writeTestOutput();
     return m_testDirector->sync();
+}
+
+EGG::Heap *KSystem::rootHeap() const {
+    return m_rootHeap;
 }
 
 const Test::TestDirector *KSystem::testDirector() const {

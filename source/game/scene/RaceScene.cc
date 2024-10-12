@@ -14,7 +14,9 @@
 namespace Scene {
 
 /// @addr{0x80553B88}
-RaceScene::RaceScene() = default;
+RaceScene::RaceScene() {
+    m_heap->setName("RaceSceneHeap");
+}
 
 /// @addr{0x80553BD4}
 RaceScene::~RaceScene() = default;

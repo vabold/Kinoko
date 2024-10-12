@@ -10,7 +10,9 @@
 namespace Scene {
 
 /// @addr{0x80542878}
-RootScene::RootScene() = default;
+RootScene::RootScene() {
+    m_heap->setName("RootSceneHeap");
+}
 
 /// @addr{0x805429A8}
 RootScene::~RootScene() = default;
