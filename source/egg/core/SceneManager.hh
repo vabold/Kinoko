@@ -69,8 +69,16 @@ public:
         Getters
      *----------*/
 
+    [[nodiscard]] Scene *currentScene() const {
+        return m_currentScene;
+    }
+
     [[nodiscard]] int currentSceneId() const {
         return m_currentSceneId;
+    }
+
+    [[nodiscard]] static Heap *heapForCreateScene() {
+        return s_heapForCreateScene;
     }
 
     /*----------*
@@ -97,6 +105,9 @@ private:
     int m_nextSceneId;
     int m_currentSceneId;
     int m_prevSceneId;
+
+    static Heap *s_heapForCreateScene;
+    static u16 s_heapOptionFlg;
 };
 
 } // namespace EGG

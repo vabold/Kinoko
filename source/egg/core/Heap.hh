@@ -63,7 +63,6 @@ public:
 
     [[nodiscard]] static ExpHeap *dynamicCastToExp(Heap *heap);
     [[nodiscard]] static Heap *getCurrentHeap();
-    [[nodiscard]] static void *getMemorySpace();
 
     [[nodiscard]] static constexpr uintptr_t getOffset() {
         // offsetof doesn't work, so instead of hardcoding an offset, we derive it ourselves
@@ -81,16 +80,13 @@ protected:
     Heap *m_parentHeap;
     Flags m_flags;
     Abstract::Memory::MEMLink m_link;
-    std::list<Disposer *> m_children;
+    Abstract::Memory::MEMList m_children;
     const char *m_name;
 
     static Abstract::Memory::MEMList s_heapList;
 
     static Heap *s_currentHeap;
-    static bool s_isHeapInitialized;
     static Heap *s_allocatableHeap;
-    static ExpHeap *s_rootHeap;
-    static void *s_memorySpace;
 };
 
 } // namespace EGG

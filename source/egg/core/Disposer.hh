@@ -11,12 +11,18 @@ class Heap;
 class Disposer {
     friend class Heap;
 
+public:
+    [[nodiscard]] static constexpr u16 getLinkOffset() {
+        return reinterpret_cast<uintptr_t>(&reinterpret_cast<Disposer *>(NULL)->m_link);
+    }
+
 protected:
     Disposer();
     virtual ~Disposer();
 
 private:
     Heap *m_heap;
+    Abstract::Memory::MEMLink m_link;
 };
 
 } // namespace EGG

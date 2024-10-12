@@ -5,11 +5,7 @@ using namespace Abstract::Memory;
 namespace EGG {
 
 /// @addr{0x802296E8}
-Heap::Heap(MEMiHeapHead *handle) : m_handle(handle), m_children() {
-    if (!s_isHeapInitialized) {
-        PANIC("Cannot create a heap before calling Heap::initalize");
-    }
-
+Heap::Heap(MEMiHeapHead *handle) : m_handle(handle), m_children(Disposer::getLinkOffset()) {
     m_block = nullptr;
     m_parentHeap = nullptr;
     m_name = "NoName";
@@ -25,12 +21,12 @@ Heap::~Heap() {
 
 /// @addr{0x80229C5C}
 void Heap::dispose() {
-    for (auto *&node : m_children) {
+    Disposer *node = nullptr;
+    while ((node = reinterpret_cast<Disposer *>(m_children.getFirst()))) {
         node->~Disposer();
-        node = nullptr;
     }
 
-    m_children.clear();
+    ASSERT(!m_children.m_headObject && !m_children.m_tailObject);
 }
 
 void Heap::disableAllocation() {
@@ -46,7 +42,7 @@ bool Heap::tstDisableAllocation() const {
 }
 
 void Heap::appendDisposer(Disposer *disposer) {
-    m_children.push_back(disposer);
+    m_children.append(disposer);
 }
 
 void Heap::removeDisposer(Disposer *disposer) {
@@ -93,16 +89,6 @@ void Heap::setName(const char *name) {
 
 void Heap::setParentHeap(Heap *heap) {
     m_parentHeap = heap;
-}
-
-/// @addr{0x802296A8}
-void Heap::initialize() {
-    constexpr size_t MEMORY_SPACE_SIZE = 0x1000000;
-
-    s_isHeapInitialized = true;
-
-    s_memorySpace = malloc(MEMORY_SPACE_SIZE);
-    ExpHeap::initRootHeap(s_memorySpace, MEMORY_SPACE_SIZE);
 }
 
 /// @addr{0x80229814}
@@ -195,10 +181,6 @@ Heap *Heap::getCurrentHeap() {
     return s_currentHeap;
 }
 
-void *Heap::getMemorySpace() {
-    return s_memorySpace;
-}
-
 } // namespace EGG
 
 /// @addr{0x80229DCC}
@@ -252,6 +234,4 @@ void operator delete[](void *block, size_t /* size */) noexcept {
 MEMList EGG::Heap::s_heapList = MEMList(EGG::Heap::getOffset()); ///< @addr{0x80384320}
 
 EGG::Heap *EGG::Heap::s_currentHeap = nullptr;     ///< @addr{0x80386EA0}
-bool EGG::Heap::s_isHeapInitialized = false;       ///< @addr{0x80386EA4}
 EGG::Heap *EGG::Heap::s_allocatableHeap = nullptr; ///< @addr{0x80386EA8}
-void *EGG::Heap::s_memorySpace = nullptr;

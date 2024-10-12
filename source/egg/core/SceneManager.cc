@@ -1,5 +1,9 @@
 #include "SceneManager.hh"
 
+#include "egg/core/ExpHeap.hh"
+
+#include <host/System.hh>
+
 namespace EGG {
 
 /*------------*
@@ -84,6 +88,24 @@ void SceneManager::createChildScene(int id, Scene *parent) {
 
 /// @addr{0x8023B0E4}
 void SceneManager::createScene(int id, Scene *parent) {
+    Heap *parentHeap = parent ? parent->heap() : Host::KSystem::Instance().rootHeap();
+
+    // We need to preserve the locked status to reinstate it later
+    bool locked = parentHeap->tstDisableAllocation();
+    if (locked) {
+        parentHeap->enableAllocation();
+    }
+
+    ExpHeap *newHeap = ExpHeap::create(-1, parentHeap, s_heapOptionFlg);
+    s_heapForCreateScene = newHeap;
+
+    if (locked) {
+        parentHeap->disableAllocation();
+    }
+
+    newHeap->becomeCurrentHeap();
+    newHeap->setName("DefaultSceneHeap");
+
     Scene *newScene = m_creator->create(id);
 
     if (parent) {
@@ -101,19 +123,21 @@ void SceneManager::createScene(int id, Scene *parent) {
 void SceneManager::destroyScene(Scene *scene) {
     scene->exit();
     if (scene->child()) {
-        destroyScene(scene);
+        destroyScene(scene->child());
     }
 
     Scene *parent = scene->parent();
-    delete m_currentScene;
+    m_creator->destroy(scene->id());
     m_currentScene = nullptr;
 
-    if (!parent) {
-        return;
+    if (parent) {
+        parent->setChild(nullptr);
+        m_currentScene = parent;
     }
 
-    parent->setChild(nullptr);
-    m_currentScene = parent;
+    scene->heap()->destroy();
+    Heap *parentHeap = parent ? parent->heap() : Host::KSystem::Instance().rootHeap();
+    parentHeap->becomeCurrentHeap();
 }
 
 /// @addr{0x8023AF84}
@@ -256,5 +280,8 @@ bool SceneManager::fadeOut() {
 void SceneManager::resetAfterFadeType() {
     m_fadeType = FadeType::Idle;
 }
+
+Heap *SceneManager::s_heapForCreateScene = nullptr;
+u16 SceneManager::s_heapOptionFlg = 2;
 
 } // namespace EGG

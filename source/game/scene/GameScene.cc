@@ -9,6 +9,7 @@ namespace Scene {
 
 /// @addr{0x8051A1E0}
 GameScene::GameScene() {
+    m_heap->setName("DefaultGameSceneHeap");
     m_nextSceneId = -1;
 }
 

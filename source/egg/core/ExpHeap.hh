@@ -47,14 +47,8 @@ public:
     [[nodiscard]] static ExpHeap *create(void *startAddress, size_t size, u16 opt);
     [[nodiscard]] static ExpHeap *create(size_t size, Heap *heap, u16 opt);
 
-    static void initRootHeap(void *startAddress, size_t size);
-
-    [[nodiscard]] static ExpHeap *getRootHeap();
-
 private:
     ExpHeap(Abstract::Memory::MEMiHeapHead *handle);
-
-    static ExpHeap *s_rootHeap;
 };
 
 } // namespace EGG

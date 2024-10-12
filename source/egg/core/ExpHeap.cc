@@ -125,23 +125,6 @@ const MEMiExpHeapHead *ExpHeap::dynamicCastHandleToExp() const {
     return reinterpret_cast<MEMiExpHeapHead *>(m_handle);
 }
 
-void ExpHeap::initRootHeap(void *startAddress, size_t size) {
-    MEMiHeapHead::OptFlag opt;
-    opt.setBit(MEMiHeapHead::eOptFlag::ZeroFillAlloc);
-
-#ifdef BUILD_DEBUG
-    opt.setBit(MEMiHeapHead::eOptFlag::DebugFillAlloc);
-#endif
-
-    s_rootHeap = create(startAddress, size, 2);
-    s_rootHeap->setName("EGGRoot");
-    s_rootHeap->becomeCurrentHeap();
-}
-
-ExpHeap *ExpHeap::getRootHeap() {
-    return s_rootHeap;
-}
-
 /// @addr{0x80226DD0}
 ExpHeap::GroupSizeRecord::GroupSizeRecord() {
     reset();
@@ -162,7 +145,5 @@ size_t ExpHeap::GroupSizeRecord::getGroupSize(u16 groupID) const {
 void ExpHeap::GroupSizeRecord::addSize(u16 groupID, size_t size) {
     m_entries[groupID] += size;
 }
-
-ExpHeap *ExpHeap::s_rootHeap = nullptr;
 
 } // namespace EGG
