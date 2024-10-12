@@ -191,14 +191,14 @@ void BoxColManager::resetIterators() {
 
 /// @addr{0x80786050}
 BoxColUnit *BoxColManager::insertDriver(f32 radius, f32 maxSpeed, const EGG::Vector3f *pos,
-        bool alwaysRecalc, void *userData) {
+        bool alwaysRecalc, Kart::KartObject *kartObject) {
     BoxColFlag flag = BoxColFlag(eBoxColFlag::Driver);
 
     if (alwaysRecalc) {
         flag.setBit(eBoxColFlag::PermRecalcAABB);
     }
 
-    return insert(radius, maxSpeed, pos, flag, userData);
+    return insert(radius, maxSpeed, pos, flag, reinterpret_cast<void *>(kartObject));
 }
 
 /// @addr{0x80786078}
