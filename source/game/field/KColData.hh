@@ -51,10 +51,6 @@ public:
 
     [[nodiscard]] const u16 *searchBlock(const EGG::Vector3f &pos);
 
-    [[nodiscard]] EGG::Vector3f getPos(u16 posIdx) const;
-    [[nodiscard]] EGG::Vector3f getNrm(u16 nrmIdx) const;
-    [[nodiscard]] KCollisionPrism getPrism(u16 prismIdx) const;
-
     /// @beginGetters
     [[nodiscard]] u16 prismCache(u32 idx) const;
     /// @endGetters
@@ -63,6 +59,10 @@ public:
             const EGG::Vector3f &fnrm, const EGG::Vector3f &enrm3, const EGG::Vector3f &enrm);
 
 private:
+    void preloadPrisms();
+    void preloadNormals();
+    void preloadVertices();
+
     [[nodiscard]] bool checkCollision(const KCollisionPrism &prism, f32 *distOut,
             EGG::Vector3f *fnrmOut, u16 *flagsOut, CollisionCheckType type);
     [[nodiscard]] bool checkSphereMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut);
@@ -86,14 +86,18 @@ private:
     f32 m_radius;
     KCLTypeMask m_typeMask;
     const u16 *m_prismIter;
-    u32 m_prismCount;
-    const KCollisionPrism *m_prisms;
     EGG::BoundBox3f m_bbox;
     std::array<u16, 256> m_prismCache;
     u16 *m_prismCacheTop;
     u16 *m_cachedPrismArray;
     EGG::Vector3f m_cachedPos;
     f32 m_cachedRadius;
+
+    /// @brief Optimizes for time by avoiding unnecessary byteswapping.
+    /// The Wii doesn't have this problem because big endian is always assumed.
+    std::span<KCollisionPrism> m_prisms;
+    std::span<EGG::Vector3f> m_nrms;
+    std::span<EGG::Vector3f> m_vertices;
 };
 
 } // namespace Field
