@@ -44,11 +44,12 @@ KColData::KColData(const void *file) {
     m_radius = 0.0f;
     m_prismIter = nullptr;
     m_cachedPrismArray = m_prismCache.data() - 1;
-    m_prisms = reinterpret_cast<const KCollisionPrism *>(
-            addOffset(m_prismData, sizeof(KCollisionPrism)));
-    m_prismCount =
-            (reinterpret_cast<uintptr_t>(m_blockData) - reinterpret_cast<uintptr_t>(m_prisms + 1)) /
-            sizeof(KCollisionPrism);
+
+    // NOTE: Collision is expensive on the CPU, so we preload all of the prism data to ensure we're
+    // not constantly handling endianness.
+    preloadPrisms();
+    preloadNormals();
+    preloadVertices();
 
     computeBBox();
 }
@@ -91,14 +92,13 @@ void KColData::computeBBox() {
     m_bbox.max.set(-999999.0f);
     m_bbox.min.set(999999.0f);
 
-    for (size_t i = 0; i < m_prismCount; i++) {
-        const KCollisionPrism prism = getPrism(i);
-
-        const EGG::Vector3f fnrm = getNrm(prism.fnrm_i);
-        const EGG::Vector3f enrm1 = getNrm(prism.enrm1_i);
-        const EGG::Vector3f enrm2 = getNrm(prism.enrm2_i);
-        const EGG::Vector3f enrm3 = getNrm(prism.enrm3_i);
-        const EGG::Vector3f vtx1 = getPos(prism.pos_i);
+    for (size_t i = 1; i < m_prisms.size(); ++i) {
+        const auto &prism = m_prisms[i];
+        const EGG::Vector3f &fnrm = m_nrms[prism.fnrm_i];
+        const EGG::Vector3f &enrm1 = m_nrms[prism.enrm1_i];
+        const EGG::Vector3f &enrm2 = m_nrms[prism.enrm2_i];
+        const EGG::Vector3f &enrm3 = m_nrms[prism.enrm3_i];
+        const EGG::Vector3f &vtx1 = m_vertices[prism.pos_i];
 
         const EGG::Vector3f vtx2 = GetVertex(prism.height, vtx1, fnrm, enrm3, enrm1);
         const EGG::Vector3f vtx3 = GetVertex(prism.height, vtx1, fnrm, enrm3, enrm2);
@@ -132,7 +132,7 @@ bool KColData::checkSphere(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut) 
 
     // Check collision for all triangles, and continuously call the function until we're out
     while (*++m_prismIter != 0) {
-        const KCollisionPrism prism = getPrism(parse<u16>(*m_prismIter));
+        const KCollisionPrism &prism = m_prisms[parse<u16>(*m_prismIter)];
         if (checkCollision(prism, distOut, fnrmOut, flagsOut, CollisionCheckType::Plane)) {
             return true;
         }
@@ -163,7 +163,7 @@ bool KColData::checkSphereSingle(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flag
             }
         }
 
-        const KCollisionPrism prism = getPrism(parse<u16>(*m_prismIter));
+        const KCollisionPrism &prism = m_prisms[parse<u16>(*m_prismIter)];
         if (checkCollision(prism, distOut, fnrmOut, flagsOut, CollisionCheckType::Edge)) {
             return true;
         }
@@ -257,42 +257,6 @@ const u16 *KColData::searchBlock(const EGG::Vector3f &point) {
     return reinterpret_cast<const u16 *>(curBlock + (offset & ~0x80000000));
 }
 
-EGG::Vector3f KColData::getPos(u16 posIdx) const {
-    const EGG::Vector3f *vec = &reinterpret_cast<const EGG::Vector3f *>(m_posData)[posIdx];
-    u8 *unsafeData = reinterpret_cast<u8 *>(const_cast<EGG::Vector3f *>(vec));
-    EGG::RamStream stream = EGG::RamStream(unsafeData, sizeof(EGG::Vector3f));
-    EGG::Vector3f pos;
-    pos.read(stream);
-    return pos;
-}
-
-EGG::Vector3f KColData::getNrm(u16 nrmIdx) const {
-    const EGG::Vector3f *vec = &reinterpret_cast<const EGG::Vector3f *>(m_nrmData)[nrmIdx];
-    u8 *unsafeData = reinterpret_cast<u8 *>(const_cast<EGG::Vector3f *>(vec));
-    EGG::RamStream stream = EGG::RamStream(unsafeData, sizeof(EGG::Vector3f));
-    EGG::Vector3f nrm;
-    nrm.read(stream);
-    return nrm;
-}
-
-KColData::KCollisionPrism KColData::getPrism(u16 prismIdx) const {
-    const KCollisionPrism *prism =
-            &reinterpret_cast<const KCollisionPrism *>(m_prismData)[prismIdx];
-    u8 *unsafeData = reinterpret_cast<u8 *>(const_cast<KCollisionPrism *>(prism));
-    EGG::RamStream stream = EGG::RamStream(unsafeData, sizeof(KCollisionPrism));
-
-    f32 height = stream.read_f32();
-    u16 posIndex = stream.read_u16();
-    u16 faceNormIndex = stream.read_u16();
-    u16 edge1NormIndex = stream.read_u16();
-    u16 edge2NormIndex = stream.read_u16();
-    u16 edge3NormIndex = stream.read_u16();
-    u16 attribute = stream.read_u16();
-
-    return KCollisionPrism(height, posIndex, faceNormIndex, edge1NormIndex, edge2NormIndex,
-            edge3NormIndex, attribute);
-}
-
 u16 KColData::prismCache(u32 idx) const {
     return m_prismCache[idx];
 }
@@ -316,6 +280,70 @@ EGG::Vector3f KColData::GetVertex(f32 height, const EGG::Vector3f &vertex1,
     return cross + vertex1;
 }
 
+/// @brief Creates a copy of the prisms in memory.
+/// @details Optimizes for time by copying all of the prisms to avoid constant byteswapping.
+/// Memory cost is typically upwards of a few hundred KB, with the worst case being ~1MB.
+void KColData::preloadPrisms() {
+    size_t prismCount =
+            (reinterpret_cast<uintptr_t>(m_blockData) - reinterpret_cast<uintptr_t>(m_prismData)) /
+            sizeof(KCollisionPrism);
+
+    u8 *unsafeData = reinterpret_cast<u8 *>(const_cast<void *>(m_prismData));
+    EGG::RamStream stream = EGG::RamStream(unsafeData, sizeof(KCollisionPrism) * prismCount);
+
+    m_prisms = std::span<KCollisionPrism>(new KCollisionPrism[prismCount], prismCount);
+
+    // Because the prisms are one-indexed, we insert an empty prism
+    stream.skip(sizeof(KCollisionPrism));
+
+    for (size_t i = 1; i < prismCount; ++i) {
+        KCollisionPrism &prism = m_prisms[i];
+        prism.height = stream.read_f32();
+        prism.pos_i = stream.read_u16();
+        prism.fnrm_i = stream.read_u16();
+        prism.enrm1_i = stream.read_u16();
+        prism.enrm2_i = stream.read_u16();
+        prism.enrm3_i = stream.read_u16();
+        prism.attribute = stream.read_u16();
+    }
+}
+
+/// @brief Creates a copy of the normals in memory.
+/// @details Optimizes for time by copying all of the normals to avoid constant byteswapping.
+/// Memory cost is typically upwards of a few hundred KB, with the worst case being ~750KB.
+void KColData::preloadNormals() {
+    size_t normalCount = (reinterpret_cast<uintptr_t>(m_prismData) + sizeof(KCollisionPrism) -
+                                 reinterpret_cast<uintptr_t>(m_nrmData)) /
+            sizeof(EGG::Vector3f);
+
+    m_nrms = std::span<EGG::Vector3f>(new EGG::Vector3f[normalCount], normalCount);
+
+    u8 *unsafeData = reinterpret_cast<u8 *>(const_cast<void *>(m_nrmData));
+    EGG::RamStream stream = EGG::RamStream(unsafeData, sizeof(EGG::Vector3f) * normalCount);
+
+    for (auto &nrm : m_nrms) {
+        nrm.read(stream);
+    }
+}
+
+/// @brief Creates a copy of the vertices in memory.
+/// @details Optimizes for time by copying all of the vertices to avoid constant byteswapping.
+/// Memory cost is typically upwards of a few hundred KB, with the worst case being ~750KB.
+void KColData::preloadVertices() {
+    size_t vertexCount =
+            (reinterpret_cast<uintptr_t>(m_nrmData) - reinterpret_cast<uintptr_t>(m_posData)) /
+            sizeof(EGG::Vector3f);
+
+    m_vertices = std::span<EGG::Vector3f>(new EGG::Vector3f[vertexCount], vertexCount);
+
+    u8 *unsafeData = reinterpret_cast<u8 *>(const_cast<void *>(m_posData));
+    EGG::RamStream stream = EGG::RamStream(unsafeData, sizeof(EGG::Vector3f) * vertexCount);
+
+    for (auto &vert : m_vertices) {
+        vert.read(stream);
+    }
+}
+
 /// @brief This is a combination of the three collision checks in the base game.
 /// @details The checks vary only by a few if-statements, related to whether we are checking for:
 /// 1. A collision with at least the triangle edge (0x807C0F00)
@@ -329,7 +357,7 @@ bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::V
             *distOut = dist;
         }
         if (fnrmOut) {
-            *fnrmOut = getNrm(prism.fnrm_i);
+            *fnrmOut = m_nrms[prism.fnrm_i];
         }
         if (flagsOut) {
             *flagsOut = prism.attribute;
@@ -344,28 +372,28 @@ bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::V
         return false;
     }
 
-    const EGG::Vector3f relativePos = m_pos - getPos(prism.pos_i);
+    const EGG::Vector3f relativePos = m_pos - m_vertices[prism.pos_i];
 
     // Edge normals point outside the triangle
-    const EGG::Vector3f enrm1 = getNrm(prism.enrm1_i);
+    const EGG::Vector3f &enrm1 = m_nrms[prism.enrm1_i];
     f32 dist_ca = relativePos.ps_dot(enrm1);
     if (m_radius <= dist_ca) {
         return false;
     }
 
-    const EGG::Vector3f enrm2 = getNrm(prism.enrm2_i);
+    const EGG::Vector3f &enrm2 = m_nrms[prism.enrm2_i];
     f32 dist_ab = relativePos.ps_dot(enrm2);
     if (m_radius <= dist_ab) {
         return false;
     }
 
-    const EGG::Vector3f enrm3 = getNrm(prism.enrm3_i);
+    const EGG::Vector3f &enrm3 = m_nrms[prism.enrm3_i];
     f32 dist_bc = relativePos.ps_dot(enrm3) - prism.height;
     if (m_radius <= dist_bc) {
         return false;
     }
 
-    const EGG::Vector3f fnrm = getNrm(prism.fnrm_i);
+    const EGG::Vector3f &fnrm = m_nrms[prism.fnrm_i];
     f32 plane_dist = relativePos.ps_dot(fnrm);
     f32 dist_in_plane = m_radius - plane_dist;
     if (dist_in_plane <= 0.0f) {
@@ -499,7 +527,7 @@ bool KColData::checkSphereMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *at
 
     // Check collision for all triangles, and continuously call the function until we're out
     while (*++m_prismIter != 0) {
-        const KCollisionPrism prism = getPrism(parse<u16>(*m_prismIter));
+        const KCollisionPrism &prism = m_prisms[parse<u16>(*m_prismIter)];
         if (checkCollision(prism, distOut, fnrmOut, attributeOut, CollisionCheckType::Movement)) {
             return true;
         }
