@@ -1,5 +1,7 @@
 #pragma once
 
+#include "game/field/BoxColManager.hh"
+
 #include "game/system/KPadController.hh"
 
 #include <egg/math/Matrix.hh>
@@ -44,6 +46,8 @@ struct KartAccessor {
 
     std::vector<KartSuspension *> suspensions;
     std::vector<KartTire *> tires;
+
+    Field::BoxColUnit *boxColUnit;
 };
 
 /// @brief Base class for most kart-related objects.
@@ -97,6 +101,8 @@ public:
     [[nodiscard]] const System::KPad *inputs() const;
     [[nodiscard]] Render::KartModel *model();
     [[nodiscard]] const Render::KartModel *model() const;
+    [[nodiscard]] Field::BoxColUnit *boxColUnit();
+    [[nodiscard]] Field::BoxColUnit *boxColUnit() const;
 
     [[nodiscard]] const EGG::Vector3f &scale() const;
     [[nodiscard]] const EGG::Matrix34f &pose() const;
