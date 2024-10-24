@@ -4,11 +4,18 @@
 
 namespace System {
 
+/// @brief Converts a raw stick input into an input usable by the state.
+/// @param rawStick The raw stick input to convert.
+/// @return The converted input.
+static constexpr f32 RawStickToState(u8 rawStick) {
+    return (static_cast<f32>(rawStick) - 7.0f) / 7.0f;
+}
+
 /// @addr{0x8051EBA8}
 KPadController::KPadController() : m_connected(false) {}
 
 /// @addr{0x8051CE7C}
-ControlSource KPadController::controlSource() {
+ControlSource KPadController::controlSource() const {
     return ControlSource::Unknown;
 }
 
@@ -41,7 +48,7 @@ KPadGhostController::KPadGhostController() : m_acceptingInputs(false) {
 KPadGhostController::~KPadGhostController() = default;
 
 /// @addr{0x8052282C}
-ControlSource KPadGhostController::controlSource() {
+ControlSource KPadGhostController::controlSource() const {
     return ControlSource::Ghost;
 }
 
@@ -104,9 +111,8 @@ void KPadGhostController::calcImpl() {
     u8 sticks = m_buttonsStreams[1]->readFrame();
     m_raceInputState.stickXRaw = sticks >> 4 & 0xF;
     m_raceInputState.stickYRaw = sticks & 0xF;
-    m_raceInputState.stick =
-            EGG::Vector2f((static_cast<f32>(m_raceInputState.stickXRaw) - 7.0f) / 7.0f,
-                    (static_cast<f32>(m_raceInputState.stickYRaw) - 7.0f) / 7.0f);
+    m_raceInputState.stick = EGG::Vector2f(RawStickToState(m_raceInputState.stickXRaw),
+            RawStickToState(m_raceInputState.stickYRaw));
     m_raceInputState.trickRaw = m_buttonsStreams[2]->readFrame();
 
     switch (m_raceInputState.trickRaw >> 4) {
@@ -145,6 +151,71 @@ void RaceInputState::reset() {
     stickYRaw = 7;
     trick = Trick::None;
     trickRaw = 0;
+}
+
+/// @brief Checks if the input state is valid.
+/// @return If the input state is valid.
+bool RaceInputState::isValid() const {
+    if (!isButtonsValid()) {
+        return false;
+    }
+
+    if (!isStickValid(stick.x) || !isStickValid(stick.y)) {
+        return false;
+    }
+
+    if (!isTrickValid()) {
+        return false;
+    }
+
+    return true;
+}
+
+/// @brief Checks if there are any invalid buttons.
+/// @details Validatation with the previous input state doesn't happen because it doesn't exist.
+/// Therefore, we cannot check here if e.g. the drift button is pressed when it shouldn't be.
+/// @return If no invalid buttons are present.
+bool RaceInputState::isButtonsValid() const {
+    return !(buttons & ~0xf);
+}
+
+/// @brief Checks if the stick values are within the domain of the physics engine.
+/// @details The set of valid stick values is \f$\{\frac{x-7}{7}|0\leq x\leq 14,\in\mathbb{Z}\}\f$.
+/// It's possible for the stick input to be 8/7 with x = 15, but only with ghost controllers.
+/// @return If the stick values are valid.
+bool RaceInputState::isStickValid(f32 stick) const {
+    if (stick > 1.0f || stick < -1.0f) {
+        return false;
+    }
+
+    for (size_t i = 0; i <= 14; ++i) {
+        auto cond = stick <=> RawStickToState(i);
+        ASSERT(cond != std::partial_ordering::unordered);
+
+        if (cond == std::partial_ordering::equivalent) {
+            return true;
+        } else if (cond == std::partial_ordering::less) {
+            return false;
+        }
+    }
+
+    // This is unreachable
+    return false;
+}
+
+/// @brief Checks if the trick input is valid.
+/// @return If the trick input is valid.
+bool RaceInputState::isTrickValid() const {
+    switch (trick) {
+    case Trick::None:
+    case Trick::Up:
+    case Trick::Down:
+    case Trick::Left:
+    case Trick::Right:
+        return true;
+    default:
+        return false;
+    }
 }
 
 bool RaceInputState::accelerate() const {
@@ -236,6 +307,86 @@ u8 KPadGhostTrickButtonsStream::readVal() const {
     return currentSequence >> 0x8 & ~0x80;
 }
 
+/* ================================ *
+ *     HOST CONTROLLER
+ * ================================ */
+
+KPadHostController::KPadHostController() = default;
+
+KPadHostController::~KPadHostController() = default;
+
+ControlSource KPadHostController::controlSource() const {
+    return ControlSource::Host;
+}
+
+void KPadHostController::reset(bool driftIsAuto) {
+    m_driftIsAuto = driftIsAuto;
+    m_raceInputState.reset();
+    m_connected = true;
+}
+
+/// @brief Sets the inputs of the controller.
+/// @param state The specified inputs packaged in the state. Only buttons, stick, and trick matter.
+/// @return Input state validity.
+bool KPadHostController::setInputs(const RaceInputState &state) {
+    return setInputs(state.buttons, state.stick, state.trick);
+}
+
+/// @brief Sets the inputs of the controller.
+/// @param buttons The button inputs.
+/// @param stick The stick inputs, as a 2D vector.
+/// @param trick The trick input.
+/// @return Input state validity.
+bool KPadHostController::setInputs(u16 buttons, const EGG::Vector2f &stick, Trick trick) {
+    m_raceInputState.buttons = buttons;
+    m_raceInputState.stick = stick;
+    m_raceInputState.trick = trick;
+
+    return m_raceInputState.isValid();
+}
+
+/// @brief Sets the inputs of the controller.
+/// @param buttons The button inputs.
+/// @param stickX The stick input on the X axis.
+/// @param stickY The stick input on the Y axis.
+/// @param trick The trick input.
+/// @return Input state validity.
+bool KPadHostController::setInputs(u16 buttons, f32 stickX, f32 stickY, Trick trick) {
+    m_raceInputState.buttons = buttons;
+    m_raceInputState.stick.x = stickX;
+    m_raceInputState.stick.y = stickY;
+    m_raceInputState.trick = trick;
+
+    return m_raceInputState.isValid();
+}
+
+/// @brief Sets the inputs of the controller.
+/// @details A different name is specified to avoid any ambiguity with the parameters.
+/// @param buttons The button inputs.
+/// @param stickXRaw The 7-centered raw stick input on the X axis.
+/// @param stickYRaw The 7-centered raw stick input on the Y axis.
+/// @param trick The trick input.
+/// @return Input state validity.
+bool KPadHostController::setInputsRawStick(u16 buttons, u8 stickXRaw, u8 stickYRaw, Trick trick) {
+    return setInputs(buttons, RawStickToState(stickXRaw), RawStickToState(stickYRaw), trick);
+}
+
+/// @brief Sets the inputs of the controller.
+/// @details A different name is specified to avoid any ambiguity with the parameters.
+/// @param buttons The button inputs.
+/// @param stickXRaw The 0-centered raw stick input on the X axis.
+/// @param stickYRaw The 0-centered raw stick input on the Y axis.
+/// @param trick The trick input.
+/// @return Input state validity.
+bool KPadHostController::setInputsRawStickZeroCenter(u16 buttons, s8 stickXRaw, s8 stickYRaw,
+        Trick trick) {
+    return setInputsRawStick(buttons, stickXRaw + 7, stickYRaw + 7, trick);
+}
+
+/* ================================ *
+ *     PADS
+ * ================================ */
+
 /// @addr{0x80520F64}
 KPad::KPad() : m_controller(nullptr) {
     reset();
@@ -285,6 +436,11 @@ void KPadPlayer::setGhostController(KPadGhostController *controller, const u8 *i
     }
 
     controller->readGhostBuffer(m_ghostBuffer, driftIsAuto);
+}
+
+void KPadPlayer::setHostController(KPadHostController *controller, bool driftIsAuto) {
+    m_controller = controller;
+    m_controller->setDriftIsAuto(driftIsAuto);
 }
 
 /// @addr{0x805215D4}

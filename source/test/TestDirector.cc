@@ -3,8 +3,7 @@
 #include <game/kart/KartObjectManager.hh>
 
 #include <abstract/File.hh>
-
-#include <egg/util/Stream.hh>
+#include <host/System.hh>
 
 #include <format>
 
@@ -225,6 +224,16 @@ const TestCase &TestDirector::testCase() const {
 
 bool TestDirector::sync() const {
     return m_sync;
+}
+
+void TestDirector::OnInit(System::RaceConfig *config, void * /* arg */) {
+    size_t size;
+    const auto *testDirector = Host::KSystem::Instance().testDirector();
+    u8 *rkg = Abstract::File::Load(testDirector->testCase().rkgPath.data(), size);
+    config->setGhost(rkg);
+    delete[] rkg;
+
+    config->raceScenario().players[0].type = System::RaceConfig::Player::Type::Ghost;
 }
 
 void TestDirector::readHeader() {

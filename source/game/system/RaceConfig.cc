@@ -1,10 +1,8 @@
 #include "RaceConfig.hh"
 
-#include "game/system/GhostFile.hh"
 #include "game/system/KPadDirector.hh"
 
 #include <abstract/File.hh>
-#include <host/System.hh>
 
 namespace System {
 
@@ -15,32 +13,52 @@ void RaceConfig::init() {
 
 /// @addr{0x805302C4}
 /// @details Normally we copy the menu scenario into the race scenario.
-/// There's no menu scenario in Kinoko, so instead we initialize values here.
-/// For now, we want to initialize solely based off the ghost file.
+/// However, Kinoko doesn't support menus, so we use a callback.
 void RaceConfig::initRace() {
     m_raceScenario.playerCount = 1;
 
-    size_t size;
-    const auto *testDirector = Host::KSystem::Instance().testDirector();
-    u8 *rkg = Abstract::File::Load(testDirector->testCase().rkgPath.data(), size);
-    m_ghost = rkg;
-    delete[] rkg;
+    if (s_onInitCallback) {
+        s_onInitCallback(this, s_onInitCallbackArg);
+    }
+
+    initControllers();
+}
+
+/// @addr{0x8052F4E8}
+/// @brief Initializes the controllers.
+/// @details This is normally scoped within RaceConfig::Scenario, but Kinoko doesn't support menus.
+void RaceConfig::initControllers() {
+    switch (m_raceScenario.players[0].type) {
+    case Player::Type::Ghost:
+        initGhost();
+        break;
+    case Player::Type::Local:
+        KPadDirector::Instance()->setHostPad(m_raceScenario.players[0].driftIsAuto);
+        break;
+    default:
+        PANIC("Players must be either local or ghost!");
+        break;
+    }
+}
+
+/// @addr{0x8052EEF0}
+/// @brief Initializes the ghost.
+/// @details This is normally scoped within RaceConfig::Scenario, but Kinoko doesn't support menus.
+void RaceConfig::initGhost() {
     GhostFile ghost(m_ghost);
 
     m_raceScenario.course = ghost.course();
     Player &player = m_raceScenario.players[0];
     player.character = ghost.character();
     player.vehicle = ghost.vehicle();
-    player.type = Player::Type::Ghost;
+    player.driftIsAuto = ghost.driftIsAuto();
 
-    initControllers(ghost);
+    KPadDirector::Instance()->setGhostPad(ghost.inputs(), ghost.driftIsAuto());
 }
 
-/// @addr{0x8052F4E8}
-/// @details This is normally scoped within RaceConfig::Scenario, but since Kinoko doesn't support
-/// menus, we simplify and just initialize the controller here.
-void RaceConfig::initControllers(const GhostFile &ghost) {
-    KPadDirector::Instance()->setGhostPad(ghost.inputs(), ghost.driftIsAuto());
+void RaceConfig::RegisterInitCallback(const InitCallback &callback, void *arg) {
+    s_onInitCallback = callback;
+    s_onInitCallbackArg = arg;
 }
 
 /// @addr{0x8052FE58}
@@ -87,5 +105,18 @@ void RaceConfig::Scenario::init() {
 }
 
 RaceConfig *RaceConfig::s_instance = nullptr; ///< @addr{0x809BD728}
+
+/** @brief Host-agnostic way of initializing RaceConfig.
+    The type of the first player *must* be set to either Local or Ghost.
+
+    - If the type is Ghost, m_ghost must be set to a decompressed ghost file.
+
+    - If the type is Local, the race scenario's course and the first player's character, vehicle,
+    and driftIsAuto must be set.
+*/
+RaceConfig::InitCallback RaceConfig::s_onInitCallback = nullptr;
+
+/// @brief The argument sent into the callback. This is expected to be reinterpret_casted.
+void *RaceConfig::s_onInitCallbackArg = nullptr;
 
 } // namespace System

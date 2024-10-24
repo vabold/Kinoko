@@ -105,6 +105,9 @@ void KSystem::init() {
     m_sceneMgr = new EGG::SceneManager(sceneCreator);
     m_testDirector = new Test::TestDirector(m_suiteData);
     delete[] m_suiteData.data();
+
+    // Register the RaceConfig callback
+    System::RaceConfig::RegisterInitCallback(m_testDirector->OnInit, nullptr);
 }
 
 /// @addr{0x80242504}
