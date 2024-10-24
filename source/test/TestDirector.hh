@@ -2,7 +2,7 @@
 
 #include "test/Test.hh"
 
-#include <egg/util/Stream.hh>
+#include <game/system/RaceConfig.hh>
 
 #include <queue>
 #include <span>
@@ -41,6 +41,8 @@ public:
     [[nodiscard]] const TestCase &testCase() const;
 
     [[nodiscard]] bool sync() const;
+
+    static void OnInit(System::RaceConfig *config, void *arg);
 
 private:
     void readHeader();

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Common.hh>
-
 #include "game/system/GhostFile.hh"
+
+#include <functional>
 
 namespace System {
 
@@ -25,6 +25,7 @@ public:
         Character character;
         Vehicle vehicle;
         Type type;
+        bool driftIsAuto;
     };
 
     struct Scenario {
@@ -41,13 +42,26 @@ public:
         Course course;
     };
 
+    typedef std::function<void(RaceConfig *, void *)> InitCallback;
+
     void init();
     void initRace();
-    void initControllers(const GhostFile &ghost);
+    void initControllers();
+    void initGhost();
 
     [[nodiscard]] const Scenario &raceScenario() const {
         return m_raceScenario;
     }
+
+    [[nodiscard]] Scenario &raceScenario() {
+        return m_raceScenario;
+    }
+
+    void setGhost(const u8 *rkg) {
+        m_ghost = rkg;
+    }
+
+    static void RegisterInitCallback(const InitCallback &callback, void *arg);
 
     static RaceConfig *CreateInstance();
     static void DestroyInstance();
@@ -61,6 +75,8 @@ private:
     RawGhostFile m_ghost;
 
     static RaceConfig *s_instance; ///< @addr{0x809BD728}
+    static InitCallback s_onInitCallback;
+    static void *s_onInitCallbackArg;
 };
 
 } // namespace System

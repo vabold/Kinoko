@@ -16,8 +16,10 @@ public:
     void endGhostProxies();
 
     [[nodiscard]] const KPadPlayer &playerInput() const;
+    [[nodiscard]] KPadHostController *hostController();
 
     void setGhostPad(const u8 *inputs, bool driftIsAuto);
+    void setHostPad(bool driftIsAuto);
 
     static KPadDirector *CreateInstance();
     static void DestroyInstance();
@@ -29,6 +31,7 @@ private:
 
     KPadPlayer m_playerInput;
     KPadGhostController *m_ghostController;
+    KPadHostController *m_hostController;
 
     static KPadDirector *s_instance; ///< @addr{0x809BD70C}
 };

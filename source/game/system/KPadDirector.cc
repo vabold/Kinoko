@@ -11,6 +11,7 @@ void KPadDirector::calc() {
 /// @addr{0x805237E8}
 void KPadDirector::calcPads() {
     m_ghostController->calc();
+    m_hostController->calc();
 }
 
 /// @addr{0x80523724}
@@ -35,9 +36,17 @@ const KPadPlayer &KPadDirector::playerInput() const {
     return m_playerInput;
 }
 
+KPadHostController *KPadDirector::hostController() {
+    return m_hostController;
+}
+
 /// @addr{0x8052453C}
 void KPadDirector::setGhostPad(const u8 *inputs, bool driftIsAuto) {
     m_playerInput.setGhostController(m_ghostController, inputs, driftIsAuto);
+}
+
+void KPadDirector::setHostPad(bool driftIsAuto) {
+    m_playerInput.setHostController(m_hostController, driftIsAuto);
 }
 
 /// @addr{0x8052313C}
@@ -61,6 +70,7 @@ KPadDirector *KPadDirector::Instance() {
 /// @addr{0x805232F0}
 KPadDirector::KPadDirector() {
     m_ghostController = new KPadGhostController;
+    m_hostController = new KPadHostController;
 }
 
 /// @addr{0x805231DC}
