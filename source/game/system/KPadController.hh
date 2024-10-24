@@ -14,6 +14,7 @@ enum class ControlSource {
     Gamecube = 3,
     Ghost = 4,
     AI = 5,
+    Host = 6, // New, represents an external program
 };
 
 enum class Trick {
@@ -30,6 +31,8 @@ struct RaceInputState {
     virtual ~RaceInputState() {}
 
     void reset();
+
+    [[nodiscard]] bool isValid() const;
 
     [[nodiscard]] bool accelerate() const;
     [[nodiscard]] bool brake() const;
@@ -133,7 +136,7 @@ protected:
 class KPadGhostController : public KPadController {
 public:
     KPadGhostController();
-    ~KPadGhostController();
+    ~KPadGhostController() override;
 
     [[nodiscard]] ControlSource controlSource() override;
     void reset(bool driftIsAuto) override;
@@ -148,6 +151,23 @@ private:
     const u8 *m_ghostBuffer;
     std::array<KPadGhostButtonsStream *, 3> m_buttonsStreams;
     bool m_acceptingInputs;
+};
+
+/// @brief The abstraction of a controller object but for external usage.
+/// @details The input state is managed externally by programs interfacing with Kinoko.
+class KPadHostController : public KPadController {
+public:
+    KPadHostController();
+    ~KPadHostController() override;
+
+    [[nodiscard]] ControlSource controlSource() override;
+    void reset(bool driftIsAuto) override;
+
+    bool setInputs(const RaceInputState &state);
+    bool setInputs(u16 buttons, const EGG::Vector2f &stick, Trick trick);
+    bool setInputs(u16 buttons, f32 stickX, f32 stickY, Trick trick);
+    bool setInputsRawStick(u16 buttons, u8 stickXRaw, u8 stickYRaw, Trick trick);
+    bool setInputsRawStickZeroCenter(u16 buttons, s8 stickXRaw, s8 stickYRaw, Trick trick);
 };
 
 class KPad {
@@ -175,6 +195,7 @@ public:
     ~KPadPlayer();
 
     void setGhostController(KPadGhostController *controller, const u8 *inputs, bool driftIsAuto);
+    void setHostController(KPadHostController *controller, bool driftIsAuto);
 
     void startGhostProxy(); ///< Signals to start reading ghost data after fade-in.
     void endGhostProxy();   ///< Signals to stop reading ghost data after race completion.
