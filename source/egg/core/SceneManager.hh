@@ -1,6 +1,5 @@
 #pragma once
 
-#include "egg/core/ColorFader.hh"
 #include "egg/core/Scene.hh"
 #include "egg/core/SceneCreator.hh"
 
@@ -9,19 +8,6 @@ namespace EGG {
 /// @brief Manages the scene stack and transitions between scenes.
 class SceneManager {
 public:
-    /*----------*
-        Structs
-     *----------*/
-
-    enum class FadeType {
-        Idle = -1,
-        ChangeScene = 0,
-        ChangeSiblingScene = 1,
-        // Outgoing = 2,
-        // Incoming = 3,
-        Reinitialize = 4,
-    };
-
     /*------------*
         Lifecycle
      *------------*/
@@ -35,8 +21,6 @@ public:
 
     virtual void calc();
     virtual void calcCurrentScene();
-    virtual void calcCurrentFader();
-    virtual void createDefaultFader();
 
     /*----------*
         Methods
@@ -53,17 +37,10 @@ public:
     void outgoingParentScene(Scene *parent);
     void reinitCurrentScene();
 
-    bool changeSiblingSceneAfterFadeOut(int id);
-    bool reinitCurrentSceneAfterFadeOut();
-
     bool destroyCurrentSceneNoIncoming(bool destroyRootIfNoParent);
     bool destroyToSelectSceneId(int nextSceneId);
     [[nodiscard]] Scene *findParentScene(int id) const;
     void setupNextSceneId();
-
-    bool fadeIn();
-    bool fadeOut();
-    void resetAfterFadeType();
 
     /*----------*
         Getters
@@ -85,10 +62,6 @@ public:
         Setters
      *----------*/
 
-    void setAfterFadeType(FadeType type) {
-        m_fadeType = type;
-    }
-
     void setNextSceneId(int id) {
         m_nextSceneId = id;
     }
@@ -100,8 +73,6 @@ private:
 
     SceneCreator *m_creator;
     Scene *m_currentScene;
-    ColorFader *m_currentFader;
-    FadeType m_fadeType;
     int m_nextSceneId;
     int m_currentSceneId;
     int m_prevSceneId;
