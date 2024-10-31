@@ -8,6 +8,10 @@ namespace System {
 
 class MapdataCannonPoint;
 class MapdataCannonPointAccessor;
+class MapdataCheckPath;
+class MapdataCheckPathAccessor;
+class MapdataCheckPoint;
+class MapdataCheckPointAccessor;
 class MapdataFileAccessor;
 class MapdataGeoObj;
 class MapdataGeoObjAccessor;
@@ -22,13 +26,17 @@ class MapdataStartPointAccessor;
 class CourseMap : EGG::Disposer {
 public:
     void init();
-    [[nodiscard]] MapdataCannonPointAccessor *parseCannonPoint(u32 sectionName);
-    [[nodiscard]] MapdataGeoObjAccessor *parseGeoObj(u32 sectionName);
-    [[nodiscard]] MapdataStageInfoAccessor *parseStageInfo(u32 sectionName);
-    [[nodiscard]] MapdataStartPointAccessor *parseStartPoint(u32 sectionName);
+    [[nodiscard]] MapdataCannonPointAccessor *parseCannonPoint(u32 sectionName) const;
+    [[nodiscard]] MapdataCheckPathAccessor *parseCheckPath(u32 sectionName) const;
+    [[nodiscard]] MapdataCheckPointAccessor *parseCheckPoint(u32 sectionName) const;
+    [[nodiscard]] MapdataGeoObjAccessor *parseGeoObj(u32 sectionName) const;
+    [[nodiscard]] MapdataStageInfoAccessor *parseStageInfo(u32 sectionName) const;
+    [[nodiscard]] MapdataStartPointAccessor *parseStartPoint(u32 sectionName) const;
 
     /// @beginGetters
     [[nodiscard]] MapdataCannonPoint *getCannonPoint(u16 i) const;
+    [[nodiscard]] MapdataCheckPath *getCheckPath(u16 i) const;
+    [[nodiscard]] MapdataCheckPoint *getCheckPoint(u16 i) const;
     [[nodiscard]] MapdataGeoObj *getGeoObj(u16 i) const;
     [[nodiscard]] MapdataStageInfo *getStageInfo() const;
     [[nodiscard]] MapdataStartPoint *getStartPoint(u16 i) const;
@@ -51,6 +59,8 @@ private:
 
     MapdataFileAccessor *m_course;
     MapdataStartPointAccessor *m_startPoint;
+    MapdataCheckPathAccessor *m_checkPath;
+    MapdataCheckPointAccessor *m_checkPoint;
     MapdataGeoObjAccessor *m_geoObj;
     MapdataCannonPointAccessor *m_cannonPoint;
     MapdataStageInfoAccessor *m_stageInfo;

@@ -36,6 +36,12 @@ f32 Vector2f::normalise() {
     return len;
 }
 
+/// @brief Initializes a Vector2f by reading 8 bytes from the stream.
+void Vector2f::read(Stream &stream) {
+    x = stream.read_f32();
+    y = stream.read_f32();
+}
+
 /// @brief The dot product between the vector and itself.
 f32 Vector3f::dot() const {
     return x * x + y * y + z * z;
@@ -162,7 +168,7 @@ Vector3f Vector3f::perpInPlane(const EGG::Vector3f &rhs, bool normalise) const {
     return ret;
 }
 
-/// @brief Constructs a Vector3f by reading 12 bytes from the stream.
+/// @brief Initializes a Vector3f by reading 12 bytes from the stream.
 void Vector3f::read(Stream &stream) {
     x = stream.read_f32();
     y = stream.read_f32();

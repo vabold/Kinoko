@@ -1,6 +1,8 @@
 #include "CourseMap.hh"
 
 #include "game/system/map/MapdataCannonPoint.hh"
+#include "game/system/map/MapdataCheckPath.hh"
+#include "game/system/map/MapdataCheckPoint.hh"
 #include "game/system/map/MapdataFileAccessor.hh"
 #include "game/system/map/MapdataGeoObj.hh"
 #include "game/system/map/MapdataStageInfo.hh"
@@ -17,11 +19,15 @@ void CourseMap::init() {
             new MapdataFileAccessor(reinterpret_cast<const MapdataFileAccessor::SData *>(buffer));
 
     constexpr u32 CANNON_POINT_SIGNATURE = 0x434e5054;
+    constexpr u32 CHECK_PATH_SIGNATURE = 0x434b5048;
+    constexpr u32 CHECK_POINT_SIGNATURE = 0x434b5054;
     constexpr u32 GEO_OBJ_SIGNATURE = 0x474f424a;
     constexpr u32 START_POINT_SIGNATURE = 0x4b545054;
     constexpr u32 STAGE_INFO_SIGNATURE = 0x53544749;
 
     m_startPoint = parseStartPoint(START_POINT_SIGNATURE);
+    m_checkPath = parseCheckPath(CHECK_PATH_SIGNATURE);
+    m_checkPoint = parseCheckPoint(CHECK_POINT_SIGNATURE);
     m_geoObj = parseGeoObj(GEO_OBJ_SIGNATURE);
     m_cannonPoint = parseCannonPoint(CANNON_POINT_SIGNATURE);
     m_stageInfo = parseStageInfo(STAGE_INFO_SIGNATURE);
@@ -43,7 +49,7 @@ void CourseMap::init() {
 }
 
 /// @addr{0x80512FA4}
-MapdataCannonPointAccessor *CourseMap::parseCannonPoint(u32 sectionName) {
+MapdataCannonPointAccessor *CourseMap::parseCannonPoint(u32 sectionName) const {
     const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
 
     MapdataCannonPointAccessor *accessor = nullptr;
@@ -54,8 +60,32 @@ MapdataCannonPointAccessor *CourseMap::parseCannonPoint(u32 sectionName) {
     return accessor;
 }
 
+/// @addr{0x8051377C}
+MapdataCheckPathAccessor *CourseMap::parseCheckPath(u32 sectionName) const {
+    const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
+
+    MapdataCheckPathAccessor *accessor = nullptr;
+    if (sectionPtr) {
+        accessor = new MapdataCheckPathAccessor(sectionPtr);
+    }
+
+    return accessor;
+}
+
+/// @addr{0x80513640}
+MapdataCheckPointAccessor *CourseMap::parseCheckPoint(u32 sectionName) const {
+    const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
+
+    MapdataCheckPointAccessor *accessor = nullptr;
+    if (sectionPtr) {
+        accessor = new MapdataCheckPointAccessor(sectionPtr);
+    }
+
+    return accessor;
+}
+
 /// @addr{0x805134C8}
-MapdataGeoObjAccessor *CourseMap::parseGeoObj(u32 sectionName) {
+MapdataGeoObjAccessor *CourseMap::parseGeoObj(u32 sectionName) const {
     const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
 
     MapdataGeoObjAccessor *accessor = nullptr;
@@ -67,7 +97,7 @@ MapdataGeoObjAccessor *CourseMap::parseGeoObj(u32 sectionName) {
 }
 
 /// @addr{0x80512D64}
-MapdataStageInfoAccessor *CourseMap::parseStageInfo(u32 sectionName) {
+MapdataStageInfoAccessor *CourseMap::parseStageInfo(u32 sectionName) const {
     const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
 
     MapdataStageInfoAccessor *accessor = nullptr;
@@ -79,7 +109,7 @@ MapdataStageInfoAccessor *CourseMap::parseStageInfo(u32 sectionName) {
 }
 
 /// @addr{0x80513F5C}
-MapdataStartPointAccessor *CourseMap::parseStartPoint(u32 sectionName) {
+MapdataStartPointAccessor *CourseMap::parseStartPoint(u32 sectionName) const {
     const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
 
     MapdataStartPointAccessor *accessor = nullptr;
@@ -90,9 +120,19 @@ MapdataStartPointAccessor *CourseMap::parseStartPoint(u32 sectionName) {
     return accessor;
 }
 
-/// @addr{0x80518AF8}
+/// @addr{0x80518AE0}
 MapdataCannonPoint *CourseMap::getCannonPoint(u16 i) const {
     return m_cannonPoint && m_cannonPoint->size() != 0 ? m_cannonPoint->get(i) : nullptr;
+}
+
+/// @addr{0x80515C70}
+MapdataCheckPath *CourseMap::getCheckPath(u16 i) const {
+    return m_checkPath && m_checkPath->size() != 0 ? m_checkPath->get(i) : nullptr;
+}
+
+/// @addr{0x80515C24}
+MapdataCheckPoint *CourseMap::getCheckPoint(u16 i) const {
+    return m_checkPoint && m_checkPoint->size() != 0 ? m_checkPoint->get(i) : nullptr;
 }
 
 /// @addr{0x80514148}
