@@ -20,6 +20,48 @@ static constexpr size_t RKG_USER_DATA_SIZE = 0x14;
 static constexpr size_t RKG_MII_DATA_OFFSET = 0x3C;
 static constexpr size_t RKG_MII_DATA_SIZE = 0x4A;
 
+/// @brief C++ implementation of the CTGP ghost footer, as documented by MrBean and Chadderz.
+/// @details This footer was not created with C/C++ interfacing in mind.
+/// In practice, the goal for the footer was to generate load instructions with negative offsets,
+/// relative to the end of the file.
+struct __attribute__((packed)) CTGPGhostFooter {
+    u8 trackSHA1[20];
+    u64 ghostDBPlayerID;
+    f32 trueFinishTime;
+    u8 _20[0x27 - 0x20];
+    u8 regionLetter;
+    u8 _28[0x38 - 0x28];
+    std::array<f32, 10> trueLapTimes; ///< Indexed via 10 - i, such that i is one-indexed.
+    u64 rtcTimeEnd;
+    u64 rtcTimeStart;
+    u64 rtcTimePaused;
+    u8 ghostConsoleFlags;
+    u8 shroom3Lap;
+    u8 shroom2Lap;
+    u8 shroom1Lap;
+    u8 shortcutDefinitionVer;
+    u8 ghostActionFlags;
+    u8 tasCategory : 4; ///< Values 4-6 determine if a ghost is 200cc, if the category is 3.
+    u8 category : 4;    ///< Value 3 determines TAS. Values 4-7 determine if a ghost is 200cc.
+    u8 footerVersion;
+    u32 footerLen;
+    u32 magic;
+    u32 checksum;
+
+    static constexpr u32 CTGP_FOOTER_SIGNATURE = 0x434b4744; // CKGD
+};
+STATIC_ASSERT(sizeof(CTGPGhostFooter) == 0x8c);
+
+struct CTGPMetadata {
+    CTGPMetadata();
+
+    void read(const CTGPGhostFooter *data);
+    void read(EGG::RamStream &stream);
+
+    bool m_isCTGP;
+    bool m_is200cc;
+};
+
 /// @brief The binary data of a ghost saved to a file.
 /// Offset  | Size | Description
 ///------------- | ------------- | -------------
@@ -68,8 +110,10 @@ public:
     template <typename T>
     [[nodiscard]] T parseAt(size_t offset) const;
 
+    [[nodiscard]] static const CTGPGhostFooter *FindCTGPFooter(const u8 *rkg, size_t size);
+
 private:
-    [[nodiscard]] bool compressed(const u8 *rkg) const;
+    [[nodiscard]] static bool compressed(const u8 *rkg);
 
     u8 m_buffer[RKG_UNCOMPRESSED_FILE_SIZE];
 };
