@@ -256,7 +256,7 @@ void TestDirector::OnInit(System::RaceConfig *config, void * /* arg */) {
     size_t size;
     const auto *testDirector = Host::KSystem::Instance().testDirector();
     u8 *rkg = Abstract::File::Load(testDirector->testCase().rkgPath.data(), size);
-    config->setGhost(rkg);
+    config->setGhost(rkg, size);
     delete[] rkg;
 
     config->raceScenario().players[0].type = System::RaceConfig::Player::Type::Ghost;
