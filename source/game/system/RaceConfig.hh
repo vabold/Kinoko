@@ -57,8 +57,9 @@ public:
         return m_raceScenario;
     }
 
-    void setGhost(const u8 *rkg) {
+    void setGhost(const u8 *rkg, size_t size = std::numeric_limits<size_t>::max()) {
         m_ghost = rkg;
+        m_ctgpMetadata.read(RawGhostFile::FindCTGPFooter(rkg, size));
     }
 
     static void RegisterInitCallback(const InitCallback &callback, void *arg);
@@ -73,6 +74,7 @@ private:
 
     Scenario m_raceScenario;
     RawGhostFile m_ghost;
+    CTGPMetadata m_ctgpMetadata;
 
     static RaceConfig *s_instance; ///< @addr{0x809BD728}
     static InitCallback s_onInitCallback;
