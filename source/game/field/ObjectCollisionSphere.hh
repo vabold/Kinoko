@@ -9,6 +9,9 @@ public:
     ObjectCollisionSphere(f32 radius, const EGG::Vector3f &center);
     ~ObjectCollisionSphere() override;
 
+    f32 getBoundingRadius() const override;
+    const EGG::Vector3f &getSupport(const EGG::Vector3f &v) const override;
+
 private:
     f32 m_radius;
     EGG::Vector3f m_pos;
