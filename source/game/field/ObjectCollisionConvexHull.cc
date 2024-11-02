@@ -9,6 +9,8 @@ namespace Field {
 /// This overload enables conversion from std::array into a span, which initializes the points.
 ObjectCollisionConvexHull::ObjectCollisionConvexHull(const std::span<EGG::Vector3f> &points)
     : ObjectCollisionConvexHull(points.size()) {
+    m_worldRadius = 70.0f;
+
     for (size_t i = 0; i < points.size(); ++i) {
         m_points[i] = points[i];
     }
@@ -18,6 +20,29 @@ ObjectCollisionConvexHull::ObjectCollisionConvexHull(const std::span<EGG::Vector
 ObjectCollisionConvexHull::~ObjectCollisionConvexHull() {
     delete[] m_points.data();
     delete[] m_worldPoints.data();
+}
+
+/// @addr{0x807F957C}
+f32 ObjectCollisionConvexHull::getBoundingRadius() const {
+    return m_worldRadius;
+}
+
+/// @addr{0x80836628}
+const EGG::Vector3f &ObjectCollisionConvexHull::getSupport(const EGG::Vector3f &v) const {
+    const EGG::Vector3f *result = &m_worldPoints[0];
+    f32 maxDot = v.dot(*result);
+
+    for (size_t i = 1; i < m_worldPoints.size(); ++i) {
+        const auto &iter = m_worldPoints[i];
+        f32 iterDot = v.dot(iter);
+
+        if (maxDot < iterDot) {
+            result = &iter;
+            maxDot = iterDot;
+        }
+    }
+
+    return *result;
 }
 
 /// @addr{0x808364E0}

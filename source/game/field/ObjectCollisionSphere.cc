@@ -14,4 +14,17 @@ ObjectCollisionSphere::ObjectCollisionSphere(f32 radius, const EGG::Vector3f &ce
 /// @addr{0x80836B5C}
 ObjectCollisionSphere::~ObjectCollisionSphere() = default;
 
+/// @addr{0x80836B54}
+f32 ObjectCollisionSphere::getBoundingRadius() const {
+    return m_worldRadius;
+}
+
+/// @addr{0x80836920}
+const EGG::Vector3f &ObjectCollisionSphere::getSupport(const EGG::Vector3f &v) const {
+    // if (m_hasColDir)
+    //      return m_worldPos;
+
+    return m_worldPos.dot(v) > m_center.dot(v) ? m_worldPos : m_center;
+}
+
 } // namespace Field

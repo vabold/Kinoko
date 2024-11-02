@@ -9,6 +9,9 @@ public:
     ObjectCollisionCylinder(f32 radius, f32 height, const EGG::Vector3f &center);
     ~ObjectCollisionCylinder() override;
 
+    f32 getBoundingRadius() const override;
+    const EGG::Vector3f &getSupport(const EGG::Vector3f &v) const override;
+
 private:
     f32 m_radius;
     f32 m_height;

@@ -18,4 +18,14 @@ ObjectCollisionCylinder::ObjectCollisionCylinder(f32 radius, f32 height,
 /// @addr{0x808364A0}
 ObjectCollisionCylinder::~ObjectCollisionCylinder() = default;
 
+/// @addr{0x80836498}
+f32 ObjectCollisionCylinder::getBoundingRadius() const {
+    return m_worldRadius;
+}
+
+/// @addr{0x8083618C}
+const EGG::Vector3f &ObjectCollisionCylinder::getSupport(const EGG::Vector3f &v) const {
+    return m_top.dot(v) > m_bottom.dot(v) ? m_top : m_bottom;
+}
+
 } // namespace Field
