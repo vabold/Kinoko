@@ -7,7 +7,7 @@ namespace Field {
 /// @brief Smallest convex shape that encloses a given set of points.
 class ObjectCollisionConvexHull : public ObjectCollisionBase {
 public:
-    ObjectCollisionConvexHull(const std::span<EGG::Vector3f> &points);
+    ObjectCollisionConvexHull(const std::span<const EGG::Vector3f> &points);
     ~ObjectCollisionConvexHull() override;
 
     f32 getBoundingRadius() const override;
