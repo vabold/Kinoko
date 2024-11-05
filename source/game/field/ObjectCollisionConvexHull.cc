@@ -7,7 +7,7 @@ namespace Field {
 /// @details The base game has the possibility to only provide a count to allocate space.
 /// To account for this, we split the base game's constructor into two overloads.
 /// This overload enables conversion from std::array into a span, which initializes the points.
-ObjectCollisionConvexHull::ObjectCollisionConvexHull(const std::span<EGG::Vector3f> &points)
+ObjectCollisionConvexHull::ObjectCollisionConvexHull(const std::span<const EGG::Vector3f> &points)
     : ObjectCollisionConvexHull(points.size()) {
     m_worldRadius = 70.0f;
 
@@ -52,6 +52,8 @@ const EGG::Vector3f &ObjectCollisionConvexHull::getSupport(const EGG::Vector3f &
 /// To account for this, we split the base game's constructor into two overloads.
 /// This overload enables avoiding immediate point initialization, which is useful for inheritance.
 ObjectCollisionConvexHull::ObjectCollisionConvexHull(size_t count) {
+    ASSERT(count < 0x100);
+
     m_points = std::span<EGG::Vector3f>(new EGG::Vector3f[count], count);
     m_worldPoints = std::span<EGG::Vector3f>(new EGG::Vector3f[count], count);
 }

@@ -7,6 +7,12 @@
 #include <list>
 #include <vector>
 
+namespace Field {
+
+class ObjectCollisionKart;
+
+} // namespace Field
+
 namespace Render {
 
 class KartModel;
@@ -40,6 +46,7 @@ struct KartAccessor {
     KartSub *sub;
     KartMove *move;
     KartCollide *collide;
+    Field::ObjectCollisionKart *objectCollisionKart;
     KartState *state;
 
     std::vector<KartSuspension *> suspensions;
@@ -97,6 +104,8 @@ public:
     [[nodiscard]] const System::KPad *inputs() const;
     [[nodiscard]] Render::KartModel *model();
     [[nodiscard]] const Render::KartModel *model() const;
+    [[nodiscard]] Field::ObjectCollisionKart *objectCollisionKart();
+    [[nodiscard]] const Field::ObjectCollisionKart *objectCollisionKart() const;
 
     [[nodiscard]] const EGG::Vector3f &scale() const;
     [[nodiscard]] const EGG::Matrix34f &pose() const;

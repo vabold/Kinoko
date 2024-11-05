@@ -5,6 +5,8 @@
 #include "game/kart/KartSuspension.hh"
 #include "game/kart/KartTire.hh"
 
+#include "game/field/ObjectCollisionKart.hh"
+
 #include "game/render/KartModel.hh"
 
 #include "game/system/RaceConfig.hh"
@@ -89,11 +91,13 @@ void KartObject::init() {
     for (u16 tireIdx = 0; tireIdx < m_pointers.param->tireCount(); ++tireIdx) {
         m_pointers.tires[tireIdx]->init(tireIdx);
     }
+    m_pointers.objectCollisionKart = new Field::ObjectCollisionKart();
 }
 
 /// @addr{0x8058E188}
 void KartObject::initImpl() {
     sub()->init();
+    objectCollisionKart()->init(param()->playerIdx());
 }
 
 /// @brief Sets the initial position and rotation of the kart based off the current track.

@@ -47,8 +47,8 @@ struct Vector2f {
 
 /// @brief A 3D float vector.
 struct Vector3f {
-    Vector3f(f32 x_, f32 y_, f32 z_);
-    Vector3f();
+    constexpr Vector3f(f32 x_, f32 y_, f32 z_) : x(x_), y(y_), z(z_) {}
+    constexpr Vector3f() : x(0.0f), y(0.0f), z(0.0f) {}
     // NOTE: Defining the destructor in the header ensures the struct is trivially destructible
     ~Vector3f() = default;
 
