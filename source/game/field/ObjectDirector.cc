@@ -33,7 +33,9 @@ ObjectDirector *ObjectDirector::Instance() {
 }
 
 /// @addr{0x8082A38C}
-ObjectDirector::ObjectDirector() : m_flowTable("ObjFlow.bin") {}
+ObjectDirector::ObjectDirector()
+    : m_flowTable("ObjFlow.bin"), m_hitTableKart("GeoHitTableKart.bin"),
+      m_hitTableKartObject("GeoHitTableKartObj.bin") {}
 
 /// @addr{0x8082A694}
 ObjectDirector::~ObjectDirector() {

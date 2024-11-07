@@ -1,6 +1,7 @@
 #pragma once
 
 #include "game/field/ObjectFlowTable.hh"
+#include "game/field/ObjectHitTable.hh"
 #include "game/field/obj/ObjectBase.hh"
 
 #include <vector>
@@ -24,6 +25,8 @@ private:
 
     std::vector<ObjectBase *> m_objects;
     ObjectFlowTable m_flowTable;
+    ObjectHitTable m_hitTableKart;
+    ObjectHitTable m_hitTableKartObject;
 
     static ObjectDirector *s_instance;
 };
