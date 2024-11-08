@@ -2,7 +2,7 @@
 
 #include "game/field/ObjectFlowTable.hh"
 #include "game/field/ObjectHitTable.hh"
-#include "game/field/obj/ObjectBase.hh"
+#include "game/field/obj/ObjectCollidable.hh"
 
 #include <vector>
 
@@ -10,6 +10,10 @@ namespace Field {
 
 class ObjectDirector : EGG::Disposer {
 public:
+    void init();
+    void calc();
+    void addObject(ObjectCollidable *obj);
+
     const ObjectFlowTable &flowTable() const;
 
     static ObjectDirector *CreateInstance();
@@ -23,10 +27,13 @@ private:
     void createObjects();
     ObjectBase *createObject(const System::MapdataGeoObj &params);
 
-    std::vector<ObjectBase *> m_objects;
     ObjectFlowTable m_flowTable;
     ObjectHitTable m_hitTableKart;
     ObjectHitTable m_hitTableKartObject;
+
+    std::vector<ObjectBase *> m_objects;          ///< All objects live here
+    std::vector<ObjectBase *> m_calcObjects;      ///< Objects needing calc() live here too.
+    std::vector<ObjectBase *> m_collisionObjects; ///< Objects having collision live here too
 
     static ObjectDirector *s_instance;
 };

@@ -9,7 +9,7 @@ public:
     ObjectNoImpl(const System::MapdataGeoObj &params);
     ~ObjectNoImpl() override;
 
-    void init() override;
+    void load() override;
 };
 
 } // namespace Field

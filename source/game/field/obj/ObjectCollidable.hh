@@ -11,7 +11,9 @@ public:
     ObjectCollidable(const System::MapdataGeoObj &params);
     ~ObjectCollidable() override;
 
-    void init() override;
+    void load() override;
+
+    [[nodiscard]] virtual const ObjectCollisionBase *collision() const;
 
 protected:
     virtual void createCollision();

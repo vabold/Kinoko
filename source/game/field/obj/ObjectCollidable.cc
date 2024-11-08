@@ -14,8 +14,13 @@ ObjectCollidable::ObjectCollidable(const System::MapdataGeoObj &params) : Object
 ObjectCollidable::~ObjectCollidable() = default;
 
 /// @addr{0x8081F0A0}
-void ObjectCollidable::init() {
+void ObjectCollidable::load() {
     createCollision();
+    ObjectDirector::Instance()->addObject(this);
+}
+
+const ObjectCollisionBase *ObjectCollidable::collision() const {
+    return m_collision;
 }
 
 /// @addr{0x8081F224}
