@@ -37,7 +37,7 @@ void RaceScene::initEngines() {
     Kart::KartObjectManager::Instance()->init();
     // System::RaceManager::Instance()->init();
     Item::ItemDirector::Instance()->init();
-    // Field::ObjectDirector::Instance()->init();
+    Field::ObjectDirector::Instance()->init();
 }
 
 /// @addr{0x80554E6C}
@@ -47,7 +47,7 @@ void RaceScene::calcEngines() {
     auto *raceMgr = System::RaceManager::Instance();
     raceMgr->calc();
     Field::BoxColManager::Instance()->calc();
-    // Field::ObjectDirector::Instance()->calc();
+    Field::ObjectDirector::Instance()->calc();
     Kart::KartObjectManager::Instance()->calc();
     Item::ItemDirector::Instance()->calc();
     // raceMgr->random1()->nextU32();

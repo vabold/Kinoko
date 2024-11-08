@@ -6,6 +6,42 @@
 
 namespace Field {
 
+/// @addr{0x8082A2B4}
+void ObjectDirector::init() {
+    for (auto *&obj : m_objects) {
+        obj->init();
+        obj->calcModel();
+    }
+}
+
+/// @addr{0x8082A8F4}
+void ObjectDirector::calc() {
+    for (auto *&obj : m_calcObjects) {
+        obj->calc();
+    }
+
+    for (auto *&obj : m_calcObjects) {
+        obj->calcModel();
+    }
+}
+
+/// @addr{0x8082B0E8}
+void ObjectDirector::addObject(ObjectCollidable *obj) {
+    u32 loadFlags = obj->loadFlags();
+
+    if (loadFlags & 1) {
+        m_calcObjects.push_back(obj);
+    }
+
+    if (m_flowTable.set(m_flowTable.slot(obj->id()))->mode != 0) {
+        if (obj->collision()) {
+            m_collisionObjects.push_back(obj);
+        }
+    }
+
+    m_objects.push_back(obj);
+}
+
 const ObjectFlowTable &ObjectDirector::flowTable() const {
     return m_flowTable;
 }
@@ -54,6 +90,8 @@ void ObjectDirector::createObjects() {
     const auto *courseMap = System::CourseMap::Instance();
     size_t objectCount = courseMap->getGeoObjCount();
     m_objects.reserve(objectCount);
+    m_calcObjects.reserve(objectCount);
+    m_collisionObjects.reserve(objectCount);
 
     for (size_t i = 0; i < objectCount; ++i) {
         const auto *pObj = courseMap->getGeoObj(i);
@@ -70,8 +108,7 @@ void ObjectDirector::createObjects() {
         }
 
         ObjectBase *object = createObject(*pObj);
-        object->init();
-        m_objects.push_back(object);
+        object->load();
     }
 }
 
