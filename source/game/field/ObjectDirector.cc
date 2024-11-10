@@ -1,6 +1,9 @@
 #include "ObjectDirector.hh"
 
+#include "game/field/BoxColManager.hh"
 #include "game/field/obj/ObjectRegistry.hh"
+
+#include "game/kart/KartObject.hh"
 
 #include "game/system/CourseMap.hh"
 
@@ -42,8 +45,66 @@ void ObjectDirector::addObject(ObjectCollidable *obj) {
     m_objects.push_back(obj);
 }
 
+/// @addr{0x8082AB04}
+size_t ObjectDirector::checkKartObjectCollision(Kart::KartObject *kartObj,
+        ObjectCollisionConvexHull *convexHull) {
+    size_t count = 0;
+
+    while (ObjectCollidable *obj = BoxColManager::Instance()->getNextObject()) {
+        auto *objCollision = obj->collision();
+        if (!objCollision) {
+            continue;
+        }
+
+        obj->calcCollisionTransform();
+        if (!obj->checkCollision(convexHull, m_hitDepths[count])) {
+            continue;
+        }
+
+        // We have a collision, process it
+        // Assume that we are not in a star, mega, or bullet
+        Kart::Reaction reactionOnKart = m_hitTableKart.reaction(m_hitTableKart.slot(obj->id()));
+        Kart::Reaction reactionOnObj =
+                m_hitTableKartObject.reaction(m_hitTableKartObject.slot(obj->id()));
+
+        // The object might change the reaction states
+        obj->processKartReactions(kartObj, reactionOnKart, reactionOnObj);
+
+        Kart::Reaction reaction =
+                obj->onCollision(kartObj, reactionOnKart, reactionOnObj, m_hitDepths[count]);
+        m_reactions[count] = reaction;
+
+        if (reaction == Kart::Reaction::WallAllSpeed || reaction == Kart::Reaction::WallSpark) {
+            obj->onWallCollision(kartObj, m_hitDepths[count]);
+        } else {
+            obj->onObjectCollision(kartObj);
+        }
+
+        m_collisionObjects[count] = obj;
+        if (m_hitDepths[count].y < 0.0f) {
+            m_hitDepths[count].y = 0.0f;
+        }
+
+        ++count;
+    }
+
+    return count;
+}
+
 const ObjectFlowTable &ObjectDirector::flowTable() const {
     return m_flowTable;
+}
+
+Kart::Reaction ObjectDirector::reaction(size_t idx) const {
+    ASSERT(idx < m_reactions.size());
+
+    return m_reactions[idx];
+}
+
+const EGG::Vector3f &ObjectDirector::hitDepth(size_t idx) const {
+    ASSERT(idx < m_hitDepths.size());
+
+    return m_hitDepths[idx];
 }
 
 /// @addr{0x8082A784}

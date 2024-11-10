@@ -1,6 +1,6 @@
 #pragma once
 
-#include <egg/math/Vector.hh>
+#include <egg/math/Matrix.hh>
 
 namespace Field {
 
@@ -26,10 +26,15 @@ public:
     ObjectCollisionBase();
     virtual ~ObjectCollisionBase();
 
-    virtual f32 getBoundingRadius() const = 0;
+    virtual void transform(const EGG::Matrix34f &mat, const EGG::Vector3f &scale,
+            const EGG::Vector3f &speed) = 0;
     virtual const EGG::Vector3f &getSupport(const EGG::Vector3f &v) const = 0;
+    virtual f32 getBoundingRadius() const = 0;
 
     bool check(ObjectCollisionBase &rhs, EGG::Vector3f &distance);
+
+protected:
+    EGG::Vector3f m_translation;
 
 private:
     bool enclosesOrigin(const GJKState &state, u32 idx) const;

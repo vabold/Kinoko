@@ -5,6 +5,8 @@
 #include "game/field/ObjectCollisionSphere.hh"
 #include "game/field/ObjectDirector.hh"
 
+#include "game/kart/KartObject.hh"
+
 namespace Field {
 
 /// @addr{0x8081EFEC}
@@ -22,6 +24,12 @@ void ObjectCollidable::load() {
     }
 
     ObjectDirector::Instance()->addObject(this);
+}
+
+/// @addr{0x8081F7C8}
+void ObjectCollidable::calcCollisionTransform() {
+    calcTransform();
+    m_collision->transform(m_transform, m_scale, getCollisionTranslation());
 }
 
 /// @addr{0x806815A0}
@@ -51,8 +59,43 @@ void ObjectCollidable::loadAABB(f32 radius, f32 maxSpeed) {
     m_boxColUnit = boxColMgr->insertObject(radius, maxSpeed, &pos, alwaysRecalc, this);
 }
 
-const ObjectCollisionBase *ObjectCollidable::collision() const {
-    return m_collision;
+/// @addr{0x8081F66C}
+void ObjectCollidable::processKartReactions(Kart::KartObject *kartObj,
+        Kart::Reaction &reactionOnKart, Kart::Reaction &reactionOnObj) {
+    // Process the reaction on kart
+    if (kartObj->speedRatioCapped() < 0.5f) {
+        if (reactionOnKart == Kart::Reaction::SpinSomeSpeed) {
+            reactionOnKart = Kart::Reaction::WallAllSpeed;
+        } else if (reactionOnKart == Kart::Reaction::SpinHitSomeSpeed) {
+            reactionOnKart = Kart::Reaction::None;
+        }
+    } else {
+        if (reactionOnKart == Kart::Reaction::SpinHitSomeSpeed) {
+            reactionOnKart = Kart::Reaction::SpinSomeSpeed;
+        }
+    }
+
+    // Process the reaction on object
+    if (reactionOnObj == Kart::Reaction::UNK_3 || reactionOnObj == Kart::Reaction::UNK_4) {
+        reactionOnObj = Kart::Reaction::None;
+    }
+}
+
+/// @addr{0x8068179C}
+Kart::Reaction ObjectCollidable::onCollision(Kart::KartObject * /*kartObj*/,
+        Kart::Reaction reactionOnKart, Kart::Reaction /*reactionOnObj*/,
+        const EGG::Vector3f & /*hitDepth*/) {
+    return reactionOnKart;
+}
+
+/// @addr{0x80681748}
+bool ObjectCollidable::checkCollision(ObjectCollisionBase *lhs, EGG::Vector3f &dist) {
+    return lhs->check(*collision(), dist);
+}
+
+/// @addr{0x8068173C}
+const EGG::Vector3f &ObjectCollidable::getCollisionTranslation() const {
+    return EGG::Vector3f::zero;
 }
 
 /// @addr{0x8081F224}
@@ -89,6 +132,11 @@ void ObjectCollidable::createCollision() {
 /// @addr{0x806816B8}
 const EGG::Vector3f &ObjectCollidable::collisionCenter() const {
     return EGG::Vector3f::zero;
+}
+
+/// @addr{0x80573518}
+ObjectCollisionBase *ObjectCollidable::collision() const {
+    return m_collision;
 }
 
 } // namespace Field

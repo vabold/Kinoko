@@ -2,6 +2,8 @@
 
 #include "game/field/CollisionDirector.hh"
 
+#include "game/kart/KartCollide.hh"
+
 namespace Field {
 
 /// @addr{0x807787F0}
@@ -33,6 +35,22 @@ void ObjectDokan::calc() {
 /// @addr{0x80778FE4}
 u32 ObjectDokan::loadFlags() const {
     return 1;
+}
+
+/// @addr{0x80778C0C}
+Kart::Reaction ObjectDokan::onCollision(Kart::KartObject * /*kartObj*/,
+        Kart::Reaction reactionOnKart, Kart::Reaction reactionOnObj,
+        const EGG::Vector3f & /*hitDepth*/) {
+    constexpr f32 INITIAL_VELOCITY = 100.0f;
+
+    if (reactionOnObj == Kart::Reaction::UNK_3 || reactionOnObj == Kart::Reaction::UNK_5) {
+        if (!m_b0) {
+            m_b0 = true;
+            m_velocity = INITIAL_VELOCITY * EGG::Vector3f::ey;
+        }
+    }
+
+    return reactionOnKart;
 }
 
 /// @addr{0x807789BC}

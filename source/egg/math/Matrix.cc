@@ -142,6 +142,14 @@ void Matrix34f::makeR(const Vector3f &r) {
     mtx[2][3] = 0.0f;
 }
 
+/// @addr{0x80230280}
+void Matrix34f::makeS(const Vector3f &s) {
+    makeZero();
+    mtx[0][0] = s.x;
+    mtx[1][1] = s.y;
+    mtx[2][2] = s.z;
+}
+
 /// @brief Zeroes every element of the matrix.
 void Matrix34f::makeZero() {
     *this = Matrix34f::zero;

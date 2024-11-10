@@ -1,5 +1,7 @@
 #include "BoxColManager.hh"
 
+#include "game/field/obj/ObjectCollidable.hh"
+
 #include <numeric>
 
 namespace Field {
@@ -17,6 +19,7 @@ void BoxColUnit::init(f32 radius, f32 maxSpeed, const EGG::Vector3f *pos, const 
     m_radius = radius;
     m_range = radius + maxSpeed;
     m_flag = flag;
+    m_flag.setBit(eBoxColFlag::Active);
     m_userData = userData;
     m_xMax = pos->x + m_range;
     m_xMin = pos->x - m_range;
@@ -176,8 +179,8 @@ void BoxColManager::calc() {
 }
 
 /// @addr{0x80785E5C}
-void *BoxColManager::getNextObject() {
-    return getNextImpl(m_nextObjectID, eBoxColFlag::Object);
+ObjectCollidable *BoxColManager::getNextObject() {
+    return reinterpret_cast<ObjectCollidable *>(getNextImpl(m_nextObjectID, eBoxColFlag::Object));
 }
 
 /// @addr{0x80785EC4}
@@ -273,7 +276,7 @@ BoxColManager *BoxColManager::Instance() {
 }
 
 /// @brief Helper function since the getters share all code except the flag.
-void *BoxColManager::getNextImpl(s32 id, const BoxColFlag &flag) {
+void *BoxColManager::getNextImpl(s32 &id, const BoxColFlag &flag) {
     if (id == MAX_UNIT_COUNT) {
         return nullptr;
     }
@@ -287,7 +290,7 @@ void *BoxColManager::getNextImpl(s32 id, const BoxColFlag &flag) {
 /// @addr{Inlined}
 void BoxColManager::iterate(s32 &iter, const BoxColFlag &flag) {
     while (++iter < m_maxID) {
-        if (m_units[iter]->m_flag == flag) {
+        if (m_units[iter]->m_flag.on(flag)) {
             return;
         }
     }

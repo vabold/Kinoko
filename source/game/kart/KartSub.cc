@@ -167,6 +167,9 @@ void KartSub::calcPass1() {
     flags.setBit(Field::eBoxColFlag::Drivable, Field::eBoxColFlag::Object);
     boxColUnit()->search(flags);
 
+    collide()->calcObjectCollision();
+    dynamics()->setPos(pos() + collide()->tangentOff());
+
     if (state()->isSomethingWallCollision()) {
         const EGG::Vector3f &softWallSpeed = state()->softWallSpeed();
         f32 speedFactor = 5.0f;

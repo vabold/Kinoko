@@ -22,9 +22,24 @@ ObjectCollisionConvexHull::~ObjectCollisionConvexHull() {
     delete[] m_worldPoints.data();
 }
 
-/// @addr{0x807F957C}
-f32 ObjectCollisionConvexHull::getBoundingRadius() const {
-    return m_worldRadius;
+/// @addr{0x808367C4}
+void ObjectCollisionConvexHull::transform(const EGG::Matrix34f &mat, const EGG::Vector3f &scale,
+        const EGG::Vector3f &speed) {
+    m_translation = speed;
+
+    if (scale.x == 0.0f) {
+        for (size_t i = 0; i < m_points.size(); ++i) {
+            m_worldPoints[i] = mat.multVector(m_points[i]);
+        }
+    } else {
+        EGG::Matrix34f temp;
+        temp.makeS(scale);
+        temp = mat.multiplyTo(temp);
+
+        for (size_t i = 0; i < m_points.size(); ++i) {
+            m_worldPoints[i] = temp.multVector(m_points[i]);
+        }
+    }
 }
 
 /// @addr{0x80836628}
@@ -43,6 +58,16 @@ const EGG::Vector3f &ObjectCollisionConvexHull::getSupport(const EGG::Vector3f &
     }
 
     return *result;
+}
+
+/// @addr{0x807F957C}
+f32 ObjectCollisionConvexHull::getBoundingRadius() const {
+    return m_worldRadius;
+}
+
+/// @addr{0x8080C414}
+void ObjectCollisionConvexHull::setBoundingRadius(f32 val) {
+    m_worldRadius = val;
 }
 
 /// @addr{0x808364E0}

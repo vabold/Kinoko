@@ -99,6 +99,7 @@ public:
     void exitCannon();
 
     /// @beginSetters
+    void setSpeed(f32 val);
     void setSmoothedUp(const EGG::Vector3f &v);
     void setUp(const EGG::Vector3f &v);
     void setDir(const EGG::Vector3f &v);

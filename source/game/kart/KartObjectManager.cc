@@ -18,6 +18,7 @@ void KartObjectManager::init() {
 void KartObjectManager::calc() {
     for (size_t i = 0; i < m_count; ++i) {
         KartObject *object = m_objects[i];
+        object->collide()->setTangentOff(EGG::Vector3f::zero);
         object->collide()->setMovement(EGG::Vector3f::zero);
     }
 

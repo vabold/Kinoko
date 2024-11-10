@@ -2,6 +2,8 @@
 
 #include "game/field/obj/ObjectId.hh"
 
+#include "game/kart/KartCollide.hh"
+
 #include <span>
 
 namespace Field {
@@ -11,7 +13,7 @@ public:
     ObjectHitTable(const char *filename);
     ~ObjectHitTable();
 
-    s16 reaction(s16 i) const;
+    Kart::Reaction reaction(s16 i) const;
     s16 slot(ObjectId id) const;
 
 private:

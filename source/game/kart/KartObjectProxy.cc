@@ -363,6 +363,11 @@ f32 KartObjectProxy::speedRatio() const {
     return move()->speedRatio();
 }
 
+/// @addr{80590DC0}
+f32 KartObjectProxy::speedRatioCapped() const {
+    return move()->speedRatioCapped();
+}
+
 std::list<KartObjectProxy *> &KartObjectProxy::proxyList() {
     return s_proxyList;
 }

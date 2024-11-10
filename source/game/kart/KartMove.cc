@@ -918,7 +918,8 @@ void KartMove::calcRotation() {
 
         if (!drifting) {
             bool noTurn = false;
-            if (!state()->isWallCollision() && EGG::Mathf::abs(m_speed) < 1.0f) {
+            if (!state()->isWallCollision() && !state()->isWall3Collision() &&
+                    EGG::Mathf::abs(m_speed) < 1.0f) {
                 if (!(state()->isHop() && m_hopPosY > 0.0f)) {
                     turn = 0.0f;
                     noTurn = true;
@@ -1870,6 +1871,10 @@ void KartMove::exitCannon() {
     state()->setInCannon(false);
     state()->setSkipWheelCalc(false);
     dynamics()->setIntVel(m_cannonEntryOfs * m_speed);
+}
+
+void KartMove::setSpeed(f32 val) {
+    m_speed = val;
 }
 
 void KartMove::setSmoothedUp(const EGG::Vector3f &v) {
