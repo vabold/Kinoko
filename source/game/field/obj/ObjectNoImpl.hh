@@ -10,6 +10,7 @@ public:
     ~ObjectNoImpl() override;
 
     void load() override;
+    void calcCollisionTransform() override {}
 };
 
 } // namespace Field

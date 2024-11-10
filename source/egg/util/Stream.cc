@@ -107,6 +107,10 @@ u8 *RamStream::data() {
     return m_buffer;
 }
 
+u8 *RamStream::dataAtIndex() {
+    return m_buffer + m_index;
+}
+
 /// @brief Splits the current stream into two.
 /// @details Segments the current stream at the current index. The returned stream is the data from
 /// the current index to size bytes after. The current stream is then moved to `size` bytes after

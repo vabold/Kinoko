@@ -6,6 +6,8 @@
 #include "game/kart/KartState.hh"
 
 #include "game/field/CollisionDirector.hh"
+#include "game/field/ObjectCollisionKart.hh"
+#include "game/field/ObjectDirector.hh"
 
 #include <egg/math/Math.hh>
 
@@ -58,7 +60,26 @@ void KartCollide::findCollision() {
     calcBodyCollision(move()->totalScale(), body()->sinkDepth(), fullRot(), scale());
 
     auto &colData = collisionData();
-    if (colData.bWall || colData.bWall3) {
+    bool existingWallCollision = colData.bWall || colData.bWall3;
+    bool newWallCollision =
+            m_surfaceFlags.onBit(eSurfaceFlags::ObjectWall, eSurfaceFlags::ObjectWall3);
+    if (existingWallCollision || newWallCollision) {
+        if (!existingWallCollision) {
+            colData.wallNrm = m_totalReactionWallNrm;
+            if (m_surfaceFlags.onBit(eSurfaceFlags::ObjectWall)) {
+                colData.bWall = true;
+            } else if (m_surfaceFlags.onBit(eSurfaceFlags::ObjectWall3)) {
+                colData.bWall3 = true;
+            }
+        } else if (newWallCollision) {
+            colData.wallNrm += m_totalReactionWallNrm;
+            if (m_surfaceFlags.onBit(eSurfaceFlags::ObjectWall)) {
+                colData.bWall = true;
+            } else if (m_surfaceFlags.onBit(eSurfaceFlags::ObjectWall3)) {
+                colData.bWall3 = true;
+            }
+        }
+
         colData.wallNrm.normalise();
     }
 
@@ -438,6 +459,31 @@ void KartCollide::calcBoundingRadius() {
     m_boundingRadius = collisionGroup()->boundingRadius() * move()->hitboxScale();
 }
 
+/// @addr{0x80571F10}
+void KartCollide::calcObjectCollision() {
+    m_totalReactionWallNrm = EGG::Vector3f::zero;
+    m_surfaceFlags.resetBit(eSurfaceFlags::ObjectWall, eSurfaceFlags::ObjectWall3);
+
+    size_t collisionCount = objectCollisionKart()->checkCollision(pose(), velocity());
+
+    const auto *objectDirector = Field::ObjectDirector::Instance();
+
+    for (size_t i = 0; i < collisionCount; ++i) {
+        Reaction reaction = objectDirector->reaction(i);
+        if (reaction != Reaction::None && reaction != Reaction::UNK_7) {
+            size_t handlerIdx = static_cast<std::underlying_type_t<Reaction>>(reaction);
+            Action action = (this->*s_objectCollisionHandlers[handlerIdx])(i);
+            static_cast<void>(action); // Ignore for now
+
+            if (reaction != Reaction::SmallBump && reaction != Reaction::BigBump) {
+                const EGG::Vector3f &hitDepth = objectDirector->hitDepth(i);
+                m_tangentOff += hitDepth;
+                m_movement += hitDepth;
+            }
+        }
+    }
+}
+
 /// @stage All
 /// @brief Processes moving water and floor collision effects
 /// @addr{0x8056E8D4}
@@ -747,6 +793,98 @@ void KartCollide::applyBodyCollision(CollisionData &collisionData, const EGG::Ve
     }
 }
 
+/// @addr{0x8056E564}
+Action KartCollide::handleReactNone(size_t /*idx*/) {
+    return Action::None;
+}
+
+/// @addr{0x8057363C}
+Action KartCollide::handleReactWallAllSpeed(size_t idx) {
+    m_totalReactionWallNrm += Field::ObjectCollisionKart::GetHitDirection(idx);
+    m_surfaceFlags.setBit(eSurfaceFlags::ObjectWall);
+
+    return Action::None;
+}
+
+/// @addr{0x805733CC}
+Action KartCollide::handleReactSpinAllSpeed(size_t /*idx*/) {
+    return Action::UNK_0;
+}
+
+/// @addr{0x805733D4}
+Action KartCollide::handleReactSpinSomeSpeed(size_t /*idx*/) {
+    return Action::UNK_1;
+}
+
+/// @addr{0x805735AC}
+Action KartCollide::handleReactFireSpin(size_t /*idx*/) {
+    return Action::UNK_9;
+}
+
+/// @addr{0x805733C4}
+Action KartCollide::handleReactSmallLaunch(size_t /*idx*/) {
+    return Action::UNK_2;
+}
+
+/// @addr{0x805733DC}
+Action KartCollide::handleReactKnockbackSomeSpeedLoseItem(size_t /*idx*/) {
+    return Action::UNK_3;
+}
+
+/// @addr{0x8057353C}
+Action KartCollide::handleReactLaunchSpinLoseItem(size_t /*idx*/) {
+    return Action::UNK_6;
+}
+
+/// @addr{0x805733EC}
+Action KartCollide::handleReactKnockbackBumpLoseItem(size_t /*idx*/) {
+    return Action::UNK_4;
+}
+
+/// @addr{0x805735B4}
+Action KartCollide::handleReactLongCrushLoseItem(size_t /*idx*/) {
+    return Action::UNK_12;
+}
+
+/// @addr{0x805733E4}
+Action KartCollide::handleReactHighLaunchLoseItem(size_t /*idx*/) {
+    return Action::UNK_8;
+}
+
+/// @addr{0x80573754}
+Action KartCollide::handleReactWeakWall(size_t /*idx*/) {
+    move()->setSpeed(move()->speed() * 0.82f);
+    return Action::None;
+}
+
+/// @addr{0x805733F4}
+Action KartCollide::handleReactLaunchSpin(size_t /*idx*/) {
+    return Action::UNK_5;
+}
+
+/// @addr{0x805736C8}
+Action KartCollide::handleReactWallSpark(size_t idx) {
+    m_totalReactionWallNrm += Field::ObjectCollisionKart::GetHitDirection(idx);
+    m_surfaceFlags.setBit(eSurfaceFlags::ObjectWall3);
+
+    return Action::None;
+}
+
+/// @addr{0x805735D4}
+Action KartCollide::handleReactShortCrushLoseItem(size_t /*idx*/) {
+    return Action::UNK_14;
+}
+
+/// @addr{0x805735DC}
+Action KartCollide::handleReactCrushRespawn(size_t /*idx*/) {
+    return Action::UNK_16;
+}
+
+/// @addr{0x805735E4}
+Action KartCollide::handleReactExplosionLoseItem(size_t /*idx*/) {
+    return Action::UNK_7;
+}
+
 /// @addr{0x805B78D0}
 void KartCollide::setFloorColInfo(CollisionData &collisionData, const EGG::Vector3f &relPos,
         const EGG::Vector3f &vel, const EGG::Vector3f &floorNrm) {
@@ -754,6 +892,10 @@ void KartCollide::setFloorColInfo(CollisionData &collisionData, const EGG::Vecto
     collisionData.vel = vel;
     collisionData.floorNrm = floorNrm;
     collisionData.bFloor = true;
+}
+
+void KartCollide::setTangentOff(const EGG::Vector3f &v) {
+    m_tangentOff = v;
 }
 
 void KartCollide::setMovement(const EGG::Vector3f &v) {
@@ -766,6 +908,10 @@ f32 KartCollide::boundingRadius() const {
 
 const KartCollide::SurfaceFlags &KartCollide::surfaceFlags() const {
     return m_surfaceFlags;
+}
+
+const EGG::Vector3f &KartCollide::tangentOff() const {
+    return m_tangentOff;
 }
 
 const EGG::Vector3f &KartCollide::movement() const {
@@ -791,5 +937,41 @@ u16 KartCollide::someNonSoftWallTimer() const {
 f32 KartCollide::colPerpendicularity() const {
     return m_colPerpendicularity;
 }
+
+std::array<KartCollide::ObjectCollisionHandler, 33> KartCollide::s_objectCollisionHandlers = {{
+        &KartCollide::handleReactNone,
+        &KartCollide::handleReactNone,
+        &KartCollide::handleReactNone,
+        &KartCollide::handleReactNone,
+        &KartCollide::handleReactNone,
+        &KartCollide::handleReactNone,
+        &KartCollide::handleReactNone,
+        &KartCollide::handleReactNone,
+        &KartCollide::handleReactWallAllSpeed,
+        &KartCollide::handleReactSpinAllSpeed,
+        &KartCollide::handleReactSpinSomeSpeed,
+        &KartCollide::handleReactFireSpin,
+        &KartCollide::handleReactNone,
+        &KartCollide::handleReactSmallLaunch,
+        &KartCollide::handleReactKnockbackSomeSpeedLoseItem,
+        &KartCollide::handleReactLaunchSpinLoseItem,
+        &KartCollide::handleReactKnockbackBumpLoseItem,
+        &KartCollide::handleReactLongCrushLoseItem,
+        &KartCollide::handleReactNone,
+        &KartCollide::handleReactNone,
+        &KartCollide::handleReactNone,
+        &KartCollide::handleReactHighLaunchLoseItem,
+        &KartCollide::handleReactNone,
+        &KartCollide::handleReactWeakWall,
+        &KartCollide::handleReactNone,
+        &KartCollide::handleReactLaunchSpin,
+        &KartCollide::handleReactWallSpark,
+        &KartCollide::handleReactNone,
+        &KartCollide::handleReactNone,
+        &KartCollide::handleReactNone,
+        &KartCollide::handleReactShortCrushLoseItem,
+        &KartCollide::handleReactCrushRespawn,
+        &KartCollide::handleReactExplosionLoseItem,
+}};
 
 } // namespace Kart

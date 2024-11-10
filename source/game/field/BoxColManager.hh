@@ -11,17 +11,19 @@ class KartObject;
 
 namespace Field {
 
+class ObjectCollidable;
+
 /// @brief A bitfield that represents the state and type of a given BoxColUnit.
 /// @details The lower 8 bits represent the type, while the remaining bits represent the state.
 /// There are originally two flags for objects, but one is for CPUs, which we can ignore for now.
 enum class eBoxColFlag {
     Driver = 0,
     Object = 3,
-    Drivable = 5,
-    PermRecalcAABB = 9, ///< Recalculate this unit's spatial indexing every frame.
-    Intangible = 10,    ///< Ignore collision with the unit.
-    Active = 11,
-    TempRecalcAABB = 12, ///< Only recalculate once.
+    Drivable = 4,
+    PermRecalcAABB = 8, ///< Recalculate this unit's spatial indexing every frame.
+    Intangible = 9,     ///< Ignore collision with the unit.
+    Active = 10,
+    TempRecalcAABB = 11, ///< Only recalculate once.
 };
 typedef EGG::TBitFlag<u32, eBoxColFlag> BoxColFlag;
 
@@ -69,7 +71,7 @@ public:
     void clear();
     void calc();
 
-    [[nodiscard]] void *getNextObject();
+    [[nodiscard]] ObjectCollidable *getNextObject();
     [[nodiscard]] void *getNextDrivable();
 
     void resetIterators();
@@ -90,7 +92,7 @@ public:
     [[nodiscard]] static BoxColManager *Instance();
 
 private:
-    [[nodiscard]] void *getNextImpl(s32 id, const BoxColFlag &flag);
+    [[nodiscard]] void *getNextImpl(s32 &id, const BoxColFlag &flag);
     void iterate(s32 &iter, const BoxColFlag &flag);
     [[nodiscard]] BoxColUnit *insert(f32 radius, f32 maxSpeed, const EGG::Vector3f *pos,
             const BoxColFlag &flag, void *userData);

@@ -69,6 +69,7 @@ public:
     [[nodiscard]] RamStream split(u32 size);
     void setBufferAndSize(void *buffer, u32 size);
     [[nodiscard]] u8 *data();
+    [[nodiscard]] u8 *dataAtIndex();
 
 private:
     u8 *m_buffer;

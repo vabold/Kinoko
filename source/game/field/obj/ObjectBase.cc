@@ -14,15 +14,7 @@ ObjectBase::~ObjectBase() = default;
 
 /// @addr{0x808217B8}
 void ObjectBase::calcModel() {
-    if (!(m_flags & 2)) {
-        if (!(m_flags & 1)) {
-            m_transform.setBase(3, m_pos);
-            m_flags |= 4;
-        }
-    } else {
-        m_transform.makeRT(m_rot, m_pos);
-        m_flags &= ~0x3;
-    }
+    calcTransform();
 }
 
 /// @addr{0x806BF434}
@@ -46,6 +38,17 @@ f32 ObjectBase::getCollisionRadius() const {
 /// @addr{0x80572574}
 ObjectId ObjectBase::id() const {
     return m_id;
+}
+
+/// @addr{0x80821640}
+void ObjectBase::calcTransform() {
+    if (m_flags & 2) {
+        m_transform.makeRT(m_rot, m_pos);
+        m_flags &= ~0x3;
+    } else if (m_flags & 1) {
+        m_transform.setBase(3, m_pos);
+        m_flags |= 4;
+    }
 }
 
 } // namespace Field

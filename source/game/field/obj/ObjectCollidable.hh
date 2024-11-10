@@ -4,6 +4,13 @@
 
 #include "game/field/ObjectCollisionBase.hh"
 
+namespace Kart {
+
+class KartObject;
+enum class Reaction;
+
+} // namespace Kart
+
 namespace Field {
 
 class ObjectCollidable : public ObjectBase {
@@ -12,11 +19,20 @@ public:
     ~ObjectCollidable() override;
 
     void load() override;
+    void calcCollisionTransform() override;
     [[nodiscard]] f32 getCollisionRadius() const override;
 
     virtual void loadAABB(f32 maxSpeed);
     virtual void loadAABB(f32 radius, f32 maxSpeed);
-    [[nodiscard]] virtual const ObjectCollisionBase *collision() const;
+    virtual void processKartReactions(Kart::KartObject *kartObj, Kart::Reaction &reactionOnKart,
+            Kart::Reaction &reactionOnObj);
+    virtual Kart::Reaction onCollision(Kart::KartObject *kartObj, Kart::Reaction reactionOnKart,
+            Kart::Reaction reactionOnObj, const EGG::Vector3f &hitDepth);
+    virtual void onWallCollision(Kart::KartObject *, const EGG::Vector3f &) {}
+    virtual void onObjectCollision(Kart::KartObject *) {}
+    virtual bool checkCollision(ObjectCollisionBase *lhs, EGG::Vector3f &dist);
+    virtual const EGG::Vector3f &getCollisionTranslation() const;
+    [[nodiscard]] virtual ObjectCollisionBase *collision() const;
 
 protected:
     virtual void createCollision();

@@ -12,4 +12,10 @@ ObjectCollisionBox::ObjectCollisionBox(f32 x, f32 y, f32 z, const EGG::Vector3f 
 /// @addr{0x808342F0}
 ObjectCollisionBox::~ObjectCollisionBox() = default;
 
+/// @addr{0x80833EEC}
+void ObjectCollisionBox::transform(const EGG::Matrix34f & /*mat*/, const EGG::Vector3f & /*scale*/,
+        const EGG::Vector3f & /*speed*/) {
+    ; // TODO
+}
+
 } // namespace Field

@@ -18,6 +18,7 @@ public:
     virtual void calc() {}
     virtual void calcModel();
     virtual void load() = 0;
+    virtual void calcCollisionTransform() = 0;
     [[nodiscard]] virtual u32 loadFlags() const;
     [[nodiscard]] virtual const EGG::Vector3f &getPosition() const;
     [[nodiscard]] virtual f32 getCollisionRadius() const;
@@ -25,6 +26,8 @@ public:
     [[nodiscard]] ObjectId id() const;
 
 protected:
+    void calcTransform();
+
     ObjectId m_id;
     BoxColUnit *m_boxColUnit;
     u16 m_flags;

@@ -1,5 +1,7 @@
 #include "ObjectCollisionKart.hh"
 
+#include "game/field/ObjectDirector.hh"
+
 #include "game/kart/KartObjectManager.hh"
 
 #include "game/system/RaceConfig.hh"
@@ -22,38 +24,58 @@ void ObjectCollisionKart::init(u32 idx) {
     m_playerIdx = idx;
 
     auto vehicle = System::RaceConfig::Instance()->raceScenario().players[idx].vehicle;
-    m_convexHull = new ObjectCollisionConvexHull(GetVehicleVertices(vehicle));
+    m_hull = new ObjectCollisionConvexHull(GetVehicleVertices(vehicle));
+}
+
+/// @addr{0x8081E170}
+size_t ObjectCollisionKart::checkCollision(const EGG::Matrix34f &mat, const EGG::Vector3f &v) {
+    if (!m_hull) {
+        return 0;
+    }
+
+    const EGG::Vector3f &scale = m_kartObject->scale();
+    m_hull->transform(mat, scale, v);
+    m_hull->setBoundingRadius(scale.x * m_hull->getBoundingRadius());
+
+    return ObjectDirector::Instance()->checkKartObjectCollision(m_kartObject, m_hull);
+}
+
+/// @addr{0x80572544}
+EGG::Vector3f ObjectCollisionKart::GetHitDirection(u16 objKartHit) {
+    EGG::Vector3f hitDepth = ObjectDirector::Instance()->hitDepth(objKartHit);
+    hitDepth.normalise();
+    return hitDepth;
 }
 
 /// @brief Helper function to map between a vehicle and its set of convex hull vertices.
 constexpr std::span<const EGG::Vector3f> ObjectCollisionKart::GetVehicleVertices(Vehicle vehicle) {
-    constexpr std::array<EGG::Vector3f, 2> VERT_STANDARD_KART_S = {{
+    static constexpr std::array<EGG::Vector3f, 2> VERT_STANDARD_KART_S = {{
             {0.0f, 35.0f, -40.0f},
             {0.0f, 35.0f, 25.0f},
     }};
 
-    constexpr std::array<EGG::Vector3f, 4> VERT_STANDARD_KART_M = {{
+    static constexpr std::array<EGG::Vector3f, 4> VERT_STANDARD_KART_M = {{
             {0.0, 60.0, 10.0},
             {10.0, 35.0, -50.0},
             {-10.0, 35.0, -50.0},
             {0.0, 35.0, 65.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 4> VERT_STANDARD_KART_L = {{
+    static constexpr std::array<EGG::Vector3f, 4> VERT_STANDARD_KART_L = {{
             {0.0, 135.0, 30.0},
             {25.0, 35.0, -95.0},
             {-25.0, 35.0, -95.0},
             {0.0, 35.0, 105.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 4> VERT_BOOSTER_SEAT = {{
+    static constexpr std::array<EGG::Vector3f, 4> VERT_BOOSTER_SEAT = {{
             {0.0, 120.0, 0.0},
             {0.0, 95.0, -55.0},
             {0.0, 10.0, -15.0},
             {0.0, 10.0, 20.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 5> VERT_CLASSIC_DRAGSTER = {{
+    static constexpr std::array<EGG::Vector3f, 5> VERT_CLASSIC_DRAGSTER = {{
             {0.0, 55.0, -25.0},
             {20.0, -5.0, -85.0},
             {-20.0, -5.0, -85.0},
@@ -61,7 +83,7 @@ constexpr std::span<const EGG::Vector3f> ObjectCollisionKart::GetVehicleVertices
             {-20.0, -5.0, 60.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 5> VERT_OFFROADER = {{
+    static constexpr std::array<EGG::Vector3f, 5> VERT_OFFROADER = {{
             {0.0, 85.0, 30.0},
             {60.0, 5.0, -95.0},
             {-60.0, 5.0, -95.0},
@@ -69,20 +91,20 @@ constexpr std::span<const EGG::Vector3f> ObjectCollisionKart::GetVehicleVertices
             {-50.0, 5.0, 130.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 3> VERT_MINI_BEAST = {{
+    static constexpr std::array<EGG::Vector3f, 3> VERT_MINI_BEAST = {{
             {0.0, 25.0, -10.0},
             {0.0, 5.0, -60.0},
             {0.0, 5.0, 40.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 4> VERT_WILD_WING = {{
+    static constexpr std::array<EGG::Vector3f, 4> VERT_WILD_WING = {{
             {0.0, 60.0, -10.0},
             {15.0, 25.0, -80.0},
             {-15.0, 25.0, -80.0},
             {0.0, 25.0, 80.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 5> VERT_FLAME_FLYER = {{
+    static constexpr std::array<EGG::Vector3f, 5> VERT_FLAME_FLYER = {{
             {0.0, 80.0, 0.0},
             {30.0, 0.0, -105.0},
             {-30.0, 0.0, -105.0},
@@ -90,20 +112,20 @@ constexpr std::span<const EGG::Vector3f> ObjectCollisionKart::GetVehicleVertices
             {-25.0, 0.0, 105.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 3> VERT_CHEEP_CHARGER = {{
+    static constexpr std::array<EGG::Vector3f, 3> VERT_CHEEP_CHARGER = {{
             {0.0, 40.0, 0.0},
             {0.0, 25.0, -10.0},
             {0.0, 25.0, 10.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 4> VERT_SUPER_BLOOPER = {{
+    static constexpr std::array<EGG::Vector3f, 4> VERT_SUPER_BLOOPER = {{
             {0.0, 50.0, 0.0},
             {0.0, 25.0, 50.0},
             {-25.0, 25.0, -20.0},
             {25.0, 25.0, -20.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 5> VERT_PIRANHA_PROWLER = {{
+    static constexpr std::array<EGG::Vector3f, 5> VERT_PIRANHA_PROWLER = {{
             {0.0, 95.0, -10.0},
             {35.0, -25.0, -115.0},
             {-35.0, -25.0, -115.0},
@@ -111,7 +133,7 @@ constexpr std::span<const EGG::Vector3f> ObjectCollisionKart::GetVehicleVertices
             {-35.0, -25.0, 85.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 5> VERT_TINY_TITAN = {{
+    static constexpr std::array<EGG::Vector3f, 5> VERT_TINY_TITAN = {{
             {0.0, 55.0, -10.0},
             {25.0, -10.0, -40.0},
             {-25.0, -10.0, -40.0},
@@ -119,7 +141,7 @@ constexpr std::span<const EGG::Vector3f> ObjectCollisionKart::GetVehicleVertices
             {25.0, -10.0, 30.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 5> VERT_DAYTRIPPER = {{
+    static constexpr std::array<EGG::Vector3f, 5> VERT_DAYTRIPPER = {{
             {0.0, 60.0, 0.0},
             {12.0, 5.0, -55.0},
             {-12.0, 5.0, -55.0},
@@ -127,7 +149,7 @@ constexpr std::span<const EGG::Vector3f> ObjectCollisionKart::GetVehicleVertices
             {-8.0, 5.0, 35.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 5> VERT_JETSETTER = {{
+    static constexpr std::array<EGG::Vector3f, 5> VERT_JETSETTER = {{
             {0.0, 120.0, 30.0},
             {25.0, 30.0, -75.0},
             {-25.0, 30.0, -75.0},
@@ -135,13 +157,13 @@ constexpr std::span<const EGG::Vector3f> ObjectCollisionKart::GetVehicleVertices
             {-20.0, 30.0, 115.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 3> VERT_BLUE_FALCON = {{
+    static constexpr std::array<EGG::Vector3f, 3> VERT_BLUE_FALCON = {{
             {20.0, 20.0, -30.0},
             {-20.0, 20.0, -30.0},
             {0.0, 20.0, 80.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 5> VERT_SPRINTER = {{
+    static constexpr std::array<EGG::Vector3f, 5> VERT_SPRINTER = {{
             {0.0, 60.0, 0.0},
             {25.0, 20.0, -60.0},
             {-25.0, 20.0, -60.0},
@@ -149,7 +171,7 @@ constexpr std::span<const EGG::Vector3f> ObjectCollisionKart::GetVehicleVertices
             {-20.0, 20.0, 75.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 7> VERT_HONEYCOUPE = {{
+    static constexpr std::array<EGG::Vector3f, 7> VERT_HONEYCOUPE = {{
             {0.0, 100.0, 50.0},
             {60.0, 20.0, -110.0},
             {-60.0, 20.0, -110.0},
@@ -159,117 +181,117 @@ constexpr std::span<const EGG::Vector3f> ObjectCollisionKart::GetVehicleVertices
             {-50.0, 0.0, 130.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 3> VERT_STANDARD_BIKE_S = {{
+    static constexpr std::array<EGG::Vector3f, 3> VERT_STANDARD_BIKE_S = {{
             {0.0, 40.0, 0.0},
             {0.0, 5.0, -15.0},
             {0.0, 5.0, 20.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 3> VERT_STANDARD_BIKE_M = {{
+    static constexpr std::array<EGG::Vector3f, 3> VERT_STANDARD_BIKE_M = {{
             {0.0, 75.0, 10.0},
             {0.0, 10.0, -20.0},
             {0.0, 10.0, 20.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 3> VERT_STANDARD_BIKE_L = {{
+    static constexpr std::array<EGG::Vector3f, 3> VERT_STANDARD_BIKE_L = {{
             {0.0, 110.0, -15.0},
             {0.0, -5.0, -35.0},
             {0.0, -5.0, 40.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 3> VERT_BULLET_BIKE = {{
+    static constexpr std::array<EGG::Vector3f, 3> VERT_BULLET_BIKE = {{
             {0.0, 25.0, 10.0},
             {0.0, -10.0, -45.0},
             {0.0, -10.0, 50.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 3> VERT_MACH_BIKE = {{
+    static constexpr std::array<EGG::Vector3f, 3> VERT_MACH_BIKE = {{
             {0.0, 50.0, 15.0},
             {0.0, 5.0, -30.0},
             {0.0, 5.0, 35.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 3> VERT_FLAME_RUNNER = {{
+    static constexpr std::array<EGG::Vector3f, 3> VERT_FLAME_RUNNER = {{
             {0.0, 105.0, -10.0},
             {0.0, -5.0, -50.0},
             {0.0, -5.0, 45.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 3> VERT_BIT_BIKE = {{
+    static constexpr std::array<EGG::Vector3f, 3> VERT_BIT_BIKE = {{
             {0.0, 40.0, -10.0},
             {0.0, 15.0, -15.0},
             {0.0, 15.0, 5.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 3> VERT_SUGARSCOOT = {{
+    static constexpr std::array<EGG::Vector3f, 3> VERT_SUGARSCOOT = {{
             {0.0, 70.0, 10.0},
             {0.0, 10.0, -40.0},
             {0.0, 10.0, 15.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 4> VERT_WARIO_BIKE = {{
+    static constexpr std::array<EGG::Vector3f, 4> VERT_WARIO_BIKE = {{
             {0.0, 110.0, 35.0},
             {0.0, 70.0, -65.0},
             {0.0, -10.0, -75.0},
             {0.0, -5.0, 85.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 3> VERT_QUACKER = {{
+    static constexpr std::array<EGG::Vector3f, 3> VERT_QUACKER = {{
             {0.0, 40.0, 0.0},
             {0.0, 10.0, 20.0},
             {0.0, 10.0, -5.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 3> VERT_ZIP_ZIP = {{
+    static constexpr std::array<EGG::Vector3f, 3> VERT_ZIP_ZIP = {{
             {0.0, 75.0, 10.0},
             {0.0, 10.0, -25.0},
             {0.0, 10.0, 20.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 3> VERT_SHOOTING_STAR = {{
+    static constexpr std::array<EGG::Vector3f, 3> VERT_SHOOTING_STAR = {{
             {0.0, 120.0, 35.0},
             {0.0, -15.0, -45.0},
             {0.0, -15.0, 100.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 3> VERT_MAGIKRUISER = {{
+    static constexpr std::array<EGG::Vector3f, 3> VERT_MAGIKRUISER = {{
             {0.0, 35.0, -20.0},
             {0.0, 0.0, -70.0},
             {0.0, 0.0, 20.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 3> VERT_SNEAKSTER = {{
+    static constexpr std::array<EGG::Vector3f, 3> VERT_SNEAKSTER = {{
             {0.0, 50.0, 20.0},
             {0.0, 15.0, -50.0},
             {0.0, 15.0, 30.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 3> VERT_SPEAR = {{
+    static constexpr std::array<EGG::Vector3f, 3> VERT_SPEAR = {{
             {0.0, 105.0, -20.0},
             {0.0, -15.0, -60.0},
             {0.0, -15.0, 75.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 3> VERT_JET_BUBBLE = {{
+    static constexpr std::array<EGG::Vector3f, 3> VERT_JET_BUBBLE = {{
             {0.0, 35.0, 10.0},
             {0.0, -5.0, -45.0},
             {0.0, -5.0, 50.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 3> VERT_DOLPHIN_DASHER = {{
+    static constexpr std::array<EGG::Vector3f, 3> VERT_DOLPHIN_DASHER = {{
             {0.0, 50.0, 20.0},
             {0.0, -5.0, -35.0},
             {0.0, -5.0, 42.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 4> VERT_PHANTOM = {{
+    static constexpr std::array<EGG::Vector3f, 4> VERT_PHANTOM = {{
             {0.0, 120.0, 35.0},
             {20.0, -5.0, -85.0},
             {-20.0, -5.0, -85.0},
             {0.0, -5.0, 100.0},
     }};
 
-    constexpr std::array<EGG::Vector3f, 7> VERT_DEFAULT = {{
+    static constexpr std::array<EGG::Vector3f, 7> VERT_DEFAULT = {{
             {0.0, 140.0, 10.0},
             {-60.0, 70.0, 40.0},
             {60.0, 70.0, 40.0},

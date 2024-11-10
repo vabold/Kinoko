@@ -30,6 +30,7 @@ public:
     void makeQ(const Quatf &q);
     void makeRT(const Vector3f &r, const Vector3f &t);
     void makeR(const Vector3f &r);
+    void makeS(const Vector3f &s);
     void makeZero();
     void makeOrthonormalBasis(const Vector3f &v0, const Vector3f &v1);
     void setAxisRotation(f32 angle, const Vector3f &axis);

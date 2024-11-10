@@ -24,16 +24,16 @@ ObjectHitTable::ObjectHitTable(const char *filename) {
         stream.skip(m_fieldCount * 2 - 2);
     }
 
-    m_slots = reinterpret_cast<const s16 *>(stream.data());
+    m_slots = reinterpret_cast<const s16 *>(stream.dataAtIndex());
 }
 
 /// @addr{0x807F9348}
 ObjectHitTable::~ObjectHitTable() = default;
 
-s16 ObjectHitTable::reaction(s16 i) const {
+Kart::Reaction ObjectHitTable::reaction(s16 i) const {
     ASSERT(i != -1);
     ASSERT(i < m_count);
-    return m_reactions[i];
+    return static_cast<Kart::Reaction>(m_reactions[i]);
 }
 
 s16 ObjectHitTable::slot(ObjectId id) const {

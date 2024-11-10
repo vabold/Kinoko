@@ -48,8 +48,8 @@ bool ObjectCollisionBase::check(ObjectCollisionBase &rhs, EGG::Vector3f &distanc
         if (inSimplex(state, A) || (max2 - dot) < max2 * 0.000001) {
             getNearestPoint(state, state.m_flags, v0, v1);
 
-            v0 -= D * getBoundingRadius() / max;
-            v1 += D * rhs.getBoundingRadius() / max;
+            v0 -= D * (getBoundingRadius() / max);
+            v1 += D * (rhs.getBoundingRadius() / max);
 
             distance = v1 - v0;
 
@@ -65,8 +65,8 @@ bool ObjectCollisionBase::check(ObjectCollisionBase &rhs, EGG::Vector3f &distanc
         if (!getNearestSimplex(state, D)) {
             getNearestPoint(state, state.m_flags, v0, v1);
 
-            v0 -= D * getBoundingRadius() / max;
-            v1 += D * rhs.getBoundingRadius() / max;
+            v0 -= D * (getBoundingRadius() / max);
+            v1 += D * (rhs.getBoundingRadius() / max);
 
             distance = v1 - v0;
 
@@ -82,8 +82,8 @@ bool ObjectCollisionBase::check(ObjectCollisionBase &rhs, EGG::Vector3f &distanc
             FUN_808350e4(state, D);
             getNearestPoint(state, state.m_flags, v0, v1);
             f32 len = EGG::Mathf::sqrt(D.dot());
-            v0 -= D * getBoundingRadius() / len;
-            v1 += D * rhs.getBoundingRadius() / len;
+            v0 -= D * (getBoundingRadius() / len);
+            v1 += D * (rhs.getBoundingRadius() / len);
 
             distance = v1 - v0;
 
@@ -173,8 +173,8 @@ void ObjectCollisionBase::getNearestPoint(GJKState &state, u32 idx, EGG::Vector3
         v1 += state.m_support2[i] * state.m_scales[idx][i];
     }
 
-    v0 /= sum;
-    v1 /= sum;
+    v0 *= 1.0f / sum;
+    v1 *= 1.0f / sum;
 }
 
 /// @addr{0x808357E4} @addr{0x808359A4}
@@ -222,7 +222,7 @@ void ObjectCollisionBase::getNearestPoint(const GJKState &state, u32 idx, EGG::V
         v += state.m_s[i] * state.m_scales[idx][i];
     }
 
-    v /= sum;
+    v *= 1.0f / sum;
 }
 
 /// @addr{0x80835A8C}
