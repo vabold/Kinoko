@@ -16,7 +16,39 @@ ObjectCollidable::~ObjectCollidable() = default;
 /// @addr{0x8081F0A0}
 void ObjectCollidable::load() {
     createCollision();
+
+    if (m_collision) {
+        loadAABB(0.0f);
+    }
+
     ObjectDirector::Instance()->addObject(this);
+}
+
+/// @addr{0x806815A0}
+/// @brief Finds the radius that fits fully in a BoxColUnit.
+/// @details We refer to the collision parameters as a box due to its use of axes.
+/// This does not imply that all collidable objects are boxes!
+f32 ObjectCollidable::getCollisionRadius() const {
+    const auto &flowTable = ObjectDirector::Instance()->flowTable();
+    const auto *collisionSet = flowTable.set(flowTable.slot(m_id));
+
+    f32 zRadius = m_scale.z * static_cast<f32>(parse<s16>(collisionSet->params.box.z));
+    f32 xRadius = m_scale.x * static_cast<f32>(parse<s16>(collisionSet->params.box.x));
+
+    return std::max(xRadius, zRadius);
+}
+
+/// @addr{0x806816D8}
+void ObjectCollidable::loadAABB(f32 maxSpeed) {
+    loadAABB(getCollisionRadius(), maxSpeed);
+}
+
+/// @addr{0x8081F180}
+void ObjectCollidable::loadAABB(f32 radius, f32 maxSpeed) {
+    auto *boxColMgr = BoxColManager::Instance();
+    const EGG::Vector3f &pos = getPosition();
+    bool alwaysRecalc = loadFlags() & 0x5;
+    m_boxColUnit = boxColMgr->insertObject(radius, maxSpeed, &pos, alwaysRecalc, this);
 }
 
 const ObjectCollisionBase *ObjectCollidable::collision() const {

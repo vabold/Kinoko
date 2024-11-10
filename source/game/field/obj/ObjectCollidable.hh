@@ -12,7 +12,10 @@ public:
     ~ObjectCollidable() override;
 
     void load() override;
+    [[nodiscard]] f32 getCollisionRadius() const override;
 
+    virtual void loadAABB(f32 maxSpeed);
+    virtual void loadAABB(f32 radius, f32 maxSpeed);
     [[nodiscard]] virtual const ObjectCollisionBase *collision() const;
 
 protected:

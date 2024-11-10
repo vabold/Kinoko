@@ -31,6 +31,18 @@ u32 ObjectBase::loadFlags() const {
     return 0;
 }
 
+/// @addr{0x80681598}
+const EGG::Vector3f &ObjectBase::getPosition() const {
+    return m_pos;
+}
+
+/// @addr{0x8080BDC0}
+f32 ObjectBase::getCollisionRadius() const {
+    constexpr f32 BASE_RADIUS = 100.0f;
+
+    return BASE_RADIUS;
+}
+
 /// @addr{0x80572574}
 ObjectId ObjectBase::id() const {
     return m_id;
