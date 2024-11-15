@@ -20,7 +20,8 @@ public:
 
     void load() override;
     void calcCollisionTransform() override;
-    [[nodiscard]] f32 getCollisionRadius() const override;
+    f32 getCollisionRadius() const override;
+    void createCollision() override;
 
     virtual void loadAABB(f32 maxSpeed);
     virtual void loadAABB(f32 radius, f32 maxSpeed);
@@ -35,7 +36,6 @@ public:
     [[nodiscard]] virtual ObjectCollisionBase *collision() const;
 
 protected:
-    virtual void createCollision();
     virtual const EGG::Vector3f &collisionCenter() const;
 
     ObjectCollisionBase *m_collision;
