@@ -12,6 +12,7 @@ enum class ObjectId {
     DKtreeA64c = 0x158,
     OilSFC = 0x15d,
     ParasolR = 0x16e,
+    Turibashi = 0x202,
 };
 
 enum class BlacklistedObjectId {

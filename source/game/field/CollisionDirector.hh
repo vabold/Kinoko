@@ -9,6 +9,23 @@
 /// @brief Pertains to collision.
 namespace Field {
 
+struct CollisionInfo {
+    EGG::BoundBox3f bbox;
+    EGG::Vector3f tangentOff;
+    EGG::Vector3f floorNrm;
+    EGG::Vector3f wallNrm;
+    EGG::Vector3f _3c;
+    f32 floorDist;
+    f32 wallDist;
+    f32 _50;
+    f32 perpendicularity;
+
+    void updateFloor(f32 dist, const EGG::Vector3f &fnrm);
+    void updateWall(f32 dist, const EGG::Vector3f &fnrm);
+    void update(f32 now_dist, const EGG::Vector3f &offset, const EGG::Vector3f &fnrm,
+            u32 kclAttributeTypeBit);
+};
+
 /// @brief Manages the caching of colliding KCL triangles and exposes queries for collision checks.
 /// @addr{0x809C2F44}
 /// @nosubgrouping
@@ -24,24 +41,25 @@ public:
             bool scaledUp);
 
     [[nodiscard]] bool checkSphereFull(f32 radius, const EGG::Vector3f &v0, const EGG::Vector3f &v1,
-            KCLTypeMask flags, CourseColMgr::CollisionInfo *pInfo, KCLTypeMask *pFlagsOut,
-            u32 /*start*/);
+            KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut, u32 start);
     [[nodiscard]] bool checkSphereFullPush(f32 radius, const EGG::Vector3f &v0,
-            const EGG::Vector3f &v1, KCLTypeMask flags, CourseColMgr::CollisionInfo *pInfo,
-            KCLTypeMask *pFlagsOut, u32 /*start*/);
+            const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *pInfo,
+            KCLTypeMask *pFlagsOut, u32 start);
 
     [[nodiscard]] bool checkSphereCachedPartial(const EGG::Vector3f &pos,
-            const EGG::Vector3f &prevPos, KCLTypeMask typeMask,
-            CourseColMgr::CollisionInfo *colInfo, KCLTypeMask *typeMaskOut, f32 radius);
+            const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CollisionInfo *colInfo,
+            KCLTypeMask *typeMaskOut, f32 radius, u32 start);
     [[nodiscard]] bool checkSphereCachedPartialPush(const EGG::Vector3f &pos,
-            const EGG::Vector3f &prevPos, KCLTypeMask typeMask,
-            CourseColMgr::CollisionInfo *colInfo, KCLTypeMask *typeMaskOut, f32 radius, u32 start);
+            const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CollisionInfo *colInfo,
+            KCLTypeMask *typeMaskOut, f32 radius, u32 start);
     [[nodiscard]] bool checkSphereCachedFullPush(const EGG::Vector3f &pos,
-            const EGG::Vector3f &prevPos, KCLTypeMask typeMask,
-            CourseColMgr::CollisionInfo *colInfo, KCLTypeMask *typeMaskOut, f32 radius, u32 start);
+            const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CollisionInfo *colInfo,
+            KCLTypeMask *typeMaskOut, f32 radius, u32 start);
 
     void resetCollisionEntries(KCLTypeMask *ptr);
     void pushCollisionEntry(f32 dist, KCLTypeMask *typeMask, KCLTypeMask kclTypeBit, u16 attribute);
+    void setCurrentCollisionVariant(u16 attribute);
+    void setCurrentCollisionTrickable(bool trickable);
 
     bool findClosestCollisionEntry(KCLTypeMask *typeMask, KCLTypeMask type);
 

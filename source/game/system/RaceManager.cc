@@ -95,6 +95,10 @@ RaceManager::Stage RaceManager::stage() const {
     return m_stage;
 }
 
+u32 RaceManager::timer() const {
+    return m_timer;
+}
+
 /// @addr{0x80532084}
 RaceManager *RaceManager::CreateInstance() {
     ASSERT(!s_instance);

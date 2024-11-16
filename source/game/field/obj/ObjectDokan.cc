@@ -59,7 +59,7 @@ void ObjectDokan::calcFloor() {
     constexpr f32 PIPE_SQRT_RADIUS = 10.0f;
     constexpr f32 ACCELERATION = 0.2f;
 
-    CourseColMgr::CollisionInfo colInfo;
+    CollisionInfo colInfo;
     EGG::Vector3f pos = m_pos;
     pos.y += PIPE_RADIUS;
     KCLTypeMask typeMask;

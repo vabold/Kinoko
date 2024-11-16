@@ -361,6 +361,28 @@ f32 CosFIdx(f32 fidx) {
     return sSinCosTbl[idx].cosVal + r * sSinCosTbl[idx].cosDt;
 }
 
+/// @addr{0x800851E0}
+std::pair<f32, f32> SinCosFIdx(f32 fidx) {
+    f32 abs_fidx = fabs(fidx);
+
+    while (abs_fidx >= 65536.0f) {
+        abs_fidx -= 65536.0f;
+    }
+
+    u16 idx = static_cast<u16>(abs_fidx);
+    f32 r = abs_fidx - static_cast<f32>(idx);
+    idx &= 0xFF;
+
+    f32 cos = fma(r, sSinCosTbl[idx].cosDt, sSinCosTbl[idx].cosVal);
+    f32 sin = fma(r, sSinCosTbl[idx].sinDt, sSinCosTbl[idx].sinVal);
+
+    if (fidx < 0.0f) {
+        sin = -sin;
+    }
+
+    return {sin, cos};
+}
+
 f32 AtanFIdx_(f32 x) {
     x *= 32.0f;
     u16 idx = static_cast<u16>(x);

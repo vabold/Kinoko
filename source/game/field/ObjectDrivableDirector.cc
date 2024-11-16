@@ -23,13 +23,104 @@ void ObjectDrivableDirector::calc() {
 
 /// @addr{0x8081B6C8}
 void ObjectDrivableDirector::addObject(ObjectDrivable *obj) {
-    u32 loadFlags = obj->loadFlags();
-
-    if (loadFlags & 1) {
+    if (obj->loadFlags() & 1) {
         m_calcObjects.push_back(obj);
     }
 
     m_objects.push_back(obj);
+}
+
+/// @addr{0x8081BE48}
+bool ObjectDrivableDirector::checkSphereFull(f32 radius, f32 scale, const EGG::Vector3f &v0,
+        const EGG::Vector3f &v1, KCLTypeMask mask, CollisionInfo *colInfo, KCLTypeMask *maskOut,
+        u32 start) {
+    if (m_objects.empty()) {
+        return false;
+    }
+
+    BoxColManager::Instance()->search(scale, v0, eBoxColFlag::Drivable);
+
+    bool hasCollision = false;
+    while (ObjectDrivable *obj = BoxColManager::Instance()->getNextDrivable()) {
+        hasCollision |= obj->checkSphereFull(radius, v0, v1, mask, colInfo, maskOut, start);
+    }
+
+    return hasCollision;
+}
+
+/// @addr{0x8081BFA0}
+bool ObjectDrivableDirector::checkSphereFullPush(f32 radius, f32 scale, const EGG::Vector3f &v0,
+        const EGG::Vector3f &v1, KCLTypeMask mask, CollisionInfo *colInfo, KCLTypeMask *maskOut,
+        u32 start) {
+    if (m_objects.empty()) {
+        return false;
+    }
+
+    BoxColManager::Instance()->search(scale, v0, eBoxColFlag::Drivable);
+
+    bool hasCollision = false;
+    while (ObjectDrivable *obj = BoxColManager::Instance()->getNextDrivable()) {
+        hasCollision |= obj->checkSphereFullPush(radius, v0, v1, mask, colInfo, maskOut, start);
+    }
+
+    return hasCollision;
+}
+
+/// @addr{0x8081C5A0}
+bool ObjectDrivableDirector::checkSphereCachedPartial(f32 radius, f32 scale,
+        const EGG::Vector3f &v0, const EGG::Vector3f &v1, KCLTypeMask mask, CollisionInfo *colInfo,
+        KCLTypeMask *maskOut, u32 start) {
+    if (m_objects.empty()) {
+        return false;
+    }
+
+    BoxColManager::Instance()->search(scale, v0, eBoxColFlag::Drivable);
+
+    bool hasCollision = false;
+    while (ObjectDrivable *obj = BoxColManager::Instance()->getNextDrivable()) {
+        hasCollision |=
+                obj->checkSphereCachedPartial(radius, v0, v1, mask, colInfo, maskOut, start);
+    }
+
+    return hasCollision;
+}
+
+/// @addr{0x8081C6B4}
+bool ObjectDrivableDirector::checkSphereCachedPartialPush(f32 radius, f32 scale,
+        const EGG::Vector3f &v0, const EGG::Vector3f &v1, KCLTypeMask mask, CollisionInfo *colInfo,
+        KCLTypeMask *maskOut, u32 start) {
+    if (m_objects.empty()) {
+        return false;
+    }
+
+    BoxColManager::Instance()->search(scale, v0, eBoxColFlag::Drivable);
+
+    bool hasCollision = false;
+    while (ObjectDrivable *obj = BoxColManager::Instance()->getNextDrivable()) {
+        hasCollision |=
+                obj->checkSphereCachedPartialPush(radius, v0, v1, mask, colInfo, maskOut, start);
+    }
+
+    return hasCollision;
+}
+
+/// @addr{0x8081C958}
+bool ObjectDrivableDirector::checkSphereCachedFullPush(f32 radius, f32 scale,
+        const EGG::Vector3f &v0, const EGG::Vector3f &v1, KCLTypeMask mask, CollisionInfo *colInfo,
+        KCLTypeMask *maskOut, u32 start) {
+    if (m_objects.empty()) {
+        return false;
+    }
+
+    BoxColManager::Instance()->search(scale, v0, eBoxColFlag::Drivable);
+
+    bool hasCollision = false;
+    while (ObjectDrivable *obj = BoxColManager::Instance()->getNextDrivable()) {
+        hasCollision |=
+                obj->checkSphereCachedFullPush(radius, v0, v1, mask, colInfo, maskOut, start);
+    }
+
+    return hasCollision;
 }
 
 /// @addr{0x8081B7CC}

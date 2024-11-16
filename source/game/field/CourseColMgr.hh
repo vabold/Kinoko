@@ -1,6 +1,7 @@
 #pragma once
 
 #include "game/field/KColData.hh"
+#include "game/field/obj/ObjectDrivable.hh"
 
 #include <egg/math/BoundBox.hh>
 #include <egg/math/Matrix.hh>
@@ -8,6 +9,8 @@
 // Credit: em-eight/mkw
 
 namespace Field {
+
+struct CollisionInfo;
 
 typedef bool (
         KColData::*CollisionCheckFunc)(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut);
@@ -17,23 +20,6 @@ typedef bool (
 /// @nosubgrouping
 class CourseColMgr : EGG::Disposer {
 public:
-    struct CollisionInfo {
-        EGG::BoundBox3f bbox;
-        EGG::Vector3f tangentOff;
-        EGG::Vector3f floorNrm;
-        EGG::Vector3f wallNrm;
-        EGG::Vector3f _3c;
-        f32 floorDist;
-        f32 wallDist;
-        f32 _50;
-        f32 perpendicularity;
-
-        void updateFloor(f32 dist, const EGG::Vector3f &fnrm);
-        void updateWall(f32 dist, const EGG::Vector3f &fnrm);
-        void update(f32 now_dist, const EGG::Vector3f &offset, const EGG::Vector3f &fnrm,
-                u32 kclAttributeTypeBit);
-    };
-
     struct NoBounceWallColInfo {
         EGG::BoundBox3f bbox;
         EGG::Vector3f tangentOff;
