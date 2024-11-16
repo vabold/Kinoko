@@ -1,7 +1,6 @@
 #pragma once
 
 #include "game/field/CourseColMgr.hh"
-#include "game/field/KCollisionTypes.hh"
 #include "game/field/ObjectCollisionBase.hh"
 #include "game/field/obj/ObjectBase.hh"
 
