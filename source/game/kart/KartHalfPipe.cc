@@ -7,8 +7,6 @@
 #include "game/kart/KartPhysics.hh"
 #include "game/kart/KartState.hh"
 
-#include "game/field/CourseColMgr.hh"
-
 #include <egg/math/Math.hh>
 
 namespace Kart {

@@ -17,4 +17,5 @@
 #include "game/field/obj/ObjectOilSFC.hh"
 #include "game/field/obj/ObjectParasolR.hh"
 #include "game/field/obj/ObjectPuchiPakkun.hh"
+#include "game/field/obj/ObjectTuribashi.hh"
 #include "game/field/obj/ObjectWLWallGC.hh"

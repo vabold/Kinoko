@@ -39,6 +39,7 @@ enum class ObjectId {
     KinokoBend = 0x1f6,
     KinokoNm = 0x1fa,
     Crane = 0x1fb,
+    Turibashi = 0x202,
     Aurora = 0x204,
     Mdush = 0x217,
 };
