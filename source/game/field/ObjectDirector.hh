@@ -19,6 +19,7 @@ public:
             ObjectCollisionConvexHull *convexHull);
 
     const ObjectFlowTable &flowTable() const;
+    const ObjectBase *collidingObject(size_t idx) const;
     Kart::Reaction reaction(size_t idx) const;
     const EGG::Vector3f &hitDepth(size_t idx) const;
 
@@ -43,6 +44,8 @@ private:
 
     static constexpr size_t MAX_UNIT_COUNT = 0x100;
 
+    std::array<ObjectBase *, MAX_UNIT_COUNT>
+            m_collidingObjects; ///< Objects we are currently colliding with
     std::array<EGG::Vector3f, MAX_UNIT_COUNT> m_hitDepths;
     std::array<Kart::Reaction, MAX_UNIT_COUNT> m_reactions;
 

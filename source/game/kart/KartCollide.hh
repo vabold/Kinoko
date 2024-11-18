@@ -83,6 +83,7 @@ public:
             Field::CourseColMgr::CollisionInfo *colInfo);
     void calcBoundingRadius();
     void calcObjectCollision();
+    void calcPoleTimer();
 
     void processWheel(CollisionData &collisionData, Hitbox &hitbox,
             Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut);
@@ -154,6 +155,8 @@ private:
     u16 m_someSoftWallTimer;
     f32 m_suspBottomHeightNonSoftWall;
     u16 m_someNonSoftWallTimer;
+    s16 m_poleAngVelTimer;
+    f32 m_poleYaw;
     f32 m_colPerpendicularity;
 
     static std::array<ObjectCollisionHandler, 33> s_objectCollisionHandlers;

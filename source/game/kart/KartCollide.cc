@@ -32,6 +32,8 @@ void KartCollide::init() {
     m_suspBottomHeightSoftWall = 0.0f;
     m_someNonSoftWallTimer = 0;
     m_someSoftWallTimer = 0;
+    m_poleAngVelTimer = 0;
+    m_poleYaw = 0.0f;
     m_colPerpendicularity = 0.0f;
 }
 
@@ -461,6 +463,10 @@ void KartCollide::calcBoundingRadius() {
 
 /// @addr{0x80571F10}
 void KartCollide::calcObjectCollision() {
+    constexpr f32 COS_PI_OVER_4 = 0.707f;
+    constexpr s32 DUMMY_POLE_ANG_VEL_TIME = 3;
+    constexpr f32 DUMMY_POLE_ANG_VEL = 0.005f;
+
     m_totalReactionWallNrm = EGG::Vector3f::zero;
     m_surfaceFlags.resetBit(eSurfaceFlags::ObjectWall, eSurfaceFlags::ObjectWall3);
 
@@ -481,7 +487,33 @@ void KartCollide::calcObjectCollision() {
                 m_movement += hitDepth;
             }
         }
+
+        if (objectDirector->collidingObject(i)->id() == Field::ObjectId::DummyPole) {
+            EGG::Vector3f hitDirection = objectCollisionKart()->GetHitDirection(i);
+            const EGG::Vector3f &lastDir = move()->lastDir();
+
+            if (lastDir.dot(hitDirection) < -COS_PI_OVER_4) {
+                EGG::Vector3f angVel = hitDirection.cross(lastDir);
+                f32 sign = angVel.y > 0.0f ? -1.0f : 1.0f;
+
+                m_poleAngVelTimer = DUMMY_POLE_ANG_VEL_TIME;
+                m_poleYaw = DUMMY_POLE_ANG_VEL * sign;
+            }
+        }
     }
+
+    calcPoleTimer();
+}
+
+/// @addr{Inlined in 0x80571F10}
+void KartCollide::calcPoleTimer() {
+    if (m_poleAngVelTimer > 0 && (state()->isAccelerate() || state()->isBrake())) {
+        EGG::Vector3f angVel2 = dynamics()->angVel2();
+        angVel2.y += m_poleYaw;
+        dynamics()->setAngVel2(angVel2);
+    }
+
+    m_poleAngVelTimer = std::max(0, m_poleAngVelTimer - 1);
 }
 
 /// @stage All
