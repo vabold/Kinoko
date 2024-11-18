@@ -80,7 +80,7 @@ size_t ObjectDirector::checkKartObjectCollision(Kart::KartObject *kartObj,
             obj->onObjectCollision(kartObj);
         }
 
-        m_collisionObjects[count] = obj;
+        m_collidingObjects[count] = obj;
         if (m_hitDepths[count].y < 0.0f) {
             m_hitDepths[count].y = 0.0f;
         }
@@ -93,6 +93,12 @@ size_t ObjectDirector::checkKartObjectCollision(Kart::KartObject *kartObj,
 
 const ObjectFlowTable &ObjectDirector::flowTable() const {
     return m_flowTable;
+}
+
+const ObjectBase *ObjectDirector::collidingObject(size_t idx) const {
+    ASSERT(idx < m_collidingObjects.size());
+
+    return m_collidingObjects[idx];
 }
 
 Kart::Reaction ObjectDirector::reaction(size_t idx) const {
@@ -150,9 +156,13 @@ ObjectDirector::~ObjectDirector() {
 void ObjectDirector::createObjects() {
     const auto *courseMap = System::CourseMap::Instance();
     size_t objectCount = courseMap->getGeoObjCount();
-    m_objects.reserve(objectCount);
-    m_calcObjects.reserve(objectCount);
-    m_collisionObjects.reserve(objectCount);
+
+    // It's possible for the KMP to specify settings for objects that aren't tracked here
+    // MAX_UNIT_COUNT is the upper bound for tracked object count, so we reserve the minimum
+    size_t maxCount = std::min(objectCount, MAX_UNIT_COUNT);
+    m_objects.reserve(maxCount);
+    m_calcObjects.reserve(maxCount);
+    m_collisionObjects.reserve(maxCount);
 
     for (size_t i = 0; i < objectCount; ++i) {
         const auto *pObj = courseMap->getGeoObj(i);
@@ -181,6 +191,10 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
         return new ObjectDokan(params);
     case ObjectId::OilSFC:
         return new ObjectOilSFC(params);
+    // Non-specified objects are stock collidable objects by default
+    // However, we need to specify an impl, so we don't use default
+    case ObjectId::DummyPole:
+        return new ObjectCollidable(params);
     default:
         return new ObjectNoImpl(params);
     }
