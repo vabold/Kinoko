@@ -8,7 +8,7 @@ Test Case                                                 | Frames      |     | 
 [`mg-ng-rta-1-40-273`](https://youtu.be/8-0Xetey5xY)      | 877 / 6422  | ❌ | Mushroom
 [`tf-rta-1-44-178`](https://youtu.be/2XWFuncJAGk)         | 743 / 6656  | ❌ | Moving road
 [`tf-ng-rta-1-49-039`](https://youtu.be/mqQa_1Cq1bw)      | 689 / 6947  | ❌ | Moving road
-[`mc-rta-0-46-553`](https://youtu.be/1F2xfHYrkXM)         | 1494 / 3202 | ❌ | KMP
+[`mc-rta-0-46-553`](https://youtu.be/1F2xfHYrkXM)         | 3202 / 3202 | ✔️ |
 [`mc-ng-rta-1-20-357`](https://youtu.be/kG8PvG8K1ZA)      | 1222 / 4228 | ❌ | KMP
 [`cm-rta-0-25-145`](https://youtu.be/F_RUQVghmuA)         | 1919 / 1919 | ✔️ |
 [`cm-ng-rta-1-55-264`](https://youtu.be/XxKG3IYWduE)      | 651 / 7320  | ❌ | KMP
