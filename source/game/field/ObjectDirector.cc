@@ -194,6 +194,7 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
     // Non-specified objects are stock collidable objects by default
     // However, we need to specify an impl, so we don't use default
     case ObjectId::DummyPole:
+    case ObjectId::CastleTree1c:
         return new ObjectCollidable(params);
     default:
         return new ObjectNoImpl(params);
