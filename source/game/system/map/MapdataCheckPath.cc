@@ -2,6 +2,7 @@
 
 namespace System {
 
+/// @addr{0x80515098}
 MapdataCheckPath::MapdataCheckPath(const SData *data) : m_rawData(data), m_depth(-1) {
     u8 *unsafeData = reinterpret_cast<u8 *>(const_cast<SData *>(data));
     EGG::RamStream stream = EGG::RamStream(unsafeData, sizeof(SData));
@@ -21,10 +22,79 @@ void MapdataCheckPath::read(EGG::Stream &stream) {
     }
 }
 
+/// @brief Performs DFS to calculate @ref m_depth for all subsequent checkpaths.
+/// @param depth Number of checkpaths from first checkpath.
+/// @addr{0x805150E0}
+void MapdataCheckPath::findDepth(s8 depth, const MapdataCheckPathAccessor &accessor) {
+    if (m_depth != -1) {
+        return;
+    }
+
+    m_depth = depth;
+
+    for (auto &nextID : m_next) {
+        if (nextID == 0xFF) {
+            continue;
+        }
+
+        accessor.get(nextID)->findDepth(depth + 1, accessor);
+    }
+}
+
+u8 MapdataCheckPath::start() const {
+    return m_start;
+}
+
+u8 MapdataCheckPath::end() const {
+    return m_start + m_size - 1;
+}
+
+const std::array<u8, MapdataCheckPath::MAX_NEIGHBORS> &MapdataCheckPath::next() const {
+    return m_next;
+}
+
+const std::array<u8, MapdataCheckPath::MAX_NEIGHBORS> &MapdataCheckPath::prev() const {
+    return m_prev;
+}
+
+s8 MapdataCheckPath::depth() const {
+    return m_depth;
+}
+
+bool MapdataCheckPath::isPointInPath(u16 checkpointId) const {
+    return m_start <= checkpointId && checkpointId <= end();
+}
+
+/// @addr{0x80515014}
+MapdataCheckPath *MapdataCheckPathAccessor::findCheckpathForCheckpoint(u16 checkpointId) const {
+    for (size_t i = 0; i < size(); ++i) {
+        MapdataCheckPath *checkpath = get(i);
+        if (checkpath->isPointInPath(checkpointId)) {
+            return checkpath;
+        }
+    }
+
+    return nullptr;
+}
+
 MapdataCheckPathAccessor::MapdataCheckPathAccessor(const MapSectionHeader *header)
     : MapdataAccessorBase<MapdataCheckPath, MapdataCheckPath::SData>(header) {
     init(reinterpret_cast<const MapdataCheckPath::SData *>(m_sectionHeader + 1),
             parse<u16>(m_sectionHeader->count));
+
+    if (m_entryCount == 0) {
+        return;
+    }
+
+    // Maximum number of paths one could traverse through in a lap
+    s8 maxDepth = -1;
+    get(0)->findDepth(0, *this);
+
+    for (size_t i = 0; i < size(); i++) {
+        maxDepth = std::max(maxDepth, get(i)->depth());
+    }
+
+    m_lapProportion = 1.0f / (maxDepth + 1.0f);
 }
 
 MapdataCheckPathAccessor::~MapdataCheckPathAccessor() = default;

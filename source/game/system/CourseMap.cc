@@ -158,6 +158,10 @@ u32 CourseMap::version() const {
     return m_course->version();
 }
 
+MapdataCheckPathAccessor *CourseMap::checkPath() const {
+    return m_checkPath;
+}
+
 f32 CourseMap::startTmpAngle() const {
     return m_startTmpAngle;
 }
