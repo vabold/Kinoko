@@ -83,6 +83,16 @@ To update the test binary, be sure to re-run:
 
 While a GUI is not planned for the project at this time, contributors are welcome to add a graphics frontend under three conditions: the license must not change, it does not interfere with the CLI, and most importantly, it must **not** distribute any in-game assets.
 
+## Integrate Kinoko to your project
+You can link Kinoko to your own project using CMake by linking with the `libkinoko` target. For example:
+```cmake
+# add_subdirectory(kinoko)
+
+add_executable(example main.cpp)
+target_link_libraries(example libkinoko)
+```
+Note that any project using Kinoko's include directories will also require C++23.
+
 ## Contributing
 
 The codebase uses C++ for the engine and Python for any external scripts.
