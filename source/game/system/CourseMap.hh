@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Common.hh>
+#include <egg/math/Vector.hh>
 
 /// @brief High-level handling for generic system operations, such as input reading, race
 /// configuration, and resource management.
@@ -36,6 +36,11 @@ public:
     [[nodiscard]] MapdataStageInfoAccessor *parseStageInfo(u32 sectionName) const;
     [[nodiscard]] MapdataStartPointAccessor *parseStartPoint(u32 sectionName) const;
 
+    [[nodiscard]] s16 findSector(const EGG::Vector3f &pos, u16 checkpointIdx, f32 &distanceRatio);
+    [[nodiscard]] s16 findRecursiveSector(const EGG::Vector3f &pos, s16 depth,
+            bool searchBackwardsFirst, MapdataCheckPoint *checkpoint, f32 &completion,
+            bool playerIsForwards) const;
+
     /// @beginGetters
     [[nodiscard]] MapdataCannonPoint *getCannonPoint(u16 i) const;
     [[nodiscard]] MapdataCheckPath *getCheckPath(u16 i) const;
@@ -60,6 +65,20 @@ public:
 private:
     CourseMap();
     ~CourseMap() override;
+
+    [[nodiscard]] s16 findSectorBetweenSides(const EGG::Vector3f &pos,
+            MapdataCheckPoint *checkpoint, f32 &distanceRatio);
+    [[nodiscard]] s16 findSectorOutsideSector(const EGG::Vector3f &pos,
+            MapdataCheckPoint *checkpoint, f32 &distanceRatio);
+    [[nodiscard]] s16 findSectorRegional(const EGG::Vector3f &pos, MapdataCheckPoint *checkpoint,
+            f32 &distanceRatio);
+    [[nodiscard]] s16 searchNextCheckpoint(const EGG::Vector3f &pos, s16 depth,
+            const MapdataCheckPoint *checkpoint, f32 &completion, bool playerIsForwards,
+            bool useCache) const;
+    [[nodiscard]] s16 searchPrevCheckpoint(const EGG::Vector3f &pos, s16 depth,
+            const MapdataCheckPoint *checkpoint, f32 &completion, bool playerIsForwards,
+            bool useCache) const;
+    void clearSectorChecked();
 
     MapdataFileAccessor *m_course;
     MapdataStartPointAccessor *m_startPoint;

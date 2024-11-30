@@ -27,10 +27,10 @@ void MapdataCheckPoint::read(EGG::Stream &stream) {
     m_nextPt = stream.read_u8();
 }
 
+/// @addr{0x80515624}
 /// @brief Calculates @ref m_nextPoints and @ref m_prevPoints from @ref m_nextPt and @ref m_prevPt.
 /// @details Also calculates the quadrilaterals for the next checkpoints, filling the fields of @ref
 /// LinkedCheckpoint for each.
-/// @addr{0x80515624}
 void MapdataCheckPoint::initCheckpointLinks(MapdataCheckPointAccessor &accessor, int id) {
     m_id = id;
     const auto *checkPathAccessor = CourseMap::Instance()->checkPath();
@@ -95,13 +95,115 @@ void MapdataCheckPoint::initCheckpointLinks(MapdataCheckPointAccessor &accessor,
     }
 }
 
+/// @addr{0x80510D7C}
+MapdataCheckPoint::SectorOccupancy MapdataCheckPoint::checkSectorAndDistanceRatio(
+        const EGG::Vector3f &pos, f32 &distanceRatio) const {
+    bool betweenSides = false;
+    EGG::Vector2f p1 = m_right;
+    p1.y = pos.z - p1.y;
+    p1.x = pos.x - p1.x;
+
+    for (size_t i = 0; i < m_nextCount; ++i) {
+        const LinkedCheckpoint &next = m_nextPoints[i];
+        EGG::Vector2f p0 = next.checkpoint->m_left;
+        p0.y = pos.z - p0.y;
+        p0.x = pos.x - p0.x;
+        MapdataCheckPoint::SectorOccupancy result =
+                checkSectorAndDistanceRatio(next, p0, p1, distanceRatio);
+
+        if (result == SectorOccupancy::InsideSector) {
+            return SectorOccupancy::InsideSector;
+        } else if (result == SectorOccupancy::BetweenSides) {
+            betweenSides = true;
+        }
+    }
+
+    return betweenSides ? SectorOccupancy::BetweenSides : SectorOccupancy::OutsideSector;
+}
+
+bool MapdataCheckPoint::isNormalCheckpoint() const {
+    return static_cast<CheckArea>(m_checkArea) == CheckArea::NormalCheckpoint;
+}
+
+bool MapdataCheckPoint::isFinishLine() const {
+    return static_cast<CheckArea>(m_checkArea) == CheckArea::FinishLine;
+}
+
+void MapdataCheckPoint::setSearched() {
+    m_searched = true;
+}
+
+void MapdataCheckPoint::clearSearched() {
+    m_searched = false;
+}
+
+bool MapdataCheckPoint::searched() const {
+    return m_searched;
+}
+
 s8 MapdataCheckPoint::checkArea() const {
     return m_checkArea;
+}
+
+u16 MapdataCheckPoint::nextCount() const {
+    return m_nextCount;
+}
+
+u16 MapdataCheckPoint::prevCount() const {
+    return m_prevCount;
+}
+
+u16 MapdataCheckPoint::id() const {
+    return m_id;
+}
+
+MapdataCheckPoint *MapdataCheckPoint::prevPoint(size_t i) const {
+    ASSERT(i < m_prevPoints.size());
+    return m_prevPoints[i];
 }
 
 MapdataCheckPoint *MapdataCheckPoint::nextPoint(size_t i) const {
     ASSERT(i < m_nextPoints.size());
     return m_nextPoints[i].checkpoint;
+}
+
+/// @addr{0x80510C74}
+MapdataCheckPoint::SectorOccupancy MapdataCheckPoint::checkSectorAndDistanceRatio(
+        const LinkedCheckpoint &next, const EGG::Vector2f &p0, const EGG::Vector2f &p1,
+        f32 &distanceRatio) const {
+    if (!checkSector(next, p0, p1)) {
+        return SectorOccupancy::OutsideSector;
+    }
+
+    return checkDistanceRatio(next, p0, p1, distanceRatio) ? SectorOccupancy::InsideSector :
+                                                             SectorOccupancy::BetweenSides;
+}
+
+/// @addr{0x0x80510B84}
+/// @return Whether the player is between the two sides of the checkpoint quad.
+bool MapdataCheckPoint::checkSector(const LinkedCheckpoint &next, const EGG::Vector2f &p0,
+        const EGG::Vector2f &p1) const {
+    if (-(next.p0diff.y) * p0.x + next.p0diff.x * p0.y < 0.0f) {
+        return false;
+    }
+
+    if (next.p1diff.y * p1.x - next.p1diff.x * p1.y < 0.0f) {
+        return false;
+    }
+
+    return true;
+}
+
+/// @addr{0x80510BF0}
+/// @brief Sets the distance ratio, which is the progress of traversal through the checkpoint quad.
+/// @param distanceRatio The distance ratio reference to set.
+/// @return Whether the distance ratio is in its valid range, [0, 1].
+bool MapdataCheckPoint::checkDistanceRatio(const LinkedCheckpoint &next, const EGG::Vector2f &p0,
+        const EGG::Vector2f &p1, f32 &distanceRatio) const {
+    f32 d1 = m_dir.dot(p1);
+    f32 d2 = -(next.checkpoint->m_dir.dot(p0));
+    distanceRatio = d1 / (d1 + d2);
+    return distanceRatio >= 0.0f && distanceRatio <= 1.0f;
 }
 
 /// @addr{0x80515244}
@@ -112,15 +214,13 @@ void MapdataCheckPointAccessor::init() {
 
     for (size_t ckptId = 0; ckptId < size(); ckptId++) {
         MapdataCheckPoint *checkpoint = get(ckptId);
-        s8 checkArea = checkpoint->checkArea();
         checkpoint->initCheckpointLinks(*this, ckptId);
 
-        if (static_cast<MapdataCheckPoint::CheckArea>(checkArea) ==
-                MapdataCheckPoint::CheckArea::FINISH_LINE) {
+        if (checkpoint->isFinishLine()) {
             finishLineCheckpointId = ckptId;
         }
 
-        lastKcpType = std::max(lastKcpType, checkArea);
+        lastKcpType = std::max(lastKcpType, checkpoint->checkArea());
     }
 
     m_lastKcpType = lastKcpType;

@@ -28,21 +28,49 @@ public:
     };
     STATIC_ASSERT(sizeof(SData) == 0x14);
 
+    enum class SectorOccupancy {
+        InsideSector,  ///< Player is inside the given checkpoint group
+        OutsideSector, ///< Player is outside the given checkpoint group
+        BetweenSides,  ///< Player is between sides of the checkpoint group but not
+                       ///< between this checkpoint and next
+    };
+
     MapdataCheckPoint(const SData *data);
     void read(EGG::Stream &stream);
     void initCheckpointLinks(MapdataCheckPointAccessor &accessor, int id);
+    [[nodiscard]] SectorOccupancy checkSectorAndDistanceRatio(const EGG::Vector3f &pos,
+            f32 &distanceRatio) const;
+
+    [[nodiscard]] bool isNormalCheckpoint() const;
+    [[nodiscard]] bool isFinishLine() const;
+
+    /// @beginSetters
+    void setSearched();
+    void clearSearched();
+    /// @endSetters
 
     /// @beginGetters
+    [[nodiscard]] bool searched() const;
     [[nodiscard]] s8 checkArea() const;
+    [[nodiscard]] u16 nextCount() const;
+    [[nodiscard]] u16 prevCount() const;
+    [[nodiscard]] u16 id() const;
+    [[nodiscard]] MapdataCheckPoint *prevPoint(size_t i) const;
+    [[nodiscard]] MapdataCheckPoint *nextPoint(size_t i) const;
     /// @endGetters
 
     enum class CheckArea {
-        NORMAL_CHECKPOINT = -1, ///< Only used for picking respawn position
-        FINISH_LINE = 0,        ///< Triggers a lap change
+        NormalCheckpoint = -1, ///< Only used for picking respawn position
+        FinishLine = 0,        ///< Triggers a lap change
     };
 
 private:
-    [[nodiscard]] MapdataCheckPoint *nextPoint(size_t i) const;
+    [[nodiscard]] SectorOccupancy checkSectorAndDistanceRatio(const LinkedCheckpoint &next,
+            const EGG::Vector2f &p0, const EGG::Vector2f &p1, f32 &distanceRatio) const;
+    [[nodiscard]] bool checkSector(const LinkedCheckpoint &next, const EGG::Vector2f &p0,
+            const EGG::Vector2f &p1) const;
+    [[nodiscard]] bool checkDistanceRatio(const LinkedCheckpoint &next, const EGG::Vector2f &p0,
+            const EGG::Vector2f &p1, f32 &distanceRatio) const;
 
     static constexpr size_t MAX_NEIGHBORS = 6;
 
@@ -64,6 +92,7 @@ private:
     u16 m_prevCount;
     EGG::Vector2f m_midpoint;
     EGG::Vector2f m_dir;
+    bool m_searched;
     u16 m_id;
     std::array<MapdataCheckPoint *, MAX_NEIGHBORS> m_prevPoints;
     std::array<LinkedCheckpoint, MAX_NEIGHBORS> m_nextPoints;
