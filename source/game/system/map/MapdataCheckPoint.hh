@@ -42,7 +42,7 @@ public:
     void read(EGG::Stream &stream);
     void initCheckpointLinks(MapdataCheckPointAccessor &accessor, int id);
     [[nodiscard]] SectorOccupancy checkSectorAndCheckpointCompletion(const EGG::Vector3f &pos,
-            f32 *checkpointCompletion) const;
+            f32 &checkpointCompletion) const;
 
     /// @beginSetters
     void setSearched();
@@ -57,7 +57,7 @@ public:
     [[nodiscard]] u16 nextCount() const;
     [[nodiscard]] u16 prevCount() const;
     [[nodiscard]] u16 id() const;
-    [[nodiscard]] MapdataCheckPoint *prevPoint(s32 i) const;
+    [[nodiscard]] MapdataCheckPoint *prevPoint(size_t i) const;
     [[nodiscard]] MapdataCheckPoint *nextPoint(size_t i) const;
     /// @endGetters
 
@@ -70,9 +70,9 @@ private:
     [[nodiscard]] bool checkSector(const LinkedCheckpoint &next, const EGG::Vector2f &p0,
             const EGG::Vector2f &p1) const;
     [[nodiscard]] bool checkCheckpointCompletion(const LinkedCheckpoint &next,
-            const EGG::Vector2f &p0, const EGG::Vector2f &p1, f32 *checkpointCompletion) const;
+            const EGG::Vector2f &p0, const EGG::Vector2f &p1, f32 &checkpointCompletion) const;
     [[nodiscard]] SectorOccupancy checkSectorAndCheckpointCompletion_(const LinkedCheckpoint &next,
-            const EGG::Vector2f &p0, const EGG::Vector2f &p1, float *checkpointCompletion) const;
+            const EGG::Vector2f &p0, const EGG::Vector2f &p1, f32 &checkpointCompletion) const;
 
     static constexpr size_t MAX_NEIGHBORS = 6;
 

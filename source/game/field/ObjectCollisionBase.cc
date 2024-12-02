@@ -177,7 +177,7 @@ void ObjectCollisionBase::getNearestPoint(GJKState &state, u32 idx, EGG::Vector3
     v1 *= 1.0f / sum;
 }
 
-/// @addr{0x808357E4}
+/// @addr{0x808357E4} @addr{0x808359A4}
 bool ObjectCollisionBase::FUN_808357e4(const GJKState &state, u32 idx) const {
     for (u32 i = 0, mask = 1; i < 4; ++i, mask *= 2) {
         if ((state.m_00c & mask) == 0) {

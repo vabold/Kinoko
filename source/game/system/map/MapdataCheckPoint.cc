@@ -102,7 +102,7 @@ void MapdataCheckPoint::initCheckpointLinks(MapdataCheckPointAccessor &accessor,
 /// @see MapdataCheckPoint::checkSectorAndCheckpointCompletion_
 /// @rename
 MapdataCheckPoint::SectorOccupancy MapdataCheckPoint::checkSectorAndCheckpointCompletion(
-        const EGG::Vector3f &pos, float *completion) const {
+        const EGG::Vector3f &pos, f32 &completion) const {
     EGG::Vector2f p1 = m_right;
     p1.y = pos.z - p1.y;
     p1.x = pos.x - p1.x;
@@ -162,7 +162,7 @@ u16 MapdataCheckPoint::id() const {
     return m_id;
 }
 
-MapdataCheckPoint *MapdataCheckPoint::prevPoint(s32 i) const {
+MapdataCheckPoint *MapdataCheckPoint::prevPoint(size_t i) const {
     return m_prevPoints[i];
 }
 
@@ -193,24 +193,23 @@ bool MapdataCheckPoint::checkSector(const LinkedCheckpoint &next, const EGG::Vec
 /// @return True if 0 <= checkpointCompletion <= 1, meaning the player is
 /// between the current checkpoint line and the next; otherwise, false
 bool MapdataCheckPoint::checkCheckpointCompletion(const LinkedCheckpoint &next,
-        const EGG::Vector2f &p0, const EGG::Vector2f &p1, float *checkpointCompletion) const {
+        const EGG::Vector2f &p0, const EGG::Vector2f &p1, f32 &checkpointCompletion) const {
     f32 d1 = m_dir.dot(p1);
     f32 d2 = -(next.checkpoint->m_dir.dot(p0));
-    f32 checkpointCompletion_ = d1 / (d1 + d2);
-    *checkpointCompletion = checkpointCompletion_;
-    return (checkpointCompletion_ >= 0.0f && checkpointCompletion_ <= 1.0f);
+    checkpointCompletion = d1 / (d1 + d2);
+    return (checkpointCompletion >= 0.0f && checkpointCompletion <= 1.0f);
 }
 
 /// @addr{0x80510C74}
 /// @brief Calls both @ref checkSector and @ref checkCheckpointCompletion;
 /// updates @param checkpointCompletion
 /// @rename consider mk7 symbol `4adb64
-/// Field::MapdataCheckPoint::checkSectorAndDistanceRatio(float*, const sead::Vector3<float>&)
+/// Field::MapdataCheckPoint::checkSectorAndDistanceRatio(f32*, const sead::Vector3<f32>&)
 /// const`, which seems undescriptive ("DistanceRatio"). also, this should probably not share a name
 /// with @ref MapdataCheckPoint::checkSectorAndCheckpointCompletion
 MapdataCheckPoint::SectorOccupancy MapdataCheckPoint::checkSectorAndCheckpointCompletion_(
         const LinkedCheckpoint &next, const EGG::Vector2f &p0, const EGG::Vector2f &p1,
-        float *checkpointCompletion) const {
+        f32 &checkpointCompletion) const {
     if (!checkSector(next, p0, p1)) {
         return SectorOccupancy::OutsideSector;
     }
@@ -221,8 +220,7 @@ MapdataCheckPoint::SectorOccupancy MapdataCheckPoint::checkSectorAndCheckpointCo
 }
 
 /// @addr{0x80515244}
-/// @brief Initializes all checkpoint links, and finds the finish line and last
-/// key checkpoint.
+/// @brief Initializes all checkpoint links, and finds the finish line and last key checkpoint.
 void MapdataCheckPointAccessor::init() {
     s8 lastKcpType = -1;
     s16 finishLineCheckpointId = -1;
