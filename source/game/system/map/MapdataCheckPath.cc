@@ -41,6 +41,10 @@ void MapdataCheckPath::findDepth(s8 depth, const MapdataCheckPathAccessor &acces
     }
 }
 
+bool MapdataCheckPath::isPointInPath(u16 checkpointId) const {
+    return m_start <= checkpointId && checkpointId <= end();
+}
+
 u8 MapdataCheckPath::start() const {
     return m_start;
 }
@@ -61,22 +65,11 @@ s8 MapdataCheckPath::depth() const {
     return m_depth;
 }
 
-bool MapdataCheckPath::isPointInPath(u16 checkpointId) const {
-    return m_start <= checkpointId && checkpointId <= end();
+f32 MapdataCheckPath::oneOverCount() const {
+    return m_oneOverCount;
 }
 
-/// @addr{0x80515014}
-MapdataCheckPath *MapdataCheckPathAccessor::findCheckpathForCheckpoint(u16 checkpointId) const {
-    for (size_t i = 0; i < size(); ++i) {
-        MapdataCheckPath *checkpath = get(i);
-        if (checkpath->isPointInPath(checkpointId)) {
-            return checkpath;
-        }
-    }
-
-    return nullptr;
-}
-
+/// @addr{Inlined in 0x8051377C}
 MapdataCheckPathAccessor::MapdataCheckPathAccessor(const MapSectionHeader *header)
     : MapdataAccessorBase<MapdataCheckPath, MapdataCheckPath::SData>(header) {
     init(reinterpret_cast<const MapdataCheckPath::SData *>(m_sectionHeader + 1),
@@ -90,7 +83,7 @@ MapdataCheckPathAccessor::MapdataCheckPathAccessor(const MapSectionHeader *heade
     s8 maxDepth = -1;
     get(0)->findDepth(0, *this);
 
-    for (size_t i = 0; i < size(); i++) {
+    for (size_t i = 0; i < size(); ++i) {
         maxDepth = std::max(maxDepth, get(i)->depth());
     }
 
@@ -98,5 +91,21 @@ MapdataCheckPathAccessor::MapdataCheckPathAccessor(const MapSectionHeader *heade
 }
 
 MapdataCheckPathAccessor::~MapdataCheckPathAccessor() = default;
+
+/// @addr{0x80515014}
+MapdataCheckPath *MapdataCheckPathAccessor::findCheckpathForCheckpoint(u16 checkpointId) const {
+    for (size_t i = 0; i < size(); ++i) {
+        MapdataCheckPath *checkpath = get(i);
+        if (checkpath->isPointInPath(checkpointId)) {
+            return checkpath;
+        }
+    }
+
+    return nullptr;
+}
+
+f32 MapdataCheckPathAccessor::lapProportion() const {
+    return m_lapProportion;
+}
 
 } // namespace System

@@ -280,6 +280,14 @@ MapdataStartPoint *CourseMap::getStartPoint(u16 i) const {
     return m_startPoint && m_startPoint->size() != 0 ? m_startPoint->get(i) : nullptr;
 }
 
+u16 CourseMap::getCheckPathCount() const {
+    return m_checkPath ? m_checkPath->size() : 0;
+}
+
+u16 CourseMap::getCheckPointCount() const {
+    return m_checkPoint ? m_checkPoint->size() : 0;
+}
+
 u16 CourseMap::getGeoObjCount() const {
     return m_geoObj ? m_geoObj->size() : 0;
 }

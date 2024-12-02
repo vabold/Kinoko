@@ -140,6 +140,9 @@ void MapdataCheckPoint::clearSearched() {
 bool MapdataCheckPoint::searched() const {
     return m_searched;
 }
+u8 MapdataCheckPoint::jugemIndex() const {
+    return m_jugemIndex;
+}
 
 s8 MapdataCheckPoint::checkArea() const {
     return m_checkArea;
@@ -206,6 +209,16 @@ bool MapdataCheckPoint::checkDistanceRatio(const LinkedCheckpoint &next, const E
     return distanceRatio >= 0.0f && distanceRatio <= 1.0f;
 }
 
+MapdataCheckPointAccessor::MapdataCheckPointAccessor(const MapSectionHeader *header)
+    : MapdataAccessorBase<MapdataCheckPoint, MapdataCheckPoint::SData>(header) {
+    MapdataAccessorBase::init(
+            reinterpret_cast<const MapdataCheckPoint::SData *>(m_sectionHeader + 1),
+            parse<u16>(m_sectionHeader->count));
+    init();
+}
+
+MapdataCheckPointAccessor::~MapdataCheckPointAccessor() = default;
+
 /// @addr{0x80515244}
 /// @brief Initializes all checkpoint links, and finds the finish line and last key checkpoint.
 void MapdataCheckPointAccessor::init() {
@@ -226,15 +239,5 @@ void MapdataCheckPointAccessor::init() {
     m_lastKcpType = lastKcpType;
     m_finishLineCheckpointId = finishLineCheckpointId;
 }
-
-MapdataCheckPointAccessor::MapdataCheckPointAccessor(const MapSectionHeader *header)
-    : MapdataAccessorBase<MapdataCheckPoint, MapdataCheckPoint::SData>(header) {
-    MapdataAccessorBase::init(
-            reinterpret_cast<const MapdataCheckPoint::SData *>(m_sectionHeader + 1),
-            parse<u16>(m_sectionHeader->count));
-    init();
-}
-
-MapdataCheckPointAccessor::~MapdataCheckPointAccessor() = default;
 
 } // namespace System

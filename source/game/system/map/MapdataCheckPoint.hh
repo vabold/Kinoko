@@ -51,6 +51,7 @@ public:
 
     /// @beginGetters
     [[nodiscard]] bool searched() const;
+    [[nodiscard]] u8 jugemIndex() const;
     [[nodiscard]] s8 checkArea() const;
     [[nodiscard]] u16 nextCount() const;
     [[nodiscard]] u16 prevCount() const;
@@ -104,10 +105,7 @@ public:
     MapdataCheckPointAccessor(const MapSectionHeader *header);
     ~MapdataCheckPointAccessor() override;
 
-    [[nodiscard]] s8 lastKcpType() const;
-
 private:
-    void findFinishAndLastKcp();
     void init();
 
     s8 m_lastKcpType;
