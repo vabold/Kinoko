@@ -1,21 +1,11 @@
 #pragma once
 
 #include "game/system/KPadController.hh"
+#include "game/system/map/MapdataCheckPoint.hh"
 
 #include <egg/math/Vector.hh>
 
 namespace System {
-
-class RaceManagerPlayer {
-public:
-    RaceManagerPlayer();
-    virtual ~RaceManagerPlayer() {}
-
-    [[nodiscard]] const KPad *inputs() const;
-
-private:
-    const KPad *m_inputs;
-};
 
 /// @addr{0x809BD730}
 /// @brief Manages the timers that track the stages of a race.
@@ -26,6 +16,27 @@ private:
 /// @nosubgrouping
 class RaceManager : EGG::Disposer {
 public:
+    class Player {
+    public:
+        Player();
+        virtual ~Player() {}
+
+        void init();
+        void calc();
+
+        [[nodiscard]] const KPad *inputs() const;
+
+    private:
+        MapdataCheckPoint *calcCheckpoint(u16 checkpointId, f32 distanceRatio);
+        [[nodiscard]] bool areCheckpointsSubsequent(MapdataCheckPoint *checkpoint,
+                u16 nextCheckpointId) const;
+
+        u16 m_checkpointId;
+        f32 m_checkpointFactor; ///< The proportion of a lap for the current checkpoint
+        u8 m_jugemId;
+        const KPad *m_inputs;
+    };
+
     enum class Stage {
         Intro = 0,
         Countdown = 1,
@@ -33,6 +44,8 @@ public:
         FinishLocal = 3,
         FinishGlobal = 4,
     };
+
+    void init();
 
     void findKartStartPoint(EGG::Vector3f &pos, EGG::Vector3f &angles);
 
@@ -42,7 +55,7 @@ public:
 
     /// @beginGetters
     [[nodiscard]] int getCountdownTimer() const;
-    [[nodiscard]] const RaceManagerPlayer &player() const;
+    [[nodiscard]] const Player &player() const;
     [[nodiscard]] Stage stage() const;
     /// @endGetters
 
@@ -54,7 +67,7 @@ private:
     RaceManager();
     ~RaceManager() override;
 
-    RaceManagerPlayer m_player;
+    Player m_player;
     Stage m_stage;
     u16 m_introTimer;
     u32 m_timer;

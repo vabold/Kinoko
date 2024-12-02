@@ -35,7 +35,7 @@ void RaceScene::createEngines() {
 /// @addr{0x8055472C}
 void RaceScene::initEngines() {
     Kart::KartObjectManager::Instance()->init();
-    // System::RaceManager::Instance()->init();
+    System::RaceManager::Instance()->init();
     Item::ItemDirector::Instance()->init();
     Field::ObjectDirector::Instance()->init();
 }

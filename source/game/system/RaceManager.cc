@@ -2,9 +2,18 @@
 
 #include "game/system/CourseMap.hh"
 #include "game/system/KPadDirector.hh"
+#include "game/system/map/MapdataCheckPath.hh"
 #include "game/system/map/MapdataStartPoint.hh"
 
+#include "game/kart/KartObjectManager.hh"
+#include "game/kart/KartState.hh"
+
 namespace System {
+
+/// @addr{0x80532F88}
+void RaceManager::init() {
+    m_player.init();
+}
 
 /// @addr{0x805362DC}
 /// @todo When expanding to other gamemodes, we will need to pass the player index
@@ -26,6 +35,8 @@ void RaceManager::findKartStartPoint(EGG::Vector3f &pos, EGG::Vector3f &angles) 
 /// @addr{0x805331B4}
 void RaceManager::calc() {
     constexpr u16 STAGE_INTRO_DURATION = 172;
+
+    m_player.calc();
 
     switch (m_stage) {
     case Stage::Intro:
@@ -58,7 +69,7 @@ int RaceManager::getCountdownTimer() const {
     return STAGE_COUNTDOWN_DURATION - m_timer;
 }
 
-const RaceManagerPlayer &RaceManager::player() const {
+const RaceManager::Player &RaceManager::player() const {
     return m_player;
 }
 
@@ -97,12 +108,74 @@ RaceManager::~RaceManager() {
 }
 
 /// @addr{0x80533ED8}
-RaceManagerPlayer::RaceManagerPlayer() {
+RaceManager::Player::Player() {
+    m_checkpointId = 0;
+    m_checkpointFactor = -1.0f;
     m_inputs = &KPadDirector::Instance()->playerInput();
 }
 
-const KPad *RaceManagerPlayer::inputs() const {
+/// @addr{0x80534194}
+void RaceManager::Player::init() {
+    auto *courseMap = CourseMap::Instance();
+
+    if (courseMap->getCheckPointCount() != 0 && courseMap->getCheckPathCount() != 0) {
+        const EGG::Vector3f &pos = Kart::KartObjectManager::Instance()->object(0)->pos();
+        f32 distanceRatio;
+        s16 checkpointId = courseMap->findSector(pos, 0, distanceRatio);
+
+        m_checkpointId = std::max<s16>(0, checkpointId);
+        m_jugemId = courseMap->getCheckPoint(m_checkpointId)->jugemIndex();
+    } else {
+        m_jugemId = 0;
+    }
+}
+
+/// @addr{0x80535304}
+void RaceManager::Player::calc() {
+    auto *courseMap = CourseMap::Instance();
+    const auto *kart = Kart::KartObjectManager::Instance()->object(0);
+
+    if (courseMap->getCheckPointCount() == 0 || courseMap->getCheckPathCount() == 0 ||
+            kart->state()->isBeforeRespawn()) {
+        return;
+    }
+
+    f32 distanceRatio;
+    s16 checkpointId = courseMap->findSector(kart->pos(), m_checkpointId, distanceRatio);
+
+    if (checkpointId == -1) {
+        return;
+    }
+
+    if (m_checkpointFactor < 0.0f || m_checkpointId != checkpointId) {
+        calcCheckpoint(checkpointId, distanceRatio);
+    }
+}
+
+const KPad *RaceManager::Player::inputs() const {
     return m_inputs;
+}
+
+/// @addr{0x80534DF8}
+MapdataCheckPoint *RaceManager::Player::calcCheckpoint(u16 checkpointId, f32 /*distanceRatio*/) {
+    auto *courseMap = CourseMap::Instance();
+    m_checkpointId = checkpointId;
+    MapdataCheckPath *checkPath = courseMap->checkPath()->findCheckpathForCheckpoint(checkpointId);
+    m_checkpointFactor = checkPath->oneOverCount() * courseMap->checkPath()->lapProportion();
+
+    return courseMap->getCheckPoint(checkpointId);
+}
+
+/// @addr{Inlined in 0x80534DF8}
+bool RaceManager::Player::areCheckpointsSubsequent(MapdataCheckPoint *checkpoint,
+        u16 nextCheckpointId) const {
+    for (size_t i = 0; i < checkpoint->nextCount(); ++i) {
+        if (nextCheckpointId == checkpoint->nextPoint(i)->id()) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 RaceManager *RaceManager::s_instance = nullptr; ///< @addr{0x809BD730}

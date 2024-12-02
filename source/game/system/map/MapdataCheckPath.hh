@@ -24,7 +24,7 @@ public:
     void read(EGG::Stream &stream);
 
     void findDepth(s8 depth, const MapdataCheckPathAccessor &accessor);
-    bool isPointInPath(u16 checkpointId) const;
+    [[nodiscard]] bool isPointInPath(u16 checkpointId) const;
 
     static constexpr size_t MAX_NEIGHBORS = 6;
 
@@ -34,6 +34,7 @@ public:
     [[nodiscard]] const std::array<u8, MAX_NEIGHBORS> &next() const;
     [[nodiscard]] const std::array<u8, MAX_NEIGHBORS> &prev() const;
     [[nodiscard]] s8 depth() const;
+    [[nodiscard]] f32 oneOverCount() const;
     /// @endGetters
 
 private:
@@ -53,7 +54,9 @@ public:
     MapdataCheckPathAccessor(const MapSectionHeader *header);
     ~MapdataCheckPathAccessor() override;
 
-    MapdataCheckPath *findCheckpathForCheckpoint(u16 checkpointId) const;
+    [[nodiscard]] MapdataCheckPath *findCheckpathForCheckpoint(u16 checkpointId) const;
+
+    [[nodiscard]] f32 lapProportion() const;
 
 private:
     /// @brief Minimum proportion of a lap a checkpath can be. Calculated as
