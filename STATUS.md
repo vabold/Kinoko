@@ -18,8 +18,8 @@ Test Case                                                 | Frames      |     | 
 [`dc-rta-1-28-321`](https://youtu.be/Rs5AK3iHVno)         | 1058 / 5705 | ❌ | KMP
 [`kc-rta-1-55-250`](https://youtu.be/Elb5K7woV20)         | 1520 / 7320 | ❌ | Moving water
 [`kc-ng-rta-2-17-176`](https://youtu.be/UgSQj6RpDYM)      | 1424 / 8634 | ❌ | Moving water
-[`mt-rta-1-33-239`](https://youtu.be/FX89203m2iE)         | 1971 / 6000 | ❌ | KMP
-[`mt-ng-rta-2-13-126`](https://youtu.be/igcHE0-OV0g)      | 2647 / 8391 | ❌ | KMP
+[`mt-rta-1-33-239`](https://youtu.be/FX89203m2iE)         | 6000 / 6000 | ✔️ |
+[`mt-ng-rta-2-13-126`](https://youtu.be/igcHE0-OV0g)      | 8391 / 8391 | ✔️ |
 [`gv-rta-0-15-425`](https://youtu.be/bB0oUzdCHTA)         | 487 / 1336  | ❌ | KMP?
 [`gv-ng-rta-1-32-914`](https://youtu.be/J55Fo2ZMz9M)      | 570 / 5981  | ❌ | KMP?
 [`gv-nosc-rta-1-50-927`](https://youtu.be/R7oK3U7iZrk)    | 567 / 7060  | ❌ | KMP?
