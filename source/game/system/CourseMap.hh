@@ -52,15 +52,15 @@ public:
 
     void clearSectorChecked();
     [[nodiscard]] s16 findSector(const EGG::Vector3f &pos, u16 checkpointIdx,
-            f32 *checkpointCompletion, bool isRemote);
+            f32 &checkpointCompletion);
     [[nodiscard]] s16 searchNextCheckpoint(const EGG::Vector3f &pos, s16 depth,
-            const MapdataCheckPoint &checkpoint, float *completion, u32 params,
+            const MapdataCheckPoint &checkpoint, f32 &completion, u32 params,
             const bool param_8) const;
     [[nodiscard]] s16 searchPrevCheckpoint(const EGG::Vector3f &pos, s16 depth,
-            const MapdataCheckPoint &checkpoint, float *completion, u32 params,
+            const MapdataCheckPoint &checkpoint, f32 &completion, u32 params,
             const bool param_8) const;
     [[nodiscard]] s16 findRecursiveSector(const EGG::Vector3f &pos, s16 depth,
-            bool searchBackwardsFirst, MapdataCheckPoint &checkpoint, float *completion,
+            bool searchBackwardsFirst, MapdataCheckPoint &checkpoint, f32 &completion,
             u32 params) const;
 
     static CourseMap *CreateInstance();
