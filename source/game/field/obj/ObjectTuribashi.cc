@@ -158,15 +158,15 @@ bool ObjectTuribashi::checkSphereImpl(f32 radius, const EGG::Vector3f &v0,
     constexpr u16 PERIOD = 160;     // Framecount of a full bridge swing.
     constexpr f32 HEIGHT = 2000.0f; // Distance between min/max positions along the angled bridge.
 
-    EGG::Vector3f deltaPos = v0 - m_pos;
-
-    if (EGG::Mathf::abs(deltaPos.z) > RADIUS) {
-        return false;
-    }
-
     // This check normally happens after the stage check,
     // but there's no difference in behavior if we check earlier.
     if ((flags & 1) == 0) {
+        return false;
+    }
+
+    EGG::Vector3f deltaPos = v0 - m_pos;
+
+    if (EGG::Mathf::abs(deltaPos.z) > RADIUS) {
         return false;
     }
 
