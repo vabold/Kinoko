@@ -28,12 +28,37 @@ public:
     };
     STATIC_ASSERT(sizeof(SData) == 0x14);
 
+    enum class SectorOccupancy {
+        InsideSector,  ///< if player is inside the checkpoint quad
+        OutsideSector, ///< if player is not between the sides of the quad (may still be between
+                       ///< this checkpoint and next); player is likely in a different checkpoint
+                       ///< group
+        OutsideSector_BetweenSides, ///< if player is between the sides of the quad, but NOT between
+                                    ///< this checkpoint and next; player is likely in the same
+                                    ///< checkpoint group
+    };
+
     MapdataCheckPoint(const SData *data);
     void read(EGG::Stream &stream);
     void initCheckpointLinks(MapdataCheckPointAccessor &accessor, int id);
+    [[nodiscard]] SectorOccupancy checkSectorAndCheckpointCompletion(const EGG::Vector3f &pos,
+            f32 &checkpointCompletion) const;
+
+    /// @beginSetters
+    void setSearched();
+    void clearSearched();
+    /// @endSetters
 
     /// @beginGetters
+    [[nodiscard]] bool searched() const;
     [[nodiscard]] s8 checkArea() const;
+    [[nodiscard]] bool isNormalCheckpoint() const;
+    [[nodiscard]] bool isFinishLine() const;
+    [[nodiscard]] u16 nextCount() const;
+    [[nodiscard]] u16 prevCount() const;
+    [[nodiscard]] u16 id() const;
+    [[nodiscard]] MapdataCheckPoint *prevPoint(size_t i) const;
+    [[nodiscard]] MapdataCheckPoint *nextPoint(size_t i) const;
     /// @endGetters
 
     enum class CheckArea {
@@ -42,7 +67,12 @@ public:
     };
 
 private:
-    [[nodiscard]] MapdataCheckPoint *nextPoint(size_t i) const;
+    [[nodiscard]] bool checkSector(const LinkedCheckpoint &next, const EGG::Vector2f &p0,
+            const EGG::Vector2f &p1) const;
+    [[nodiscard]] bool checkCheckpointCompletion(const LinkedCheckpoint &next,
+            const EGG::Vector2f &p0, const EGG::Vector2f &p1, f32 &checkpointCompletion) const;
+    [[nodiscard]] SectorOccupancy checkSectorAndCheckpointCompletion_(const LinkedCheckpoint &next,
+            const EGG::Vector2f &p0, const EGG::Vector2f &p1, f32 &checkpointCompletion) const;
 
     static constexpr size_t MAX_NEIGHBORS = 6;
 
@@ -64,6 +94,7 @@ private:
     u16 m_prevCount;
     EGG::Vector2f m_midpoint;
     EGG::Vector2f m_dir;
+    bool m_searched;
     u16 m_id;
     std::array<MapdataCheckPoint *, MAX_NEIGHBORS> m_prevPoints;
     std::array<LinkedCheckpoint, MAX_NEIGHBORS> m_nextPoints;
