@@ -3,7 +3,6 @@
 #include "game/system/CourseMap.hh"
 #include "game/system/map/MapdataCheckPath.hh"
 
-#include <cstddef>
 #include <ranges>
 
 namespace System {
