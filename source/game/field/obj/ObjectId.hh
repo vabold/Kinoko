@@ -13,6 +13,7 @@ enum class ObjectId {
     OilSFC = 0x15d,
     ParasolR = 0x16e,
     PuchiPakkun = 0x1aa,
+    Aurora = 0x204,
 };
 
 enum class BlacklistedObjectId {
