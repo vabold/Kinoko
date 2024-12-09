@@ -1,6 +1,7 @@
 #include "ObjectDirector.hh"
 
 #include "game/field/BoxColManager.hh"
+#include "game/field/ObjectDrivableDirector.hh"
 #include "game/field/obj/ObjectRegistry.hh"
 
 #include "game/kart/KartObject.hh"
@@ -15,6 +16,8 @@ void ObjectDirector::init() {
         obj->init();
         obj->calcModel();
     }
+
+    ObjectDrivableDirector::Instance()->init();
 }
 
 /// @addr{0x8082A8F4}
@@ -26,6 +29,8 @@ void ObjectDirector::calc() {
     for (auto *&obj : m_calcObjects) {
         obj->calcModel();
     }
+
+    ObjectDrivableDirector::Instance()->calc();
 }
 
 /// @addr{0x8082B0E8}
@@ -118,6 +123,8 @@ ObjectDirector *ObjectDirector::CreateInstance() {
     ASSERT(!s_instance);
     s_instance = new ObjectDirector;
 
+    ObjectDrivableDirector::CreateInstance();
+
     s_instance->createObjects();
 
     return s_instance;
@@ -129,6 +136,8 @@ void ObjectDirector::DestroyInstance() {
     auto *instance = s_instance;
     s_instance = nullptr;
     delete instance;
+
+    ObjectDrivableDirector::DestroyInstance();
 }
 
 ObjectDirector *ObjectDirector::Instance() {
