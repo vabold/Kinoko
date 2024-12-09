@@ -27,8 +27,8 @@ Test Case                                                 | Frames      |     | 
 [`mh-rta-1-42-872`](https://youtu.be/CellUlOYgnc)         | 6578 / 6578 | ✔️ |
 [`bc-rta-2-08-697`](https://youtu.be/1DEReKemoeI)         | 808 / 8126  | ❌ | KMP
 [`bc-ng-rta-2-20-001`](https://youtu.be/028nClzy7B4)      | 808 / 8803  | ❌ | KMP
-[`rr-rta-1-24-751`](https://youtu.be/dgNMHyFda14)         | 3194 / 5491 | ❌ | KMP
-[`rr-ng-rta-2-24-281`](https://youtu.be/O-BtWWsq82o)      | 1207 / 9060 | ❌ | KMP
+[`rr-rta-1-24-751`](https://youtu.be/dgNMHyFda14)         | 5491 / 5491 | ✔️ |
+[`rr-ng-rta-2-24-281`](https://youtu.be/O-BtWWsq82o)      | 1212 / 9060 | ❌ | Kart boost-related?
 [`rpb-rta-0-59-978`](https://youtu.be/Z-lVl-7B-So)        | 1078 / 4007 | ❌ | Moving water
 [`rpb-ng-rta-1-12-656`](https://youtu.be/LujU0kJx-hU)     | 2491 / 4767 | ❌ | Moving water
 [`ryf-rta-0-58-648`](https://youtu.be/3IKzbmawUbk)        | 583 / 3927  | ❌ | Water

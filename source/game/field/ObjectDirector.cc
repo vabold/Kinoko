@@ -204,6 +204,8 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
         return new ObjectParasolR(params);
     case ObjectId::Turibashi:
         return new ObjectTuribashi(params);
+    case ObjectId::Aurora:
+        return new ObjectAurora(params);
     case ObjectId::Ami:
         return new ObjectAmi(params);
     // Non-specified objects are stock collidable objects by default
