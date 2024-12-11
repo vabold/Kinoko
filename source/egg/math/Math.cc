@@ -314,7 +314,7 @@ static constexpr AtanEntry sArcTanTbl[32 + 1] = {
 
 /// @addr{0x8022F80C}
 f32 sqrt(f32 x) {
-    return x > 0.0 ? frsqrt(x) * x : 0.0;
+    return x > 0.0f ? frsqrt(x) * x : 0.0f;
 }
 
 /// CREDIT: Hanachan
@@ -325,8 +325,9 @@ f32 frsqrt(f32 x) {
 
     // Newton-Raphson refinement
     f32 tmp0 = static_cast<f32>(est * force25Bit(est));
-    f32 tmp1 = static_cast<f32>(est * 0.5f);
-    f32 tmp2 = static_cast<f32>(3.0f - static_cast<f64>(tmp0) * static_cast<f64>(x));
+    f32 tmp1 = static_cast<f32>(est * static_cast<f64>(0.5f));
+    f32 tmp2 =
+            static_cast<f32>(static_cast<f64>(3.0f) - static_cast<f64>(tmp0) * static_cast<f64>(x));
     return tmp1 * tmp2;
 }
 
