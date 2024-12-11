@@ -1,6 +1,8 @@
 #include "KartItem.hh"
 
 #include "game/kart/KartMove.hh"
+#include "game/kart/KartState.hh"
+
 #include "game/system/RaceManager.hh"
 
 namespace Item {
@@ -32,6 +34,7 @@ void KartItem::calc() {
     const auto *raceMgr = System::RaceManager::Instance();
     bool canUse = m_flags.onBit(eFlags::ItemButtonActivation);
     canUse = canUse && raceMgr->isStageReached(System::RaceManager::Stage::Race);
+    canUse = canUse && !state()->isBurnout();
     canUse = canUse && (m_inventory.id() != ItemId::NONE);
 
     if (canUse) {

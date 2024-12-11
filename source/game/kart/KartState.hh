@@ -61,6 +61,7 @@ public:
     void setZipperBoost(bool isSet);
     void setZipperStick(bool isSet);
     void setZipperTrick(bool isSet);
+    void setBurnout(bool isSet);
     void setTrickRot(bool isSet);
     void setChargingSsmt(bool isSet);
     void setRejectRoad(bool isSet);
@@ -122,6 +123,7 @@ public:
     [[nodiscard]] bool isDisableBackwardsAccel() const;
     [[nodiscard]] bool isZipperBoost() const;
     [[nodiscard]] bool isZipperTrick() const;
+    [[nodiscard]] bool isBurnout() const;
     [[nodiscard]] bool isZipperStick() const;
     [[nodiscard]] bool isTrickRot() const;
     [[nodiscard]] bool isChargingSsmt() const;
@@ -202,6 +204,7 @@ private:
     bool m_bZipperBoost;               ///< Set when boosting after landing from a zipper.
     bool m_bZipperStick;               ///< Set while mid-air and still influenced by the zipper.
     bool m_bZipperTrick;               ///< Set while tricking mid-air from a zipper.
+    bool m_bBurnout;                   ///< Set during a burnout on race start.
     bool m_bTrickRot;
     bool m_bChargingSsmt;      ///< Tracks whether we are charging a stand-still mini-turbo.
     bool m_bRejectRoad;        ///< Collision which causes a change in the player's pos and rot.
