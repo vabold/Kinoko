@@ -1,6 +1,7 @@
 #pragma once
 
 #include "game/kart/KartBoost.hh"
+#include "game/kart/KartBurnout.hh"
 #include "game/kart/KartHalfPipe.hh"
 #include "game/kart/KartObjectProxy.hh"
 #include "game/kart/KartReject.hh"
@@ -141,6 +142,7 @@ public:
     [[nodiscard]] PadType &padType();
     [[nodiscard]] KartJump *jump() const;
     [[nodiscard]] KartHalfPipe *halfPipe() const;
+    [[nodiscard]] KartBurnout &burnout();
     /// @endGetters
 
 protected:
@@ -253,6 +255,7 @@ protected:
     Flags m_flags;
     KartJump *m_jump;
     KartHalfPipe *m_halfPipe;                   ///< Pertains to zipper physics.
+    KartBurnout m_burnout;                      ///< Manages the state of start boost burnout.
     const DriftingParameters *m_driftingParams; ///< Drift-type-specific parameters.
     f32 m_rawTurn; ///< Float in range [-1, 1]. Represents stick magnitude + direction.
 };

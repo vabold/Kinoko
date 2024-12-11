@@ -85,12 +85,15 @@ void KartState::calcInput() {
                 }
             }
 
-            m_bAccelerate = currentState.accelerate();
-            m_bAccelerateStart = m_bAccelerate && !lastState.accelerate();
-            m_bBrake = currentState.brake();
-            if (!m_bAutoDrift) {
-                m_bDriftInput = currentState.drift();
-                m_bHopStart = m_bDriftInput && !lastState.drift();
+            if (!state()->isBurnout()) {
+                m_bAccelerate = currentState.accelerate();
+                m_bAccelerateStart = m_bAccelerate && !lastState.accelerate();
+                m_bBrake = currentState.brake();
+
+                if (!m_bAutoDrift) {
+                    m_bDriftInput = currentState.drift();
+                    m_bHopStart = m_bDriftInput && !lastState.drift();
+                }
             }
         }
 
@@ -389,9 +392,10 @@ void KartState::calcHandleStartBoost() {
 /// @param idx The index into the start boost entries array.
 void KartState::handleStartBoost(size_t idx) {
     if (m_startBoostIdx == std::numeric_limits<size_t>::max()) {
-        PANIC("More burnout RE required. See KartMoveSub264 function 0x805890b0.");
+        move()->burnout().start();
+    } else {
+        move()->applyStartBoost(START_BOOST_ENTRIES[idx].frames);
     }
-    move()->applyStartBoost(START_BOOST_ENTRIES[idx].frames);
 }
 
 /// @brief Resets certain bitfields pertaining to ejections (reject road, half pipe zippers, etc.)
@@ -565,6 +569,10 @@ bool KartState::isZipperTrick() const {
     return m_bZipperTrick;
 }
 
+bool KartState::isBurnout() const {
+    return m_bBurnout;
+}
+
 bool KartState::isZipperStick() const {
     return m_bZipperStick;
 }
@@ -706,6 +714,7 @@ void KartState::clearBitfield1() {
     m_bZipperBoost = false;
     m_bZipperStick = false;
     m_bZipperTrick = false;
+    m_bBurnout = false;
     m_bTrickRot = false;
     m_bChargingSsmt = false;
     m_bRejectRoad = false;
@@ -848,6 +857,10 @@ void KartState::setZipperStick(bool isSet) {
 
 void KartState::setZipperTrick(bool isSet) {
     m_bZipperTrick = isSet;
+}
+
+void KartState::setBurnout(bool isSet) {
+    m_bBurnout = isSet;
 }
 
 void KartState::setTrickRot(bool isSet) {

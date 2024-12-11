@@ -249,6 +249,7 @@ void KartMove::setKartSpeedLimit() {
 /// Afterwards, calculates the kart's speed and rotation.
 void KartMove::calc() {
     dynamics()->resetInternalVelocity();
+    m_burnout.calc();
     calcSsmtStart();
     m_halfPipe->calc();
     calcTop();
@@ -1125,17 +1126,21 @@ void KartMove::calcAcceleration() {
 
     m_lastSpeed = m_speed;
 
-    if (m_acceleration < 0.0f) {
-        if (m_speed < -20.0f) {
-            m_acceleration = 0.0f;
-        } else {
-            if (m_speed + m_acceleration <= -20.0f) {
-                m_acceleration = -20.0f - m_speed;
+    if (state()->isBurnout()) {
+        m_speed = 0.0f;
+    } else {
+        if (m_acceleration < 0.0f) {
+            if (m_speed < -20.0f) {
+                m_acceleration = 0.0f;
+            } else {
+                if (m_speed + m_acceleration <= -20.0f) {
+                    m_acceleration = -20.0f - m_speed;
+                }
             }
         }
-    }
 
-    m_speed += m_acceleration;
+        m_speed += m_acceleration;
+    }
 
     if (state()->isBeforeRespawn()) {
         m_speed *= OOB_SLOWDOWN_RATE;
@@ -2083,6 +2088,10 @@ KartJump *KartMove::jump() const {
 
 KartHalfPipe *KartMove::halfPipe() const {
     return m_halfPipe;
+}
+
+KartBurnout &KartMove::burnout() {
+    return m_burnout;
 }
 
 /// @addr{0x80587B30}
