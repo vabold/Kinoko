@@ -56,15 +56,21 @@ public:
     void clearSectorChecked();
     [[nodiscard]] s16 findSector(const EGG::Vector3f &pos, u16 checkpointIdx,
             f32 &checkpointCompletion);
+    [[nodiscard]] s16 findSectorBetweenSides(const EGG::Vector3f &pos,
+            MapdataCheckPoint *checkpoint, f32 &checkpointCompletion);
+    [[nodiscard]] s16 findSectorOutsideSector(const EGG::Vector3f &pos,
+            MapdataCheckPoint *checkpoint, f32 &checkpointCompletion);
+    [[nodiscard]] s16 findSectorGlobal(const EGG::Vector3f &pos, MapdataCheckPoint *checkpoint,
+            f32 &checkpointCompletion);
     [[nodiscard]] s16 searchNextCheckpoint(const EGG::Vector3f &pos, s16 depth,
-            const MapdataCheckPoint &checkpoint, f32 &completion, u32 params,
+            const MapdataCheckPoint &checkpoint, f32 &completion, bool playerIsForwards,
             const bool param_8) const;
     [[nodiscard]] s16 searchPrevCheckpoint(const EGG::Vector3f &pos, s16 depth,
-            const MapdataCheckPoint &checkpoint, f32 &completion, u32 params,
+            const MapdataCheckPoint &checkpoint, f32 &completion, bool playerIsForwards,
             const bool param_8) const;
     [[nodiscard]] s16 findRecursiveSector(const EGG::Vector3f &pos, s16 depth,
             bool searchBackwardsFirst, MapdataCheckPoint &checkpoint, f32 &completion,
-            u32 params) const;
+            bool playerIsForwards) const;
 
     static CourseMap *CreateInstance();
     static void DestroyInstance();
