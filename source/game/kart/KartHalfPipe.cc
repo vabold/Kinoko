@@ -130,7 +130,8 @@ void KartHalfPipe::calcRot() {
         break;
     case StuntType::Backside: {
         EGG::Quatf rpy;
-        rpy.setRPY(EGG::Vector3f(0.0f, DEG2RAD * (0.25 * -m_rotSign * m_stuntManager.angle), 0.0f));
+        rpy.setRPY(
+                EGG::Vector3f(0.0f, DEG2RAD * (0.25f * -m_rotSign * m_stuntManager.angle), 0.0f));
         EGG::Vector3f rot = rpy.rotateVector(EGG::Vector3f::ez);
         m_stuntRot.setAxisRotation(angle, rot);
     } break;

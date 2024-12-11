@@ -40,6 +40,7 @@ common_ccflags = [
     '-isystem', 'build',
     '-std=c++23',
     '-Wall',
+    '-Wdouble-promotion',
     '-Werror',
     '-Wextra',
     '-Wno-delete-non-virtual-dtor',
