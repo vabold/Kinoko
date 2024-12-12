@@ -113,9 +113,7 @@ MapdataCheckPoint::SectorOccupancy MapdataCheckPoint::checkSectorAndCheckpointCo
         MapdataCheckPoint::SectorOccupancy result =
                 checkSectorAndCheckpointCompletion_(next, p0, p1, completion);
 
-        if (result == SectorOccupancy::OutsideSector) {
-            continue;
-        } else {
+        if (result != SectorOccupancy::OutsideSector) {
             return result;
         }
     }
