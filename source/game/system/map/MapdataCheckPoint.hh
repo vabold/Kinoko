@@ -29,13 +29,10 @@ public:
     STATIC_ASSERT(sizeof(SData) == 0x14);
 
     enum class SectorOccupancy {
-        InsideSector,  ///< if player is inside the checkpoint quad
-        OutsideSector, ///< if player is not between the sides of the quad (may still be between
-                       ///< this checkpoint and next); player is likely in a different checkpoint
-                       ///< group
-        OutsideSector_BetweenSides, ///< if player is between the sides of the quad, but NOT between
-                                    ///< this checkpoint and next; player is likely in the same
-                                    ///< checkpoint group
+        InsideSector,               ///< Player is inside the given checkpoint group
+        OutsideSector,              ///< Player is outside the given checkpoint group
+        OutsideSector_BetweenSides, ///< Player is between sides of the checkpoint group but not
+                                    ///< between this checkpoint and next
     };
 
     MapdataCheckPoint(const SData *data);

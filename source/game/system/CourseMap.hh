@@ -53,6 +53,14 @@ public:
     [[nodiscard]] f32 startTmp3() const;
     /// @endGetters
 
+    static CourseMap *CreateInstance();
+    static void DestroyInstance();
+    [[nodiscard]] static CourseMap *Instance();
+
+private:
+    CourseMap();
+    ~CourseMap() override;
+
     void clearSectorChecked();
     [[nodiscard]] s16 findSector(const EGG::Vector3f &pos, u16 checkpointIdx,
             f32 &checkpointCompletion);
@@ -63,22 +71,14 @@ public:
     [[nodiscard]] s16 findSectorGlobal(const EGG::Vector3f &pos, MapdataCheckPoint *checkpoint,
             f32 &checkpointCompletion);
     [[nodiscard]] s16 searchNextCheckpoint(const EGG::Vector3f &pos, s16 depth,
-            const MapdataCheckPoint &checkpoint, f32 &completion, bool playerIsForwards,
-            const bool param_8) const;
+            const MapdataCheckPoint *checkpoint, f32 &completion, bool playerIsForwards,
+            bool param_8) const;
     [[nodiscard]] s16 searchPrevCheckpoint(const EGG::Vector3f &pos, s16 depth,
-            const MapdataCheckPoint &checkpoint, f32 &completion, bool playerIsForwards,
-            const bool param_8) const;
+            const MapdataCheckPoint *checkpoint, f32 &completion, bool playerIsForwards,
+            bool param_8) const;
     [[nodiscard]] s16 findRecursiveSector(const EGG::Vector3f &pos, s16 depth,
-            bool searchBackwardsFirst, MapdataCheckPoint &checkpoint, f32 &completion,
+            bool searchBackwardsFirst, MapdataCheckPoint *checkpoint, f32 &completion,
             bool playerIsForwards) const;
-
-    static CourseMap *CreateInstance();
-    static void DestroyInstance();
-    [[nodiscard]] static CourseMap *Instance();
-
-private:
-    CourseMap();
-    ~CourseMap() override;
 
     MapdataFileAccessor *m_course;
     MapdataStartPointAccessor *m_startPoint;
