@@ -6,3 +6,4 @@ out
 .vscode
 *.szs
 statusTestCases.json
+.env
