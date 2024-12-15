@@ -1244,7 +1244,7 @@ f32 KartMove::calcWallCollisionSpeedFactor(f32 &f1) {
 
     onWallCollision();
 
-    if (state()->isOverZipper()) {
+    if (state()->isHalfPipeInvisibleWall() || state()->isOverZipper()) {
         return 1.0f;
     }
 
@@ -1281,7 +1281,7 @@ void KartMove::calcWallCollisionStart(f32 param_2) {
     m_vel1Dir = m_dir;
     m_landingDir = m_dir;
 
-    if (!state()->isOverZipper() && param_2 < 0.9f) {
+    if (!state()->isHalfPipeInvisibleWall() && !state()->isOverZipper() && param_2 < 0.9f) {
         f32 speedDiff = m_lastSpeed - m_speed;
 
         if (speedDiff > 30.0f) {
