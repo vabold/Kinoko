@@ -1,11 +1,14 @@
 #include "CollisionDirector.hh"
 
+#include "game/field/ObjectDrivableDirector.hh"
+
 namespace Field {
 
 /// @addr{0x8078E4F0}
 void CollisionDirector::checkCourseColNarrScLocal(f32 radius, const EGG::Vector3f &pos,
-        KCLTypeMask mask, u32 /*unused*/) {
+        KCLTypeMask mask, bool scaledUp) {
     CourseColMgr::Instance()->scaledNarrowScopeLocal(1.0f, radius, nullptr, pos, mask);
+    ObjectDrivableDirector::Instance()->colNarScLocal(radius, radius, pos, mask, scaledUp);
 }
 
 /// @addr{0x8078F500}
