@@ -24,16 +24,29 @@ public:
         void init();
         void calc();
 
+        /// @beginGetters
+        [[nodiscard]] u16 checkpointId() const;
+        [[nodiscard]] f32 raceCompletion() const;
+        [[nodiscard]] s8 jugemId() const;
         [[nodiscard]] const KPad *inputs() const;
+        /// @endGetters
 
     private:
         MapdataCheckPoint *calcCheckpoint(u16 checkpointId, f32 distanceRatio);
-        [[nodiscard]] bool areCheckpointsSubsequent(MapdataCheckPoint *checkpoint,
+        [[nodiscard]] bool areCheckpointsSubsequent(const MapdataCheckPoint *checkpoint,
                 u16 nextCheckpointId) const;
 
+        void decrementLap();
+        void incrementLap();
+
         u16 m_checkpointId;
+        f32 m_raceCompletion;
         f32 m_checkpointFactor; ///< The proportion of a lap for the current checkpoint
-        u8 m_jugemId;
+        f32 m_checkpointStartLapCompletion;
+        f32 m_lapCompletion;
+        s8 m_jugemId;
+        s16 m_currentLap;
+        s8 m_maxKcp;
         const KPad *m_inputs;
     };
 

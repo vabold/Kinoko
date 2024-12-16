@@ -110,7 +110,20 @@ RaceManager::~RaceManager() {
 /// @addr{0x80533ED8}
 RaceManager::Player::Player() {
     m_checkpointId = 0;
+    m_raceCompletion = 0.0f;
     m_checkpointFactor = -1.0f;
+    m_checkpointStartLapCompletion = 0.0f;
+    m_lapCompletion = 0.999999f;
+
+    auto *courseMap = CourseMap::Instance();
+
+    if (courseMap->getCheckPointCount() > 0 && courseMap->getCheckPathCount() > 0) {
+        m_maxKcp = courseMap->checkPoint()->lastKcpType();
+    } else {
+        m_maxKcp = -1;
+    }
+
+    m_currentLap = 0;
     m_inputs = &KPadDirector::Instance()->playerInput();
 }
 
@@ -150,6 +163,22 @@ void RaceManager::Player::calc() {
     if (m_checkpointFactor < 0.0f || m_checkpointId != checkpointId) {
         calcCheckpoint(checkpointId, distanceRatio);
     }
+
+    m_raceCompletion = static_cast<f32>(m_currentLap) +
+            (m_checkpointStartLapCompletion + m_checkpointFactor * distanceRatio);
+    m_raceCompletion = std::min(m_raceCompletion, static_cast<f32>(m_currentLap) + 0.99999f);
+}
+
+u16 RaceManager::Player::checkpointId() const {
+    return m_checkpointId;
+}
+
+f32 RaceManager::Player::raceCompletion() const {
+    return m_raceCompletion;
+}
+
+s8 RaceManager::Player::jugemId() const {
+    return m_jugemId;
 }
 
 const KPad *RaceManager::Player::inputs() const {
@@ -157,17 +186,53 @@ const KPad *RaceManager::Player::inputs() const {
 }
 
 /// @addr{0x80534DF8}
-MapdataCheckPoint *RaceManager::Player::calcCheckpoint(u16 checkpointId, f32 /*distanceRatio*/) {
+MapdataCheckPoint *RaceManager::Player::calcCheckpoint(u16 checkpointId, f32 distanceRatio) {
     auto *courseMap = CourseMap::Instance();
-    m_checkpointId = checkpointId;
-    MapdataCheckPath *checkPath = courseMap->checkPath()->findCheckpathForCheckpoint(checkpointId);
-    m_checkpointFactor = checkPath->oneOverCount() * courseMap->checkPath()->lapProportion();
 
-    return courseMap->getCheckPoint(checkpointId);
+    u16 oldCheckpointId = m_checkpointId;
+    m_checkpointId = checkpointId;
+
+    f32 lapProportion = courseMap->checkPath()->lapProportion();
+    MapdataCheckPath *checkPath = courseMap->checkPath()->findCheckpathForCheckpoint(checkpointId);
+    m_checkpointFactor = checkPath->oneOverCount() * lapProportion;
+
+    m_checkpointStartLapCompletion = static_cast<f32>(checkPath->depth()) * lapProportion +
+            (m_checkpointFactor * static_cast<f32>(checkpointId - checkPath->start()));
+
+    f32 deltaLapCompletion =
+            m_lapCompletion - (m_checkpointStartLapCompletion + distanceRatio * m_checkpointFactor);
+
+    MapdataCheckPoint *newCheckpoint = courseMap->getCheckPoint(checkpointId);
+    const MapdataCheckPoint *oldCheckpoint = courseMap->getCheckPoint(oldCheckpointId);
+
+    s8 newJugemIdx = newCheckpoint->jugemIndex();
+    if (newJugemIdx >= 0) {
+        m_jugemId = newJugemIdx;
+    }
+
+    if (!newCheckpoint->isNormalCheckpoint()) {
+        if (newCheckpoint->checkArea() > m_maxKcp) {
+            m_maxKcp = newCheckpoint->checkArea();
+        } else if (m_maxKcp == courseMap->checkPoint()->lastKcpType()) {
+            if ((newCheckpoint->isFinishLine() &&
+                        areCheckpointsSubsequent(oldCheckpoint, checkpointId)) ||
+                    deltaLapCompletion > 0.95f) {
+                incrementLap();
+            }
+        }
+    }
+
+    if ((oldCheckpoint->isFinishLine() &&
+                areCheckpointsSubsequent(newCheckpoint, oldCheckpointId)) ||
+            deltaLapCompletion < -0.95f) {
+        decrementLap();
+    }
+
+    return newCheckpoint;
 }
 
 /// @addr{Inlined in 0x80534DF8}
-bool RaceManager::Player::areCheckpointsSubsequent(MapdataCheckPoint *checkpoint,
+bool RaceManager::Player::areCheckpointsSubsequent(const MapdataCheckPoint *checkpoint,
         u16 nextCheckpointId) const {
     for (size_t i = 0; i < checkpoint->nextCount(); ++i) {
         if (nextCheckpointId == checkpoint->nextPoint(i)->id()) {
@@ -176,6 +241,25 @@ bool RaceManager::Player::areCheckpointsSubsequent(MapdataCheckPoint *checkpoint
     }
 
     return false;
+}
+
+/// @addr{0x80534D6C}
+void RaceManager::Player::decrementLap() {
+    auto *courseMap = CourseMap::Instance();
+
+    if (courseMap->getCheckPointCount() > 0 && courseMap->getCheckPathCount() > 0) {
+        m_maxKcp = courseMap->checkPoint()->lastKcpType();
+    } else {
+        m_maxKcp = -1;
+    }
+
+    --m_currentLap;
+}
+
+/// @addr{0x805349B8}
+void RaceManager::Player::incrementLap() {
+    m_maxKcp = 0;
+    ++m_currentLap;
 }
 
 RaceManager *RaceManager::s_instance = nullptr; ///< @addr{0x809BD730}
