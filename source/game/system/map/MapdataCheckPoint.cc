@@ -140,7 +140,7 @@ void MapdataCheckPoint::clearSearched() {
 bool MapdataCheckPoint::searched() const {
     return m_searched;
 }
-u8 MapdataCheckPoint::jugemIndex() const {
+s8 MapdataCheckPoint::jugemIndex() const {
     return m_jugemIndex;
 }
 
@@ -218,6 +218,10 @@ MapdataCheckPointAccessor::MapdataCheckPointAccessor(const MapSectionHeader *hea
 }
 
 MapdataCheckPointAccessor::~MapdataCheckPointAccessor() = default;
+
+s8 MapdataCheckPointAccessor::lastKcpType() const {
+    return m_lastKcpType;
+}
 
 /// @addr{0x80515244}
 /// @brief Initializes all checkpoint links, and finds the finish line and last key checkpoint.

@@ -300,6 +300,10 @@ MapdataCheckPathAccessor *CourseMap::checkPath() const {
     return m_checkPath;
 }
 
+MapdataCheckPointAccessor *CourseMap::checkPoint() const {
+    return m_checkPoint;
+}
+
 f32 CourseMap::startTmpAngle() const {
     return m_startTmpAngle;
 }

@@ -53,6 +53,7 @@ public:
     [[nodiscard]] u16 getGeoObjCount() const;
     [[nodiscard]] u32 version() const;
     [[nodiscard]] MapdataCheckPathAccessor *checkPath() const;
+    [[nodiscard]] MapdataCheckPointAccessor *checkPoint() const;
     [[nodiscard]] f32 startTmpAngle() const;
     [[nodiscard]] f32 startTmp0() const;
     [[nodiscard]] f32 startTmp1() const;
