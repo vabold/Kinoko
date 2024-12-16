@@ -181,8 +181,67 @@ T RawGhostFile::parseAt(size_t offset) const {
     return parse<T>(*reinterpret_cast<const T *>(m_buffer + offset));
 }
 
-bool RawGhostFile::compressed(const u8 *rkg) const {
+const CTGPGhostFooter *RawGhostFile::FindCTGPFooter(const u8 *rkg, size_t size) {
+    // If there is no ghost, there is no footer
+    if (!rkg) {
+        return nullptr;
+    }
+
+    // We don't know the size - assume there is no CTGP footer
+    if (size == std::numeric_limits<size_t>::max()) {
+        return nullptr;
+    }
+
+    // All CTGP ghosts are compressed
+    if (!compressed(rkg)) {
+        return nullptr;
+    }
+
+    const u8 *pFooter = (rkg + size) - sizeof(CTGPGhostFooter);
+    const CTGPGhostFooter *footer = reinterpret_cast<const CTGPGhostFooter *>(pFooter);
+    if (parse<u32>(footer->magic) != CTGPGhostFooter::CTGP_FOOTER_SIGNATURE) {
+        return nullptr;
+    }
+
+    return footer;
+}
+
+bool RawGhostFile::compressed(const u8 *rkg) {
     return ((*(rkg + 0xC) >> 3) & 1) == 1;
+}
+
+CTGPMetadata::CTGPMetadata() : m_isCTGP(false), m_is200cc(false) {}
+
+void CTGPMetadata::read(const CTGPGhostFooter *data) {
+    if (!data) {
+        m_isCTGP = false;
+        return;
+    }
+
+    u8 *streamPtr = const_cast<u8 *>(reinterpret_cast<const u8 *>(data));
+    EGG::RamStream stream(streamPtr, sizeof(CTGPGhostFooter));
+    read(stream);
+}
+
+void CTGPMetadata::read(EGG::RamStream &stream) {
+    // Check if it's CTGP
+    // This is always expected to be the case if we reach this point
+    stream.jump(offsetof(CTGPGhostFooter, magic));
+    ASSERT(stream.read_u32() == CTGPGhostFooter::CTGP_FOOTER_SIGNATURE);
+    m_isCTGP = true;
+
+    // Check if it's 200cc
+    // We cannot jump directly into a bitfield, so we jump to the member behind it and add 1
+    stream.jump(offsetof(CTGPGhostFooter, ghostActionFlags) + 1);
+    u8 categoryInfo = stream.read_u8();
+    u8 tasCategory = categoryInfo >> 4 & 0xf;
+    u8 category = categoryInfo & 0xf;
+
+    if (category == 3) {
+        m_is200cc = tasCategory >= 4 && tasCategory <= 6;
+    } else {
+        m_is200cc = category >= 4 && category <= 7;
+    }
 }
 
 } // namespace System
