@@ -441,6 +441,10 @@ bool KartState::isHopStart() const {
     return m_bHopStart;
 }
 
+bool KartState::isAccelerateStart() const {
+    return m_bAccelerateStart;
+}
+
 bool KartState::isGroundStart() const {
     return m_bGroundStart;
 }
@@ -529,6 +533,10 @@ bool KartState::isRampBoost() const {
     return m_bRampBoost;
 }
 
+bool KartState::isTriggerRespawn() const {
+    return m_bTriggerRespawn;
+}
+
 bool KartState::isCannonStart() const {
     return m_bCannonStart;
 }
@@ -567,6 +575,10 @@ bool KartState::isZipperBoost() const {
 
 bool KartState::isZipperTrick() const {
     return m_bZipperTrick;
+}
+
+bool KartState::isRespawnKillY() const {
+    return m_bRespawnKillY;
 }
 
 bool KartState::isBurnout() const {
@@ -611,6 +623,14 @@ bool KartState::isSkipWheelCalc() const {
 
 bool KartState::isNoSparkInvisibleWall() const {
     return m_bNoSparkInvisibleWall;
+}
+
+bool KartState::isInRespawn() const {
+    return m_bInRespawn;
+}
+
+bool KartState::isAfterRespawn() const {
+    return m_bAfterRespawn;
 }
 
 bool KartState::isUNK2() const {
@@ -703,6 +723,7 @@ void KartState::clearBitfield0() {
 
 /// @brief Helper function to clear all bit flags at 0x8-0xB in KartState.
 void KartState::clearBitfield1() {
+    m_bTriggerRespawn = false;
     m_bCannonStart = false;
     m_bInCannon = false;
     m_bTrickStart = false;
@@ -714,6 +735,7 @@ void KartState::clearBitfield1() {
     m_bZipperBoost = false;
     m_bZipperStick = false;
     m_bZipperTrick = false;
+    m_bRespawnKillY = false;
     m_bBurnout = false;
     m_bTrickRot = false;
     m_bChargingSsmt = false;
@@ -727,6 +749,8 @@ void KartState::clearBitfield2() {
     m_bWheelieRot = false;
     m_bSkipWheelCalc = false;
     m_bNoSparkInvisibleWall = false;
+    m_bInRespawn = false;
+    m_bAfterRespawn = false;
     m_bJumpPadDisableYsusForce = false;
 }
 
@@ -815,6 +839,10 @@ void KartState::setRampBoost(bool isSet) {
     m_bRampBoost = isSet;
 }
 
+void KartState::setTriggerRespawn(bool isSet) {
+    m_bTriggerRespawn = isSet;
+}
+
 void KartState::setCannonStart(bool isSet) {
     m_bCannonStart = isSet;
 }
@@ -859,6 +887,10 @@ void KartState::setZipperTrick(bool isSet) {
     m_bZipperTrick = isSet;
 }
 
+void KartState::setRespawnKillY(bool isSet) {
+    m_bRespawnKillY = isSet;
+}
+
 void KartState::setBurnout(bool isSet) {
     m_bBurnout = isSet;
 }
@@ -893,6 +925,14 @@ void KartState::setSkipWheelCalc(bool isSet) {
 
 void KartState::setNoSparkInvisibleWall(bool isSet) {
     m_bNoSparkInvisibleWall = isSet;
+}
+
+void KartState::setInRespawn(bool isSet) {
+    m_bInRespawn = isSet;
+}
+
+void KartState::setAfterRespawn(bool isSet) {
+    m_bAfterRespawn = isSet;
 }
 
 void KartState::setJumpPadDisableYsusForce(bool isSet) {

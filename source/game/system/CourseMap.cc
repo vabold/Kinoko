@@ -270,6 +270,11 @@ MapdataGeoObj *CourseMap::getGeoObj(u16 i) const {
     return i < getGeoObjCount() ? m_geoObj->get(i) : nullptr;
 }
 
+/// @addr{0x80518920}
+MapdataJugemPoint *CourseMap::getJugemPoint(u16 i) const {
+    return i < getJugemPointCount() ? m_jugemPoint->get(i) : nullptr;
+}
+
 /// @addr{0x80518B78}
 MapdataStageInfo *CourseMap::getStageInfo() const {
     return m_stageInfo && m_stageInfo->size() != 0 ? m_stageInfo->get(0) : nullptr;
@@ -290,6 +295,10 @@ u16 CourseMap::getCheckPointCount() const {
 
 u16 CourseMap::getGeoObjCount() const {
     return m_geoObj ? m_geoObj->size() : 0;
+}
+
+u16 CourseMap::getJugemPointCount() const {
+    return m_jugemPoint ? m_jugemPoint->size() : 0;
 }
 
 u32 CourseMap::version() const {

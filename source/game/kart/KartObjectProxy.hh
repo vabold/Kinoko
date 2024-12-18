@@ -69,6 +69,7 @@ public:
     /// @beginSetters
     void setPos(const EGG::Vector3f &pos);
     void setRot(const EGG::Quatf &q);
+    void setInertiaScale(const EGG::Vector3f &scale);
     /// @endSetters
 
     /// @beginGetters
@@ -143,6 +144,7 @@ public:
     [[nodiscard]] std::pair<EGG::Vector3f, EGG::Vector3f> getCannonPosRot();
     [[nodiscard]] f32 speedRatio() const;
     [[nodiscard]] f32 speedRatioCapped() const;
+    [[nodiscard]] bool isInRespawn() const;
 
     [[nodiscard]] static std::list<KartObjectProxy *> &proxyList();
     /// @endGetters
