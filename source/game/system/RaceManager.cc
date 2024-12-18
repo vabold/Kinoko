@@ -64,6 +64,12 @@ bool RaceManager::isStageReached(Stage stage) const {
             static_cast<std::underlying_type_t<Stage>>(stage);
 }
 
+/// @addr{0x8053621C}
+MapdataJugemPoint *RaceManager::jugemPoint() const {
+    s8 jugemId = std::max<s8>(m_player.jugemId(), 0);
+    return System::CourseMap::Instance()->getJugemPoint(static_cast<u16>(jugemId));
+}
+
 /// @addr{0x80533090}
 int RaceManager::getCountdownTimer() const {
     return STAGE_COUNTDOWN_DURATION - m_timer;
