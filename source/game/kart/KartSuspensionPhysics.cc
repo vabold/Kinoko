@@ -269,6 +269,11 @@ void KartSuspensionPhysics::calcSuspension(const EGG::Vector3f &forward,
             -(m_bspWheel->springStiffness * travel + m_bspWheel->dampingFactor * speedScalar);
 
     EGG::Vector3f fRot = m_bottomDir * springDamp;
+
+    if (isInRespawn()) {
+        fRot.y = std::max(-1.0f, std::min(1.0f, fRot.y));
+    }
+
     EGG::Vector3f fLinear = fRot;
     EGG::Vector3f rotProj = fRot;
     rotProj.y = 0.0f;

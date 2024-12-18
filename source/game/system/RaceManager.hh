@@ -2,6 +2,7 @@
 
 #include "game/system/KPadController.hh"
 #include "game/system/map/MapdataCheckPoint.hh"
+#include "game/system/map/MapdataJugemPoint.hh"
 
 #include <egg/math/Vector.hh>
 
@@ -65,6 +66,7 @@ public:
     void calc();
 
     [[nodiscard]] bool isStageReached(Stage stage) const;
+    [[nodiscard]] MapdataJugemPoint *jugemPoint() const;
 
     /// @beginGetters
     [[nodiscard]] int getCountdownTimer() const;
