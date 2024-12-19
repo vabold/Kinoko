@@ -39,6 +39,9 @@ public:
     void resetDriftManual();
 
     void calc();
+    void calcRespawnStart();
+    void calcInRespawn();
+    void calcRespawnBoost();
     void calcTop();
     void calcAirtimeTop();
     void calcSpecialFloor();
@@ -109,6 +112,8 @@ public:
     void calcRotCannon(const EGG::Vector3f &forward);
     void exitCannon();
 
+    void triggerRespawn();
+
     /// @beginSetters
     void setSpeed(f32 val);
     void setSmoothedUp(const EGG::Vector3f &v);
@@ -139,6 +144,8 @@ public:
     [[nodiscard]] u16 floorCollisionCount() const;
     [[nodiscard]] s32 hopStickX() const;
     [[nodiscard]] f32 hopPosY() const;
+    [[nodiscard]] s16 respawnTimer() const;
+    [[nodiscard]] s16 respawnPostLandTimer() const;
     [[nodiscard]] PadType &padType();
     [[nodiscard]] KartJump *jump() const;
     [[nodiscard]] KartHalfPipe *halfPipe() const;
@@ -147,6 +154,7 @@ public:
 
 protected:
     enum class eFlags {
+        Respawned = 0,   ///< Set when Lakitu lets go of the player, cleared when landing.
         DriftReset = 1,  ///< Set when a wall bonk should cancel your drift.
         SsmtCharged = 2, ///< Set after holding a stand-still mini-turbo for 75 frames.
         LaunchBoost = 4,
@@ -249,6 +257,10 @@ protected:
     f32 m_hopVelY;    ///< Relative velocity due to a hop. Starts at 10 and decreases with gravity.
     f32 m_hopPosY;    ///< Relative position as the result of a hop. Starts at 0.
     f32 m_hopGravity; ///< Always main gravity (-1.3f).
+    s16 m_timeInRespawn;        ///< The number of frames elapsed after position snap from respawn.
+    s16 m_respawnPreLandTimer;  ///< Counts down from 4 when pressing A before landing from respawn.
+    s16 m_respawnPostLandTimer; ///< Counts up to 4 if not accelerating after respawn landing.
+    s16 m_respawnTimer;
     DrivingDirection m_drivingDirection; ///< Current state of driver's direction.
     s16 m_backwardsAllowCounter;         ///< Tracks the 15f delay before reversing.
     PadType m_padType;

@@ -102,6 +102,15 @@ void KartSub::calcPass0() {
     }
 
     state()->calc();
+
+    if (state()->isTriggerRespawn()) {
+        setInertiaScale(EGG::Vector3f(1.0f, 1.0f, 1.0f));
+        resetPhysics();
+        state()->reset();
+        move()->setTurnParams();
+        move()->calcRespawnStart();
+    }
+
     physics()->setPos(dynamics()->pos());
     physics()->setVelocity(dynamics()->velocity());
     dynamics()->setGravity(-1.3f);

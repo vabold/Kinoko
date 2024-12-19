@@ -95,8 +95,8 @@ void KartCollide::findCollision() {
 void KartCollide::FUN_80572F4C() {
     f32 fVar1;
 
-    if (state()->isBoost() || state()->isOverZipper() || state()->isNoSparkInvisibleWall() ||
-            state()->isHalfPipeRamp()) {
+    if (isInRespawn() || state()->isBoost() || state()->isOverZipper() ||
+            state()->isNoSparkInvisibleWall() || state()->isHalfPipeRamp()) {
         fVar1 = 0.0f;
     } else {
         fVar1 = 0.05f;
@@ -347,6 +347,18 @@ void KartCollide::calcBeforeRespawn() {
     if (pos().y < 0.0f) {
         activateOob(true, nullptr, false, false);
     }
+
+    if (!state()->isBeforeRespawn()) {
+        return;
+    }
+
+    if (--m_respawnTimer > 0) {
+        return;
+    }
+
+    state()->setBeforeRespawn(false);
+    m_respawnTimer = 0;
+    move()->triggerRespawn();
 }
 
 /// @addr{0x80573B00}

@@ -19,6 +19,7 @@ public:
 
     void init();
     void resetInternalVelocity();
+    void setInertia(const EGG::Vector3f &m, const EGG::Vector3f &n);
     void setBspParams(f32 rotSpeed, const EGG::Vector3f &m, const EGG::Vector3f &n,
             bool skipInertia);
 
@@ -46,6 +47,8 @@ public:
     void setAngVel0YFactor(f32 val);
     void setTop_(const EGG::Vector3f &v);
     void setForceUpright(bool isSet);
+    void setNoGravity(bool isSet);
+    void setKillExtVelY(bool isSet);
     /// @endSetters
 
     /// @beginGetters
@@ -93,7 +96,8 @@ protected:
 
     f32 m_angVel0YFactor; ///< Scalar for damping angular velocity.
     bool m_forceUpright;  ///< Specifies if we should return the vehicle to upwards orientation.
-    bool m_noGravity;     ///< @unused
+    bool m_noGravity;     ///< Disables gravity. Relevant when respawning.
+    bool m_killExtVelY;   ///< Caps external velocity at 0.
 };
 
 /// @brief State management for most components of a bike's physics

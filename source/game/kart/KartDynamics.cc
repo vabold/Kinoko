@@ -30,11 +30,26 @@ void KartDynamics::stabilize() {
 
 /// @addr{0x805B4B54}
 void KartDynamics::init() {
+    m_pos = EGG::Vector3f::zero;
+    m_extVel = EGG::Vector3f::zero;
+    m_acceleration = EGG::Vector3f::zero;
+    m_angVel0 = EGG::Vector3f::zero;
+    m_angVel1 = EGG::Vector3f::zero;
+    m_velocity = EGG::Vector3f::zero;
     m_speedNorm = 0.0f;
+    m_angVel2 = EGG::Vector3f::zero;
+    m_mainRot = EGG::Quatf::ident;
+    m_fullRot = EGG::Quatf::ident;
+    m_totalForce = EGG::Vector3f::zero;
+    m_totalTorque = EGG::Vector3f::zero;
+    m_specialRot = EGG::Quatf::ident;
+    m_extraRot = EGG::Quatf::ident;
     m_gravity = -1.0f;
+    m_intVel = EGG::Vector3f::zero;
     m_top = EGG::Vector3f::ey;
     m_forceUpright = true;
     m_noGravity = false;
+    m_killExtVelY = false;
     m_stabilizationFactor = 0.1f;
     m_top_ = EGG::Vector3f::ey;
     m_speedFix = 0.0f;
@@ -45,24 +60,28 @@ void KartDynamics::resetInternalVelocity() {
     m_intVel.setZero();
 }
 
+/// @addr{0x805B4E84}
+void KartDynamics::setInertia(const EGG::Vector3f &m, const EGG::Vector3f &n) {
+    constexpr f32 TWELFTH = 1.0f / 12.0f;
+
+    m_inertiaTensor = EGG::Matrix34f::zero;
+    m_inertiaTensor[0, 0] = (m.y * m.y + m.z * m.z) * TWELFTH + n.y * n.y + n.z * n.z;
+    m_inertiaTensor[1, 1] = (m.z * m.z + m.x * m.x) * TWELFTH + n.z * n.z + n.x * n.x;
+    m_inertiaTensor[2, 2] = (m.x * m.x + m.y * m.y) * TWELFTH + n.x * n.x + n.y * n.y;
+    m_invInertiaTensor = m_inertiaTensor.inverseTo33();
+}
+
 /// @brief On init, takes elements from the kart's BSP and computes the moment of inertia tensor.
 /// @addr{0x805B4DC4}
 void KartDynamics::setBspParams(f32 rotSpeed, const EGG::Vector3f &m, const EGG::Vector3f &n,
         bool skipInertia) {
-    constexpr f32 TWELFTH = 1.0f / 12.0f;
-
     m_angVel0Factor = rotSpeed;
 
     if (skipInertia) {
         return;
     }
 
-    m_inertiaTensor = EGG::Matrix34f::zero;
-    m_inertiaTensor[0, 0] = (m.y * m.y + m.z * m.z) * TWELFTH + n.y * n.y + n.z * n.z;
-    m_inertiaTensor[1, 1] = (m.z * m.z + m.x * m.x) * TWELFTH + n.z * n.z + n.x * n.x;
-    m_inertiaTensor[2, 2] = (m.x * m.x + m.y * m.y) * TWELFTH + n.x * n.x + n.y * n.y;
-
-    m_invInertiaTensor = m_inertiaTensor.inverseTo33();
+    setInertia(m, n);
 }
 
 /// @stage All
@@ -77,6 +96,11 @@ void KartDynamics::calc(f32 dt, f32 maxSpeed, bool /*air*/) {
 
     m_acceleration = m_totalForce;
     m_extVel += m_acceleration * dt;
+
+    if (m_killExtVelY) {
+        m_extVel.y = std::min(0.0f, m_extVel.y);
+    }
+
     m_extVel *= 0.998f;
     m_angVel0 *= 0.98f;
 
@@ -259,6 +283,14 @@ void KartDynamics::setTop_(const EGG::Vector3f &v) {
 
 void KartDynamics::setForceUpright(bool isSet) {
     m_forceUpright = isSet;
+}
+
+void KartDynamics::setNoGravity(bool isSet) {
+    m_noGravity = isSet;
+}
+
+void KartDynamics::setKillExtVelY(bool isSet) {
+    m_killExtVelY = isSet;
 }
 
 const EGG::Matrix34f &KartDynamics::invInertiaTensor() const {
