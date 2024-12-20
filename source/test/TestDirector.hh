@@ -42,7 +42,7 @@ public:
 
     [[nodiscard]] bool sync() const;
 
-    static void OnInit(System::RaceConfig *config, void *arg);
+    void OnInit(System::RaceConfig *config, void *arg);
 
 private:
     void readHeader();

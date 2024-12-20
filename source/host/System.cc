@@ -12,102 +12,18 @@ namespace Host {
 
 /// @brief The main entry point for the program.
 /// @addr{0x80008EF0}
-int KSystem::main(int argc, char **argv) {
+void KSystem::main(int /* argc */, char** /* argv */) {
     initMemory();
-
-    if (argc < 2) {
-        PANIC("Expected file argument");
-    }
-
-    for (int i = 1; i < argc; ++i) {
-        if (argv[i][0] != '-') {
-            PANIC("Invalid argument: %s", argv[i]);
-        }
-
-        Option opt = option(argv[i]);
-        if (opt == Option::Invalid) {
-            PANIC("Invalid option %s", argv[i]);
-        }
-
-        handleOption(opt, argc, argv, i);
-    }
-
     init();
+
     m_sceneMgr->changeScene(0);
-    bool success = true;
-
-    while (true) {
-        success &= run();
-
-        if (!m_testDirector->popTestCase()) {
-            break;
-        }
-
-        // TODO: Use a system heap! The test director currently has a dependency on the scene heap.
-        m_sceneMgr->destroyScene(m_sceneMgr->currentScene());
-        m_testDirector->init();
-        m_sceneMgr->createScene(2, m_sceneMgr->currentScene());
-    }
-
-    // Shut down the RootScene
-    m_sceneMgr->destroyToSelectSceneId(0);
-
-    return success ? 0 : 1;
-}
-
-KSystem::Option KSystem::option(char *arg) {
-    switch (arg[1]) {
-    case '-':
-        break;
-    case 's':
-        return Option::Suite;
-    case '\0':
-    default:
-        return Option::Invalid;
-    }
-
-    if (strlen(arg) <= 2) {
-        PANIC("Invalid argument: %s", arg);
-    }
-
-    if (strcmp(arg, "--suite") == 0) {
-        return Option::Suite;
-    } else {
-        return Option::Invalid;
-    }
-}
-
-void KSystem::handleOption(Option opt, int argc, char **argv, int &i) {
-    switch (opt) {
-    case Option::Suite: {
-        // We expect another arg following the option
-        if (argc - i < 2) {
-            PANIC("Expected argument after %s", argv[i]);
-        }
-
-        size_t size;
-        u8 *data = Abstract::File::Load(argv[++i], size);
-
-        if (size == 0) {
-            PANIC("Failed to load suite data!");
-        }
-
-        m_suiteData = std::span<u8>(data, size);
-    } break;
-    case Option::Invalid:
-        break;
-    }
+    run();
 }
 
 /// @addr{0x80009194}
 void KSystem::init() {
     auto *sceneCreator = new SceneCreatorDynamic;
     m_sceneMgr = new EGG::SceneManager(sceneCreator);
-    m_testDirector = new Test::TestDirector(m_suiteData);
-    delete[] m_suiteData.data();
-
-    // Register the RaceConfig callback
-    System::RaceConfig::RegisterInitCallback(m_testDirector->OnInit, nullptr);
 }
 
 /// @addr{0x80242504}
@@ -131,23 +47,20 @@ void KSystem::initMemory() {
 }
 
 /// @brief The main loop of the program.
-/// @return Whether or not all test cases have passed.
 /// @addr{0x8000951C}
-bool KSystem::run() {
-    while (m_testDirector->calc()) {
-        m_sceneMgr->calc();
+void KSystem::run() {
+    while (true) {
+	calc();
     }
+}
 
-    m_testDirector->writeTestOutput();
-    return m_testDirector->sync();
+/// @brief Function not present in the original game. Useful for stepping the game one frame
+void KSystem::calc() {
+    m_sceneMgr->calc();
 }
 
 EGG::Heap *KSystem::rootHeap() const {
     return m_rootHeap;
-}
-
-const Test::TestDirector *KSystem::testDirector() const {
-    return m_testDirector;
 }
 
 /// @addr{0x80008E84}

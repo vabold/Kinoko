@@ -228,8 +228,7 @@ bool TestDirector::sync() const {
 
 void TestDirector::OnInit(System::RaceConfig *config, void * /* arg */) {
     size_t size;
-    const auto *testDirector = Host::KSystem::Instance().testDirector();
-    u8 *rkg = Abstract::File::Load(testDirector->testCase().rkgPath.data(), size);
+    u8 *rkg = Abstract::File::Load(testCase().rkgPath.data(), size);
     config->setGhost(rkg);
     delete[] rkg;
 
