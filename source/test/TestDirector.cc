@@ -1,6 +1,7 @@
 #include "TestDirector.hh"
 
 #include <game/kart/KartObjectManager.hh>
+#include <game/system/RaceManager.hh>
 
 #include <abstract/File.hh>
 #include <host/System.hh>
@@ -17,6 +18,7 @@ enum Changelog {
     AddedIntVel = 3,
     AddedSpeed = 4,
     AddedRotation = 5,
+    AddedCheckpoints = 6,
 };
 
 TestDirector::TestDirector(const std::span<u8> &suiteData) {
@@ -131,7 +133,17 @@ void TestDirector::test(const TestData &data) {
     const auto &mainRot = object->mainRot();
     const auto &angVel2 = object->angVel2();
 
+    const auto &player = System::RaceManager::Instance()->player();
+    f32 raceCompletion = player.raceCompletion();
+    u16 checkpointId = player.checkpointId();
+    u8 jugemId = player.jugemId();
+
     switch (m_versionMinor) {
+    case Changelog::AddedCheckpoints:
+        checkDesync(data.raceCompletion, raceCompletion, "raceCompletion");
+        checkDesync(data.checkpointId, checkpointId, "checkpointId");
+        checkDesync(data.jugemId, jugemId, "jugemId");
+        [[fallthrough]];
     case Changelog::AddedRotation:
         checkDesync(data.mainRot, mainRot, "mainRot");
         checkDesync(data.angVel2, angVel2, "angVel2");
@@ -182,6 +194,10 @@ TestData TestDirector::findNextEntry() {
     f32 softSpeedLimit = 0.0f;
     EGG::Quatf mainRot;
     EGG::Vector3f angVel2;
+    f32 raceCompletion = 0.0f;
+    u16 checkpointId = 0;
+    u8 jugemId = 0;
+
     pos.read(m_stream);
     fullRot.read(m_stream);
 
@@ -204,6 +220,13 @@ TestData TestDirector::findNextEntry() {
         angVel2.read(m_stream);
     }
 
+    if (m_versionMinor >= Changelog::AddedCheckpoints) {
+        raceCompletion = m_stream.read_f32();
+        checkpointId = m_stream.read_u16();
+        jugemId = m_stream.read_u8();
+        m_stream.skip(1);
+    }
+
     TestData data;
     data.pos = pos;
     data.fullRot = fullRot;
@@ -214,6 +237,9 @@ TestData TestDirector::findNextEntry() {
     data.softSpeedLimit = softSpeedLimit;
     data.mainRot = mainRot;
     data.angVel2 = angVel2;
+    data.raceCompletion = raceCompletion;
+    data.checkpointId = checkpointId;
+    data.jugemId = jugemId;
     return data;
 }
 

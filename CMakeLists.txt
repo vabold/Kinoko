@@ -54,7 +54,6 @@ target_include_directories(libkinoko
 )
 target_compile_options(libkinoko PRIVATE ${COMMON_CXX_FLAGS} ${GAME_CXX_FLAGS})
 target_compile_features(libkinoko PUBLIC cxx_std_23)
-target_link_options(libkinoko PRIVATE "-Wl,--version-script=${CMAKE_SOURCE_DIR}/hide.map")
 
 # Create targets
 add_executable(kinoko ${TEST_SOURCE_FILES})

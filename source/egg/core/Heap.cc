@@ -128,8 +128,9 @@ void *Heap::alloc(size_t size, int align, Heap *pHeap) {
             WARN("HEAP ALLOC FAIL (%p, %s):\nTotal bytes: %d (%.1fMBytes)\nFree bytes: %d "
                  "(%.1fMBytes)\nAlloc bytes: %d "
                  "(%.1fMBytes)\nAlign: %d",
-                    currentHeap, currentHeap->getName(), heapSize, heapSizeMB, heapFreeSize,
-                    heapFreeSizeMB, size, sizeMB, align);
+                    currentHeap, currentHeap->getName(), static_cast<f64>(heapSize),
+                    static_cast<f64>(heapSizeMB), heapFreeSize, static_cast<f64>(heapFreeSizeMB),
+                    size, static_cast<f64>(sizeMB), align);
         }
 
         return block;

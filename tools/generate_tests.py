@@ -1,6 +1,7 @@
 import json
 import os
 import struct
+from argparse import ArgumentParser
 
 class TestCase:
     def __init__(self, key, value):
@@ -9,7 +10,7 @@ class TestCase:
         self.krkgPath = str.encode("../"+value["krkgPath"]) + b'\x00'
         self.targetFrame = value["targetFrame"]
 
-def generate_tests(filename = 'testCases.json'):
+def generate_tests(filename = 'testCases.json', out_filename = 'out/testCases.bin'):
     # Parse test cases from JSON
     tests = []
 
@@ -27,7 +28,7 @@ def generate_tests(filename = 'testCases.json'):
 
     # Generate binary (enforce big-endian)
     os.makedirs("out", exist_ok=True)
-    with open('out/testCases.bin', 'wb') as f:
+    with open(out_filename, 'wb') as f:
         # Number of test cases
         f.write(struct.pack('>H', len(tests)))
 
@@ -65,3 +66,10 @@ def generate_tests(filename = 'testCases.json'):
 
             # Alignment check footer
             f.write(struct.pack('<4s', TEST_CASE_FOOTER))
+
+if __name__ == '__main__':
+    parser = ArgumentParser(description="Generate test cases binary file")
+    parser.add_argument('input', help="Path to the .json file")
+    parser.add_argument('output', help="Path to the .bin file")
+    args = parser.parse_args()
+    generate_tests(args.input, args.output)

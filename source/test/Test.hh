@@ -28,6 +28,10 @@ struct TestData {
     // Added in 0.5
     EGG::Quatf mainRot;
     EGG::Vector3f angVel2;
+    // Added in 0.6
+    f32 raceCompletion;
+    u16 checkpointId;
+    u8 jugemId;
 };
 
 } // namespace Test

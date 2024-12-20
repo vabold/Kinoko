@@ -18,6 +18,7 @@ public:
 
     void calcInput();
     void calc();
+    void resetFlags();
     void calcCollisions();
     void calcStartBoost();
     void calcHandleStartBoost();
@@ -27,6 +28,7 @@ public:
     /// @beginSetters
     void clearBitfield0();
     void clearBitfield1();
+    void clearBitfield2();
     void clearBitfield3();
 
     void setAccelerate(bool isSet);
@@ -47,13 +49,23 @@ public:
     void setSlipdriftCharge(bool isSet);
     void setWheelie(bool isSet);
     void setRampBoost(bool isSet);
+    void setTriggerRespawn(bool isSet);
     void setCannonStart(bool isSet);
     void setInCannon(bool isSet);
     void setTrickStart(bool isSet);
     void setInATrick(bool isSet);
     void setJumpPad(bool isSet);
     void setBoostOffroadInvincibility(bool isSet);
+    void setHalfPipeRamp(bool isSet);
+    void setOverZipper(bool isSet);
     void setDisableBackwardsAccel(bool isSet);
+    void setZipperBoost(bool isSet);
+    void setZipperStick(bool isSet);
+    void setZipperTrick(bool isSet);
+    void setRespawnKillY(bool isSet);
+    void setBurnout(bool isSet);
+    void setInRespawn(bool isSet);
+    void setAfterRespawn(bool isSet);
     void setTrickRot(bool isSet);
     void setChargingSsmt(bool isSet);
     void setRejectRoad(bool isSet);
@@ -61,6 +73,7 @@ public:
     void setTrickable(bool isSet);
     void setWheelieRot(bool isSet);
     void setSkipWheelCalc(bool isSet);
+    void setNoSparkInvisibleWall(bool isSet);
     void setJumpPadDisableYsusForce(bool isSet);
     void setSomethingWallCollision(bool isSet);
     void setSoftWallDrift(bool isSet);
@@ -68,6 +81,7 @@ public:
     void setCannonPointId(u16 val);
     void setBoostRampType(s32 val);
     void setJumpPadVariant(s32 val);
+    void setHalfPipeInvisibilityTimer(s16 val);
     void setTrickableTimer(s16 val);
     /// @endSetters
 
@@ -81,6 +95,7 @@ public:
     [[nodiscard]] bool isWall3Collision() const;
     [[nodiscard]] bool isWallCollision() const;
     [[nodiscard]] bool isHopStart() const;
+    [[nodiscard]] bool isAccelerateStart() const;
     [[nodiscard]] bool isGroundStart() const;
     [[nodiscard]] bool isVehicleBodyFloorCollision() const;
     [[nodiscard]] bool isAnyWheelCollision() const;
@@ -95,6 +110,7 @@ public:
     [[nodiscard]] bool isHWG() const;
     [[nodiscard]] bool isChargeStartBoost() const;
     [[nodiscard]] bool isBoost() const;
+    [[nodiscard]] bool isAirStart() const;
     [[nodiscard]] bool isStickRight() const;
     [[nodiscard]] bool isMushroomBoost() const;
     [[nodiscard]] bool isDriftAuto() const;
@@ -102,12 +118,20 @@ public:
     [[nodiscard]] bool isWheelie() const;
     [[nodiscard]] bool isRampBoost() const;
     [[nodiscard]] bool isJumpPad() const;
+    [[nodiscard]] bool isTriggerRespawn() const;
     [[nodiscard]] bool isCannonStart() const;
     [[nodiscard]] bool isInCannon() const;
     [[nodiscard]] bool isTrickStart() const;
     [[nodiscard]] bool isInATrick() const;
     [[nodiscard]] bool isBoostOffroadInvincibility() const;
+    [[nodiscard]] bool isHalfPipeRamp() const;
+    [[nodiscard]] bool isOverZipper() const;
     [[nodiscard]] bool isDisableBackwardsAccel() const;
+    [[nodiscard]] bool isZipperBoost() const;
+    [[nodiscard]] bool isZipperTrick() const;
+    [[nodiscard]] bool isRespawnKillY() const;
+    [[nodiscard]] bool isBurnout() const;
+    [[nodiscard]] bool isZipperStick() const;
     [[nodiscard]] bool isTrickRot() const;
     [[nodiscard]] bool isChargingSsmt() const;
     [[nodiscard]] bool isRejectRoad() const;
@@ -115,6 +139,9 @@ public:
     [[nodiscard]] bool isTrickable() const;
     [[nodiscard]] bool isWheelieRot() const;
     [[nodiscard]] bool isSkipWheelCalc() const;
+    [[nodiscard]] bool isNoSparkInvisibleWall() const;
+    [[nodiscard]] bool isInRespawn() const;
+    [[nodiscard]] bool isAfterRespawn() const;
     [[nodiscard]] bool isJumpPadDisableYsusForce() const;
     [[nodiscard]] bool isUNK2() const;
     [[nodiscard]] bool isSomethingWallCollision() const;
@@ -162,6 +189,7 @@ private:
     bool m_bTouchingGround;     ///< Set when any part of the vehicle is colliding with floor KCL.
     bool m_bHop;                ///< Set while we are in a drift hop. Clears when we land.
     bool m_bBoost;              ///< Set while in a boost.
+    bool m_bAirStart;
     bool m_bStickRight;    ///< Set on right stick input. Mutually exclusive to @ref m_bStickLeft.
     bool m_bMushroomBoost; ///< Set while we are in a mushroom boost.
     bool m_bDriftAuto;     ///< Currently in a drift w/ automatic.
@@ -174,12 +202,20 @@ private:
     /// @name bitfield1
     /// The bitfield at offset 0x8.
     /// @{
+    bool m_bTriggerRespawn;
     bool m_bCannonStart;
     bool m_bInCannon;
     bool m_bTrickStart;
     bool m_bInATrick;
     bool m_bBoostOffroadInvincibility; ///< Set if we should ignore offroad slowdown this frame.
+    bool m_bHalfPipeRamp;              ///< Set while colliding with zipper KCL.
+    bool m_bOverZipper;                ///< Set while mid-air from a zipper.
     bool m_bDisableBackwardsAccel;     ///< Enforces a 20f delay when reversing after charging SSMT.
+    bool m_bZipperBoost;               ///< Set when boosting after landing from a zipper.
+    bool m_bZipperStick;               ///< Set while mid-air and still influenced by the zipper.
+    bool m_bZipperTrick;               ///< Set while tricking mid-air from a zipper.
+    bool m_bRespawnKillY;              ///< Set while respawning to cap external velocity at 0.
+    bool m_bBurnout;                   ///< Set during a burnout on race start.
     bool m_bTrickRot;
     bool m_bChargingSsmt;      ///< Tracks whether we are charging a stand-still mini-turbo.
     bool m_bRejectRoad;        ///< Collision which causes a change in the player's pos and rot.
@@ -192,6 +228,9 @@ private:
     /// @{
     bool m_bWheelieRot;
     bool m_bSkipWheelCalc;
+    bool m_bNoSparkInvisibleWall;
+    bool m_bInRespawn;
+    bool m_bAfterRespawn;
     bool m_bJumpPadDisableYsusForce;
     /// @}
 
@@ -218,6 +257,7 @@ private:
     u16 m_cannonPointId;
     s32 m_boostRampType;
     s32 m_jumpPadVariant;
+    s16 m_halfPipeInvisibilityTimer;
     f32 m_stickX;           ///< One of 15 discrete stick values from [-1.0, 1.0].
     f32 m_stickY;           ///< One of 15 discrete stick values from [-1.0, 1.0].
     f32 m_startBoostCharge; ///< 0-1 representation of start boost charge. Burnout if >0.95f.

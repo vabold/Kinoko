@@ -48,6 +48,8 @@ enum class Reaction {
 class KartCollide : KartObjectProxy {
 public:
     enum class eSurfaceFlags {
+        Wall = 0,
+        SolidOOB = 1,
         ObjectWall = 2,
         ObjectWall3 = 3,
         BoostRamp = 4,
@@ -75,6 +77,7 @@ public:
     void calcTriggers(Field::KCLTypeMask *mask, const EGG::Vector3f &pos, bool twoPoint);
     void handleTriggers(Field::KCLTypeMask *mask);
     void calcFallBoundary(Field::KCLTypeMask *mask, bool shortBoundary);
+    void calcBeforeRespawn();
     void activateOob(bool detachCamera, Field::KCLTypeMask *mask, bool somethingCPU,
             bool somethingBullet);
     void calcWheelCollision(u16 wheelIdx, CollisionGroup *hitboxGroup, const EGG::Vector3f &colVel,
@@ -150,6 +153,7 @@ private:
     EGG::Vector3f m_tangentOff;
     EGG::Vector3f m_movement;
     s16 m_respawnTimer;
+    s16 m_solidOobTimer;
     f32 m_smoothedBack; // 0x50
     f32 m_suspBottomHeightSoftWall;
     u16 m_someSoftWallTimer;

@@ -1,8 +1,12 @@
 #pragma once
 
 #include "game/kart/KartBoost.hh"
+#include "game/kart/KartBurnout.hh"
+#include "game/kart/KartHalfPipe.hh"
 #include "game/kart/KartObjectProxy.hh"
 #include "game/kart/KartReject.hh"
+
+#include "game/field/CourseColMgr.hh"
 
 #include <egg/core/BitFlag.hh>
 
@@ -35,6 +39,9 @@ public:
     void resetDriftManual();
 
     void calc();
+    void calcRespawnStart();
+    void calcInRespawn();
+    void calcRespawnBoost();
     void calcTop();
     void calcAirtimeTop();
     void calcSpecialFloor();
@@ -51,6 +58,7 @@ public:
     void clearDrift();
     void clearJumpPad();
     void clearRampBoost();
+    void clearZipperBoost();
     void clearBoost();
     void clearSsmt();
     void clearOffroadInvincibility();
@@ -68,6 +76,10 @@ public:
     void calcSsmtStart();
     void calcHopPhysics();
     void calcRejectRoad();
+    bool calcZipperCollision(f32 radius, f32 scale, EGG::Vector3f &pos, EGG::Vector3f &upLocal,
+            const EGG::Vector3f &prevPos, Field::CourseColMgr::CollisionInfo *colInfo,
+            Field::KCLTypeMask *maskOut, Field::KCLTypeMask flags) const;
+    f32 calcSlerpRate(f32 scale, const EGG::Quatf &from, const EGG::Quatf &to) const;
     virtual void calcVehicleRotation(f32 turn);
     virtual void hop();
     virtual void onHop() {}
@@ -88,15 +100,19 @@ public:
     void activateBoost(KartBoost::Type type, s16 frames);
     void applyStartBoost(s16 frames);
     void activateMushroom();
+    void activateZipperBoost();
     void setOffroadInvincibility(s16 timer);
     void calcOffroadInvincibility();
     void calcMushroomBoost();
+    void calcZipperBoost();
     void landTrick();
 
     void enterCannon();
     void calcCannon();
     void calcRotCannon(const EGG::Vector3f &forward);
     void exitCannon();
+
+    void triggerRespawn();
 
     /// @beginSetters
     void setSpeed(f32 val);
@@ -127,12 +143,18 @@ public:
     [[nodiscard]] f32 speedRatio() const;
     [[nodiscard]] u16 floorCollisionCount() const;
     [[nodiscard]] s32 hopStickX() const;
+    [[nodiscard]] f32 hopPosY() const;
+    [[nodiscard]] s16 respawnTimer() const;
+    [[nodiscard]] s16 respawnPostLandTimer() const;
     [[nodiscard]] PadType &padType();
     [[nodiscard]] KartJump *jump() const;
+    [[nodiscard]] KartHalfPipe *halfPipe() const;
+    [[nodiscard]] KartBurnout &burnout();
     /// @endGetters
 
 protected:
     enum class eFlags {
+        Respawned = 0,   ///< Set when Lakitu lets go of the player, cleared when landing.
         DriftReset = 1,  ///< Set when a wall bonk should cancel your drift.
         SsmtCharged = 2, ///< Set after holding a stand-still mini-turbo for 75 frames.
         LaunchBoost = 4,
@@ -209,6 +231,8 @@ protected:
     u16 m_smtCharge;         ///< A value between 0 and 300 representing current SMT charge.
     f32 m_outsideDriftBonus; ///< Added to angular velocity when outside drifting.
     KartBoost m_boost;
+    s16 m_zipperBoostTimer;
+    s16 m_zipperBoostMax;
     KartReject m_reject;
     s16 m_offroadInvincibility;  ///< How many frames until the player is affected by offroad.
     s16 m_ssmtCharge;            ///< Increments every frame up to 75 when charging stand-still MT.
@@ -233,11 +257,17 @@ protected:
     f32 m_hopVelY;    ///< Relative velocity due to a hop. Starts at 10 and decreases with gravity.
     f32 m_hopPosY;    ///< Relative position as the result of a hop. Starts at 0.
     f32 m_hopGravity; ///< Always main gravity (-1.3f).
+    s16 m_timeInRespawn;        ///< The number of frames elapsed after position snap from respawn.
+    s16 m_respawnPreLandTimer;  ///< Counts down from 4 when pressing A before landing from respawn.
+    s16 m_respawnPostLandTimer; ///< Counts up to 4 if not accelerating after respawn landing.
+    s16 m_respawnTimer;
     DrivingDirection m_drivingDirection; ///< Current state of driver's direction.
     s16 m_backwardsAllowCounter;         ///< Tracks the 15f delay before reversing.
     PadType m_padType;
     Flags m_flags;
     KartJump *m_jump;
+    KartHalfPipe *m_halfPipe;                   ///< Pertains to zipper physics.
+    KartBurnout m_burnout;                      ///< Manages the state of start boost burnout.
     const DriftingParameters *m_driftingParams; ///< Drift-type-specific parameters.
     f32 m_rawTurn; ///< Float in range [-1, 1]. Represents stick magnitude + direction.
 };

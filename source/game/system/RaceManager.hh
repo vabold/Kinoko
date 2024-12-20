@@ -1,21 +1,12 @@
 #pragma once
 
 #include "game/system/KPadController.hh"
+#include "game/system/map/MapdataCheckPoint.hh"
+#include "game/system/map/MapdataJugemPoint.hh"
 
 #include <egg/math/Vector.hh>
 
 namespace System {
-
-class RaceManagerPlayer {
-public:
-    RaceManagerPlayer();
-    virtual ~RaceManagerPlayer() {}
-
-    [[nodiscard]] const KPad *inputs() const;
-
-private:
-    const KPad *m_inputs;
-};
 
 /// @addr{0x809BD730}
 /// @brief Manages the timers that track the stages of a race.
@@ -26,6 +17,40 @@ private:
 /// @nosubgrouping
 class RaceManager : EGG::Disposer {
 public:
+    class Player {
+    public:
+        Player();
+        virtual ~Player() {}
+
+        void init();
+        void calc();
+
+        /// @beginGetters
+        [[nodiscard]] u16 checkpointId() const;
+        [[nodiscard]] f32 raceCompletion() const;
+        [[nodiscard]] s8 jugemId() const;
+        [[nodiscard]] const KPad *inputs() const;
+        /// @endGetters
+
+    private:
+        MapdataCheckPoint *calcCheckpoint(u16 checkpointId, f32 distanceRatio);
+        [[nodiscard]] bool areCheckpointsSubsequent(const MapdataCheckPoint *checkpoint,
+                u16 nextCheckpointId) const;
+
+        void decrementLap();
+        void incrementLap();
+
+        u16 m_checkpointId;
+        f32 m_raceCompletion;
+        f32 m_checkpointFactor; ///< The proportion of a lap for the current checkpoint
+        f32 m_checkpointStartLapCompletion;
+        f32 m_lapCompletion;
+        s8 m_jugemId;
+        s16 m_currentLap;
+        s8 m_maxKcp;
+        const KPad *m_inputs;
+    };
+
     enum class Stage {
         Intro = 0,
         Countdown = 1,
@@ -34,15 +59,18 @@ public:
         FinishGlobal = 4,
     };
 
+    void init();
+
     void findKartStartPoint(EGG::Vector3f &pos, EGG::Vector3f &angles);
 
     void calc();
 
     [[nodiscard]] bool isStageReached(Stage stage) const;
+    [[nodiscard]] MapdataJugemPoint *jugemPoint() const;
 
     /// @beginGetters
     [[nodiscard]] int getCountdownTimer() const;
-    [[nodiscard]] const RaceManagerPlayer &player() const;
+    [[nodiscard]] const Player &player() const;
     [[nodiscard]] Stage stage() const;
     /// @endGetters
 
@@ -54,7 +82,7 @@ private:
     RaceManager();
     ~RaceManager() override;
 
-    RaceManagerPlayer m_player;
+    Player m_player;
     Stage m_stage;
     u16 m_introTimer;
     u32 m_timer;

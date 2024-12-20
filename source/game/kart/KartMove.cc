@@ -15,6 +15,7 @@
 #include "game/system/CourseMap.hh"
 #include "game/system/RaceManager.hh"
 #include "game/system/map/MapdataCannonPoint.hh"
+#include "game/system/map/MapdataJugemPoint.hh"
 
 #include <egg/math/Math.hh>
 #include <egg/math/Quat.hh>
@@ -34,15 +35,6 @@ static constexpr std::array<CannonParameter, 3> CANNON_PARAMETERS = {{
         {120.0f, 2000.0f, 1000.0f, 45.0f},
 }};
 
-/// @brief Rate at which the kart's leaning rotation increases during the race
-static constexpr f32 LEAN_ROT_INC_RACE = 0.1f;
-/// @brief Max leaning rotation during the race
-static constexpr f32 LEAN_ROT_CAP_RACE = 1.0f;
-/// @brief Rate at which the kart's leaning rotation increases during the countdown
-static constexpr f32 LEAN_ROT_INC_COUNTDOWN = 0.08f;
-/// @brief Max leaning rotation during the countdown
-static constexpr f32 LEAN_ROT_CAP_COUNTDOWN = 0.6f;
-
 /// @addr{0x80577FC4}
 KartMove::KartMove() : m_smoothedUp(EGG::Vector3f::ey), m_scale(1.0f, 1.0f, 1.0f) {
     m_totalScale = 1.0f;
@@ -58,18 +50,19 @@ KartMove::~KartMove() = default;
 /// @addr{0x8057821C}
 void KartMove::createSubsystems() {
     m_jump = new KartJump(this);
+    m_halfPipe = new KartHalfPipe();
 }
 
 /// @stage All
 /// @brief Each frame, looks at player input and kart stats. Saves turn-related info.
 /// @addr{0x8057A8B4}
 void KartMove::calcTurn() {
-    if (state()->isCannonStart() || state()->isInCannon()) {
-        return;
-    }
-
     m_realTurn = 0.0f;
     m_rawTurn = 0.0f;
+
+    if (state()->isCannonStart() || state()->isInCannon() || state()->isOverZipper()) {
+        return;
+    }
 
     if (state()->isBeforeRespawn()) {
         return;
@@ -164,6 +157,8 @@ void KartMove::init(bool b1, bool b2) {
     m_mtCharge = 0;
     m_outsideDriftBonus = 0.0f;
     m_boost.reset();
+    m_zipperBoostTimer = 0;
+    m_zipperBoostMax = 0;
     m_reject.reset();
     m_offroadInvincibility = 0;
     m_ssmtCharge = 0;
@@ -194,10 +189,15 @@ void KartMove::init(bool b1, bool b2) {
     m_hopVelY = 0.0f;
     m_hopPosY = 0.0f;
     m_hopGravity = 0.0f;
+    m_timeInRespawn = 0;
+    m_respawnPreLandTimer = 0;
+    m_respawnPostLandTimer = 0;
+    m_respawnTimer = 0;
     m_drivingDirection = DrivingDirection::Forwards;
     m_padType.makeAllZero();
     m_flags.makeAllZero();
     m_jump->reset();
+    m_halfPipe->reset();
     m_rawTurn = 0.0f;
 }
 
@@ -253,10 +253,18 @@ void KartMove::setKartSpeedLimit() {
 /// @details Calls various functions to handle drifts, hops, boosts.
 /// Afterwards, calculates the kart's speed and rotation.
 void KartMove::calc() {
+    if (state()->isInRespawn()) {
+        calcInRespawn();
+        return;
+    }
+
     dynamics()->resetInternalVelocity();
+    m_burnout.calc();
     calcSsmtStart();
+    m_halfPipe->calc();
     calcTop();
     tryEndJumpPad();
+    calcRespawnBoost();
     calcSpecialFloor();
     m_jump->calc();
     calcDirs();
@@ -272,6 +280,7 @@ void KartMove::calc() {
     calcSsmt();
     calcBoost();
     calcMushroomBoost();
+    calcZipperBoost();
 
     if (state()->isInCannon()) {
         calcCannon();
@@ -281,6 +290,93 @@ void KartMove::calc() {
     calcVehicleSpeed();
     calcAcceleration();
     calcRotation();
+}
+
+/// @addr{0x80584334}
+void KartMove::calcRespawnStart() {
+    constexpr float RESPAWN_HEIGHT = 700.0f;
+
+    const auto *jugemPoint = System::RaceManager::Instance()->jugemPoint();
+    const EGG::Vector3f &jugemPos = jugemPoint->pos();
+    const EGG::Vector3f &jugemRot = jugemPoint->rot();
+
+    EGG::Vector3f respawnPos = jugemPos;
+    respawnPos.y += RESPAWN_HEIGHT;
+    EGG::Vector3f respawnRot = EGG::Vector3f(0.0f, jugemRot.y, 0.0f);
+
+    setInitialPhysicsValues(respawnPos, respawnRot);
+    state()->setTriggerRespawn(false);
+    state()->setInRespawn(true);
+}
+
+/// @addr{0x80579A50}
+void KartMove::calcInRespawn() {
+    constexpr f32 LAKITU_VELOCITY = 1.5f;
+    constexpr u16 RESPAWN_DURATION = 110;
+
+    if (!state()->isInRespawn()) {
+        return;
+    }
+
+    EGG::Vector3f newPos = pos();
+    newPos.y -= LAKITU_VELOCITY;
+    dynamics()->setPos(newPos);
+    dynamics()->setNoGravity(true);
+
+    if (++m_timeInRespawn > RESPAWN_DURATION) {
+        state()->setInRespawn(false);
+        state()->setAfterRespawn(true);
+        state()->setRespawnKillY(true);
+        m_timeInRespawn = 0;
+        m_flags.setBit(eFlags::Respawned);
+        dynamics()->setNoGravity(false);
+    }
+}
+
+/// @addr{0x80581C90}
+void KartMove::calcRespawnBoost() {
+    constexpr s16 RESPAWN_BOOST_DURATION = 30;
+    constexpr s16 RESPAWN_BOOST_INPUT_LENIENCY = 4;
+
+    if (state()->isAfterRespawn()) {
+        if (state()->isTouchingGround()) {
+            if (m_respawnPreLandTimer > 0) {
+                if (!state()->isBeforeRespawn()) {
+                    activateBoost(KartBoost::Type::AllMt, RESPAWN_BOOST_DURATION);
+                    m_respawnTimer = RESPAWN_BOOST_DURATION;
+                }
+            } else {
+                m_respawnPostLandTimer = RESPAWN_BOOST_INPUT_LENIENCY;
+            }
+
+            state()->setAfterRespawn(false);
+            m_flags.resetBit(eFlags::Respawned);
+        }
+
+        m_respawnPreLandTimer = std::max(0, m_respawnPreLandTimer - 1);
+
+        if (m_flags.onBit(eFlags::Respawned) && state()->isAccelerateStart()) {
+            m_respawnPreLandTimer = RESPAWN_BOOST_INPUT_LENIENCY;
+            m_flags.resetBit(eFlags::Respawned);
+        }
+    } else {
+        if (m_respawnPostLandTimer > 0) {
+            if (state()->isAccelerateStart()) {
+                if (!state()->isBeforeRespawn()) {
+                    activateBoost(KartBoost::Type::AllMt, RESPAWN_BOOST_DURATION);
+                    m_respawnTimer = RESPAWN_BOOST_DURATION;
+                }
+
+                m_respawnPostLandTimer = 0;
+            }
+
+            m_respawnPostLandTimer = std::max(0, m_respawnPostLandTimer - 1);
+        } else {
+            state()->setRespawnKillY(false);
+        }
+    }
+
+    m_respawnTimer = std::max(0, m_respawnTimer - 1);
 }
 
 /// @addr{0x8057D398}
@@ -309,7 +405,10 @@ void KartMove::calcTop() {
 
             f32 scalar = 0.8f;
 
-            if (!state()->isBoost() && !state()->isRampBoost() && !state()->isWheelie()) {
+            if (state()->isHalfPipeRamp() ||
+                    (!state()->isBoost() && !state()->isRampBoost() && !state()->isWheelie() &&
+                            !state()->isOverZipper() &&
+                            (!state()->isZipperBoost() || m_zipperBoostTimer > 15))) {
                 f32 topDotZ = 0.8f - 6.0f * (EGG::Mathf::abs(inputTop.dot(componentZAxis())));
                 scalar = std::min(0.8f, std::max(0.3f, topDotZ));
             }
@@ -318,6 +417,7 @@ void KartMove::calcTop() {
             m_smoothedUp.normalise();
 
             f32 bodyDotFront = bodyFront().dot(m_smoothedUp);
+
             if (bodyDotFront < -0.1f) {
                 stabilizationFactor += std::min(0.2f, EGG::Mathf::abs(bodyDotFront) * 0.5f);
             }
@@ -332,7 +432,7 @@ void KartMove::calcTop() {
 
     dynamics()->setStabilizationFactor(stabilizationFactor);
 
-    m_nonZipperAirtime = state()->airtime();
+    m_nonZipperAirtime = state()->isOverZipper() ? 0 : state()->airtime();
     m_flags.changeBit(collide()->surfaceFlags().onBit(KartCollide::eSurfaceFlags::Trickable),
             eFlags::TrickableSurface);
 }
@@ -340,7 +440,7 @@ void KartMove::calcTop() {
 /// @addr{0x8057D888}
 /// @brief Calculates rotation of the bike due to excessive airtime.
 void KartMove::calcAirtimeTop() {
-    if (!state()->isAirtimeOver20()) {
+    if (state()->isOverZipper() || !state()->isAirtimeOver20()) {
         return;
     }
 
@@ -390,10 +490,11 @@ void KartMove::calcDirs() {
     local_88.normalise();
     m_flags.setBit(eFlags::LaunchBoost);
 
-    if (!state()->isInATrick() &&
-            (state()->isTouchingGround() || !state()->isRampBoost() ||
-                    !m_jump->isBoostRampEnabled()) &&
-            !state()->isJumpPad() && state()->airtime() <= 5) {
+    if (!state()->isInATrick() && !state()->isOverZipper() &&
+            (((state()->isTouchingGround() || !state()->isRampBoost() ||
+                      !m_jump->isBoostRampEnabled()) &&
+                     !state()->isJumpPad() && state()->airtime() <= 5) ||
+                    state()->isNoSparkInvisibleWall())) {
         if (state()->isHop()) {
             local_88 = m_hopDir;
         }
@@ -428,7 +529,9 @@ void KartMove::calcDirs() {
         m_vel1Dir = m_dir;
     }
 
-    m_jump->tryStart(m_smoothedUp.cross(m_dir));
+    if (!state()->isOverZipper()) {
+        m_jump->tryStart(m_smoothedUp.cross(m_dir));
+    }
 
     if (m_hasLandingDir) {
         f32 dot = m_dir.dot(m_landingDir);
@@ -459,6 +562,11 @@ void KartMove::calcStickyRoad() {
     constexpr f32 STICKY_RADIUS = 200.0f;
     constexpr Field::KCLTypeMask STICKY_MASK =
             KCL_TYPE_BIT(COL_TYPE_STICKY_ROAD) | KCL_TYPE_BIT(COL_TYPE_MOVING_WATER);
+
+    if (state()->isOverZipper()) {
+        state()->setStickyRoad(false);
+        return;
+    }
 
     if ((!state()->isStickyRoad() &&
                 collide()->surfaceFlags().offBit(KartCollide::eSurfaceFlags::Trickable)) ||
@@ -698,6 +806,12 @@ void KartMove::clearRampBoost() {
     state()->setRampBoost(false);
 }
 
+/// @addr{0x80582F38}
+void KartMove::clearZipperBoost() {
+    m_zipperBoostTimer = 0;
+    state()->setZipperBoost(false);
+}
+
 /// @addr{0x80582D94}
 void KartMove::clearBoost() {
     m_boost.resetActive();
@@ -724,28 +838,30 @@ void KartMove::clearOffroadInvincibility() {
 void KartMove::calcManualDrift() {
     bool isHopping = calcPreDrift();
 
-    const EGG::Vector3f rotZ = dynamics()->mainRot().rotateVector(EGG::Vector3f::ez);
+    if (!state()->isOverZipper()) {
+        const EGG::Vector3f rotZ = dynamics()->mainRot().rotateVector(EGG::Vector3f::ez);
 
-    if (!state()->isTouchingGround() &&
-            param()->stats().driftType != KartParam::Stats::DriftType::Inside_Drift_Bike &&
-            (state()->isDriftManual() || state()->isSlipdriftCharge()) &&
-            m_flags.onBit(eFlags::LaunchBoost)) {
-        const EGG::Vector3f up = dynamics()->mainRot().rotateVector(EGG::Vector3f::ey);
-        EGG::Vector3f driftRej = m_outsideDriftLastDir.rej(up);
+        if (!state()->isTouchingGround() &&
+                param()->stats().driftType != KartParam::Stats::DriftType::Inside_Drift_Bike &&
+                (state()->isDriftManual() || state()->isSlipdriftCharge()) &&
+                m_flags.onBit(eFlags::LaunchBoost)) {
+            const EGG::Vector3f up = dynamics()->mainRot().rotateVector(EGG::Vector3f::ey);
+            EGG::Vector3f driftRej = m_outsideDriftLastDir.rej(up);
 
-        if (driftRej.normalise() != 0.0f) {
-            f32 rejCrossDirMag = driftRej.cross(rotZ).length();
-            f32 angle = EGG::Mathf::atan2(rejCrossDirMag, driftRej.dot(rotZ));
-            f32 sign = 1.0f;
-            if ((rotZ.z * (rotZ.x - driftRej.x)) - (rotZ.x * (rotZ.z - driftRej.z)) > 0.0f) {
-                sign = -1.0f;
+            if (driftRej.normalise() != 0.0f) {
+                f32 rejCrossDirMag = driftRej.cross(rotZ).length();
+                f32 angle = EGG::Mathf::atan2(rejCrossDirMag, driftRej.dot(rotZ));
+                f32 sign = 1.0f;
+                if ((rotZ.z * (rotZ.x - driftRej.x)) - (rotZ.x * (rotZ.z - driftRej.z)) > 0.0f) {
+                    sign = -1.0f;
+                }
+
+                m_outsideDriftAngle += angle * RAD2DEG * sign;
             }
-
-            m_outsideDriftAngle += angle * RAD2DEG * sign;
         }
-    }
 
-    m_outsideDriftLastDir = rotZ;
+        m_outsideDriftLastDir = rotZ;
+    }
 
     // TODO: Is this backwards/inverted?
     if (((!state()->isHop() || m_hopFrame < 3) && !state()->isSlipdriftCharge()) ||
@@ -773,9 +889,10 @@ void KartMove::calcManualDrift() {
             }
         }
     } else {
-        if (!state()->isDriftInput() || !state()->isAccelerate() ||
-                state()->isRejectRoadTrigger() || state()->isWall3Collision() ||
-                state()->isWallCollision() || !canStartDrift()) {
+        if (!state()->isOverZipper() &&
+                (!state()->isDriftInput() || !state()->isAccelerate() ||
+                        state()->isRejectRoadTrigger() || state()->isWall3Collision() ||
+                        state()->isWallCollision() || !canStartDrift())) {
             releaseMt();
             resetDriftManual();
             m_flags.setBit(eFlags::DriftReset);
@@ -940,27 +1057,33 @@ void KartMove::calcRotation() {
         if (!forwards) {
             turn = -turn;
         }
-    }
 
-    if (!state()->isTouchingGround()) {
-        if (state()->isRampBoost() && m_jump->isBoostRampEnabled()) {
-            turn = 0.0f;
-        } else {
-            u32 airtime = state()->airtime();
-            if (airtime >= 70) {
-                turn = 0.0f;
-            } else if (airtime >= 30) {
-                turn = std::max(0.0f, turn * (1.0f - (airtime - 30) * 0.025f));
-            }
+        if (state()->isZipperBoost() && !state()->isDriftManual()) {
+            turn *= 2.0f;
         }
     }
 
-    const EGG::Vector3f forward = dynamics()->mainRot().rotateVector(EGG::Vector3f::ez);
-    f32 angle = EGG::Mathf::atan2(forward.cross(m_dir).length(), forward.dot(m_dir));
-    angle = EGG::Mathf::abs(angle) * RAD2DEG;
+    if (!state()->isZipperTrick()) {
+        if (!state()->isTouchingGround()) {
+            if (state()->isRampBoost() && m_jump->isBoostRampEnabled()) {
+                turn = 0.0f;
+            } else {
+                u32 airtime = state()->airtime();
+                if (airtime >= 70) {
+                    turn = 0.0f;
+                } else if (airtime >= 30) {
+                    turn = std::max(0.0f, turn * (1.0f - (airtime - 30) * 0.025f));
+                }
+            }
+        }
 
-    if (angle > 60.0f) {
-        turn *= std::max(0.0f, 1.0f - (angle - 60.0f) / 40.0f);
+        const EGG::Vector3f forward = dynamics()->mainRot().rotateVector(EGG::Vector3f::ez);
+        f32 angle = EGG::Mathf::atan2(forward.cross(m_dir).length(), forward.dot(m_dir));
+        angle = EGG::Mathf::abs(angle) * RAD2DEG;
+
+        if (angle > 60.0f) {
+            turn *= std::max(0.0f, 1.0f - (angle - 60.0f) / 40.0f);
+        }
     }
 
     calcVehicleRotation(turn);
@@ -996,8 +1119,12 @@ void KartMove::calcVehicleSpeed() {
             if (state()->isJumpPad() && !state()->isAccelerate()) {
                 m_speedDragMultiplier = 0.99f;
             } else {
-                if (state()->airtime() > 5) {
+                if (state()->isOverZipper()) {
                     m_speedDragMultiplier = 0.999f;
+                } else {
+                    if (state()->airtime() > 5) {
+                        m_speedDragMultiplier = 0.999f;
+                    }
                 }
             }
             m_speed *= m_speedDragMultiplier;
@@ -1008,7 +1135,7 @@ void KartMove::calcVehicleSpeed() {
     } else {
         if (!state()->isJumpPad() && !state()->isRampBoost()) {
             if (state()->isAccelerate()) {
-                m_acceleration = calcVehicleAcceleration();
+                m_acceleration = state()->isHalfPipeRamp() ? 5.0f : calcVehicleAcceleration();
             } else {
                 if (!state()->isBrake() || state()->isDisableBackwardsAccel()) {
                     m_speed *= m_speed > 0.0f ? 0.98f : 0.95f;
@@ -1098,17 +1225,23 @@ void KartMove::calcAcceleration() {
 
     m_lastSpeed = m_speed;
 
-    if (m_acceleration < 0.0f) {
-        if (m_speed < -20.0f) {
-            m_acceleration = 0.0f;
-        } else {
-            if (m_speed + m_acceleration <= -20.0f) {
-                m_acceleration = -20.0f - m_speed;
+    dynamics()->setKillExtVelY(state()->isRespawnKillY());
+
+    if (state()->isBurnout()) {
+        m_speed = 0.0f;
+    } else {
+        if (m_acceleration < 0.0f) {
+            if (m_speed < -20.0f) {
+                m_acceleration = 0.0f;
+            } else {
+                if (m_speed + m_acceleration <= -20.0f) {
+                    m_acceleration = -20.0f - m_speed;
+                }
             }
         }
-    }
 
-    m_speed += m_acceleration;
+        m_speed += m_acceleration;
+    }
 
     if (state()->isBeforeRespawn()) {
         m_speed *= OOB_SLOWDOWN_RATE;
@@ -1180,7 +1313,10 @@ void KartMove::calcAcceleration() {
     }
 
     EGG::Vector3f nextSpeed = m_speed * m_vel1Dir;
-    nextSpeed.y = std::min(TERMINAL_VELOCITY, nextSpeed.y);
+
+    f32 maxSpeedY = state()->isOverZipper() ? KartHalfPipe::TerminalVelocity() : TERMINAL_VELOCITY;
+    nextSpeed.y = std::min(nextSpeed.y, maxSpeedY);
+
     dynamics()->setIntVel(dynamics()->intVel() + nextSpeed);
 
     if (state()->isTouchingGround() && !state()->isDriftManual() && !state()->isHop()) {
@@ -1208,6 +1344,10 @@ f32 KartMove::calcWallCollisionSpeedFactor(f32 &f1) {
     }
 
     onWallCollision();
+
+    if (state()->isOverZipper()) {
+        return 1.0f;
+    }
 
     EGG::Vector3f wallNrm = collisionData().wallNrm;
     if (wallNrm.y > 0.0f) {
@@ -1242,7 +1382,7 @@ void KartMove::calcWallCollisionStart(f32 param_2) {
     m_vel1Dir = m_dir;
     m_landingDir = m_dir;
 
-    if (param_2 < 0.9f) {
+    if (!state()->isOverZipper() && param_2 < 0.9f) {
         f32 speedDiff = m_lastSpeed - m_speed;
 
         if (speedDiff > 30.0f) {
@@ -1327,7 +1467,8 @@ void KartMove::calcDive() {
 
     m_divingRot *= 0.96f;
 
-    if (state()->isTouchingGround() || state()->isCannonStart() || state()->isInCannon()) {
+    if (state()->isTouchingGround() || state()->isCannonStart() || state()->isInCannon() ||
+            state()->isOverZipper()) {
         return;
     }
 
@@ -1406,6 +1547,25 @@ void KartMove::calcHopPhysics() {
 /// @addr{0x80579960}
 void KartMove::calcRejectRoad() {
     m_reject.calcRejectRoad();
+}
+
+/// @addr{0x80583F2C}
+bool KartMove::calcZipperCollision(f32 radius, f32 scale, EGG::Vector3f &pos,
+        EGG::Vector3f &upLocal, const EGG::Vector3f &prevPos,
+        Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut,
+        Field::KCLTypeMask flags) const {
+    upLocal = mainRot().rotateVector(EGG::Vector3f::ey);
+    pos = dynamics()->pos() + (-scale * m_scale.y) * upLocal;
+
+    auto *colDir = Field::CollisionDirector::Instance();
+    return colDir->checkSphereFullPush(radius, pos, prevPos, flags, colInfo, maskOut, 0);
+}
+
+/// @addr{0x805879A4}
+f32 KartMove::calcSlerpRate(f32 scale, const EGG::Quatf &from, const EGG::Quatf &to) const {
+    f32 dotNorm = std::max(-1.0f, std::min(1.0f, from.dot(to)));
+    f32 acos = EGG::Mathf::acos(dotNorm);
+    return acos > 0.0f ? std::min(0.1f, scale / acos) : 0.1f;
 }
 
 /// @addr{0x8057CF0C}
@@ -1607,7 +1767,7 @@ void KartMove::tryStartJumpPad() {
             {56.0f, 56.0f, 50.0f},
     }};
 
-    if (state()->isBeforeRespawn()) {
+    if (state()->isBeforeRespawn() || state()->isHalfPipeRamp()) {
         return;
     }
 
@@ -1681,6 +1841,24 @@ void KartMove::activateMushroom() {
     setOffroadInvincibility(MUSHROOM_DURATION);
 }
 
+/// @addr{0x8057F96C}
+void KartMove::activateZipperBoost() {
+    constexpr s16 BASE_DURATION = 50;
+    constexpr s16 TRICK_DURATION = 100;
+
+    if (state()->isBeforeRespawn()) {
+        return;
+    }
+
+    s16 boostDuration = state()->isZipperTrick() ? TRICK_DURATION : BASE_DURATION;
+    activateBoost(KartBoost::Type::TrickAndZipper, boostDuration);
+
+    setOffroadInvincibility(boostDuration);
+    m_zipperBoostTimer = 0;
+    m_zipperBoostMax = boostDuration;
+    state()->setZipperBoost(true);
+}
+
 /// @stage 2
 /// @brief Ignores offroad KCL collision for a set amount of time.
 /// @addr{0x805824C8}
@@ -1722,6 +1900,26 @@ void KartMove::calcMushroomBoost() {
     state()->setMushroomBoost(false);
 }
 
+/// @addr{0x80582E34}
+void KartMove::calcZipperBoost() {
+    if (!state()->isZipperBoost()) {
+        return;
+    }
+
+    state()->setAccelerate(true);
+
+    if (!state()->isOverZipper() && ++m_zipperBoostTimer >= m_zipperBoostMax) {
+        m_zipperBoostTimer = 0;
+        state()->setZipperBoost(false);
+    }
+
+    if (m_zipperBoostTimer < 10) {
+        EGG::Vector3f angVel = dynamics()->angVel0();
+        angVel.y = 0.0f;
+        dynamics()->setAngVel0(angVel);
+    }
+}
+
 /// @addr{0x8057F7A8}
 void KartMove::landTrick() {
     static constexpr std::array<s16, 3> KART_TRICK_BOOST_DURATION = {{
@@ -1758,6 +1956,7 @@ void KartMove::enterCannon() {
 
     cancelJumpPad();
     clearRampBoost();
+    clearZipperBoost();
     clearSsmt();
     clearOffroadInvincibility();
 
@@ -1873,6 +2072,12 @@ void KartMove::exitCannon() {
     dynamics()->setIntVel(m_cannonEntryOfs * m_speed);
 }
 
+/// @addr{0x805799AC}
+void KartMove::triggerRespawn() {
+    m_timeInRespawn = 0;
+    state()->setTriggerRespawn(true);
+}
+
 void KartMove::setSpeed(f32 val) {
     m_speed = val;
 }
@@ -1976,12 +2181,32 @@ s32 KartMove::hopStickX() const {
     return m_hopStickX;
 }
 
+f32 KartMove::hopPosY() const {
+    return m_hopPosY;
+}
+
+s16 KartMove::respawnTimer() const {
+    return m_respawnTimer;
+}
+
+s16 KartMove::respawnPostLandTimer() const {
+    return m_respawnPostLandTimer;
+}
+
 KartMove::PadType &KartMove::padType() {
     return m_padType;
 }
 
 KartJump *KartMove::jump() const {
     return m_jump;
+}
+
+KartHalfPipe *KartMove::halfPipe() const {
+    return m_halfPipe;
+}
+
+KartBurnout &KartMove::burnout() {
+    return m_burnout;
 }
 
 /// @addr{0x80587B30}
@@ -2014,6 +2239,7 @@ void KartMoveBike::cancelWheelie() {
 /// @addr{0x80587BB8}
 void KartMoveBike::createSubsystems() {
     m_jump = new KartJumpBike(this);
+    m_halfPipe = new KartHalfPipe();
 }
 
 /// @stage All
@@ -2043,10 +2269,10 @@ void KartMoveBike::calcVehicleRotation(f32 turn) {
     f32 leanRotMin = -m_leanRotCap;
     f32 leanRotMax = m_leanRotCap;
 
-    if (state()->isBeforeRespawn() || state()->isWheelie() || state()->isRejectRoadTrigger() ||
-            state()->isAirtimeOver20() || state()->isSoftWallDrift() ||
-            state()->isSomethingWallCollision() || state()->isHWG() || state()->isCannonStart() ||
-            state()->isInCannon()) {
+    if (state()->isBeforeRespawn() || state()->isWheelie() || state()->isOverZipper() ||
+            state()->isRejectRoadTrigger() || state()->isAirtimeOver20() ||
+            state()->isSoftWallDrift() || state()->isSomethingWallCollision() || state()->isHWG() ||
+            state()->isCannonStart() || state()->isInCannon()) {
         m_leanRot *= m_turningParams->leanRotDecayFactor;
     } else if (!state()->isDrifting()) {
         if (stickX <= 0.2f) {
@@ -2108,13 +2334,13 @@ void KartMoveBike::calcVehicleRotation(f32 turn) {
 
     calcDive();
 
-    f32 scalar = (m_speed >= 0.0f) ? m_speedRatioCapped * 2.0f : 0.0f;
-    scalar = std::min(1.0f, scalar);
-
     EGG::Vector3f top = m_up;
 
-    if (!state()->isRejectRoad()) {
+    if (!state()->isRejectRoad() && !state()->isHalfPipeRamp() && !state()->isOverZipper()) {
+        f32 scalar = (m_speed >= 0.0f) ? m_speedRatioCapped * 2.0f : 0.0f;
+        scalar = std::min(1.0f, scalar);
         top = scalar * m_up + (1.0f - scalar) * EGG::Vector3f::ey;
+
         if (std::numeric_limits<f32>::epsilon() < top.dot()) {
             top.normalise();
         }
@@ -2142,11 +2368,11 @@ void KartMoveBike::setTurnParams() {
     }
 
     if (System::RaceManager::Instance()->isStageReached(System::RaceManager::Stage::Race)) {
-        m_leanRotInc = LEAN_ROT_INC_RACE;
-        m_leanRotCap = LEAN_ROT_CAP_RACE;
+        m_leanRotInc = m_turningParams->leanRotIncRace;
+        m_leanRotCap = m_turningParams->leanRotCapRace;
     } else {
-        m_leanRotInc = LEAN_ROT_INC_COUNTDOWN;
-        m_leanRotCap = LEAN_ROT_CAP_COUNTDOWN;
+        m_leanRotInc = m_turningParams->leanRotIncCountdown;
+        m_leanRotCap = m_turningParams->leanRotCapCountdown;
     }
 }
 
@@ -2269,6 +2495,7 @@ void KartMoveBike::initOob() {
     clearBoost();
     clearJumpPad();
     clearRampBoost();
+    clearZipperBoost();
     clearSsmt();
     clearOffroadInvincibility();
     cancelWheelie();

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Common.hh>
+#include <egg/math/Vector.hh>
 
 /// @brief High-level handling for generic system operations, such as input reading, race
 /// configuration, and resource management.
@@ -15,6 +15,8 @@ class MapdataCheckPointAccessor;
 class MapdataFileAccessor;
 class MapdataGeoObj;
 class MapdataGeoObjAccessor;
+class MapdataJugemPoint;
+class MapdataJugemPointAccessor;
 class MapdataStageInfo;
 class MapdataStageInfoAccessor;
 class MapdataStartPoint;
@@ -30,18 +32,30 @@ public:
     [[nodiscard]] MapdataCheckPathAccessor *parseCheckPath(u32 sectionName) const;
     [[nodiscard]] MapdataCheckPointAccessor *parseCheckPoint(u32 sectionName) const;
     [[nodiscard]] MapdataGeoObjAccessor *parseGeoObj(u32 sectionName) const;
+    [[nodiscard]] MapdataJugemPointAccessor *parseJugemPoint(u32 sectionName);
     [[nodiscard]] MapdataStageInfoAccessor *parseStageInfo(u32 sectionName) const;
     [[nodiscard]] MapdataStartPointAccessor *parseStartPoint(u32 sectionName) const;
+
+    [[nodiscard]] s16 findSector(const EGG::Vector3f &pos, u16 checkpointIdx, f32 &distanceRatio);
+    [[nodiscard]] s16 findRecursiveSector(const EGG::Vector3f &pos, s16 depth,
+            bool searchBackwardsFirst, MapdataCheckPoint *checkpoint, f32 &completion,
+            bool playerIsForwards) const;
 
     /// @beginGetters
     [[nodiscard]] MapdataCannonPoint *getCannonPoint(u16 i) const;
     [[nodiscard]] MapdataCheckPath *getCheckPath(u16 i) const;
     [[nodiscard]] MapdataCheckPoint *getCheckPoint(u16 i) const;
     [[nodiscard]] MapdataGeoObj *getGeoObj(u16 i) const;
+    [[nodiscard]] MapdataJugemPoint *getJugemPoint(u16 i) const;
     [[nodiscard]] MapdataStageInfo *getStageInfo() const;
     [[nodiscard]] MapdataStartPoint *getStartPoint(u16 i) const;
+    [[nodiscard]] u16 getCheckPathCount() const;
+    [[nodiscard]] u16 getCheckPointCount() const;
     [[nodiscard]] u16 getGeoObjCount() const;
+    [[nodiscard]] u16 getJugemPointCount() const;
     [[nodiscard]] u32 version() const;
+    [[nodiscard]] MapdataCheckPathAccessor *checkPath() const;
+    [[nodiscard]] MapdataCheckPointAccessor *checkPoint() const;
     [[nodiscard]] f32 startTmpAngle() const;
     [[nodiscard]] f32 startTmp0() const;
     [[nodiscard]] f32 startTmp1() const;
@@ -57,11 +71,26 @@ private:
     CourseMap();
     ~CourseMap() override;
 
+    [[nodiscard]] s16 findSectorBetweenSides(const EGG::Vector3f &pos,
+            MapdataCheckPoint *checkpoint, f32 &distanceRatio);
+    [[nodiscard]] s16 findSectorOutsideSector(const EGG::Vector3f &pos,
+            MapdataCheckPoint *checkpoint, f32 &distanceRatio);
+    [[nodiscard]] s16 findSectorRegional(const EGG::Vector3f &pos, MapdataCheckPoint *checkpoint,
+            f32 &distanceRatio);
+    [[nodiscard]] s16 searchNextCheckpoint(const EGG::Vector3f &pos, s16 depth,
+            const MapdataCheckPoint *checkpoint, f32 &completion, bool playerIsForwards,
+            bool useCache) const;
+    [[nodiscard]] s16 searchPrevCheckpoint(const EGG::Vector3f &pos, s16 depth,
+            const MapdataCheckPoint *checkpoint, f32 &completion, bool playerIsForwards,
+            bool useCache) const;
+    void clearSectorChecked();
+
     MapdataFileAccessor *m_course;
     MapdataStartPointAccessor *m_startPoint;
     MapdataCheckPathAccessor *m_checkPath;
     MapdataCheckPointAccessor *m_checkPoint;
     MapdataGeoObjAccessor *m_geoObj;
+    MapdataJugemPointAccessor *m_jugemPoint;
     MapdataCannonPointAccessor *m_cannonPoint;
     MapdataStageInfoAccessor *m_stageInfo;
 

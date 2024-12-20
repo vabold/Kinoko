@@ -27,6 +27,7 @@ struct CollisionData;
 class KartBody;
 class KartCollide;
 class KartDynamics;
+class KartHalfPipe;
 class KartJump;
 class KartMove;
 class KartParam;
@@ -68,6 +69,7 @@ public:
     /// @beginSetters
     void setPos(const EGG::Vector3f &pos);
     void setRot(const EGG::Quatf &q);
+    void setInertiaScale(const EGG::Vector3f &scale);
     /// @endSetters
 
     /// @beginGetters
@@ -79,6 +81,8 @@ public:
     [[nodiscard]] const CollisionGroup *collisionGroup() const;
     [[nodiscard]] KartMove *move();
     [[nodiscard]] const KartMove *move() const;
+    [[nodiscard]] KartHalfPipe *halfPipe();
+    [[nodiscard]] const KartHalfPipe *halfPipe() const;
     [[nodiscard]] KartJump *jump();
     [[nodiscard]] const KartJump *jump() const;
     [[nodiscard]] KartParam *param();
@@ -123,6 +127,7 @@ public:
     [[nodiscard]] const EGG::Vector3f &componentZAxis() const;
 
     [[nodiscard]] const EGG::Vector3f &pos() const;
+    [[nodiscard]] const EGG::Vector3f &prevPos() const;
     [[nodiscard]] const EGG::Quatf &fullRot() const;
     [[nodiscard]] const EGG::Vector3f &extVel() const;
     [[nodiscard]] const EGG::Vector3f &intVel() const;
@@ -139,6 +144,7 @@ public:
     [[nodiscard]] std::pair<EGG::Vector3f, EGG::Vector3f> getCannonPosRot();
     [[nodiscard]] f32 speedRatio() const;
     [[nodiscard]] f32 speedRatioCapped() const;
+    [[nodiscard]] bool isInRespawn() const;
 
     [[nodiscard]] static std::list<KartObjectProxy *> &proxyList();
     /// @endGetters

@@ -45,7 +45,7 @@ bool ObjectCollisionBase::check(ObjectCollisionBase &rhs, EGG::Vector3f &distanc
 
         lastRadius = std::max(lastRadius, dot / max);
 
-        if (inSimplex(state, A) || (max2 - dot) < max2 * 0.000001) {
+        if (inSimplex(state, A) || (max2 - dot) < max2 * 0.000001f) {
             getNearestPoint(state, state.m_flags, v0, v1);
 
             v0 -= D * (getBoundingRadius() / max);

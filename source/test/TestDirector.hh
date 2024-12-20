@@ -47,6 +47,24 @@ public:
 private:
     void readHeader();
 
+    template <IntegralType T>
+    void checkDesync(const T &t0, const T &t1, const char *name) {
+        if (t0 == t1) {
+            return;
+        }
+
+        if (m_sync) {
+            REPORT("Test Case Failed: %s [%d / %d]", testCase().name.c_str(), m_currentFrame,
+                    m_frameCount);
+        }
+
+        REPORT("DESYNC! Name: %s", name);
+        REPORT("Expected: %d", t0);
+        REPORT("Observed: %d", t1);
+
+        m_sync = false;
+    }
+
     template <typename T>
     void checkDesync(const T &t0, const T &t1, const char *name) {
         if (t0 == t1) {

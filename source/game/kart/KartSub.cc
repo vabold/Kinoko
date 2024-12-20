@@ -102,6 +102,15 @@ void KartSub::calcPass0() {
     }
 
     state()->calc();
+
+    if (state()->isTriggerRespawn()) {
+        setInertiaScale(EGG::Vector3f(1.0f, 1.0f, 1.0f));
+        resetPhysics();
+        state()->reset();
+        move()->setTurnParams();
+        move()->calcRespawnStart();
+    }
+
     physics()->setPos(dynamics()->pos());
     physics()->setVelocity(dynamics()->velocity());
     dynamics()->setGravity(-1.3f);
@@ -191,7 +200,7 @@ void KartSub::calcPass1() {
         collide()->setMovement(collide()->movement() + effectiveSpeed);
     }
 
-    const auto &colData = collisionData();
+    auto &colData = collisionData();
     if (colData.bWallAtLeftCloser || colData.bWallAtRightCloser || m_sideCollisionTimer > 0) {
         EGG::Vector3f right = dynamics()->mainRot().rotateVector(EGG::Vector3f::ex);
 
@@ -215,11 +224,15 @@ void KartSub::calcPass1() {
             KCL_TYPE_VEHICLE_INTERACTABLE, 0);
 
     if (!state()->isInCannon()) {
-        collide()->findCollision();
-        body()->calcTargetSinkDepth();
-        const auto &colData = collisionData();
-        if (colData.bWall || colData.bWall3) {
-            collide()->setMovement(collide()->movement() + colData.movement);
+        if (!state()->isZipperStick()) {
+            collide()->findCollision();
+            body()->calcTargetSinkDepth();
+
+            if (colData.bWall || colData.bWall3) {
+                collide()->setMovement(collide()->movement() + colData.movement);
+            }
+        } else {
+            colData.reset();
         }
 
         collide()->calcFloorEffect();
