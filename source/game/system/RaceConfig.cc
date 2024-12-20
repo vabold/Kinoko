@@ -44,7 +44,13 @@ void RaceConfig::initControllers() {
 /// @addr{0x8052EEF0}
 /// @brief Initializes the ghost.
 /// @details This is normally scoped within RaceConfig::Scenario, but Kinoko doesn't support menus.
+/// @todo Implement full support for 200cc.
 void RaceConfig::initGhost() {
+    // 200cc isn't supported yet, so we simply check that it's not present
+    if (m_ctgpMetadata.m_isCTGP) {
+        ASSERT(!m_ctgpMetadata.m_is200cc);
+    }
+
     GhostFile ghost(m_ghost);
 
     m_raceScenario.course = ghost.course();
