@@ -133,5 +133,5 @@ int main(int argc, char **argv) {
         sceneMgr->createScene(2, sceneMgr->currentScene());
     }
 
-    return success;
+    return success ? 0 : 1;
 }
