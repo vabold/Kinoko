@@ -1,0 +1,52 @@
+#include "Option.hh"
+
+#include <cstring>
+
+namespace Host::Option {
+
+std::optional<EOption> CheckFlag(const char *arg) {
+    ASSERT(arg);
+    if (arg[0] != '-') {
+        return std::nullopt;
+    }
+
+    // Verbose flag
+    if (arg[1] == '-') {
+        const char *verbose_arg = &arg[2];
+
+        if (strcmp(verbose_arg, "mode") == 0) {
+            return EOption::Mode;
+        }
+
+        if (strcmp(verbose_arg, "suite") == 0) {
+            return EOption::Suite;
+        }
+
+        return EOption::Invalid;
+    } else {
+        switch (arg[1]) {
+        case 'M':
+        case 'm':
+            return EOption::Mode;
+        case 'S':
+        case 's':
+            return EOption::Suite;
+        default:
+            return EOption::Invalid;
+        }
+    }
+
+    // This is unreachable
+    return std::nullopt;
+}
+
+EMode CheckModeArg(const char *arg) {
+    ASSERT(arg);
+    if (strcmp(arg, "test") == 0) {
+        return EMode::Test;
+    }
+
+    return EMode::Invalid;
+}
+
+} // namespace Host::Option

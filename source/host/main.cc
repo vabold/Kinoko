@@ -1,4 +1,8 @@
-#include "host/System.hh"
+#include "host/KTestSystem.hh"
+#include "host/Option.hh"
+
+#include <egg/core/ExpHeap.hh>
+#include <egg/core/SceneManager.hh>
 
 #if defined(__arm64__) || defined(__aarch64__)
 static void FlushDenormalsToZero() {
@@ -14,7 +18,60 @@ static void FlushDenormalsToZero() {
 }
 #endif
 
+static void *s_memorySpace = nullptr;
+static EGG::Heap *s_rootHeap = nullptr;
+
+static void InitMemory() {
+    constexpr size_t MEMORY_SPACE_SIZE = 0x1000000;
+    Abstract::Memory::MEMiHeapHead::OptFlag opt;
+    opt.setBit(Abstract::Memory::MEMiHeapHead::eOptFlag::ZeroFillAlloc);
+
+#ifdef BUILD_DEBUG
+    opt.setBit(Abstract::Memory::MEMiHeapHead::eOptFlag::DebugFillAlloc);
+#endif
+
+    s_memorySpace = malloc(MEMORY_SPACE_SIZE);
+    s_rootHeap = EGG::ExpHeap::create(s_memorySpace, MEMORY_SPACE_SIZE, opt);
+    s_rootHeap->setName("EGGRoot");
+    s_rootHeap->becomeCurrentHeap();
+
+    EGG::SceneManager::SetRootHeap(s_rootHeap);
+}
+
 int main(int argc, char **argv) {
     FlushDenormalsToZero();
-    return Host::KSystem::Instance().main(argc, argv);
+    InitMemory();
+
+    if (argc < 3) {
+        PANIC("Too few arguments!");
+    }
+
+    // The first argument is the executable, so we ignore it
+    // The second argument is the mode flag
+    // The third argument is the mode arg
+    // TODO: Iterate until we find the index of the mode flag
+    std::optional<Host::EOption> flag = Host::Option::CheckFlag(argv[1]);
+    if (!flag) {
+        PANIC("Not a flag!");
+    }
+
+    if (*flag != Host::EOption::Mode) {
+        PANIC("First flag expected to be mode!");
+    }
+
+    KSystem *sys = nullptr;
+
+    switch (Host::Option::CheckModeArg(argv[2])) {
+    case Host::EMode::Test:
+        sys = KTestSystem::CreateInstance();
+        break;
+    case Host::EMode::Invalid:
+    default:
+        PANIC("Invalid mode!");
+        break;
+    }
+
+    sys->parseOptions(argc - 3, argv + 3);
+    sys->init();
+    return sys->run() ? 0 : 1;
 }
