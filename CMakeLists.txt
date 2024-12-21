@@ -21,7 +21,7 @@ set(COMMON_CXX_FLAGS
 )
 
 set(GAME_CXX_FLAGS
-    -DKINOKO_EGG_OPERATOR_NEW
+    -DREVOLUTION
 )
 
 set(RK_INCLUDE_DIRS
@@ -38,8 +38,8 @@ set(TEST_SOURCE_FILES)
 # Loop through all source files and categorize them
 foreach(FILE ${SOURCE_FILES})
     # Check if the file is in the 'test' folder
-    if(FILE MATCHES "/test/")
-	list(APPEND TEST_SOURCE_FILES ${FILE})
+    if(FILE MATCHES "/test/" OR FILE MATCHES "main.cc")
+        list(APPEND TEST_SOURCE_FILES ${FILE})
     else()
         list(APPEND GAME_SOURCE_FILES ${FILE})
     endif()

@@ -50,7 +50,7 @@ void KSystem::initMemory() {
 /// @addr{0x8000951C}
 void KSystem::run() {
     while (true) {
-	calc();
+        calc();
     }
 }
 

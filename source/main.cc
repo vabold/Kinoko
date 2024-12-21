@@ -1,4 +1,4 @@
-#include "host/System.hh"
+#include <host/System.hh>
 
 #include <test/TestDirector.hh>
 
@@ -115,13 +115,13 @@ int main(int argc, char **argv) {
 
     bool success = true;
     while (true) {
-	// complete a run
-	while (testDirector->calc()) {
-	    ksystem.calc();
-	}
+        // complete a run
+        while (testDirector->calc()) {
+            ksystem.calc();
+        }
 
-	testDirector->writeTestOutput();
-	success &= testDirector->sync();
+        testDirector->writeTestOutput();
+        success &= testDirector->sync();
 
         if (!testDirector->popTestCase()) {
             break;
