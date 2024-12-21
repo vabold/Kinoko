@@ -66,6 +66,10 @@ public:
         m_nextSceneId = id;
     }
 
+    static void SetRootHeap(Heap *heap) {
+        s_rootHeap = heap;
+    }
+
 private:
     /*----------*
         Members
@@ -79,6 +83,8 @@ private:
 
     static Heap *s_heapForCreateScene;
     static u16 s_heapOptionFlg;
+
+    static Heap *s_rootHeap;
 };
 
 } // namespace EGG

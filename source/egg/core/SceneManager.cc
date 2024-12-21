@@ -2,8 +2,6 @@
 
 #include "egg/core/ExpHeap.hh"
 
-#include <host/System.hh>
-
 namespace EGG {
 
 /*------------*
@@ -50,7 +48,7 @@ void SceneManager::createChildScene(int id, Scene *parent) {
 
 /// @addr{0x8023B0E4}
 void SceneManager::createScene(int id, Scene *parent) {
-    Heap *parentHeap = parent ? parent->heap() : Host::KSystem::Instance().rootHeap();
+    Heap *parentHeap = parent ? parent->heap() : s_rootHeap;
 
     // We need to preserve the locked status to reinstate it later
     bool locked = parentHeap->tstDisableAllocation();
@@ -98,7 +96,7 @@ void SceneManager::destroyScene(Scene *scene) {
     }
 
     scene->heap()->destroy();
-    Heap *parentHeap = parent ? parent->heap() : Host::KSystem::Instance().rootHeap();
+    Heap *parentHeap = parent ? parent->heap() : s_rootHeap;
     parentHeap->becomeCurrentHeap();
 }
 
@@ -211,5 +209,7 @@ void SceneManager::setupNextSceneId() {
 
 Heap *SceneManager::s_heapForCreateScene = nullptr;
 u16 SceneManager::s_heapOptionFlg = 2;
+
+Heap *SceneManager::s_rootHeap = nullptr;
 
 } // namespace EGG
