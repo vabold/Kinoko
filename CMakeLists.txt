@@ -45,7 +45,7 @@ foreach(FILE ${SOURCE_FILES})
     endif()
 endforeach()
 
-add_library(libkinoko ${GAME_SOURCE_FILES})
+add_library(libkinoko SHARED ${GAME_SOURCE_FILES})
 target_include_directories(libkinoko SYSTEM
     PRIVATE ${RK_INCLUDE_DIRS}
 )
