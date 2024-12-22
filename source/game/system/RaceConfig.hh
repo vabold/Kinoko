@@ -61,6 +61,14 @@ public:
         m_ghost = rkg;
     }
 
+    void configure(Course course, Character character, Vehicle vehicle, bool isAuto) {
+        m_raceScenario.course = course;
+        Player &player = m_raceScenario.players[0];
+        player.character = character;
+        player.vehicle = vehicle;
+        player.driftIsAuto = isAuto;
+    }
+
     static void RegisterInitCallback(const InitCallback &callback, void *arg);
 
     static RaceConfig *CreateInstance();
