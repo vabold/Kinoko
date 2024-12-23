@@ -32,10 +32,17 @@ void RaceManager::findKartStartPoint(EGG::Vector3f &pos, EGG::Vector3f &angles) 
     }
 }
 
+/// @addr{0x80533C6C}
+void RaceManager::endPlayerRace(u32 /*idx*/) {
+    // We only have one player, so most of the logic is much simpler
+    m_stage = Stage::FinishGlobal;
+}
+
 /// @addr{0x805331B4}
 void RaceManager::calc() {
     constexpr u16 STAGE_INTRO_DURATION = 172;
 
+    m_timerManager.calc();
     m_player.calc();
 
     switch (m_stage) {
@@ -47,6 +54,7 @@ void RaceManager::calc() {
         break;
     case Stage::Countdown:
         if (++m_timer >= STAGE_COUNTDOWN_DURATION) {
+            m_timerManager.setStarted(true);
             m_stage = Stage::Race;
         }
         break;
@@ -77,6 +85,10 @@ int RaceManager::getCountdownTimer() const {
 
 const RaceManager::Player &RaceManager::player() const {
     return m_player;
+}
+
+const TimerManager &RaceManager::timerManager() const {
+    return m_timerManager;
 }
 
 RaceManager::Stage RaceManager::stage() const {
@@ -130,6 +142,7 @@ RaceManager::Player::Player() {
     }
 
     m_currentLap = 0;
+    m_maxLap = 1;
     m_inputs = &KPadDirector::Instance()->playerInput();
 }
 
@@ -185,6 +198,15 @@ f32 RaceManager::Player::raceCompletion() const {
 
 s8 RaceManager::Player::jugemId() const {
     return m_jugemId;
+}
+
+const Timer &RaceManager::Player::lapTimer(size_t idx) const {
+    ASSERT(idx < m_lapTimers.size());
+    return m_lapTimers[idx];
+}
+
+const Timer &RaceManager::Player::raceTimer() const {
+    return m_raceTimer;
 }
 
 const KPad *RaceManager::Player::inputs() const {
@@ -265,7 +287,59 @@ void RaceManager::Player::decrementLap() {
 /// @addr{0x805349B8}
 void RaceManager::Player::incrementLap() {
     m_maxKcp = 0;
-    ++m_currentLap;
+    if (++m_currentLap <= m_maxLap) {
+        return;
+    }
+
+    const auto *kart = Kart::KartObjectManager::Instance()->object(0);
+    u16 addMs = CourseMap::Instance()->getCheckPointEntryOffsetMs(m_checkpointId, kart->pos(),
+            kart->prevPos());
+
+    const Timer &currentTimer = RaceManager::Instance()->timerManager().currentTimer();
+
+    Timer timer;
+    timer.mil = static_cast<u16>(static_cast<f32>(addMs) + static_cast<f32>(currentTimer.mil));
+
+    if (timer.mil > 999) {
+        // The additional milliseconds caused an overflow
+        u8 seconds = currentTimer.sec;
+        timer.mil -= 1000;
+        timer.sec = seconds + 1;
+
+        u16 addMin = 0;
+        if (timer.sec > 59) {
+            timer.sec -= 60;
+            addMin = 1;
+        }
+
+        timer.min = addMin + currentTimer.min;
+        if (timer.min > 999) {
+            timer.min = 999;
+            timer.sec = 59;
+            timer.mil = 999;
+        }
+    } else {
+        timer.sec = currentTimer.sec;
+        timer.min = currentTimer.min;
+    }
+
+    timer.valid = true;
+    // TODO: Handle this case more gracefully
+    ASSERT(static_cast<size_t>(m_maxLap - 1) < m_lapTimers.size());
+    Timer &lapTimer = m_lapTimers[m_maxLap - 1];
+    lapTimer = timer;
+
+    if (m_maxLap >= 3) {
+        endRace(timer);
+    } else {
+        m_maxLap = m_currentLap;
+    }
+}
+
+/// @addr{0x805347F4}
+void RaceManager::Player::endRace(const Timer &finishTime) {
+    m_raceTimer = finishTime;
+    RaceManager::Instance()->endPlayerRace(0);
 }
 
 RaceManager *RaceManager::s_instance = nullptr; ///< @addr{0x809BD730}

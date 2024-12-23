@@ -14,7 +14,7 @@ MapdataCheckPoint::MapdataCheckPoint(const SData *data)
     EGG::RamStream stream = EGG::RamStream(unsafeData, sizeof(SData));
     read(stream);
     m_midpoint = 0.5f * (m_left + m_right);
-    m_dir = EGG::Vector2f(m_left.y - m_right.y, m_right.x - m_left.x);
+    m_dir = EGG::Vector2f(m_right.y - m_left.y, m_left.x - m_right.x);
     m_dir.normalise();
 }
 
@@ -121,6 +121,56 @@ MapdataCheckPoint::SectorOccupancy MapdataCheckPoint::checkSectorAndDistanceRati
     return betweenSides ? SectorOccupancy::BetweenSides : SectorOccupancy::OutsideSector;
 }
 
+/// @addr{0x80511EC8}
+/// @brief Finds the offset between the two positions that enter the checkpoint.
+/// @details This assumes the player is entering the checkpoint as intended, and not from the side.
+/// @param prevPos The previous position, likely not located in the checkpoint.
+/// @param pos The current position, likely located in the checkpoint.
+/// @return The earliest subdivision that crosses into the checkpoint, in the range [1, 17].
+u16 MapdataCheckPoint::getEntryOffsetMs(const EGG::Vector2f &prevPos,
+        const EGG::Vector2f &pos) const {
+    constexpr f32 REFRESH_PERIOD = 1000.0f / 59.94f;
+
+    EGG::Vector2f velocity = pos - prevPos;
+    velocity *= 1.0f / REFRESH_PERIOD;
+
+    // d_k = p_0 - m + kv
+    // We walk along the line via k increments, until we pass it
+    // The goal of this function is to approximate k as an integer
+    EGG::Vector2f displacement = prevPos - m_midpoint + velocity;
+
+    u16 k = 1;
+    for (; static_cast<f32>(k) < REFRESH_PERIOD && displacement.dot(m_dir) < 0.0f; ++k) {
+        displacement += velocity;
+    }
+
+    return k;
+}
+
+/// @brief Finds the offset between the two positions that enter the checkpoint.
+/// @details This assumes the player is entering the checkpoint as intended, and not from the side.
+/// This function isn't in the base game, but it can be used to determine improvements to runs.
+/// @param prevPos The previous position, likely not located in the checkpoint.
+/// @param pos The current position, likely located in the checkpoint.
+/// @return The exact offset that crosses into the checkpoint, in the range [0, 1000 / 59.94].
+f32 MapdataCheckPoint::getEntryOffsetExact(const EGG::Vector2f &prevPos,
+        const EGG::Vector2f &pos) const {
+    constexpr f32 REFRESH_PERIOD = 1000.0f / 59.94f;
+
+    EGG::Vector2f velocity = pos - prevPos;
+    velocity *= 1.0f / REFRESH_PERIOD;
+
+    // d_k = p_0 - m + kv
+    // d_k dot r = 0 => k is the exact offset to the finish line
+    // Therefore, k = ((m - p_0) dot r) / (v dot r)
+
+    f32 x = (m_midpoint - prevPos).dot(m_dir);
+    f32 y = velocity.dot(m_dir);
+
+    // y = 0 => v is parallel to the checkpoint line
+    return y != 0.0f ? x / y : 0.0f;
+}
+
 bool MapdataCheckPoint::isNormalCheckpoint() const {
     return static_cast<CheckArea>(m_checkArea) == CheckArea::NormalCheckpoint;
 }
@@ -140,6 +190,7 @@ void MapdataCheckPoint::clearSearched() {
 bool MapdataCheckPoint::searched() const {
     return m_searched;
 }
+
 s8 MapdataCheckPoint::jugemIndex() const {
     return m_jugemIndex;
 }
