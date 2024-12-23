@@ -28,8 +28,16 @@ struct Vector2f {
         return Vector2f(x + rhs.x, y + rhs.y);
     }
 
+    Vector2f &operator+=(const Vector2f &rhs) {
+        return *this = *this + rhs;
+    }
+
     [[nodiscard]] Vector2f operator*(const f32 scalar) const {
         return Vector2f(x * scalar, y * scalar);
+    }
+
+    Vector2f &operator*=(const f32 scalar) {
+        return *this = *this * scalar;
     }
 
     friend Vector2f operator*(f32 scalar, const Vector2f &rhs) {

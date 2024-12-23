@@ -1,6 +1,6 @@
 #pragma once
 
-#include "game/system/Timer.hh"
+#include "game/system/TimerManager.hh"
 
 #include <egg/util/Stream.hh>
 
