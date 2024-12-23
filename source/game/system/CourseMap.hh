@@ -42,6 +42,10 @@ public:
             bool playerIsForwards) const;
 
     /// @beginGetters
+    [[nodiscard]] u16 getCheckPointEntryOffsetMs(u16 i, const EGG::Vector3f &pos,
+            const EGG::Vector3f &prevPos) const;
+    [[nodiscard]] f32 getCheckPointEntryOffsetExact(u16 i, const EGG::Vector3f &pos,
+            const EGG::Vector3f &prevPos) const;
     [[nodiscard]] MapdataCannonPoint *getCannonPoint(u16 i) const;
     [[nodiscard]] MapdataCheckPath *getCheckPath(u16 i) const;
     [[nodiscard]] MapdataCheckPoint *getCheckPoint(u16 i) const;

@@ -41,6 +41,11 @@ public:
     [[nodiscard]] SectorOccupancy checkSectorAndDistanceRatio(const EGG::Vector3f &pos,
             f32 &distanceRatio) const;
 
+    [[nodiscard]] u16 getEntryOffsetMs(const EGG::Vector2f &prevPos,
+            const EGG::Vector2f &pos) const;
+    [[nodiscard]] f32 getEntryOffsetExact(const EGG::Vector2f &prevPos,
+            const EGG::Vector2f &pos) const;
+
     [[nodiscard]] bool isNormalCheckpoint() const;
     [[nodiscard]] bool isFinishLine() const;
 
