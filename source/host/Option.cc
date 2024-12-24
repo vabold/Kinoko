@@ -40,13 +40,4 @@ std::optional<EOption> CheckFlag(const char *arg) {
     return std::nullopt;
 }
 
-EMode CheckModeArg(const char *arg) {
-    ASSERT(arg);
-    if (strcmp(arg, "test") == 0) {
-        return EMode::Test;
-    }
-
-    return EMode::Invalid;
-}
-
 } // namespace Host::Option

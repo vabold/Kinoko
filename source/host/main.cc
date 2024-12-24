@@ -42,6 +42,13 @@ int main(int argc, char **argv) {
     FlushDenormalsToZero();
     InitMemory();
 
+    // The hashmap cannot be constexpr, as it heap-allocates
+    // Therefore, it cannot be static, as memory needs to be initialized first
+    // TODO: Allow memory initialization before any other static initializers
+    const std::unordered_map<std::string, std::function<KSystem *()>> modeMap = {
+            {"test", []() -> KSystem * { return KTestSystem::CreateInstance(); }},
+    };
+
     if (argc < 3) {
         PANIC("Too few arguments!");
     }
@@ -60,15 +67,13 @@ int main(int argc, char **argv) {
     }
 
     KSystem *sys = nullptr;
+    const std::string mode = argv[2];
 
-    switch (Host::Option::CheckModeArg(argv[2])) {
-    case Host::EMode::Test:
-        sys = KTestSystem::CreateInstance();
-        break;
-    case Host::EMode::Invalid:
-    default:
+    auto it = modeMap.find(mode);
+    if (it != modeMap.end()) {
+        sys = it->second();
+    } else {
         PANIC("Invalid mode!");
-        break;
     }
 
     sys->parseOptions(argc - 3, argv + 3);

@@ -6,8 +6,8 @@
 #include <game/system/RaceConfig.hh>
 
 #include <queue>
-#include <span>
 
+/// @brief Kinoko system designed to execute tests.
 class KTestSystem final : public KSystem {
 public:
     void init() override;

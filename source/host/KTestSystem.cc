@@ -28,6 +28,9 @@ struct TestHeader {
     u32 dataOffset;
 };
 
+/// @brief Initializes the system.
+/// @details This reads over the KRKG and generates the list of test cases,
+/// before starting the first test case and initializing the race scene.
 void KTestSystem::init() {
     constexpr u32 TEST_HEADER_SIGNATURE = 0x54535448; // TSTH
     constexpr u32 TEST_FOOTER_SIGNATURE = 0x54535446; // TSTF
@@ -94,10 +97,14 @@ void KTestSystem::init() {
     m_sceneMgr->changeScene(0);
 }
 
+/// @brief Executes a frame.
 void KTestSystem::calc() {
     m_sceneMgr->calc();
 }
 
+/// @brief Executes a run.
+/// @details A run consists of iterating over all tests.
+/// @return Whether the run was successful or not.
 bool KTestSystem::run() {
     bool success = true;
 
@@ -117,6 +124,10 @@ bool KTestSystem::run() {
     return success;
 }
 
+/// @brief Parses non-generic command line options.
+/// @details The only currently accepted option is the suite flag.
+/// @param argc The number of arguments.
+/// @param argv The arguments.
 void KTestSystem::parseOptions(int argc, char **argv) {
     if (argc < 2) {
         PANIC("Expected suite argument!");
@@ -212,7 +223,7 @@ bool KTestSystem::popTestCase() {
 }
 
 /// @brief Checks one frame in the test.
-/// @return Whether the test is done.
+/// @return Whether the test can continue.
 bool KTestSystem::calcTest() {
     // Check if we're out of frames
     u16 targetFrame = getCurrentTestCase().targetFrame;
@@ -335,6 +346,9 @@ void KTestSystem::testFrame(const TestData &data) {
     }
 }
 
+/// @brief Runs a single test case, and ends when the test is finished or when a desync is found.
+/// @details This will also accumulate results in results.txt.
+/// @return Whether the run synchronized or desynchronized.
 bool KTestSystem::runTest() {
     while (calcTest()) {
         calc();
@@ -355,12 +369,16 @@ void KTestSystem::writeTestOutput() const {
 }
 
 /// @brief Gets the current test case.
+/// @details In the event that there is no active test case, this gets the next test case.
 /// @return The current test case.
 const KTestSystem::TestCase &KTestSystem::getCurrentTestCase() const {
     ASSERT(!m_testCases.empty());
     return m_testCases.front();
 }
 
+/// @brief Initializes the race configuration as needed for test cases.
+/// @param config The race configuration instance.
+/// @param arg Unused optional argument.
 void KTestSystem::OnInit(System::RaceConfig *config, void * /* arg */) {
     size_t size;
     u8 *rkg = Abstract::File::Load(Instance()->getCurrentTestCase().rkgPath.data(), size);
