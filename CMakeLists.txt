@@ -23,7 +23,7 @@ set(COMMON_CXX_FLAGS
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     # using Clang
-    list(APPEND COMMON_CXX_FLAGS -fvisibility-global-new-delete=force-hidden)
+    list(APPEND COMMON_CXX_FLAGS -fvisibility-global-new-delete=force-hidden -Wl,--gc-sections -fPIC -shared -lstdc++)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # using GCC
     list(APPEND COMMON_CXX_FLAGS -Wno-packed-bitfield-compat)
