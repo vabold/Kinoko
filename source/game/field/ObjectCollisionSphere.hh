@@ -15,7 +15,7 @@ public:
     f32 getBoundingRadius() const override;
 
 private:
-    f32 m_radius;
+    [[maybe_unused]] f32 m_radius;
     EGG::Vector3f m_pos;
 
     f32 m_worldRadius;

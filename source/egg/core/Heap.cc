@@ -126,9 +126,9 @@ void *Heap::alloc(size_t size, int align, Heap *pHeap) {
             f32 sizeMB = static_cast<f32>(size) / BYTES_TO_MBYTES;
 
             WARN("HEAP ALLOC FAIL (%p, %s):\nTotal bytes: %d (%.1fMBytes)\nFree bytes: %d "
-                 "(%.1fMBytes)\nAlloc bytes: %d "
+                 "(%.1fMBytes)\nAlloc bytes: %zu "
                  "(%.1fMBytes)\nAlign: %d",
-                    currentHeap, currentHeap->getName(), static_cast<f64>(heapSize),
+                    currentHeap, currentHeap->getName(), heapSize,
                     static_cast<f64>(heapSizeMB), heapFreeSize, static_cast<f64>(heapFreeSizeMB),
                     size, static_cast<f64>(sizeMB), align);
         }
@@ -136,7 +136,7 @@ void *Heap::alloc(size_t size, int align, Heap *pHeap) {
         return block;
     }
 
-    WARN("HEAP ALLOC FAIL: Cannot allocate %d from heap %p", size, pHeap);
+    WARN("HEAP ALLOC FAIL: Cannot allocate %zu from heap %p", size, pHeap);
     return nullptr;
 }
 
@@ -185,7 +185,7 @@ Heap *Heap::getCurrentHeap() {
 } // namespace EGG
 
 /// @addr{0x80229DCC}
-void *operator new(size_t size) noexcept {
+void *operator new(size_t size) KINOKO_NEW_NOEXCEPT {
     return EGG::Heap::alloc(size, 4, nullptr);
 }
 
@@ -200,7 +200,7 @@ void *operator new(size_t size, EGG::Heap *heap, int align) noexcept {
 }
 
 /// @addr{0x80229DF0}
-void *operator new[](size_t size) noexcept {
+void *operator new[](size_t size) KINOKO_NEW_NOEXCEPT {
     return EGG::Heap::alloc(size, 4, nullptr);
 }
 

@@ -8,7 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Common flags
 set(COMMON_CXX_FLAGS
-    -DREVOLUTION
+    -DKINOKO_EGG_OPERATOR_NEW
     -fno-asynchronous-unwind-tables
     -fno-exceptions
     -fno-rtti
@@ -18,9 +18,16 @@ set(COMMON_CXX_FLAGS
     -Werror
     -Wextra
     -Wno-delete-non-virtual-dtor
-    -Wno-packed-bitfield-compat
     -Wsuggest-override
 )
+
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    # using Clang
+    list(APPEND COMMON_CXX_FLAGS -fvisibility-global-new-delete=force-hidden)
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    # using GCC
+    list(APPEND COMMON_CXX_FLAGS -Wno-packed-bitfield-compat)
+endif()
 
 set(RK_INCLUDE_DIRS
     include

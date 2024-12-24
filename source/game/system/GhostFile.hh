@@ -101,7 +101,7 @@ private:
     Character m_character;
     Vehicle m_vehicle;
     Course m_course;
-    u32 m_controllerId;
+    [[maybe_unused]] u32 m_controllerId;
     u8 m_year; ///< The year, relative to 2000
     u8 m_month;
     u8 m_day;

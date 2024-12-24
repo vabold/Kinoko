@@ -75,7 +75,7 @@ private:
 
     static constexpr size_t MAX_NEIGHBORS = 6;
 
-    const SData *m_rawData;
+    [[maybe_unused]] const SData *m_rawData;
     EGG::Vector2f m_left;
     EGG::Vector2f m_right;
     s8 m_jugemIndex; ///< Index of respawn point associated with this checkpoint. Players who die
