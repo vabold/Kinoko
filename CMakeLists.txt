@@ -23,7 +23,7 @@ set(COMMON_CXX_FLAGS
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     # using Clang
-    list(APPEND COMMON_CXX_FLAGS -fvisibility-global-new-delete=force-hidden -Wl,--gc-sections -fPIC -shared -lstdc++)
+    list(APPEND COMMON_CXX_FLAGS -fvisibility-global-new-delete=force-hidden)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # using GCC
     list(APPEND COMMON_CXX_FLAGS -Wno-packed-bitfield-compat)
@@ -44,6 +44,9 @@ target_include_directories(libkinoko SYSTEM
 )
 target_compile_options(libkinoko PRIVATE ${COMMON_CXX_FLAGS})
 target_compile_features(libkinoko PUBLIC cxx_std_23)
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    target_link_options(libkinoko PRIVATE -lstdc++)
+endif()
 
 # Create targets
 add_executable(kinoko source/host/main.cc)
