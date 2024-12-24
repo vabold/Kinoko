@@ -50,6 +50,10 @@ public:
     /// @endSetters
 
     /// @beginGetters
+    [[nodiscard]] u16 getEntryOffsetMs(const EGG::Vector2f &prevPos,
+            const EGG::Vector2f &pos) const;
+    [[nodiscard]] f32 getEntryOffsetExact(const EGG::Vector2f &prevPos,
+            const EGG::Vector2f &pos) const;
     [[nodiscard]] bool searched() const;
     [[nodiscard]] s8 jugemIndex() const;
     [[nodiscard]] s8 checkArea() const;
