@@ -5,6 +5,8 @@ namespace System {
 /// @addr{0x8051C374}
 Timer::Timer() : min(0), sec(0), mil(0), valid(false) {}
 
+Timer::Timer(u16 min_, u8 sec_, u16 mil_) : min(min_), sec(sec_), mil(mil_), valid(true) {}
+
 /// Parses a time from an RKG's 3 byte time format.
 /// @see RawGhostFile
 Timer::Timer(u32 data) {

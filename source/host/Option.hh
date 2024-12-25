@@ -10,6 +10,7 @@ enum class EOption {
     Invalid = -1,
     Mode,
     Suite,
+    Ghost,
 };
 
 namespace Option {

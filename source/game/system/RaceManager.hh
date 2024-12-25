@@ -25,10 +25,13 @@ public:
         void init();
         void calc();
 
+        [[nodiscard]] Timer getLapSplit(size_t idx) const;
+
         /// @beginGetters
         [[nodiscard]] u16 checkpointId() const;
         [[nodiscard]] f32 raceCompletion() const;
         [[nodiscard]] s8 jugemId() const;
+        [[nodiscard]] const std::array<Timer, 3> &lapTimers() const;
         [[nodiscard]] const Timer &lapTimer(size_t idx) const;
         [[nodiscard]] const Timer &raceTimer() const;
         [[nodiscard]] const KPad *inputs() const;

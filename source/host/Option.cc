@@ -22,6 +22,10 @@ std::optional<EOption> CheckFlag(const char *arg) {
             return EOption::Suite;
         }
 
+        if (strcmp(verbose_arg, "ghost") == 0) {
+            return EOption::Ghost;
+        }
+
         return EOption::Invalid;
     } else {
         switch (arg[1]) {
@@ -31,6 +35,9 @@ std::optional<EOption> CheckFlag(const char *arg) {
         case 'S':
         case 's':
             return EOption::Suite;
+        case 'G':
+        case 'g':
+            return EOption::Ghost;
         default:
             return EOption::Invalid;
         }
