@@ -1,8 +1,8 @@
+#include "host/KReplaySystem.hh"
 #include "host/KTestSystem.hh"
 #include "host/Option.hh"
 
 #include <egg/core/ExpHeap.hh>
-#include <egg/core/SceneManager.hh>
 
 #if defined(__arm64__) || defined(__aarch64__)
 static void FlushDenormalsToZero() {
@@ -47,6 +47,7 @@ int main(int argc, char **argv) {
     // TODO: Allow memory initialization before any other static initializers
     const std::unordered_map<std::string, std::function<KSystem *()>> modeMap = {
             {"test", []() -> KSystem * { return KTestSystem::CreateInstance(); }},
+            {"replay", []() -> KSystem * { return KReplaySystem::CreateInstance(); }},
     };
 
     if (argc < 3) {

@@ -188,6 +188,26 @@ void RaceManager::Player::calc() {
     m_raceCompletion = std::min(m_raceCompletion, static_cast<f32>(m_currentLap) + 0.99999f);
 }
 
+/// @addr{0x8053572C}
+/// @brief Gets the lap split, which is the difference between the given lap and the previous one.
+/// @param lap One-indexed lap.
+/// @return The split timer.
+Timer RaceManager::Player::getLapSplit(size_t lap) const {
+    ASSERT(lap <= m_lapTimers.size());
+
+    if (lap < 2) {
+        return m_lapTimers[0];
+    }
+
+    const Timer &currentLap = m_lapTimers[lap - 1];
+    const Timer &previousLap = m_lapTimers[lap - 2];
+    if (!currentLap.valid || !previousLap.valid) {
+        return Timer(std::numeric_limits<u16>::max(), 0, 0);
+    }
+
+    return currentLap - previousLap;
+}
+
 u16 RaceManager::Player::checkpointId() const {
     return m_checkpointId;
 }
@@ -198,6 +218,10 @@ f32 RaceManager::Player::raceCompletion() const {
 
 s8 RaceManager::Player::jugemId() const {
     return m_jugemId;
+}
+
+const std::array<Timer, 3> &RaceManager::Player::lapTimers() const {
+    return m_lapTimers;
 }
 
 const Timer &RaceManager::Player::lapTimer(size_t idx) const {
@@ -296,38 +320,11 @@ void RaceManager::Player::incrementLap() {
             kart->prevPos());
 
     const Timer &currentTimer = RaceManager::Instance()->timerManager().currentTimer();
+    Timer timer = currentTimer + static_cast<f32>(addMs);
 
-    Timer timer;
-    timer.mil = static_cast<u16>(static_cast<f32>(addMs) + static_cast<f32>(currentTimer.mil));
-
-    if (timer.mil > 999) {
-        // The additional milliseconds caused an overflow
-        u8 seconds = currentTimer.sec;
-        timer.mil -= 1000;
-        timer.sec = seconds + 1;
-
-        u16 addMin = 0;
-        if (timer.sec > 59) {
-            timer.sec -= 60;
-            addMin = 1;
-        }
-
-        timer.min = addMin + currentTimer.min;
-        if (timer.min > 999) {
-            timer.min = 999;
-            timer.sec = 59;
-            timer.mil = 999;
-        }
-    } else {
-        timer.sec = currentTimer.sec;
-        timer.min = currentTimer.min;
-    }
-
-    timer.valid = true;
     // TODO: Handle this case more gracefully
     ASSERT(static_cast<size_t>(m_maxLap - 1) < m_lapTimers.size());
-    Timer &lapTimer = m_lapTimers[m_maxLap - 1];
-    lapTimer = timer;
+    m_lapTimers[m_maxLap - 1] = timer;
 
     if (m_maxLap >= 3) {
         endRace(timer);
