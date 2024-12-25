@@ -1,3 +1,5 @@
+#pragma once
+
 #include "host/KSystem.hh"
 
 #include <egg/core/SceneManager.hh>

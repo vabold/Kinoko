@@ -1,3 +1,5 @@
+#pragma once
+
 #include <Common.hh>
 
 namespace Abstract::File {
