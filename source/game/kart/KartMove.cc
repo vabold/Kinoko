@@ -1708,7 +1708,7 @@ void KartMove::calcMtCharge() {
             m_mtCharge += EXTRA_MT_CHARGE;
         }
 
-        if (m_mtCharge >= MAX_MT_CHARGE) {
+        if (m_mtCharge > MAX_MT_CHARGE) {
             m_mtCharge = MAX_MT_CHARGE;
             m_driftState = DriftState::ChargingSmt;
         }
