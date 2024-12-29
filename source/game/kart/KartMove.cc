@@ -950,7 +950,10 @@ void KartMove::calcManualDrift() {
                 (!state()->isDriftInput() || !state()->isAccelerate() ||
                         state()->isRejectRoadTrigger() || state()->isWall3Collision() ||
                         state()->isWallCollision() || !canStartDrift())) {
-            releaseMt();
+            if (canStartDrift()) {
+                releaseMt();
+            }
+
             resetDriftManual();
             m_flags.setBit(eFlags::DriftReset);
         } else {
