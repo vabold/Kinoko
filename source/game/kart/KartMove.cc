@@ -885,7 +885,7 @@ void KartMove::calcAutoDrift() {
     }
 
     EGG::Quatf angleAxis;
-    angleAxis.setAxisRotation(m_autoDriftAngle * DEG2RAD, m_up);
+    angleAxis.setAxisRotation(-m_autoDriftAngle * DEG2RAD, m_up);
     physics()->composeExtraRot(angleAxis);
 }
 
