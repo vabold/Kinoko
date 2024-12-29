@@ -2599,8 +2599,8 @@ void KartMoveBike::tryStartWheelie() {
 
     if (!state()->isWheelie()) {
         if (dpadUp && state()->isTouchingGround()) {
-            if (state()->isDriftManual() || state()->isWallCollision() || state()->isHop() ||
-                    state()->isDriftAuto()) {
+            if (state()->isDriftManual() || state()->isWallCollision() ||
+                    state()->isWall3Collision() || state()->isHop() || state()->isDriftAuto()) {
                 return;
             }
 
