@@ -1373,8 +1373,8 @@ void KartMove::calcAcceleration() {
     m_processedSpeed = m_speed;
 
     const auto *raceMgr = System::RaceManager::Instance();
-    if (state()->isTouchingGround() && !state()->isAccelerate() &&
-            raceMgr->isStageReached(System::RaceManager::Stage::Race)) {
+    if (!state()->isDisableBackwardsAccel() && state()->isTouchingGround() &&
+            !state()->isAccelerate() && raceMgr->isStageReached(System::RaceManager::Stage::Race)) {
         calcDeceleration();
     }
 

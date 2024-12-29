@@ -565,16 +565,16 @@ bool KartState::isOverZipper() const {
     return m_bOverZipper;
 }
 
-bool KartState::isDisableBackwardsAccel() const {
-    return m_bDisableBackwardsAccel;
-}
-
 bool KartState::isZipperBoost() const {
     return m_bZipperBoost;
 }
 
 bool KartState::isZipperTrick() const {
     return m_bZipperTrick;
+}
+
+bool KartState::isDisableBackwardsAccel() const {
+    return m_bDisableBackwardsAccel;
 }
 
 bool KartState::isRespawnKillY() const {
@@ -875,10 +875,6 @@ void KartState::setOverZipper(bool isSet) {
     m_bOverZipper = isSet;
 }
 
-void KartState::setDisableBackwardsAccel(bool isSet) {
-    m_bDisableBackwardsAccel = isSet;
-}
-
 void KartState::setZipperBoost(bool isSet) {
     m_bZipperBoost = isSet;
 }
@@ -889,6 +885,10 @@ void KartState::setZipperStick(bool isSet) {
 
 void KartState::setZipperTrick(bool isSet) {
     m_bZipperTrick = isSet;
+}
+
+void KartState::setDisableBackwardsAccel(bool isSet) {
+    m_bDisableBackwardsAccel = isSet;
 }
 
 void KartState::setRespawnKillY(bool isSet) {
