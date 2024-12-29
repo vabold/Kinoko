@@ -29,7 +29,7 @@ void ObjectCollisionConvexHull::transform(const EGG::Matrix34f &mat, const EGG::
 
     if (scale.x == 0.0f) {
         for (size_t i = 0; i < m_points.size(); ++i) {
-            m_worldPoints[i] = mat.multVector(m_points[i]);
+            m_worldPoints[i] = mat.ps_multVector(m_points[i]);
         }
     } else {
         EGG::Matrix34f temp;
@@ -37,7 +37,7 @@ void ObjectCollisionConvexHull::transform(const EGG::Matrix34f &mat, const EGG::
         temp = mat.multiplyTo(temp);
 
         for (size_t i = 0; i < m_points.size(); ++i) {
-            m_worldPoints[i] = temp.multVector(m_points[i]);
+            m_worldPoints[i] = temp.ps_multVector(m_points[i]);
         }
     }
 }

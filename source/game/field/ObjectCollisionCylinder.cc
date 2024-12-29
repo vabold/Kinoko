@@ -22,7 +22,7 @@ ObjectCollisionCylinder::~ObjectCollisionCylinder() = default;
 void ObjectCollisionCylinder::transform(const EGG::Matrix34f &mat, const EGG::Vector3f &scale,
         const EGG::Vector3f &speed) {
     m_translation = speed;
-    m_worldPos = scale * m_pos;
+    m_worldPos = m_pos * scale.x;
     m_worldHeight = m_height * scale.y;
     m_worldRadius = m_radius * scale.x;
 
