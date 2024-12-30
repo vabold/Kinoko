@@ -318,7 +318,7 @@ void KartSub::calcPass1() {
 
 /// @addr{0x80598338}
 void KartSub::resizeAABB(f32 radiusScale) {
-    f32 radius = radiusScale * collide()->boundingRadius();
+    f32 radius = radiusScale * collisionGroup()->boundingRadius();
     boxColUnit()->resize(radius + 25.0f, move()->hardSpeedLimit());
 }
 
