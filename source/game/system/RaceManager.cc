@@ -251,8 +251,8 @@ MapdataCheckPoint *RaceManager::Player::calcCheckpoint(u16 checkpointId, f32 dis
     m_checkpointStartLapCompletion = static_cast<f32>(checkPath->depth()) * lapProportion +
             (m_checkpointFactor * static_cast<f32>(checkpointId - checkPath->start()));
 
-    f32 deltaLapCompletion =
-            m_lapCompletion - (m_checkpointStartLapCompletion + distanceRatio * m_checkpointFactor);
+    f32 newLapCompletion = m_checkpointStartLapCompletion + distanceRatio * m_checkpointFactor;
+    f32 deltaLapCompletion = m_lapCompletion - newLapCompletion;
 
     MapdataCheckPoint *newCheckpoint = courseMap->getCheckPoint(checkpointId);
     const MapdataCheckPoint *oldCheckpoint = courseMap->getCheckPoint(oldCheckpointId);
@@ -279,6 +279,8 @@ MapdataCheckPoint *RaceManager::Player::calcCheckpoint(u16 checkpointId, f32 dis
             deltaLapCompletion < -0.95f) {
         decrementLap();
     }
+
+    m_lapCompletion = newLapCompletion;
 
     return newCheckpoint;
 }
