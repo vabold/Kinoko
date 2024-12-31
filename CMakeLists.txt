@@ -21,9 +21,12 @@ set(COMMON_CXX_FLAGS
     -Wsuggest-override
 )
 
+set(GAME_CXX_FLAGS
+)
+
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     # using Clang
-    list(APPEND COMMON_CXX_FLAGS -fvisibility-global-new-delete=force-hidden)
+    list(APPEND GAME_CXX_FLAGS -fvisibility-global-new-delete=force-hidden)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # using GCC
     list(APPEND COMMON_CXX_FLAGS -Wno-packed-bitfield-compat)
@@ -42,7 +45,7 @@ add_library(libkinoko SHARED ${SOURCE_FILES})
 target_include_directories(libkinoko SYSTEM
     PUBLIC ${RK_INCLUDE_DIRS}
 )
-target_compile_options(libkinoko PRIVATE ${COMMON_CXX_FLAGS})
+target_compile_options(libkinoko PRIVATE ${COMMON_CXX_FLAGS} ${GAME_CXX_FLAGS})
 target_compile_features(libkinoko PUBLIC cxx_std_23)
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     target_link_options(libkinoko PRIVATE -lstdc++)
@@ -52,6 +55,7 @@ endif()
 add_executable(kinoko source/host/main.cc)
 target_link_libraries(kinoko libkinoko)
 target_compile_options(kinoko PRIVATE ${COMMON_CXX_FLAGS})
+#target_link_options(kinoko PRIVATE -lstdc++)
 
 # Add a custom target to generate testCases.json
 set(TEST_JSON ${CMAKE_CURRENT_SOURCE_DIR}/testCases.json)
