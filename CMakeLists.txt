@@ -55,7 +55,6 @@ endif()
 add_executable(kinoko source/host/main.cc)
 target_link_libraries(kinoko libkinoko)
 target_compile_options(kinoko PRIVATE ${COMMON_CXX_FLAGS})
-#target_link_options(kinoko PRIVATE -lstdc++)
 
 # Add a custom target to generate testCases.json
 set(TEST_JSON ${CMAKE_CURRENT_SOURCE_DIR}/testCases.json)
