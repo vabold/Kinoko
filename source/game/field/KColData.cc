@@ -504,7 +504,7 @@ bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::V
         f32 s = edge_dist - t * cos;
         const EGG::Vector3f corner_pos = edge_nor * t + other_edge_nor * s;
 
-        f32 cornerDot = corner_pos.ps_dot();
+        f32 cornerDot = corner_pos.ps_squareMag();
         if (type == CollisionCheckType::Plane) {
             if (cornerDot > plane_dist * plane_dist) {
                 return false;
