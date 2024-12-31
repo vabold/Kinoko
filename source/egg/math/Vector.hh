@@ -145,6 +145,7 @@ struct Vector3f {
     [[nodiscard]] f32 dot(const EGG::Vector3f &rhs) const;
     [[nodiscard]] f32 ps_dot() const;
     [[nodiscard]] f32 ps_dot(const EGG::Vector3f &rhs) const;
+    [[nodiscard]] f32 ps_squareMag() const;
     [[nodiscard]] f32 length() const;
     f32 normalise();
     [[nodiscard]] Vector3f maximize(const Vector3f &rhs) const;
