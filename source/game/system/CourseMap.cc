@@ -250,6 +250,27 @@ s16 CourseMap::findRecursiveSector(const EGG::Vector3f &pos, s16 depth, bool sea
                       id;
 }
 
+/// @addr{0x80511E7C}
+u16 CourseMap::getCheckPointEntryOffsetMs(u16 i, const EGG::Vector3f &pos,
+        const EGG::Vector3f &prevPos) const {
+    EGG::Vector2f prevPos_ = EGG::Vector2f(prevPos.x, prevPos.z);
+    EGG::Vector2f pos_ = EGG::Vector2f(pos.x, pos.z);
+
+    MapdataCheckPoint *checkPoint = getCheckPoint(i);
+    ASSERT(checkPoint);
+    return checkPoint->getEntryOffsetMs(prevPos_, pos_);
+}
+
+f32 CourseMap::getCheckPointEntryOffsetExact(u16 i, const EGG::Vector3f &pos,
+        const EGG::Vector3f &prevPos) const {
+    EGG::Vector2f prevPos_ = EGG::Vector2f(prevPos.x, prevPos.z);
+    EGG::Vector2f pos_ = EGG::Vector2f(pos.x, pos.z);
+
+    MapdataCheckPoint *checkPoint = getCheckPoint(i);
+    ASSERT(checkPoint);
+    return checkPoint->getEntryOffsetExact(prevPos_, pos_);
+}
+
 /// @addr{0x80518AE0}
 MapdataCannonPoint *CourseMap::getCannonPoint(u16 i) const {
     return m_cannonPoint && m_cannonPoint->size() != 0 ? m_cannonPoint->get(i) : nullptr;

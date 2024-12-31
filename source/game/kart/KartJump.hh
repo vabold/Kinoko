@@ -44,7 +44,7 @@ public:
     KartJump(KartMove *move);
     virtual ~KartJump();
 
-    virtual void calcRot() {}
+    virtual void calcRot();
 
     void setupProperties();
     void reset();
@@ -69,6 +69,9 @@ public:
     /// @endGetters
 
 protected:
+    virtual void start(const EGG::Vector3f &left);
+    virtual void init();
+
     TrickType m_type;
     SurfaceVariant m_variant;
     System::Trick m_nextTrick;
@@ -84,9 +87,6 @@ protected:
     KartMove *m_move;
 
 private:
-    virtual void start(const EGG::Vector3f & /*left*/) {}
-    virtual void init() {}
-
     s16 m_nextAllowTimer;
     bool m_boostRampEnabled;
 };

@@ -421,7 +421,7 @@ bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::V
         if (type == CollisionCheckType::Movement) {
             EGG::Vector3f lastPos = relativePos - m_movement;
             // We're only colliding if we are moving towards the face
-            if (plane_dist < 0.0f && lastPos.dot(fnrm) < 0.0f) {
+            if (plane_dist < 0.0f && lastPos.ps_dot(fnrm) < 0.0f) {
                 return false;
             }
         }
@@ -430,6 +430,8 @@ bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::V
 
     EGG::Vector3f edge_nor, other_edge_nor;
     f32 edge_dist, other_edge_dist;
+    bool swap = false;
+    bool swapNorms = false;
     // > means further, < means closer, = means same distance
     if (dist_ab >= dist_ca && dist_ab > dist_bc) {
         // AB is the furthest edge
@@ -439,10 +441,12 @@ bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::V
             // CA is the second furthest edge
             other_edge_nor = enrm1;
             other_edge_dist = dist_ca;
+            swapNorms = true;
         } else {
             // BC is the second furthest edge
             other_edge_nor = enrm3;
             other_edge_dist = dist_bc;
+            swap = true;
         }
     } else if (dist_bc >= dist_ca) {
         // BC is the furthest edge
@@ -452,10 +456,12 @@ bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::V
             // AB is the second furthest edge
             other_edge_nor = enrm2;
             other_edge_dist = dist_ab;
+            swapNorms = true;
         } else {
             // CA is the second furthest edge
             other_edge_nor = enrm1;
             other_edge_dist = dist_ca;
+            swap = true;
         }
     } else {
         // CA is the furthest edge
@@ -465,10 +471,12 @@ bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::V
             // BC is the second furthest edge
             other_edge_nor = enrm3;
             other_edge_dist = dist_bc;
+            swapNorms = true;
         } else {
             // AB is the second furthest edge
             other_edge_nor = enrm2;
             other_edge_dist = dist_ab;
+            swap = true;
         }
     }
 
@@ -483,17 +491,27 @@ bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::V
         sq_dist = m_radius * m_radius - edge_dist * edge_dist;
     } else {
         f32 sq_sin = cos * cos - 1.0f;
+
+        if (swap) {
+            std::swap(edge_dist, other_edge_dist);
+        }
+
+        if (swapNorms) {
+            std::swap(edge_nor, other_edge_nor);
+        }
+
         f32 t = (cos * edge_dist - other_edge_dist) / sq_sin;
         f32 s = edge_dist - t * cos;
-        const EGG::Vector3f corner_pos = edge_nor * s + other_edge_nor * t;
+        const EGG::Vector3f corner_pos = edge_nor * t + other_edge_nor * s;
 
+        f32 cornerDot = corner_pos.ps_squareMag();
         if (type == CollisionCheckType::Plane) {
-            if (corner_pos.dot() > plane_dist * plane_dist) {
+            if (cornerDot > plane_dist * plane_dist) {
                 return false;
             }
         }
 
-        sq_dist = m_radius * m_radius - corner_pos.dot();
+        sq_dist = m_radius * m_radius - cornerDot;
     }
 
     if (sq_dist < plane_dist * plane_dist || sq_dist <= 0.0f) {
@@ -505,7 +523,7 @@ bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::V
     if (type == CollisionCheckType::Movement) {
         EGG::Vector3f lastPos = relativePos - m_movement;
         // We're only colliding if we are moving towards the face
-        if (lastPos.dot(fnrm) < 0.0f) {
+        if (lastPos.ps_dot(fnrm) < 0.0f) {
             return false;
         }
     }

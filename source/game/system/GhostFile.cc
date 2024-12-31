@@ -58,6 +58,15 @@ void GhostFile::read(EGG::RamStream &stream) {
     stream.read(m_miiData.data(), RKG_MII_DATA_SIZE);
 }
 
+const Timer &GhostFile::lapTimer(size_t i) const {
+    ASSERT(i < m_lapTimes.size());
+    return m_lapTimes[i];
+}
+
+const Timer &GhostFile::raceTimer() const {
+    return m_raceTime;
+}
+
 Character GhostFile::character() const {
     return m_character;
 }

@@ -28,6 +28,7 @@ private:
     f32 _5c;
     f32 _64;
     bool m_isInsideDrift;
+    f32 _2e8;
 };
 
 class KartModelKart : public KartModel {

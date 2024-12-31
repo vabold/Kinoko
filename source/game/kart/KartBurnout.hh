@@ -15,6 +15,10 @@ public:
     void start();
     void calc();
 
+    /// @beginGetters
+    [[nodiscard]] f32 pitch() const;
+    /// @endGetters
+
 private:
     void calcRotation();
     bool calcEnd(u32 duration);
@@ -26,6 +30,7 @@ private:
     u32 m_timer;
     u16 m_phase;
     f32 m_amplitude;
+    f32 m_pitch;
 };
 
 } // namespace Kart

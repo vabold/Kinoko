@@ -53,6 +53,7 @@ public:
     void calcDisableBackwardsAccel();
     void calcSsmt();
     bool calcPreDrift();
+    void calcAutoDrift();
     void calcManualDrift();
     void startManualDrift();
     void clearDrift();
@@ -249,6 +250,8 @@ protected:
     f32 m_jumpPadMaxSpeed;
     const JumpPadProperties *m_jumpPadProperties;
     u16 m_rampBoost;
+    f32 m_autoDriftAngle;
+    s16 m_autoDriftStartFrameCounter;
     f32 m_cannonEntryOfsLength;
     EGG::Vector3f m_cannonEntryPos;
     EGG::Vector3f m_cannonEntryOfs;
@@ -328,6 +331,7 @@ private:
     u32 m_wheelieFrames;   ///< Tracks wheelie duration and cancels the wheelie after 180 frames.
     s16 m_wheelieCooldown; ///< The number of frames before another wheelie can start.
     f32 m_wheelieRotDec;   ///< The wheelie rotation decrementor, used after a wheelie has ended.
+    s16 m_autoHardStickXFrames;
     const TurningParameters *m_turningParams; ///< Inside/outside drifting bike turn info.
 };
 

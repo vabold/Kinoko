@@ -117,7 +117,7 @@ bool ObjectCollisionBase::enclosesOrigin(const GJKState &state, u32 idx) const {
 
 /// @addr{0x808350E4}
 void ObjectCollisionBase::FUN_808350e4(GJKState &state, EGG::Vector3f &v) const {
-    f32 min = std::numeric_limits<f32>::min();
+    f32 min = std::numeric_limits<f32>::max();
 
     for (u32 mask = state.m_00c; mask != 0; --mask) {
         if (mask != (mask & state.m_00c) || !enclosesOrigin(state, mask)) {

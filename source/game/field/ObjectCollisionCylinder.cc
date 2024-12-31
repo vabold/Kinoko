@@ -22,13 +22,13 @@ ObjectCollisionCylinder::~ObjectCollisionCylinder() = default;
 void ObjectCollisionCylinder::transform(const EGG::Matrix34f &mat, const EGG::Vector3f &scale,
         const EGG::Vector3f &speed) {
     m_translation = speed;
-    m_worldPos = scale * m_pos;
+    m_worldPos = m_pos * scale.x;
     m_worldHeight = m_height * scale.y;
     m_worldRadius = m_radius * scale.x;
 
-    m_center = mat.multVector(m_worldPos);
-    m_top = mat.multVector(m_worldPos + EGG::Vector3f::ey * m_worldHeight);
-    m_bottom = mat.multVector(m_worldPos - EGG::Vector3f::ey * m_worldHeight);
+    m_center = mat.ps_multVector(m_worldPos);
+    m_top = mat.ps_multVector(m_worldPos + EGG::Vector3f::ey * m_worldHeight);
+    m_bottom = mat.ps_multVector(m_worldPos - EGG::Vector3f::ey * m_worldHeight);
 }
 
 /// @addr{0x8083618C}

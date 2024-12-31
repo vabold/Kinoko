@@ -47,6 +47,7 @@ public:
     void setBoost(bool isSet);
     void setMushroomBoost(bool isSet);
     void setSlipdriftCharge(bool isSet);
+    void setDriftAuto(bool isSet);
     void setWheelie(bool isSet);
     void setRampBoost(bool isSet);
     void setTriggerRespawn(bool isSet);
@@ -58,10 +59,10 @@ public:
     void setBoostOffroadInvincibility(bool isSet);
     void setHalfPipeRamp(bool isSet);
     void setOverZipper(bool isSet);
-    void setDisableBackwardsAccel(bool isSet);
     void setZipperBoost(bool isSet);
     void setZipperStick(bool isSet);
     void setZipperTrick(bool isSet);
+    void setDisableBackwardsAccel(bool isSet);
     void setRespawnKillY(bool isSet);
     void setBurnout(bool isSet);
     void setInRespawn(bool isSet);
@@ -126,9 +127,9 @@ public:
     [[nodiscard]] bool isBoostOffroadInvincibility() const;
     [[nodiscard]] bool isHalfPipeRamp() const;
     [[nodiscard]] bool isOverZipper() const;
-    [[nodiscard]] bool isDisableBackwardsAccel() const;
     [[nodiscard]] bool isZipperBoost() const;
     [[nodiscard]] bool isZipperTrick() const;
+    [[nodiscard]] bool isDisableBackwardsAccel() const;
     [[nodiscard]] bool isRespawnKillY() const;
     [[nodiscard]] bool isBurnout() const;
     [[nodiscard]] bool isZipperStick() const;
@@ -210,10 +211,10 @@ private:
     bool m_bBoostOffroadInvincibility; ///< Set if we should ignore offroad slowdown this frame.
     bool m_bHalfPipeRamp;              ///< Set while colliding with zipper KCL.
     bool m_bOverZipper;                ///< Set while mid-air from a zipper.
-    bool m_bDisableBackwardsAccel;     ///< Enforces a 20f delay when reversing after charging SSMT.
     bool m_bZipperBoost;               ///< Set when boosting after landing from a zipper.
     bool m_bZipperStick;               ///< Set while mid-air and still influenced by the zipper.
     bool m_bZipperTrick;               ///< Set while tricking mid-air from a zipper.
+    bool m_bDisableBackwardsAccel;     ///< Enforces a 20f delay when reversing after charging SSMT.
     bool m_bRespawnKillY;              ///< Set while respawning to cap external velocity at 0.
     bool m_bBurnout;                   ///< Set during a burnout on race start.
     bool m_bTrickRot;

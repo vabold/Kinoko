@@ -56,13 +56,13 @@ void KartObject::createTires() {
         tireCount = 4;
     }
 
-    for (u16 wheelIdx = 0; wheelIdx < tireCount; ++wheelIdx) {
-        if (bodyType == KartParam::Stats::Body::Three_Wheel_Kart && wheelIdx == 0) {
+    for (u16 wheelIdx = 0, i = 0; i < tireCount; ++i) {
+        if (bodyType == KartParam::Stats::Body::Three_Wheel_Kart && i == 0) {
             continue;
         }
 
-        u16 bspWheelIdx = BSP_WHEEL_INDICES[wheelIdx];
-        KartSuspensionPhysics::TireType tireType = X_MIRRORED_TIRE[wheelIdx];
+        u16 bspWheelIdx = BSP_WHEEL_INDICES[i];
+        KartSuspensionPhysics::TireType tireType = X_MIRRORED_TIRE[i];
 
         KartSuspension *sus = new KartSuspension;
         KartTire *tire = (bspWheelIdx == 0) ? new KartTireFront(tireType, bspWheelIdx) :
@@ -71,7 +71,7 @@ void KartObject::createTires() {
         m_pointers.suspensions.push_back(sus);
         m_pointers.tires.push_back(tire);
 
-        sus->init(wheelIdx, tireType, bspWheelIdx);
+        sus->init(wheelIdx++, tireType, bspWheelIdx);
     }
 }
 

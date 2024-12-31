@@ -1,3 +1,5 @@
+#pragma once
+
 #include <Common.hh>
 
 /// @brief Base interface for a Kinoko system.

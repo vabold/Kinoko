@@ -1,3 +1,5 @@
+#pragma once
+
 #include <Common.hh>
 
 #include <optional>
@@ -8,6 +10,7 @@ enum class EOption {
     Invalid = -1,
     Mode,
     Suite,
+    Ghost,
 };
 
 namespace Option {

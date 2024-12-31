@@ -23,6 +23,30 @@ KartJump::KartJump(KartMove *move) : m_move(move) {
 /// @addr{0x80575AA8}
 KartJump::~KartJump() = default;
 
+/// @addr{0x805764FC}
+void KartJump::calcRot() {
+    m_angleDelta *= m_angleDeltaFactor;
+    m_angleDelta = std::max(m_angleDelta, m_properties.angleDeltaMin);
+    m_angleDeltaFactor -= m_angleDeltaFactorDec;
+    m_angleDeltaFactor = std::max(m_angleDeltaFactor, m_properties.angleDeltaFactorMin);
+    m_angle += m_angleDelta;
+    m_angle = std::min(m_angle, m_finalAngle);
+
+    switch (m_type) {
+    case TrickType::KartFlipTrickZ:
+        m_rot.setRPY(EGG::Vector3f(0.0f, 0.0f, -(m_angle * DEG2RAD) * m_rotSign));
+        break;
+    case TrickType::FlipTrickYLeft:
+    case TrickType::FlipTrickYRight:
+        m_rot.setRPY(EGG::Vector3f(0.0f, m_angle * DEG2RAD * m_rotSign, 0.0f));
+        break;
+    default:
+        break;
+    }
+
+    physics()->composeStuntRot(m_rot);
+}
+
 /// @addr{0x80576460}
 void KartJump::setupProperties() {
     static constexpr std::array<TrickProperties, 3> TRICK_PROPERTIES = {{
@@ -201,6 +225,33 @@ s16 KartJump::cooldown() const {
     return m_cooldown;
 }
 
+/// @addr{0x80575EE8}
+void KartJump::start(const EGG::Vector3f &left) {
+    init();
+    setAngle(left);
+    state()->setInATrick(true);
+    m_cooldown = 5;
+}
+
+/// @addr{0x8057616C}
+void KartJump::init() {
+    if (m_variant == SurfaceVariant::DoubleFlipTrick) {
+        m_type = TrickType::StuntTrickBasic;
+        return;
+    }
+
+    if (m_nextTrick < System::Trick::Left) {
+        m_type = TrickType::KartFlipTrickZ;
+        m_rotSign = (m_nextTrick == System::Trick::Up) ? -1.0f : 1.0f;
+    } else {
+        m_type = static_cast<TrickType>(m_nextTrick);
+        m_rotSign = (m_type == TrickType::FlipTrickYRight) ? -1.0f : 1.0f;
+    }
+
+    setupProperties();
+    state()->setTrickRot(true);
+}
+
 KartJumpBike::KartJumpBike(KartMove *move) : KartJump(move) {}
 
 /// @addr{0x80576AFC}
@@ -246,10 +297,8 @@ void KartJumpBike::calcRot() {
 
 /// @addr{0x80576758}
 void KartJumpBike::start(const EGG::Vector3f &left) {
-    init();
-    setAngle(left);
-    state()->setInATrick(true);
-    m_cooldown = 5;
+    KartJump::start(left);
+
     KartMoveBike *moveBike = static_cast<KartMoveBike *>(m_move);
     moveBike->cancelWheelie();
 }

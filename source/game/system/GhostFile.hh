@@ -1,6 +1,6 @@
 #pragma once
 
-#include "game/system/Timer.hh"
+#include "game/system/TimerManager.hh"
 
 #include <egg/util/Stream.hh>
 
@@ -85,6 +85,8 @@ public:
     void read(EGG::RamStream &stream); ///< Organizes binary data into members. See RawGhostFile.
 
     /// @beginGetters
+    [[nodiscard]] const Timer &lapTimer(size_t i) const;
+    [[nodiscard]] const Timer &raceTimer() const;
     [[nodiscard]] Character character() const;
     [[nodiscard]] Vehicle vehicle() const;
     [[nodiscard]] Course course() const;
