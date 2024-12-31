@@ -36,6 +36,10 @@ void KartBurnout::calc() {
     }
 }
 
+f32 KartBurnout::pitch() const {
+    return m_pitch;
+}
+
 /// @addr{0x80589308}
 void KartBurnout::calcRotation() {
     constexpr u16 PHASE_INCREMENT = 800;
@@ -53,10 +57,10 @@ void KartBurnout::calcRotation() {
         m_amplitude *= DAMPENING_FACTOR;
     }
 
-    f32 pitch = DEG2RAD * (AMPLITUDE_FACTOR * sin) * m_amplitude;
+    m_pitch = DEG2RAD * (AMPLITUDE_FACTOR * sin) * m_amplitude;
 
     EGG::Quatf rpy;
-    rpy.setRPY(EGG::Vector3f(0.0f, pitch, 0.0f));
+    rpy.setRPY(EGG::Vector3f(0.0f, m_pitch, 0.0f));
 
     physics()->composeStuntRot(rpy);
 }
