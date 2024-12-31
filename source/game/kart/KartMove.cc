@@ -1373,7 +1373,6 @@ void KartMove::calcAcceleration() {
     EGG::Matrix34f local_90;
     local_90.setAxisRotation(rotationScalar * DEG2RAD, crossVec);
     m_vel1Dir = local_90.multVector33(m_vel1Dir);
-    m_processedSpeed = m_speed;
 
     const auto *raceMgr = System::RaceManager::Instance();
     if (!state()->isDisableBackwardsAccel() && state()->isTouchingGround() &&
@@ -1381,6 +1380,7 @@ void KartMove::calcAcceleration() {
         calcDeceleration();
     }
 
+    m_processedSpeed = m_speed;
     EGG::Vector3f nextSpeed = m_speed * m_vel1Dir;
 
     f32 maxSpeedY = state()->isOverZipper() ? KartHalfPipe::TerminalVelocity() : TERMINAL_VELOCITY;
