@@ -43,6 +43,13 @@ void KartItem::calc() {
     }
 }
 
+/// @addr{0x80798848}
+void KartItem::clear() {
+    if (m_inventory.id() != ItemId::NONE) {
+        m_inventory.clear();
+    }
+}
+
 /// @addr{0x8079864C}
 void KartItem::activateMushroom() {
     move()->activateMushroom();

@@ -13,6 +13,8 @@ public:
     void init();
     void calc();
 
+    void clearInventory(size_t idx);
+
     static ItemDirector *CreateInstance();
     static void DestroyInstance();
     [[nodiscard]] static ItemDirector *Instance();

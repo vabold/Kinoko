@@ -17,6 +17,7 @@ public:
 
     void init(size_t playerIdx);
     void calc();
+    void clear();
 
     void activateMushroom();
     void useMushroom();
