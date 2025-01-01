@@ -12,6 +12,7 @@ class KartObject;
 namespace Field {
 
 class ObjectCollidable;
+class ObjectDrivable;
 
 /// @brief A bitfield that represents the state and type of a given BoxColUnit.
 /// @details The lower 8 bits represent the type, while the remaining bits represent the state.
@@ -72,7 +73,7 @@ public:
     void calc();
 
     [[nodiscard]] ObjectCollidable *getNextObject();
-    [[nodiscard]] void *getNextDrivable();
+    [[nodiscard]] ObjectDrivable *getNextDrivable();
 
     void resetIterators();
 
