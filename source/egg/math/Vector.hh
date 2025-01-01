@@ -126,11 +126,11 @@ struct Vector3f {
         return *this = *this / scalar;
     }
 
-    bool operator==(const Vector3f &rhs) const {
+    [[nodiscard]] bool operator==(const Vector3f &rhs) const {
         return x == rhs.x && y == rhs.y && z == rhs.z;
     }
 
-    bool operator!=(const Vector3f &rhs) const {
+    [[nodiscard]] bool operator!=(const Vector3f &rhs) const {
         return !(*this == rhs);
     }
 

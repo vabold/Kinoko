@@ -18,21 +18,21 @@ public:
     size_t checkKartObjectCollision(Kart::KartObject *kartObj,
             ObjectCollisionConvexHull *convexHull);
 
-    const ObjectFlowTable &flowTable() const;
-    const ObjectBase *collidingObject(size_t idx) const;
-    Kart::Reaction reaction(size_t idx) const;
-    const EGG::Vector3f &hitDepth(size_t idx) const;
+    [[nodiscard]] const ObjectFlowTable &flowTable() const;
+    [[nodiscard]] const ObjectBase *collidingObject(size_t idx) const;
+    [[nodiscard]] Kart::Reaction reaction(size_t idx) const;
+    [[nodiscard]] const EGG::Vector3f &hitDepth(size_t idx) const;
 
     static ObjectDirector *CreateInstance();
     static void DestroyInstance();
-    static ObjectDirector *Instance();
+    [[nodiscard]] static ObjectDirector *Instance();
 
 private:
     ObjectDirector();
     ~ObjectDirector() override;
 
     void createObjects();
-    ObjectBase *createObject(const System::MapdataGeoObj &params);
+    [[nodiscard]] ObjectBase *createObject(const System::MapdataGeoObj &params);
 
     ObjectFlowTable m_flowTable;
     ObjectHitTable m_hitTableKart;

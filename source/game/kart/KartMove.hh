@@ -80,7 +80,7 @@ public:
     bool calcZipperCollision(f32 radius, f32 scale, EGG::Vector3f &pos, EGG::Vector3f &upLocal,
             const EGG::Vector3f &prevPos, Field::CourseColMgr::CollisionInfo *colInfo,
             Field::KCLTypeMask *maskOut, Field::KCLTypeMask flags) const;
-    f32 calcSlerpRate(f32 scale, const EGG::Quatf &from, const EGG::Quatf &to) const;
+    [[nodiscard]] f32 calcSlerpRate(f32 scale, const EGG::Quatf &from, const EGG::Quatf &to) const;
     virtual void calcVehicleRotation(f32 turn);
     virtual void hop();
     virtual void onHop() {}
@@ -88,9 +88,9 @@ public:
     virtual void calcMtCharge();
     virtual void initOob() {}
     [[nodiscard]] virtual f32 getWheelieSoftSpeedLimitBonus() const;
-    virtual bool canWheelie() const;
-    virtual bool canHop() const;
-    bool canStartDrift() const;
+    [[nodiscard]] virtual bool canWheelie() const;
+    [[nodiscard]] virtual bool canHop() const;
+    [[nodiscard]] bool canStartDrift() const;
 
     void tryStartBoostPanel();
     void tryStartBoostRamp();
