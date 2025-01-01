@@ -59,10 +59,7 @@ void KartBurnout::calcRotation() {
 
     m_pitch = DEG2RAD * (AMPLITUDE_FACTOR * sin) * m_amplitude;
 
-    EGG::Quatf rpy;
-    rpy.setRPY(EGG::Vector3f(0.0f, m_pitch, 0.0f));
-
-    physics()->composeStuntRot(rpy);
+    physics()->composeStuntRot(EGG::Quatf::FromRPY(0.0f, m_pitch, 0.0f));
 }
 
 /// @addr{0x8058920C}

@@ -124,26 +124,25 @@ void KartHalfPipe::calcRot() {
     switch (m_stunt) {
     case StuntType::Side360:
     case StuntType::Side720:
-        m_stuntRot.setRPY(EGG::Vector3f(0.0f, angle, 0.0f));
+        m_stuntRot.setRPY(0.0f, angle, 0.0f);
         break;
     case StuntType::Backside: {
-        EGG::Quatf rpy;
-        rpy.setRPY(
-                EGG::Vector3f(0.0f, DEG2RAD * (0.25f * -m_rotSign * m_stuntManager.angle), 0.0f));
+        auto rpy = EGG::Quatf::FromRPY(0.0f, DEG2RAD * (0.25f * -m_rotSign * m_stuntManager.angle),
+                0.0f);
         EGG::Vector3f rot = rpy.rotateVector(EGG::Vector3f::ez);
         m_stuntRot.setAxisRotation(angle, rot);
     } break;
     case StuntType::Frontside: {
-        EGG::Quatf rpy;
-        rpy.setRPY(EGG::Vector3f(0.0f, 0.0f, DEG2RAD * (0.2f * -m_rotSign * m_stuntManager.angle)));
+        EGG::Quatf rpy = EGG::Quatf::FromRPY(0.0f, 0.0f,
+                DEG2RAD * (0.2f * -m_rotSign * m_stuntManager.angle));
         EGG::Vector3f rot = rpy.rotateVector(EGG::Vector3f::ey);
         m_stuntRot.setAxisRotation(angle, rot);
     } break;
     case StuntType::Frontflip:
-        m_stuntRot.setRPY(EGG::Vector3f(m_rotSign * angle, 0.0f, 0.0f));
+        m_stuntRot.setRPY(m_rotSign * angle, 0.0f, 0.0f);
         break;
     case StuntType::Backflip:
-        m_stuntRot.setRPY(EGG::Vector3f(-m_rotSign * angle, 0.0f, 0.0f));
+        m_stuntRot.setRPY(-m_rotSign * angle, 0.0f, 0.0f);
         break;
     default:
         break;
