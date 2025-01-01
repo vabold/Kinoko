@@ -519,6 +519,9 @@ bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::V
     }
 
     f32 dist = EGG::Mathf::sqrt(sq_dist) - plane_dist;
+    if (dist <= 0.0f) {
+        return false;
+    }
 
     if (type == CollisionCheckType::Movement) {
         EGG::Vector3f lastPos = relativePos - m_movement;

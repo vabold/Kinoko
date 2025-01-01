@@ -10,7 +10,10 @@ TOKEN = os.getenv("token")
 DOLPHIN_PATH = os.getenv("dolphin_path")
 SP_PATH = os.getenv("sp_path")
 NAND_PATH = os.getenv("nand_path")
+KINOKO_PATH = os.getenv("kinoko_path")
+KINOKO_EXEC = os.getenv("kinoko_exec")
 IS_GENERATING_KRKG = False
+IS_REPLAYING_GHOST = False
 
 client = discord.Client(intents=discord.Intents.default())
 tree = discord.app_commands.CommandTree(client)
@@ -120,6 +123,80 @@ async def dolphin_generate_krkg(ghost: bytes, interaction: discord.Interaction):
 
 
 # ================================
+#     REPLAY
+# ================================
+
+
+async def replay_clear_io():
+    ghost_path = os.path.join(KINOKO_PATH, "ghost.rkg")
+    results_path = os.path.join(KINOKO_PATH, "results.txt")
+
+    if os.path.exists(ghost_path):
+        os.remove(ghost_path)
+
+    if os.path.exists(results_path):
+        os.remove(results_path)
+
+
+async def replay_set_ghost(ghost: bytes):
+    with open(os.path.join(KINOKO_PATH, "ghost.rkg"), "wb") as f:
+        f.write(ghost)
+
+
+async def replay_run() -> int:
+    args = ["-m", "replay", "-g", "ghost.rkg"]
+    proc = await asyncio.create_subprocess_exec(
+        os.path.join(KINOKO_PATH, KINOKO_EXEC), *args, cwd=KINOKO_PATH
+    )
+    await proc.communicate()
+    return proc.returncode
+
+
+async def replay_results() -> Optional[str]:
+    results_path = os.path.join(KINOKO_PATH, "results.txt")
+    if os.path.exists(results_path):
+        with open(results_path, "r") as f:
+            return f.read()
+    else:
+        return None
+
+
+async def replay_exec(ghost: bytes, interaction: discord.Interaction):
+    await replay_clear_io()
+    await replay_set_ghost(ghost)
+
+    return_code = await replay_run()
+
+    if return_code == 0:
+        await respond_generic_success(
+            interaction,
+            "Run synced successfully!",
+        )
+        return
+
+    if return_code != 3:
+        await respond_bug_error(interaction, "Unknown error! Possibly a segfault")
+        return
+
+    fail = await replay_results()
+    if fail:
+        await respond_fail_error(
+            interaction,
+            fail.split("\n")[1],
+            tip="This is a desync! Send the ghost in the Kinoko Discord server!",
+        )
+        return
+    # Empty string is falsey, leading to two situations where fail is False
+    elif os.path.exists(os.path.join(KINOKO_PATH, "results.txt")):
+        await respond_bug_error(
+            interaction, "Kinoko closed, but there's no explanation"
+        )
+        return
+
+    await respond_bug_error(interaction, "Kinoko returned nothing")
+
+
+# ================================
 #     RESPONSES
 # ================================
 
@@ -129,6 +206,21 @@ async def respond_generic_error(
 ):
     embed = discord.Embed(color=0xFF595E, title="Error!", description=f"### {error}")
     embed.set_footer(text=tip)
+    if (
+        interaction.response.type
+        == discord.InteractionResponseType.deferred_channel_message
+    ):
+        await interaction.followup.send(embed=embed, ephemeral=True)
+    else:
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+
+
+async def respond_generic_success(
+    interaction: discord.Interaction, msg: str, tip: Optional[str] = None
+):
+    embed = discord.Embed(color=0x5EFF59, title="Success!", description=f"### {msg}")
+    embed.set_footer(text=tip)
+
     if (
         interaction.response.type
         == discord.InteractionResponseType.deferred_channel_message
@@ -245,6 +337,51 @@ async def command_generate_krkg(
     IS_GENERATING_KRKG = False
 
 
+@tree.command(name="replay_ghost")
+async def command_replay_ghost(
+    interaction: discord.Interaction, ghost: discord.Attachment
+):
+    global IS_REPLAYING_GHOST
+
+    # Log when people generate KRKGs
+    print(f"{interaction.user.name} is requesting to replay a ghost!")
+
+    # Check if the file claims to be a ghost
+    file_extension = ghost.filename.split(".")[-1]
+    if file_extension != "rkg":
+        await respond_generic_error(
+            interaction,
+            "File is not an RKG",
+            "Double check that the file extension is .rkg!",
+        )
+        return
+
+    # Check if the size is too small or big to be a ghost
+    if ghost.size < 0x8C or ghost.size > 0x2800:
+        await respond_generic_error(
+            interaction,
+            f"File is too {"small" if ghost.size < 0x8c else "big"} to be an RKG",
+        )
+        return
+
+    # We can only replay one ghost at a time, due to how we I/O with Kinoko
+    # This theoretically creates a race condition, but with low traffic in mind,
+    # the chances of a collision are incredibly unlikely
+    # TODO: This command should use a mutex to add to a queue that another thread reads from
+    if IS_REPLAYING_GHOST:
+        await respond_generic_error(
+            interaction,
+            "Already replaying a ghost",
+            "I can only handle one ghost at a time. Try again later!",
+        )
+        return
+
+    IS_REPLAYING_GHOST = True
+    await interaction.response.defer(ephemeral=True, thinking=True)
+    await replay_exec(await ghost.read(), interaction)
+    IS_REPLAYING_GHOST = False
+
+
 if __name__ == "__main__":
     assert TOKEN, 'Missing token for Discord bot, ensure "token" exists in environment'
     assert (
@@ -254,5 +391,11 @@ if __name__ == "__main__":
     assert (
         NAND_PATH
     ), 'Missing path for save data, ensure "nand_path" exists in environment'
+    assert (
+        KINOKO_PATH
+    ), 'Missing path for Kinoko directory, ensure "kinoko_path" exists in environment'
+    assert (
+        KINOKO_EXEC
+    ), 'Missing path for Kinoko executable, ensure "kinoko_exec" exists in environment'
 
     client.run(TOKEN)
