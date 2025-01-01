@@ -222,8 +222,7 @@ void KartMove::clear() {
 /// @brief Initializes the kart's position and rotation. Calls tire suspension initializers.
 /// @addr{0x80584044}
 void KartMove::setInitialPhysicsValues(const EGG::Vector3f &position, const EGG::Vector3f &angles) {
-    EGG::Quatf quaternion;
-    quaternion.setRPY(angles * DEG2RAD);
+    EGG::Quatf quaternion = EGG::Quatf::fromRPY(angles * DEG2RAD);
     EGG::Vector3f newPos = position;
     Field::CourseColMgr::CollisionInfo info;
     Field::KCLTypeMask kcl_flags = KCL_NONE;
