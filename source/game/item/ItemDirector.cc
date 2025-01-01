@@ -18,6 +18,11 @@ void ItemDirector::calc() {
     }
 }
 
+void ItemDirector::clearInventory(size_t idx) {
+    ASSERT(idx < m_karts.size());
+    m_karts[idx].clear();
+}
+
 /// @addr{0x80799138}
 ItemDirector *ItemDirector::CreateInstance() {
     ASSERT(!s_instance);
