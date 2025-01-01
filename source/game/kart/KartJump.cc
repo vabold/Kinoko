@@ -34,11 +34,11 @@ void KartJump::calcRot() {
 
     switch (m_type) {
     case TrickType::KartFlipTrickZ:
-        m_rot.setRPY(EGG::Vector3f(0.0f, 0.0f, -(m_angle * DEG2RAD) * m_rotSign));
+        m_rot.setRPY(0.0f, 0.0f, -(m_angle * DEG2RAD) * m_rotSign);
         break;
     case TrickType::FlipTrickYLeft:
     case TrickType::FlipTrickYRight:
-        m_rot.setRPY(EGG::Vector3f(0.0f, m_angle * DEG2RAD * m_rotSign, 0.0f));
+        m_rot.setRPY(0.0f, m_angle * DEG2RAD * m_rotSign, 0.0f);
         break;
     default:
         break;
@@ -254,20 +254,17 @@ void KartJumpBike::calcRot() {
 
     switch (m_type) {
     case TrickType::BikeFlipTrickNose:
-    case TrickType::BikeFlipTrickTail: {
-        EGG::Vector3f angles = EGG::Vector3f(-(m_angle * DEG2RAD) * m_rotSign, 0.0f, 0.0f);
-        m_rot.setRPY(angles);
-    } break;
+    case TrickType::BikeFlipTrickTail:
+        m_rot.setRPY(-(m_angle * DEG2RAD) * m_rotSign, 0.0f, 0.0f);
+        break;
     case TrickType::FlipTrickYLeft:
-    case TrickType::FlipTrickYRight: {
-        EGG::Vector3f angles = EGG::Vector3f(0.0f, m_angle * DEG2RAD * m_rotSign, 0.0f);
-        m_rot.setRPY(angles);
-    } break;
+    case TrickType::FlipTrickYRight:
+        m_rot.setRPY(0.0f, m_angle * DEG2RAD * m_rotSign, 0.0f);
+        break;
     case TrickType::BikeSideStuntTrick: {
         f32 sin = EGG::Mathf::SinFIdx(m_angle * DEG2FIDX);
-        EGG::Vector3f angles = EGG::Vector3f(sin * -PI_OVER_9, (sin * m_rotSign) * -PI_OVER_3,
+        m_rot.setRPY(sin * -PI_OVER_9, (sin * m_rotSign) * -PI_OVER_3,
                 (sin * m_rotSign) * PI_OVER_9);
-        m_rot.setRPY(angles);
     } break;
     default:
         break;

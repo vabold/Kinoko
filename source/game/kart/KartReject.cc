@@ -49,10 +49,8 @@ void KartReject::calcRejectRoad() {
 
         if (angle > minAngle) {
             angle = 0.05f * (angle - 60.0f);
-            EGG::Quatf rot;
-            EGG::Vector3f vRot = EGG::Vector3f(0.0f,
+            EGG::Quatf rot = EGG::Quatf::FromRPY(0.0f,
                     (1.0f + angle * move()->speedRatio()) * dVar11 * DEG2RAD * m_rejectSign, 0.0f);
-            rot.setRPY(vRot);
             EGG::Quatf local_78 = mainRot().multSwap(rot);
             local_78.normalise();
 

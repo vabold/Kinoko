@@ -5,17 +5,22 @@ namespace EGG {
 /// @addr{0x80239E10}
 /// @brief Sets roll, pitch, and yaw.
 void Quatf::setRPY(const Vector3f &rpy) {
-    const f32 cz = Mathf::cos(rpy.z * 0.5f);
-    const f32 cy = Mathf::cos(rpy.y * 0.5f);
-    const f32 cx = Mathf::cos(rpy.x * 0.5f);
-    const f32 sz = Mathf::sin(rpy.z * 0.5f);
-    const f32 sy = Mathf::sin(rpy.y * 0.5f);
-    const f32 sx = Mathf::sin(rpy.x * 0.5f);
+    *this = FromRPY(rpy.x, rpy.y, rpy.z);
+}
 
-    w = cz * cy * cx + sz * sy * sx;
-    v.x = cz * cy * sx - sz * sy * cx;
-    v.y = cz * sy * cx + sz * cy * sx;
-    v.z = sz * cy * cx - cz * sy * sx;
+/// @brief Helper function to avoid unnecessary Vector3f construction.
+void Quatf::setRPY(f32 r, f32 p, f32 y) {
+    const f32 cy = Mathf::cos(y * 0.5f);
+    const f32 cp = Mathf::cos(p * 0.5f);
+    const f32 cr = Mathf::cos(r * 0.5f);
+    const f32 sy = Mathf::sin(y * 0.5f);
+    const f32 sp = Mathf::sin(p * 0.5f);
+    const f32 sr = Mathf::sin(r * 0.5f);
+
+    w = cy * cp * cr + sy * sp * sr;
+    v.x = cy * cp * sr - sy * sp * cr;
+    v.y = cy * sp * cr + sy * cp * sr;
+    v.z = sy * cp * cr - cy * sp * sr;
 }
 
 /// @addr{0x8023A168}
@@ -133,6 +138,19 @@ Quatf Quatf::multSwap(const Quatf &q) const {
 void Quatf::read(Stream &stream) {
     v.read(stream);
     w = stream.read_f32();
+}
+
+Quatf Quatf::FromRPY(const EGG::Vector3f &rpy) {
+    Quatf ret;
+    ret.setRPY(rpy);
+    return ret;
+}
+
+/// @brief Helper function to avoid unnecessary Vector3f construction.
+Quatf Quatf::FromRPY(f32 r, f32 p, f32 y) {
+    Quatf ret;
+    ret.setRPY(r, p, y);
+    return ret;
 }
 
 } // namespace EGG
