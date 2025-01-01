@@ -22,7 +22,7 @@ public:
     void end(bool boost);
 
     /// @addr{0x80574108}
-    static consteval f32 TerminalVelocity() {
+    [[nodiscard]] static consteval f32 TerminalVelocity() {
         return 65.0f;
     }
 
