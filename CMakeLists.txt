@@ -6,12 +6,13 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+option(KINOKO_USE_RTTI "Enable RTTI (disable -fno-rtti)" OFF)
+
 # Common flags
 set(COMMON_CXX_FLAGS
     -DKINOKO_EGG_OPERATOR_NEW
     -fno-asynchronous-unwind-tables
     -fno-exceptions
-    -fno-rtti
     -fshort-wchar
     -fstack-protector-strong
     -Wall
@@ -20,6 +21,10 @@ set(COMMON_CXX_FLAGS
     -Wno-delete-non-virtual-dtor
     -Wsuggest-override
 )
+
+if(NOT KINOKO_USE_RTTI)
+    list(APPEND COMMON_CXX_FLAGS -fno-rtti)
+endif()
 
 set(GAME_CXX_FLAGS
 )
