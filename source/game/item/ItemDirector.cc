@@ -18,6 +18,11 @@ void ItemDirector::calc() {
     }
 }
 
+KartItem &ItemDirector::kartItem(size_t idx) {
+    ASSERT(idx < m_karts.size());
+    return m_karts[idx];
+}
+
 /// @addr{0x80799138}
 ItemDirector *ItemDirector::CreateInstance() {
     ASSERT(!s_instance);

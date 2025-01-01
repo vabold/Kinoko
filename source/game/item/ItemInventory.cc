@@ -21,6 +21,11 @@ void ItemInventory::useItem(int count) {
         return;
     }
 
+    clear();
+}
+
+/// @addr{0x807BC9C0}
+void ItemInventory::clear() {
     m_currentId = ItemId::NONE;
     m_currentCount = 0;
 }
