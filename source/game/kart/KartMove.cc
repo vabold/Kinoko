@@ -12,6 +12,9 @@
 #include "game/field/CollisionDirector.hh"
 #include "game/field/KCollisionTypes.hh"
 
+#include "game/item/ItemDirector.hh"
+#include "game/item/KartItem.hh"
+
 #include "game/system/CourseMap.hh"
 #include "game/system/RaceManager.hh"
 #include "game/system/map/MapdataCannonPoint.hh"
@@ -308,6 +311,9 @@ void KartMove::calcRespawnStart() {
     EGG::Vector3f respawnRot = EGG::Vector3f(0.0f, jugemRot.y, 0.0f);
 
     setInitialPhysicsValues(respawnPos, respawnRot);
+
+    Item::ItemDirector::Instance()->kartItem(0).clear();
+
     state()->setTriggerRespawn(false);
     state()->setInRespawn(true);
 }

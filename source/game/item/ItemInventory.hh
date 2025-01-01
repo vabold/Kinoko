@@ -13,6 +13,7 @@ public:
     /// @beginSetters
     void setItem(ItemId id);
     void useItem(int count);
+    void clear();
     /// @endSetters
 
     /// @beginGetters
