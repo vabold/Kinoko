@@ -13,8 +13,8 @@ public:
     ObjectHitTable(const char *filename);
     ~ObjectHitTable();
 
-    Kart::Reaction reaction(s16 i) const;
-    s16 slot(ObjectId id) const;
+    [[nodiscard]] Kart::Reaction reaction(s16 i) const;
+    [[nodiscard]] s16 slot(ObjectId id) const;
 
 private:
     s16 m_count;

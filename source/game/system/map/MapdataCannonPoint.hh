@@ -21,10 +21,10 @@ public:
     void read(EGG::Stream &stream);
 
     /// @beginGetters
-    const EGG::Vector3f &pos() const;
-    const EGG::Vector3f &rot() const;
-    u16 id() const;
-    s16 parameterIdx() const;
+    [[nodiscard]] const EGG::Vector3f &pos() const;
+    [[nodiscard]] const EGG::Vector3f &rot() const;
+    [[nodiscard]] u16 id() const;
+    [[nodiscard]] s16 parameterIdx() const;
     /// @endGetters
 
 private:

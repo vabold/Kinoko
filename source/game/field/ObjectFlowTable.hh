@@ -46,8 +46,8 @@ public:
     ObjectFlowTable(const char *filename);
     ~ObjectFlowTable();
 
-    const SObjectCollisionSet *set(s16 slot) const;
-    s16 slot(ObjectId id) const;
+    [[nodiscard]] const SObjectCollisionSet *set(s16 slot) const;
+    [[nodiscard]] s16 slot(ObjectId id) const;
 
 private:
     struct SFile {
