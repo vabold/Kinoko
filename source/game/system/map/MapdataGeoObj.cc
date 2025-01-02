@@ -3,8 +3,7 @@
 namespace System {
 
 MapdataGeoObj::MapdataGeoObj(const SData *data) : m_rawData(data) {
-    u8 *unsafeData = reinterpret_cast<u8 *>(const_cast<SData *>(data));
-    EGG::RamStream stream = EGG::RamStream(unsafeData, sizeof(SData));
+    EGG::RamStream stream = EGG::RamStream(data, sizeof(SData));
     read(stream);
 }
 

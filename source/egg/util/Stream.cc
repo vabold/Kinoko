@@ -8,12 +8,12 @@ Stream::~Stream() = default;
 
 void Stream::skip(u32 count) {
     m_index += count;
-    ASSERT(!eof());
+    ASSERT(!bad());
 }
 
 void Stream::jump(u32 index) {
     m_index = index;
-    ASSERT(!eof());
+    ASSERT(!bad());
 }
 
 void Stream::setEndian(std::endian endian) {
@@ -66,8 +66,8 @@ f64 Stream::read_f64() {
 
 RamStream::RamStream() : m_buffer(nullptr), m_size(0) {}
 
-RamStream::RamStream(u8 *buffer, u32 size) {
-    setBufferAndSize(buffer, size);
+RamStream::RamStream(const void *buffer, u32 size) {
+    setBufferAndSize(const_cast<void *>(buffer), size);
 }
 
 RamStream::~RamStream() = default;
@@ -86,7 +86,15 @@ void RamStream::write(void *input, u32 size) {
     }
 }
 
-bool RamStream::eof() {
+bool RamStream::eof() const {
+    return m_index == m_size;
+}
+
+bool RamStream::safe(u32 size) const {
+    return m_index + size <= m_size;
+}
+
+bool RamStream::bad() const {
     return m_index > m_size;
 }
 
@@ -94,7 +102,7 @@ bool RamStream::eof() {
 std::string RamStream::read_string() {
     std::string ret(reinterpret_cast<char *>(m_buffer + m_index));
     m_index += ret.size() + 1;
-    ASSERT(!eof());
+    ASSERT(!bad());
     return ret;
 }
 
@@ -118,7 +126,7 @@ u8 *RamStream::dataAtIndex() {
 RamStream RamStream::split(u32 size) {
     RamStream stream = RamStream(m_buffer + m_index, size);
     m_index += size;
-    ASSERT(!eof());
+    ASSERT(!bad());
 
     return stream;
 }
