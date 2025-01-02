@@ -2276,6 +2276,14 @@ KartBurnout &KartMove::burnout() {
     return m_burnout;
 }
 
+KartMove::DriftState KartMove::driftState() const {
+    return m_driftState;
+}
+
+u16 KartMove::mtCharge() const {
+    return m_mtCharge;
+}
+
 /// @addr{0x80587B30}
 KartMoveBike::KartMoveBike() : m_leanRot(0.0f) {}
 
