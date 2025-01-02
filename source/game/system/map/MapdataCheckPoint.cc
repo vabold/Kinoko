@@ -10,8 +10,7 @@ namespace System {
 /// @addr{0x805154E4}
 MapdataCheckPoint::MapdataCheckPoint(const SData *data)
     : m_rawData(data), m_nextCount(0), m_prevCount(0) {
-    u8 *unsafeData = reinterpret_cast<u8 *>(const_cast<SData *>(data));
-    EGG::RamStream stream = EGG::RamStream(unsafeData, sizeof(SData));
+    EGG::RamStream stream = EGG::RamStream(data, sizeof(SData));
     read(stream);
     m_midpoint = 0.5f * (m_left + m_right);
     m_dir = EGG::Vector2f(m_right.y - m_left.y, m_left.x - m_right.x);

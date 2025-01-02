@@ -14,7 +14,9 @@ public:
 
     virtual void read(void *output, u32 size) = 0;
     virtual void write(void *input, u32 size) = 0;
-    virtual bool eof() = 0;
+    virtual bool eof() const = 0;
+    virtual bool safe(u32 size) const = 0;
+    virtual bool bad() const = 0;
 
     void skip(u32 count);
     void jump(u32 index);
@@ -41,10 +43,10 @@ protected:
 private:
     template <ParseableType T>
     [[nodiscard]] T read() {
+        ASSERT(safe(sizeof(T)));
         T val;
         read(&val, sizeof(val));
         m_index += sizeof(val);
-        ASSERT(!eof());
 
         return parse<T>(val, m_endian);
     }
@@ -58,12 +60,14 @@ private:
 class RamStream : public Stream {
 public:
     RamStream();
-    RamStream(u8 *buffer, u32 size);
+    RamStream(const void *buffer, u32 size);
     ~RamStream() override;
 
     void read(void *output, u32 size) override;
     void write(void *input, u32 size) override;
-    [[nodiscard]] bool eof() override;
+    [[nodiscard]] bool eof() const override;
+    [[nodiscard]] bool safe(u32 size) const override;
+    [[nodiscard]] bool bad() const override;
 
     [[nodiscard]] std::string read_string();
     [[nodiscard]] RamStream split(u32 size);
