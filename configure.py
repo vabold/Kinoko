@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from argparse import ArgumentParser
 from glob import glob
 import io
 import os
@@ -8,6 +9,9 @@ from tools.generate_tests import generate_tests
 from vendor.ninja_syntax import Writer
 
 generate_tests()
+parser = ArgumentParser()
+parser.add_argument('--timing', action='store_true', help="Enables timing logs.")
+args = parser.parse_args()
 
 out_buf = io.StringIO()
 n = Writer(out_buf)
@@ -27,7 +31,7 @@ n.variable('compiler', 'g++')
 n.newline()
 
 common_ccflags = [
-    '-DREVOLUTION',
+    '-DFEATURE_TIMING' if args.timing else '',
     '-fno-asynchronous-unwind-tables',
     '-fno-exceptions',
     '-fno-rtti',
@@ -75,7 +79,7 @@ n.rule(
     description='LD $out',
 )
 
-code_in_files = [file for file in glob('**/*.cc', recursive=True)]
+code_in_files = list(glob('**/*.cc', recursive=True))
 
 target_code_out_files = []
 debug_code_out_files = []
@@ -149,6 +153,6 @@ n.build(
     ],
 )
 
-with open('build.ninja', 'w') as out_file:
+with open('build.ninja', 'w', encoding="utf-8") as out_file:
     out_file.write(out_buf.getvalue())
 n.close()
