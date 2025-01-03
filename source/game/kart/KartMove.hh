@@ -161,6 +161,8 @@ public:
     [[nodiscard]] KartBurnout &burnout();
     [[nodiscard]] DriftState driftState() const;
     [[nodiscard]] u16 mtCharge() const;
+    [[nodiscard]] f32 kclSpeedFactor() const;
+    [[nodiscard]] f32 kclRotFactor() const;
     /// @endGetters
 
 protected:
