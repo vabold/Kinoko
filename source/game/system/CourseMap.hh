@@ -17,6 +17,8 @@ class MapdataGeoObj;
 class MapdataGeoObjAccessor;
 class MapdataJugemPoint;
 class MapdataJugemPointAccessor;
+class MapdataPointInfo;
+class MapdataPointInfoAccessor;
 class MapdataStageInfo;
 class MapdataStageInfoAccessor;
 class MapdataStartPoint;
@@ -32,7 +34,8 @@ public:
     [[nodiscard]] MapdataCheckPathAccessor *parseCheckPath(u32 sectionName) const;
     [[nodiscard]] MapdataCheckPointAccessor *parseCheckPoint(u32 sectionName) const;
     [[nodiscard]] MapdataGeoObjAccessor *parseGeoObj(u32 sectionName) const;
-    [[nodiscard]] MapdataJugemPointAccessor *parseJugemPoint(u32 sectionName);
+    [[nodiscard]] MapdataJugemPointAccessor *parseJugemPoint(u32 sectionName) const;
+    [[nodiscard]] MapdataPointInfoAccessor *parsePointInfo(u32 sectionName) const;
     [[nodiscard]] MapdataStageInfoAccessor *parseStageInfo(u32 sectionName) const;
     [[nodiscard]] MapdataStartPointAccessor *parseStartPoint(u32 sectionName) const;
 
@@ -50,12 +53,14 @@ public:
     [[nodiscard]] MapdataCheckPath *getCheckPath(u16 i) const;
     [[nodiscard]] MapdataCheckPoint *getCheckPoint(u16 i) const;
     [[nodiscard]] MapdataGeoObj *getGeoObj(u16 i) const;
+    [[nodiscard]] MapdataPointInfo *getPointInfo(u16 i) const;
     [[nodiscard]] MapdataJugemPoint *getJugemPoint(u16 i) const;
     [[nodiscard]] MapdataStageInfo *getStageInfo() const;
     [[nodiscard]] MapdataStartPoint *getStartPoint(u16 i) const;
     [[nodiscard]] u16 getCheckPathCount() const;
     [[nodiscard]] u16 getCheckPointCount() const;
     [[nodiscard]] u16 getGeoObjCount() const;
+    [[nodiscard]] u16 getPointInfoCount() const;
     [[nodiscard]] u16 getJugemPointCount() const;
     [[nodiscard]] u32 version() const;
     [[nodiscard]] MapdataCheckPathAccessor *checkPath() const;
@@ -93,6 +98,7 @@ private:
     MapdataStartPointAccessor *m_startPoint;
     MapdataCheckPathAccessor *m_checkPath;
     MapdataCheckPointAccessor *m_checkPoint;
+    MapdataPointInfoAccessor *m_pointInfo;
     MapdataGeoObjAccessor *m_geoObj;
     MapdataJugemPointAccessor *m_jugemPoint;
     MapdataCannonPointAccessor *m_cannonPoint;
