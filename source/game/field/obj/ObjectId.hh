@@ -10,6 +10,7 @@ enum class ObjectId {
     CastleTree1c = 0x130,
     DKtreeA64c = 0x158,
     OilSFC = 0x15d,
+    ParasolR = 0x16e,
 };
 
 enum class BlacklistedObjectId {
