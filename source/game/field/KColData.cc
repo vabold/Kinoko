@@ -54,6 +54,12 @@ KColData::KColData(const void *file) {
     computeBBox();
 }
 
+KColData::~KColData() {
+    delete[] m_prisms.data();
+    delete[] m_nrms.data();
+    delete[] m_vertices.data();
+}
+
 /// @addr{0x807C24C0}
 void KColData::narrowScopeLocal(const EGG::Vector3f &pos, f32 radius, KCLTypeMask mask) {
     m_prismCacheTop = m_prismCache.data();
