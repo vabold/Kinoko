@@ -35,6 +35,7 @@ public:
     STATIC_ASSERT(sizeof(KCollisionPrism) == 0x10);
 
     KColData(const void *file);
+    ~KColData();
 
     void narrowScopeLocal(const EGG::Vector3f &pos, f32 radius, KCLTypeMask mask);
     void narrowPolygon_EachBlock(const u16 *prismArray);
