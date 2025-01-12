@@ -3,6 +3,7 @@
 #include "game/field/KCollisionTypes.hh"
 
 #include <egg/math/BoundBox.hh>
+#include <egg/math/Matrix.hh>
 
 // Credit: em-eight/mkw
 // Credit: stblr/Hanachan
@@ -39,8 +40,16 @@ struct CollisionInfo {
         }
     }
 
+    void reset() {
+        bbox.setZero();
+        wallDist = -std::numeric_limits<f32>::min();
+        floorDist = -std::numeric_limits<f32>::min();
+        perpendicularity = 0.0f;
+    }
+
     void update(f32 now_dist, const EGG::Vector3f &offset, const EGG::Vector3f &fnrm,
             u32 kclAttributeTypeBit);
+    void transformInfo(CollisionInfo &rhs, const EGG::Matrix34f &mtx);
 };
 
 /// @brief Performs lookups for KCL triangles
@@ -89,7 +98,13 @@ public:
     [[nodiscard]] const u16 *searchBlock(const EGG::Vector3f &pos);
 
     /// @beginGetters
-    [[nodiscard]] u16 prismCache(u32 idx) const;
+    [[nodiscard]] const EGG::BoundBox3f &bbox() const {
+        return m_bbox;
+    }
+
+    [[nodiscard]] u16 prismCache(u32 idx) const {
+        return m_prismCache[idx];
+    }
     /// @endGetters
 
     [[nodiscard]] static EGG::Vector3f GetVertex(f32 height, const EGG::Vector3f &vertex1,
