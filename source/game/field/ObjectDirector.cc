@@ -191,6 +191,8 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
     case ObjectId::PalmTree:
     case ObjectId::DKtreeA64c:
         return new ObjectCollidable(params);
+    case ObjectId::Mdush:
+        return new ObjectKCL(params);
     default:
         return new ObjectNoImpl(params);
     }
