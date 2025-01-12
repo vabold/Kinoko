@@ -5,8 +5,6 @@
 #include "game/field/ObjectHitTable.hh"
 #include "game/field/obj/ObjectCollidable.hh"
 
-#include <vector>
-
 namespace Field {
 
 class ObjectDirector : EGG::Disposer {
@@ -38,9 +36,9 @@ private:
     ObjectHitTable m_hitTableKart;
     ObjectHitTable m_hitTableKartObject;
 
-    std::vector<ObjectBase *> m_objects;          ///< All objects live here
-    std::vector<ObjectBase *> m_calcObjects;      ///< Objects needing calc() live here too.
-    std::vector<ObjectBase *> m_collisionObjects; ///< Objects having collision live here too
+    fixed_vector<ObjectBase *> m_objects;          ///< All objects live here
+    fixed_vector<ObjectBase *> m_calcObjects;      ///< Objects needing calc() live here too.
+    fixed_vector<ObjectBase *> m_collisionObjects; ///< Objects having collision live here too
 
     static constexpr size_t MAX_UNIT_COUNT = 0x100;
 

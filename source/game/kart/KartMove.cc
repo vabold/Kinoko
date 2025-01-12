@@ -1253,18 +1253,14 @@ f32 KartMove::calcVehicleAcceleration() const {
         return 1.0f;
     }
 
-    std::vector<f32> as;
-    std::vector<f32> ts;
+    std::span<const f32> as;
+    std::span<const f32> ts;
     if (state()->isDrifting()) {
-        const auto &as_arr = param()->stats().accelerationDriftA;
-        const auto &ts_arr = param()->stats().accelerationDriftT;
-        as = {as_arr.begin(), as_arr.end()};
-        ts = {ts_arr.begin(), ts_arr.end()};
+        as = param()->stats().accelerationDriftA;
+        ts = param()->stats().accelerationDriftT;
     } else {
-        const auto &as_arr = param()->stats().accelerationStandardA;
-        const auto &ts_arr = param()->stats().accelerationStandardT;
-        as = {as_arr.begin(), as_arr.end()};
-        ts = {ts_arr.begin(), ts_arr.end()};
+        as = param()->stats().accelerationStandardA;
+        ts = param()->stats().accelerationStandardT;
     }
 
     size_t i = 0;
