@@ -10,6 +10,7 @@ namespace EGG {
 /// the scalar is used to represent the amount of rotation.
 struct Quatf {
     Quatf();
+    Quatf(const Quatf &q);
     Quatf(f32 w_, const Vector3f &v_);
     Quatf(f32 w_, f32 x_, f32 y_, f32 z_);
     ~Quatf();
@@ -73,6 +74,7 @@ struct Quatf {
     }
 
     void setRPY(const Vector3f &rpy);
+    void setRPY(f32 r, f32 p, f32 y);
     void normalise();
     void makeVectorRotation(const Vector3f &from, const Vector3f &to);
     Quatf conjugate() const;
@@ -86,6 +88,9 @@ struct Quatf {
     Quatf multSwap(const Quatf &q) const;
 
     void read(Stream &stream);
+
+    static Quatf fromRPY(const EGG::Vector3f &rpy);
+    static Quatf fromRPY(f32 r, f32 p, f32 y);
 
     Vector3f v;
     f32 w;
