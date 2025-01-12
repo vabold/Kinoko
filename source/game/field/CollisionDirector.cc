@@ -10,8 +10,8 @@ void CollisionDirector::checkCourseColNarrScLocal(f32 radius, const EGG::Vector3
 
 /// @addr{0x8078F500}
 bool CollisionDirector::checkSphereFull(f32 radius, const EGG::Vector3f &v0,
-        const EGG::Vector3f &v1, KCLTypeMask flags, CourseColMgr::CollisionInfo *pInfo,
-        KCLTypeMask *pFlagsOut, u32 /*timeOffset*/) {
+        const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut,
+        u32 /*timeOffset*/) {
     if (pInfo) {
         pInfo->bbox.min = EGG::Vector3f::zero;
         pInfo->bbox.max = EGG::Vector3f::zero;
@@ -56,8 +56,8 @@ bool CollisionDirector::checkSphereFull(f32 radius, const EGG::Vector3f &v0,
 
 /// @addr{0x8078F784}
 bool CollisionDirector::checkSphereFullPush(f32 radius, const EGG::Vector3f &v0,
-        const EGG::Vector3f &v1, KCLTypeMask flags, CourseColMgr::CollisionInfo *pInfo,
-        KCLTypeMask *pFlagsOut, u32 /*timeOffset*/) {
+        const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut,
+        u32 /*timeOffset*/) {
     if (pInfo) {
         pInfo->bbox.setZero();
         pInfo->_50 = -std::numeric_limits<f32>::min();
@@ -102,8 +102,8 @@ bool CollisionDirector::checkSphereFullPush(f32 radius, const EGG::Vector3f &v0,
 
 /// @addr{0x807901F0}
 bool CollisionDirector::checkSphereCachedPartial(f32 radius, const EGG::Vector3f &pos,
-        const EGG::Vector3f &prevPos, KCLTypeMask typeMask,
-        CourseColMgr::CollisionInfoPartial *info, KCLTypeMask *typeMaskOut, u32 /*timeOffset*/) {
+        const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CollisionInfoPartial *info,
+        KCLTypeMask *typeMaskOut, u32 /*timeOffset*/) {
     if (info) {
         info->bbox.setZero();
     }
@@ -139,8 +139,8 @@ bool CollisionDirector::checkSphereCachedPartial(f32 radius, const EGG::Vector3f
 
 /// @addr{0x807903BC}
 bool CollisionDirector::checkSphereCachedPartialPush(f32 radius, const EGG::Vector3f &pos,
-        const EGG::Vector3f &prevPos, KCLTypeMask typeMask,
-        CourseColMgr::CollisionInfoPartial *info, KCLTypeMask *typeMaskOut, u32 /*timeOffset*/) {
+        const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CollisionInfoPartial *info,
+        KCLTypeMask *typeMaskOut, u32 /*timeOffset*/) {
     if (info) {
         info->bbox.setZero();
     }
@@ -166,7 +166,7 @@ bool CollisionDirector::checkSphereCachedPartialPush(f32 radius, const EGG::Vect
 
 /// @addr{0x807907F8}
 bool CollisionDirector::checkSphereCachedFullPush(f32 radius, const EGG::Vector3f &pos,
-        const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CourseColMgr::CollisionInfo *colInfo,
+        const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CollisionInfo *colInfo,
         KCLTypeMask *typeMaskOut, u32 /*timeOffset*/) {
     if (colInfo) {
         colInfo->bbox.min.setZero();

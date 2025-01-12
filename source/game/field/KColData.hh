@@ -9,6 +9,40 @@
 
 namespace Field {
 
+struct CollisionInfoPartial {
+    EGG::BoundBox3f bbox;
+    EGG::Vector3f tangentOff;
+};
+
+struct CollisionInfo {
+    EGG::BoundBox3f bbox;
+    EGG::Vector3f tangentOff;
+    EGG::Vector3f floorNrm;
+    EGG::Vector3f wallNrm;
+    EGG::Vector3f _3c;
+    f32 floorDist;
+    f32 wallDist;
+    f32 _50;
+    f32 perpendicularity;
+
+    void updateFloor(f32 dist, const EGG::Vector3f &fnrm) {
+        if (dist > floorDist) {
+            floorDist = dist;
+            floorNrm = fnrm;
+        }
+    }
+
+    void updateWall(f32 dist, const EGG::Vector3f &fnrm) {
+        if (dist > wallDist) {
+            wallDist = dist;
+            wallNrm = fnrm;
+        }
+    }
+
+    void update(f32 now_dist, const EGG::Vector3f &offset, const EGG::Vector3f &fnrm,
+            u32 kclAttributeTypeBit);
+};
+
 /// @brief Performs lookups for KCL triangles
 /// @nosubgrouping
 class KColData {

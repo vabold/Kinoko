@@ -18,6 +18,7 @@ public:
     virtual void calc() {}
     virtual void calcModel();
     virtual void load() = 0;
+    virtual void createCollision() = 0;
     virtual void calcCollisionTransform() = 0;
 
     /// @addr{0x806BF434}

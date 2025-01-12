@@ -24,20 +24,19 @@ public:
             u32 timeOffset);
 
     [[nodiscard]] bool checkSphereFull(f32 radius, const EGG::Vector3f &v0, const EGG::Vector3f &v1,
-            KCLTypeMask flags, CourseColMgr::CollisionInfo *pInfo, KCLTypeMask *pFlagsOut,
-            u32 timeOffset);
+            KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut, u32 timeOffset);
     [[nodiscard]] bool checkSphereFullPush(f32 radius, const EGG::Vector3f &v0,
-            const EGG::Vector3f &v1, KCLTypeMask flags, CourseColMgr::CollisionInfo *pInfo,
+            const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *pInfo,
             KCLTypeMask *pFlagsOut, u32 timeOffset);
 
     [[nodiscard]] bool checkSphereCachedPartial(f32 radius, const EGG::Vector3f &pos,
-            const EGG::Vector3f &prevPos, KCLTypeMask typeMask,
-            CourseColMgr::CollisionInfoPartial *info, KCLTypeMask *typeMaskOut, u32 timeOffset);
+            const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CollisionInfoPartial *info,
+            KCLTypeMask *typeMaskOut, u32 timeOffset);
     [[nodiscard]] bool checkSphereCachedPartialPush(f32 radius, const EGG::Vector3f &pos,
-            const EGG::Vector3f &prevPos, KCLTypeMask typeMask,
-            CourseColMgr::CollisionInfoPartial *info, KCLTypeMask *typeMaskOut, u32 timeOffset);
+            const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CollisionInfoPartial *info,
+            KCLTypeMask *typeMaskOut, u32 timeOffset);
     [[nodiscard]] bool checkSphereCachedFullPush(f32 radius, const EGG::Vector3f &pos,
-            const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CourseColMgr::CollisionInfo *info,
+            const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CollisionInfo *info,
             KCLTypeMask *typeMaskOut, u32 timeOffset);
 
     void resetCollisionEntries(KCLTypeMask *ptr);

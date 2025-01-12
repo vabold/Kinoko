@@ -51,7 +51,7 @@ public:
     }
 
 protected:
-    virtual void createCollision();
+    void createCollision() override;
 
     /// @addr{0x806816B8}
     virtual const EGG::Vector3f &collisionCenter() const {

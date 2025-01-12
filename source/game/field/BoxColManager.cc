@@ -1,6 +1,7 @@
 #include "BoxColManager.hh"
 
 #include "game/field/obj/ObjectCollidable.hh"
+#include "game/field/obj/ObjectDrivable.hh"
 
 #include <numeric>
 
@@ -184,8 +185,8 @@ ObjectCollidable *BoxColManager::getNextObject() {
 }
 
 /// @addr{0x80785EC4}
-void *BoxColManager::getNextDrivable() {
-    return getNextImpl(m_nextDrivableID, eBoxColFlag::Drivable);
+ObjectDrivable *BoxColManager::getNextDrivable() {
+    return reinterpret_cast<ObjectDrivable *>(getNextImpl(m_nextDrivableID, eBoxColFlag::Drivable));
 }
 
 /// @addr{0x80785F2C}
