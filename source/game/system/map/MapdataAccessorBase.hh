@@ -39,7 +39,7 @@ public:
         return m_entryCount;
     }
 
-    void init(const TData *start, u16 count) {
+    virtual void init(const TData *start, u16 count) {
         if (count != 0) {
             m_entryCount = count;
             m_entries = new T *[count];

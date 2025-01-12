@@ -68,6 +68,7 @@ public:
     [[nodiscard]] std::string read_string();
     [[nodiscard]] RamStream split(u32 size);
     void setBufferAndSize(void *buffer, u32 size);
+    void extendSize(u32 size);
     [[nodiscard]] u8 *data();
     [[nodiscard]] u8 *dataAtIndex();
 

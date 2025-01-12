@@ -6,6 +6,7 @@
 #include "game/system/map/MapdataFileAccessor.hh"
 #include "game/system/map/MapdataGeoObj.hh"
 #include "game/system/map/MapdataJugemPoint.hh"
+#include "game/system/map/MapdataPointInfo.hh"
 #include "game/system/map/MapdataStageInfo.hh"
 #include "game/system/map/MapdataStartPoint.hh"
 
@@ -25,12 +26,14 @@ void CourseMap::init() {
     constexpr u32 GEO_OBJ_SIGNATURE = 0x474f424a;
     constexpr u32 JUGEM_POINT_SIGNATURE = 0x4a475054;
     constexpr u32 START_POINT_SIGNATURE = 0x4b545054;
+    constexpr u32 POINT_INFO_SIGNATURE = 0x504f5449;
     constexpr u32 STAGE_INFO_SIGNATURE = 0x53544749;
 
     m_startPoint = parseStartPoint(START_POINT_SIGNATURE);
     m_checkPath = parseCheckPath(CHECK_PATH_SIGNATURE);
     m_checkPoint = parseCheckPoint(CHECK_POINT_SIGNATURE);
     m_geoObj = parseGeoObj(GEO_OBJ_SIGNATURE);
+    m_pointInfo = parsePointInfo(POINT_INFO_SIGNATURE);
     m_jugemPoint = parseJugemPoint(JUGEM_POINT_SIGNATURE);
     m_cannonPoint = parseCannonPoint(CANNON_POINT_SIGNATURE);
     m_stageInfo = parseStageInfo(STAGE_INFO_SIGNATURE);
@@ -100,12 +103,24 @@ MapdataGeoObjAccessor *CourseMap::parseGeoObj(u32 sectionName) const {
 }
 
 /// @addr{0x805130C4}
-MapdataJugemPointAccessor *CourseMap::parseJugemPoint(u32 sectionName) {
+MapdataJugemPointAccessor *CourseMap::parseJugemPoint(u32 sectionName) const {
     const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
 
     MapdataJugemPointAccessor *accessor = nullptr;
     if (sectionPtr) {
         accessor = new MapdataJugemPointAccessor(sectionPtr);
+    }
+
+    return accessor;
+}
+
+/// @addr{0x80513398}
+MapdataPointInfoAccessor *CourseMap::parsePointInfo(u32 sectionName) const {
+    const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
+
+    MapdataPointInfoAccessor *accessor = nullptr;
+    if (sectionPtr) {
+        accessor = new MapdataPointInfoAccessor(sectionPtr);
     }
 
     return accessor;
@@ -291,6 +306,11 @@ MapdataGeoObj *CourseMap::getGeoObj(u16 i) const {
     return i < getGeoObjCount() ? m_geoObj->get(i) : nullptr;
 }
 
+/// @addr{0x80515E04}
+MapdataPointInfo *CourseMap::getPointInfo(u16 i) const {
+    return i < getPointInfoCount() ? m_pointInfo->get(i) : nullptr;
+}
+
 /// @addr{0x80518920}
 MapdataJugemPoint *CourseMap::getJugemPoint(u16 i) const {
     return i < getJugemPointCount() ? m_jugemPoint->get(i) : nullptr;
@@ -316,6 +336,10 @@ u16 CourseMap::getCheckPointCount() const {
 
 u16 CourseMap::getGeoObjCount() const {
     return m_geoObj ? m_geoObj->size() : 0;
+}
+
+u16 CourseMap::getPointInfoCount() const {
+    return m_pointInfo ? m_pointInfo->size() : 0;
 }
 
 u16 CourseMap::getJugemPointCount() const {

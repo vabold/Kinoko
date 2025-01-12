@@ -103,6 +103,10 @@ void RamStream::setBufferAndSize(void *buffer, u32 size) {
     m_size = size;
 }
 
+void RamStream::extendSize(u32 size) {
+    m_size += size;
+}
+
 u8 *RamStream::data() {
     return m_buffer;
 }
