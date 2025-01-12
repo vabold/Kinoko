@@ -228,7 +228,7 @@ void KartMove::setInitialPhysicsValues(const EGG::Vector3f &position, const EGG:
     EGG::Quatf quaternion;
     quaternion.setRPY(angles * DEG2RAD);
     EGG::Vector3f newPos = position;
-    Field::CourseColMgr::CollisionInfo info;
+    Field::CollisionInfo info;
     Field::KCLTypeMask kcl_flags = KCL_NONE;
 
     bool bColliding = Field::CollisionDirector::Instance()->checkSphereFullPush(100.0f, newPos,
@@ -592,7 +592,7 @@ void KartMove::calcStickyRoad() {
     EGG::Vector3f pos = dynamics()->pos();
     EGG::Vector3f vel = m_speed * m_vel1Dir;
     EGG::Vector3f down = -STICKY_RADIUS * componentYAxis();
-    Field::CourseColMgr::CollisionInfo colInfo;
+    Field::CollisionInfo colInfo;
     colInfo.bbox.setZero();
     Field::KCLTypeMask kcl_flags = KCL_NONE;
     bool stickyRoad = false;
@@ -1644,7 +1644,7 @@ void KartMove::calcRejectRoad() {
 /// @addr{0x80583F2C}
 bool KartMove::calcZipperCollision(f32 radius, f32 scale, EGG::Vector3f &pos,
         EGG::Vector3f &upLocal, const EGG::Vector3f &prevPos,
-        Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut,
+        Field::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut,
         Field::KCLTypeMask flags) const {
     upLocal = mainRot().rotateVector(EGG::Vector3f::ey);
     pos = dynamics()->pos() + (-scale * m_scale.y) * upLocal;

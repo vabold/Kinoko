@@ -83,18 +83,18 @@ public:
     void calcWheelCollision(u16 wheelIdx, CollisionGroup *hitboxGroup, const EGG::Vector3f &colVel,
             const EGG::Vector3f &center, f32 radius);
     void calcSideCollision(CollisionData &collisionData, Hitbox &hitbox,
-            Field::CourseColMgr::CollisionInfo *colInfo);
+            Field::CollisionInfo *colInfo);
     void calcBoundingRadius();
     void calcObjectCollision();
     void calcPoleTimer();
 
     void processWheel(CollisionData &collisionData, Hitbox &hitbox,
-            Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut);
+            Field::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut);
     void processBody(CollisionData &collisionData, Hitbox &hitbox,
-            Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut);
+            Field::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut);
     [[nodiscard]] bool processWall(CollisionData &collisionData, Field::KCLTypeMask *maskOut);
     void processFloor(CollisionData &collisionData, Hitbox &hitbox,
-            Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut, bool wheel);
+            Field::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut, bool wheel);
 
     void applySomeFloorMoment(f32 down, f32 rate, CollisionGroup *hitboxGroup,
             const EGG::Vector3f &forward, const EGG::Vector3f &nextDir, const EGG::Vector3f &speed,
@@ -102,7 +102,7 @@ public:
 
     [[nodiscard]] bool FUN_805B6A9C(CollisionData &collisionData, const Hitbox &hitbox,
             EGG::BoundBox3f &minMax, EGG::Vector3f &relPos, s32 &count,
-            const Field::KCLTypeMask &maskOut, const Field::CourseColMgr::CollisionInfo &colInfo);
+            const Field::KCLTypeMask &maskOut, const Field::CollisionInfo &colInfo);
     void applyBodyCollision(CollisionData &collisionData, const EGG::Vector3f &movement,
             const EGG::Vector3f &posRel, s32 count);
 

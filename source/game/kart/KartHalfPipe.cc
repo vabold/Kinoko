@@ -163,8 +163,8 @@ void KartHalfPipe::calcLanding(bool) {
 
     constexpr f32 COS_PI_OVER_4 = 0.707f;
 
-    Field::CourseColMgr::CollisionInfo colInfo;
-    Field::CourseColMgr::CollisionInfo colInfo2;
+    Field::CollisionInfo colInfo;
+    Field::CollisionInfo colInfo2;
     Field::KCLTypeMask maskOut;
     EGG::Vector3f pos;
     EGG::Vector3f upLocal;

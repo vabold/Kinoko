@@ -213,7 +213,7 @@ void KartCollide::calcBodyCollision(f32 totalScale, f32 sinkDepth, const EGG::Qu
 
     EGG::Vector3f posRel = EGG::Vector3f::zero;
     s32 count = 0;
-    Field::CourseColMgr::CollisionInfo colInfo;
+    Field::CollisionInfo colInfo;
     colInfo.bbox.setDirect(EGG::Vector3f::zero, EGG::Vector3f::zero);
     Field::KCLTypeMask maskOut;
     Field::CourseColMgr::NoBounceWallColInfo noBounceWallInfo;
@@ -395,7 +395,7 @@ void KartCollide::calcWheelCollision(u16 /*wheelIdx*/, CollisionGroup *hitboxGro
     hitboxGroup->resetCollision();
     firstHitbox.setWorldPos(center);
 
-    Field::CourseColMgr::CollisionInfo colInfo;
+    Field::CollisionInfo colInfo;
     colInfo.bbox.setZero();
     Field::KCLTypeMask kclOut;
     Field::CourseColMgr::NoBounceWallColInfo noBounceWallInfo;
@@ -442,7 +442,7 @@ void KartCollide::calcWheelCollision(u16 /*wheelIdx*/, CollisionGroup *hitboxGro
 /// @stage 2
 /// @addr{0x8056F26C}
 void KartCollide::calcSideCollision(CollisionData &collisionData, Hitbox &hitbox,
-        Field::CourseColMgr::CollisionInfo *colInfo) {
+        Field::CollisionInfo *colInfo) {
     if (colInfo->perpendicularity <= 0.0f) {
         return;
     }
@@ -474,7 +474,7 @@ void KartCollide::calcSideCollision(CollisionData &collisionData, Hitbox &hitbox
         f32 sign = i == 1 ? -1.0f : 1.0f;
         f32 effectiveRadius = sign * hitbox.radius();
         EGG::Vector3f effectivePos = hitbox.worldPos() + effectiveRadius * right;
-        Field::CourseColMgr::CollisionInfoPartial tempColInfo;
+        Field::CollisionInfoPartial tempColInfo;
 
         if (Field::CollisionDirector::Instance()->checkSphereCachedPartial(hitbox.radius(),
                     effectivePos, hitbox.lastPos(), KCL_TYPE_DRIVER_WALL, &tempColInfo, nullptr,
@@ -559,13 +559,13 @@ void KartCollide::calcPoleTimer() {
 /// @brief Processes moving water and floor collision effects
 /// @addr{0x8056E8D4}
 void KartCollide::processWheel(CollisionData &collisionData, Hitbox &hitbox,
-        Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut) {
+        Field::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut) {
     processFloor(collisionData, hitbox, colInfo, maskOut, true);
 }
 
 /// @addr{0x8056E764}
 void KartCollide::processBody(CollisionData &collisionData, Hitbox &hitbox,
-        Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut) {
+        Field::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut) {
     bool hasWallCollision = processWall(collisionData, maskOut);
 
     processFloor(collisionData, hitbox, colInfo, maskOut, false);
@@ -612,7 +612,7 @@ bool KartCollide::processWall(CollisionData &collisionData, Field::KCLTypeMask *
 /// @param maskOut Stores the flags from the floor KCL
 /// @param wheel Differentiates between body and wheel floor collision (boost panels)
 void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
-        Field::CourseColMgr::CollisionInfo * /*colInfo*/, Field::KCLTypeMask *maskOut, bool wheel) {
+        Field::CollisionInfo * /*colInfo*/, Field::KCLTypeMask *maskOut, bool wheel) {
     constexpr Field::KCLTypeMask BOOST_RAMP_MASK = KCL_TYPE_BIT(COL_TYPE_BOOST_RAMP);
 
     if (collisionData.bSoftWall) {
@@ -804,7 +804,7 @@ void KartCollide::applySomeFloorMoment(f32 down, f32 rate, CollisionGroup *hitbo
 /// @rename
 bool KartCollide::FUN_805B6A9C(CollisionData &collisionData, const Hitbox &hitbox,
         EGG::BoundBox3f &minMax, EGG::Vector3f &relPos, s32 &count,
-        const Field::KCLTypeMask &maskOut, const Field::CourseColMgr::CollisionInfo &colInfo) {
+        const Field::KCLTypeMask &maskOut, const Field::CollisionInfo &colInfo) {
     if (maskOut & KCL_TYPE_WALL) {
         if (!(maskOut & KCL_TYPE_FLOOR) && state()->isHWG() &&
                 state()->softWallSpeed().dot(colInfo.wallNrm) < 0.3f) {
