@@ -41,10 +41,12 @@ public:
     void narrowPolygon_EachBlock(const u16 *prismArray);
 
     void computeBBox();
+    [[nodiscard]] bool checkPointCollision(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut);
     [[nodiscard]] bool checkSphereCollision(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut);
     [[nodiscard]] bool checkSphere(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut);
     [[nodiscard]] bool checkSphereSingle(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut);
 
+    void lookupPoint(const EGG::Vector3f &pos, const EGG::Vector3f &prevPos, KCLTypeMask typeMask);
     void lookupSphere(f32 radius, const EGG::Vector3f &pos, const EGG::Vector3f &prevPos,
             KCLTypeMask typeMask);
     void lookupSphereCached(const EGG::Vector3f &p1, const EGG::Vector3f &p2, u32 typeMask,
@@ -66,7 +68,11 @@ private:
 
     [[nodiscard]] bool checkCollision(const KCollisionPrism &prism, f32 *distOut,
             EGG::Vector3f *fnrmOut, u16 *flagsOut, CollisionCheckType type);
+    [[nodiscard]] bool checkPointCollision(const KCollisionPrism &prism, f32 *distOut,
+            EGG::Vector3f *fnrmOut, u16 *flagsOut, bool movement);
     [[nodiscard]] bool checkSphereMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut);
+    [[nodiscard]] bool checkPointMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut);
+    [[nodiscard]] bool checkPoint(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut);
 
     const void *m_posData;
     const void *m_nrmData;

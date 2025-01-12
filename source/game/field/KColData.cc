@@ -117,6 +117,12 @@ void KColData::computeBBox() {
     }
 }
 
+/// @addr{0x807C1F80}
+bool KColData::checkPointCollision(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut) {
+    return std::isfinite(m_prevPos.y) ? checkPointMovement(distOut, fnrmOut, flagsOut) :
+                                        checkPoint(distOut, fnrmOut, flagsOut);
+}
+
 /// @addr{0x807C2410}
 bool KColData::checkSphereCollision(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut) {
     return std::isfinite(m_prevPos.y) ? checkSphereMovement(distOut, fnrmOut, flagsOut) :
@@ -178,7 +184,18 @@ bool KColData::checkSphereSingle(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flag
     return false;
 }
 
-/// @brief Sets members in preparation of a subsequent collision check call
+/// @brief Sets members in preparation of a subsequent point collision check call
+/// @addr{0x807C1B0C}
+void KColData::lookupPoint(const EGG::Vector3f &pos, const EGG::Vector3f &prevPos,
+        KCLTypeMask typeMask) {
+    m_prismIter = searchBlock(pos);
+    m_pos = pos;
+    m_prevPos = prevPos;
+    m_movement = pos - prevPos;
+    m_typeMask = typeMask;
+}
+
+/// @brief Sets members in preparation of a subsequent sphere collision check call
 /// @addr{0x807C1BB4}
 void KColData::lookupSphere(f32 radius, const EGG::Vector3f &pos, const EGG::Vector3f &prevPos,
         KCLTypeMask typeMask) {
@@ -534,6 +551,65 @@ bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::V
     return out(dist);
 }
 
+/// @brief This is a combination of two point collision check functions. They only vary based on
+/// whether we are checking movement.
+bool KColData::checkPointCollision(const KCollisionPrism &prism, f32 *distOut,
+        EGG::Vector3f *fnrmOut, u16 *flagsOut, bool movement) {
+    KCLTypeMask attrMask = KCL_ATTRIBUTE_TYPE_BIT(prism.attribute);
+    if (!(attrMask & m_typeMask)) {
+        return false;
+    }
+
+    const EGG::Vector3f relativePos = m_pos - m_vertices[prism.pos_i];
+
+    const EGG::Vector3f &enrm1 = m_nrms[prism.enrm1_i];
+    f32 dist_ca = relativePos.ps_dot(enrm1);
+    if (dist_ca >= 0.01f) {
+        return false;
+    }
+
+    const EGG::Vector3f &enrm2 = m_nrms[prism.enrm2_i];
+    f32 dist_ab = relativePos.ps_dot(enrm2);
+    if (dist_ab >= 0.01f) {
+        return false;
+    }
+
+    const EGG::Vector3f &enrm3 = m_nrms[prism.enrm3_i];
+    f32 dist_bc = relativePos.ps_dot(enrm3) - prism.height;
+    if (dist_bc >= 0.01f) {
+        return false;
+    }
+
+    const EGG::Vector3f &fnrm = m_nrms[prism.fnrm_i];
+    f32 plane_dist = relativePos.ps_dot(fnrm);
+    f32 dist_in_plane = 0.01f - plane_dist;
+    if (dist_in_plane <= 0.0f) {
+        return false;
+    }
+
+    if (m_prismThickness <= dist_in_plane && 0.02f + m_prismThickness <= dist_in_plane) {
+        return false;
+    }
+
+    if (movement && (attrMask & KCL_TYPE_DIRECTIONAL) && m_movement.dot(fnrm) < 0.0f) {
+        return false;
+    }
+
+    if (distOut) {
+        *distOut = dist_in_plane;
+    }
+
+    if (fnrmOut) {
+        *fnrmOut = fnrm;
+    }
+
+    if (flagsOut) {
+        *flagsOut = prism.attribute;
+    }
+
+    return true;
+}
+
 /// @brief Iterates the local data block to check for directional collision
 /// @addr{0x807C0884}
 /// @param distOut If colliding, returns the distance between the player and the tri
@@ -550,6 +626,46 @@ bool KColData::checkSphereMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *at
     while (*++m_prismIter != 0) {
         const KCollisionPrism &prism = m_prisms[parse<u16>(*m_prismIter)];
         if (checkCollision(prism, distOut, fnrmOut, attributeOut, CollisionCheckType::Movement)) {
+            return true;
+        }
+    }
+
+    // We're out of triangles to check - another list must be prepared for subsequent calls
+    m_prismIter = nullptr;
+    return false;
+}
+
+/// @addr{0x807C21F4}
+bool KColData::checkPoint(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut) {
+    // If there's no list of triangles to check, there's no collision
+    if (!m_prismIter) {
+        return false;
+    }
+
+    // Check collision for all triangles, and continuously call the function until we're out
+    while (*++m_prismIter != 0) {
+        const KCollisionPrism &prism = m_prisms[parse<u16>(*m_prismIter)];
+        if (checkPointCollision(prism, distOut, fnrmOut, attributeOut, false)) {
+            return true;
+        }
+    }
+
+    // We're out of triangles to check - another list must be prepared for subsequent calls
+    m_prismIter = nullptr;
+    return false;
+}
+
+/// @addr{0x807C1F80}
+bool KColData::checkPointMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut) {
+    // If there's no list of triangles to check, there's no collision
+    if (!m_prismIter) {
+        return false;
+    }
+
+    // Check collision for all triangles, and continuously call the function until we're out
+    while (*++m_prismIter != 0) {
+        const KCollisionPrism &prism = m_prisms[parse<u16>(*m_prismIter)];
+        if (checkPointCollision(prism, distOut, fnrmOut, attributeOut, true)) {
             return true;
         }
     }
