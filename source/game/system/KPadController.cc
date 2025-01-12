@@ -87,8 +87,7 @@ void KPadGhostController::readGhostBuffer(const u8 *buffer, bool driftIsAuto) {
     m_ghostBuffer = buffer;
     m_driftIsAuto = driftIsAuto;
 
-    EGG::RamStream stream =
-            EGG::RamStream(const_cast<u8 *>(buffer), RKG_UNCOMPRESSED_INPUT_DATA_SECTION_SIZE);
+    EGG::RamStream stream = EGG::RamStream(buffer, RKG_UNCOMPRESSED_INPUT_DATA_SECTION_SIZE);
 
     u16 faceCount = stream.read_u16();
     u16 directionCount = stream.read_u16();
@@ -270,15 +269,19 @@ u8 KPadGhostButtonsStream::readFrame() {
     } else {
         if (readIsNewSequence()) {
             readSequenceFrames = 0;
-            if (buffer.eof()) {
-                state = 2;
-                return 0;
-            }
             currentSequence = buffer.read_u16();
         }
     }
 
     ++readSequenceFrames;
+
+    // In the base game, this check normally occurs before a new sequence is read. As a result, the
+    // base game does not know that it has run out of inputs until the frame that it tries to access
+    // past the last valid input. We stray from this behavior so that we can know when we are on the
+    // last frame of input.
+    if (buffer.eof() && readIsNewSequence()) {
+        state = 2;
+    }
 
     return readVal();
 }

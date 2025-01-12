@@ -15,8 +15,7 @@ KColData::KColData(const void *file) {
     auto addOffset = [](const void *file, u32 offset) -> const void * {
         return reinterpret_cast<const void *>(reinterpret_cast<const u8 *>(file) + offset);
     };
-    u8 *unsafeData = reinterpret_cast<u8 *>(const_cast<void *>(file));
-    EGG::RamStream stream = EGG::RamStream(unsafeData, sizeof(KColHeader));
+    EGG::RamStream stream = EGG::RamStream(file, sizeof(KColHeader));
 
     u32 posOffset = stream.read_u32();
     u32 nrmOffset = stream.read_u32();
@@ -294,8 +293,7 @@ void KColData::preloadPrisms() {
             (reinterpret_cast<uintptr_t>(m_blockData) - reinterpret_cast<uintptr_t>(m_prismData)) /
             sizeof(KCollisionPrism);
 
-    u8 *unsafeData = reinterpret_cast<u8 *>(const_cast<void *>(m_prismData));
-    EGG::RamStream stream = EGG::RamStream(unsafeData, sizeof(KCollisionPrism) * prismCount);
+    EGG::RamStream stream = EGG::RamStream(m_prismData, sizeof(KCollisionPrism) * prismCount);
 
     m_prisms = std::span<KCollisionPrism>(new KCollisionPrism[prismCount], prismCount);
 
@@ -323,9 +321,7 @@ void KColData::preloadNormals() {
             sizeof(EGG::Vector3f);
 
     m_nrms = std::span<EGG::Vector3f>(new EGG::Vector3f[normalCount], normalCount);
-
-    u8 *unsafeData = reinterpret_cast<u8 *>(const_cast<void *>(m_nrmData));
-    EGG::RamStream stream = EGG::RamStream(unsafeData, sizeof(EGG::Vector3f) * normalCount);
+    EGG::RamStream stream = EGG::RamStream(m_nrmData, sizeof(EGG::Vector3f) * normalCount);
 
     for (auto &nrm : m_nrms) {
         nrm.read(stream);
@@ -341,9 +337,7 @@ void KColData::preloadVertices() {
             sizeof(EGG::Vector3f);
 
     m_vertices = std::span<EGG::Vector3f>(new EGG::Vector3f[vertexCount], vertexCount);
-
-    u8 *unsafeData = reinterpret_cast<u8 *>(const_cast<void *>(m_posData));
-    EGG::RamStream stream = EGG::RamStream(unsafeData, sizeof(EGG::Vector3f) * vertexCount);
+    EGG::RamStream stream = EGG::RamStream(m_posData, sizeof(EGG::Vector3f) * vertexCount);
 
     for (auto &vert : m_vertices) {
         vert.read(stream);
