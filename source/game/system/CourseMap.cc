@@ -54,85 +54,43 @@ void CourseMap::init() {
 /// @addr{0x80512FA4}
 MapdataCannonPointAccessor *CourseMap::parseCannonPoint(u32 sectionName) const {
     const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
-
-    MapdataCannonPointAccessor *accessor = nullptr;
-    if (sectionPtr) {
-        accessor = new MapdataCannonPointAccessor(sectionPtr);
-    }
-
-    return accessor;
+    return sectionPtr ? new MapdataCannonPointAccessor(sectionPtr) : nullptr;
 }
 
 /// @addr{0x8051377C}
 MapdataCheckPathAccessor *CourseMap::parseCheckPath(u32 sectionName) const {
     const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
-
-    MapdataCheckPathAccessor *accessor = nullptr;
-    if (sectionPtr) {
-        accessor = new MapdataCheckPathAccessor(sectionPtr);
-    }
-
-    return accessor;
+    return sectionPtr ? new MapdataCheckPathAccessor(sectionPtr) : nullptr;
 }
 
 /// @addr{0x80513640}
 MapdataCheckPointAccessor *CourseMap::parseCheckPoint(u32 sectionName) const {
     const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
-
-    MapdataCheckPointAccessor *accessor = nullptr;
-    if (sectionPtr) {
-        accessor = new MapdataCheckPointAccessor(sectionPtr);
-    }
-
-    return accessor;
+    return sectionPtr ? new MapdataCheckPointAccessor(sectionPtr) : nullptr;
 }
 
 /// @addr{0x805134C8}
 MapdataGeoObjAccessor *CourseMap::parseGeoObj(u32 sectionName) const {
     const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
-
-    MapdataGeoObjAccessor *accessor = nullptr;
-    if (sectionPtr) {
-        accessor = new MapdataGeoObjAccessor(sectionPtr);
-    }
-
-    return accessor;
+    return sectionPtr ? new MapdataGeoObjAccessor(sectionPtr) : nullptr;
 }
 
 /// @addr{0x805130C4}
 MapdataJugemPointAccessor *CourseMap::parseJugemPoint(u32 sectionName) {
     const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
-
-    MapdataJugemPointAccessor *accessor = nullptr;
-    if (sectionPtr) {
-        accessor = new MapdataJugemPointAccessor(sectionPtr);
-    }
-
-    return accessor;
+    return sectionPtr ? new MapdataJugemPointAccessor(sectionPtr) : nullptr;
 }
 
 /// @addr{0x80512D64}
 MapdataStageInfoAccessor *CourseMap::parseStageInfo(u32 sectionName) const {
     const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
-
-    MapdataStageInfoAccessor *accessor = nullptr;
-    if (sectionPtr) {
-        accessor = new MapdataStageInfoAccessor(sectionPtr);
-    }
-
-    return accessor;
+    return sectionPtr ? new MapdataStageInfoAccessor(sectionPtr) : nullptr;
 }
 
 /// @addr{0x80513F5C}
 MapdataStartPointAccessor *CourseMap::parseStartPoint(u32 sectionName) const {
     const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
-
-    MapdataStartPointAccessor *accessor = nullptr;
-    if (sectionPtr) {
-        accessor = new MapdataStartPointAccessor(sectionPtr);
-    }
-
-    return accessor;
+    return sectionPtr ? new MapdataStartPointAccessor(sectionPtr) : nullptr;
 }
 
 /// @addr{0x80511500}
