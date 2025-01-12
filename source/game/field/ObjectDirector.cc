@@ -195,6 +195,7 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
     // However, we need to specify an impl, so we don't use default
     case ObjectId::DummyPole:
     case ObjectId::CastleTree1c:
+    case ObjectId::DKtreeA64c:
         return new ObjectCollidable(params);
     default:
         return new ObjectNoImpl(params);
