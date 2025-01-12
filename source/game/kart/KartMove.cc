@@ -1205,7 +1205,8 @@ void KartMove::calcVehicleSpeed() {
             if (state()->isAccelerate()) {
                 m_acceleration = state()->isHalfPipeRamp() ? 5.0f : calcVehicleAcceleration();
             } else {
-                if (!state()->isBrake() || state()->isDisableBackwardsAccel()) {
+                if (!state()->isBrake() || state()->isDisableBackwardsAccel() ||
+                        state()->isSomethingWallCollision()) {
                     m_speed *= m_speed > 0.0f ? 0.98f : 0.95f;
                 } else if (m_drivingDirection == DrivingDirection::Braking) {
                     m_acceleration = -1.5f;

@@ -191,10 +191,14 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
         return new ObjectDokan(params);
     case ObjectId::OilSFC:
         return new ObjectOilSFC(params);
+    case ObjectId::ParasolR:
+        return new ObjectParasolR(params);
     // Non-specified objects are stock collidable objects by default
     // However, we need to specify an impl, so we don't use default
     case ObjectId::DummyPole:
     case ObjectId::CastleTree1c:
+    case ObjectId::PalmTree:
+    case ObjectId::DKtreeA64c:
         return new ObjectCollidable(params);
     default:
         return new ObjectNoImpl(params);
