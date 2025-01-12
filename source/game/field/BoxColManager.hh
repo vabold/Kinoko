@@ -88,6 +88,9 @@ public:
     void search(BoxColUnit *unit, const BoxColFlag &flag);
     void search(f32 radius, const EGG::Vector3f &pos, const BoxColFlag &flag);
 
+    [[nodiscard]] bool isSphereInSpatialCache(f32 radius, const EGG::Vector3f &pos,
+            const BoxColFlag &flag) const;
+
     static BoxColManager *CreateInstance();
     static void DestroyInstance();
     [[nodiscard]] static BoxColManager *Instance();
