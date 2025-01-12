@@ -1,8 +1,8 @@
+import os
+from typing import Optional
 import asyncio
 import discord
 from dotenv import load_dotenv
-import os
-from typing import Optional
 
 # Global variable management
 load_dotenv()
@@ -113,7 +113,7 @@ async def dolphin_generate_krkg(ghost: bytes, interaction: discord.Interaction):
         await respond_fail_error(interaction, fail)
         return
     # Empty string is falsey, leading to two situations where fail is False
-    elif os.path.exists(os.path.join(NAND_PATH, "fail")):
+    if os.path.exists(os.path.join(NAND_PATH, "fail")):
         await respond_bug_error(
             interaction, "Dolphin returned fail, but there's no explanation"
         )
@@ -187,7 +187,7 @@ async def replay_exec(ghost: bytes, interaction: discord.Interaction):
         )
         return
     # Empty string is falsey, leading to two situations where fail is False
-    elif os.path.exists(os.path.join(KINOKO_PATH, "results.txt")):
+    if os.path.exists(os.path.join(KINOKO_PATH, "results.txt")):
         await respond_bug_error(
             interaction, "Kinoko closed, but there's no explanation"
         )
@@ -315,7 +315,7 @@ async def command_generate_krkg(
     if ghost.size < 0x8C or ghost.size > 0x2800:
         await respond_generic_error(
             interaction,
-            f"File is too {"small" if ghost.size < 0x8c else "big"} to be an RKG",
+            f"File is too {'small' if ghost.size < 0x8c else 'big'} to be an RKG",
         )
         return
 
@@ -360,7 +360,7 @@ async def command_replay_ghost(
     if ghost.size < 0x8C or ghost.size > 0x2800:
         await respond_generic_error(
             interaction,
-            f"File is too {"small" if ghost.size < 0x8c else "big"} to be an RKG",
+            f"File is too {'small' if ghost.size < 0x8c else 'big'} to be an RKG",
         )
         return
 
