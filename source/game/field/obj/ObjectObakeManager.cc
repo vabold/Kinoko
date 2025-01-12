@@ -8,19 +8,15 @@ namespace Kinoko::Field {
 
 /// @addr{0x8080B0D8}
 ObjectObakeManager::ObjectObakeManager(const System::MapdataGeoObj &params)
-    : ObjectDrivable(params), m_blockCache({}) {
+    : ObjectDrivable(params), m_blockCache({}), m_blocks(MAX_BLOCKS), m_calcBlocks(MAX_BLOCKS) {
     static constexpr f32 BLOCK_WIDTH = 195.00002f;
     static constexpr f32 BLOCK_HEIGHT = 130.0f;
-    static constexpr size_t MAX_FALLING_BLOCKS = 256;
 
     m_colBox = EGG::egg_new<ObjectCollisionBox>(BLOCK_WIDTH, BLOCK_HEIGHT, BLOCK_WIDTH,
             EGG::Vector3f::zero);
     m_colSphere = EGG::egg_new<ObjectCollisionSphere>(1.0f, EGG::Vector3f::zero);
 
     addBlock(params);
-
-    // Pre-allocate max size now to avoid re-allocation during race when heap is locked.
-    m_calcBlocks.reserve(MAX_FALLING_BLOCKS);
 }
 
 /// @addr{0x8080BEA4}

@@ -147,7 +147,9 @@ void ObjectDirector::DestroyInstance() {
 /// @addr{0x8082A38C}
 ObjectDirector::ObjectDirector()
     : m_flowTable("ObjFlow.bin"), m_hitTableKart("GeoHitTableKart.bin"),
-      m_hitTableKartObject("GeoHitTableKartObj.bin"), m_psea(nullptr) {}
+      m_hitTableKartObject("GeoHitTableKartObj.bin"), m_objects(MAX_UNIT_COUNT),
+      m_calcObjects(MAX_UNIT_COUNT), m_collisionObjects(MAX_UNIT_COUNT), m_psea(nullptr),
+      m_managedObjects(MAX_MANAGED_OBJECTS) {}
 
 /// @addr{0x8082A694}
 ObjectDirector::~ObjectDirector() {
@@ -165,13 +167,6 @@ ObjectDirector::~ObjectDirector() {
 void ObjectDirector::createObjects() {
     const auto *courseMap = System::CourseMap::Instance();
     size_t objectCount = courseMap->getGeoObjCount();
-
-    // It's possible for the KMP to specify settings for objects that aren't tracked here
-    // MAX_UNIT_COUNT is the upper bound for tracked object count, so we reserve the minimum
-    size_t maxCount = std::min(objectCount, MAX_UNIT_COUNT);
-    m_objects.reserve(maxCount);
-    m_calcObjects.reserve(maxCount);
-    m_collisionObjects.reserve(maxCount);
 
     auto *objDrivableDir = ObjectDrivableDirector::Instance();
     auto course = System::RaceConfig::Instance()->raceScenario().course;

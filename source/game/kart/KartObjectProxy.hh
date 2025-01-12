@@ -11,7 +11,6 @@
 #include <egg/math/Matrix.hh>
 
 #include <list>
-#include <vector>
 
 namespace Kinoko {
 
@@ -62,8 +61,8 @@ struct KartAccessor {
     Field::ObjectCollisionKart *objectCollisionKart;
     KartState *state;
 
-    std::vector<KartSuspension *, EGG::Allocator<KartSuspension *>> suspensions;
-    std::vector<KartTire *, EGG::Allocator<KartTire *>> tires;
+    fixed_vector<KartSuspension *> suspensions;
+    fixed_vector<KartTire *> tires;
 
     Field::BoxColUnit *boxColUnit;
 };

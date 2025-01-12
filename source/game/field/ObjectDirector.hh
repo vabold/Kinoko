@@ -58,13 +58,11 @@ public:
         return m_hitDepths[idx];
     }
 
-    [[nodiscard]] std::vector<ObjectCollidable *, EGG::Allocator<ObjectCollidable *>> &
-    managedObjects() {
+    [[nodiscard]] fixed_vector<ObjectCollidable *> &managedObjects() {
         return m_managedObjects;
     }
 
-    [[nodiscard]] const std::vector<ObjectCollidable *, EGG::Allocator<ObjectCollidable *>> &
-    managedObjects() const {
+    [[nodiscard]] const fixed_vector<ObjectCollidable *> &managedObjects() const {
         return m_managedObjects;
     }
 
@@ -104,11 +102,9 @@ private:
     ObjectHitTable m_hitTableKart;
     ObjectHitTable m_hitTableKartObject;
 
-    std::vector<ObjectBase *, EGG::Allocator<ObjectBase *>> m_objects; ///< All objects live here
-    std::vector<ObjectBase *, EGG::Allocator<ObjectBase *>>
-            m_calcObjects; ///< Objects needing calc() live here too.
-    std::vector<ObjectBase *, EGG::Allocator<ObjectBase *>>
-            m_collisionObjects; ///< Objects having collision live here too
+    fixed_vector<ObjectBase *> m_objects;          ///< All objects live here
+    fixed_vector<ObjectBase *> m_calcObjects;      ///< Objects needing calc() live here too.
+    fixed_vector<ObjectBase *> m_collisionObjects; ///< Objects having collision live here too
 
     static constexpr size_t MAX_UNIT_COUNT = 0x100;
 
@@ -117,9 +113,11 @@ private:
     std::array<EGG::Vector3f, MAX_UNIT_COUNT> m_hitDepths;
     std::array<Kart::Reaction, MAX_UNIT_COUNT> m_reactions;
     ObjectPsea *m_psea;
-    std::vector<ObjectCollidable *, EGG::Allocator<ObjectCollidable *>> m_managedObjects;
+    fixed_vector<ObjectCollidable *> m_managedObjects;
 
     static f32 s_wanwanMaxPitch; ///< @addr{0x808C70E8}
+
+    static constexpr size_t MAX_MANAGED_OBJECTS = 400; ///< Maximum number of managed objects
 
     static ObjectDirector *s_instance;
 };

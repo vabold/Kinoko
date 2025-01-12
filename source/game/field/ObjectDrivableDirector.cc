@@ -222,7 +222,8 @@ void ObjectDrivableDirector::DestroyInstance() {
 }
 
 /// @addr{0x8081B324}
-ObjectDrivableDirector::ObjectDrivableDirector() : m_obakeManager(nullptr) {}
+ObjectDrivableDirector::ObjectDrivableDirector()
+    : m_objects(MAX_OBJECTS), m_calcObjects(MAX_OBJECTS), m_obakeManager(nullptr) {}
 
 /// @addr{0x8081B380}
 ObjectDrivableDirector::~ObjectDrivableDirector() {

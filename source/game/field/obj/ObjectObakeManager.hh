@@ -117,9 +117,10 @@ private:
     /// Spatially-indexed array of blocks for faster collision lookups.
     std::array<std::array<ObjectObakeBlock *, CACHE_SIZE_X>, CACHE_SIZE_Z> m_blockCache;
 
-    std::vector<ObjectObakeBlock *, EGG::Allocator<ObjectObakeBlock *>> m_blocks; ///< All blocks
-    std::vector<ObjectObakeBlock *, EGG::Allocator<ObjectObakeBlock *>>
-            m_calcBlocks; ///< Actively falling blocks
+    fixed_vector<ObjectObakeBlock *> m_blocks;     ///< All blocks
+    fixed_vector<ObjectObakeBlock *> m_calcBlocks; ///< Actively falling blocks
+
+    static constexpr size_t MAX_BLOCKS = 656; ///< Allocated size of m_blocks and m_calcBlocks
 };
 
 } // namespace Kinoko::Field
