@@ -255,6 +255,24 @@ void BoxColManager::search(BoxColUnit *unit, const BoxColFlag &flag) {
 /// @addr{0x80786B14}
 void BoxColManager::search(f32 radius, const EGG::Vector3f &pos, const BoxColFlag &flag) {
     searchImpl(radius, pos, flag);
+    resetIterators();
+}
+
+/// @addr{0x80786E60}
+bool BoxColManager::isSphereInSpatialCache(f32 radius, const EGG::Vector3f &pos,
+        const BoxColFlag &flag) const {
+    if (m_cacheRadius == -1.0f) {
+        return false;
+    }
+
+    if (!m_cacheFlag.onAll(flag)) {
+        return false;
+    }
+
+    f32 radiusDiff = m_cacheRadius - radius;
+    EGG::Vector3f posDiff = pos - m_cachePoint;
+
+    return EGG::Mathf::abs(posDiff.x) <= radiusDiff && EGG::Mathf::abs(posDiff.z) <= radiusDiff;
 }
 
 /// @addr{0x807855DC}

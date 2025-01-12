@@ -167,6 +167,13 @@ struct TBitFlag {
         return (bits & mask) != 0;
     }
 
+    /// @brief Checks if all bits are on in the specified mask.
+    /// @param mask The bit mask to check.
+    /// @return True if all bits in the mask are on, otherwise false.
+    [[nodiscard]] constexpr bool onAll(T mask) const {
+        return (bits | mask) == bits;
+    }
+
     /// @brief Checks if all bits are off in the specified mask.
     /// @param mask The bit mask to check.
     /// @return True if all bits in the mask are off, otherwise false.

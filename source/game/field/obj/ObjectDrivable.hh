@@ -13,7 +13,11 @@ public:
     ~ObjectDrivable() override;
 
     void load() override;
-    [[nodiscard]] f32 getCollisionRadius() const override;
+
+    /// @addr{0x80682918}
+    [[nodiscard]] f32 getCollisionRadius() const override {
+        return 5000.0f;
+    }
 
     virtual void initCollision() {}
     virtual void loadAABB(f32 radius);
