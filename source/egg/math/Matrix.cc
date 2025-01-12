@@ -250,6 +250,18 @@ Vector3f Matrix34f::multVector33(const Vector3f &vec) const {
     return ret;
 }
 
+/// @addr{0x8019A970}
+/// @brief Paired-singles impl. of @ref multVector33.
+Vector3f Matrix34f::ps_multVector33(const Vector3f &vec) const {
+    Vector3f ret;
+
+    ret.x = fma(mtx[0][2], vec.z, fma(mtx[0][0], vec.x, mtx[0][1] * vec.y));
+    ret.y = fma(mtx[1][2], vec.z, fma(mtx[1][0], vec.x, mtx[1][1] * vec.y));
+    ret.z = fma(mtx[2][2], vec.z, fma(mtx[2][0], vec.x, mtx[2][1] * vec.y));
+
+    return ret;
+}
+
 /// @addr{0x8022F90C}
 /// @brief Inverts the 3x3 portion of the 3x4 matrix.
 /// @details Unlike a typical matrix inversion, if the determinant is 0, then this function returns

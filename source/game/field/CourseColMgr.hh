@@ -90,6 +90,10 @@ public:
     void clearNoBounceWallInfo() {
         m_noBounceWallInfo = nullptr;
     }
+
+    void setLocalMtx(EGG::Matrix34f *mtx) {
+        m_localMtx = mtx;
+    }
     /// @endSetters
 
     /// @beginGetters
