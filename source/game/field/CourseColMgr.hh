@@ -17,6 +17,11 @@ typedef bool (
 /// @nosubgrouping
 class CourseColMgr : EGG::Disposer {
 public:
+    struct CollisionInfoPartial {
+        EGG::BoundBox3f bbox;
+        EGG::Vector3f tangentOff;
+    };
+
     struct CollisionInfo {
         EGG::BoundBox3f bbox;
         EGG::Vector3f tangentOff;
@@ -59,22 +64,57 @@ public:
     void scaledNarrowScopeLocal(f32 scale, f32 radius, KColData *data, const EGG::Vector3f &pos,
             KCLTypeMask mask);
 
-    [[nodiscard]] bool checkSphereFull(f32 scalar, f32 radius, KColData *data,
-            const EGG::Vector3f &v0, const EGG::Vector3f &v1, KCLTypeMask flags,
-            CollisionInfo *info, KCLTypeMask *kcl_flags_out);
-    [[nodiscard]] bool checkSphereFullPush(f32 scalar, f32 radius, KColData *data,
-            const EGG::Vector3f &v0, const EGG::Vector3f &v1, KCLTypeMask flags,
-            CollisionInfo *info, KCLTypeMask *kcl_flags_out);
+    [[nodiscard]] bool checkPointPartial(f32 scale, KColData *data, const EGG::Vector3f &pos,
+            const EGG::Vector3f &prevPos, KCLTypeMask mask, CollisionInfoPartial *info,
+            KCLTypeMask *maskOut);
+    [[nodiscard]] bool checkPointPartialPush(f32 scale, KColData *data, const EGG::Vector3f &pos,
+            const EGG::Vector3f &prevPos, KCLTypeMask mask, CollisionInfoPartial *info,
+            KCLTypeMask *maskOut);
+    [[nodiscard]] bool checkPointFull(f32 kclScale, KColData *data, const EGG::Vector3f &pos,
+            const EGG::Vector3f &prevPos, KCLTypeMask mask, CollisionInfo *info,
+            KCLTypeMask *maskOut);
+    [[nodiscard]] bool checkPointFullPush(f32 kclScale, KColData *data, const EGG::Vector3f &pos,
+            const EGG::Vector3f &prevPos, KCLTypeMask mask, CollisionInfo *info,
+            KCLTypeMask *maskOut);
 
-    [[nodiscard]] bool checkSphereCachedPartial(KColData *data, const EGG::Vector3f &pos,
-            const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CollisionInfo *colInfo,
-            KCLTypeMask *typeMaskOut, f32 scale, f32 radius);
-    [[nodiscard]] bool checkSphereCachedPartialPush(KColData *data, const EGG::Vector3f &pos,
-            const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CollisionInfo *colInfo,
-            KCLTypeMask *typeMaskOut, f32 scale, f32 radius);
-    [[nodiscard]] bool checkSphereCachedFullPush(KColData *data, const EGG::Vector3f &pos,
-            const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CollisionInfo *colInfo,
-            KCLTypeMask *typeMaskOut, f32 scale, f32 radius);
+    [[nodiscard]] bool checkSpherePartial(f32 scale, f32 radius, KColData *data,
+            const EGG::Vector3f &pos, const EGG::Vector3f &prevPos, KCLTypeMask mask,
+            CollisionInfoPartial *info, KCLTypeMask *maskOut);
+    [[nodiscard]] bool checkSpherePartialPush(f32 scale, f32 radius, KColData *data,
+            const EGG::Vector3f &pos, const EGG::Vector3f &prevPos, KCLTypeMask mask,
+            CollisionInfoPartial *info, KCLTypeMask *maskOut);
+    [[nodiscard]] bool checkSphereFull(f32 scalar, f32 radius, KColData *data,
+            const EGG::Vector3f &pos, const EGG::Vector3f &prevPos, KCLTypeMask mask,
+            CollisionInfo *info, KCLTypeMask *maskOut);
+    [[nodiscard]] bool checkSphereFullPush(f32 scalar, f32 radius, KColData *data,
+            const EGG::Vector3f &pos, const EGG::Vector3f &prevPos, KCLTypeMask mask,
+            CollisionInfo *info, KCLTypeMask *maskOut);
+
+    [[nodiscard]] bool checkPointCachedPartial(f32 scale, KColData *data, const EGG::Vector3f &pos,
+            const EGG::Vector3f &prevPos, KCLTypeMask mask, CollisionInfoPartial *info,
+            KCLTypeMask *maskOut);
+    [[nodiscard]] bool checkPointCachedPartialPush(f32 scale, KColData *data,
+            const EGG::Vector3f &pos, const EGG::Vector3f &prevPos, KCLTypeMask mask,
+            CollisionInfoPartial *info, KCLTypeMask *maskOut);
+    [[nodiscard]] bool checkPointCachedFull(f32 scale, KColData *data, const EGG::Vector3f &pos,
+            const EGG::Vector3f &prevPos, KCLTypeMask mask, CollisionInfo *info,
+            KCLTypeMask *maskOut);
+    [[nodiscard]] bool checkPointCachedFullPush(f32 scale, KColData *data, const EGG::Vector3f &pos,
+            const EGG::Vector3f &prevPos, KCLTypeMask mask, CollisionInfo *info,
+            KCLTypeMask *maskOut);
+
+    [[nodiscard]] bool checkSphereCachedPartial(f32 scale, f32 radius, KColData *data,
+            const EGG::Vector3f &pos, const EGG::Vector3f &prevPos, KCLTypeMask typeMask,
+            CollisionInfoPartial *info, KCLTypeMask *maskOut);
+    [[nodiscard]] bool checkSphereCachedPartialPush(f32 scale, f32 radius, KColData *data,
+            const EGG::Vector3f &pos, const EGG::Vector3f &prevPos, KCLTypeMask typeMask,
+            CollisionInfoPartial *info, KCLTypeMask *maskOut);
+    [[nodiscard]] bool checkSphereCachedFull(f32 scale, f32 radius, KColData *data,
+            const EGG::Vector3f &pos, const EGG::Vector3f &prevPos, KCLTypeMask typeMask,
+            CollisionInfo *colInfo, KCLTypeMask *maskOut);
+    [[nodiscard]] bool checkSphereCachedFullPush(f32 scale, f32 radius, KColData *data,
+            const EGG::Vector3f &pos, const EGG::Vector3f &prevPos, KCLTypeMask typeMask,
+            CollisionInfo *colInfo, KCLTypeMask *maskOut);
 
     /// @beginSetters
     void setNoBounceWallInfo(NoBounceWallColInfo *info) {
@@ -106,15 +146,18 @@ private:
     ~CourseColMgr() override;
 
     [[nodiscard]] bool doCheckWithPartialInfo(KColData *data, CollisionCheckFunc collisionCheckFunc,
-            CollisionInfo *colInfo, KCLTypeMask *typeMask);
+            CollisionInfoPartial *info, KCLTypeMask *typeMask);
     [[nodiscard]] bool doCheckWithPartialInfoPush(KColData *data,
-            CollisionCheckFunc collisionCheckFunc, CollisionInfo *colInfo, KCLTypeMask *typeMask);
+            CollisionCheckFunc collisionCheckFunc, CollisionInfoPartial *info,
+            KCLTypeMask *typeMask);
     [[nodiscard]] bool doCheckWithFullInfo(KColData *data, CollisionCheckFunc collisionCheckFunc,
             CollisionInfo *colInfo, KCLTypeMask *flagsOut);
     [[nodiscard]] bool doCheckWithFullInfoPush(KColData *data,
             CollisionCheckFunc collisionCheckFunc, CollisionInfo *colInfo, KCLTypeMask *flagsOut);
+    [[nodiscard]] bool doCheckMaskOnly(KColData *data, CollisionCheckFunc collisionCheckFunc,
+            KCLTypeMask *maskOut);
     [[nodiscard]] bool doCheckMaskOnlyPush(KColData *data, CollisionCheckFunc collisionCheckFunc,
-            KCLTypeMask *typeMaskOut);
+            KCLTypeMask *maskOut);
 
     KColData *m_data;
     f32 m_kclScale;
