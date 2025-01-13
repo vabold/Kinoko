@@ -3,10 +3,12 @@
 #include "egg/math/Math.hh"
 
 namespace EGG {
-
-Vector2f::Vector2f(f32 x_, f32 y_) : x(x_), y(y_) {}
-
+#ifdef BUILD_DEBUG
+Vector2f::Vector2f()
+    : x(std::numeric_limits<f32>::signaling_NaN()), y(std::numeric_limits<f32>::signaling_NaN()) {}
+#else
 Vector2f::Vector2f() = default;
+#endif
 
 Vector2f::~Vector2f() = default;
 
@@ -41,6 +43,14 @@ void Vector2f::read(Stream &stream) {
     x = stream.read_f32();
     y = stream.read_f32();
 }
+
+#ifdef BUILD_DEBUG
+Vector3f::Vector3f()
+    : x(std::numeric_limits<f32>::signaling_NaN()), y(std::numeric_limits<f32>::signaling_NaN()),
+      z(std::numeric_limits<f32>::signaling_NaN()) {}
+#else
+Vector3f::Vector3f() = default;
+#endif
 
 /// @brief The dot product between the vector and itself.
 f32 Vector3f::dot() const {

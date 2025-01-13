@@ -22,7 +22,7 @@ bool ObjectCollisionBase::check(ObjectCollisionBase &rhs, EGG::Vector3f &distanc
     f32 max = INITIAL_MAX_VALUE;
     f32 lastRadius = 0.0f;
 
-    EGG::Vector3f D;
+    EGG::Vector3f D = EGG::Vector3f::zero;
     EGG::Vector3f v0;
     EGG::Vector3f v1;
     GJKState state;
@@ -120,7 +120,7 @@ void ObjectCollisionBase::FUN_808350e4(GJKState &state, EGG::Vector3f &v) const 
         }
 
         f32 sqLen = 0.0f;
-        EGG::Vector3f tmp;
+        EGG::Vector3f tmp = EGG::Vector3f::zero;
         getNearestPoint(state, mask, tmp);
 
         sqLen = tmp.dot();
