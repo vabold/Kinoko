@@ -8,8 +8,14 @@ namespace EGG {
 
 /// @brief A 2D float vector.
 struct Vector2f {
-    Vector2f(f32 x_, f32 y_);
-    Vector2f();
+#ifdef BUILD_DEBUG
+    constexpr Vector2f()
+        : x(std::numeric_limits<f32>::signaling_NaN()),
+          y(std::numeric_limits<f32>::signaling_NaN()) {}
+#else
+    constexpr Vector2f() = default;
+#endif
+    constexpr Vector2f(f32 x_, f32 y_) : x(x_), y(y_) {}
     ~Vector2f();
 
     inline void set(f32 val) {
@@ -61,8 +67,16 @@ struct Vector2f {
 
 /// @brief A 3D float vector.
 struct Vector3f {
+#ifdef BUILD_DEBUG
+    constexpr Vector3f()
+        : x(std::numeric_limits<f32>::signaling_NaN()),
+          y(std::numeric_limits<f32>::signaling_NaN()),
+          z(std::numeric_limits<f32>::signaling_NaN()) {}
+#else
+    constexpr Vector3f() = default;
+#endif
     constexpr Vector3f(f32 x_, f32 y_, f32 z_) : x(x_), y(y_), z(z_) {}
-    constexpr Vector3f() : x(0.0f), y(0.0f), z(0.0f) {}
+
     // NOTE: Defining the destructor in the header ensures the struct is trivially destructible
     ~Vector3f() = default;
 

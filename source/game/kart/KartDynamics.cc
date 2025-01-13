@@ -34,7 +34,9 @@ void KartDynamics::init() {
     m_extVel = EGG::Vector3f::zero;
     m_acceleration = EGG::Vector3f::zero;
     m_angVel0 = EGG::Vector3f::zero;
+    m_movingObjVel = EGG::Vector3f::zero;
     m_angVel1 = EGG::Vector3f::zero;
+    m_movingRoadVel = EGG::Vector3f::zero;
     m_velocity = EGG::Vector3f::zero;
     m_speedNorm = 0.0f;
     m_angVel2 = EGG::Vector3f::zero;
@@ -68,7 +70,7 @@ void KartDynamics::setInertia(const EGG::Vector3f &m, const EGG::Vector3f &n) {
     m_inertiaTensor[0, 0] = (m.y * m.y + m.z * m.z) * TWELFTH + n.y * n.y + n.z * n.z;
     m_inertiaTensor[1, 1] = (m.z * m.z + m.x * m.x) * TWELFTH + n.z * n.z + n.x * n.x;
     m_inertiaTensor[2, 2] = (m.x * m.x + m.y * m.y) * TWELFTH + n.x * n.x + n.y * n.y;
-    m_invInertiaTensor = m_inertiaTensor.inverseTo33();
+    m_inertiaTensor.inverseTo33(m_invInertiaTensor);
 }
 
 /// @brief On init, takes elements from the kart's BSP and computes the moment of inertia tensor.

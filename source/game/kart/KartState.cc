@@ -189,7 +189,7 @@ void KartState::calcCollisions() {
 
     u16 wheelCollisions = 0;
     u16 softWallCount = 0;
-    EGG::Vector3f wallNrm;
+    EGG::Vector3f wallNrm = EGG::Vector3f::zero;
     bool trickable = false;
 
     for (u16 tireIdx = 0; tireIdx < tireCount(); ++tireIdx) {
