@@ -208,7 +208,7 @@ void KartCollide::calcBodyCollision(f32 totalScale, f32 sinkDepth, const EGG::Qu
     CollisionData &collisionData = hitboxGroup->collisionData();
     collisionData.reset();
 
-    EGG::Vector3f posRel;
+    EGG::Vector3f posRel = EGG::Vector3f::zero;
     s32 count = 0;
     Field::CourseColMgr::CollisionInfo colInfo;
     colInfo.bbox.setDirect(EGG::Vector3f::zero, EGG::Vector3f::zero);

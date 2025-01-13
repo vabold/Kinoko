@@ -9,9 +9,13 @@ namespace EGG {
 /// The vector is used to represent the axis of rotation, while
 /// the scalar is used to represent the amount of rotation.
 struct Quatf {
-    Quatf();
-    Quatf(f32 w_, const Vector3f &v_);
-    Quatf(f32 w_, f32 x_, f32 y_, f32 z_);
+#ifdef BUILD_DEBUG
+    constexpr Quatf() : w(std::numeric_limits<f32>::signaling_NaN()) {}
+#else
+    constexpr Quatf() = default;
+#endif
+    constexpr Quatf(f32 w_, const Vector3f &v_) : v(v_), w(w_) {}
+    constexpr Quatf(f32 w_, f32 x_, f32 y_, f32 z_) : v(x_, y_, z_), w(w_) {}
     ~Quatf();
 
     Quatf &operator=(const Quatf &q) {

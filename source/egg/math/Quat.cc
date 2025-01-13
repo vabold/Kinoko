@@ -4,12 +4,6 @@
 
 namespace EGG {
 
-Quatf::Quatf() : w(1.0f) {}
-
-Quatf::Quatf(f32 w_, const Vector3f &v_) : v(v_), w(w_) {}
-
-Quatf::Quatf(f32 w_, f32 x_, f32 y_, f32 z_) : v(x_, y_, z_), w(w_) {}
-
 Quatf::~Quatf() = default;
 
 /// @addr{0x80239E10}

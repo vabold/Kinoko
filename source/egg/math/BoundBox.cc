@@ -5,9 +5,7 @@
 namespace EGG {
 
 /// @addr{0x802145C0}
-BoundBox2f::BoundBox2f() {
-    resetBound();
-}
+BoundBox2f::BoundBox2f() = default;
 
 BoundBox2f::~BoundBox2f() = default;
 
@@ -30,9 +28,7 @@ void BoundBox2f::setMax(const Vector2f &v) {
     max = v;
 }
 
-BoundBox3f::BoundBox3f() {
-    resetBound();
-}
+BoundBox3f::BoundBox3f() = default;
 
 BoundBox3f::~BoundBox3f() = default;
 

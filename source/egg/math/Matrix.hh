@@ -41,7 +41,7 @@ public:
     [[nodiscard]] Vector3f multVector(const Vector3f &vec) const;
     [[nodiscard]] Vector3f ps_multVector(const Vector3f &vec) const;
     [[nodiscard]] Vector3f multVector33(const Vector3f &vec) const;
-    [[nodiscard]] Matrix34f inverseTo33() const;
+    void inverseTo33(Matrix34f &out) const;
     [[nodiscard]] Matrix34f transpose() const;
 
     static const Matrix34f ident;
