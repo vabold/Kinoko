@@ -29,4 +29,8 @@ ItemId ItemInventory::id() const {
     return m_currentId;
 }
 
+int ItemInventory::currentCount() const {
+    return m_currentCount;
+}
+
 } // namespace Item

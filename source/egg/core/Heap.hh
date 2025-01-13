@@ -91,11 +91,20 @@ protected:
 
 } // namespace EGG
 
-[[nodiscard]] void *operator new(size_t size) noexcept;
+#ifdef KINOKO_EGG_OPERATOR_NEW
+#ifdef __clang__
+#define KINOKO_NEW_NOEXCEPT
+#else
+#define KINOKO_NEW_NOEXCEPT noexcept
+#endif
+#pragma GCC visibility push(hidden)
+[[nodiscard]] void *operator new(size_t size) KINOKO_NEW_NOEXCEPT;
 [[nodiscard]] void *operator new(size_t size, int align) noexcept;
 [[nodiscard]] void *operator new(size_t size, EGG::Heap *heap, int align) noexcept;
-[[nodiscard]] void *operator new[](size_t size) noexcept;
+[[nodiscard]] void *operator new[](size_t size) KINOKO_NEW_NOEXCEPT;
 [[nodiscard]] void *operator new[](size_t size, int align) noexcept;
 [[nodiscard]] void *operator new[](size_t size, EGG::Heap *heap, int align) noexcept;
 void operator delete(void *block) noexcept;
 void operator delete[](void *block) noexcept;
+#pragma GCC visibility pop
+#endif
