@@ -113,7 +113,7 @@ bool KartReject::calcRejection() {
         bool hasFloorCollision = false;
         bool hasRejectCollision = false;
         bool hasInvisibleWallCollision = false;
-        EGG::Vector3f tangentOff;
+        EGG::Vector3f tangentOff = EGG::Vector3f::zero;
 
         if (mask & KCL_TYPE_INVISIBLE_WALL) {
             hasInvisibleWallCollision =

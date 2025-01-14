@@ -154,7 +154,7 @@ f32 CollisionGroup::initHitboxes(const std::array<BSP::Hitbox, 16> &hitboxes) {
 /// @addr{0x805B883C}
 /// @return The furthest point of all the hitboxes' spheres
 f32 CollisionGroup::computeCollisionLimits() {
-    EGG::Vector3f max;
+    EGG::Vector3f max = EGG::Vector3f::zero;
 
     for (const auto &hitbox : m_hitboxes) {
         const BSP::Hitbox *bspHitbox = hitbox.bspHitbox();

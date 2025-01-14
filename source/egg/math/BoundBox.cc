@@ -5,9 +5,7 @@
 namespace EGG {
 
 /// @addr{0x802145C0}
-BoundBox2f::BoundBox2f() {
-    resetBound();
-}
+BoundBox2f::BoundBox2f() = default;
 
 BoundBox2f::~BoundBox2f() = default;
 

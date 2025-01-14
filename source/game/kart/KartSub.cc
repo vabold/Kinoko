@@ -268,9 +268,9 @@ void KartSub::calcPass1() {
         dynamics()->setPos(dynamics()->pos() + vehicleCompensation);
 
         if (!collisionData().bFloor) {
-            EGG::Vector3f relPos;
-            EGG::Vector3f vel;
-            EGG::Vector3f floorNrm;
+            EGG::Vector3f relPos = EGG::Vector3f::zero;
+            EGG::Vector3f vel = EGG::Vector3f::zero;
+            EGG::Vector3f floorNrm = EGG::Vector3f::zero;
             u32 count = 0;
 
             for (u16 wheelIdx = 0; wheelIdx < tireCount(); ++wheelIdx) {
