@@ -21,24 +21,24 @@ public:
     };
 
     void checkCourseColNarrScLocal(f32 radius, const EGG::Vector3f &pos, KCLTypeMask mask,
-            u32 /*unused*/);
+            u32 timeOffset);
 
     [[nodiscard]] bool checkSphereFull(f32 radius, const EGG::Vector3f &v0, const EGG::Vector3f &v1,
             KCLTypeMask flags, CourseColMgr::CollisionInfo *pInfo, KCLTypeMask *pFlagsOut,
-            u32 /*start*/);
+            u32 timeOffset);
     [[nodiscard]] bool checkSphereFullPush(f32 radius, const EGG::Vector3f &v0,
             const EGG::Vector3f &v1, KCLTypeMask flags, CourseColMgr::CollisionInfo *pInfo,
-            KCLTypeMask *pFlagsOut, u32 /*start*/);
+            KCLTypeMask *pFlagsOut, u32 timeOffset);
 
-    [[nodiscard]] bool checkSphereCachedPartial(const EGG::Vector3f &pos,
+    [[nodiscard]] bool checkSphereCachedPartial(f32 radius, const EGG::Vector3f &pos,
             const EGG::Vector3f &prevPos, KCLTypeMask typeMask,
-            CourseColMgr::CollisionInfo *colInfo, KCLTypeMask *typeMaskOut, f32 radius);
-    [[nodiscard]] bool checkSphereCachedPartialPush(const EGG::Vector3f &pos,
+            CourseColMgr::CollisionInfoPartial *info, KCLTypeMask *typeMaskOut, u32 timeOffset);
+    [[nodiscard]] bool checkSphereCachedPartialPush(f32 radius, const EGG::Vector3f &pos,
             const EGG::Vector3f &prevPos, KCLTypeMask typeMask,
-            CourseColMgr::CollisionInfo *colInfo, KCLTypeMask *typeMaskOut, f32 radius, u32 start);
-    [[nodiscard]] bool checkSphereCachedFullPush(const EGG::Vector3f &pos,
-            const EGG::Vector3f &prevPos, KCLTypeMask typeMask,
-            CourseColMgr::CollisionInfo *colInfo, KCLTypeMask *typeMaskOut, f32 radius, u32 start);
+            CourseColMgr::CollisionInfoPartial *info, KCLTypeMask *typeMaskOut, u32 timeOffset);
+    [[nodiscard]] bool checkSphereCachedFullPush(f32 radius, const EGG::Vector3f &pos,
+            const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CourseColMgr::CollisionInfo *info,
+            KCLTypeMask *typeMaskOut, u32 timeOffset);
 
     void resetCollisionEntries(KCLTypeMask *ptr);
     void pushCollisionEntry(f32 dist, KCLTypeMask *typeMask, KCLTypeMask kclTypeBit, u16 attribute);
