@@ -64,8 +64,7 @@ EGG::RamStream KartParamFileManager::getDriverStream(Character character) const 
     auto *file = reinterpret_cast<ParamFile<KartParam::Stats> *>(m_driverParam.file);
     ASSERT(file);
     void *offset = &file->params[idx];
-    u32 size = sizeof(KartParam::Stats);
-    return EGG::RamStream(reinterpret_cast<u8 *>(offset), size);
+    return EGG::RamStream(offset, sizeof(KartParam::Stats));
 }
 
 EGG::RamStream KartParamFileManager::getVehicleStream(Vehicle vehicle) const {
@@ -77,8 +76,7 @@ EGG::RamStream KartParamFileManager::getVehicleStream(Vehicle vehicle) const {
     auto *file = reinterpret_cast<ParamFile<KartParam::Stats> *>(m_kartParam.file);
     ASSERT(file);
     void *offset = &file->params[idx];
-    u32 size = sizeof(KartParam::Stats);
-    return EGG::RamStream(reinterpret_cast<u8 *>(offset), size);
+    return EGG::RamStream(offset, sizeof(KartParam::Stats));
 }
 
 EGG::RamStream KartParamFileManager::getHitboxStream(Vehicle vehicle) const {
@@ -92,7 +90,7 @@ EGG::RamStream KartParamFileManager::getHitboxStream(Vehicle vehicle) const {
     auto *file = resourceManager->getBsp(vehicle, &size);
     ASSERT(file);
     ASSERT(size == sizeof(BSP));
-    return EGG::RamStream(reinterpret_cast<u8 *>(file), size);
+    return EGG::RamStream(file, size);
 }
 
 EGG::RamStream KartParamFileManager::getBikeDispParamsStream(Vehicle vehicle) const {
@@ -107,8 +105,7 @@ EGG::RamStream KartParamFileManager::getBikeDispParamsStream(Vehicle vehicle) co
     auto *file = reinterpret_cast<ParamFile<KartParam::BikeDisp> *>(m_bikeDispParam.file);
     ASSERT(file);
     void *offset = &file->params[idx];
-    u32 size = sizeof(KartParam::BikeDisp);
-    return EGG::RamStream(reinterpret_cast<u8 *>(offset), size);
+    return EGG::RamStream(offset, sizeof(KartParam::BikeDisp));
 }
 
 KartParamFileManager *KartParamFileManager::CreateInstance() {
