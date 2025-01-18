@@ -1,6 +1,7 @@
 #pragma once
 
 #include "game/system/map/MapdataAccessorBase.hh"
+#include "game/system/map/MapdataArea.hh"
 #include "game/system/map/MapdataCannonPoint.hh"
 #include "game/system/map/MapdataCheckPath.hh"
 #include "game/system/map/MapdataCheckPoint.hh"
@@ -64,6 +65,11 @@ public:
         return i < getGeoObjCount() ? m_geoObj->get(i) : nullptr;
     }
 
+    /// @addr{0x80516768}
+    [[nodiscard]] MapdataArea *getArea(u16 i) const {
+        return i < getAreaCount() ? m_area->get(i) : nullptr;
+    }
+
     /// @addr{0x80515E04}
     [[nodiscard]] MapdataPointInfo *getPointInfo(u16 i) const {
         return i < getPointInfoCount() ? m_pointInfo->get(i) : nullptr;
@@ -98,6 +104,10 @@ public:
 
     [[nodiscard]] u16 getGeoObjCount() const {
         return m_geoObj ? m_geoObj->size() : 0;
+    }
+
+    [[nodiscard]] u16 getAreaCount() const {
+        return m_area ? m_area->size() : 0;
     }
 
     [[nodiscard]] u16 getPointInfoCount() const {
@@ -180,6 +190,7 @@ private:
     MapdataCheckPointAccessor *m_checkPoint;
     MapdataPointInfoAccessor *m_pointInfo;
     MapdataGeoObjAccessor *m_geoObj;
+    MapdataAreaAccessor *m_area;
     MapdataJugemPointAccessor *m_jugemPoint;
     MapdataCannonPointAccessor *m_cannonPoint;
     MapdataStageInfoAccessor *m_stageInfo;
