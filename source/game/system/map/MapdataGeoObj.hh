@@ -22,11 +22,13 @@ public:
     void read(EGG::Stream &stream);
 
     /// @beginGetters
-    u16 id() const;
-    const EGG::Vector3f &pos() const;
-    const EGG::Vector3f &rot() const;
-    const EGG::Vector3f &scale() const;
-    u16 presenceFlag() const;
+    [[nodiscard]] u16 id() const;
+    [[nodiscard]] const EGG::Vector3f &pos() const;
+    [[nodiscard]] const EGG::Vector3f &rot() const;
+    [[nodiscard]] const EGG::Vector3f &scale() const;
+    [[nodiscard]] s16 pathId() const;
+    [[nodiscard]] u16 setting(size_t idx) const;
+    [[nodiscard]] u16 presenceFlag() const;
     /// @endGetters
 
 private:
