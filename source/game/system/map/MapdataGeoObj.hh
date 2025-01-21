@@ -22,23 +22,32 @@ public:
     void read(EGG::Stream &stream);
 
     /// @beginGetters
-    u16 id() const {
+    [[nodiscard]] u16 id() const {
         return m_id;
     }
 
-    const EGG::Vector3f &pos() const {
+    [[nodiscard]] const EGG::Vector3f &pos() const {
         return m_pos;
     }
 
-    const EGG::Vector3f &rot() const {
+    [[nodiscard]] const EGG::Vector3f &rot() const {
         return m_rot;
     }
 
-    const EGG::Vector3f &scale() const {
+    [[nodiscard]] const EGG::Vector3f &scale() const {
         return m_scale;
     }
 
-    u16 presenceFlag() const {
+    [[nodiscard]] s16 pathId() const {
+        return m_pathId;
+    }
+
+    [[nodiscard]] u16 setting(size_t idx) const {
+        ASSERT(idx < m_settings.size());
+        return m_settings[idx];
+    }
+
+    [[nodiscard]] u16 presenceFlag() const {
         return m_presenceFlag;
     }
     /// @endGetters

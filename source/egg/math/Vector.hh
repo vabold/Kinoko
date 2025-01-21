@@ -220,6 +220,7 @@ struct Vector3f {
     [[nodiscard]] f32 ps_dot(const EGG::Vector3f &rhs) const;
     [[nodiscard]] f32 ps_squareMag() const;
     f32 normalise();
+    void normalise2();
     [[nodiscard]] Vector3f maximize(const Vector3f &rhs) const;
     [[nodiscard]] Vector3f minimize(const Vector3f &rhs) const;
     [[nodiscard]] f32 ps_sqDistance(const Vector3f &rhs) const;
