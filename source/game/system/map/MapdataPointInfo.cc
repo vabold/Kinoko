@@ -35,10 +35,6 @@ void MapdataPointInfo::read(EGG::RamStream &stream) {
     }
 }
 
-size_t MapdataPointInfo::pointCount() const {
-    return m_points.size();
-}
-
 /// @addr{0x80515D3C}
 MapdataPointInfoAccessor::MapdataPointInfoAccessor(const MapSectionHeader *header)
     : MapdataAccessorBase<MapdataPointInfo, MapdataPointInfo::SData>(header) {

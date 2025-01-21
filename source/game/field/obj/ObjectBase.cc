@@ -1,5 +1,8 @@
 #include "ObjectBase.hh"
 
+#include <game/system/CourseMap.hh>
+#include <game/system/map/MapdataPointInfo.hh>
+
 #include <egg/math/Math.hh>
 
 namespace Field {
@@ -7,7 +10,8 @@ namespace Field {
 /// @addr{0x8081F828}
 ObjectBase::ObjectBase(const System::MapdataGeoObj &params)
     : m_id(static_cast<ObjectId>(params.id())), m_flags(0x3), m_pos(params.pos()),
-      m_rot(params.rot() * DEG2RAD), m_scale(params.scale()), m_transform(EGG::Matrix34f::ident) {}
+      m_rot(params.rot() * DEG2RAD), m_scale(params.scale()), m_transform(EGG::Matrix34f::ident),
+      m_mapObj(&params) {}
 
 /// @addr{0x8067E3C4}
 ObjectBase::~ObjectBase() = default;
@@ -15,6 +19,28 @@ ObjectBase::~ObjectBase() = default;
 /// @addr{0x808217B8}
 void ObjectBase::calcModel() {
     calcTransform();
+}
+
+/// @addr{0x80820980}
+void ObjectBase::loadRail() {
+    if (!m_mapObj) {
+        return;
+    }
+
+    s16 pathId = m_mapObj->pathId();
+
+    if (pathId == -1) {
+        return;
+    }
+
+    auto *point = System::CourseMap::Instance()->getPointInfo(pathId);
+    f32 speed = static_cast<f32>(m_mapObj->setting(0));
+
+    if (point->setting(0) == 0) {
+        m_railInterpolator = new RailLinearInterpolator(speed, pathId);
+    } else {
+        m_railInterpolator = new RailSmoothInterpolator(speed, pathId);
+    }
 }
 
 /// @addr{0x80821640}

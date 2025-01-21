@@ -52,6 +52,14 @@ f32 Vector3f::normalise() {
     return len;
 }
 
+/// @addr{0x80243B6C}
+void Vector3f::normalise2() {
+    f32 sqLen = squaredLength();
+    if (sqLen > std::numeric_limits<f32>::epsilon()) {
+        *this *= Mathf::frsqrt(sqLen);
+    }
+}
+
 /// @addr{0x80085580}
 /// @brief Returns a vector whose elements are the max of the elements of both vectors.
 Vector3f Vector3f::maximize(const Vector3f &rhs) const {

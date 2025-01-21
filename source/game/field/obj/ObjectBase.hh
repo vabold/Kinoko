@@ -1,6 +1,7 @@
 #pragma once
 
 #include "game/field/BoxColManager.hh"
+#include "game/field/RailInterpolator.hh"
 #include "game/field/obj/ObjectId.hh"
 
 #include "game/system/map/MapdataGeoObj.hh"
@@ -19,6 +20,7 @@ public:
     virtual void calcModel();
     virtual void load() = 0;
     virtual void createCollision() = 0;
+    virtual void loadRail();
     virtual void calcCollisionTransform() = 0;
 
     /// @addr{0x806BF434}
@@ -46,12 +48,14 @@ protected:
     void calcTransform();
 
     ObjectId m_id;
+    RailInterpolator *m_railInterpolator;
     BoxColUnit *m_boxColUnit;
     u16 m_flags;
     EGG::Vector3f m_pos;
     EGG::Vector3f m_rot;
     EGG::Vector3f m_scale;
     EGG::Matrix34f m_transform;
+    const System::MapdataGeoObj *m_mapObj;
 };
 
 } // namespace Field
