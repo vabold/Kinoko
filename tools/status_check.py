@@ -2,12 +2,12 @@
 # asserting that the sync framecount is the highest it currently can be. This helps us capture when changes focused
 # on one test case actually benefit a different test case.
 
-from generate_tests import generate_tests
 import json
 import os
 import subprocess
 import sys
 from typing import Dict, TypedDict
+from generate_tests import generate_tests
 
 STATUS_TEST_CASE_FILENAME = 'statusTestCases.json'
 
@@ -125,7 +125,7 @@ def get_test_cases_from_status_md() -> Dict[str, TestCase]:
     # Read STATUS.md and parse test cases to dictionary
     with open('STATUS.md', 'r', encoding='utf-8') as f:
         # Skip the first 4 lines to get to first test case line
-        for i in range(4):
+        for _ in range(4):
             next(f)
 
         for line in f:
@@ -165,15 +165,15 @@ def main():
     generate_tests(STATUS_TEST_CASE_FILENAME)
 
     # Run Kinoko. subprocess.run shell behavior varies between Windows and Linux
-    exec = os.path.join('.', 'kinoko')
+    path = os.path.join('.', 'kinoko')
     args = [
-        exec,
+        path,
         "-m",
         "test",
         "-s",
         "testCases.bin",
-    ] if sys.platform.startswith('win32') else exec + " -m test -s testCases.bin"
-    result = subprocess.run(args, cwd='out', shell=True, capture_output=True, text=True)
+    ] if sys.platform.startswith('win32') else path + " -m test -s testCases.bin"
+    result = subprocess.run(args, cwd='out', shell=True, capture_output=True, check=False, text=True)
 
     # Check each test case is up-to-date. If not, return non-zero exit code so
     # our build action is aware.
