@@ -39,7 +39,7 @@ void Vector2f::read(Stream &stream) {
 }
 
 /// @brief The dot product between the vector and itself.
-f32 Vector3f::dot() const {
+f32 Vector3f::squaredLength() const {
     return x * x + y * y + z * z;
 }
 
@@ -75,16 +75,18 @@ Vector3f Vector3f::cross(const Vector3f &rhs) const {
 
 /// @brief The square root of the vector's dot product.
 f32 Vector3f::length() const {
-    return Mathf::sqrt(dot());
+    return Mathf::sqrt(squaredLength());
 }
 
 /// @addr{0x80243ADC}
 /// @brief Normalizes the vector and returns the original length.
 /// @return (optional) The length of the vector before normalisation.
 f32 Vector3f::normalise() {
-    f32 len = length();
-    if (std::numeric_limits<f32>::epsilon() < dot()) {
-        *this = *this * (1.0f / len);
+    f32 len = 0.0f;
+
+    if (squaredLength() > std::numeric_limits<f32>::epsilon()) {
+        len = length();
+        *this *= (1.0f / len);
     }
 
     return len;
@@ -134,7 +136,7 @@ std::pair<Vector3f, Vector3f> Vector3f::projAndRej(const Vector3f &rhs) const {
 /// @brief The square of the distance between two vectors.
 f32 Vector3f::sqDistance(const Vector3f &rhs) const {
     const EGG::Vector3f diff = *this - rhs;
-    return diff.dot();
+    return diff.squaredLength();
 }
 
 /// @addr{0x8019ADE0}

@@ -76,12 +76,12 @@ bool ObjectCollisionBase::check(ObjectCollisionBase &rhs, EGG::Vector3f &distanc
             return true;
         }
 
-        max = EGG::Mathf::sqrt(D.dot());
+        max = D.length();
 
         if (max2 - max * max <= std::numeric_limits<f32>::epsilon() * max2) {
             FUN_808350e4(state, D);
             getNearestPoint(state, state.m_flags, v0, v1);
-            f32 len = EGG::Mathf::sqrt(D.dot());
+            f32 len = D.length();
             v0 -= D * (getBoundingRadius() / len);
             v1 += D * (rhs.getBoundingRadius() / len);
 
@@ -123,7 +123,7 @@ void ObjectCollisionBase::FUN_808350e4(GJKState &state, EGG::Vector3f &v) const 
         EGG::Vector3f tmp = EGG::Vector3f::zero;
         getNearestPoint(state, mask, tmp);
 
-        sqLen = tmp.dot();
+        sqLen = tmp.squaredLength();
         if (sqLen < min) {
             state.m_flags = mask;
             v = tmp;
@@ -240,7 +240,7 @@ void ObjectCollisionBase::calcSimplex(GJKState &state) const {
     }
 
     state.m_scales[state.m_mask][idx] = 1.0f;
-    s_dotProductCache[idx][idx] = state.m_s[idx].dot();
+    s_dotProductCache[idx][idx] = state.m_s[idx].squaredLength();
 
     for (u32 i = 0, iMask = 1; i < 4; ++i, iMask *= 2) {
         if ((state.m_flags & iMask) == 0) {

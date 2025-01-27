@@ -516,7 +516,7 @@ void KartMove::calcDirs() {
 
         EGG::Vector3f dirDiff = local_b8 - m_dir;
 
-        if (dirDiff.dot() <= std::numeric_limits<f32>::epsilon()) {
+        if (dirDiff.squaredLength() <= std::numeric_limits<f32>::epsilon()) {
             m_dir = local_b8;
             m_dirDiff.setZero();
         } else {
@@ -546,7 +546,7 @@ void KartMove::calcDirs() {
     if (m_hasLandingDir) {
         f32 dot = m_dir.dot(m_landingDir);
         EGG::Vector3f cross = m_dir.cross(m_landingDir);
-        f32 crossDot = EGG::Mathf::sqrt(cross.dot());
+        f32 crossDot = cross.length();
         f32 angle = EGG::Mathf::atan2(crossDot, dot);
         angle = EGG::Mathf::abs(angle);
 
@@ -1577,7 +1577,7 @@ void KartMove::calcDive() {
     EGG::Vector3f forwardRotated = dynamics()->mainRot().rotateVector(EGG::Vector3f::ez);
     f32 upDotTop = m_up.dot(topRotated);
     EGG::Vector3f upCrossTop = m_up.cross(topRotated);
-    f32 crossNorm = EGG::Mathf::sqrt(upCrossTop.dot());
+    f32 crossNorm = upCrossTop.length();
     f32 angle = EGG::Mathf::abs(EGG::Mathf::atan2(crossNorm, upDotTop));
 
     f32 fVar1 = angle * RAD2DEG - 20.0f;
@@ -1654,7 +1654,7 @@ void KartMove::calcVehicleRotation(f32 turn) {
         EGG::Vector3f frontSpeed = velocity().rej(front).perpInPlane(m_up, false);
         f32 magnitude = tiltMagnitude;
 
-        if (frontSpeed.dot() > std::numeric_limits<f32>::epsilon()) {
+        if (frontSpeed.squaredLength() > std::numeric_limits<f32>::epsilon()) {
             magnitude = frontSpeed.length();
 
             if (front.z * frontSpeed.x - front.x * frontSpeed.z > 0.0f) {
@@ -2418,7 +2418,7 @@ void KartMoveBike::calcVehicleRotation(f32 turn) {
         scalar = std::min(1.0f, scalar);
         top = scalar * m_up + (1.0f - scalar) * EGG::Vector3f::ey;
 
-        if (std::numeric_limits<f32>::epsilon() < top.dot()) {
+        if (std::numeric_limits<f32>::epsilon() < top.squaredLength()) {
             top.normalise();
         }
     }
