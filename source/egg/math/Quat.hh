@@ -83,7 +83,8 @@ struct Quatf {
     Vector3f rotateVector(const Vector3f &vec) const;
     Vector3f rotateVectorInv(const Vector3f &vec) const;
     Quatf slerpTo(const Quatf &q2, f32 t) const;
-    f32 dot() const;
+    f32 squaredNorm() const;
+    f32 norm() const;
     f32 dot(const Quatf &q) const;
     void setAxisRotation(f32 angle, const Vector3f &axis);
     Quatf multSwap(const Vector3f &v) const;

@@ -155,7 +155,7 @@ struct Vector3f {
     }
 
     [[nodiscard]] Vector3f cross(const EGG::Vector3f &rhs) const;
-    [[nodiscard]] f32 dot() const;
+    [[nodiscard]] f32 squaredLength() const;
     [[nodiscard]] f32 dot(const EGG::Vector3f &rhs) const;
     [[nodiscard]] f32 ps_dot() const;
     [[nodiscard]] f32 ps_dot(const EGG::Vector3f &rhs) const;

@@ -476,7 +476,7 @@ void KartCollide::calcSideCollision(CollisionData &collisionData, Hitbox &hitbox
         if (Field::CollisionDirector::Instance()->checkSphereCachedPartial(effectivePos,
                     hitbox.lastPos(), KCL_TYPE_DRIVER_WALL, &tempColInfo, nullptr,
                     hitbox.radius())) {
-            tangents[i] = colInfo->tangentOff.dot();
+            tangents[i] = colInfo->tangentOff.squaredLength();
         }
     }
 
@@ -727,7 +727,7 @@ void KartCollide::applySomeFloorMoment(f32 down, f32 rate, CollisionGroup *hitbo
     crossVec = colData.floorNrm.cross(negSpeed);
     crossVec = crossVec.cross(colData.floorNrm);
 
-    if (std::numeric_limits<f32>::epsilon() >= crossVec.dot()) {
+    if (std::numeric_limits<f32>::epsilon() >= crossVec.squaredLength()) {
         return;
     }
 

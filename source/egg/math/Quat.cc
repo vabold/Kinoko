@@ -25,7 +25,7 @@ void Quatf::setRPY(const Vector3f &rpy) {
 /// @addr{0x8023A168}
 /// @brief Scales the quaternion to a unit length.
 void Quatf::normalise() {
-    f32 len = dot() > std::numeric_limits<f32>::epsilon() ? Mathf::sqrt(dot()) : 0.0f;
+    f32 len = squaredNorm() > std::numeric_limits<f32>::epsilon() ? norm() : 0.0f;
 
     if (len != 0.0f) {
         f32 inv = 1.0f / len;
@@ -112,8 +112,12 @@ Quatf Quatf::slerpTo(const Quatf &q1, f32 t) const {
 
 /// @addr{0x8023A138}
 /// @brief Computes \f$this \cdot this = w^2 + x^2 + y^2 + z^2\f$
-f32 Quatf::dot() const {
-    return w * w + v.dot();
+f32 Quatf::squaredNorm() const {
+    return w * w + v.squaredLength();
+}
+
+f32 Quatf::norm() const {
+    return Mathf::sqrt(squaredNorm());
 }
 
 /// @brief Computes \f$this \cdot rhs = w \times rhs.w + x \times rhs.x + y \times rhs.y + z \times
