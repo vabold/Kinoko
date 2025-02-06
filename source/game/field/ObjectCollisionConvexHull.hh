@@ -12,8 +12,8 @@ public:
 
     void transform(const EGG::Matrix34f &mat, const EGG::Vector3f &scale,
             const EGG::Vector3f &speed) override;
-    const EGG::Vector3f &getSupport(const EGG::Vector3f &v) const override;
-    f32 getBoundingRadius() const override;
+    [[nodiscard]] const EGG::Vector3f &getSupport(const EGG::Vector3f &v) const override;
+    [[nodiscard]] f32 getBoundingRadius() const override;
 
     virtual void setBoundingRadius(f32 val);
 

@@ -73,7 +73,7 @@ public:
     [[nodiscard]] NoBounceWallColInfo *noBounceWallInfo() const;
     /// @endGetters
 
-    static void *LoadFile(const char *filename);
+    [[nodiscard]] static void *LoadFile(const char *filename);
 
     static CourseColMgr *CreateInstance();
     static void DestroyInstance();

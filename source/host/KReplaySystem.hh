@@ -14,7 +14,7 @@ public:
 
     static KReplaySystem *CreateInstance();
     static void DestroyInstance();
-    static KReplaySystem *Instance();
+    [[nodiscard]] static KReplaySystem *Instance();
 
 private:
     typedef std::pair<const System::Timer &, const System::Timer &> DesyncingTimerPair;
@@ -24,12 +24,12 @@ private:
     KReplaySystem(KReplaySystem &&) = delete;
     ~KReplaySystem() override;
 
-    bool calcEnd() const;
+    [[nodiscard]] bool calcEnd() const;
     void reportFail(const std::string &msg) const;
 
-    bool success() const;
-    s32 getDesyncingTimerIdx() const;
-    DesyncingTimerPair getDesyncingTimer(s32 i) const;
+    [[nodiscard]] bool success() const;
+    [[nodiscard]] s32 getDesyncingTimerIdx() const;
+    [[nodiscard]] DesyncingTimerPair getDesyncingTimer(s32 i) const;
 
     static void OnInit(System::RaceConfig *config, void *arg);
 
