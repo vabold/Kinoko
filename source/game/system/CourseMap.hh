@@ -6,6 +6,8 @@
 /// configuration, and resource management.
 namespace System {
 
+class MapdataArea;
+class MapdataAreaAccessor;
 class MapdataCannonPoint;
 class MapdataCannonPointAccessor;
 class MapdataCheckPath;
@@ -34,6 +36,7 @@ public:
     [[nodiscard]] MapdataCheckPathAccessor *parseCheckPath(u32 sectionName) const;
     [[nodiscard]] MapdataCheckPointAccessor *parseCheckPoint(u32 sectionName) const;
     [[nodiscard]] MapdataGeoObjAccessor *parseGeoObj(u32 sectionName) const;
+    [[nodiscard]] MapdataAreaAccessor *parseArea(u32 sectionName) const;
     [[nodiscard]] MapdataJugemPointAccessor *parseJugemPoint(u32 sectionName) const;
     [[nodiscard]] MapdataPointInfoAccessor *parsePointInfo(u32 sectionName) const;
     [[nodiscard]] MapdataStageInfoAccessor *parseStageInfo(u32 sectionName) const;
@@ -53,6 +56,7 @@ public:
     [[nodiscard]] MapdataCheckPath *getCheckPath(u16 i) const;
     [[nodiscard]] MapdataCheckPoint *getCheckPoint(u16 i) const;
     [[nodiscard]] MapdataGeoObj *getGeoObj(u16 i) const;
+    [[nodiscard]] MapdataArea *getArea(u16 i) const;
     [[nodiscard]] MapdataPointInfo *getPointInfo(u16 i) const;
     [[nodiscard]] MapdataJugemPoint *getJugemPoint(u16 i) const;
     [[nodiscard]] MapdataStageInfo *getStageInfo() const;
@@ -60,6 +64,7 @@ public:
     [[nodiscard]] u16 getCheckPathCount() const;
     [[nodiscard]] u16 getCheckPointCount() const;
     [[nodiscard]] u16 getGeoObjCount() const;
+    [[nodiscard]] u16 getAreaCount() const;
     [[nodiscard]] u16 getPointInfoCount() const;
     [[nodiscard]] u16 getJugemPointCount() const;
     [[nodiscard]] u32 version() const;
@@ -100,6 +105,7 @@ private:
     MapdataCheckPointAccessor *m_checkPoint;
     MapdataPointInfoAccessor *m_pointInfo;
     MapdataGeoObjAccessor *m_geoObj;
+    MapdataAreaAccessor *m_area;
     MapdataJugemPointAccessor *m_jugemPoint;
     MapdataCannonPointAccessor *m_cannonPoint;
     MapdataStageInfoAccessor *m_stageInfo;
