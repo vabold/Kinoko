@@ -52,6 +52,7 @@ enum class ObjectId {
     BulldozerR = 0x1f9,
     KinokoNm = 0x1fa,
     Crane = 0x1fb,
+    TwistedWay = 0x1fe,
     TownBridge = 0x1ff,
     Turibashi = 0x202,
     Aurora = 0x204,

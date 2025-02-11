@@ -261,6 +261,8 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
         return new ObjectKinokoNm(params);
     case ObjectId::Crane:
         return new ObjectCrane(params);
+    case ObjectId::TwistedWay:
+        return new ObjectTwistedWay(params);
     case ObjectId::TownBridge:
         return new ObjectTownBridge(params);
     case ObjectId::Turibashi:
