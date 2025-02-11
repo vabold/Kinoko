@@ -1,4 +1,9 @@
 {
+    "Zeke BC NG RTA WR": {
+        "rkgPath": "samples/bc-ng-rta-2-20-001.rkg",
+        "krkgPath": "samples/bc-ng-rta-2-20-001.krkg",
+        "targetFrame": 1707
+    },
     "Flare RR NG RTA WR": {
         "rkgPath": "samples/rr-ng-rta-2-24-281.rkg",
         "krkgPath": "samples/rr-ng-rta-2-24-281.krkg",

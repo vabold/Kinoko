@@ -12,6 +12,7 @@ enum class ObjectId {
     DKtreeA64c = 0x158,
     OilSFC = 0x15d,
     ParasolR = 0x16e,
+    TwistedWay = 0x1fe,
     Turibashi = 0x202,
     Aurora = 0x204,
     Ami = 0x20e,
