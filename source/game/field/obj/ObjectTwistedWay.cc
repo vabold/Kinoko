@@ -1,7 +1,7 @@
 #include "ObjectTwistedWay.hh"
 
 #include "game/field/CollisionDirector.hh"
-#include "game/system/RaceManager.hh"     
+#include "game/system/RaceManager.hh"
 
 #include <egg/math/Math.hh>
 
