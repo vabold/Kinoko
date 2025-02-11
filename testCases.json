@@ -4,6 +4,11 @@
         "krkgPath": "samples/bc-ng-rta-2-20-001.krkg",
         "targetFrame": 1707
     },
+    "Emil BC RTA WR": {
+        "rkgPath": "samples/bc-rta-2-08-697.rkg",
+        "krkgPath": "samples/bc-rta-2-08-697.krkg",
+        "targetFrame": 1717
+    },
     "Flare RR NG RTA WR": {
         "rkgPath": "samples/rr-ng-rta-2-24-281.rkg",
         "krkgPath": "samples/rr-ng-rta-2-24-281.krkg",
