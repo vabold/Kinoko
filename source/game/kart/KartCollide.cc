@@ -25,6 +25,7 @@ KartCollide::~KartCollide() = default;
 /// @addr{0x8056E624}
 void KartCollide::init() {
     calcBoundingRadius();
+    m_floorMomentRate = 0.8f;
     m_surfaceFlags.makeAllZero();
     m_respawnTimer = 0;
     m_solidOobTimer = 0;
@@ -104,7 +105,8 @@ void KartCollide::FUN_80572F4C() {
 
     bool resetXZ = fVar1 > 0.0f && state()->isAirtimeOver20() && dynamics()->velocity().y < -50.0f;
 
-    FUN_805B72B8(0.01f, fVar1, resetXZ, !state()->isJumpPadDisableYsusForce());
+    FUN_805B72B8(state()->isInAction() ? 0.3f : 0.01f, fVar1, resetXZ,
+            !state()->isJumpPadDisableYsusForce());
 }
 
 /// @stage All
@@ -872,6 +874,16 @@ void KartCollide::applyBodyCollision(CollisionData &collisionData, const EGG::Ve
     }
 }
 
+/// @addr{0x805713D8}
+void KartCollide::startFloorMomentRate() {
+    m_floorMomentRate = 0.01f;
+}
+
+/// @addr{0x805713FC}
+void KartCollide::calcFloorMomentRate() {
+    m_floorMomentRate = state()->isInAction() ? 0.01f : std::min(m_floorMomentRate + 0.01f, 0.8f);
+}
+
 /// @addr{0x8056E564}
 Action KartCollide::handleReactNone(size_t /*idx*/) {
     return Action::None;
@@ -983,6 +995,10 @@ void KartCollide::setMovement(const EGG::Vector3f &v) {
 
 f32 KartCollide::boundingRadius() const {
     return m_boundingRadius;
+}
+
+f32 KartCollide::floorMomentRate() const {
+    return m_floorMomentRate;
 }
 
 const KartCollide::SurfaceFlags &KartCollide::surfaceFlags() const {

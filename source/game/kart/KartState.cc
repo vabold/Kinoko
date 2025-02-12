@@ -70,8 +70,8 @@ void KartState::reset() {
 void KartState::calcInput() {
     const auto *raceMgr = System::RaceManager::Instance();
     if (raceMgr->isStageReached(System::RaceManager::Stage::Race)) {
-        if (!state()->isBeforeRespawn() && !state()->isCannonStart() && !state()->isInCannon() &&
-                !state()->isOverZipper()) {
+        if (!state()->isInAction() && !state()->isBeforeRespawn() && !state()->isCannonStart() &&
+                !state()->isInCannon() && !state()->isOverZipper()) {
             const auto &currentState = inputs()->currentState();
             const auto &lastState = inputs()->lastState();
             m_stickX = currentState.stick.x;

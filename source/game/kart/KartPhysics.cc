@@ -89,8 +89,13 @@ void KartPhysics::composeExtraRot(const EGG::Quatf &rot) {
 }
 
 /// @addr{0x8059FDD0}
-void KartPhysics::composeDecayingRot(const EGG::Quatf &rot) {
+void KartPhysics::composeDecayingStuntRot(const EGG::Quatf &rot) {
     m_decayingStuntRot *= rot;
+}
+
+/// @addr{0x8059FE94}
+void KartPhysics::composeDecayingExtraRot(const EGG::Quatf &rot) {
+    m_decayingExtraRot *= rot;
 }
 
 /// @addr{0x805A0410}

@@ -153,7 +153,7 @@ void KartJump::calcInput() {
 /// @addr{0x805766B8}
 void KartJump::end() {
     if (state()->isTrickRot()) {
-        physics()->composeDecayingRot(m_rot);
+        physics()->composeDecayingStuntRot(m_rot);
     }
 
     state()->setInATrick(false);

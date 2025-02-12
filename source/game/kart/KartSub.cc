@@ -242,6 +242,7 @@ void KartSub::calcPass1() {
         }
 
         collide()->calcFloorEffect();
+        collide()->calcFloorMomentRate();
 
         if (colData.bFloor) {
             // Update floor count
@@ -358,7 +359,9 @@ void KartSub::tryEndHWG() {
         }
     }
 
-    dynamics()->setForceUpright(!state()->isSoftWallDrift());
+    if (!state()->isInAction()) {
+        dynamics()->setForceUpright(!state()->isSoftWallDrift());
+    }
 }
 
 f32 KartSub::someScale() {

@@ -72,18 +72,21 @@ private:
      * ================================ */
 
     void startStub();
+    void startAction1();
 
     /* ================================ *
      *     CALC FUNCTIONS
      * ================================ */
 
     bool calcStub();
+    bool calcAction1();
 
     /* ================================ *
      *     END FUNCTIONS
      * ================================ */
 
     void endStub(bool arg);
+    void endAction1(bool arg);
 
     Action m_currentAction;
     f32 m_rotationDirection;

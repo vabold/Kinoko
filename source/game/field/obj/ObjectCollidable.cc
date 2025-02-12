@@ -84,7 +84,7 @@ void ObjectCollidable::processKartReactions(Kart::KartObject *kartObj,
 /// @addr{0x8068179C}
 Kart::Reaction ObjectCollidable::onCollision(Kart::KartObject * /*kartObj*/,
         Kart::Reaction reactionOnKart, Kart::Reaction /*reactionOnObj*/,
-        const EGG::Vector3f & /*hitDepth*/) {
+        EGG::Vector3f & /*hitDepth*/) {
     return reactionOnKart;
 }
 
