@@ -34,6 +34,7 @@ public:
 
 private:
     KartMove *m_move;
+    KartAction *m_action;
     KartCollide *m_collide;
     KartState *m_state;
     EGG::Vector3f m_maxSuspOvertravel;

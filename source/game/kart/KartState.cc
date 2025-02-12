@@ -533,6 +533,10 @@ bool KartState::isRampBoost() const {
     return m_bRampBoost;
 }
 
+bool KartState::isInAction() const {
+    return m_bInAction;
+}
+
 bool KartState::isTriggerRespawn() const {
     return m_bTriggerRespawn;
 }
@@ -723,6 +727,7 @@ void KartState::clearBitfield0() {
 
 /// @brief Helper function to clear all bit flags at 0x8-0xB in KartState.
 void KartState::clearBitfield1() {
+    m_bInAction = false;
     m_bTriggerRespawn = false;
     m_bCannonStart = false;
     m_bInCannon = false;
@@ -841,6 +846,10 @@ void KartState::setJumpPad(bool isSet) {
 
 void KartState::setRampBoost(bool isSet) {
     m_bRampBoost = isSet;
+}
+
+void KartState::setInAction(bool isSet) {
+    m_bInAction = isSet;
 }
 
 void KartState::setTriggerRespawn(bool isSet) {

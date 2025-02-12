@@ -206,6 +206,19 @@ void KartMove::init(bool b1, bool b2) {
     m_rawTurn = 0.0f;
 }
 
+/// @addr{0x8058348C}
+void KartMove::clear() {
+    clearBoost();
+    clearJumpPad();
+    clearRampBoost();
+    clearZipperBoost();
+    clearSsmt();
+    clearOffroadInvincibility();
+    m_halfPipe->end(false);
+    m_jump->end();
+    clearRejectRoad();
+}
+
 /// @addr{0x8058974C}
 f32 KartMove::leanRot() const {
     return 0.0f;
@@ -843,6 +856,11 @@ void KartMove::clearOffroadInvincibility() {
     state()->setBoostOffroadInvincibility(false);
 }
 
+void KartMove::clearRejectRoad() {
+    state()->setRejectRoadTrigger(false);
+    state()->setNoSparkInvisibleWall(false);
+}
+
 /// @stage 2
 /// @brief Each frame, handles automatic transmission drifting.
 /// @addr{0x8057E0DC}
@@ -1184,6 +1202,11 @@ void KartMove::calcVehicleSpeed() {
 
     m_acceleration = 0.0f;
     m_speedDragMultiplier = 1.0f;
+
+    if (state()->isInAction()) {
+        action()->calcVehicleSpeed();
+        return;
+    }
 
     if ((state()->isSomethingWallCollision() && state()->isTouchingGround() &&
                 !state()->isAnyWheelCollision()) ||
@@ -2465,6 +2488,12 @@ void KartMoveBike::init(bool b1, bool b2) {
     m_wheelieFrames = 0;
     m_wheelieCooldown = 0;
     m_autoHardStickXFrames = 0;
+}
+
+/// @addr{0x80588950}
+void KartMoveBike::clear() {
+    KartMove::clear();
+    cancelWheelie();
 }
 
 /// @stage 2

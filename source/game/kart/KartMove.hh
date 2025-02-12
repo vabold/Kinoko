@@ -32,6 +32,7 @@ public:
     virtual void calcWheelie() {}
     virtual void setTurnParams();
     virtual void init(bool b1, bool b2);
+    virtual void clear();
     [[nodiscard]] virtual f32 leanRot() const;
 
     void setInitialPhysicsValues(const EGG::Vector3f &position, const EGG::Vector3f &angles);
@@ -63,6 +64,7 @@ public:
     void clearBoost();
     void clearSsmt();
     void clearOffroadInvincibility();
+    void clearRejectRoad();
     void releaseMt();
     void controlOutsideDriftAngle();
     void calcRotation();
@@ -312,6 +314,7 @@ public:
     void initOob() override;
     void setTurnParams() override;
     void init(bool b1, bool b2) override;
+    void clear() override;
     [[nodiscard]] f32 getWheelieSoftSpeedLimitBonus() const override;
     [[nodiscard]] f32 wheelieRotFactor() const;
 

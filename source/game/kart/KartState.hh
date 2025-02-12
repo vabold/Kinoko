@@ -50,6 +50,7 @@ public:
     void setDriftAuto(bool isSet);
     void setWheelie(bool isSet);
     void setRampBoost(bool isSet);
+    void setInAction(bool isSet);
     void setTriggerRespawn(bool isSet);
     void setCannonStart(bool isSet);
     void setInCannon(bool isSet);
@@ -119,6 +120,7 @@ public:
     [[nodiscard]] bool isWheelie() const;
     [[nodiscard]] bool isRampBoost() const;
     [[nodiscard]] bool isJumpPad() const;
+    [[nodiscard]] bool isInAction() const;
     [[nodiscard]] bool isTriggerRespawn() const;
     [[nodiscard]] bool isCannonStart() const;
     [[nodiscard]] bool isInCannon() const;
@@ -203,6 +205,7 @@ private:
     /// @name bitfield1
     /// The bitfield at offset 0x8.
     /// @{
+    bool m_bInAction;
     bool m_bTriggerRespawn;
     bool m_bCannonStart;
     bool m_bInCannon;
