@@ -1,5 +1,6 @@
 #include "KartSub.hh"
 
+#include "game/kart/KartAction.hh"
 #include "game/kart/KartBody.hh"
 #include "game/kart/KartCollide.hh"
 #include "game/kart/KartMove.hh"
@@ -23,11 +24,13 @@ KartSub::~KartSub() {
     delete m_collide;
     delete m_state;
     delete m_move;
+    delete m_action;
 }
 
 /// @addr{0x80595D48}
 void KartSub::createSubsystems(bool isBike) {
     m_move = isBike ? new KartMoveBike : new KartMove;
+    m_action = new KartAction;
     m_move->createSubsystems();
     m_state = new KartState;
     m_collide = new KartCollide;
@@ -39,6 +42,7 @@ void KartSub::copyPointers(KartAccessor &pointers) {
     pointers.collide = m_collide;
     pointers.state = m_state;
     pointers.move = m_move;
+    pointers.action = m_action;
 }
 
 /// @addr{0x80595F78}
@@ -47,6 +51,7 @@ void KartSub::init() {
     body()->reset();
     m_state->init();
     move()->setTurnParams();
+    action()->init();
     m_collide->init();
 }
 
@@ -118,6 +123,7 @@ void KartSub::calcPass0() {
 
     state()->calcInput();
     move()->calc();
+    action()->calc();
 
     if (state()->isSkipWheelCalc()) {
         for (size_t tireIdx = 0; tireIdx < tireCount(); ++tireIdx) {
