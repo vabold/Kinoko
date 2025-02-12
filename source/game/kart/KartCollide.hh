@@ -106,6 +106,9 @@ public:
     void applyBodyCollision(CollisionData &collisionData, const EGG::Vector3f &movement,
             const EGG::Vector3f &posRel, s32 count);
 
+    void startFloorMomentRate();
+    void calcFloorMomentRate();
+
     /// Object collision functions
     Action handleReactNone(size_t idx);
     Action handleReactWallAllSpeed(size_t idx);
@@ -134,6 +137,7 @@ public:
 
     /// @beginGetters
     [[nodiscard]] f32 boundingRadius() const;
+    [[nodiscard]] f32 floorMomentRate() const;
     [[nodiscard]] const SurfaceFlags &surfaceFlags() const;
     [[nodiscard]] const EGG::Vector3f &tangentOff() const;
     [[nodiscard]] const EGG::Vector3f &movement() const;
@@ -148,6 +152,7 @@ private:
     typedef Action (KartCollide::*ObjectCollisionHandler)(size_t idx);
 
     f32 m_boundingRadius;
+    f32 m_floorMomentRate;
     EGG::Vector3f m_totalReactionWallNrm;
     SurfaceFlags m_surfaceFlags;
     EGG::Vector3f m_tangentOff;

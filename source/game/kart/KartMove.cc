@@ -63,7 +63,8 @@ void KartMove::calcTurn() {
     m_realTurn = 0.0f;
     m_rawTurn = 0.0f;
 
-    if (state()->isCannonStart() || state()->isInCannon() || state()->isOverZipper()) {
+    if (state()->isInAction() || state()->isCannonStart() || state()->isInCannon() ||
+            state()->isOverZipper()) {
         return;
     }
 
@@ -363,7 +364,7 @@ void KartMove::calcRespawnBoost() {
     if (state()->isAfterRespawn()) {
         if (state()->isTouchingGround()) {
             if (m_respawnPreLandTimer > 0) {
-                if (!state()->isBeforeRespawn()) {
+                if (!state()->isBeforeRespawn() && !state()->isInAction()) {
                     activateBoost(KartBoost::Type::AllMt, RESPAWN_BOOST_DURATION);
                     m_respawnTimer = RESPAWN_BOOST_DURATION;
                 }
@@ -384,7 +385,7 @@ void KartMove::calcRespawnBoost() {
     } else {
         if (m_respawnPostLandTimer > 0) {
             if (state()->isAccelerateStart()) {
-                if (!state()->isBeforeRespawn()) {
+                if (!state()->isBeforeRespawn() && !state()->isInAction()) {
                     activateBoost(KartBoost::Type::AllMt, RESPAWN_BOOST_DURATION);
                     m_respawnTimer = RESPAWN_BOOST_DURATION;
                 }
@@ -946,7 +947,7 @@ void KartMove::calcManualDrift() {
 
     // TODO: Is this backwards/inverted?
     if (((!state()->isHop() || m_hopFrame < 3) && !state()->isSlipdriftCharge()) ||
-            !state()->isTouchingGround()) {
+            (state()->isInAction() || !state()->isTouchingGround())) {
         if (canHop()) {
             hop();
             isHopping = true;
@@ -971,7 +972,7 @@ void KartMove::calcManualDrift() {
         }
     } else {
         if (!state()->isOverZipper() &&
-                (!state()->isDriftInput() || !state()->isAccelerate() ||
+                (!state()->isDriftInput() || !state()->isAccelerate() || state()->isInAction() ||
                         state()->isRejectRoadTrigger() || state()->isWall3Collision() ||
                         state()->isWallCollision() || !canStartDrift())) {
             if (canStartDrift()) {
@@ -1046,7 +1047,7 @@ void KartMove::releaseMt() {
         mtLength *= SMT_LENGTH_FACTOR;
     }
 
-    if (!state()->isBeforeRespawn()) {
+    if (!state()->isBeforeRespawn() && !state()->isInAction()) {
         activateBoost(KartBoost::Type::AllMt, mtLength);
     }
 
@@ -1156,7 +1157,7 @@ void KartMove::calcRotation() {
         }
     }
 
-    if (!state()->isZipperTrick()) {
+    if (!state()->isInAction() && !state()->isZipperTrick()) {
         if (!state()->isTouchingGround()) {
             if (state()->isRampBoost() && m_jump->isBoostRampEnabled()) {
                 turn = 0.0f;
@@ -1189,9 +1190,10 @@ void KartMove::calcVehicleSpeed() {
     const auto *raceMgr = System::RaceManager::Instance();
     if (raceMgr->isStageReached(System::RaceManager::Stage::Race)) {
         f32 speedFix = dynamics()->speedFix();
-        if ((state()->isWallCollisionStart() || state()->wallBonkTimer() == 0 ||
-                    EGG::Mathf::abs(speedFix) >= 3.0f) &&
-                !state()->isDriftManual()) {
+        if (state()->isInAction() ||
+                ((state()->isWallCollisionStart() || state()->wallBonkTimer() == 0 ||
+                         EGG::Mathf::abs(speedFix) >= 3.0f) &&
+                        !state()->isDriftManual())) {
             m_speed += speedFix;
         }
     }
@@ -1476,9 +1478,11 @@ void KartMove::calcWallCollisionStart(f32 param_2) {
     }
 
     m_outsideDriftAngle = 0.0f;
-    m_dir = bodyFront();
-    m_vel1Dir = m_dir;
-    m_landingDir = m_dir;
+    if (!state()->isInAction()) {
+        m_dir = bodyFront();
+        m_vel1Dir = m_dir;
+        m_landingDir = m_dir;
+    }
 
     if (!state()->isOverZipper() && param_2 < 0.9f) {
         f32 speedDiff = m_lastSpeed - m_speed;
@@ -1566,7 +1570,7 @@ void KartMove::calcDive() {
     m_divingRot *= 0.96f;
 
     if (state()->isTouchingGround() || state()->isCannonStart() || state()->isInCannon() ||
-            state()->isOverZipper()) {
+            state()->isInAction() || state()->isOverZipper()) {
         return;
     }
 
@@ -1671,7 +1675,7 @@ f32 KartMove::calcSlerpRate(f32 scale, const EGG::Quatf &from, const EGG::Quatf 
 void KartMove::calcVehicleRotation(f32 turn) {
     f32 tiltMagnitude = 0.0f;
 
-    if (!state()->isSoftWallDrift() && state()->isAnyWheelCollision()) {
+    if (!state()->isInAction() && !state()->isSoftWallDrift() && state()->isAnyWheelCollision()) {
         EGG::Vector3f front = componentZAxis();
         front = front.perpInPlane(m_up, true);
         EGG::Vector3f frontSpeed = velocity().rej(front).perpInPlane(m_up, false);
@@ -1813,6 +1817,10 @@ bool KartMove::canHop() const {
         return false;
     }
 
+    if (state()->isInAction()) {
+        return false;
+    }
+
     return true;
 }
 
@@ -1865,7 +1873,7 @@ void KartMove::tryStartJumpPad() {
             {56.0f, 56.0f, 50.0f},
     }};
 
-    if (state()->isBeforeRespawn() || state()->isHalfPipeRamp()) {
+    if (state()->isBeforeRespawn() || state()->isInAction() || state()->isHalfPipeRamp()) {
         return;
     }
 
@@ -1928,7 +1936,7 @@ void KartMove::applyStartBoost(s16 frames) {
 void KartMove::activateMushroom() {
     constexpr s16 MUSHROOM_DURATION = 90;
 
-    if (state()->isBeforeRespawn()) {
+    if (state()->isBeforeRespawn() || state()->isInAction()) {
         return;
     }
 
@@ -1944,7 +1952,7 @@ void KartMove::activateZipperBoost() {
     constexpr s16 BASE_DURATION = 50;
     constexpr s16 TRICK_DURATION = 100;
 
-    if (state()->isBeforeRespawn()) {
+    if (state()->isBeforeRespawn() || state()->isInAction()) {
         return;
     }
 
@@ -2031,7 +2039,7 @@ void KartMove::landTrick() {
             95,
     }};
 
-    if (state()->isBeforeRespawn()) {
+    if (state()->isBeforeRespawn() || state()->isInAction()) {
         return;
     }
 
@@ -2369,10 +2377,11 @@ void KartMoveBike::calcVehicleRotation(f32 turn) {
     f32 leanRotMin = -m_leanRotCap;
     f32 leanRotMax = m_leanRotCap;
 
-    if (state()->isBeforeRespawn() || state()->isWheelie() || state()->isOverZipper() ||
-            state()->isRejectRoadTrigger() || state()->isAirtimeOver20() ||
-            state()->isSoftWallDrift() || state()->isSomethingWallCollision() || state()->isHWG() ||
-            state()->isCannonStart() || state()->isInCannon()) {
+    if (state()->isBeforeRespawn() || state()->isInAction() || state()->isWheelie() ||
+            state()->isOverZipper() || state()->isRejectRoadTrigger() ||
+            state()->isAirtimeOver20() || state()->isSoftWallDrift() ||
+            state()->isSomethingWallCollision() || state()->isHWG() || state()->isCannonStart() ||
+            state()->isInCannon()) {
         m_leanRot *= m_turningParams->leanRotDecayFactor;
     } else if (!state()->isDrifting()) {
         if (stickX <= 0.2f) {
@@ -2636,7 +2645,8 @@ void KartMoveBike::tryStartWheelie() {
     if (!state()->isWheelie()) {
         if (dpadUp && state()->isTouchingGround()) {
             if (state()->isDriftManual() || state()->isWallCollision() ||
-                    state()->isWall3Collision() || state()->isHop() || state()->isDriftAuto()) {
+                    state()->isWall3Collision() || state()->isHop() || state()->isDriftAuto() ||
+                    state()->isInAction()) {
                 return;
             }
 

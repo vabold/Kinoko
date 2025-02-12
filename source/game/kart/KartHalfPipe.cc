@@ -264,7 +264,7 @@ void KartHalfPipe::end(bool boost) {
     }
 
     if (state()->isZipperTrick()) {
-        physics()->composeDecayingRot(m_stuntRot);
+        physics()->composeDecayingStuntRot(m_stuntRot);
     }
 
     if (state()->isOverZipper()) {

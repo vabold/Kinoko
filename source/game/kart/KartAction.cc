@@ -1,8 +1,10 @@
 #include "KartAction.hh"
 
-#include "game/kart/KartDynamics.hh"
 #include "game/kart/KartMove.hh"
+#include "game/kart/KartPhysics.hh"
 #include "game/kart/KartState.hh"
+
+#include <egg/math/Math.hh>
 
 namespace Kart {
 
@@ -178,6 +180,11 @@ void KartAction::setRotation(size_t idx) {
 
 void KartAction::startStub() {}
 
+/// @addr{0x80567FB4}
+void KartAction::startAction1() {
+    startRotation(2);
+}
+
 /* ================================ *
  *     CALC FUNCTIONS
  * ================================ */
@@ -186,11 +193,28 @@ bool KartAction::calcStub() {
     return false;
 }
 
+/// @addr{0x80568204}
+bool KartAction::calcAction1() {
+    calcUp();
+    bool finished = calcRotation();
+
+    m_rotation.setAxisRotation(DEG2RAD * (m_currentAngle * m_rotationDirection), m_up);
+    physics()->composeExtraRot(m_rotation);
+    return finished;
+}
+
 /* ================================ *
  *     END FUNCTIONS
  * ================================ */
 
 void KartAction::endStub(bool /*arg*/) {}
+
+/// @addr{0x8056837C}
+void KartAction::endAction1(bool arg) {
+    if (arg) {
+        physics()->composeDecayingExtraRot(m_rotation);
+    }
+}
 
 /* ================================ *
  *     ACTION TABLES
@@ -227,7 +251,7 @@ const std::array<KartAction::RotationParams, 5> KartAction::s_rotationParams = {
 
 const std::array<KartAction::StartActionFunc, KartAction::MAX_ACTION> KartAction::s_onStart = {{
         &KartAction::startStub,
-        &KartAction::startStub,
+        &KartAction::startAction1,
         &KartAction::startStub,
         &KartAction::startStub,
         &KartAction::startStub,
@@ -248,7 +272,7 @@ const std::array<KartAction::StartActionFunc, KartAction::MAX_ACTION> KartAction
 
 const std::array<KartAction::CalcActionFunc, KartAction::MAX_ACTION> KartAction::s_onCalc = {{
         &KartAction::calcStub,
-        &KartAction::calcStub,
+        &KartAction::calcAction1,
         &KartAction::calcStub,
         &KartAction::calcStub,
         &KartAction::calcStub,
@@ -269,7 +293,7 @@ const std::array<KartAction::CalcActionFunc, KartAction::MAX_ACTION> KartAction:
 
 const std::array<KartAction::EndActionFunc, KartAction::MAX_ACTION> KartAction::s_onEnd = {{
         &KartAction::endStub,
-        &KartAction::endStub,
+        &KartAction::endAction1,
         &KartAction::endStub,
         &KartAction::endStub,
         &KartAction::endStub,

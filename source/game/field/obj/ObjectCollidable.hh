@@ -27,7 +27,7 @@ public:
     virtual void processKartReactions(Kart::KartObject *kartObj, Kart::Reaction &reactionOnKart,
             Kart::Reaction &reactionOnObj);
     virtual Kart::Reaction onCollision(Kart::KartObject *kartObj, Kart::Reaction reactionOnKart,
-            Kart::Reaction reactionOnObj, const EGG::Vector3f &hitDepth);
+            Kart::Reaction reactionOnObj, EGG::Vector3f &hitDepth);
     virtual void onWallCollision(Kart::KartObject *, const EGG::Vector3f &) {}
     virtual void onObjectCollision(Kart::KartObject *) {}
     virtual bool checkCollision(ObjectCollisionBase *lhs, EGG::Vector3f &dist);

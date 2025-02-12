@@ -39,8 +39,7 @@ u32 ObjectDokan::loadFlags() const {
 
 /// @addr{0x80778C0C}
 Kart::Reaction ObjectDokan::onCollision(Kart::KartObject * /*kartObj*/,
-        Kart::Reaction reactionOnKart, Kart::Reaction reactionOnObj,
-        const EGG::Vector3f & /*hitDepth*/) {
+        Kart::Reaction reactionOnKart, Kart::Reaction reactionOnObj, EGG::Vector3f & /*hitDepth*/) {
     constexpr f32 INITIAL_VELOCITY = 100.0f;
 
     if (reactionOnObj == Kart::Reaction::UNK_3 || reactionOnObj == Kart::Reaction::UNK_5) {

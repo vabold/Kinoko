@@ -26,6 +26,10 @@ void KartReject::reset() {
 
 /// @addr{0x80585AF8}
 void KartReject::calcRejectRoad() {
+    if (state()->isInAction()) {
+        return;
+    }
+
     if (state()->isRejectRoadTrigger()) {
         EGG::Vector3f down = -EGG::Vector3f::ey;
         down = down.perpInPlane(move()->up(), true);
