@@ -1,6 +1,7 @@
 #include "ObjectTwistedWay.hh"
 
 #include "game/field/CollisionDirector.hh"
+
 #include "game/system/RaceManager.hh"
 
 #include <egg/math/Math.hh>
@@ -13,13 +14,13 @@ ObjectTwistedWay::ObjectTwistedWay(const System::MapdataGeoObj &params) : Object
 /// @addr{0x80814918}
 ObjectTwistedWay::~ObjectTwistedWay() = default;
 
-/// @addr{0x80813c40}
+/// @addr{0x80813C40}
 void ObjectTwistedWay::init() {}
 
-/// @addr{0x80813cfc}
+/// @addr{0x80813CFC}
 void ObjectTwistedWay::calc() {
     if (!System::RaceManager::Instance()->isStageReached(System::RaceManager::Stage::Race)) {
-        m_ac++;
+        ++m_preRaceTimer;
     }
 }
 
@@ -28,142 +29,142 @@ u32 ObjectTwistedWay::loadFlags() const {
     return 1;
 }
 
-/// @addr{0x8081490c}
+/// @addr{0x8081490C}
 void ObjectTwistedWay::createCollision() {}
 
 /// @addr{0x80814908}
 void ObjectTwistedWay::calcCollisionTransform() {}
 
-/// @addr{0x808148f8}
+/// @addr{0x808148F8}
 f32 ObjectTwistedWay::getCollisionRadius() const {
     return COLLISION_RADIUS;
 }
 
-/// @addr{0x808148b8}
+/// @addr{0x808148B8}
 bool ObjectTwistedWay::checkPointPartial(const EGG::Vector3f &v0, const EGG::Vector3f &v1,
         KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut) {
     return checkSpherePartialImpl(0.0f, v0, v1, flags, pInfo, pFlagsOut, 0);
 }
 
-/// @addr{0x808148c8}
+/// @addr{0x808148C8}
 bool ObjectTwistedWay::checkPointPartialPush(const EGG::Vector3f &v0, const EGG::Vector3f &v1,
         KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut) {
     return checkSpherePartialPushImpl(0.0f, v0, v1, flags, pInfo, pFlagsOut, 0);
 }
 
-/// @addr{0x808148d8}
+/// @addr{0x808148D8}
 bool ObjectTwistedWay::checkPointFull(const EGG::Vector3f &v0, const EGG::Vector3f &v1,
         KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut) {
     return checkSphereFullImpl(0.0f, v0, v1, flags, pInfo, pFlagsOut, 0);
 }
 
-/// @addr{0x808148e8}
+/// @addr{0x808148E8}
 bool ObjectTwistedWay::checkPointFullPush(const EGG::Vector3f &v0, const EGG::Vector3f &v1,
         KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut) {
     return checkSphereFullPushImpl(0.0f, v0, v1, flags, pInfo, pFlagsOut, 0);
 }
 
-/// @addr{0x80814958}
+/// @addr{0x808148A8}
 bool ObjectTwistedWay::checkSpherePartial(f32 radius, const EGG::Vector3f &v0,
         const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut,
         u32 timeOffset) {
     return checkSpherePartialImpl(radius, v0, v1, flags, pInfo, pFlagsOut, timeOffset);
 }
 
-/// @addr{0x80814ea8}
+/// @addr{0x808148AC}
 bool ObjectTwistedWay::checkSpherePartialPush(f32 radius, const EGG::Vector3f &v0,
         const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut,
         u32 timeOffset) {
     return checkSpherePartialPushImpl(radius, v0, v1, flags, pInfo, pFlagsOut, timeOffset);
 }
 
-/// @addr{0x80815444}
+/// @addr{0x808148B0}
 bool ObjectTwistedWay::checkSphereFull(f32 radius, const EGG::Vector3f &v0, const EGG::Vector3f &v1,
         KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut, u32 timeOffset) {
     return checkSphereFullImpl(radius, v0, v1, flags, pInfo, pFlagsOut, timeOffset);
 }
 
-/// @addr{0x80815d64}
+/// @addr{0x808148B4}
 bool ObjectTwistedWay::checkSphereFullPush(f32 radius, const EGG::Vector3f &v0,
         const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut,
         u32 timeOffset) {
     return checkSphereFullPushImpl(radius, v0, v1, flags, pInfo, pFlagsOut, timeOffset);
 }
 
-/// @addr{0x807FB54C}
+/// @addr{0x80814868}
 bool ObjectTwistedWay::checkPointCachedPartial(const EGG::Vector3f &v0, const EGG::Vector3f &v1,
         KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut) {
     return checkSpherePartialImpl(0.0f, v0, v1, flags, pInfo, pFlagsOut, 0);
 }
 
-/// @addr{0x807FB55C}
+/// @addr{0x80814878}
 bool ObjectTwistedWay::checkPointCachedPartialPush(const EGG::Vector3f &v0, const EGG::Vector3f &v1,
         KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut) {
     return checkSpherePartialPushImpl(0.0f, v0, v1, flags, pInfo, pFlagsOut, 0);
 }
 
-/// @addr{0x807FB56C}
+/// @addr{0x80814888}
 bool ObjectTwistedWay::checkPointCachedFull(const EGG::Vector3f &v0, const EGG::Vector3f &v1,
         KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut) {
     return checkSphereFullImpl(0.0f, v0, v1, flags, pInfo, pFlagsOut, 0);
 }
 
-/// @addr{0x807FB57C}
+/// @addr{0x80814898}
 bool ObjectTwistedWay::checkPointCachedFullPush(const EGG::Vector3f &v0, const EGG::Vector3f &v1,
         KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut) {
     return checkSphereFullPushImpl(0.0f, v0, v1, flags, pInfo, pFlagsOut, 0);
 }
 
-/// @addr{0x807FB53C}
+/// @addr{0x80814858}
 bool ObjectTwistedWay::checkSphereCachedPartial(f32 radius, const EGG::Vector3f &v0,
         const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut,
         u32 timeOffset) {
     return checkSpherePartialImpl(radius, v0, v1, flags, pInfo, pFlagsOut, timeOffset);
 }
 
-/// @addr{0x807FB540}
+/// @addr{0x8081485C}
 bool ObjectTwistedWay::checkSphereCachedPartialPush(f32 radius, const EGG::Vector3f &v0,
         const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut,
         u32 timeOffset) {
     return checkSpherePartialPushImpl(radius, v0, v1, flags, pInfo, pFlagsOut, timeOffset);
 }
 
-/// @addr{0x807FB544}
+/// @addr{0x80814860}
 bool ObjectTwistedWay::checkSphereCachedFull(f32 radius, const EGG::Vector3f &v0,
         const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut,
         u32 timeOffset) {
     return checkSphereFullImpl(radius, v0, v1, flags, pInfo, pFlagsOut, timeOffset);
 }
 
-/// @addr{0x807FB548}
+/// @addr{0x80814864}
 bool ObjectTwistedWay::checkSphereCachedFullPush(f32 radius, const EGG::Vector3f &v0,
         const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut,
         u32 timeOffset) {
     return checkSphereFullPushImpl(radius, v0, v1, flags, pInfo, pFlagsOut, timeOffset);
 }
 
-/// @addr{0x807FB6D0}
+/// @addr{0x80814958}
 bool ObjectTwistedWay::checkSpherePartialImpl(f32 radius, const EGG::Vector3f &v0,
         const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut,
         u32 timeOffset) {
     return checkSphereImpl(radius, v0, v1, flags, pInfo, pFlagsOut, timeOffset, false, false);
 }
 
-/// @addr{0x807FB8B0}
+/// @addr{0x80814EA8}
 bool ObjectTwistedWay::checkSpherePartialPushImpl(f32 radius, const EGG::Vector3f &v0,
         const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut,
         u32 timeOffset) {
     return checkSphereImpl(radius, v0, v1, flags, pInfo, pFlagsOut, timeOffset, false, true);
 }
 
-/// @addr{0x807FBAC0}
+/// @addr{0x80815444}
 bool ObjectTwistedWay::checkSphereFullImpl(f32 radius, const EGG::Vector3f &v0,
         const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut,
         u32 timeOffset) {
     return checkSphereImpl(radius, v0, v1, flags, pInfo, pFlagsOut, timeOffset, true, false);
 }
 
-/// @addr{0x807FBE6C}
+/// @addr{0x80815D64}
 bool ObjectTwistedWay::checkSphereFullPushImpl(f32 radius, const EGG::Vector3f &v0,
         const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut,
         u32 timeOffset) {
@@ -178,10 +179,10 @@ bool ObjectTwistedWay::checkSphereFullPushImpl(f32 radius, const EGG::Vector3f &
 f32 ObjectTwistedWay::calcWallHeightOffset(f32 zAxisProgress, s32 phase) {
     f32 heightOffset =
             EGG::Mathf::SinFIdx((phase * F_PI / PHASE_COUNT + WAVINESS * zAxisProgress) * RAD2FIDX);
-    heightOffset = AMPLITUDE *
-            ((zAxisProgress + 1.0f) *
-                    ((zAxisProgress + 1.0f) *
-                            ((zAxisProgress - 1.0f) * ((zAxisProgress - 1.0f) * heightOffset))));
+    
+    f32 low = zAxisProgress - 1.0f;
+    f32 high = zAxisProgress + 1.0f;
+    heightOffset = AMPLITUDE * (high * (high * (low * (low * heightOffset))));
 
     return heightOffset;
 }
@@ -215,35 +216,35 @@ bool ObjectTwistedWay::checkSphereWallCollision(f32 heightOffset, f32 radius, s3
         }
 
         return true;
-    } else {
-        heightOffset = calcWallHeightOffset(0.0f, phase);
-
-        EGG::Vector3f wnrm;
-
-        if (!FUN_80814270(radius, heightOffset, relativePos, bbox, wnrm, dist)) {
-            return false;
-        }
-
-        if (pInfo) {
-            pInfo->bbox.min = pInfo->bbox.min.minimize(bbox);
-            pInfo->bbox.max = pInfo->bbox.max.maximize(bbox);
-
-            if (full) {
-                pInfo->updateWall(dist, wnrm);
-            }
-        }
-
-        if (pFlagsOut) {
-            if (push) {
-                CollisionDirector::Instance()->pushCollisionEntry(dist, pFlagsOut,
-                        KCL_TYPE_BIT(COL_TYPE_WALL), 0xc);
-            } else {
-                *pFlagsOut |= KCL_TYPE_BIT(COL_TYPE_WALL);
-            }
-        }
-
-        return true;
     }
+
+    heightOffset = calcWallHeightOffset(0.0f, phase);
+
+    EGG::Vector3f wnrm;
+
+    if (!checkSpherePoleCollision(radius, heightOffset, relativePos, bbox, wnrm, dist)) {
+        return false;
+    }
+
+    if (pInfo) {
+        pInfo->bbox.min = pInfo->bbox.min.minimize(bbox);
+        pInfo->bbox.max = pInfo->bbox.max.maximize(bbox);
+
+        if (full) {
+            pInfo->updateWall(dist, wnrm);
+        }
+    }
+
+    if (pFlagsOut) {
+        if (push) {
+            CollisionDirector::Instance()->pushCollisionEntry(dist, pFlagsOut,
+                    KCL_TYPE_BIT(COL_TYPE_WALL), 0xc);
+        } else {
+            *pFlagsOut |= KCL_TYPE_BIT(COL_TYPE_WALL);
+        }
+    }
+
+    return true;
 }
 
 bool ObjectTwistedWay::checkSphereRoadCollision(f32 heightOffset, f32 radius,
@@ -301,18 +302,16 @@ bool ObjectTwistedWay::checkSphereImpl(f32 radius, const EGG::Vector3f &v0,
         return false;
     }
 
-    u32 frameCount;
-    if (!System::RaceManager::Instance()->isStageReached(System::RaceManager::Stage::Race)) {
-        frameCount = m_ac;
-    } else {
-        frameCount = System::RaceManager::Instance()->timer();
-    }
+    auto *raceMgr = System::RaceManager::Instance();
+    bool isInRace = raceMgr->isStageReached(System::RaceManager::Stage::Race);
 
+    u32 frameCount = isInRace ? System::RaceManager::Instance()->timer() : m_preRaceTimer;
     frameCount += timeOffset;
+
     s32 phase = (frameCount % PHASE_COUNT) * 2;
 
     f32 heightOffset = 0.0f;
-    if (System::RaceManager::Instance()->isStageReached(System::RaceManager::Stage::Race)) {
+    if (isInRace) {
         f32 zAxisProgress = -relativePos.z / COLLISION_RADIUS;
         heightOffset = calcWallHeightOffset(zAxisProgress, phase);
     }
@@ -331,22 +330,30 @@ bool ObjectTwistedWay::checkSphereImpl(f32 radius, const EGG::Vector3f &v0,
     return ret;
 }
 
+/// @brief 
+/// @param radius 
+/// @param heightOffset 
+/// @param relativePos 
+/// @param v0 
+/// @param wnrm 
+/// @param dist 
+/// @return 
 /// @addr{0x80814270}
-bool ObjectTwistedWay::FUN_80814270(f32 radius, f32 heightOffset, const EGG::Vector3f &relativePos,
-        EGG::Vector3f &v0, EGG::Vector3f &fnrm, f32 &dist) {
+bool ObjectTwistedWay::checkSpherePoleCollision(f32 radius, f32 heightOffset, const EGG::Vector3f &relativePos,
+        EGG::Vector3f &v0, EGG::Vector3f &wnrm, f32 &dist) {
     auto [sinfidx, cosfidx] = EGG::Mathf::SinCosFIdx(heightOffset * RAD2FIDX);
     EGG::Vector3f b8Y = EGG::Vector3f(0.0f, _B8, 0.0f);
-    fnrm = relativePos - b8Y;
-    fnrm *= fnrm.dot(EGG::Vector3f(sinfidx, cosfidx, 0.0f));
-    fnrm = relativePos - (fnrm + b8Y);
+    wnrm = relativePos - b8Y;
+    wnrm *= wnrm.dot(EGG::Vector3f(sinfidx, cosfidx, 0.0f));
+    wnrm = relativePos - (wnrm + b8Y);
 
-    f32 dVar2 = radius + 227.0f - fnrm.length();
+    f32 dVar2 = radius + POLE_RADIUS - wnrm.length();
     if (dVar2 <= 0.0f) {
         return false;
     }
 
-    (void)fnrm.normalise();
-    v0 = fnrm * dVar2;
+    wnrm.normalise();
+    v0 = wnrm * dVar2;
     dist = dVar2;
 
     return true;

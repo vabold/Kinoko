@@ -75,7 +75,7 @@ private:
             KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut, u32 timeOffset,
             bool full, bool push);
 
-    [[nodiscard]] bool FUN_80814270(f32 radius, f32 param_3, const EGG::Vector3f &relativePos,
+    [[nodiscard]] bool checkSpherePoleCollision(f32 radius, f32 param_3, const EGG::Vector3f &relativePos,
             EGG::Vector3f &v0, EGG::Vector3f &fnrm, f32 &dist);
 
     [[nodiscard]] f32 calcWallHeightOffset(f32 zAxisProgress, s32 phase);
@@ -88,7 +88,7 @@ private:
             const EGG::Vector3f &relativePos, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut,
             bool full, bool push);
 
-    f32 m_ac = 1000.0f;
+    u32 m_preRaceTimer = 1000;
 
     static constexpr f32 AMPLITUDE = 0.2f;
     static constexpr f32 WAVINESS = 4.0f;
@@ -98,6 +98,7 @@ private:
     static constexpr f32 _B8 = 2000.0f;
     static constexpr f32 COLLISION_RADIUS = 7500.0f;
     static constexpr f32 TRICKABLE_RADIUS_FACTOR = 0.6f;
+    static constexpr f32 POLE_RADIUS = 227.0f;
 };
 
 } // namespace Field
