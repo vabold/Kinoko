@@ -20,6 +20,7 @@ KartAction::~KartAction() = default;
 /// @addr{0x8056739C}
 void KartAction::init() {
     m_currentAction = Action::None;
+    m_flags.makeAllZero();
 }
 
 /// @addr{0x805673B0}
@@ -64,6 +65,7 @@ bool KartAction::start(Action action) {
     m_onEnd = s_onEnd[actionIdx];
     state()->setInAction(true);
     m_frame = 0;
+    m_flags.makeAllZero();
     m_up = move()->up();
     move()->clear();
 
@@ -87,10 +89,15 @@ void KartAction::startRotation(size_t idx) {
 
     m_rotationDirection = dir.cross(bodyFront()).dot(bodyUp()) > 0.0f ? 1.0f : -1.0f;
     setRotation(idx);
+    m_flags.setBit(eFlags::Rotating);
 }
 
 void KartAction::setHitDepth(const EGG::Vector3f &hitDepth) {
     m_hitDepth = hitDepth;
+}
+
+const KartAction::Flags &KartAction::flags() const {
+    return m_flags;
 }
 
 /// @addr{0x80567B98}
@@ -100,6 +107,7 @@ void KartAction::end() {
 
     m_currentAction = Action::None;
     m_priority = 0;
+    m_flags.makeAllZero();
 }
 
 /// @addr{0x80567A54}

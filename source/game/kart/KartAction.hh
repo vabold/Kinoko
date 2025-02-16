@@ -24,6 +24,11 @@ enum class Action {
 
 class KartAction : KartObjectProxy {
 public:
+    enum class eFlags {
+        Rotating = 3,
+    };
+    typedef EGG::TBitFlag<u32, eFlags> Flags;
+
     KartAction();
     ~KartAction();
 
@@ -34,6 +39,8 @@ public:
     void startRotation(size_t idx);
 
     void setHitDepth(const EGG::Vector3f &hitDepth);
+
+    const Flags &flags() const;
 
 private:
     /// @brief Parameters specific to an action ID.
@@ -99,6 +106,7 @@ private:
     EGG::Quatf m_rotation;
     const ActionParams *m_actionParams;
     u32 m_frame;
+    Flags m_flags;
     f32 m_currentAngle;
     f32 m_angleIncrement;
     f32 m_multiplier;

@@ -963,11 +963,13 @@ void KartMove::calcManualDrift() {
         if (!isHopping && state()->isTouchingGround()) {
             resetDriftManual();
 
-            f32 driftAngleDecr = param()->stats().driftOutsideDecrement;
-            if (m_outsideDriftAngle > 0.0f) {
-                m_outsideDriftAngle = std::max(0.0f, m_outsideDriftAngle - driftAngleDecr);
-            } else if (m_outsideDriftAngle < 0.0f) {
-                m_outsideDriftAngle = std::min(0.0f, m_outsideDriftAngle + driftAngleDecr);
+            if (!action()->flags().onBit(KartAction::eFlags::Rotating) || m_speed <= 20.0f) {
+                f32 driftAngleDecr = param()->stats().driftOutsideDecrement;
+                if (m_outsideDriftAngle > 0.0f) {
+                    m_outsideDriftAngle = std::max(0.0f, m_outsideDriftAngle - driftAngleDecr);
+                } else if (m_outsideDriftAngle < 0.0f) {
+                    m_outsideDriftAngle = std::min(0.0f, m_outsideDriftAngle + driftAngleDecr);
+                }
             }
         }
     } else {
