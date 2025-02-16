@@ -142,13 +142,22 @@ bool RawGhostFile::decompress(const u8 *rkg) {
 
 /// @addr{0x8051C120}
 /// @todo Check for valid controller type?
-/// @todo Check lap times sum to race time?
 bool RawGhostFile::isValid(const u8 *rkg) const {
     if (strncmp(reinterpret_cast<const char *>(rkg), "RKGD", 4) != 0) {
         PANIC("RKG header malformed");
         return false;
     }
+    
+    u32 finalTime = RawGhostFile::readRKGTime(reinterpret_cast<const u8 *>(rkg + 0x4));
+    u32 lapSum = 0;
+    for (u8 i = 0; i < 8; i++) {
+        lapSum += RawGhostFile::readRKGTime(reinterpret_cast<const u8 *>(rkg + 0x11 + (i*3)));
+    }
 
+    if (finalTime != lapSum) {
+        return false;
+    }
+    
     u32 ids = parse<u32>(*reinterpret_cast<const u32 *>(rkg + 0x8));
     Vehicle vehicle = static_cast<Vehicle>(ids >> 0x1a);
     Character character = static_cast<Character>((ids >> 0x14) & 0x3f);
@@ -179,6 +188,13 @@ bool RawGhostFile::isValid(const u8 *rkg) const {
     }
 
     return true;
+}
+
+u32 RawGhostFile::readRKGTime(const u8 *timeBytes) const {
+    u32 minutes = *timeBytes; // The minutes are doubled here
+    u32 seconds = (*reinterpret_cast<const u8 *>(timeBytes + 1)) >> 2;
+    u32 milliseconds = *reinterpret_cast<const u16 *>(timeBytes + 1) & 0b0000001111111111;
+    return (minutes * 30000) + (seconds * 1000) + milliseconds;
 }
 
 const u8 *RawGhostFile::buffer() const {
