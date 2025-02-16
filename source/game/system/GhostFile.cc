@@ -193,7 +193,7 @@ bool RawGhostFile::isValid(const u8 *rkg) const {
 u32 RawGhostFile::readRKGTime(const u8 *timeBytes) const {
     u32 minutes = *timeBytes; // The minutes are doubled here
     u32 seconds = (*reinterpret_cast<const u8 *>(timeBytes + 1)) >> 2;
-    u32 milliseconds = *reinterpret_cast<const u16 *>(timeBytes + 1) & 0b0000001111111111;
+    u32 milliseconds = parse<u16>(*reinterpret_cast<const u16 *>(timeBytes + 1)) & 0b1111111111;
     return (minutes * 30000) + (seconds * 1000) + milliseconds;
 }
 
