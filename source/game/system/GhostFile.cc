@@ -154,7 +154,7 @@ bool RawGhostFile::isValid(const u8 *rkg) const {
     }
     
     Timer finalTime = Timer(parse<u32>(*reinterpret_cast<const u32*>(rkg+0x4)));
-    Timer lapSum = Timer(0);
+    Timer lapSum = Timer();
     for (u8 i = 0; i < laps; i++) {
         Timer lapTime = Timer(parse<u32>(*reinterpret_cast<const u32*>(rkg + 0x11 + (i*3))));
         lapSum += lapTime;
