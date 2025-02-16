@@ -11,7 +11,8 @@ namespace Kart {
 /// @addr{0x805672CC}
 KartAction::KartAction()
     : m_currentAction(Action::None), m_hitDepth(EGG::Vector3f::zero), m_onStart(nullptr),
-      m_onCalc(nullptr), m_onEnd(nullptr), m_actionParams(nullptr), m_rotationParams(nullptr) {}
+      m_onCalc(nullptr), m_onEnd(nullptr), m_actionParams(nullptr), m_rotationParams(nullptr),
+      m_priority(0) {}
 
 /// @addr{0x8056A1A8}
 KartAction::~KartAction() = default;
@@ -50,13 +51,14 @@ bool KartAction::start(Action action) {
     }
 
     size_t actionIdx = static_cast<size_t>(action);
-    if (m_currentAction != Action::None && m_priority > s_actionParams[actionIdx].priority) {
+    if (m_currentAction != Action::None && s_actionParams[actionIdx].priority <= m_priority) {
         return false;
     }
 
     calcEndAction(true);
     m_currentAction = action;
     m_actionParams = &s_actionParams[actionIdx];
+    m_priority = m_actionParams->priority;
     m_onStart = s_onStart[actionIdx];
     m_onCalc = s_onCalc[actionIdx];
     m_onEnd = s_onEnd[actionIdx];
