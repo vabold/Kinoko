@@ -162,14 +162,19 @@ bool RawGhostFile::isValid(const u8 *rkg) const {
     Vehicle vehicle = static_cast<Vehicle>(ids >> 0x1a);
     Character character = static_cast<Character>((ids >> 0x14) & 0x3f);
     u8 year = (ids >> 0xd) & 0x7f;
-    u8 day = (ids >> 0x4) & 0x1f;
     u8 month = (ids >> 0x9) & 0xf;
+    u8 day = (ids >> 0x4) & 0x1f;
+    u8 controllerType = ids & 0b1111;
 
     if (vehicle >= Vehicle::Max || character >= Character::Max) {
         return false;
     }
 
     if (year >= 100 || day >= 32 || month > 12) {
+        return false;
+    }
+    
+    if (controllerType > 3) {
         return false;
     }
 
