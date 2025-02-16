@@ -82,6 +82,32 @@ struct Timer {
 
         return Timer(newMin, newSec, newMs);
     }
+    
+    Timer operator+=(Timer &rhs) const {
+        s16 addMin = 0;
+        s16 addSec = 0;
+
+        s16 newMs = rhs.mil + mil;
+        if (newMs > 999) {
+            addSec = 1;
+            newMs -= 1000;
+        }
+
+        s16 newSec = rhs.sec + sec + addSec;
+        if (newSec > 59) {
+            addMin = 1;
+            newSec -= 60;
+        }
+
+        s16 newMin = rhs.min + min + addMin;
+        if (newMin > 999) {
+            newMin = 999;
+            newSec = 59;
+            newMs = 999;
+        }
+
+        return Timer(newMin, newSec, newMs);
+    }
 
     u16 min;
     u8 sec;

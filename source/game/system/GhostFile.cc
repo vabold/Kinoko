@@ -141,17 +141,23 @@ bool RawGhostFile::decompress(const u8 *rkg) {
 }
 
 /// @addr{0x8051C120}
-/// @todo Check for valid controller type?
 bool RawGhostFile::isValid(const u8 *rkg) const {
     if (strncmp(reinterpret_cast<const char *>(rkg), "RKGD", 4) != 0) {
         PANIC("RKG header malformed");
         return false;
     }
     
-    u32 finalTime = RawGhostFile::readRKGTime(reinterpret_cast<const u8 *>(rkg + 0x4));
-    u32 lapSum = 0;
-    for (u8 i = 0; i < 8; i++) {
-        lapSum += RawGhostFile::readRKGTime(reinterpret_cast<const u8 *>(rkg + 0x11 + (i*3)));
+    u8 laps = *(rkg+0x10);
+    
+    if (laps > 5) {
+        return false;
+    }
+    
+    Timer finalTime = Timer(parse<u32>(*reinterpret_cast<const u32*>(rkg+0x4)));
+    Timer lapSum = Timer(0);
+    for (u8 i = 0; i < laps; i++) {
+        Timer lapTime = Timer(parse<u32>(*reinterpret_cast<const u32*>(rkg + 0x11 + (i*3))));
+        lapSum += lapTime;
     }
 
     if (finalTime != lapSum) {
@@ -164,7 +170,7 @@ bool RawGhostFile::isValid(const u8 *rkg) const {
     u8 year = (ids >> 0xd) & 0x7f;
     u8 month = (ids >> 0x9) & 0xf;
     u8 day = (ids >> 0x4) & 0x1f;
-    u8 controllerType = ids & 0b1111;
+    u8 controllerType = ids & 0xf;
 
     if (vehicle >= Vehicle::Max || character >= Character::Max) {
         return false;
@@ -193,13 +199,6 @@ bool RawGhostFile::isValid(const u8 *rkg) const {
     }
 
     return true;
-}
-
-u32 RawGhostFile::readRKGTime(const u8 *timeBytes) const {
-    u32 minutes = *timeBytes; // The minutes are doubled here
-    u32 seconds = (*reinterpret_cast<const u8 *>(timeBytes + 1)) >> 2;
-    u32 milliseconds = parse<u16>(*reinterpret_cast<const u16 *>(timeBytes + 1)) & 0b1111111111;
-    return (minutes * 30000) + (seconds * 1000) + milliseconds;
 }
 
 const u8 *RawGhostFile::buffer() const {

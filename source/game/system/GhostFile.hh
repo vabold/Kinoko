@@ -70,7 +70,6 @@ public:
 
 private:
     [[nodiscard]] bool compressed(const u8 *rkg) const;
-    [[nodiscard]] u32 readRKGTime(const u8 *rkg) const;
 
     u8 m_buffer[RKG_UNCOMPRESSED_FILE_SIZE];
 };
