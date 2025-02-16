@@ -18,6 +18,7 @@ namespace EGG::Mathf {
 
 [[nodiscard]] f32 SinFIdx(f32 fidx);
 [[nodiscard]] f32 CosFIdx(f32 fidx);
+[[nodiscard]] std::pair<f32, f32> SinCosFIdx(f32 fidx);
 [[nodiscard]] f32 AtanFIdx_(f32 fidx);
 [[nodiscard]] f32 Atan2FIdx(f32 x, f32 y);
 [[nodiscard]] f32 sin(f32 x);

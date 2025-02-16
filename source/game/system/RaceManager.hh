@@ -83,6 +83,7 @@ public:
     [[nodiscard]] const Player &player() const;
     [[nodiscard]] const TimerManager &timerManager() const;
     [[nodiscard]] Stage stage() const;
+    [[nodiscard]] u32 timer() const;
     /// @endGetters
 
     static RaceManager *CreateInstance();

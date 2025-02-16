@@ -18,17 +18,17 @@ Test Case                                                 | Frames      |     | 
 [`dc-rta-1-28-321`](https://youtu.be/Rs5AK3iHVno)         | 1058 / 5705 | ❌ | KMP
 [`kc-rta-1-55-250`](https://youtu.be/Elb5K7woV20)         | 1520 / 7320 | ❌ | Moving water
 [`kc-ng-rta-2-17-176`](https://youtu.be/UgSQj6RpDYM)      | 1424 / 8634 | ❌ | Moving water
-[`mt-rta-1-33-239`](https://youtu.be/FX89203m2iE)         | 1971 / 6000 | ❌ | KMP
-[`mt-ng-rta-2-13-126`](https://youtu.be/igcHE0-OV0g)      | 2647 / 8391 | ❌ | KMP
+[`mt-rta-1-33-239`](https://youtu.be/FX89203m2iE)         | 6000 / 6000 | ✔️ |
+[`mt-ng-rta-2-13-126`](https://youtu.be/igcHE0-OV0g)      | 8391 / 8391 | ✔️ |
 [`gv-rta-0-15-425`](https://youtu.be/bB0oUzdCHTA)         | 487 / 1336  | ❌ | KMP?
 [`gv-ng-rta-1-32-914`](https://youtu.be/J55Fo2ZMz9M)      | 570 / 5981  | ❌ | KMP?
 [`gv-nosc-rta-1-50-927`](https://youtu.be/R7oK3U7iZrk)    | 567 / 7060  | ❌ | KMP?
 [`ddr-rta-1-46-400`](https://youtu.be/nVcVbd4n3yM)        | 3392 / 6789 | ❌ | KMP
 [`mh-rta-1-42-872`](https://youtu.be/CellUlOYgnc)         | 6578 / 6578 | ✔️ |
-[`bc-rta-2-08-697`](https://youtu.be/1DEReKemoeI)         | 808 / 8126  | ❌ | KMP
-[`bc-ng-rta-2-20-001`](https://youtu.be/028nClzy7B4)      | 808 / 8803  | ❌ | KMP
-[`rr-rta-1-24-751`](https://youtu.be/dgNMHyFda14)         | 3194 / 5491 | ❌ | KMP
-[`rr-ng-rta-2-24-281`](https://youtu.be/O-BtWWsq82o)      | 1207 / 9060 | ❌ | KMP
+[`bc-rta-2-08-697`](https://youtu.be/1DEReKemoeI)         | 1717 / 8126 | ❌ | Zipper
+[`bc-ng-rta-2-20-001`](https://youtu.be/028nClzy7B4)      | 1707 / 8803 | ❌ | Zipper
+[`rr-rta-1-24-751`](https://youtu.be/dgNMHyFda14)         | 5491 / 5491 | ✔️ |
+[`rr-ng-rta-2-24-281`](https://youtu.be/O-BtWWsq82o)      | 1305 / 9060 | ❌ | Kart boost-related?
 [`rpb-rta-0-59-978`](https://youtu.be/Z-lVl-7B-So)        | 1078 / 4007 | ❌ | Moving water
 [`rpb-ng-rta-1-12-656`](https://youtu.be/LujU0kJx-hU)     | 2491 / 4767 | ❌ | Moving water
 [`ryf-rta-0-58-648`](https://youtu.be/3IKzbmawUbk)        | 583 / 3927  | ❌ | Water
@@ -53,7 +53,7 @@ Test Case                                                 | Frames      |     | 
 [`rmc-ng-rta-1-30-272`](https://youtu.be/HSatgyRolcI)     | 5822 / 5822 | ✔️ |
 [`rmc3-rta-1-17-843`](https://youtu.be/6H6UnSDPPdI)       | 5077 / 5077 | ✔️ |
 [`rpg-rta-1-58-890`](https://youtu.be/vu0vpmTmcbg)        | 7538 / 7538 | ✔️ |
-[`rdkm-rta-1-58-133`](https://youtu.be/s3uqTaxr_4A)       | 2544 / 7492 | ❌ | KMP bridge object
-[`rdkm-ng-rta-2-04-775`](https://youtu.be/jk5NIcHWQ-Y)    | 2717 / 7890 | ❌ | KMP bridge object
+[`rdkm-rta-1-58-133`](https://youtu.be/s3uqTaxr_4A)       | 7492 / 7492 | ✔️ |
+[`rdkm-ng-rta-2-04-775`](https://youtu.be/jk5NIcHWQ-Y)    | 7890 / 7890 | ✔️ |
 [`rbc-rta-2-17-997`](https://youtu.be/6Wri7nBtZMk)        | 8683 / 8683 | ✔️ |
 [`rbc-ng-rta-2-30-459`](https://youtu.be/twZes-RI6Sc)     | 9430 / 9430 | ✔️ |

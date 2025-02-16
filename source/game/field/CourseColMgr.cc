@@ -369,21 +369,21 @@ bool CourseColMgr::doCheckMaskOnlyPush(KColData *data, CollisionCheckFunc collis
     return hasCol;
 }
 
-void CourseColMgr::CollisionInfo::updateFloor(f32 dist, const EGG::Vector3f &fnrm) {
+void CollisionInfo::updateFloor(f32 dist, const EGG::Vector3f &fnrm) {
     if (dist > floorDist) {
         floorDist = dist;
         floorNrm = fnrm;
     }
 }
 
-void CourseColMgr::CollisionInfo::updateWall(f32 dist, const EGG::Vector3f &fnrm) {
+void CollisionInfo::updateWall(f32 dist, const EGG::Vector3f &fnrm) {
     if (dist > wallDist) {
         wallDist = dist;
         wallNrm = fnrm;
     }
 }
 
-void CourseColMgr::CollisionInfo::update(f32 now_dist, const EGG::Vector3f &offset,
+void CollisionInfo::update(f32 now_dist, const EGG::Vector3f &offset,
         const EGG::Vector3f &fnrm, u32 kclAttributeTypeBit) {
     bbox.min = bbox.min.minimize(offset);
     bbox.max = bbox.max.maximize(offset);
