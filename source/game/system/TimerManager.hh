@@ -83,7 +83,7 @@ struct Timer {
         return Timer(newMin, newSec, newMs);
     }
     
-    Timer operator+=(Timer &rhs) const {
+    Timer operator+(const Timer &rhs) const {
         s16 addMin = 0;
         s16 addSec = 0;
 
@@ -108,7 +108,11 @@ struct Timer {
 
         return Timer(newMin, newSec, newMs);
     }
-
+    
+    Timer &operator+=(const Timer &rhs) {
+        return *this = *this + rhs;
+    }
+    
     u16 min;
     u8 sec;
     u16 mil; ///< @todo We will likely want to expand this to a float for more precise finish times.
