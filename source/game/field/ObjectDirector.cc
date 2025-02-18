@@ -193,6 +193,8 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
         return new ObjectOilSFC(params);
     case ObjectId::ParasolR:
         return new ObjectParasolR(params);
+    case ObjectId::PuchiPakkun:
+        return new ObjectPuchiPakkun(params);
     // Non-specified objects are stock collidable objects by default
     // However, we need to specify an impl, so we don't use default
     case ObjectId::DummyPole:
