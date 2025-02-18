@@ -17,10 +17,9 @@ public:
 private:
     f32 m_radius;
     EGG::Vector3f m_pos;
-
-    f32 m_worldRadius;
+    f32 m_scaledRadius;
+    EGG::Vector3f m_scaledPos;
     EGG::Vector3f m_worldPos;
-
     EGG::Vector3f m_center;
 };
 

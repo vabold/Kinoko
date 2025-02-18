@@ -43,6 +43,7 @@ public:
     [[nodiscard]] Vector3f multVector33(const Vector3f &vec) const;
     void inverseTo33(Matrix34f &out) const;
     [[nodiscard]] Matrix34f transpose() const;
+    [[nodiscard]] Vector3f translation() const;
 
     static const Matrix34f ident;
     static const Matrix34f zero;

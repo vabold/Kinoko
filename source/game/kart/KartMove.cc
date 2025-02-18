@@ -1409,8 +1409,9 @@ void KartMove::calcAcceleration() {
     m_vel1Dir = local_90.multVector33(m_vel1Dir);
 
     const auto *raceMgr = System::RaceManager::Instance();
-    if (!state()->isDisableBackwardsAccel() && state()->isTouchingGround() &&
-            !state()->isAccelerate() && raceMgr->isStageReached(System::RaceManager::Stage::Race)) {
+    if (!state()->isInAction() && !state()->isDisableBackwardsAccel() &&
+            state()->isTouchingGround() && !state()->isAccelerate() &&
+            raceMgr->isStageReached(System::RaceManager::Stage::Race)) {
         calcDeceleration();
     }
 

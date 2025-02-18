@@ -301,6 +301,10 @@ Matrix34f Matrix34f::transpose() const {
     return ret;
 }
 
+Vector3f Matrix34f::translation() const {
+    return Vector3f(mtx[0][3], mtx[1][3], mtx[2][3]);
+}
+
 /// @addr{0x80384370}
 const Matrix34f Matrix34f::ident(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
         0.0f);

@@ -37,6 +37,19 @@ u32 ObjectDokan::loadFlags() const {
     return 1;
 }
 
+/// @addr{0x80778D50}
+void ObjectDokan::calcCollisionTransform() {
+    if (m_id == ObjectId::DokanSFC) {
+        ObjectCollidable::calcCollisionTransform();
+    } else {
+        // rMR piranhas
+        calcTransform();
+        EGG::Matrix34f mat = m_transform;
+        mat.setBase(3, mat.translation() + EGG::Vector3f::ey * 300.0f);
+        m_collision->transform(mat, m_scale, getCollisionTranslation());
+    }
+}
+
 /// @addr{0x80778C0C}
 Kart::Reaction ObjectDokan::onCollision(Kart::KartObject * /*kartObj*/,
         Kart::Reaction reactionOnKart, Kart::Reaction reactionOnObj, EGG::Vector3f & /*hitDepth*/) {

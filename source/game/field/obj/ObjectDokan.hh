@@ -12,6 +12,7 @@ public:
     void init() override;
     void calc() override;
     [[nodiscard]] u32 loadFlags() const override;
+    void calcCollisionTransform() override;
 
     Kart::Reaction onCollision(Kart::KartObject *kartObj, Kart::Reaction reactionOnKart,
             Kart::Reaction reactionOnObj, EGG::Vector3f &hitDepth) override;
