@@ -872,7 +872,7 @@ void KartMove::calcAutoDrift() {
         return;
     }
 
-    if (canStartDrift() && !state()->isOverZipper() && !state()->isHalfPipeRamp() &&
+    if (canStartDrift() && !state()->isOverZipper() && !state()->isRejectRoadTrigger() &&
             !state()->isWheelie() && EGG::Mathf::abs(state()->stickX()) > 0.85f) {
         m_autoDriftStartFrameCounter =
                 std::min<s16>(AUTO_DRIFT_START_DELAY, m_autoDriftStartFrameCounter + 1);
