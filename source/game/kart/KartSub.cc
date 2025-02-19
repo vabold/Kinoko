@@ -347,7 +347,7 @@ void KartSub::tryEndHWG() {
                 state()->isAllWheelsCollision()) {
             state()->setSoftWallDrift(false);
         } else if (state()->isTouchingGround()) {
-            if (componentXAxis().dot(EGG::Vector3f::ey) > 0.8f) {
+            if (EGG::Mathf::abs(componentXAxis().dot(EGG::Vector3f::ey)) > 0.8f) {
                 state()->setSoftWallDrift(false);
             }
         }
