@@ -6,7 +6,7 @@ namespace System {
 
 /// @brief A simple struct to represent a lap or race finish time.
 struct Timer {
-    Timer(); ///< @unused Creates a zero'd timer.
+    Timer(); /// Creates a zero'd timer.
     Timer(u16 min_, u8 sec_, u16 mil_);
     Timer(u32 data);
     ~Timer();
@@ -82,7 +82,37 @@ struct Timer {
 
         return Timer(newMin, newSec, newMs);
     }
+    
+    Timer operator+(const Timer &rhs) const {
+        s16 addMin = 0;
+        s16 addSec = 0;
 
+        s16 newMs = rhs.mil + mil;
+        if (newMs > 999) {
+            addSec = 1;
+            newMs -= 1000;
+        }
+
+        s16 newSec = rhs.sec + sec + addSec;
+        if (newSec > 59) {
+            addMin = 1;
+            newSec -= 60;
+        }
+
+        s16 newMin = rhs.min + min + addMin;
+        if (newMin > 999) {
+            newMin = 999;
+            newSec = 59;
+            newMs = 999;
+        }
+
+        return Timer(newMin, newSec, newMs);
+    }
+    
+    Timer &operator+=(const Timer &rhs) {
+        return *this = *this + rhs;
+    }
+    
     u16 min;
     u8 sec;
     u16 mil; ///< @todo We will likely want to expand this to a float for more precise finish times.
