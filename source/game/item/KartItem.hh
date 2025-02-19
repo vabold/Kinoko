@@ -28,6 +28,7 @@ public:
 
 private:
     enum class eFlags {
+        Lockout = 10,
         ItemButtonHold = 12,
         ItemButtonActivation = 14,
     };
