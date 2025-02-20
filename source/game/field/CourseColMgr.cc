@@ -148,6 +148,10 @@ CourseColMgr::NoBounceWallColInfo *CourseColMgr::noBounceWallInfo() const {
     return m_noBounceWallInfo;
 }
 
+KColData *CourseColMgr::data() const {
+    return m_data;
+}
+
 /// @brief Loads a particular section of a .szs file
 void *CourseColMgr::LoadFile(const char *filename) {
     auto *resMgr = System::ResourceManager::Instance();

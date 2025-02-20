@@ -71,6 +71,7 @@ public:
 
     /// @beginGetters
     [[nodiscard]] NoBounceWallColInfo *noBounceWallInfo() const;
+    [[nodiscard]] KColData *data() const;
     /// @endGetters
 
     static void *LoadFile(const char *filename);
