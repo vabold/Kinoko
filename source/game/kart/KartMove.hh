@@ -22,6 +22,14 @@ public:
         JumpPad = 2,
     };
 
+    enum class DriftState {
+        NotDrifting = 0,
+        ChargingMt = 1,
+        ChargedMt = 2,
+        ChargingSmt = 2,
+        ChargedSmt = 3,
+    };
+
     typedef EGG::TBitFlag<u32, ePadType> PadType;
 
     KartMove();
@@ -153,6 +161,10 @@ public:
     [[nodiscard]] KartJump *jump() const;
     [[nodiscard]] KartHalfPipe *halfPipe() const;
     [[nodiscard]] KartBurnout &burnout();
+    [[nodiscard]] DriftState driftState() const;
+    [[nodiscard]] u16 mtCharge() const;
+    [[nodiscard]] f32 kclSpeedFactor() const;
+    [[nodiscard]] f32 kclRotFactor() const;
     /// @endGetters
 
 protected:
@@ -166,14 +178,6 @@ protected:
         WallBounce = 8,       ///< Set when our speed loss from wall collision is > 30.0f.
     };
     typedef EGG::TBitFlag<u16, eFlags> Flags;
-
-    enum class DriftState {
-        NotDrifting = 0,
-        ChargingMt = 1,
-        ChargedMt = 2,
-        ChargingSmt = 2,
-        ChargedSmt = 3,
-    };
 
     /// @brief The direction the player is currently driving in.
     enum class DrivingDirection {

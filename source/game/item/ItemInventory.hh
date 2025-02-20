@@ -18,6 +18,7 @@ public:
 
     /// @beginGetters
     [[nodiscard]] ItemId id() const;
+    [[nodiscard]] int currentCount() const;
     /// @endGetters
 
 private:

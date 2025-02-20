@@ -94,6 +94,7 @@ private:
     EGG::Vector3f m_cachedPos;
     f32 m_cachedRadius;
 
+public:
     /// @brief Optimizes for time by avoiding unnecessary byteswapping.
     /// The Wii doesn't have this problem because big endian is always assumed.
     std::span<KCollisionPrism> m_prisms;

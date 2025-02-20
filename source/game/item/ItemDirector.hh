@@ -18,6 +18,7 @@ public:
     static ItemDirector *CreateInstance();
     static void DestroyInstance();
     [[nodiscard]] static ItemDirector *Instance();
+    [[nodiscard]] ItemInventory &itemInventory(s16 idx);
 
 private:
     ItemDirector();
