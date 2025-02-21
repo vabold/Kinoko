@@ -66,12 +66,4 @@ void TimerManager::calc() {
     ++m_frameCounter;
 }
 
-const Timer &TimerManager::currentTimer() const {
-    return m_currentTimer;
-}
-
-void TimerManager::setStarted(bool isSet) {
-    m_started = isSet;
-}
-
 } // namespace System

@@ -10,7 +10,7 @@ public:
     Matrix34f();
     Matrix34f(f32 _e00, f32 _e01, f32 _e02, f32 _e03, f32 _e10, f32 _e11, f32 _e12, f32 _e13,
             f32 _e20, f32 _e21, f32 _e22, f32 _e23);
-    ~Matrix34f();
+    ~Matrix34f() = default;
 
     bool operator==(const Matrix34f &rhs) const {
         return mtx == rhs.mtx;
@@ -31,7 +31,12 @@ public:
     void makeRT(const Vector3f &r, const Vector3f &t);
     void makeR(const Vector3f &r);
     void makeS(const Vector3f &s);
-    void makeZero();
+
+    /// @brief Zeroes every element of the matrix.
+    void makeZero() {
+        *this = Matrix34f::zero;
+    }
+
     void makeOrthonormalBasis(const Vector3f &v0, const Vector3f &v1);
     void setAxisRotation(f32 angle, const Vector3f &axis);
     void mulRow33(size_t rowIdx, const Vector3f &row);
@@ -43,7 +48,10 @@ public:
     [[nodiscard]] Vector3f multVector33(const Vector3f &vec) const;
     void inverseTo33(Matrix34f &out) const;
     [[nodiscard]] Matrix34f transpose() const;
-    [[nodiscard]] Vector3f translation() const;
+
+    [[nodiscard]] Vector3f translation() const {
+        return Vector3f(mtx[0][3], mtx[1][3], mtx[2][3]);
+    }
 
     static const Matrix34f ident;
     static const Matrix34f zero;

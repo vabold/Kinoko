@@ -91,10 +91,6 @@ size_t ObjectDirector::checkKartObjectCollision(Kart::KartObject *kartObj,
     return count;
 }
 
-const ObjectFlowTable &ObjectDirector::flowTable() const {
-    return m_flowTable;
-}
-
 const ObjectBase *ObjectDirector::collidingObject(size_t idx) const {
     ASSERT(idx < m_collidingObjects.size());
 
@@ -129,10 +125,6 @@ void ObjectDirector::DestroyInstance() {
     auto *instance = s_instance;
     s_instance = nullptr;
     delete instance;
-}
-
-ObjectDirector *ObjectDirector::Instance() {
-    return s_instance;
 }
 
 /// @addr{0x8082A38C}

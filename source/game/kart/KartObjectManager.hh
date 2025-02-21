@@ -13,12 +13,19 @@ public:
     void calc();
 
     /// @beginGetters
-    [[nodiscard]] KartObject *object(size_t i) const;
+    /// @addr{0x80590100}
+    [[nodiscard]] KartObject *object(size_t i) const {
+        ASSERT(i < m_count);
+        return m_objects[i];
+    }
     /// @endGetters
 
     static KartObjectManager *CreateInstance();
     static void DestroyInstance();
-    [[nodiscard]] static KartObjectManager *Instance();
+
+    [[nodiscard]] static KartObjectManager *Instance() {
+        return s_instance;
+    }
 
 private:
     KartObjectManager();

@@ -76,10 +76,6 @@ void RaceConfig::DestroyInstance() {
     delete instance;
 }
 
-RaceConfig *RaceConfig::Instance() {
-    return s_instance;
-}
-
 /// @addr{0x8053015C}
 RaceConfig::RaceConfig() = default;
 

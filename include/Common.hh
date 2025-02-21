@@ -10,6 +10,8 @@
 #include <array>
 #include <cassert>
 #include <limits>
+#include <type_traits>
+#include <utility>
 
 typedef int8_t s8;
 typedef int16_t s16;
@@ -357,6 +359,24 @@ static constexpr const char *VEHICLE_NAMES[36] = {
 STATIC_ASSERT(std::numeric_limits<f32>::epsilon() == 1.0f / 8388608.0f);
 STATIC_ASSERT(
         std::endian::native == std::endian::big || std::endian::native == std::endian::little);
+
+/// @brief Helper template which uses function overloading and implict up-casting to determine
+/// whether or not a class is derived from a templated base class (i.e. MapdataPointInfoAccessor
+/// derives from MapdataAccessorBase). See: https://en.cppreference.com/w/cpp/language/sfinae
+template <template <typename...> class Base, typename Derived>
+struct is_derived_from_template {
+private:
+    template <typename... Ts>
+    static std::true_type test(const Base<Ts...> *);
+
+    static std::false_type test(...);
+
+public:
+    static constexpr bool value = decltype(test(std::declval<Derived *>()))::value;
+};
+
+template <template <typename...> class Base, typename Derived>
+inline constexpr bool is_derived_from_template_v = is_derived_from_template<Base, Derived>::value;
 
 template <typename T>
 concept IntegralType = std::is_integral_v<T>;

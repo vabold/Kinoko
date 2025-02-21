@@ -74,8 +74,4 @@ void KartItem::useMushroom() {
     m_inventory.useItem(1);
 }
 
-ItemInventory &KartItem::inventory() {
-    return m_inventory;
-}
-
 } // namespace Item

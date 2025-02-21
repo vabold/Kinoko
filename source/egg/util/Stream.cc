@@ -16,14 +16,6 @@ void Stream::jump(u32 index) {
     ASSERT(!bad());
 }
 
-void Stream::setEndian(std::endian endian) {
-    m_endian = endian;
-}
-
-u32 Stream::index() const {
-    return m_index;
-}
-
 u8 Stream::read_u8() {
     return read<u8>();
 }
@@ -70,8 +62,6 @@ RamStream::RamStream(const void *buffer, u32 size) {
     setBufferAndSize(const_cast<void *>(buffer), size);
 }
 
-RamStream::~RamStream() = default;
-
 void RamStream::read(void *output, u32 size) {
     u8 *buffer = reinterpret_cast<u8 *>(output);
     for (size_t i = 0; i < size; ++i) {
@@ -86,18 +76,6 @@ void RamStream::write(void *input, u32 size) {
     }
 }
 
-bool RamStream::eof() const {
-    return m_index == m_size;
-}
-
-bool RamStream::safe(u32 size) const {
-    return m_index + size <= m_size;
-}
-
-bool RamStream::bad() const {
-    return m_index > m_size;
-}
-
 // Expects a null-terminated char array, and moves the index past the null terminator
 std::string RamStream::read_string() {
     std::string ret(reinterpret_cast<char *>(m_buffer + m_index));
@@ -109,14 +87,6 @@ std::string RamStream::read_string() {
 void RamStream::setBufferAndSize(void *buffer, u32 size) {
     m_buffer = reinterpret_cast<u8 *>(buffer);
     m_size = size;
-}
-
-u8 *RamStream::data() {
-    return m_buffer;
-}
-
-u8 *RamStream::dataAtIndex() {
-    return m_buffer + m_index;
 }
 
 /// @brief Splits the current stream into two.

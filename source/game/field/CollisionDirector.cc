@@ -249,10 +249,6 @@ bool CollisionDirector::findClosestCollisionEntry(KCLTypeMask * /*typeMask*/, KC
     return !!m_closestCollisionEntry;
 }
 
-const CollisionDirector::CollisionEntry *CollisionDirector::closestCollisionEntry() const {
-    return m_closestCollisionEntry;
-}
-
 /// @addr{0x8078DFE8}
 CollisionDirector *CollisionDirector::CreateInstance() {
     ASSERT(!s_instance);

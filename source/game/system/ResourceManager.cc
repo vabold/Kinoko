@@ -76,10 +76,6 @@ void ResourceManager::DestroyInstance() {
     delete instance;
 }
 
-ResourceManager *ResourceManager::Instance() {
-    return s_instance;
-}
-
 /// @addr{0x8053FCEC}
 ResourceManager::ResourceManager() {
     m_archives = new MultiDvdArchive *[ARCHIVE_COUNT];

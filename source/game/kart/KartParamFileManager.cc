@@ -118,10 +118,6 @@ void KartParamFileManager::DestroyInstance() {
     delete instance;
 }
 
-KartParamFileManager *KartParamFileManager::Instance() {
-    return s_instance;
-}
-
 KartParamFileManager::KartParamFileManager() {
     init();
 }

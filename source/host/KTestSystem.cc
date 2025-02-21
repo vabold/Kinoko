@@ -175,10 +175,6 @@ void KTestSystem::DestroyInstance() {
     delete instance;
 }
 
-KTestSystem *KTestSystem::Instance() {
-    return static_cast<KTestSystem *>(s_instance);
-}
-
 KTestSystem::KTestSystem() = default;
 
 KTestSystem::~KTestSystem() {

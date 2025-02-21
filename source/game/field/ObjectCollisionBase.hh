@@ -6,7 +6,7 @@ namespace Field {
 
 /// @brief Houses the state of an object in terms of the Gilbert–Johnson–Keerthi (GJK) algorithm.
 struct GJKState {
-    GJKState();
+    GJKState() : m_flags(0), m_idx(0), m_mask(0), m_00c(0), m_scales{{}} {}
 
     u32 m_flags;
     u32 m_idx;

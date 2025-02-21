@@ -150,7 +150,9 @@ public:
     [[nodiscard]] f32 speedRatioCapped() const;
     [[nodiscard]] bool isInRespawn() const;
 
-    [[nodiscard]] static std::list<KartObjectProxy *> &proxyList();
+    [[nodiscard]] static std::list<KartObjectProxy *> &proxyList() {
+        return s_proxyList;
+    }
     /// @endGetters
 
 protected:

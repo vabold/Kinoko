@@ -4,8 +4,6 @@
 
 namespace EGG {
 
-Vector2f::~Vector2f() = default;
-
 f32 Vector2f::cross(const Vector2f &rhs) const {
     return x * rhs.y - y * rhs.x;
 }

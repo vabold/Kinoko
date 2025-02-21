@@ -72,11 +72,6 @@ void ExpHeap::destroy() {
     }
 }
 
-/// @addr{0x80226EFC}
-Heap::Kind ExpHeap::getHeapKind() const {
-    return Heap::Kind::Expanded;
-}
-
 /// @addr{0x80226C04}
 void *ExpHeap::alloc(size_t size, s32 align) {
     if (tstDisableAllocation()) {

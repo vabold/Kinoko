@@ -24,24 +24,67 @@ public:
     void updateCollision(const EGG::Vector3f &bottom, const EGG::Vector3f &topmostPos);
 
     /// @beginSetters
-    void setSuspTravel(f32 suspTravel);
-    void setPos(const EGG::Vector3f &pos);
-    void setLastPos(const EGG::Vector3f &pos);
-    void setLastPosDiff(const EGG::Vector3f &pos);
-    void setWheelEdgePos(const EGG::Vector3f &pos);
-    void setColVel(const EGG::Vector3f &vec);
+    void setSuspTravel(f32 suspTravel) {
+        m_suspTravel = suspTravel;
+    }
+
+    void setPos(const EGG::Vector3f &pos) {
+        m_pos = pos;
+    }
+
+    void setLastPos(const EGG::Vector3f &pos) {
+        m_lastPos = pos;
+    }
+
+    void setLastPosDiff(const EGG::Vector3f &pos) {
+        m_lastPosDiff = pos;
+    }
+
+    void setWheelEdgePos(const EGG::Vector3f &pos) {
+        m_wheelEdgePos = pos;
+    }
+
+    void setColVel(const EGG::Vector3f &vec) {
+        m_colVel = vec;
+    }
     /// @endSetters
 
     /// @beginGetters
-    [[nodiscard]] const EGG::Vector3f &pos() const;
-    [[nodiscard]] const EGG::Vector3f &lastPosDiff() const;
-    [[nodiscard]] f32 suspTravel();
-    [[nodiscard]] const EGG::Vector3f &topmostPos() const;
-    [[nodiscard]] CollisionGroup *hitboxGroup();
-    [[nodiscard]] const CollisionGroup *hitboxGroup() const;
-    [[nodiscard]] const EGG::Vector3f &speed() const;
-    [[nodiscard]] f32 effectiveRadius() const;
-    [[nodiscard]] f32 _74() const;
+    [[nodiscard]] const EGG::Vector3f &pos() const {
+        return m_pos;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &lastPosDiff() const {
+        return m_lastPosDiff;
+    }
+
+    [[nodiscard]] f32 suspTravel() {
+        return m_suspTravel;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &topmostPos() const {
+        return m_topmostPos;
+    }
+
+    [[nodiscard]] CollisionGroup *hitboxGroup() {
+        return m_hitboxGroup;
+    }
+
+    [[nodiscard]] const CollisionGroup *hitboxGroup() const {
+        return m_hitboxGroup;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &speed() const {
+        return m_speed;
+    }
+
+    [[nodiscard]] f32 effectiveRadius() const {
+        return m_effectiveRadius;
+    }
+
+    [[nodiscard]] f32 _74() const {
+        return m_74;
+    }
     /// @endGetters
 
 private:

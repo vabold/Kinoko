@@ -24,17 +24,37 @@ public:
     void read(EGG::Stream &stream);
 
     void findDepth(s8 depth, const MapdataCheckPathAccessor &accessor);
-    [[nodiscard]] bool isPointInPath(u16 checkpointId) const;
+
+    [[nodiscard]] bool isPointInPath(u16 checkpointId) const {
+        return m_start <= checkpointId && checkpointId <= end();
+    }
 
     static constexpr size_t MAX_NEIGHBORS = 6;
 
     /// @beginGetters
-    [[nodiscard]] u8 start() const;
-    [[nodiscard]] u8 end() const;
-    [[nodiscard]] const std::array<u8, MAX_NEIGHBORS> &next() const;
-    [[nodiscard]] const std::array<u8, MAX_NEIGHBORS> &prev() const;
-    [[nodiscard]] s8 depth() const;
-    [[nodiscard]] f32 oneOverCount() const;
+    [[nodiscard]] u8 start() const {
+        return m_start;
+    }
+
+    [[nodiscard]] u8 end() const {
+        return m_start + m_size - 1;
+    }
+
+    [[nodiscard]] const std::array<u8, MAX_NEIGHBORS> &next() const {
+        return m_next;
+    }
+
+    [[nodiscard]] const std::array<u8, MAX_NEIGHBORS> &prev() const {
+        return m_prev;
+    }
+
+    [[nodiscard]] s8 depth() const {
+        return m_depth;
+    }
+
+    [[nodiscard]] f32 oneOverCount() const {
+        return m_oneOverCount;
+    }
     /// @endGetters
 
 private:

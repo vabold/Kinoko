@@ -170,56 +170,6 @@ f32 MapdataCheckPoint::getEntryOffsetExact(const EGG::Vector2f &prevPos,
     return y != 0.0f ? x / y : 0.0f;
 }
 
-bool MapdataCheckPoint::isNormalCheckpoint() const {
-    return static_cast<CheckArea>(m_checkArea) == CheckArea::NormalCheckpoint;
-}
-
-bool MapdataCheckPoint::isFinishLine() const {
-    return static_cast<CheckArea>(m_checkArea) == CheckArea::FinishLine;
-}
-
-void MapdataCheckPoint::setSearched() {
-    m_searched = true;
-}
-
-void MapdataCheckPoint::clearSearched() {
-    m_searched = false;
-}
-
-bool MapdataCheckPoint::searched() const {
-    return m_searched;
-}
-
-s8 MapdataCheckPoint::jugemIndex() const {
-    return m_jugemIndex;
-}
-
-s8 MapdataCheckPoint::checkArea() const {
-    return m_checkArea;
-}
-
-u16 MapdataCheckPoint::nextCount() const {
-    return m_nextCount;
-}
-
-u16 MapdataCheckPoint::prevCount() const {
-    return m_prevCount;
-}
-
-u16 MapdataCheckPoint::id() const {
-    return m_id;
-}
-
-MapdataCheckPoint *MapdataCheckPoint::prevPoint(size_t i) const {
-    ASSERT(i < m_prevPoints.size());
-    return m_prevPoints[i];
-}
-
-MapdataCheckPoint *MapdataCheckPoint::nextPoint(size_t i) const {
-    ASSERT(i < m_nextPoints.size());
-    return m_nextPoints[i].checkpoint;
-}
-
 /// @addr{0x80510C74}
 MapdataCheckPoint::SectorOccupancy MapdataCheckPoint::checkSectorAndDistanceRatio(
         const LinkedCheckpoint &next, const EGG::Vector2f &p0, const EGG::Vector2f &p1,
@@ -268,10 +218,6 @@ MapdataCheckPointAccessor::MapdataCheckPointAccessor(const MapSectionHeader *hea
 }
 
 MapdataCheckPointAccessor::~MapdataCheckPointAccessor() = default;
-
-s8 MapdataCheckPointAccessor::lastKcpType() const {
-    return m_lastKcpType;
-}
 
 /// @addr{0x80515244}
 /// @brief Initializes all checkpoint links, and finds the finish line and last key checkpoint.

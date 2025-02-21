@@ -17,7 +17,9 @@ public:
     /// @endSetters
 
     /// @beginGetters
-    [[nodiscard]] ItemId id() const;
+    [[nodiscard]] ItemId id() const {
+        return m_currentId;
+    }
     /// @endGetters
 
 private:

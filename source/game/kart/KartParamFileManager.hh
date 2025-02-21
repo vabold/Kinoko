@@ -18,7 +18,10 @@ public:
 
     static KartParamFileManager *CreateInstance();
     static void DestroyInstance();
-    [[nodiscard]] static KartParamFileManager *Instance();
+
+    [[nodiscard]] static KartParamFileManager *Instance() {
+        return s_instance;
+    }
 
 private:
     template <typename T>

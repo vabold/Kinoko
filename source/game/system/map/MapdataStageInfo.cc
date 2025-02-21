@@ -11,14 +11,6 @@ MapdataStageInfo::MapdataStageInfo(const SData *data) : m_rawData(data) {
 
 void MapdataStageInfo::read(EGG::Stream & /*stream*/) {}
 
-u8 MapdataStageInfo::polePosition() const {
-    return m_rawData->polePosition;
-}
-
-u8 MapdataStageInfo::translationMode() const {
-    return m_rawData->translationMode;
-}
-
 MapdataStageInfoAccessor::MapdataStageInfoAccessor(const MapSectionHeader *header)
     : MapdataAccessorBase<MapdataStageInfo, MapdataStageInfo::SData>(header) {
     init(reinterpret_cast<const MapdataStageInfo::SData *>(m_sectionHeader + 1),

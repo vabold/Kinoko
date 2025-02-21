@@ -34,18 +34,43 @@ public:
     virtual void outgoing_childCreate() {}
 
     /// @beginSetters
-    void setParent(Scene *parent);
-    void setChild(Scene *child);
-    void setId(int id);
-    void setSceneMgr(SceneManager *sceneMgr);
+    void setParent(Scene *parent) {
+        m_parent = parent;
+    }
+
+    void setChild(Scene *child) {
+        m_child = child;
+    }
+
+    void setId(int id) {
+        m_id = id;
+    }
+
+    void setSceneMgr(SceneManager *sceneMgr) {
+        m_sceneMgr = sceneMgr;
+    }
     /// @endSetters
 
     /// @beginGetters
-    [[nodiscard]] Heap *heap() const;
-    [[nodiscard]] Scene *parent() const;
-    [[nodiscard]] Scene *child() const;
-    [[nodiscard]] int id() const;
-    [[nodiscard]] SceneManager *sceneMgr() const;
+    [[nodiscard]] Heap *heap() const {
+        return m_heap;
+    }
+
+    [[nodiscard]] Scene *parent() const {
+        return m_parent;
+    }
+
+    [[nodiscard]] Scene *child() const {
+        return m_child;
+    }
+
+    [[nodiscard]] int id() const {
+        return m_id;
+    }
+
+    [[nodiscard]] SceneManager *sceneMgr() const {
+        return m_sceneMgr;
+    }
     /// @endGetters
 
 protected:

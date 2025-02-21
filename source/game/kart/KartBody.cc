@@ -42,19 +42,6 @@ void KartBody::calcTargetSinkDepth() {
     m_targetSinkDepth = 3.0f * static_cast<f32>(collisionData().intensity);
 }
 
-/// @addr{0x8056E424}
-void KartBody::setAngle(f32 val) {
-    m_anAngle = val;
-}
-
-KartPhysics *KartBody::physics() const {
-    return m_physics;
-}
-
-f32 KartBody::sinkDepth() const {
-    return m_sinkDepth;
-}
-
 /// @addr{0x8056CCC0}
 KartBodyKart::KartBodyKart(KartPhysics *physics) : KartBody(physics) {}
 

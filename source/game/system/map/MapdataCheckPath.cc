@@ -40,34 +40,6 @@ void MapdataCheckPath::findDepth(s8 depth, const MapdataCheckPathAccessor &acces
     }
 }
 
-bool MapdataCheckPath::isPointInPath(u16 checkpointId) const {
-    return m_start <= checkpointId && checkpointId <= end();
-}
-
-u8 MapdataCheckPath::start() const {
-    return m_start;
-}
-
-u8 MapdataCheckPath::end() const {
-    return m_start + m_size - 1;
-}
-
-const std::array<u8, MapdataCheckPath::MAX_NEIGHBORS> &MapdataCheckPath::next() const {
-    return m_next;
-}
-
-const std::array<u8, MapdataCheckPath::MAX_NEIGHBORS> &MapdataCheckPath::prev() const {
-    return m_prev;
-}
-
-s8 MapdataCheckPath::depth() const {
-    return m_depth;
-}
-
-f32 MapdataCheckPath::oneOverCount() const {
-    return m_oneOverCount;
-}
-
 /// @addr{Inlined in 0x8051377C}
 MapdataCheckPathAccessor::MapdataCheckPathAccessor(const MapSectionHeader *header)
     : MapdataAccessorBase<MapdataCheckPath, MapdataCheckPath::SData>(header) {
