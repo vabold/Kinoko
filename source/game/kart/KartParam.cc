@@ -16,46 +16,6 @@ KartParam::KartParam(Character character, Vehicle vehicle, u8 playerIdx) {
 
 KartParam::~KartParam() = default;
 
-void KartParam::setTireCount(u16 tireCount) {
-    m_tireCount = tireCount;
-}
-
-void KartParam::setSuspCount(u16 suspCount) {
-    m_suspCount = suspCount;
-}
-
-const BSP &KartParam::bsp() const {
-    return m_bsp;
-}
-
-const KartParam::Stats &KartParam::stats() const {
-    return m_stats;
-}
-
-const KartParam::BikeDisp &KartParam::bikeDisp() const {
-    return m_bikeDisp;
-}
-
-u8 KartParam::playerIdx() const {
-    return m_playerIdx;
-}
-
-bool KartParam::isBike() const {
-    return m_isBike;
-}
-
-bool KartParam::isVehicleRelativeBike() const {
-    return stats().body == Stats::Body::Vehicle_Relative_Bike;
-}
-
-u16 KartParam::suspCount() const {
-    return m_suspCount;
-}
-
-u16 KartParam::tireCount() const {
-    return m_tireCount;
-}
-
 /// @addr{0x80591FA4}
 void KartParam::initStats(Character character, Vehicle vehicle) {
     auto *fileManager = KartParamFileManager::Instance();

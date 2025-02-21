@@ -9,7 +9,10 @@ public:
     ObjectParasolR(const System::MapdataGeoObj &params);
     ~ObjectParasolR() override;
 
-    [[nodiscard]] u32 loadFlags() const override;
+    /// @addr{0x80779EF4}
+    [[nodiscard]] u32 loadFlags() const override {
+        return 1;
+    }
 };
 
 } // namespace Field

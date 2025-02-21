@@ -402,10 +402,6 @@ bool KartObjectProxy::isInRespawn() const {
     return move()->respawnTimer() > 0 || move()->respawnPostLandTimer() > 0;
 }
 
-std::list<KartObjectProxy *> &KartObjectProxy::proxyList() {
-    return s_proxyList;
-}
-
 /// @addr{0x805901D0}
 void KartObjectProxy::apply(size_t idx) {
     m_accessor = KartObjectManager::Instance()->object(idx)->accessor();

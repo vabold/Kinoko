@@ -29,12 +29,6 @@ void KartObjectManager::calc() {
     }
 }
 
-/// @addr{0x80590100}
-KartObject *KartObjectManager::object(size_t i) const {
-    ASSERT(i < m_count);
-    return m_objects[i];
-}
-
 /// @addr{0x8058FAA8}
 KartObjectManager *KartObjectManager::CreateInstance() {
     ASSERT(!s_instance);
@@ -48,10 +42,6 @@ void KartObjectManager::DestroyInstance() {
     auto *instance = s_instance;
     s_instance = nullptr;
     delete instance;
-}
-
-KartObjectManager *KartObjectManager::Instance() {
-    return s_instance;
 }
 
 /// @addr{0x8058FB2C}

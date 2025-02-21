@@ -15,14 +15,6 @@ void MapdataJugemPoint::read(EGG::Stream &stream) {
     m_rot.read(stream);
 }
 
-const EGG::Vector3f &MapdataJugemPoint::pos() const {
-    return m_pos;
-}
-
-const EGG::Vector3f &MapdataJugemPoint::rot() const {
-    return m_rot;
-}
-
 /// @addr{Inlined at 0x805130C4}
 MapdataJugemPointAccessor::MapdataJugemPointAccessor(const MapSectionHeader *header)
     : MapdataAccessorBase<MapdataJugemPoint, MapdataJugemPoint::SData>(header) {

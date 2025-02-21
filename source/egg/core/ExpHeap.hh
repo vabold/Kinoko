@@ -31,7 +31,12 @@ public:
 
     ~ExpHeap() override;
     void destroy() override;
-    [[nodiscard]] Kind getHeapKind() const override;
+
+    /// @addr{0x80226EFC}
+    [[nodiscard]] Kind getHeapKind() const override {
+        return Heap::Kind::Expanded;
+    }
+
     [[nodiscard]] void *alloc(size_t size, s32 align) override;
     void free(void *block) override;
     [[nodiscard]] u32 getAllocatableSize(s32 align = 4) const override;

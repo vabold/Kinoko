@@ -16,7 +16,7 @@ struct Vector2f {
     constexpr Vector2f() = default;
 #endif
     constexpr Vector2f(f32 x_, f32 y_) : x(x_), y(y_) {}
-    ~Vector2f();
+    ~Vector2f() = default;
 
     inline void set(f32 val) {
         x = y = val;

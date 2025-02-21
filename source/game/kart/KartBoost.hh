@@ -21,12 +21,24 @@ public:
     [[nodiscard]] bool activate(Type type, s16 frames);
     [[nodiscard]] bool calc();
     void reset();
-    void resetActive();
+
+    /// @addr{0x80588E18}
+    void resetActive() {
+        m_active.fill(false);
+    }
 
     /// @beginGetters
-    [[nodiscard]] f32 multiplier() const;
-    [[nodiscard]] f32 acceleration() const;
-    [[nodiscard]] f32 speedLimit() const;
+    [[nodiscard]] f32 multiplier() const {
+        return m_multiplier;
+    }
+
+    [[nodiscard]] f32 acceleration() const {
+        return m_acceleration;
+    }
+
+    [[nodiscard]] f32 speedLimit() const {
+        return m_speedLimit;
+    }
     /// @endGetters
 
 private:

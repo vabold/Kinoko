@@ -156,12 +156,4 @@ void DvdArchive::unmount() {
     m_state = State::Cleared;
 }
 
-bool DvdArchive::isLoaded() const {
-    return m_state == State::Mounted;
-}
-
-bool DvdArchive::isRipped() const {
-    return m_state == State::Ripped;
-}
-
 } // namespace System

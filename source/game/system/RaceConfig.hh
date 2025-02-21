@@ -65,7 +65,10 @@ public:
 
     static RaceConfig *CreateInstance();
     static void DestroyInstance();
-    [[nodiscard]] static RaceConfig *Instance();
+
+    [[nodiscard]] static RaceConfig *Instance() {
+        return s_instance;
+    }
 
 private:
     RaceConfig();

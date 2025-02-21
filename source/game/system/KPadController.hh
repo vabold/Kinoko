@@ -33,16 +33,55 @@ struct RaceInputState {
     void reset();
 
     [[nodiscard]] bool isValid() const;
-    [[nodiscard]] bool isButtonsValid() const;
-    [[nodiscard]] bool isStickValid(f32 stick) const;
-    [[nodiscard]] bool isTrickValid() const;
 
-    [[nodiscard]] bool accelerate() const;
-    [[nodiscard]] bool brake() const;
-    [[nodiscard]] bool item() const;
-    [[nodiscard]] bool drift() const;
-    [[nodiscard]] bool trickUp() const;
-    [[nodiscard]] bool trickDown() const;
+    /// @brief Checks if there are any invalid buttons.
+    /// @details Validatation with the previous input state doesn't happen because it doesn't exist.
+    /// Therefore, we cannot check here if e.g. the drift button is pressed when it shouldn't be.
+    /// @return If no invalid buttons are present.
+    [[nodiscard]] bool isButtonsValid() const {
+        return !(buttons & ~0xf);
+    }
+
+    [[nodiscard]] bool isStickValid(f32 stick) const;
+
+    /// @brief Checks if the trick input is valid.
+    /// @return If the trick input is valid.
+    [[nodiscard]] bool isTrickValid() const {
+        switch (trick) {
+        case Trick::None:
+        case Trick::Up:
+        case Trick::Down:
+        case Trick::Left:
+        case Trick::Right:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+    [[nodiscard]] bool accelerate() const {
+        return !!(buttons & 0x1);
+    }
+
+    [[nodiscard]] bool brake() const {
+        return !!(buttons & 0x2);
+    }
+
+    [[nodiscard]] bool item() const {
+        return !!(buttons & 0x4);
+    }
+
+    [[nodiscard]] bool drift() const {
+        return !!(buttons & 0x8);
+    }
+
+    [[nodiscard]] bool trickUp() const {
+        return trick == Trick::Up;
+    }
+
+    [[nodiscard]] bool trickDown() const {
+        return trick == Trick::Down;
+    }
 
     u16 buttons;
     u16 buttonsRaw;
@@ -116,17 +155,28 @@ public:
     KPadController();
     virtual ~KPadController() {}
 
-    [[nodiscard]] virtual ControlSource controlSource() const;
+    /// @addr{0x8051CE7C}
+    [[nodiscard]] virtual ControlSource controlSource() const {
+        return ControlSource::Unknown;
+    }
+
     virtual void reset(bool /*driftIsAuto*/) {}
     virtual void calcImpl() {}
 
     void calc();
 
-    [[nodiscard]] const RaceInputState &raceInputState() const;
+    [[nodiscard]] const RaceInputState &raceInputState() const {
+        return m_raceInputState;
+    }
 
-    void setDriftIsAuto(bool driftIsAuto);
+    /// @addr{0x8051F37C}
+    void setDriftIsAuto(bool driftIsAuto) {
+        m_driftIsAuto = driftIsAuto;
+    }
 
-    [[nodiscard]] bool driftIsAuto() const;
+    [[nodiscard]] bool driftIsAuto() const {
+        return m_driftIsAuto;
+    }
 
 protected:
     RaceInputState m_raceInputState; ///< The current inputs from this controller.
@@ -141,14 +191,20 @@ public:
     KPadGhostController();
     ~KPadGhostController() override;
 
-    [[nodiscard]] ControlSource controlSource() const override;
+    /// @addr{0x8052282C}
+    [[nodiscard]] ControlSource controlSource() const override {
+        return ControlSource::Ghost;
+    }
+
     void reset(bool driftIsAuto) override;
 
     void readGhostBuffer(const u8 *buffer, bool driftIsAuto);
 
     void calcImpl() override;
 
-    void setAcceptingInputs(bool set);
+    void setAcceptingInputs(bool set) {
+        m_acceptingInputs = set;
+    }
 
 private:
     const u8 *m_ghostBuffer;

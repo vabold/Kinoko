@@ -18,14 +18,20 @@ public:
     size_t checkKartObjectCollision(Kart::KartObject *kartObj,
             ObjectCollisionConvexHull *convexHull);
 
-    const ObjectFlowTable &flowTable() const;
+    const ObjectFlowTable &flowTable() const {
+        return m_flowTable;
+    }
+
     const ObjectBase *collidingObject(size_t idx) const;
     Kart::Reaction reaction(size_t idx) const;
     const EGG::Vector3f &hitDepth(size_t idx) const;
 
     static ObjectDirector *CreateInstance();
     static void DestroyInstance();
-    static ObjectDirector *Instance();
+
+    static ObjectDirector *Instance() {
+        return s_instance;
+    }
 
 private:
     ObjectDirector();

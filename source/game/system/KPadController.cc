@@ -14,27 +14,9 @@ static constexpr f32 RawStickToState(u8 rawStick) {
 /// @addr{0x8051EBA8}
 KPadController::KPadController() : m_connected(false) {}
 
-/// @addr{0x8051CE7C}
-ControlSource KPadController::controlSource() const {
-    return ControlSource::Unknown;
-}
-
 /// @addr{0x8051ED14}
 void KPadController::calc() {
     calcImpl();
-}
-
-const RaceInputState &KPadController::raceInputState() const {
-    return m_raceInputState;
-}
-
-/// @addr{0x8051F37C}
-void KPadController::setDriftIsAuto(bool driftIsAuto) {
-    m_driftIsAuto = driftIsAuto;
-}
-
-bool KPadController::driftIsAuto() const {
-    return m_driftIsAuto;
 }
 
 /// @addr{0x80520730}
@@ -46,11 +28,6 @@ KPadGhostController::KPadGhostController() : m_acceptingInputs(false) {
 
 /// @addr{0x80520924}
 KPadGhostController::~KPadGhostController() = default;
-
-/// @addr{0x8052282C}
-ControlSource KPadGhostController::controlSource() const {
-    return ControlSource::Ghost;
-}
 
 /// @addr{0x80520998}
 void KPadGhostController::reset(bool driftIsAuto) {
@@ -133,10 +110,6 @@ void KPadGhostController::calcImpl() {
     }
 }
 
-void KPadGhostController::setAcceptingInputs(bool set) {
-    m_acceptingInputs = set;
-}
-
 RaceInputState::RaceInputState() {
     reset();
 }
@@ -170,14 +143,6 @@ bool RaceInputState::isValid() const {
     return true;
 }
 
-/// @brief Checks if there are any invalid buttons.
-/// @details Validatation with the previous input state doesn't happen because it doesn't exist.
-/// Therefore, we cannot check here if e.g. the drift button is pressed when it shouldn't be.
-/// @return If no invalid buttons are present.
-bool RaceInputState::isButtonsValid() const {
-    return !(buttons & ~0xf);
-}
-
 /// @brief Checks if the stick values are within the domain of the physics engine.
 /// @details The set of valid stick values is \f$\{\frac{x-7}{7}|0\leq x\leq 14,\in\mathbb{Z}\}\f$.
 /// It's possible for the stick input to be 8/7 with x = 15, but only with ghost controllers.
@@ -200,45 +165,6 @@ bool RaceInputState::isStickValid(f32 stick) const {
 
     // This is unreachable
     return false;
-}
-
-/// @brief Checks if the trick input is valid.
-/// @return If the trick input is valid.
-bool RaceInputState::isTrickValid() const {
-    switch (trick) {
-    case Trick::None:
-    case Trick::Up:
-    case Trick::Down:
-    case Trick::Left:
-    case Trick::Right:
-        return true;
-    default:
-        return false;
-    }
-}
-
-bool RaceInputState::accelerate() const {
-    return !!(buttons & 0x1);
-}
-
-bool RaceInputState::brake() const {
-    return !!(buttons & 0x2);
-}
-
-bool RaceInputState::item() const {
-    return !!(buttons & 0x4);
-}
-
-bool RaceInputState::drift() const {
-    return !!(buttons & 0x8);
-}
-
-bool RaceInputState::trickUp() const {
-    return trick == Trick::Up;
-}
-
-bool RaceInputState::trickDown() const {
-    return trick == Trick::Down;
 }
 
 KPadGhostButtonsStream::KPadGhostButtonsStream()

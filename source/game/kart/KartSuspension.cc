@@ -25,10 +25,6 @@ void KartSuspension::setInitialState() {
     m_physics->setInitialState();
 }
 
-KartSuspensionPhysics *KartSuspension::suspPhysics() {
-    return m_physics;
-}
-
 KartSuspensionFrontBike::KartSuspensionFrontBike() = default;
 
 /// @addr{0x805993CC}

@@ -32,9 +32,4 @@ const EGG::Vector3f &ObjectCollisionSphere::getSupport(const EGG::Vector3f &v) c
     return m_worldPos.dot(v) > m_center.dot(v) ? m_worldPos : m_center;
 }
 
-/// @addr{0x80836B54}
-f32 ObjectCollisionSphere::getBoundingRadius() const {
-    return m_scaledRadius;
-}
-
 } // namespace Field

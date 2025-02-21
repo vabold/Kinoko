@@ -20,8 +20,13 @@ public:
     void read(EGG::Stream &stream);
 
     /// @beginGetters
-    const EGG::Vector3f &pos() const;
-    const EGG::Vector3f &rot() const;
+    const EGG::Vector3f &pos() const {
+        return m_pos;
+    }
+
+    const EGG::Vector3f &rot() const {
+        return m_rot;
+    }
     /// @endGetters
 
 private:

@@ -19,7 +19,10 @@ public:
 
     static KTestSystem *CreateInstance();
     static void DestroyInstance();
-    static KTestSystem *Instance();
+
+    static KTestSystem *Instance() {
+        return static_cast<KTestSystem *>(s_instance);
+    }
 
 private:
     struct TestCase {

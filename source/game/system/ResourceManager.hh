@@ -25,7 +25,10 @@ public:
 
     static ResourceManager *CreateInstance();
     static void DestroyInstance();
-    [[nodiscard]] static ResourceManager *Instance();
+
+    [[nodiscard]] static ResourceManager *Instance() {
+        return s_instance;
+    }
 
 private:
     ResourceManager();

@@ -32,11 +32,6 @@ void ObjectDokan::calc() {
     calcFloor();
 }
 
-/// @addr{0x80778FE4}
-u32 ObjectDokan::loadFlags() const {
-    return 1;
-}
-
 /// @addr{0x80778D50}
 void ObjectDokan::calcCollisionTransform() {
     if (m_id == ObjectId::DokanSFC) {

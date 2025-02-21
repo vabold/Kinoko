@@ -38,10 +38,6 @@ void ItemDirector::DestroyInstance() {
     delete instance;
 }
 
-ItemDirector *ItemDirector::Instance() {
-    return s_instance;
-}
-
 /// @addr{0x807992D8}
 ItemDirector::ItemDirector() {
     size_t playerCount = System::RaceConfig::Instance()->raceScenario().playerCount;

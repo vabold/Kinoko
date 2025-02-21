@@ -14,9 +14,6 @@ void KPadDirector::calcPads() {
     m_hostController->calc();
 }
 
-/// @addr{0x80523724}
-void KPadDirector::clear() {}
-
 /// @addr{0x80523690}
 void KPadDirector::reset() {
     m_playerInput.reset();
@@ -30,14 +27,6 @@ void KPadDirector::startGhostProxies() {
 /// @addr{0x805245DC}
 void KPadDirector::endGhostProxies() {
     m_playerInput.endGhostProxy();
-}
-
-const KPadPlayer &KPadDirector::playerInput() const {
-    return m_playerInput;
-}
-
-KPadHostController *KPadDirector::hostController() {
-    return m_hostController;
 }
 
 /// @addr{0x8052453C}
@@ -61,10 +50,6 @@ void KPadDirector::DestroyInstance() {
     auto *instance = s_instance;
     s_instance = nullptr;
     delete instance;
-}
-
-KPadDirector *KPadDirector::Instance() {
-    return s_instance;
 }
 
 /// @addr{0x805232F0}

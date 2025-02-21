@@ -17,7 +17,10 @@ public:
 
     static ItemDirector *CreateInstance();
     static void DestroyInstance();
-    [[nodiscard]] static ItemDirector *Instance();
+
+    [[nodiscard]] static ItemDirector *Instance() {
+        return s_instance;
+    }
 
 private:
     ItemDirector();

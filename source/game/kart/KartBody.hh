@@ -19,12 +19,20 @@ public:
     void calcTargetSinkDepth();
 
     /// @beginSetters
-    void setAngle(f32 val);
+    /// @addr{0x8056E424}
+    void setAngle(f32 val) {
+        m_anAngle = val;
+    }
     /// @endSetters
 
     /// @beginGetters
-    [[nodiscard]] KartPhysics *physics() const;
-    [[nodiscard]] f32 sinkDepth() const;
+    [[nodiscard]] KartPhysics *physics() const {
+        return m_physics;
+    }
+
+    [[nodiscard]] f32 sinkDepth() const {
+        return m_sinkDepth;
+    }
     /// @endGetters
 
 protected:

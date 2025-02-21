@@ -21,9 +21,13 @@ public:
     void skip(u32 count);
     void jump(u32 index);
 
-    void setEndian(std::endian endian);
+    void setEndian(std::endian endian) {
+        m_endian = endian;
+    }
 
-    [[nodiscard]] u32 index() const;
+    [[nodiscard]] u32 index() const {
+        return m_index;
+    }
 
     [[nodiscard]] u8 read_u8();
     [[nodiscard]] u16 read_u16();
@@ -61,19 +65,34 @@ class RamStream : public Stream {
 public:
     RamStream();
     RamStream(const void *buffer, u32 size);
-    ~RamStream() override;
+    ~RamStream() override = default;
 
     void read(void *output, u32 size) override;
     void write(void *input, u32 size) override;
-    [[nodiscard]] bool eof() const override;
-    [[nodiscard]] bool safe(u32 size) const override;
-    [[nodiscard]] bool bad() const override;
+
+    [[nodiscard]] bool eof() const override {
+        return m_index == m_size;
+    }
+
+    [[nodiscard]] bool safe(u32 size) const override {
+        return m_index + size <= m_size;
+    }
+
+    [[nodiscard]] bool bad() const override {
+        return m_index > m_size;
+    }
 
     [[nodiscard]] std::string read_string();
     [[nodiscard]] RamStream split(u32 size);
     void setBufferAndSize(void *buffer, u32 size);
-    [[nodiscard]] u8 *data();
-    [[nodiscard]] u8 *dataAtIndex();
+
+    [[nodiscard]] u8 *data() {
+        return m_buffer;
+    }
+
+    [[nodiscard]] u8 *dataAtIndex() {
+        return m_buffer + m_index;
+    }
 
 private:
     u8 *m_buffer;

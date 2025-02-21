@@ -83,21 +83,4 @@ void KartBoost::reset() {
     m_speedLimit = -1.0f;
 }
 
-/// @addr{0x80588E18}
-void KartBoost::resetActive() {
-    m_active.fill(false);
-}
-
-f32 KartBoost::multiplier() const {
-    return m_multiplier;
-}
-
-f32 KartBoost::acceleration() const {
-    return m_acceleration;
-}
-
-f32 KartBoost::speedLimit() const {
-    return m_speedLimit;
-}
-
 } // namespace Kart

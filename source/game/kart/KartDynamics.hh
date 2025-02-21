@@ -18,7 +18,11 @@ public:
     virtual void stabilize();
 
     void init();
-    void resetInternalVelocity();
+
+    void resetInternalVelocity() {
+        m_intVel.setZero();
+    }
+
     void setInertia(const EGG::Vector3f &m, const EGG::Vector3f &n);
     void setBspParams(f32 rotSpeed, const EGG::Vector3f &m, const EGG::Vector3f &n,
             bool skipInertia);
@@ -31,40 +35,131 @@ public:
     void applyWrenchScaled(const EGG::Vector3f &p, const EGG::Vector3f &f, f32 scale);
 
     /// @beginSetters
-    void setPos(const EGG::Vector3f &pos);
-    void setGravity(f32 gravity);
-    void setMainRot(const EGG::Quatf &q);
-    void setFullRot(const EGG::Quatf &q);
-    void setSpecialRot(const EGG::Quatf &q);
-    void setExtraRot(const EGG::Quatf &q);
-    void setIntVel(const EGG::Vector3f &v);
-    void setTop(const EGG::Vector3f &v);
-    void setStabilizationFactor(f32 val);
-    void setTotalForce(const EGG::Vector3f &v);
-    void setExtVel(const EGG::Vector3f &v);
-    void setAngVel0(const EGG::Vector3f &v);
-    void setAngVel2(const EGG::Vector3f &v);
-    void setAngVel0YFactor(f32 val);
-    void setTop_(const EGG::Vector3f &v);
-    void setForceUpright(bool isSet);
-    void setNoGravity(bool isSet);
-    void setKillExtVelY(bool isSet);
+    void setPos(const EGG::Vector3f &pos) {
+        m_pos = pos;
+    }
+
+    void setGravity(f32 gravity) {
+        m_gravity = gravity;
+    }
+
+    void setMainRot(const EGG::Quatf &q) {
+        m_mainRot = q;
+    }
+
+    void setFullRot(const EGG::Quatf &q) {
+        m_fullRot = q;
+    }
+
+    void setSpecialRot(const EGG::Quatf &q) {
+        m_specialRot = q;
+    }
+
+    void setExtraRot(const EGG::Quatf &q) {
+        m_extraRot = q;
+    }
+
+    void setIntVel(const EGG::Vector3f &v) {
+        m_intVel = v;
+    }
+
+    void setTop(const EGG::Vector3f &v) {
+        m_top = v;
+    }
+
+    void setStabilizationFactor(f32 val) {
+        m_stabilizationFactor = val;
+    }
+
+    void setTotalForce(const EGG::Vector3f &v) {
+        m_totalForce = v;
+    }
+
+    void setExtVel(const EGG::Vector3f &v) {
+        m_extVel = v;
+    }
+
+    void setAngVel0(const EGG::Vector3f &v) {
+        m_angVel0 = v;
+    }
+
+    void setAngVel2(const EGG::Vector3f &v) {
+        m_angVel2 = v;
+    }
+
+    void setAngVel0YFactor(f32 val) {
+        m_angVel0YFactor = val;
+    }
+
+    void setTop_(const EGG::Vector3f &v) {
+        m_top_ = v;
+    }
+
+    void setForceUpright(bool isSet) {
+        m_forceUpright = isSet;
+    }
+
+    void setNoGravity(bool isSet) {
+        m_noGravity = isSet;
+    }
+
+    void setKillExtVelY(bool isSet) {
+        m_killExtVelY = isSet;
+    }
     /// @endSetters
 
     /// @beginGetters
-    [[nodiscard]] const EGG::Matrix34f &invInertiaTensor() const;
-    [[nodiscard]] f32 angVel0Factor() const;
-    [[nodiscard]] const EGG::Vector3f &pos() const;
-    [[nodiscard]] const EGG::Vector3f &velocity() const;
-    [[nodiscard]] f32 gravity() const;
-    [[nodiscard]] const EGG::Vector3f &intVel() const;
-    [[nodiscard]] const EGG::Quatf &mainRot() const;
-    [[nodiscard]] const EGG::Quatf &fullRot() const;
-    [[nodiscard]] const EGG::Vector3f &totalForce() const;
-    [[nodiscard]] const EGG::Vector3f &extVel() const;
-    [[nodiscard]] const EGG::Vector3f &angVel0() const;
-    [[nodiscard]] const EGG::Vector3f &angVel2() const;
-    [[nodiscard]] f32 speedFix() const;
+    [[nodiscard]] const EGG::Matrix34f &invInertiaTensor() const {
+        return m_invInertiaTensor;
+    }
+
+    [[nodiscard]] f32 angVel0Factor() const {
+        return m_angVel0Factor;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &pos() const {
+        return m_pos;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &velocity() const {
+        return m_velocity;
+    }
+
+    [[nodiscard]] f32 gravity() const {
+        return m_gravity;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &intVel() const {
+        return m_intVel;
+    }
+
+    [[nodiscard]] const EGG::Quatf &mainRot() const {
+        return m_mainRot;
+    }
+
+    [[nodiscard]] const EGG::Quatf &fullRot() const {
+        return m_fullRot;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &totalForce() const {
+        return m_totalForce;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &extVel() const {
+        return m_extVel;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &angVel0() const {
+        return m_angVel0;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &angVel2() const {
+        return m_angVel2;
+    }
+
+    [[nodiscard]] f32 speedFix() const {
+        return m_speedFix;
+    }
     /// @endGetters
 
 protected:

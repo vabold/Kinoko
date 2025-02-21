@@ -99,11 +99,15 @@ public:
     void calc();
 
     /// @beginGetters
-    [[nodiscard]] const Timer &currentTimer() const;
+    [[nodiscard]] const Timer &currentTimer() const {
+        return m_currentTimer;
+    }
     /// @endGetters
 
     /// @beginSetters
-    void setStarted(bool isSet);
+    void setStarted(bool isSet) {
+        m_started = isSet;
+    }
     /// @endSetters
 
 private:

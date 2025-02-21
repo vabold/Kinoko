@@ -34,25 +34,57 @@ public:
 
     void dispose();
 
-    void disableAllocation();
-    void enableAllocation();
-    [[nodiscard]] bool tstDisableAllocation() const;
+    void disableAllocation() {
+        m_flags.setBit(eFlags::Lock);
+    }
 
-    void appendDisposer(Disposer *disposer);
-    void removeDisposer(Disposer *disposer);
+    void enableAllocation() {
+        m_flags.resetBit(eFlags::Lock);
+    }
+
+    [[nodiscard]] bool tstDisableAllocation() const {
+        return m_flags.onBit(eFlags::Lock);
+    }
+
+    void appendDisposer(Disposer *disposer) {
+        m_children.append(disposer);
+    }
+
+    void removeDisposer(Disposer *disposer) {
+        m_children.remove(disposer);
+    }
 
     Heap *becomeAllocatableHeap();
     Heap *becomeCurrentHeap();
-    void registerHeapBuffer(void *buffer);
 
-    [[nodiscard]] void *getStartAddress();
-    [[nodiscard]] void *getEndAddress();
+    void registerHeapBuffer(void *buffer) {
+        m_block = buffer;
+    }
 
-    [[nodiscard]] const char *getName() const;
-    [[nodiscard]] Heap *getParentHeap() const;
+    [[nodiscard]] void *getStartAddress() {
+        return this;
+    }
 
-    void setName(const char *name);
-    void setParentHeap(Heap *heap);
+    [[nodiscard]] void *getEndAddress() {
+        return m_handle->getHeapEnd();
+    }
+
+    [[nodiscard]] const char *getName() const {
+        return m_name;
+    }
+
+    /// @addr{0x80229AD4}
+    [[nodiscard]] Heap *getParentHeap() const {
+        return m_parentHeap;
+    }
+
+    void setName(const char *name) {
+        m_name = name;
+    }
+
+    void setParentHeap(Heap *heap) {
+        m_parentHeap = heap;
+    }
 
     static void initialize();
     [[nodiscard]] static void *alloc(size_t size, int align, Heap *pHeap);
@@ -61,8 +93,13 @@ public:
     [[nodiscard]] static Heap *findHeap(Abstract::Memory::MEMiHeapHead *handle);
     [[nodiscard]] static Heap *findContainHeap(const void *block);
 
-    [[nodiscard]] static ExpHeap *dynamicCastToExp(Heap *heap);
-    [[nodiscard]] static Heap *getCurrentHeap();
+    [[nodiscard]] static ExpHeap *dynamicCastToExp(Heap *heap) {
+        return heap->getHeapKind() == Kind::Expanded ? reinterpret_cast<ExpHeap *>(heap) : nullptr;
+    }
+
+    [[nodiscard]] static Heap *getCurrentHeap() {
+        return s_currentHeap;
+    }
 
     [[nodiscard]] static constexpr uintptr_t getOffset() {
         // offsetof doesn't work, so instead of hardcoding an offset, we derive it ourselves

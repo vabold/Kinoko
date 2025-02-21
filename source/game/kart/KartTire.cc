@@ -27,10 +27,6 @@ void KartTire::initBsp() {
     m_wheelPhysics->initBsp();
 }
 
-WheelPhysics *KartTire::wheelPhysics() {
-    return m_wheelPhysics;
-}
-
 /// @addr{Inlined in 0x8058EA0C}
 KartTireFront::KartTireFront(KartSuspensionPhysics::TireType tireType, u16 bspWheelIdx)
     : KartTire(tireType, bspWheelIdx) {}

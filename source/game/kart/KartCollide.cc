@@ -9,6 +9,7 @@
 #include "game/field/ObjectCollisionKart.hh"
 #include "game/field/ObjectDirector.hh"
 
+#include <egg/math/BoundBox.hh>
 #include <egg/math/Math.hh>
 
 namespace Kart {
@@ -974,63 +975,6 @@ Action KartCollide::handleReactCrushRespawn(size_t /*idx*/) {
 /// @addr{0x805735E4}
 Action KartCollide::handleReactExplosionLoseItem(size_t /*idx*/) {
     return Action::UNK_7;
-}
-
-/// @addr{0x805B78D0}
-void KartCollide::setFloorColInfo(CollisionData &collisionData, const EGG::Vector3f &relPos,
-        const EGG::Vector3f &vel, const EGG::Vector3f &floorNrm) {
-    collisionData.relPos = relPos;
-    collisionData.vel = vel;
-    collisionData.floorNrm = floorNrm;
-    collisionData.bFloor = true;
-}
-
-void KartCollide::setTangentOff(const EGG::Vector3f &v) {
-    m_tangentOff = v;
-}
-
-void KartCollide::setMovement(const EGG::Vector3f &v) {
-    m_movement = v;
-}
-
-f32 KartCollide::boundingRadius() const {
-    return m_boundingRadius;
-}
-
-f32 KartCollide::floorMomentRate() const {
-    return m_floorMomentRate;
-}
-
-const KartCollide::SurfaceFlags &KartCollide::surfaceFlags() const {
-    return m_surfaceFlags;
-}
-
-const EGG::Vector3f &KartCollide::tangentOff() const {
-    return m_tangentOff;
-}
-
-const EGG::Vector3f &KartCollide::movement() const {
-    return m_movement;
-}
-
-f32 KartCollide::suspBottomHeightSoftWall() const {
-    return m_suspBottomHeightSoftWall;
-}
-
-u16 KartCollide::someSoftWallTimer() const {
-    return m_someSoftWallTimer;
-}
-
-f32 KartCollide::suspBottomHeightNonSoftWall() const {
-    return m_suspBottomHeightNonSoftWall;
-}
-
-u16 KartCollide::someNonSoftWallTimer() const {
-    return m_someNonSoftWallTimer;
-}
-
-f32 KartCollide::colPerpendicularity() const {
-    return m_colPerpendicularity;
 }
 
 std::array<KartCollide::ObjectCollisionHandler, 33> KartCollide::s_objectCollisionHandlers = {{

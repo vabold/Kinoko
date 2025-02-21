@@ -364,8 +364,4 @@ void KartSub::tryEndHWG() {
     }
 }
 
-f32 KartSub::someScale() {
-    return m_someScale;
-}
-
 } // namespace Kart

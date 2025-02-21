@@ -95,10 +95,6 @@ void KReplaySystem::DestroyInstance() {
     delete instance;
 }
 
-KReplaySystem *KReplaySystem::Instance() {
-    return static_cast<KReplaySystem *>(s_instance);
-}
-
 KReplaySystem::KReplaySystem()
     : m_currentGhostFileName(nullptr), m_currentGhost(nullptr), m_currentRawGhost(nullptr),
       m_currentRawGhostSize(0) {}

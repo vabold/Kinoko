@@ -23,7 +23,9 @@ public:
     void useMushroom();
 
     /// @beginGetters
-    [[nodiscard]] ItemInventory &inventory();
+    [[nodiscard]] ItemInventory &inventory() {
+        return m_inventory;
+    }
     /// @endGetters
 
 private:

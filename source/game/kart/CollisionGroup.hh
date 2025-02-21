@@ -54,19 +54,47 @@ public:
 
     /// @beginSetters
     void reset();
-    void setRadius(f32 radius);
-    void setBspHitbox(const BSP::Hitbox *hitbox, bool owns = false);
-    void setWorldPos(const EGG::Vector3f &pos);
-    void setLastPos(const EGG::Vector3f &pos);
+
+    void setRadius(f32 radius) {
+        m_radius = radius;
+    }
+
+    void setBspHitbox(const BSP::Hitbox *hitbox, bool owns = false) {
+        m_ownsBSP = owns;
+        m_bspHitbox = hitbox;
+    }
+
+    void setWorldPos(const EGG::Vector3f &pos) {
+        m_worldPos = pos;
+    }
+
+    void setLastPos(const EGG::Vector3f &pos) {
+        m_lastPos = pos;
+    }
+
     void setLastPos(const EGG::Vector3f &scale, const EGG::Matrix34f &pose);
     /// @endSetters
 
     /// @beginGetters
-    [[nodiscard]] const BSP::Hitbox *bspHitbox() const;
-    [[nodiscard]] const EGG::Vector3f &worldPos() const;
-    [[nodiscard]] const EGG::Vector3f &lastPos() const;
-    [[nodiscard]] const EGG::Vector3f &relPos() const;
-    [[nodiscard]] f32 radius() const;
+    [[nodiscard]] const BSP::Hitbox *bspHitbox() const {
+        return m_bspHitbox;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &worldPos() const {
+        return m_worldPos;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &lastPos() const {
+        return m_lastPos;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &relPos() const {
+        return m_relPos;
+    }
+
+    [[nodiscard]] f32 radius() const {
+        return m_radius;
+    }
     /// @endGetters
 
 private:
@@ -97,11 +125,25 @@ public:
     /// @endSetters
 
     /// @beginGetters
-    [[nodiscard]] f32 boundingRadius() const;
-    [[nodiscard]] Hitbox &hitbox(u16 hitboxIdx);
-    [[nodiscard]] u16 hitboxCount() const;
-    [[nodiscard]] CollisionData &collisionData();
-    [[nodiscard]] const CollisionData &collisionData() const;
+    [[nodiscard]] f32 boundingRadius() const {
+        return m_boundingRadius;
+    }
+
+    [[nodiscard]] Hitbox &hitbox(u16 hitboxIdx) {
+        return m_hitboxes[hitboxIdx];
+    }
+
+    [[nodiscard]] u16 hitboxCount() const {
+        return m_hitboxes.size();
+    }
+
+    [[nodiscard]] CollisionData &collisionData() {
+        return m_collisionData;
+    }
+
+    [[nodiscard]] const CollisionData &collisionData() const {
+        return m_collisionData;
+    }
     /// @endGetters
 
 private:
