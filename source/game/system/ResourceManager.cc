@@ -56,11 +56,6 @@ void ResourceManager::unmount(MultiDvdArchive *archive) {
     archive->unmount();
 }
 
-/// @addr{0x805419EC}
-const char *ResourceManager::GetVehicleName(Vehicle vehicle) {
-    return vehicle < Vehicle::Max ? VEHICLE_NAMES[static_cast<u8>(vehicle)] : nullptr;
-}
-
 /// @addr{0x8053FC4C}
 ResourceManager *ResourceManager::CreateInstance() {
     ASSERT(!s_instance);
@@ -74,10 +69,6 @@ void ResourceManager::DestroyInstance() {
     auto *instance = s_instance;
     s_instance = nullptr;
     delete instance;
-}
-
-ResourceManager *ResourceManager::Instance() {
-    return s_instance;
 }
 
 /// @addr{0x8053FCEC}

@@ -14,7 +14,10 @@ public:
 
     static KReplaySystem *CreateInstance();
     static void DestroyInstance();
-    static KReplaySystem *Instance();
+
+    static KReplaySystem *Instance() {
+        return static_cast<KReplaySystem *>(s_instance);
+    }
 
 private:
     typedef std::pair<const System::Timer &, const System::Timer &> DesyncingTimerPair;

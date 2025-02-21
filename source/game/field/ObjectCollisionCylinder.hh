@@ -11,8 +11,16 @@ public:
 
     void transform(const EGG::Matrix34f &mat, const EGG::Vector3f &scale,
             const EGG::Vector3f &speed) override;
-    const EGG::Vector3f &getSupport(const EGG::Vector3f &v) const override;
-    f32 getBoundingRadius() const override;
+
+    /// @addr{0x8083618C}
+    const EGG::Vector3f &getSupport(const EGG::Vector3f &v) const override {
+        return m_top.dot(v) > m_bottom.dot(v) ? m_top : m_bottom;
+    }
+
+    /// @addr{0x80836498}
+    f32 getBoundingRadius() const override {
+        return m_worldRadius;
+    }
 
 private:
     f32 m_radius;

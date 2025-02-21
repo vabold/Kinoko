@@ -125,19 +125,47 @@ public:
     ~KartParam();
 
     /// @beginSetters
-    void setTireCount(u16 tireCount);
-    void setSuspCount(u16 suspCount);
+    void setTireCount(u16 tireCount) {
+        m_tireCount = tireCount;
+    }
+
+    void setSuspCount(u16 suspCount) {
+        m_suspCount = suspCount;
+    }
     /// @endSetters
 
     /// @beginGetters
-    [[nodiscard]] const BSP &bsp() const;
-    [[nodiscard]] const Stats &stats() const;
-    [[nodiscard]] const BikeDisp &bikeDisp() const;
-    [[nodiscard]] u8 playerIdx() const;
-    [[nodiscard]] bool isBike() const;
-    [[nodiscard]] bool isVehicleRelativeBike() const;
-    [[nodiscard]] u16 suspCount() const;
-    [[nodiscard]] u16 tireCount() const;
+    [[nodiscard]] const BSP &bsp() const {
+        return m_bsp;
+    }
+
+    [[nodiscard]] const Stats &stats() const {
+        return m_stats;
+    }
+
+    [[nodiscard]] const BikeDisp &bikeDisp() const {
+        return m_bikeDisp;
+    }
+
+    [[nodiscard]] u8 playerIdx() const {
+        return m_playerIdx;
+    }
+
+    [[nodiscard]] bool isBike() const {
+        return m_isBike;
+    }
+
+    [[nodiscard]] bool isVehicleRelativeBike() const {
+        return m_stats.body == Stats::Body::Vehicle_Relative_Bike;
+    }
+
+    [[nodiscard]] u16 suspCount() const {
+        return m_suspCount;
+    }
+
+    [[nodiscard]] u16 tireCount() const {
+        return m_tireCount;
+    }
     /// @endGetters
 
 private:

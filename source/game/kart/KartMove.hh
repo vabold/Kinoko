@@ -5,6 +5,7 @@
 #include "game/kart/KartHalfPipe.hh"
 #include "game/kart/KartObjectProxy.hh"
 #include "game/kart/KartReject.hh"
+#include "game/kart/KartState.hh"
 
 #include "game/field/CourseColMgr.hh"
 
@@ -33,10 +34,13 @@ public:
     virtual void setTurnParams();
     virtual void init(bool b1, bool b2);
     virtual void clear();
-    [[nodiscard]] virtual f32 leanRot() const;
+
+    /// @addr{0x8058974C}
+    [[nodiscard]] virtual f32 leanRot() const {
+        return 0.0f;
+    }
 
     void setInitialPhysicsValues(const EGG::Vector3f &position, const EGG::Vector3f &angles);
-    void setKartSpeedLimit();
     void resetDriftManual();
 
     void calc();
@@ -89,10 +93,38 @@ public:
     virtual void onWallCollision() {}
     virtual void calcMtCharge();
     virtual void initOob() {}
-    [[nodiscard]] virtual f32 getWheelieSoftSpeedLimitBonus() const;
-    virtual bool canWheelie() const;
-    virtual bool canHop() const;
-    bool canStartDrift() const;
+
+    /// @stage 2
+    /// @brief Returns the % speed boost from wheelies. For karts, this is always 0.
+    /// @addr{0x8057C3C8}
+    [[nodiscard]] virtual f32 getWheelieSoftSpeedLimitBonus() const {
+        return 0.0f;
+    }
+
+    /// @addr{0x8058758C}
+    virtual bool canWheelie() const {
+        return false;
+    }
+
+    /// @addr{0x8057DA18}
+    virtual bool canHop() const {
+        if (!state()->isHopStart() || !state()->isTouchingGround()) {
+            return false;
+        }
+
+        if (state()->isInAction()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /// @addr{0x8057EA94}
+    bool canStartDrift() const {
+        constexpr f32 MINIMUM_DRIFT_THRESOLD = 0.55f;
+
+        return m_speed > MINIMUM_DRIFT_THRESOLD * m_baseSpeed;
+    }
 
     void tryStartBoostPanel();
     void tryStartBoostRamp();
@@ -118,41 +150,145 @@ public:
     void triggerRespawn();
 
     /// @beginSetters
-    void setSpeed(f32 val);
-    void setSmoothedUp(const EGG::Vector3f &v);
-    void setUp(const EGG::Vector3f &v);
-    void setDir(const EGG::Vector3f &v);
-    void setVel1Dir(const EGG::Vector3f &v);
-    void setFloorCollisionCount(u16 count);
-    void setKCLWheelSpeedFactor(f32 val);
-    void setKCLWheelRotFactor(f32 val);
+    void setSpeed(f32 val) {
+        m_speed = val;
+    }
+
+    void setSmoothedUp(const EGG::Vector3f &v) {
+        m_smoothedUp = v;
+    }
+
+    void setUp(const EGG::Vector3f &v) {
+        m_up = v;
+    }
+
+    void setDir(const EGG::Vector3f &v) {
+        m_dir = v;
+    }
+
+    void setVel1Dir(const EGG::Vector3f &v) {
+        m_vel1Dir = v;
+    }
+
+    void setFloorCollisionCount(u16 count) {
+        m_floorCollisionCount = count;
+    }
+
+    void setKCLWheelSpeedFactor(f32 val) {
+        m_kclWheelSpeedFactor = val;
+    }
+
+    void setKCLWheelRotFactor(f32 val) {
+        m_kclWheelRotFactor = val;
+    }
+
+    /// @addr{0x8057B9AC}
+    void setKartSpeedLimit() {
+        constexpr f32 LIMIT = 120.0f;
+        m_hardSpeedLimit = LIMIT;
+    }
     /// @endSetters
 
     /// @beginGetters
-    [[nodiscard]] s32 getAppliedHopStickX() const;
-    [[nodiscard]] f32 softSpeedLimit() const;
-    [[nodiscard]] f32 speed() const;
-    [[nodiscard]] f32 acceleration() const;
-    [[nodiscard]] const EGG::Vector3f &scale() const;
-    [[nodiscard]] f32 hardSpeedLimit() const;
-    [[nodiscard]] const EGG::Vector3f &smoothedUp() const;
-    [[nodiscard]] const EGG::Vector3f &up() const;
-    [[nodiscard]] f32 totalScale() const;
-    [[nodiscard]] f32 hitboxScale() const;
-    [[nodiscard]] const EGG::Vector3f &dir() const;
-    [[nodiscard]] const EGG::Vector3f &lastDir() const;
-    [[nodiscard]] const EGG::Vector3f &vel1Dir() const;
-    [[nodiscard]] f32 speedRatioCapped() const;
-    [[nodiscard]] f32 speedRatio() const;
-    [[nodiscard]] u16 floorCollisionCount() const;
-    [[nodiscard]] s32 hopStickX() const;
-    [[nodiscard]] f32 hopPosY() const;
-    [[nodiscard]] s16 respawnTimer() const;
-    [[nodiscard]] s16 respawnPostLandTimer() const;
-    [[nodiscard]] PadType &padType();
-    [[nodiscard]] KartJump *jump() const;
-    [[nodiscard]] KartHalfPipe *halfPipe() const;
-    [[nodiscard]] KartBurnout &burnout();
+
+    /// @brief Factors in vehicle speed to retrieve our hop direction and magnitude.
+    /// @addr{0x8057EFF8}
+    /// @return 0.0f if we are too slow to drift, otherwise the hop direction.
+    [[nodiscard]] s32 getAppliedHopStickX() const {
+        return canStartDrift() ? m_hopStickX : 0;
+    }
+
+    [[nodiscard]] f32 softSpeedLimit() const {
+        return m_softSpeedLimit;
+    }
+
+    [[nodiscard]] f32 speed() const {
+        return m_speed;
+    }
+
+    [[nodiscard]] f32 acceleration() const {
+        return m_acceleration;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &scale() const {
+        return m_scale;
+    }
+
+    [[nodiscard]] f32 hardSpeedLimit() const {
+        return m_hardSpeedLimit;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &smoothedUp() const {
+        return m_smoothedUp;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &up() const {
+        return m_up;
+    }
+
+    [[nodiscard]] f32 totalScale() const {
+        return m_totalScale;
+    }
+
+    [[nodiscard]] f32 hitboxScale() const {
+        return m_hitboxScale;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &dir() const {
+        return m_dir;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &lastDir() const {
+        return m_lastDir;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &vel1Dir() const {
+        return m_vel1Dir;
+    }
+
+    [[nodiscard]] f32 speedRatioCapped() const {
+        return m_speedRatioCapped;
+    }
+
+    [[nodiscard]] f32 speedRatio() const {
+        return m_speedRatio;
+    }
+
+    [[nodiscard]] u16 floorCollisionCount() const {
+        return m_floorCollisionCount;
+    }
+
+    [[nodiscard]] s32 hopStickX() const {
+        return m_hopStickX;
+    }
+
+    [[nodiscard]] f32 hopPosY() const {
+        return m_hopPosY;
+    }
+
+    [[nodiscard]] s16 respawnTimer() const {
+        return m_respawnTimer;
+    }
+
+    [[nodiscard]] s16 respawnPostLandTimer() const {
+        return m_respawnPostLandTimer;
+    }
+
+    [[nodiscard]] PadType &padType() {
+        return m_padType;
+    }
+
+    [[nodiscard]] KartJump *jump() const {
+        return m_jump;
+    }
+
+    [[nodiscard]] KartHalfPipe *halfPipe() const {
+        return m_halfPipe;
+    }
+
+    [[nodiscard]] KartBurnout &burnout() {
+        return m_burnout;
+    }
     /// @endGetters
 
 protected:
@@ -315,14 +451,38 @@ public:
     void setTurnParams() override;
     void init(bool b1, bool b2) override;
     void clear() override;
-    [[nodiscard]] f32 getWheelieSoftSpeedLimitBonus() const override;
-    [[nodiscard]] f32 wheelieRotFactor() const;
+
+    /// @stage 2
+    /// @brief Returns what % to raise the speed cap when wheeling.
+    /// @addr{0x80588324}
+    [[nodiscard]] f32 getWheelieSoftSpeedLimitBonus() const override {
+        constexpr f32 WHEELIE_SPEED_BONUS = 0.15f;
+        return state()->isWheelie() ? WHEELIE_SPEED_BONUS : 0.0f;
+    }
+
+    /// @addr{0x80588860}
+    [[nodiscard]] f32 wheelieRotFactor() const {
+        constexpr f32 WHEELIE_ROTATION_FACTOR = 0.2f;
+
+        return state()->isWheelie() ? WHEELIE_ROTATION_FACTOR : 1.0f;
+    }
 
     void tryStartWheelie();
 
     /// @beginGetters
-    [[nodiscard]] f32 leanRot() const override;
-    [[nodiscard]] bool canWheelie() const override;
+    /// @addr{0x805896BC}
+    [[nodiscard]] f32 leanRot() const override {
+        return m_leanRot;
+    }
+
+    /// @brief Checks if the kart is going fast enough to wheelie.
+    /// @addr{0x80588FE0}
+    [[nodiscard]] bool canWheelie() const override {
+        constexpr f32 WHEELIE_THRESHOLD = 0.3f;
+
+        return m_speedRatioCapped >= WHEELIE_THRESHOLD && m_speed >= 0.0f;
+    }
+
     /// @endGetters
 
 private:

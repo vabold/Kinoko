@@ -6,8 +6,6 @@
 
 namespace Field {
 
-GJKState::GJKState() : m_flags(0), m_idx(0), m_mask(0), m_00c(0), m_scales{{}} {}
-
 ObjectCollisionBase::ObjectCollisionBase() = default;
 
 ObjectCollisionBase::~ObjectCollisionBase() = default;

@@ -1,15 +1,5 @@
 #include "CourseMap.hh"
 
-#include "game/system/map/MapdataCannonPoint.hh"
-#include "game/system/map/MapdataCheckPath.hh"
-#include "game/system/map/MapdataCheckPoint.hh"
-#include "game/system/map/MapdataFileAccessor.hh"
-#include "game/system/map/MapdataGeoObj.hh"
-#include "game/system/map/MapdataJugemPoint.hh"
-#include "game/system/map/MapdataPointInfo.hh"
-#include "game/system/map/MapdataStageInfo.hh"
-#include "game/system/map/MapdataStartPoint.hh"
-
 #include "game/system/ResourceManager.hh"
 
 namespace System {
@@ -29,14 +19,14 @@ void CourseMap::init() {
     constexpr u32 POINT_INFO_SIGNATURE = 0x504f5449;
     constexpr u32 STAGE_INFO_SIGNATURE = 0x53544749;
 
-    m_startPoint = parseStartPoint(START_POINT_SIGNATURE);
-    m_checkPath = parseCheckPath(CHECK_PATH_SIGNATURE);
-    m_checkPoint = parseCheckPoint(CHECK_POINT_SIGNATURE);
-    m_geoObj = parseGeoObj(GEO_OBJ_SIGNATURE);
-    m_pointInfo = parsePointInfo(POINT_INFO_SIGNATURE);
-    m_jugemPoint = parseJugemPoint(JUGEM_POINT_SIGNATURE);
-    m_cannonPoint = parseCannonPoint(CANNON_POINT_SIGNATURE);
-    m_stageInfo = parseStageInfo(STAGE_INFO_SIGNATURE);
+    m_startPoint = parseMapdata<MapdataStartPointAccessor>(START_POINT_SIGNATURE);
+    m_checkPath = parseMapdata<MapdataCheckPathAccessor>(CHECK_PATH_SIGNATURE);
+    m_checkPoint = parseMapdata<MapdataCheckPointAccessor>(CHECK_POINT_SIGNATURE);
+    m_geoObj = parseMapdata<MapdataGeoObjAccessor>(GEO_OBJ_SIGNATURE);
+    m_pointInfo = parseMapdata<MapdataPointInfoAccessor>(POINT_INFO_SIGNATURE);
+    m_jugemPoint = parseMapdata<MapdataJugemPointAccessor>(JUGEM_POINT_SIGNATURE);
+    m_cannonPoint = parseMapdata<MapdataCannonPointAccessor>(CANNON_POINT_SIGNATURE);
+    m_stageInfo = parseMapdata<MapdataStageInfoAccessor>(STAGE_INFO_SIGNATURE);
 
     MapdataStageInfo *stageInfo = getStageInfo();
     constexpr u8 TRANSLATION_MODE_NARROW = 1;
@@ -52,54 +42,6 @@ void CourseMap::init() {
 
     m_startTmp0 = 800.0f;
     m_startTmp1 = 1200.0f;
-}
-
-/// @addr{0x80512FA4}
-MapdataCannonPointAccessor *CourseMap::parseCannonPoint(u32 sectionName) const {
-    const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
-    return sectionPtr ? new MapdataCannonPointAccessor(sectionPtr) : nullptr;
-}
-
-/// @addr{0x8051377C}
-MapdataCheckPathAccessor *CourseMap::parseCheckPath(u32 sectionName) const {
-    const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
-    return sectionPtr ? new MapdataCheckPathAccessor(sectionPtr) : nullptr;
-}
-
-/// @addr{0x80513640}
-MapdataCheckPointAccessor *CourseMap::parseCheckPoint(u32 sectionName) const {
-    const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
-    return sectionPtr ? new MapdataCheckPointAccessor(sectionPtr) : nullptr;
-}
-
-/// @addr{0x805134C8}
-MapdataGeoObjAccessor *CourseMap::parseGeoObj(u32 sectionName) const {
-    const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
-    return sectionPtr ? new MapdataGeoObjAccessor(sectionPtr) : nullptr;
-}
-
-/// @addr{0x805130C4}
-MapdataJugemPointAccessor *CourseMap::parseJugemPoint(u32 sectionName) const {
-    const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
-    return sectionPtr ? new MapdataJugemPointAccessor(sectionPtr) : nullptr;
-}
-
-/// @addr{0x80513398}
-MapdataPointInfoAccessor *CourseMap::parsePointInfo(u32 sectionName) const {
-    const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
-    return sectionPtr ? new MapdataPointInfoAccessor(sectionPtr) : nullptr;
-}
-
-/// @addr{0x80512D64}
-MapdataStageInfoAccessor *CourseMap::parseStageInfo(u32 sectionName) const {
-    const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
-    return sectionPtr ? new MapdataStageInfoAccessor(sectionPtr) : nullptr;
-}
-
-/// @addr{0x80513F5C}
-MapdataStartPointAccessor *CourseMap::parseStartPoint(u32 sectionName) const {
-    const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
-    return sectionPtr ? new MapdataStartPointAccessor(sectionPtr) : nullptr;
 }
 
 /// @addr{0x80511500}
@@ -238,98 +180,6 @@ f32 CourseMap::getCheckPointEntryOffsetExact(u16 i, const EGG::Vector3f &pos,
     return checkPoint->getEntryOffsetExact(prevPos_, pos_);
 }
 
-/// @addr{0x80518AE0}
-MapdataCannonPoint *CourseMap::getCannonPoint(u16 i) const {
-    return m_cannonPoint && m_cannonPoint->size() != 0 ? m_cannonPoint->get(i) : nullptr;
-}
-
-/// @addr{0x80515C70}
-MapdataCheckPath *CourseMap::getCheckPath(u16 i) const {
-    return m_checkPath && m_checkPath->size() != 0 ? m_checkPath->get(i) : nullptr;
-}
-
-/// @addr{0x80515C24}
-MapdataCheckPoint *CourseMap::getCheckPoint(u16 i) const {
-    return m_checkPoint && m_checkPoint->size() != 0 ? m_checkPoint->get(i) : nullptr;
-}
-
-/// @addr{0x80514148}
-MapdataGeoObj *CourseMap::getGeoObj(u16 i) const {
-    return i < getGeoObjCount() ? m_geoObj->get(i) : nullptr;
-}
-
-/// @addr{0x80515E04}
-MapdataPointInfo *CourseMap::getPointInfo(u16 i) const {
-    return i < getPointInfoCount() ? m_pointInfo->get(i) : nullptr;
-}
-
-/// @addr{0x80518920}
-MapdataJugemPoint *CourseMap::getJugemPoint(u16 i) const {
-    return i < getJugemPointCount() ? m_jugemPoint->get(i) : nullptr;
-}
-
-/// @addr{0x80518B78}
-MapdataStageInfo *CourseMap::getStageInfo() const {
-    return m_stageInfo && m_stageInfo->size() != 0 ? m_stageInfo->get(0) : nullptr;
-}
-
-/// @addr{0x80514B30}
-MapdataStartPoint *CourseMap::getStartPoint(u16 i) const {
-    return m_startPoint && m_startPoint->size() != 0 ? m_startPoint->get(i) : nullptr;
-}
-
-u16 CourseMap::getCheckPathCount() const {
-    return m_checkPath ? m_checkPath->size() : 0;
-}
-
-u16 CourseMap::getCheckPointCount() const {
-    return m_checkPoint ? m_checkPoint->size() : 0;
-}
-
-u16 CourseMap::getGeoObjCount() const {
-    return m_geoObj ? m_geoObj->size() : 0;
-}
-
-u16 CourseMap::getPointInfoCount() const {
-    return m_pointInfo ? m_pointInfo->size() : 0;
-}
-
-u16 CourseMap::getJugemPointCount() const {
-    return m_jugemPoint ? m_jugemPoint->size() : 0;
-}
-
-u32 CourseMap::version() const {
-    return m_course->version();
-}
-
-MapdataCheckPathAccessor *CourseMap::checkPath() const {
-    return m_checkPath;
-}
-
-MapdataCheckPointAccessor *CourseMap::checkPoint() const {
-    return m_checkPoint;
-}
-
-f32 CourseMap::startTmpAngle() const {
-    return m_startTmpAngle;
-}
-
-f32 CourseMap::startTmp0() const {
-    return m_startTmp0;
-}
-
-f32 CourseMap::startTmp1() const {
-    return m_startTmp1;
-}
-
-f32 CourseMap::startTmp2() const {
-    return m_startTmp2;
-}
-
-f32 CourseMap::startTmp3() const {
-    return m_startTmp3;
-}
-
 /// @addr{0x80512694}
 CourseMap *CourseMap::CreateInstance() {
     ASSERT(!s_instance);
@@ -343,10 +193,6 @@ void CourseMap::DestroyInstance() {
     auto *instance = s_instance;
     s_instance = nullptr;
     delete instance;
-}
-
-CourseMap *CourseMap::Instance() {
-    return s_instance;
 }
 
 /// @addr{0x8051276C}

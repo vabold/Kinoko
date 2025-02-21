@@ -30,8 +30,13 @@ public:
     void clearFile();
     void unmount();
 
-    [[nodiscard]] bool isLoaded() const;
-    [[nodiscard]] bool isRipped() const;
+    [[nodiscard]] bool isLoaded() const {
+        return m_state == State::Mounted;
+    }
+
+    [[nodiscard]] bool isRipped() const {
+        return m_state == State::Ripped;
+    }
 
 private:
     EGG::Archive *m_archive;

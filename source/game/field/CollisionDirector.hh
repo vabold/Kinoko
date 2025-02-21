@@ -46,12 +46,17 @@ public:
     bool findClosestCollisionEntry(KCLTypeMask *typeMask, KCLTypeMask type);
 
     /// @beginGetters
-    [[nodiscard]] const CollisionEntry *closestCollisionEntry() const;
+    [[nodiscard]] const CollisionEntry *closestCollisionEntry() const {
+        return m_closestCollisionEntry;
+    }
     /// @endGetters
 
     static CollisionDirector *CreateInstance();
-    [[nodiscard]] static CollisionDirector *Instance();
     static void DestroyInstance();
+
+    [[nodiscard]] static CollisionDirector *Instance() {
+        return s_instance;
+    }
 
 private:
     CollisionDirector();

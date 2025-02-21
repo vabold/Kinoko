@@ -66,43 +66,16 @@ void RaceManager::calc() {
     }
 }
 
-/// @addr{0x80536230}
-bool RaceManager::isStageReached(Stage stage) const {
-    return static_cast<std::underlying_type_t<Stage>>(m_stage) >=
-            static_cast<std::underlying_type_t<Stage>>(stage);
-}
-
 /// @addr{0x8053621C}
 MapdataJugemPoint *RaceManager::jugemPoint() const {
     s8 jugemId = std::max<s8>(m_player.jugemId(), 0);
     return System::CourseMap::Instance()->getJugemPoint(static_cast<u16>(jugemId));
 }
 
-/// @addr{0x80533090}
-int RaceManager::getCountdownTimer() const {
-    return STAGE_COUNTDOWN_DURATION - m_timer;
-}
-
-const RaceManager::Player &RaceManager::player() const {
-    return m_player;
-}
-
-const TimerManager &RaceManager::timerManager() const {
-    return m_timerManager;
-}
-
-RaceManager::Stage RaceManager::stage() const {
-    return m_stage;
-}
-
 /// @addr{0x80532084}
 RaceManager *RaceManager::CreateInstance() {
     ASSERT(!s_instance);
     s_instance = new RaceManager;
-    return s_instance;
-}
-
-RaceManager *RaceManager::Instance() {
     return s_instance;
 }
 
@@ -206,35 +179,6 @@ Timer RaceManager::Player::getLapSplit(size_t lap) const {
     }
 
     return currentLap - previousLap;
-}
-
-u16 RaceManager::Player::checkpointId() const {
-    return m_checkpointId;
-}
-
-f32 RaceManager::Player::raceCompletion() const {
-    return m_raceCompletion;
-}
-
-s8 RaceManager::Player::jugemId() const {
-    return m_jugemId;
-}
-
-const std::array<Timer, 3> &RaceManager::Player::lapTimers() const {
-    return m_lapTimers;
-}
-
-const Timer &RaceManager::Player::lapTimer(size_t idx) const {
-    ASSERT(idx < m_lapTimers.size());
-    return m_lapTimers[idx];
-}
-
-const Timer &RaceManager::Player::raceTimer() const {
-    return m_raceTimer;
-}
-
-const KPad *RaceManager::Player::inputs() const {
-    return m_inputs;
 }
 
 /// @addr{0x80534DF8}

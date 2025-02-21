@@ -205,26 +205,6 @@ void KartJump::setAngle(const EGG::Vector3f &left) {
     m_move->setVel1Dir(m_move->dir());
 }
 
-void KartJump::setBoostRampEnabled(bool isSet) {
-    m_boostRampEnabled = isSet;
-}
-
-bool KartJump::isBoostRampEnabled() const {
-    return m_boostRampEnabled;
-}
-
-TrickType KartJump::type() const {
-    return m_type;
-}
-
-SurfaceVariant KartJump::variant() const {
-    return m_variant;
-}
-
-s16 KartJump::cooldown() const {
-    return m_cooldown;
-}
-
 /// @addr{0x80575EE8}
 void KartJump::start(const EGG::Vector3f &left) {
     init();

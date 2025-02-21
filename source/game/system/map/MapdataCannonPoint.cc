@@ -16,22 +16,6 @@ void MapdataCannonPoint::read(EGG::Stream &stream) {
     m_parameterIdx = stream.read_s16();
 }
 
-const EGG::Vector3f &MapdataCannonPoint::pos() const {
-    return m_pos;
-}
-
-const EGG::Vector3f &MapdataCannonPoint::rot() const {
-    return m_rot;
-}
-
-u16 MapdataCannonPoint::id() const {
-    return m_id;
-}
-
-s16 MapdataCannonPoint::parameterIdx() const {
-    return m_parameterIdx;
-}
-
 /// @addr{Inlined at 0x80512FA4}
 MapdataCannonPointAccessor::MapdataCannonPointAccessor(const MapSectionHeader *header)
     : MapdataAccessorBase<MapdataCannonPoint, MapdataCannonPoint::SData>(header) {

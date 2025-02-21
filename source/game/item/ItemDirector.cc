@@ -18,11 +18,6 @@ void ItemDirector::calc() {
     }
 }
 
-KartItem &ItemDirector::kartItem(size_t idx) {
-    ASSERT(idx < m_karts.size());
-    return m_karts[idx];
-}
-
 /// @addr{0x80799138}
 ItemDirector *ItemDirector::CreateInstance() {
     ASSERT(!s_instance);
@@ -36,10 +31,6 @@ void ItemDirector::DestroyInstance() {
     auto *instance = s_instance;
     s_instance = nullptr;
     delete instance;
-}
-
-ItemDirector *ItemDirector::Instance() {
-    return s_instance;
 }
 
 /// @addr{0x807992D8}

@@ -13,9 +13,16 @@ public:
     void transform(const EGG::Matrix34f &mat, const EGG::Vector3f &scale,
             const EGG::Vector3f &speed) override;
     const EGG::Vector3f &getSupport(const EGG::Vector3f &v) const override;
-    f32 getBoundingRadius() const override;
 
-    virtual void setBoundingRadius(f32 val);
+    /// @addr{0x807F957C}
+    f32 getBoundingRadius() const override {
+        return m_worldRadius;
+    }
+
+    /// @addr{0x8080C414}
+    virtual void setBoundingRadius(f32 val) {
+        m_worldRadius = val;
+    }
 
 protected:
     ObjectCollisionConvexHull(size_t count);

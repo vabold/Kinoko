@@ -30,8 +30,4 @@ void ItemInventory::clear() {
     m_currentCount = 0;
 }
 
-ItemId ItemInventory::id() const {
-    return m_currentId;
-}
-
 } // namespace Item

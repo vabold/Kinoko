@@ -30,8 +30,6 @@ Matrix34f::Matrix34f(f32 _e00, f32 _e01, f32 _e02, f32 _e03, f32 _e10, f32 _e11,
     mtx[2][3] = _e23;
 }
 
-Matrix34f::~Matrix34f() = default;
-
 /// @addr{0x80230118}
 /// @brief Sets matrix from rotation and position.
 void Matrix34f::makeQT(const Quatf &q, const Vector3f &t) {
@@ -152,11 +150,6 @@ void Matrix34f::makeS(const Vector3f &s) {
     mtx[0][0] = s.x;
     mtx[1][1] = s.y;
     mtx[2][2] = s.z;
-}
-
-/// @brief Zeroes every element of the matrix.
-void Matrix34f::makeZero() {
-    *this = Matrix34f::zero;
 }
 
 /// @addr{0x805AE7B4}
@@ -299,10 +292,6 @@ Matrix34f Matrix34f::transpose() const {
     ret[2, 1] = mtx[1][2];
 
     return ret;
-}
-
-Vector3f Matrix34f::translation() const {
-    return Vector3f(mtx[0][3], mtx[1][3], mtx[2][3]);
 }
 
 /// @addr{0x80384370}

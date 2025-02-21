@@ -5,7 +5,6 @@
 #include "game/kart/KartJump.hh"
 #include "game/kart/KartParam.hh"
 #include "game/kart/KartPhysics.hh"
-#include "game/kart/KartState.hh"
 #include "game/kart/KartSub.hh"
 #include "game/kart/KartSuspension.hh"
 
@@ -220,11 +219,6 @@ void KartMove::clear() {
     clearRejectRoad();
 }
 
-/// @addr{0x8058974C}
-f32 KartMove::leanRot() const {
-    return 0.0f;
-}
-
 /// @brief Initializes the kart's position and rotation. Calls tire suspension initializers.
 /// @addr{0x80584044}
 void KartMove::setInitialPhysicsValues(const EGG::Vector3f &position, const EGG::Vector3f &angles) {
@@ -258,12 +252,6 @@ void KartMove::setInitialPhysicsValues(const EGG::Vector3f &position, const EGG:
     for (u16 tireIdx = 0; tireIdx < suspCount(); ++tireIdx) {
         suspension(tireIdx)->setInitialState();
     }
-}
-
-/// @addr{0x8057B9AC}
-void KartMove::setKartSpeedLimit() {
-    constexpr f32 LIMIT = 120.0f;
-    m_hardSpeedLimit = LIMIT;
 }
 
 /// @stage All
@@ -1802,38 +1790,6 @@ void KartMove::hop() {
     dynamics()->setTotalForce(totalForce);
 }
 
-/// @stage 2
-/// @brief Returns the % speed boost from wheelies. For karts, this is always 0.
-/// @addr{0x8057C3C8}
-f32 KartMove::getWheelieSoftSpeedLimitBonus() const {
-    return 0.0f;
-}
-
-/// @addr{0x8058758C}
-bool KartMove::canWheelie() const {
-    return false;
-}
-
-/// @addr{0x8057DA18}
-bool KartMove::canHop() const {
-    if (!state()->isHopStart() || !state()->isTouchingGround()) {
-        return false;
-    }
-
-    if (state()->isInAction()) {
-        return false;
-    }
-
-    return true;
-}
-
-/// @addr{0x8057EA94}
-bool KartMove::canStartDrift() const {
-    constexpr f32 MINIMUM_DRIFT_THRESOLD = 0.55f;
-
-    return m_speed > MINIMUM_DRIFT_THRESOLD * m_baseSpeed;
-}
-
 /// @addr{Inlined at 0x80587590}
 void KartMove::tryStartBoostPanel() {
     constexpr s16 BOOST_PANEL_DURATION = 60;
@@ -2187,137 +2143,6 @@ void KartMove::triggerRespawn() {
     state()->setTriggerRespawn(true);
 }
 
-void KartMove::setSpeed(f32 val) {
-    m_speed = val;
-}
-
-void KartMove::setSmoothedUp(const EGG::Vector3f &v) {
-    m_smoothedUp = v;
-}
-
-void KartMove::setUp(const EGG::Vector3f &v) {
-    m_up = v;
-}
-
-void KartMove::setDir(const EGG::Vector3f &v) {
-    m_dir = v;
-}
-
-void KartMove::setVel1Dir(const EGG::Vector3f &v) {
-    m_vel1Dir = v;
-}
-
-void KartMove::setFloorCollisionCount(u16 count) {
-    m_floorCollisionCount = count;
-}
-
-void KartMove::setKCLWheelSpeedFactor(f32 val) {
-    m_kclWheelSpeedFactor = val;
-}
-
-void KartMove::setKCLWheelRotFactor(f32 val) {
-    m_kclWheelRotFactor = val;
-}
-
-/// @brief Factors in vehicle speed to retrieve our hop direction and magnitude.
-/// @addr{0x8057EFF8}
-/// @return 0.0f if we are too slow to drift, otherwise the hop direction.
-s32 KartMove::getAppliedHopStickX() const {
-    return canStartDrift() ? m_hopStickX : 0;
-}
-
-f32 KartMove::softSpeedLimit() const {
-    return m_softSpeedLimit;
-}
-
-f32 KartMove::speed() const {
-    return m_speed;
-}
-
-f32 KartMove::acceleration() const {
-    return m_acceleration;
-}
-
-const EGG::Vector3f &KartMove::scale() const {
-    return m_scale;
-}
-
-f32 KartMove::hardSpeedLimit() const {
-    return m_hardSpeedLimit;
-}
-
-const EGG::Vector3f &KartMove::smoothedUp() const {
-    return m_smoothedUp;
-}
-
-const EGG::Vector3f &KartMove::up() const {
-    return m_up;
-}
-
-f32 KartMove::totalScale() const {
-    return m_totalScale;
-}
-
-f32 KartMove::hitboxScale() const {
-    return m_hitboxScale;
-}
-
-const EGG::Vector3f &KartMove::dir() const {
-    return m_dir;
-}
-
-const EGG::Vector3f &KartMove::lastDir() const {
-    return m_lastDir;
-}
-
-const EGG::Vector3f &KartMove::vel1Dir() const {
-    return m_vel1Dir;
-}
-
-f32 KartMove::speedRatioCapped() const {
-    return m_speedRatioCapped;
-}
-
-f32 KartMove::speedRatio() const {
-    return m_speedRatio;
-}
-
-u16 KartMove::floorCollisionCount() const {
-    return m_floorCollisionCount;
-}
-
-s32 KartMove::hopStickX() const {
-    return m_hopStickX;
-}
-
-f32 KartMove::hopPosY() const {
-    return m_hopPosY;
-}
-
-s16 KartMove::respawnTimer() const {
-    return m_respawnTimer;
-}
-
-s16 KartMove::respawnPostLandTimer() const {
-    return m_respawnPostLandTimer;
-}
-
-KartMove::PadType &KartMove::padType() {
-    return m_padType;
-}
-
-KartJump *KartMove::jump() const {
-    return m_jump;
-}
-
-KartHalfPipe *KartMove::halfPipe() const {
-    return m_halfPipe;
-}
-
-KartBurnout &KartMove::burnout() {
-    return m_burnout;
-}
-
 /// @addr{0x80587B30}
 KartMoveBike::KartMoveBike() : m_leanRot(0.0f) {}
 
@@ -2508,14 +2333,6 @@ void KartMoveBike::clear() {
     cancelWheelie();
 }
 
-/// @stage 2
-/// @brief Returns what % to raise the speed cap when wheeling.
-/// @addr{0x80588324}
-f32 KartMoveBike::getWheelieSoftSpeedLimitBonus() const {
-    constexpr f32 WHEELIE_SPEED_BONUS = 0.15f;
-    return state()->isWheelie() ? WHEELIE_SPEED_BONUS : 0.0f;
-}
-
 /// @brief STAGE 1+ - Every frame, checks player input for wheelies and computes wheelie rotation.
 /// @addr{0x805883F4}
 void KartMoveBike::calcWheelie() {
@@ -2632,13 +2449,6 @@ void KartMoveBike::initOob() {
     cancelWheelie();
 }
 
-/// @addr{0x80588860}
-f32 KartMoveBike::wheelieRotFactor() const {
-    constexpr f32 WHEELIE_ROTATION_FACTOR = 0.2f;
-
-    return state()->isWheelie() ? WHEELIE_ROTATION_FACTOR : 1.0f;
-}
-
 /// @brief STAGE 1+ - Every frame, checks player input to see if we should start or stop a wheelie.
 /// @addr{0x80588798}
 void KartMoveBike::tryStartWheelie() {
@@ -2663,19 +2473,6 @@ void KartMoveBike::tryStartWheelie() {
         cancelWheelie();
         m_wheelieCooldown = COOLDOWN_FRAMES;
     }
-}
-
-/// @addr{0x805896BC}
-f32 KartMoveBike::leanRot() const {
-    return m_leanRot;
-}
-
-/// @brief Checks if the kart is going fast enough to wheelie.
-/// @addr{0x80588FE0}
-bool KartMoveBike::canWheelie() const {
-    constexpr f32 WHEELIE_THRESHOLD = 0.3f;
-
-    return m_speedRatioCapped >= WHEELIE_THRESHOLD && m_speed >= 0.0f;
 }
 
 } // namespace Kart

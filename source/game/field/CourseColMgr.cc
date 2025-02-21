@@ -136,18 +136,6 @@ bool CourseColMgr::checkSphereCachedFullPush(KColData *data, const EGG::Vector3f
     }
 }
 
-void CourseColMgr::setNoBounceWallInfo(NoBounceWallColInfo *info) {
-    m_noBounceWallInfo = info;
-}
-
-void CourseColMgr::clearNoBounceWallInfo() {
-    m_noBounceWallInfo = nullptr;
-}
-
-CourseColMgr::NoBounceWallColInfo *CourseColMgr::noBounceWallInfo() const {
-    return m_noBounceWallInfo;
-}
-
 /// @brief Loads a particular section of a .szs file
 void *CourseColMgr::LoadFile(const char *filename) {
     auto *resMgr = System::ResourceManager::Instance();
@@ -167,10 +155,6 @@ void CourseColMgr::DestroyInstance() {
     auto *instance = s_instance;
     s_instance = nullptr;
     delete instance;
-}
-
-CourseColMgr *CourseColMgr::Instance() {
-    return s_instance;
 }
 
 /// @addr{0x807C29E4}
@@ -367,20 +351,6 @@ bool CourseColMgr::doCheckMaskOnlyPush(KColData *data, CollisionCheckFunc collis
     }
 
     return hasCol;
-}
-
-void CourseColMgr::CollisionInfo::updateFloor(f32 dist, const EGG::Vector3f &fnrm) {
-    if (dist > floorDist) {
-        floorDist = dist;
-        floorNrm = fnrm;
-    }
-}
-
-void CourseColMgr::CollisionInfo::updateWall(f32 dist, const EGG::Vector3f &fnrm) {
-    if (dist > wallDist) {
-        wallDist = dist;
-        wallNrm = fnrm;
-    }
 }
 
 void CourseColMgr::CollisionInfo::update(f32 now_dist, const EGG::Vector3f &offset,
