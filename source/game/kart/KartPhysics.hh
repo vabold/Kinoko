@@ -21,26 +21,81 @@ public:
     void calc(f32 dt, f32 maxSpeed, const EGG::Vector3f &scale, bool air);
 
     /// @beginSetters
-    void setPos(const EGG::Vector3f &pos);
-    void setVelocity(const EGG::Vector3f &vel);
-    void set_fc(f32 val);
-    void composeStuntRot(const EGG::Quatf &rot);
-    void composeExtraRot(const EGG::Quatf &rot);
-    void composeDecayingStuntRot(const EGG::Quatf &rot);
-    void composeDecayingExtraRot(const EGG::Quatf &rot);
-    void clearDecayingRot();
+    void setPos(const EGG::Vector3f &pos) {
+        m_pos = pos;
+    }
+
+    void setVelocity(const EGG::Vector3f &vel) {
+        m_velocity = vel;
+    }
+
+    void set_fc(f32 val) {
+        m_fc = val;
+    }
+
+    /// @addr{0x8059FC48}
+    void composeStuntRot(const EGG::Quatf &rot) {
+        m_instantaneousStuntRot *= rot;
+    }
+
+    /// @addr{0x8059FD0C}
+    void composeExtraRot(const EGG::Quatf &rot) {
+        m_instantaneousExtraRot *= rot;
+    }
+
+    /// @addr{0x8059FDD0}
+    void composeDecayingStuntRot(const EGG::Quatf &rot) {
+        m_decayingStuntRot *= rot;
+    }
+
+    /// @addr{0x8059FE94}
+    void composeDecayingExtraRot(const EGG::Quatf &rot) {
+        m_decayingExtraRot *= rot;
+    }
+
+    /// @addr{0x805A0410}
+    void clearDecayingRot() {
+        m_decayingStuntRot = EGG::Quatf::ident;
+        m_decayingExtraRot = EGG::Quatf::ident;
+    }
     /// @endSetters
 
     /// @beginGetters
-    [[nodiscard]] KartDynamics *dynamics();
-    [[nodiscard]] const KartDynamics *dynamics() const;
-    [[nodiscard]] const EGG::Matrix34f &pose() const;
-    [[nodiscard]] CollisionGroup *hitboxGroup();
-    [[nodiscard]] const EGG::Vector3f &xAxis() const;
-    [[nodiscard]] const EGG::Vector3f &yAxis() const;
-    [[nodiscard]] const EGG::Vector3f &zAxis() const;
-    [[nodiscard]] const EGG::Vector3f &pos() const;
-    [[nodiscard]] f32 fc() const;
+    [[nodiscard]] KartDynamics *dynamics() {
+        return m_dynamics;
+    }
+
+    [[nodiscard]] const KartDynamics *dynamics() const {
+        return m_dynamics;
+    }
+
+    [[nodiscard]] const EGG::Matrix34f &pose() const {
+        return m_pose;
+    }
+
+    [[nodiscard]] CollisionGroup *hitboxGroup() {
+        return m_hitboxGroup;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &xAxis() const {
+        return m_xAxis;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &yAxis() const {
+        return m_yAxis;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &zAxis() const {
+        return m_zAxis;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &pos() const {
+        return m_pos;
+    }
+
+    [[nodiscard]] f32 fc() const {
+        return m_fc;
+    }
     /// @endGetters
 
     [[nodiscard]] static KartPhysics *Create(const KartParam &param);

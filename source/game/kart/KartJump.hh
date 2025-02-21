@@ -57,15 +57,25 @@ public:
     void setAngle(const EGG::Vector3f &left);
 
     /// @beginSetters
-    void setBoostRampEnabled(bool isSet);
+    void setBoostRampEnabled(bool isSet) {
+        m_boostRampEnabled = isSet;
+    }
     /// @endSetters
 
     /// @beginGetters
-    [[nodiscard]] bool isBoostRampEnabled() const;
+    [[nodiscard]] bool isBoostRampEnabled() const {
+        return m_boostRampEnabled;
+    }
 
-    [[nodiscard]] TrickType type() const;
-    [[nodiscard]] SurfaceVariant variant() const;
-    [[nodiscard]] s16 cooldown() const;
+    [[nodiscard]] TrickType type() const {
+        return m_type;
+    }
+    [[nodiscard]] SurfaceVariant variant() const {
+        return m_variant;
+    }
+    [[nodiscard]] s16 cooldown() const {
+        return m_cooldown;
+    }
     /// @endGetters
 
 protected:

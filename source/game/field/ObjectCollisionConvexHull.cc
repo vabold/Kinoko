@@ -60,16 +60,6 @@ const EGG::Vector3f &ObjectCollisionConvexHull::getSupport(const EGG::Vector3f &
     return *result;
 }
 
-/// @addr{0x807F957C}
-f32 ObjectCollisionConvexHull::getBoundingRadius() const {
-    return m_worldRadius;
-}
-
-/// @addr{0x8080C414}
-void ObjectCollisionConvexHull::setBoundingRadius(f32 val) {
-    m_worldRadius = val;
-}
-
 /// @addr{0x808364E0}
 /// @brief Allocates space for a convex hull with the provided point count.
 /// This overload can only be called via inheritance or delegating constructors.

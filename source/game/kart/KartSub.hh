@@ -29,7 +29,9 @@ public:
     void tryEndHWG();
 
     /// @beginGetters
-    [[nodiscard]] f32 someScale();
+    [[nodiscard]] f32 someScale() {
+        return m_someScale;
+    }
     /// @endGetters
 
 private:

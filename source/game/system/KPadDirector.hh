@@ -10,20 +10,31 @@ class KPadDirector : EGG::Disposer {
 public:
     void calc();
     void calcPads();
-    void clear();
+
+    /// @addr{0x80523724}
+    void clear() {}
+
     void reset();
     void startGhostProxies();
     void endGhostProxies();
 
-    [[nodiscard]] const KPadPlayer &playerInput() const;
-    [[nodiscard]] KPadHostController *hostController();
+    [[nodiscard]] const KPadPlayer &playerInput() const {
+        return m_playerInput;
+    }
+
+    [[nodiscard]] KPadHostController *hostController() {
+        return m_hostController;
+    }
 
     void setGhostPad(const u8 *inputs, bool driftIsAuto);
     void setHostPad(bool driftIsAuto);
 
     static KPadDirector *CreateInstance();
     static void DestroyInstance();
-    [[nodiscard]] static KPadDirector *Instance();
+
+    [[nodiscard]] static KPadDirector *Instance() {
+        return s_instance;
+    }
 
 private:
     KPadDirector();

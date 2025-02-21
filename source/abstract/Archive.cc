@@ -115,30 +115,4 @@ bool ArchiveHandle::open(s32 entryId, FileInfo &info) const {
     return true;
 }
 
-/// @addr{0x80124cc0}
-void *ArchiveHandle::getFileAddress(const FileInfo &info) const {
-    return static_cast<u8 *>(m_startAddress) + info.startOffset;
-}
-
-ArchiveHandle::Node *ArchiveHandle::node(s32 entryId) const {
-    auto *nodeAddress = static_cast<u8 *>(m_nodesAddress) + sizeof(Node) * entryId;
-    return reinterpret_cast<Node *>(nodeAddress);
-}
-
-void *ArchiveHandle::startAddress() const {
-    return m_startAddress;
-}
-
-bool ArchiveHandle::RawArchive::isValidSignature() const {
-    return parse<u32>(signature) == U8_SIGNATURE;
-}
-
-bool ArchiveHandle::Node::isDirectory() const {
-    return !!(str[0]);
-}
-
-u32 ArchiveHandle::Node::stringOffset() const {
-    return parse<u32>(val) & 0xFFFFFF;
-}
-
 } // namespace Abstract

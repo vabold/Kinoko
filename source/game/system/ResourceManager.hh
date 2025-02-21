@@ -21,11 +21,17 @@ public:
     [[nodiscard]] MultiDvdArchive *load(s32 idx, const char *filename);
     void unmount(MultiDvdArchive *archive);
 
-    [[nodiscard]] static const char *GetVehicleName(Vehicle vehicle);
+    /// @addr{0x805419EC}
+    [[nodiscard]] static const char *GetVehicleName(Vehicle vehicle) {
+        return vehicle < Vehicle::Max ? VEHICLE_NAMES[static_cast<u8>(vehicle)] : nullptr;
+    }
 
     static ResourceManager *CreateInstance();
     static void DestroyInstance();
-    [[nodiscard]] static ResourceManager *Instance();
+
+    [[nodiscard]] static ResourceManager *Instance() {
+        return s_instance;
+    }
 
 private:
     ResourceManager();

@@ -29,26 +29,6 @@ void Heap::dispose() {
     ASSERT(!m_children.m_headObject && !m_children.m_tailObject);
 }
 
-void Heap::disableAllocation() {
-    m_flags.setBit(eFlags::Lock);
-}
-
-void Heap::enableAllocation() {
-    m_flags.resetBit(eFlags::Lock);
-}
-
-bool Heap::tstDisableAllocation() const {
-    return m_flags.onBit(eFlags::Lock);
-}
-
-void Heap::appendDisposer(Disposer *disposer) {
-    m_children.append(disposer);
-}
-
-void Heap::removeDisposer(Disposer *disposer) {
-    m_children.remove(disposer);
-}
-
 Heap *Heap::becomeAllocatableHeap() {
     Heap *oldHeap = s_allocatableHeap;
     s_allocatableHeap = this;
@@ -60,35 +40,6 @@ Heap *Heap::becomeCurrentHeap() {
     Heap *oldHeap = s_currentHeap;
     s_currentHeap = this;
     return oldHeap;
-}
-
-void Heap::registerHeapBuffer(void *buffer) {
-    m_block = buffer;
-}
-
-void *Heap::getStartAddress() {
-    return this;
-}
-
-void *Heap::getEndAddress() {
-    return m_handle->getHeapEnd();
-}
-
-const char *Heap::getName() const {
-    return m_name;
-}
-
-/// @addr{0x80229AD4}
-Heap *Heap::getParentHeap() const {
-    return m_parentHeap;
-}
-
-void Heap::setName(const char *name) {
-    m_name = name;
-}
-
-void Heap::setParentHeap(Heap *heap) {
-    m_parentHeap = heap;
 }
 
 /// @addr{0x80229814}
@@ -172,14 +123,6 @@ Heap *Heap::findHeap(MEMiHeapHead *handle) {
 Heap *Heap::findContainHeap(const void *block) {
     MEMiHeapHead *handle = MEMiHeapHead::findContainHeap(block);
     return handle ? findHeap(handle) : nullptr;
-}
-
-ExpHeap *Heap::dynamicCastToExp(Heap *heap) {
-    return heap->getHeapKind() == Kind::Expanded ? reinterpret_cast<ExpHeap *>(heap) : nullptr;
-}
-
-Heap *Heap::getCurrentHeap() {
-    return s_currentHeap;
 }
 
 } // namespace EGG

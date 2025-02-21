@@ -61,11 +61,17 @@ public:
         m_ghost = rkg;
     }
 
-    static void RegisterInitCallback(const InitCallback &callback, void *arg);
+    static void RegisterInitCallback(const InitCallback &callback, void *arg) {
+        s_onInitCallback = callback;
+        s_onInitCallbackArg = arg;
+    }
 
     static RaceConfig *CreateInstance();
     static void DestroyInstance();
-    [[nodiscard]] static RaceConfig *Instance();
+
+    [[nodiscard]] static RaceConfig *Instance() {
+        return s_instance;
+    }
 
 private:
     RaceConfig();

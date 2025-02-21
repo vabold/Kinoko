@@ -31,14 +31,4 @@ void ObjectCollisionCylinder::transform(const EGG::Matrix34f &mat, const EGG::Ve
     m_bottom = mat.ps_multVector(m_worldPos - EGG::Vector3f::ey * m_worldHeight);
 }
 
-/// @addr{0x8083618C}
-const EGG::Vector3f &ObjectCollisionCylinder::getSupport(const EGG::Vector3f &v) const {
-    return m_top.dot(v) > m_bottom.dot(v) ? m_top : m_bottom;
-}
-
-/// @addr{0x80836498}
-f32 ObjectCollisionCylinder::getBoundingRadius() const {
-    return m_worldRadius;
-}
-
 } // namespace Field

@@ -28,8 +28,20 @@ public:
         f32 _50;
         f32 perpendicularity;
 
-        void updateFloor(f32 dist, const EGG::Vector3f &fnrm);
-        void updateWall(f32 dist, const EGG::Vector3f &fnrm);
+        void updateFloor(f32 dist, const EGG::Vector3f &fnrm) {
+            if (dist > floorDist) {
+                floorDist = dist;
+                floorNrm = fnrm;
+            }
+        }
+
+        void updateWall(f32 dist, const EGG::Vector3f &fnrm) {
+            if (dist > wallDist) {
+                wallDist = dist;
+                wallNrm = fnrm;
+            }
+        }
+
         void update(f32 now_dist, const EGG::Vector3f &offset, const EGG::Vector3f &fnrm,
                 u32 kclAttributeTypeBit);
     };
@@ -65,19 +77,29 @@ public:
             KCLTypeMask *typeMaskOut, f32 scale, f32 radius);
 
     /// @beginSetters
-    void setNoBounceWallInfo(NoBounceWallColInfo *info);
-    void clearNoBounceWallInfo();
+    void setNoBounceWallInfo(NoBounceWallColInfo *info) {
+        m_noBounceWallInfo = info;
+    }
+
+    void clearNoBounceWallInfo() {
+        m_noBounceWallInfo = nullptr;
+    }
     /// @endSetters
 
     /// @beginGetters
-    [[nodiscard]] NoBounceWallColInfo *noBounceWallInfo() const;
+    [[nodiscard]] NoBounceWallColInfo *noBounceWallInfo() const {
+        return m_noBounceWallInfo;
+    }
     /// @endGetters
 
     static void *LoadFile(const char *filename);
 
     static CourseColMgr *CreateInstance();
     static void DestroyInstance();
-    [[nodiscard]] static CourseColMgr *Instance();
+
+    [[nodiscard]] static CourseColMgr *Instance() {
+        return s_instance;
+    }
 
 private:
     CourseColMgr();

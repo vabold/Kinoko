@@ -9,7 +9,7 @@ public:
     ObjectNoImpl(const System::MapdataGeoObj &params);
     ~ObjectNoImpl() override;
 
-    void load() override;
+    void load() override {}
     void calcCollisionTransform() override {}
 };
 

@@ -63,13 +63,19 @@ public:
     [[nodiscard]] bool decompress(const u8 *rkg);
     [[nodiscard]] bool isValid(const u8 *rkg) const;
 
-    [[nodiscard]] const u8 *buffer() const;
+    [[nodiscard]] const u8 *buffer() const {
+        return m_buffer;
+    }
 
     template <typename T>
-    [[nodiscard]] T parseAt(size_t offset) const;
+    [[nodiscard]] T parseAt(size_t offset) const {
+        return parse<T>(*reinterpret_cast<const T *>(m_buffer + offset));
+    }
 
 private:
-    [[nodiscard]] bool compressed(const u8 *rkg) const;
+    [[nodiscard]] bool compressed(const u8 *rkg) const {
+        return ((*(rkg + 0xC) >> 3) & 1) == 1;
+    }
 
     u8 m_buffer[RKG_UNCOMPRESSED_FILE_SIZE];
 };
@@ -85,13 +91,34 @@ public:
     void read(EGG::RamStream &stream); ///< Organizes binary data into members. See RawGhostFile.
 
     /// @beginGetters
-    [[nodiscard]] const Timer &lapTimer(size_t i) const;
-    [[nodiscard]] const Timer &raceTimer() const;
-    [[nodiscard]] Character character() const;
-    [[nodiscard]] Vehicle vehicle() const;
-    [[nodiscard]] Course course() const;
-    [[nodiscard]] const u8 *inputs() const;
-    [[nodiscard]] bool driftIsAuto() const;
+    [[nodiscard]] const Timer &lapTimer(size_t i) const {
+        ASSERT(i < m_lapTimes.size());
+        return m_lapTimes[i];
+    }
+
+    [[nodiscard]] const Timer &raceTimer() const {
+        return m_raceTime;
+    }
+
+    [[nodiscard]] Character character() const {
+        return m_character;
+    }
+
+    [[nodiscard]] Vehicle vehicle() const {
+        return m_vehicle;
+    }
+
+    [[nodiscard]] Course course() const {
+        return m_course;
+    }
+
+    [[nodiscard]] const u8 *inputs() const {
+        return m_inputs;
+    }
+
+    [[nodiscard]] bool driftIsAuto() const {
+        return m_driftIsAuto;
+    }
     /// @endGetters
 
 private:

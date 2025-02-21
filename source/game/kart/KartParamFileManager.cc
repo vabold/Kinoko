@@ -1,7 +1,5 @@
 #include "KartParamFileManager.hh"
 
-#include "game/system/ResourceManager.hh"
-
 namespace Kart {
 
 /// @addr{0x80591C9C}
@@ -118,10 +116,6 @@ void KartParamFileManager::DestroyInstance() {
     delete instance;
 }
 
-KartParamFileManager *KartParamFileManager::Instance() {
-    return s_instance;
-}
-
 KartParamFileManager::KartParamFileManager() {
     init();
 }
@@ -166,16 +160,6 @@ bool KartParamFileManager::validate() const {
     }
 
     return true;
-}
-
-void KartParamFileManager::FileInfo::clear() {
-    file = nullptr;
-    size = 0;
-}
-
-void KartParamFileManager::FileInfo::load(const char *filename) {
-    auto *resourceManager = System::ResourceManager::Instance();
-    file = resourceManager->getFile(filename, &size, System::ArchiveId::Core);
 }
 
 KartParamFileManager *KartParamFileManager::s_instance = nullptr;

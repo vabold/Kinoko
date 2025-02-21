@@ -13,11 +13,17 @@ public:
     void init();
     void calc();
 
-    KartItem &kartItem(size_t idx);
+    [[nodiscard]] KartItem &kartItem(size_t idx) {
+        ASSERT(idx < m_karts.size());
+        return m_karts[idx];
+    }
 
     static ItemDirector *CreateInstance();
     static void DestroyInstance();
-    [[nodiscard]] static ItemDirector *Instance();
+
+    [[nodiscard]] static ItemDirector *Instance() {
+        return s_instance;
+    }
 
 private:
     ItemDirector();

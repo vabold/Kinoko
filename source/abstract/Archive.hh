@@ -8,19 +8,12 @@
 /// @brief An abstraction of components from the nw4r and RVL libraries.
 namespace Abstract {
 
-struct RawArchive {
-    [[nodiscard]] bool isValidSignature() const;
-
-    u32 signature;
-    u32 nodesOffset;
-    u32 nodesSize;
-    u32 filesOffset;
-};
-
 class ArchiveHandle {
 public:
     struct RawArchive {
-        [[nodiscard]] bool isValidSignature() const;
+        [[nodiscard]] bool isValidSignature() const {
+            return parse<u32>(signature) == U8_SIGNATURE;
+        }
 
         u32 signature;
         u32 nodesOffset;
@@ -30,9 +23,13 @@ public:
 
     // TODO: union
     struct Node {
-        [[nodiscard]] bool isDirectory() const;
-        [[nodiscard]] const char *getName() const;
-        [[nodiscard]] u32 stringOffset() const;
+        [[nodiscard]] bool isDirectory() const {
+            return !!(str[0]);
+        }
+
+        [[nodiscard]] u32 stringOffset() const {
+            return parse<u32>(val) & 0xFFFFFF;
+        }
 
         union {
             u32 val;
@@ -60,9 +57,19 @@ public:
     [[nodiscard]] s32 convertPathToEntryId(const char *path) const;
     bool open(s32 entryId, FileInfo &info) const;
 
-    [[nodiscard]] void *getFileAddress(const FileInfo &info) const;
-    [[nodiscard]] Node *node(s32 entryId) const;
-    [[nodiscard]] void *startAddress() const;
+    /// @addr{0x80124CC0}
+    [[nodiscard]] void *getFileAddress(const FileInfo &info) const {
+        return static_cast<u8 *>(m_startAddress) + info.startOffset;
+    }
+
+    [[nodiscard]] Node *node(s32 entryId) const {
+        auto *nodeAddress = static_cast<u8 *>(m_nodesAddress) + sizeof(Node) * entryId;
+        return reinterpret_cast<Node *>(nodeAddress);
+    }
+
+    [[nodiscard]] void *startAddress() const {
+        return m_startAddress;
+    }
 
 private:
     void *m_startAddress;
