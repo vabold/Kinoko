@@ -62,7 +62,8 @@ void KartCollide::calcHitboxes() {
 /// @stage All
 /// @addr{0x80572C20}
 void KartCollide::findCollision() {
-    calcBodyCollision(move()->totalScale(), body()->sinkDepth(), fullRot(), scale());
+    const EGG::Quatf &rot = state()->isEndHalfPipe() ? mainRot() : fullRot();
+    calcBodyCollision(move()->totalScale(), body()->sinkDepth(), rot, scale());
 
     auto &colData = collisionData();
     bool existingWallCollision = colData.bWall || colData.bWall3;
@@ -97,7 +98,7 @@ void KartCollide::findCollision() {
 void KartCollide::FUN_80572F4C() {
     f32 fVar1;
 
-    if (isInRespawn() || state()->isBoost() || state()->isOverZipper() ||
+    if (isInRespawn() || state()->isBoost() || state()->isOverZipper() || state()->isUNK1000() ||
             state()->isNoSparkInvisibleWall() || state()->isHalfPipeRamp()) {
         fVar1 = 0.0f;
     } else {
@@ -263,7 +264,7 @@ void KartCollide::calcFloorEffect() {
 
     m_suspBottomHeightNonSoftWall = 0.0f;
     m_surfaceFlags.resetBit(eSurfaceFlags::Wall, eSurfaceFlags::SolidOOB, eSurfaceFlags::BoostRamp,
-            eSurfaceFlags::Offroad, eSurfaceFlags::Trickable, eSurfaceFlags::NotTrickable);
+            eSurfaceFlags::Offroad, eSurfaceFlags::Trickable, eSurfaceFlags::NotTrickable, eSurfaceFlags::StopHalfPipeState);
     m_suspBottomHeightSoftWall = 0.0f;
     m_someNonSoftWallTimer = 0;
     m_someSoftWallTimer = 0;
@@ -329,6 +330,20 @@ void KartCollide::calcTriggers(Field::KCLTypeMask *mask, const EGG::Vector3f &po
 /// @addr{0x8056F510}
 void KartCollide::handleTriggers(Field::KCLTypeMask *mask) {
     calcFallBoundary(mask, false);
+
+    if (*mask & KCL_TYPE_BIT(COL_TYPE_EFFECT_TRIGGER)) {
+
+        auto *colDir = Field::CollisionDirector::Instance();
+        if (colDir->findClosestCollisionEntry(mask, KCL_TYPE_BIT(COL_TYPE_EFFECT_TRIGGER))) {
+            const auto *closestColEntry = colDir->closestCollisionEntry();
+
+            if (KCL_VARIANT_TYPE(closestColEntry->attribute) == 4) {
+                halfPipe()->end(true);
+                state()->setEndHalfPipe(true);
+                m_surfaceFlags.setBit(eSurfaceFlags::StopHalfPipeState);
+            }
+        }
+    }
 }
 
 /// @addr{0x80571D98}
@@ -813,8 +828,11 @@ bool KartCollide::FUN_805B6A9C(CollisionData &collisionData, const Hitbox &hitbo
 
         collisionData.wallNrm += colInfo.wallNrm;
 
-        if ((maskOut & KCL_TYPE_ANY_INVISIBLE_WALL) && !(maskOut & KCL_TYPE_4010D000)) {
-            collisionData.bInvisibleWallOnly = true;
+        if ((maskOut & KCL_TYPE_ANY_INVISIBLE_WALL)) {
+            collisionData.bInvisibleWall = true;
+            if(!(maskOut & KCL_TYPE_4010D000)) {
+                collisionData.bInvisibleWallOnly = true;
+            }
         }
 
         if (maskOut & KCL_TYPE_BIT(COL_TYPE_WALL_2)) {
