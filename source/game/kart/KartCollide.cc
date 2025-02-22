@@ -232,8 +232,8 @@ void KartCollide::calcBodyCollision(f32 totalScale, f32 sinkDepth, const EGG::Qu
 
         hitbox.calc(totalScale, sinkDepth, scale, rot, pos());
 
-        if (Field::CollisionDirector::Instance()->checkSphereCachedFullPush(hitbox.worldPos(),
-                    hitbox.lastPos(), flags, &colInfo, &maskOut, hitbox.radius(), 0)) {
+        if (Field::CollisionDirector::Instance()->checkSphereCachedFullPush(hitbox.radius(),
+                    hitbox.worldPos(), hitbox.lastPos(), flags, &colInfo, &maskOut, 0)) {
             if (!!(maskOut & KCL_TYPE_VEHICLE_COLLIDEABLE)) {
                 Field::CollisionDirector::Instance()->findClosestCollisionEntry(&maskOut,
                         KCL_TYPE_VEHICLE_COLLIDEABLE);
@@ -292,7 +292,7 @@ void KartCollide::calcFloorEffect() {
 void KartCollide::calcTriggers(Field::KCLTypeMask *mask, const EGG::Vector3f &pos, bool twoPoint) {
     EGG::Vector3f v1 = twoPoint ? physics()->pos() : EGG::Vector3f::inf;
     Field::KCLTypeMask typeMask = twoPoint ? KCL_TYPE_DIRECTIONAL : KCL_TYPE_NON_DIRECTIONAL;
-    f32 fVar1 = twoPoint ? 80.0f : 100.0f * move()->totalScale();
+    f32 radius = twoPoint ? 80.0f : 100.0f * move()->totalScale();
     f32 scalar = -bsp().initialYPos * move()->totalScale() * 0.3f;
     EGG::Vector3f scaledPos = pos + scalar * componentYAxis();
     EGG::Vector3f back = dynamics()->mainRot().rotateVector(EGG::Vector3f::ez);
@@ -302,8 +302,8 @@ void KartCollide::calcTriggers(Field::KCLTypeMask *mask, const EGG::Vector3f &po
     scalar = m_smoothedBack * -physics()->fc() * 1.8f * move()->totalScale();
     scaledPos += scalar * back;
 
-    bool collide = Field::CollisionDirector::Instance()->checkSphereCachedPartialPush(scaledPos, v1,
-            typeMask, nullptr, mask, fVar1, 0);
+    bool collide = Field::CollisionDirector::Instance()->checkSphereCachedPartialPush(radius,
+            scaledPos, v1, typeMask, nullptr, mask, 0);
 
     if (!collide) {
         return;
@@ -402,8 +402,8 @@ void KartCollide::calcWheelCollision(u16 /*wheelIdx*/, CollisionGroup *hitboxGro
     Field::CourseColMgr::Instance()->setNoBounceWallInfo(&noBounceWallInfo);
 
     bool collided = Field::CollisionDirector::Instance()->checkSphereCachedFullPush(
-            firstHitbox.worldPos(), firstHitbox.lastPos(), KCL_TYPE_VEHICLE_COLLIDEABLE, &colInfo,
-            &kclOut, firstHitbox.radius(), 0);
+            firstHitbox.radius(), firstHitbox.worldPos(), firstHitbox.lastPos(),
+            KCL_TYPE_VEHICLE_COLLIDEABLE, &colInfo, &kclOut, 0);
 
     CollisionData &collisionData = hitboxGroup->collisionData();
 
@@ -474,11 +474,11 @@ void KartCollide::calcSideCollision(CollisionData &collisionData, Hitbox &hitbox
         f32 sign = i == 1 ? -1.0f : 1.0f;
         f32 effectiveRadius = sign * hitbox.radius();
         EGG::Vector3f effectivePos = hitbox.worldPos() + effectiveRadius * right;
-        Field::CourseColMgr::CollisionInfo tempColInfo;
+        Field::CourseColMgr::CollisionInfoPartial tempColInfo;
 
-        if (Field::CollisionDirector::Instance()->checkSphereCachedPartial(effectivePos,
-                    hitbox.lastPos(), KCL_TYPE_DRIVER_WALL, &tempColInfo, nullptr,
-                    hitbox.radius())) {
+        if (Field::CollisionDirector::Instance()->checkSphereCachedPartial(hitbox.radius(),
+                    effectivePos, hitbox.lastPos(), KCL_TYPE_DRIVER_WALL, &tempColInfo, nullptr,
+                    0)) {
             tangents[i] = colInfo->tangentOff.squaredLength();
         }
     }
