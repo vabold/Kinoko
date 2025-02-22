@@ -35,6 +35,15 @@ size_t MapdataPointInfo::pointCount() const {
     return m_points.size();
 }
 
+u8 MapdataPointInfo::setting(size_t idx) const {
+    ASSERT(idx < m_settings.size());
+    return m_settings[idx];
+}
+
+const std::span<MapdataPointInfo::Point> &MapdataPointInfo::points() const {
+    return m_points;
+}
+
 /// @addr{0x80515D3C}
 MapdataPointInfoAccessor::MapdataPointInfoAccessor(const MapSectionHeader *header)
     : MapdataAccessorBase<MapdataPointInfo, MapdataPointInfo::SData>(header) {
