@@ -10,6 +10,7 @@ void CourseMap::init() {
     m_course =
             new MapdataFileAccessor(reinterpret_cast<const MapdataFileAccessor::SData *>(buffer));
 
+    constexpr u32 AREA_SIGNATURE = 0x41524541;
     constexpr u32 CANNON_POINT_SIGNATURE = 0x434e5054;
     constexpr u32 CHECK_PATH_SIGNATURE = 0x434b5048;
     constexpr u32 CHECK_POINT_SIGNATURE = 0x434b5054;
@@ -24,6 +25,7 @@ void CourseMap::init() {
     m_checkPoint = parseMapdata<MapdataCheckPointAccessor>(CHECK_POINT_SIGNATURE);
     m_geoObj = parseMapdata<MapdataGeoObjAccessor>(GEO_OBJ_SIGNATURE);
     m_pointInfo = parseMapdata<MapdataPointInfoAccessor>(POINT_INFO_SIGNATURE);
+    m_area = parseMapdata<MapdataAreaAccessor>(AREA_SIGNATURE);
     m_jugemPoint = parseMapdata<MapdataJugemPointAccessor>(JUGEM_POINT_SIGNATURE);
     m_cannonPoint = parseMapdata<MapdataCannonPointAccessor>(CANNON_POINT_SIGNATURE);
     m_stageInfo = parseMapdata<MapdataStageInfoAccessor>(STAGE_INFO_SIGNATURE);
