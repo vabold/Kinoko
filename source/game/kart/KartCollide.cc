@@ -62,7 +62,8 @@ void KartCollide::calcHitboxes() {
 /// @stage All
 /// @addr{0x80572C20}
 void KartCollide::findCollision() {
-    calcBodyCollision(move()->totalScale(), body()->sinkDepth(), fullRot(), scale());
+    const EGG::Quatf &rot = state()->isEndHalfPipe() ? mainRot() : fullRot();
+    calcBodyCollision(move()->totalScale(), body()->sinkDepth(), rot, scale());
 
     auto &colData = collisionData();
     bool existingWallCollision = colData.bWall || colData.bWall3;
@@ -264,7 +265,8 @@ void KartCollide::calcFloorEffect() {
 
     m_suspBottomHeightNonSoftWall = 0.0f;
     m_surfaceFlags.resetBit(eSurfaceFlags::Wall, eSurfaceFlags::SolidOOB, eSurfaceFlags::BoostRamp,
-            eSurfaceFlags::Offroad, eSurfaceFlags::Trickable, eSurfaceFlags::NotTrickable);
+            eSurfaceFlags::Offroad, eSurfaceFlags::Trickable, eSurfaceFlags::NotTrickable,
+            eSurfaceFlags::StopHalfPipeState);
     m_suspBottomHeightSoftWall = 0.0f;
     m_someNonSoftWallTimer = 0;
     m_someSoftWallTimer = 0;
@@ -330,6 +332,17 @@ void KartCollide::calcTriggers(Field::KCLTypeMask *mask, const EGG::Vector3f &po
 /// @addr{0x8056F510}
 void KartCollide::handleTriggers(Field::KCLTypeMask *mask) {
     calcFallBoundary(mask, false);
+
+    if (*mask & KCL_TYPE_BIT(COL_TYPE_EFFECT_TRIGGER)) {
+        auto *colDir = Field::CollisionDirector::Instance();
+        if (colDir->findClosestCollisionEntry(mask, KCL_TYPE_BIT(COL_TYPE_EFFECT_TRIGGER))) {
+            if (KCL_VARIANT_TYPE(colDir->closestCollisionEntry()->attribute) == 4) {
+                halfPipe()->end(true);
+                state()->setEndHalfPipe(true);
+                m_surfaceFlags.setBit(eSurfaceFlags::StopHalfPipeState);
+            }
+        }
+    }
 }
 
 /// @addr{0x80571D98}
@@ -683,6 +696,9 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
             colDirector->findClosestCollisionEntry(maskOut, halfPipeRampMask)) {
         state()->setHalfPipeRamp(true);
         state()->setHalfPipeInvisibilityTimer(2);
+        if (KCL_VARIANT_TYPE(colDirector->closestCollisionEntry()->attribute) == 1) {
+            move()->padType().setBit(KartMove::ePadType::BoostPanel);
+        }
     }
 
     Field::KCLTypeMask jumpPadMask = KCL_TYPE_BIT(COL_TYPE_JUMP_PAD);

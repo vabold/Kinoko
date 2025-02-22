@@ -147,6 +147,10 @@ public:
         m_bOverZipper = isSet;
     }
 
+    void setZipperInvisibleWall(bool isSet) {
+        m_bZipperInvisibleWall = isSet;
+    }
+
     void setZipperBoost(bool isSet) {
         m_bZipperBoost = isSet;
     }
@@ -225,6 +229,10 @@ public:
 
     void setHWG(bool isSet) {
         m_bHWG = isSet;
+    }
+
+    void setEndHalfPipe(bool isSet) {
+        m_bEndHalfPipe = isSet;
     }
 
     void setCannonPointId(u16 val) {
@@ -493,6 +501,10 @@ public:
         return m_bSomethingWallCollision;
     }
 
+    [[nodiscard]] bool isEndHalfPipe() const {
+        return m_bEndHalfPipe;
+    }
+
     [[nodiscard]] bool isAutoDrift() const {
         return m_bAutoDrift;
     }
@@ -627,6 +639,7 @@ private:
     bool m_bSoftWallDrift;
     bool m_bHWG;              ///< Set when "Horizontal Wall Glitch" is active.
     bool m_bChargeStartBoost; ///< Like @ref m_bAccelerate but during countdown.
+    bool m_bEndHalfPipe;
     /// @}
 
     /// @name bitfield4
