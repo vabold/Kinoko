@@ -264,7 +264,8 @@ void KartCollide::calcFloorEffect() {
 
     m_suspBottomHeightNonSoftWall = 0.0f;
     m_surfaceFlags.resetBit(eSurfaceFlags::Wall, eSurfaceFlags::SolidOOB, eSurfaceFlags::BoostRamp,
-            eSurfaceFlags::Offroad, eSurfaceFlags::Trickable, eSurfaceFlags::NotTrickable, eSurfaceFlags::StopHalfPipeState);
+            eSurfaceFlags::Offroad, eSurfaceFlags::Trickable, eSurfaceFlags::NotTrickable,
+            eSurfaceFlags::StopHalfPipeState);
     m_suspBottomHeightSoftWall = 0.0f;
     m_someNonSoftWallTimer = 0;
     m_someSoftWallTimer = 0;
@@ -332,7 +333,6 @@ void KartCollide::handleTriggers(Field::KCLTypeMask *mask) {
     calcFallBoundary(mask, false);
 
     if (*mask & KCL_TYPE_BIT(COL_TYPE_EFFECT_TRIGGER)) {
-
         auto *colDir = Field::CollisionDirector::Instance();
         if (colDir->findClosestCollisionEntry(mask, KCL_TYPE_BIT(COL_TYPE_EFFECT_TRIGGER))) {
             const auto *closestColEntry = colDir->closestCollisionEntry();
@@ -833,7 +833,7 @@ bool KartCollide::FUN_805B6A9C(CollisionData &collisionData, const Hitbox &hitbo
 
         if ((maskOut & KCL_TYPE_ANY_INVISIBLE_WALL)) {
             collisionData.bInvisibleWall = true;
-            if(!(maskOut & KCL_TYPE_4010D000)) {
+            if (!(maskOut & KCL_TYPE_4010D000)) {
                 collisionData.bInvisibleWallOnly = true;
             }
         }

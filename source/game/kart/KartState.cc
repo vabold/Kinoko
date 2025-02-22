@@ -277,7 +277,8 @@ void KartState::calcCollisions() {
         }
     }
 
-    if (colData.bInvisibleWall && m_bHalfPipeRamp && collide()->surfaceFlags().offBit(KartCollide::eSurfaceFlags::StopHalfPipeState)) {
+    if (colData.bInvisibleWall && m_bHalfPipeRamp &&
+            collide()->surfaceFlags().offBit(KartCollide::eSurfaceFlags::StopHalfPipeState)) {
         state()->setUNK1000(true);
     }
 

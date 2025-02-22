@@ -599,12 +599,12 @@ private:
     bool m_bHalfPipeRamp;              ///< Set while colliding with zipper KCL.
     bool m_bOverZipper;                ///< Set while mid-air from a zipper.
     bool m_bUNK1000;
-    bool m_bZipperBoost;               ///< Set when boosting after landing from a zipper.
-    bool m_bZipperStick;               ///< Set while mid-air and still influenced by the zipper.
-    bool m_bZipperTrick;               ///< Set while tricking mid-air from a zipper.
-    bool m_bDisableBackwardsAccel;     ///< Enforces a 20f delay when reversing after charging SSMT.
-    bool m_bRespawnKillY;              ///< Set while respawning to cap external velocity at 0.
-    bool m_bBurnout;                   ///< Set during a burnout on race start.
+    bool m_bZipperBoost;           ///< Set when boosting after landing from a zipper.
+    bool m_bZipperStick;           ///< Set while mid-air and still influenced by the zipper.
+    bool m_bZipperTrick;           ///< Set while tricking mid-air from a zipper.
+    bool m_bDisableBackwardsAccel; ///< Enforces a 20f delay when reversing after charging SSMT.
+    bool m_bRespawnKillY;          ///< Set while respawning to cap external velocity at 0.
+    bool m_bBurnout;               ///< Set during a burnout on race start.
     bool m_bTrickRot;
     bool m_bChargingSsmt;      ///< Tracks whether we are charging a stand-still mini-turbo.
     bool m_bRejectRoad;        ///< Collision which causes a change in the player's pos and rot.
