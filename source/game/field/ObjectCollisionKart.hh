@@ -20,8 +20,8 @@ public:
 
     size_t checkCollision(const EGG::Matrix34f &mat, const EGG::Vector3f &v);
 
-    static EGG::Vector3f GetHitDirection(u16 objKartHit);
-    static constexpr std::span<const EGG::Vector3f> GetVehicleVertices(Vehicle vehicle);
+    [[nodiscard]] static EGG::Vector3f GetHitDirection(u16 objKartHit);
+    [[nodiscard]] static constexpr std::span<const EGG::Vector3f> GetVehicleVertices(Vehicle vehicle);
 
 private:
     ObjectCollisionConvexHull *m_hull;

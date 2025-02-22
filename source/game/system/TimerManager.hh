@@ -11,7 +11,7 @@ struct Timer {
     Timer(u32 data);
     ~Timer();
 
-    std::strong_ordering operator<=>(const Timer &rhs) const {
+    [[nodiscard]] std::strong_ordering operator<=>(const Timer &rhs) const {
         if (auto cmp = min <=> rhs.min; cmp != 0) {
             return cmp;
         }
@@ -27,11 +27,11 @@ struct Timer {
         return valid <=> rhs.valid;
     }
 
-    bool operator==(const Timer &rhs) const = default;
-    bool operator!=(const Timer &rhs) const = default;
+    [[nodiscard]] bool operator==(const Timer &rhs) const = default;
+    [[nodiscard]] bool operator!=(const Timer &rhs) const = default;
 
     /// @addr{0x807EE860}
-    Timer operator-(const Timer &rhs) const {
+    [[nodiscard]] Timer operator-(const Timer &rhs) const {
         s16 addMin = 0;
         s16 addSec = 0;
 
@@ -57,7 +57,7 @@ struct Timer {
         return Timer(newMin, newSec, newMs);
     }
 
-    Timer operator+(f32 ms) const {
+    [[nodiscard]] Timer operator+(f32 ms) const {
         s16 addMin = 0;
         s16 addSec = 0;
 
