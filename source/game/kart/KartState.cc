@@ -277,7 +277,8 @@ void KartState::calcCollisions() {
         }
     }
 
-    if (colData.bInvisibleWall && m_bHalfPipeRamp) {
+    if (colData.bInvisibleWall && m_bHalfPipeRamp &&
+            collide()->surfaceFlags().offBit(KartCollide::eSurfaceFlags::StopHalfPipeState)) {
         m_bZipperInvisibleWall = true;
     }
 
@@ -318,6 +319,10 @@ void KartState::calcCollisions() {
         m_top.normalise();
 
         m_bTouchingGround = true;
+
+        if (!m_bInAction) {
+            m_bEndHalfPipe = false;
+        }
 
         if (m_bOverZipper) {
             halfPipe()->end(true);
@@ -485,6 +490,7 @@ void KartState::clearBitfield3() {
     m_bSoftWallDrift = false;
     m_bHWG = false;
     m_bChargeStartBoost = false;
+    m_bEndHalfPipe = false;
 }
 
 } // namespace Kart

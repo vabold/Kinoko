@@ -57,6 +57,7 @@ public:
         GroundBoostPanelOrRamp = 7,
         Trickable = 11,
         NotTrickable = 12,
+        StopHalfPipeState = 16,
     };
     typedef EGG::TBitFlag<u32, eSurfaceFlags> SurfaceFlags;
 

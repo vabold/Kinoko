@@ -1,5 +1,6 @@
 #include "KartHalfPipe.hh"
 
+#include "game/kart/KartCollide.hh"
 #include "game/kart/KartDynamics.hh"
 #include "game/kart/KartMove.hh"
 #include "game/kart/KartParam.hh"
@@ -37,7 +38,8 @@ void KartHalfPipe::calc() {
 
     calcTrick();
 
-    if (m_touchingZipper && state()->isAirStart()) {
+    if (collide()->surfaceFlags().offBit(KartCollide::eSurfaceFlags::StopHalfPipeState) &&
+            m_touchingZipper && state()->isAirStart()) {
         dynamics()->setExtVel(EGG::Vector3f::zero);
         state()->setOverZipper(true);
 
