@@ -697,6 +697,9 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
             colDirector->findClosestCollisionEntry(maskOut, halfPipeRampMask)) {
         state()->setHalfPipeRamp(true);
         state()->setHalfPipeInvisibilityTimer(2);
+        if (KCL_VARIANT_TYPE(colDirector->closestCollisionEntry()->attribute) == 1) {
+            move()->padType().setBit(KartMove::ePadType::BoostPanel);
+        }
     }
 
     Field::KCLTypeMask jumpPadMask = KCL_TYPE_BIT(COL_TYPE_JUMP_PAD);
