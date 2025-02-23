@@ -20,6 +20,7 @@ void CollisionData::reset() {
     bFloor = false;
     bWall = false;
     bWall3 = false;
+    bInvisibleWall = false;
     bInvisibleWallOnly = false;
     bSoftWall = false;
     bTrickable = false;
