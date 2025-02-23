@@ -24,6 +24,7 @@ public:
     STATIC_ASSERT(sizeof(SData) == 0x4);
 
     MapdataPointInfo(const SData *data);
+    ~MapdataPointInfo();
 
     void read(EGG::RamStream &stream);
 

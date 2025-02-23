@@ -10,6 +10,10 @@ MapdataPointInfo::MapdataPointInfo(const SData *data) : m_rawData(data) {
     read(stream);
 }
 
+MapdataPointInfo::~MapdataPointInfo() {
+    delete m_points.data();
+}
+
 void MapdataPointInfo::read(EGG::RamStream &stream) {
     u16 count = stream.read_u16();
 
