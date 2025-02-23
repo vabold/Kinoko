@@ -57,6 +57,9 @@ public:
         } fields;
     } m_attribute;
     u32 m_size;
+#ifdef BUILD_DEBUG
+    u32 m_tag;
+#endif // BUILD_DEBUG
     MEMiExpBlockLink m_link;
 };
 
@@ -100,6 +103,9 @@ private:
     MEMiExpBlockList m_freeBlocks;
     MEMiExpBlockList m_usedBlocks;
     u16 m_groupId;
+#ifdef BUILD_DEBUG
+    u32 m_tag;
+#endif // BUILD_DEBUG
     Attribute m_attribute;
 
     static constexpr u32 EXP_HEAP_SIGNATURE = 0x45585048; // EXPH

@@ -4,6 +4,7 @@
 #include "game/field/ObjectFlowTable.hh"
 #include "game/field/ObjectHitTable.hh"
 #include "game/field/obj/ObjectCollidable.hh"
+#include "game/field/obj/ObjectNoImpl.hh"
 
 #include <vector>
 
@@ -14,6 +15,7 @@ public:
     void init();
     void calc();
     void addObject(ObjectCollidable *obj);
+    void addObjectNoImpl(ObjectNoImpl *obj);
 
     size_t checkKartObjectCollision(Kart::KartObject *kartObj,
             ObjectCollisionConvexHull *convexHull);

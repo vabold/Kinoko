@@ -45,6 +45,10 @@ void ObjectDirector::addObject(ObjectCollidable *obj) {
     m_objects.push_back(obj);
 }
 
+void ObjectDirector::addObjectNoImpl(ObjectNoImpl *obj) {
+    m_objects.push_back(obj);
+}
+
 /// @addr{0x8082AB04}
 size_t ObjectDirector::checkKartObjectCollision(Kart::KartObject *kartObj,
         ObjectCollisionConvexHull *convexHull) {
