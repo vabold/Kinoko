@@ -13,7 +13,9 @@ namespace Field {
 ObjectCollidable::ObjectCollidable(const System::MapdataGeoObj &params) : ObjectBase(params) {}
 
 /// @addr{0x8067E384}
-ObjectCollidable::~ObjectCollidable() = default;
+ObjectCollidable::~ObjectCollidable() {
+    delete m_collision;
+}
 
 /// @addr{0x8081F0A0}
 void ObjectCollidable::load() {

@@ -175,6 +175,22 @@ enum class WeightClass {
     Heavy = 2,
 };
 
+enum class GroupID : u16 {
+    None = 0,
+    Race = 1,
+    Gfx = 2,
+    Kart = 3,
+    Object = 4,
+    Course = 5,
+    UI = 6,
+    Effect = 7,
+    Sound = 8,
+    Resource = 10,
+    HomeMenu = 11,
+    Item = 12,
+    Net = 13,
+};
+
 static constexpr WeightClass CharacterToWeight(Character character) {
     switch (character) {
     case Character::Baby_Peach:

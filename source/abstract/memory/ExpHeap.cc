@@ -91,6 +91,9 @@ void *MEMiExpBlockHead::getMemoryEnd() const {
 MEMiExpHeapHead::MEMiExpHeapHead(void *end, u16 opt)
     : MEMiHeapHead(EXP_HEAP_SIGNATURE, AddOffset(this, sizeof(MEMiExpHeapHead)), end, opt) {
     m_groupId = 0;
+#ifdef BUILD_DEBUG
+    m_tag = 0;
+#endif // BUILD_DEBUG
     m_attribute.makeAllZero();
 
     Region region = Region(getHeapStart(), getHeapEnd());
@@ -314,6 +317,9 @@ void *MEMiExpHeapHead::allocUsedBlockFromFreeBlock(MEMiExpBlockHead *block, void
     head->m_attribute.fields.direction = direction;
     head->m_attribute.fields.alignment = GetAddrNum(head) - GetAddrNum(leftRegion.end);
     head->m_attribute.fields.groupId = m_groupId;
+#ifdef BUILD_DEBUG
+    head->m_tag = ++m_tag;
+#endif // BUILD_DEBUG
 
     m_usedBlocks.append(head);
 

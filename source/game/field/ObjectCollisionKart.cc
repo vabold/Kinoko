@@ -12,7 +12,9 @@ namespace Field {
 ObjectCollisionKart::ObjectCollisionKart() : m_kartObject(nullptr) {}
 
 /// @addr{0x8081E0E4}
-ObjectCollisionKart::~ObjectCollisionKart() = default;
+ObjectCollisionKart::~ObjectCollisionKart() {
+    delete m_hull;
+}
 
 /// @addr{0x8081D090}
 void ObjectCollisionKart::init(u32 idx) {

@@ -112,6 +112,10 @@ void ExpHeap::setGroupID(u16 groupID) {
     return dynamicCastHandleToExp()->setGroupID(groupID);
 }
 
+u16 ExpHeap::getGroupID() const {
+    return dynamicCastHandleToExp()->getGroupID();
+}
+
 MEMiExpHeapHead *ExpHeap::dynamicCastHandleToExp() {
     return reinterpret_cast<MEMiExpHeapHead *>(m_handle);
 }

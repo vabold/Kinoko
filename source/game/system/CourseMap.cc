@@ -209,6 +209,12 @@ CourseMap::~CourseMap() {
 
     delete m_course;
     delete m_startPoint;
+    delete m_checkPath;
+    delete m_checkPoint;
+    delete m_pointInfo;
+    delete m_geoObj;
+    delete m_jugemPoint;
+    delete m_cannonPoint;
     delete m_stageInfo;
 }
 

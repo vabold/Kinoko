@@ -2,6 +2,7 @@
 
 #include "game/system/MultiDvdArchive.hh"
 
+#include <egg/core/ExpHeap.hh>
 #include <egg/core/Scene.hh>
 
 #include <list>
@@ -42,8 +43,21 @@ private:
     void deinitScene();
     void unmountResources();
 
+#ifdef BUILD_DEBUG
+    void checkMemory();
+    void getMemoryLeakTags();
+    size_t getMemoryLeakTagCount();
+
+    static void ViewTags(void *block, Abstract::Memory::MEMiHeapHead *heap, uintptr_t param);
+    static void IncreaseTagCount(void *block, Abstract::Memory::MEMiHeapHead *heap,
+            uintptr_t param);
+#endif // BUILD_DEBUG
+
+    EGG::ExpHeap::GroupSizeRecord m_groupSizeRecord;
     std::list<Resource *> m_resources; ///< List of all active resources in the scene.
     int m_nextSceneId;
+
+    size_t m_totalMemoryUsed;
 };
 
 } // namespace Scene

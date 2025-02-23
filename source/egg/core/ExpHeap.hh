@@ -25,6 +25,10 @@ public:
         [[nodiscard]] size_t getGroupSize(u16 groupID) const;
         void addSize(u16 groupID, size_t size);
 
+        [[nodiscard]] constexpr size_t size() const {
+            return m_entries.size();
+        }
+
     private:
         std::array<size_t, 256> m_entries;
     };
@@ -45,6 +49,7 @@ public:
     void calcGroupSize(GroupSizeRecord *record);
 
     void setGroupID(u16 groupID);
+    [[nodiscard]] u16 getGroupID() const;
 
     [[nodiscard]] Abstract::Memory::MEMiExpHeapHead *dynamicCastHandleToExp();
     [[nodiscard]] const Abstract::Memory::MEMiExpHeapHead *dynamicCastHandleToExp() const;
