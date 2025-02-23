@@ -231,6 +231,10 @@ public:
         m_bHWG = isSet;
     }
 
+    void setEndHalfPipe(bool isSet) {
+        m_bEndHalfPipe = isSet;
+    }
+
     void setCannonPointId(u16 val) {
         m_cannonPointId = val;
     }
@@ -495,6 +499,10 @@ public:
 
     [[nodiscard]] bool isSomethingWallCollision() const {
         return m_bSomethingWallCollision;
+    }
+
+    [[nodiscard]] bool isEndHalfPipe() const {
+        return m_bEndHalfPipe;
     }
 
     [[nodiscard]] bool isAutoDrift() const {

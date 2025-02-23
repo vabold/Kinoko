@@ -3,7 +3,6 @@
 #include "game/kart/KartCollide.hh"
 #include "game/kart/KartDynamics.hh"
 #include "game/kart/KartMove.hh"
-#include "game/kart/KartObjectManager.hh"
 #include "game/kart/KartParam.hh"
 #include "game/kart/KartPhysics.hh"
 #include "game/kart/KartState.hh"
@@ -39,55 +38,54 @@ void KartHalfPipe::calc() {
 
     calcTrick();
 
-    if (collide()->surfaceFlags().offBit(KartCollide::eSurfaceFlags::StopHalfPipeState)) {
-        if ((m_touchingZipper && state()->isAirStart())) {
-            dynamics()->setExtVel(EGG::Vector3f::zero);
-            state()->setOverZipper(true);
+    if (collide()->surfaceFlags().offBit(KartCollide::eSurfaceFlags::StopHalfPipeState) &&
+            m_touchingZipper && state()->isAirStart()) {
+        dynamics()->setExtVel(EGG::Vector3f::zero);
+        state()->setOverZipper(true);
 
-            EGG::Vector3f upXZ = move()->up();
-            upXZ.y = 0.0f;
-            upXZ.normalise();
-            EGG::Vector3f up = move()->dir().perpInPlane(upXZ, true);
+        EGG::Vector3f upXZ = move()->up();
+        upXZ.y = 0.0f;
+        upXZ.normalise();
+        EGG::Vector3f up = move()->dir().perpInPlane(upXZ, true);
 
-            EGG::Vector3f local_64 = up.cross(bodyUp().perpInPlane(up, true));
-            m_nextSign = local_64.dot(EGG::Vector3f::ey) > 0.0f ? 1.0f : -1.0f;
+        EGG::Vector3f local_64 = up.cross(bodyUp().perpInPlane(up, true));
+        m_nextSign = local_64.dot(EGG::Vector3f::ey) > 0.0f ? 1.0f : -1.0f;
 
+        EGG::Vector3f velNorm = velocity();
+        velNorm.normalise();
+        EGG::Vector3f rot = dynamics()->mainRot().rotateVectorInv(velNorm);
+
+        m_rot.makeVectorRotation(rot, EGG::Vector3f::ez);
+        m_prevPos = prevPos();
+
+        calcLanding(false);
+
+        f32 scaledDir = std::min(65.0f, move()->dir().y * move()->speed());
+        m_attemptedTrickTimer = std::max<s32>(0, scaledDir * 2.0f / 1.3f - 1.0f);
+    } else {
+        if (state()->isOverZipper()) {
+            dynamics()->setGravity(-1.3f);
+
+            EGG::Vector3f side = mainRot().rotateVector(EGG::Vector3f::ez);
             EGG::Vector3f velNorm = velocity();
             velNorm.normalise();
-            EGG::Vector3f rot = dynamics()->mainRot().rotateVectorInv(velNorm);
 
-            m_rot.makeVectorRotation(rot, EGG::Vector3f::ez);
-            m_prevPos = prevPos();
+            EGG::Quatf sideRot;
+            sideRot.makeVectorRotation(side, velNorm);
+            sideRot = sideRot.multSwap(mainRot()).multSwap(m_rot);
 
+            f32 t = move()->calcSlerpRate(DEG2RAD360, mainRot(), sideRot);
+            EGG::Quatf slerp = mainRot().slerpTo(sideRot, t);
+            dynamics()->setFullRot(slerp);
+            dynamics()->setMainRot(slerp);
+
+            --m_attemptedTrickTimer;
+
+            calcRot();
             calcLanding(false);
-
-            f32 scaledDir = std::min(65.0f, move()->dir().y * move()->speed());
-            m_attemptedTrickTimer = std::max<s32>(0, scaledDir * 2.0f / 1.3f - 1.0f);
         } else {
-            if (state()->isOverZipper()) {
-                dynamics()->setGravity(-1.3f);
-
-                EGG::Vector3f side = mainRot().rotateVector(EGG::Vector3f::ez);
-                EGG::Vector3f velNorm = velocity();
-                velNorm.normalise();
-
-                EGG::Quatf sideRot;
-                sideRot.makeVectorRotation(side, velNorm);
-                sideRot = sideRot.multSwap(mainRot()).multSwap(m_rot);
-
-                f32 t = move()->calcSlerpRate(DEG2RAD360, mainRot(), sideRot);
-                EGG::Quatf slerp = mainRot().slerpTo(sideRot, t);
-                dynamics()->setFullRot(slerp);
-                dynamics()->setMainRot(slerp);
-
-                --m_attemptedTrickTimer;
-
-                calcRot();
-                calcLanding(false);
-            } else {
-                if (state()->isHalfPipeRamp()) {
-                    calcLanding(true);
-                }
+            if (state()->isHalfPipeRamp()) {
+                calcLanding(true);
             }
         }
     }

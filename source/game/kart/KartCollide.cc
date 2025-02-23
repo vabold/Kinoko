@@ -831,7 +831,7 @@ bool KartCollide::FUN_805B6A9C(CollisionData &collisionData, const Hitbox &hitbo
 
         collisionData.wallNrm += colInfo.wallNrm;
 
-        if ((maskOut & KCL_TYPE_ANY_INVISIBLE_WALL)) {
+        if (maskOut & KCL_TYPE_ANY_INVISIBLE_WALL) {
             collisionData.bInvisibleWall = true;
             if (!(maskOut & KCL_TYPE_4010D000)) {
                 collisionData.bInvisibleWallOnly = true;
