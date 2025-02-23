@@ -28,7 +28,9 @@ ObjectHitTable::ObjectHitTable(const char *filename) {
 }
 
 /// @addr{0x807F9348}
-ObjectHitTable::~ObjectHitTable() = default;
+ObjectHitTable::~ObjectHitTable() {
+    delete m_reactions.data();
+}
 
 Kart::Reaction ObjectHitTable::reaction(s16 i) const {
     ASSERT(i != -1);

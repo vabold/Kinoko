@@ -47,7 +47,10 @@ KartMove::KartMove() : m_smoothedUp(EGG::Vector3f::ey), m_scale(1.0f, 1.0f, 1.0f
 }
 
 /// @addr{0x80587B78}
-KartMove::~KartMove() = default;
+KartMove::~KartMove() {
+    delete m_jump;
+    delete m_halfPipe;
+}
 
 /// @addr{0x8057821C}
 void KartMove::createSubsystems() {
@@ -1275,18 +1278,14 @@ f32 KartMove::calcVehicleAcceleration() const {
         return 1.0f;
     }
 
-    std::vector<f32> as;
-    std::vector<f32> ts;
+    std::span<const f32> as;
+    std::span<const f32> ts;
     if (state()->isDrifting()) {
-        const auto &as_arr = param()->stats().accelerationDriftA;
-        const auto &ts_arr = param()->stats().accelerationDriftT;
-        as = {as_arr.begin(), as_arr.end()};
-        ts = {ts_arr.begin(), ts_arr.end()};
+        as = param()->stats().accelerationDriftA;
+        ts = param()->stats().accelerationDriftT;
     } else {
-        const auto &as_arr = param()->stats().accelerationStandardA;
-        const auto &ts_arr = param()->stats().accelerationStandardT;
-        as = {as_arr.begin(), as_arr.end()};
-        ts = {ts_arr.begin(), ts_arr.end()};
+        as = param()->stats().accelerationStandardA;
+        ts = param()->stats().accelerationStandardT;
     }
 
     size_t i = 0;

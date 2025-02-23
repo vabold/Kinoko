@@ -1,5 +1,6 @@
 #pragma once
 
+#include <egg/core/ExpHeap.hh>
 #include <egg/core/Scene.hh>
 
 namespace Scene {
@@ -15,6 +16,10 @@ public:
 private:
     void allocate();
     void init();
+
+    void checkMemory();
+
+    EGG::ExpHeap::GroupSizeRecord m_groupSizeRecord;
 };
 
 } // namespace Scene

@@ -11,10 +11,37 @@ namespace Scene {
 GameScene::GameScene() {
     m_heap->setName("DefaultGameSceneHeap");
     m_nextSceneId = -1;
+
+    m_totalMemoryUsed = 0;
+    EGG::ExpHeap *heap = EGG::Heap::dynamicCastToExp(m_heap);
+    ASSERT(heap);
+
+    heap->calcGroupSize(&m_groupSizeRecord);
+    for (u16 groupID = 0; groupID < m_groupSizeRecord.size(); ++groupID) {
+        m_totalMemoryUsed += m_groupSizeRecord.getGroupSize(groupID);
+    }
 }
 
 /// @addr{0x8051A3C0}
-GameScene::~GameScene() = default;
+GameScene::~GameScene() {
+    m_resources.clear();
+
+    EGG::ExpHeap *heap = EGG::Heap::dynamicCastToExp(m_heap);
+    ASSERT(heap);
+
+    heap->calcGroupSize(&m_groupSizeRecord);
+    size_t sum = 0;
+    for (u16 groupID = 0; groupID < m_groupSizeRecord.size(); ++groupID) {
+        sum += m_groupSizeRecord.getGroupSize(groupID);
+    }
+
+    if (sum > m_totalMemoryUsed) {
+#ifdef BUILD_DEBUG
+        WARN("MEMORY LEAK DETECTED: %zu bytes", sum - m_totalMemoryUsed);
+        getMemoryLeakTags();
+#endif
+    }
+}
 
 /// @addr{0x8051B3C8}
 void GameScene::calc() {
@@ -59,6 +86,7 @@ void GameScene::initScene() {
     createEngines();
     System::KPadDirector::Instance()->reset();
     initEngines();
+    checkMemory();
 }
 
 /// @addr{0x8051B0F4}
@@ -81,4 +109,61 @@ void GameScene::unmountResources() {
         delete resource;
     }
 }
+
+void GameScene::checkMemory() {
+    EGG::ExpHeap *heap = EGG::Heap::dynamicCastToExp(m_heap);
+    ASSERT(heap);
+
+    heap->calcGroupSize(&m_groupSizeRecord);
+    size_t defaultSize = m_groupSizeRecord.getGroupSize(static_cast<u16>(GroupID::None));
+
+    // Because we're working with a class that can be inherited (but not doubly-inherited),
+    // it's possible that derived classes can have a different size compared to GameScene
+    // We don't need to know the exact derived class, though, as we have the memory block head
+    // The scene is the first, always group ID 0 allocation to happen in the scene's heap
+    Abstract::Memory::MEMiExpBlockHead *blockHead =
+            static_cast<Abstract::Memory::MEMiExpBlockHead *>(
+                    SubOffset(this, sizeof(Abstract::Memory::MEMiExpBlockHead)));
+    size_t initialAllocSize = blockHead->m_size;
+    ASSERT(defaultSize >= initialAllocSize);
+
+    defaultSize -= initialAllocSize;
+    if (defaultSize > 0) {
+        WARN("Default memory usage found! %zu bytes", defaultSize);
+    }
+
+    for (u16 groupID = 1; groupID < m_groupSizeRecord.size(); ++groupID) {
+        size_t size = m_groupSizeRecord.getGroupSize(groupID);
+        if (size == 0) {
+            continue;
+        }
+
+        DEBUG("Group ID %d: Allocated %zu bytes", groupID, size);
+    }
+}
+
+#ifdef BUILD_DEBUG
+void GameScene::getMemoryLeakTags() {
+    std::vector<u32> vec;
+    EGG::Heap::dynamicCastToExp(m_heap)->dynamicCastHandleToExp()->visitAllocated(ViewTags,
+            GetAddrNum(&vec));
+
+    DEBUG("TAGGED MEMORY BLOCKS:");
+    ASSERT(!vec.empty());
+    printf("[%d", vec[0]);
+    for (u32 i = 1; i < vec.size(); ++i) {
+        printf(", %d", vec[i]);
+    }
+    printf("]\n");
+}
+
+void GameScene::ViewTags(void *block, Abstract::Memory::MEMiHeapHead * /*heap*/, uintptr_t param) {
+    Abstract::Memory::MEMiExpBlockHead *blockHead =
+            static_cast<Abstract::Memory::MEMiExpBlockHead *>(
+                    SubOffset(block, sizeof(Abstract::Memory::MEMiExpBlockHead)));
+    std::vector<u32> *vec = reinterpret_cast<std::vector<u32> *>(param);
+    vec->push_back(blockHead->m_tag);
+}
+#endif
+
 } // namespace Scene

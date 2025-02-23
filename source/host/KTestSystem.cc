@@ -350,6 +350,8 @@ bool KTestSystem::runTest() {
         calc();
     }
 
+    // TODO: Use a system heap! std::string relies on heap allocation
+    m_sceneMgr->currentScene()->heap()->enableAllocation();
     writeTestOutput();
     return m_sync;
 }
