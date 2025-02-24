@@ -144,25 +144,53 @@ void GameScene::checkMemory() {
 
 #ifdef BUILD_DEBUG
 void GameScene::getMemoryLeakTags() {
-    std::vector<u32> vec;
+    size_t count = getMemoryLeakTagCount();
+    if (count == 0) {
+        return;
+    }
+
+    std::span<u32> tags = std::span<u32>(new u32[count], count);
+    for (auto &tag : tags) {
+        tag = 0; // empty tag
+    }
+
     EGG::Heap::dynamicCastToExp(m_heap)->dynamicCastHandleToExp()->visitAllocated(ViewTags,
-            GetAddrNum(&vec));
+            GetAddrNum(&tags));
 
     DEBUG("TAGGED MEMORY BLOCKS:");
-    ASSERT(!vec.empty());
-    printf("[%d", vec[0]);
-    for (u32 i = 1; i < vec.size(); ++i) {
-        printf(", %d", vec[i]);
+    printf("[%d", tags[0]);
+    for (u32 i = 1; i < tags.size(); ++i) {
+        printf(", %d", tags[i]);
     }
     printf("]\n");
+
+    delete[] tags.data();
+}
+
+size_t GameScene::getMemoryLeakTagCount() {
+    size_t count = 0;
+    EGG::Heap::dynamicCastToExp(m_heap)->dynamicCastHandleToExp()->visitAllocated(IncreaseTagCount,
+            GetAddrNum(&count));
+    return count;
 }
 
 void GameScene::ViewTags(void *block, Abstract::Memory::MEMiHeapHead * /*heap*/, uintptr_t param) {
     Abstract::Memory::MEMiExpBlockHead *blockHead =
             static_cast<Abstract::Memory::MEMiExpBlockHead *>(
                     SubOffset(block, sizeof(Abstract::Memory::MEMiExpBlockHead)));
-    std::vector<u32> *vec = reinterpret_cast<std::vector<u32> *>(param);
-    vec->push_back(blockHead->m_tag);
+    std::span<u32> *span = reinterpret_cast<std::span<u32> *>(param);
+    for (auto &tag : *span) {
+        if (tag == 0) {
+            tag = blockHead->m_tag;
+            break;
+        }
+    }
+}
+
+void GameScene::IncreaseTagCount(void * /*block*/, Abstract::Memory::MEMiHeapHead * /*heap*/,
+        uintptr_t param) {
+    size_t &count = *reinterpret_cast<size_t *>(param);
+    ++count;
 }
 #endif
 

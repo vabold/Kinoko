@@ -46,8 +46,11 @@ private:
     void checkMemory();
 #ifdef BUILD_DEBUG
     void getMemoryLeakTags();
+    size_t getMemoryLeakTagCount();
 
     static void ViewTags(void *block, Abstract::Memory::MEMiHeapHead *heap, uintptr_t param);
+    static void IncreaseTagCount(void *block, Abstract::Memory::MEMiHeapHead *heap,
+            uintptr_t param);
 #endif
 
     EGG::ExpHeap::GroupSizeRecord m_groupSizeRecord;
