@@ -143,6 +143,10 @@ public:
         m_bHalfPipeRamp = isSet;
     }
 
+    void setUNK1000(bool isSet) {
+        m_bUNK1000 = isSet;
+    }
+
     void setOverZipper(bool isSet) {
         m_bOverZipper = isSet;
     }
@@ -225,6 +229,10 @@ public:
 
     void setHWG(bool isSet) {
         m_bHWG = isSet;
+    }
+
+    void setEndHalfPipe(bool isSet) {
+        m_bEndHalfPipe = isSet;
     }
 
     void setCannonPointId(u16 val) {
@@ -409,6 +417,10 @@ public:
         return m_bHalfPipeRamp;
     }
 
+    [[nodiscard]] bool isUNK1000() const {
+        return m_bUNK1000;
+    }
+
     [[nodiscard]] bool isOverZipper() const {
         return m_bOverZipper;
     }
@@ -487,6 +499,10 @@ public:
 
     [[nodiscard]] bool isSomethingWallCollision() const {
         return m_bSomethingWallCollision;
+    }
+
+    [[nodiscard]] bool isEndHalfPipe() const {
+        return m_bEndHalfPipe;
     }
 
     [[nodiscard]] bool isAutoDrift() const {
@@ -590,12 +606,13 @@ private:
     bool m_bBoostOffroadInvincibility; ///< Set if we should ignore offroad slowdown this frame.
     bool m_bHalfPipeRamp;              ///< Set while colliding with zipper KCL.
     bool m_bOverZipper;                ///< Set while mid-air from a zipper.
-    bool m_bZipperBoost;               ///< Set when boosting after landing from a zipper.
-    bool m_bZipperStick;               ///< Set while mid-air and still influenced by the zipper.
-    bool m_bZipperTrick;               ///< Set while tricking mid-air from a zipper.
-    bool m_bDisableBackwardsAccel;     ///< Enforces a 20f delay when reversing after charging SSMT.
-    bool m_bRespawnKillY;              ///< Set while respawning to cap external velocity at 0.
-    bool m_bBurnout;                   ///< Set during a burnout on race start.
+    bool m_bUNK1000;
+    bool m_bZipperBoost;           ///< Set when boosting after landing from a zipper.
+    bool m_bZipperStick;           ///< Set while mid-air and still influenced by the zipper.
+    bool m_bZipperTrick;           ///< Set while tricking mid-air from a zipper.
+    bool m_bDisableBackwardsAccel; ///< Enforces a 20f delay when reversing after charging SSMT.
+    bool m_bRespawnKillY;          ///< Set while respawning to cap external velocity at 0.
+    bool m_bBurnout;               ///< Set during a burnout on race start.
     bool m_bTrickRot;
     bool m_bChargingSsmt;      ///< Tracks whether we are charging a stand-still mini-turbo.
     bool m_bRejectRoad;        ///< Collision which causes a change in the player's pos and rot.
@@ -622,6 +639,7 @@ private:
     bool m_bSoftWallDrift;
     bool m_bHWG;              ///< Set when "Horizontal Wall Glitch" is active.
     bool m_bChargeStartBoost; ///< Like @ref m_bAccelerate but during countdown.
+    bool m_bEndHalfPipe;
     /// @}
 
     /// @name bitfield4
