@@ -70,14 +70,14 @@ void KartState::reset() {
 void KartState::calcInput() {
     const auto *raceMgr = System::RaceManager::Instance();
     if (raceMgr->isStageReached(System::RaceManager::Stage::Race)) {
-        if (!state()->isInAction() && !state()->isBeforeRespawn() && !state()->isCannonStart() &&
-                !state()->isInCannon() && !state()->isOverZipper()) {
+        if (!m_bInAction && !m_bBeforeRespawn && !m_bCannonStart && !m_bInCannon &&
+                !m_bOverZipper) {
             const auto &currentState = inputs()->currentState();
             const auto &lastState = inputs()->lastState();
             m_stickX = currentState.stick.x;
             m_stickY = currentState.stick.y;
 
-            if (!state()->isRejectRoadTrigger()) {
+            if (!m_bRejectRoadTrigger) {
                 if (m_stickX < 0.0f) {
                     m_bStickLeft = true;
                 } else if (m_stickX > 0.0f) {
@@ -85,7 +85,7 @@ void KartState::calcInput() {
                 }
             }
 
-            if (!state()->isBurnout()) {
+            if (!m_bBurnout) {
                 m_bAccelerate = currentState.accelerate();
                 m_bAccelerateStart = m_bAccelerate && !lastState.accelerate();
                 m_bBrake = currentState.brake();
@@ -219,7 +219,7 @@ void KartState::calcCollisions() {
         m_top += colData.floorNrm;
         trickable = trickable || colData.bTrickable;
 
-        if (state()->isOverZipper()) {
+        if (m_bOverZipper) {
             halfPipe()->end(true);
         }
     }
@@ -313,7 +313,7 @@ void KartState::calcCollisions() {
 
         m_bTouchingGround = true;
 
-        if (state()->isOverZipper()) {
+        if (m_bOverZipper) {
             halfPipe()->end(true);
         }
 
