@@ -29,6 +29,8 @@ public:
     void read(EGG::RamStream &stream);
 
     [[nodiscard]] size_t pointCount() const;
+    [[nodiscard]] u8 setting(size_t idx) const;
+    [[nodiscard]] const std::span<Point> &points() const;
 
 private:
     const SData *m_rawData;
