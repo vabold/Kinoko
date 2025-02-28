@@ -38,6 +38,7 @@ enum class ObjectId {
     KinokoUd = 0x1f5,
     KinokoBend = 0x1f6,
     KinokoNm = 0x1fa,
+    Crane = 0x1fb,
     Aurora = 0x204,
     Mdush = 0x217,
 };
