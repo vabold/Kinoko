@@ -232,6 +232,7 @@ Vector3f Matrix34f::ps_multVector(const Vector3f &vec) const {
 }
 
 /// @brief Multiplies a 3x3 matrix by a vector.
+/// @addr{0x8059A4F8}
 Vector3f Matrix34f::multVector33(const Vector3f &vec) const {
     Vector3f ret;
 
