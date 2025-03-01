@@ -32,7 +32,7 @@ void ObjectCrane::calc() {
     calcTransform();
 
     m_pos = m_startPos + m_transform.multVector33(scaledX + scaledY);
-    m_flags |= 1;
+    m_flags.setBit(eFlags::Position);
 
     if (m_yt++ > m_yPeriod) {
         m_yt = 0;
