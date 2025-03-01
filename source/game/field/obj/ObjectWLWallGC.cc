@@ -40,7 +40,7 @@ ObjectWLWallGC::~ObjectWLWallGC() = default;
 
 /// @addr{0x8086BE34}
 void ObjectWLWallGC::init() {
-    m_flags |= 1;
+    m_flags.setBit(eFlags::Position);
     m_pos = m_initialPos;
 
     calcTransform();
@@ -51,7 +51,7 @@ void ObjectWLWallGC::init() {
 void ObjectWLWallGC::calc() {
     EGG::Vector3f prevPos = m_pos;
 
-    m_flags |= 4;
+    m_flags.setBit(eFlags::Matrix);
     m_transform = getUpdatedMatrix(0);
     m_pos = m_transform.base(3);
 
