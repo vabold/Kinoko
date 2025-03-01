@@ -134,7 +134,7 @@ void ObjectCarTGE::init() {
 
     m_squashed = false;
     m_pos = m_railInterpolator->curPos();
-    m_flags |= 1;
+    m_flags.setBit(eFlags::Position);
     m_currSpeed = m_railInterpolator->speed();
     m_scaledTangentDir = m_railInterpolator->curTangentDir() * m_currSpeed;
     m_hitAngle = (m_carType == CarType::Truck) ? HIT_ANGLE_TRUCK : HIT_ANGLE_NORMAL;
@@ -348,7 +348,7 @@ void ObjectCarTGE::calcPos() {
         m_pos = (curPos - m_tangent * t * 0.5f) - EGG::Vector3f::ey * 5.0f;
     }
 
-    m_flags |= 1;
+    m_flags.setBit(eFlags::Position);
     m_up = OrthonormalBasis(m_tangent).base(1);
     setMatrixTangentTo(m_up, m_tangent);
 }

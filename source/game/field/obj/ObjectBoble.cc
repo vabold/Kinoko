@@ -13,7 +13,7 @@ void ObjectBoble::init() {
     m_railInterpolator->init(0.0f, 0);
     m_curTangentDir = m_railInterpolator->curTangentDir();
     m_railInterpolator->setPerPointVelocities(true);
-    m_flags |= 8;
+    m_flags.setBit(eFlags::Scale);
     m_scale = EGG::Vector3f(1.0f, 1.0f, 1.0f);
 }
 
@@ -21,7 +21,7 @@ void ObjectBoble::init() {
 void ObjectBoble::calc() {
     m_railInterpolator->calc();
     m_pos = m_railInterpolator->curPos();
-    m_flags |= 1;
+    m_flags.setBit(eFlags::Position);
 
     calcTangent();
 }

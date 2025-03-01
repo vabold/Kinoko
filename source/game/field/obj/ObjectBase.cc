@@ -15,14 +15,17 @@ namespace Field {
 /// @addr{0x8081F828}
 ObjectBase::ObjectBase(const System::MapdataGeoObj &params)
     : m_drawMdl(nullptr), m_resFile(nullptr), m_id(static_cast<ObjectId>(params.id())),
-      m_flags(0x3), m_pos(params.pos()), m_rot(params.rot() * DEG2RAD), m_scale(params.scale()),
-      m_transform(EGG::Matrix34f::ident), m_mapObj(&params) {}
+      m_pos(params.pos()), m_rot(params.rot() * DEG2RAD), m_scale(params.scale()),
+      m_transform(EGG::Matrix34f::ident), m_mapObj(&params) {
+    m_flags.setBit(eFlags::Position, eFlags::Rotation, eFlags::Scale);
+}
 
 /// @addr{0x8081FB04}
 ObjectBase::ObjectBase(const char *name, const EGG::Vector3f &pos, const EGG::Vector3f &rot,
         const EGG::Vector3f &scale)
-    : m_drawMdl(nullptr), m_resFile(nullptr), m_flags(11), m_pos(pos), m_rot(rot), m_scale(scale),
+    : m_drawMdl(nullptr), m_resFile(nullptr), m_pos(pos), m_rot(rot), m_scale(scale),
       m_transform(EGG::Matrix34f::ident), m_mapObj(nullptr) {
+    m_flags.setBit(eFlags::Position, eFlags::Rotation, eFlags::Scale);
     m_id = ObjectDirector::Instance()->flowTable().getIdfFromName(name);
 }
 
@@ -101,11 +104,12 @@ const char *ObjectBase::getKclName() const {
 
 /// @addr{0x80821640}
 void ObjectBase::calcTransform() {
-    if (m_flags & 2) {
+    if (m_flags.onBit(eFlags::Rotation)) {
         m_transform.makeRT(m_rot, m_pos);
-        m_flags &= ~0x3;
-    } else if (m_flags & 1) {
+        m_flags.resetBit(eFlags::Rotation, eFlags::Position);
+    } else if (m_flags.onBit(eFlags::Position)) {
         m_transform.setBase(3, m_pos);
+        m_flags.setBit(eFlags::Matrix);
     }
 }
 
@@ -125,7 +129,7 @@ void ObjectBase::linkAnims(const std::span<const char *> &names,
 
 /// @addr{0x80821910}
 void ObjectBase::setMatrixTangentTo(const EGG::Vector3f &up, const EGG::Vector3f &tangent) {
-    m_flags |= 4;
+    m_flags.setBit(eFlags::Matrix);
     SetRotTangentHorizontal(m_transform, up, tangent);
     m_transform.setBase(3, m_pos);
 }
