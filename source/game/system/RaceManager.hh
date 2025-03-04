@@ -121,6 +121,10 @@ public:
     [[nodiscard]] Stage stage() const {
         return m_stage;
     }
+
+    [[nodiscard]] u32 timer() const {
+        return m_timer;
+    }
     /// @endGetters
 
     static RaceManager *CreateInstance();

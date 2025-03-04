@@ -42,6 +42,24 @@ public:
     void resetCollisionEntries(KCLTypeMask *ptr);
     void pushCollisionEntry(f32 dist, KCLTypeMask *typeMask, KCLTypeMask kclTypeBit, u16 attribute);
 
+    /// @addr{0x807BDB5C}
+    void setCurrentCollisionVariant(u16 attribute) {
+        ASSERT(m_collisionEntryCount > 0);
+        u16 &entryAttr = m_entries[m_collisionEntryCount - 1].attribute;
+        entryAttr = (entryAttr & 0xff1f) | (attribute << 5);
+    }
+
+    /// @addr{0x807BDBC4}
+    void setCurrentCollisionTrickable(bool trickable) {
+        ASSERT(m_collisionEntryCount > 0);
+        u16 &entryAttr = m_entries[m_collisionEntryCount - 1].attribute;
+        entryAttr &= 0xdfff;
+
+        if (trickable) {
+            entryAttr |= (1 << 0xd);
+        }
+    }
+
     bool findClosestCollisionEntry(KCLTypeMask *typeMask, KCLTypeMask type);
 
     /// @beginGetters
