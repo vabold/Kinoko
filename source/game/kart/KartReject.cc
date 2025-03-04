@@ -63,7 +63,9 @@ void KartReject::calcRejectRoad() {
 
         state()->setHop(false);
 
-        if (!state()->isNoSparkInvisibleWall() && !calcRejection()) {
+        bool didReject = calcRejection();
+
+        if (!state()->isNoSparkInvisibleWall() && !didReject) {
             state()->setRejectRoadTrigger(false);
         }
 
