@@ -136,6 +136,8 @@ void KartState::resetFlags() {
     m_bAirStart = false;
     m_bStickRight = false;
 
+    m_bUNK1000 = false;
+
     m_bJumpPadDisableYsusForce = false;
 
     m_stickY = 0.0f;
@@ -275,6 +277,11 @@ void KartState::calcCollisions() {
         }
     }
 
+    if (colData.bInvisibleWall && m_bHalfPipeRamp &&
+            collide()->surfaceFlags().offBit(KartCollide::eSurfaceFlags::StopHalfPipeState)) {
+        state()->setUNK1000(true);
+    }
+
     if (softWallCount > 0 || hwg) {
         m_bUNK2 = true;
         m_softWallSpeed = wallNrm;
@@ -312,6 +319,7 @@ void KartState::calcCollisions() {
         m_top.normalise();
 
         m_bTouchingGround = true;
+        m_bEndHalfPipe = false;
 
         if (m_bOverZipper) {
             halfPipe()->end(true);
@@ -449,6 +457,7 @@ void KartState::clearBitfield1() {
     m_bHalfPipeRamp = false;
     m_bOverZipper = false;
     m_bDisableBackwardsAccel = false;
+    m_bUNK1000 = false;
     m_bZipperBoost = false;
     m_bZipperStick = false;
     m_bZipperTrick = false;
@@ -478,6 +487,7 @@ void KartState::clearBitfield3() {
     m_bSoftWallDrift = false;
     m_bHWG = false;
     m_bChargeStartBoost = false;
+    m_bEndHalfPipe = false;
 }
 
 } // namespace Kart
