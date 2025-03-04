@@ -87,7 +87,9 @@ void KartDynamics::setBspParams(f32 rotSpeed, const EGG::Vector3f &m, const EGG:
 /// @addr{0x805B5170}
 /// @param dt Delta time. It's always 1.0f.
 /// @param maxSpeed Always 120.0f.
-void KartDynamics::calc(f32 dt, f32 maxSpeed, bool /*air*/) {
+void KartDynamics::calc(f32 dt, f32 maxSpeed, bool air) {
+    constexpr f32 TERMINAL_Y_VEL = 120.0f;
+
     if (!m_noGravity) {
         m_totalForce.y += m_gravity;
     }
@@ -123,6 +125,10 @@ void KartDynamics::calc(f32 dt, f32 maxSpeed, bool /*air*/) {
         if (speedBack.dot(playerBackHoriz) < 0.0f) {
             m_speedFix = -m_speedFix;
         }
+    }
+
+    if (air) {
+        m_intVel.y = std::min(TERMINAL_Y_VEL, m_intVel.y);
     }
 
     m_velocity = m_extVel * dt + m_intVel + m_movingObjVel + m_movingRoadVel;
