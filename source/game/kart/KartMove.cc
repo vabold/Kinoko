@@ -1436,7 +1436,7 @@ f32 KartMove::calcWallCollisionSpeedFactor(f32 &f1) {
 
     onWallCollision();
 
-    if (state()->isOverZipper()) {
+    if (state()->isZipperInvisibleWall() || state()->isOverZipper()) {
         return 1.0f;
     }
 

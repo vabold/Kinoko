@@ -136,6 +136,8 @@ void KartState::resetFlags() {
     m_bAirStart = false;
     m_bStickRight = false;
 
+    m_bZipperInvisibleWall = false;
+
     m_bJumpPadDisableYsusForce = false;
 
     m_stickY = 0.0f;
@@ -273,6 +275,10 @@ void KartState::calcCollisions() {
                 hwg = true;
             }
         }
+    }
+
+    if (colData.bInvisibleWall && m_bHalfPipeRamp) {
+        m_bZipperInvisibleWall = true;
     }
 
     if (softWallCount > 0 || hwg) {
@@ -448,6 +454,7 @@ void KartState::clearBitfield1() {
     m_bBoostOffroadInvincibility = false;
     m_bHalfPipeRamp = false;
     m_bOverZipper = false;
+    m_bZipperInvisibleWall = false;
     m_bDisableBackwardsAccel = false;
     m_bZipperBoost = false;
     m_bZipperStick = false;
