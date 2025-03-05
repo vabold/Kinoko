@@ -413,6 +413,10 @@ public:
         return m_bOverZipper;
     }
 
+    [[nodiscard]] bool isZipperInvisibleWall() const {
+        return m_bZipperInvisibleWall;
+    }
+
     [[nodiscard]] bool isZipperBoost() const {
         return m_bZipperBoost;
     }
@@ -590,6 +594,7 @@ private:
     bool m_bBoostOffroadInvincibility; ///< Set if we should ignore offroad slowdown this frame.
     bool m_bHalfPipeRamp;              ///< Set while colliding with zipper KCL.
     bool m_bOverZipper;                ///< Set while mid-air from a zipper.
+    bool m_bZipperInvisibleWall;       ///< Set when colliding with invisible wall above a zipper.
     bool m_bZipperBoost;               ///< Set when boosting after landing from a zipper.
     bool m_bZipperStick;               ///< Set while mid-air and still influenced by the zipper.
     bool m_bZipperTrick;               ///< Set while tricking mid-air from a zipper.

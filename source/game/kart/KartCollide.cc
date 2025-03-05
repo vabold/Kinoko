@@ -98,7 +98,8 @@ void KartCollide::FUN_80572F4C() {
     f32 fVar1;
 
     if (isInRespawn() || state()->isBoost() || state()->isOverZipper() ||
-            state()->isNoSparkInvisibleWall() || state()->isHalfPipeRamp()) {
+            state()->isZipperInvisibleWall() || state()->isNoSparkInvisibleWall() ||
+            state()->isHalfPipeRamp()) {
         fVar1 = 0.0f;
     } else {
         fVar1 = 0.05f;
@@ -811,16 +812,28 @@ bool KartCollide::FUN_805B6A9C(CollisionData &collisionData, const Hitbox &hitbo
             return true;
         }
 
+        bool skipWalls = false;
+
         collisionData.wallNrm += colInfo.wallNrm;
 
-        if ((maskOut & KCL_TYPE_ANY_INVISIBLE_WALL) && !(maskOut & KCL_TYPE_4010D000)) {
-            collisionData.bInvisibleWallOnly = true;
+        if (maskOut & KCL_TYPE_ANY_INVISIBLE_WALL) {
+            collisionData.bInvisibleWall = true;
+
+            if (!(maskOut & KCL_TYPE_4010D000)) {
+                collisionData.bInvisibleWallOnly = true;
+
+                if (maskOut & KCL_TYPE_BIT(COL_TYPE_HALFPIPE_INVISIBLE_WALL)) {
+                    skipWalls = true;
+                }
+            }
         }
 
-        if (maskOut & KCL_TYPE_BIT(COL_TYPE_WALL_2)) {
-            collisionData.bWall3 = true;
-        } else {
-            collisionData.bWall = true;
+        if (!skipWalls) {
+            if (maskOut & KCL_TYPE_BIT(COL_TYPE_WALL_2)) {
+                collisionData.bWall3 = true;
+            } else {
+                collisionData.bWall = true;
+            }
         }
     }
 

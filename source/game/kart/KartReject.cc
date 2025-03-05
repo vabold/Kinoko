@@ -72,7 +72,7 @@ void KartReject::calcRejectRoad() {
         return;
     }
 
-    if (!state()->isRejectRoad()) {
+    if (!state()->isRejectRoad() || state()->isZipperInvisibleWall()) {
         return;
     }
 
