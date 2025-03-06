@@ -79,7 +79,7 @@ public:
         u16 enrm1_i;
         u16 enrm2_i;
         u16 enrm3_i;
-        u16 attribute;
+        KCLAttribute attribute;
     };
     STATIC_ASSERT(sizeof(KCollisionPrism) == 0x10);
 
@@ -90,10 +90,13 @@ public:
     void narrowPolygon_EachBlock(const u16 *prismArray);
 
     void computeBBox();
-    [[nodiscard]] bool checkPointCollision(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut);
-    [[nodiscard]] bool checkSphereCollision(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut);
-    [[nodiscard]] bool checkSphere(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut);
-    [[nodiscard]] bool checkSphereSingle(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut);
+    [[nodiscard]] bool checkPointCollision(f32 *distOut, EGG::Vector3f *fnrmOut,
+            KCLAttribute *flagsOut);
+    [[nodiscard]] bool checkSphereCollision(f32 *distOut, EGG::Vector3f *fnrmOut,
+            KCLAttribute *flagsOut);
+    [[nodiscard]] bool checkSphere(f32 *distOut, EGG::Vector3f *fnrmOut, KCLAttribute *flagsOut);
+    [[nodiscard]] bool checkSphereSingle(f32 *distOut, EGG::Vector3f *fnrmOut,
+            KCLAttribute *flagsOut);
 
     void lookupPoint(const EGG::Vector3f &pos, const EGG::Vector3f &prevPos, KCLTypeMask typeMask);
     void lookupSphere(f32 radius, const EGG::Vector3f &pos, const EGG::Vector3f &prevPos,
@@ -122,12 +125,14 @@ private:
     void preloadVertices();
 
     [[nodiscard]] bool checkCollision(const KCollisionPrism &prism, f32 *distOut,
-            EGG::Vector3f *fnrmOut, u16 *flagsOut, CollisionCheckType type);
+            EGG::Vector3f *fnrmOut, KCLAttribute *flagsOut, CollisionCheckType type);
     [[nodiscard]] bool checkPointCollision(const KCollisionPrism &prism, f32 *distOut,
-            EGG::Vector3f *fnrmOut, u16 *flagsOut, bool movement);
-    [[nodiscard]] bool checkSphereMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut);
-    [[nodiscard]] bool checkPointMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut);
-    [[nodiscard]] bool checkPoint(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut);
+            EGG::Vector3f *fnrmOut, KCLAttribute *flagsOut, bool movement);
+    [[nodiscard]] bool checkSphereMovement(f32 *distOut, EGG::Vector3f *fnrmOut,
+            KCLAttribute *attributeOut);
+    [[nodiscard]] bool checkPointMovement(f32 *distOut, EGG::Vector3f *fnrmOut,
+            KCLAttribute *attributeOut);
+    [[nodiscard]] bool checkPoint(f32 *distOut, EGG::Vector3f *fnrmOut, KCLAttribute *attributeOut);
 
     const void *m_posData;
     const void *m_nrmData;

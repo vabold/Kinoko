@@ -299,7 +299,7 @@ bool ObjectObakeManager::checkSpherePartialPushImpl(f32 radius, const EGG::Vecto
                         if (maskOut) {
                             auto *colDir = CollisionDirector::Instance();
                             colDir->pushCollisionEntry(dist.length(), maskOut,
-                                    KCL_TYPE_BIT(COL_TYPE_SPECIAL_WALL), COL_TYPE_SPECIAL_WALL);
+                                    KCL_TYPE_BIT(COL_TYPE_SPECIAL_WALL), {COL_TYPE_SPECIAL_WALL});
                             colDir->setCurrentCollisionVariant(2);
                         }
                     }
@@ -329,7 +329,7 @@ bool ObjectObakeManager::checkSpherePartialPushImpl(f32 radius, const EGG::Vecto
                         if (maskOut) {
                             auto *colDir = CollisionDirector::Instance();
                             colDir->pushCollisionEntry(dist.length(), maskOut,
-                                    KCL_TYPE_BIT(COL_TYPE_ROAD), COL_TYPE_ROAD);
+                                    KCL_TYPE_BIT(COL_TYPE_ROAD), {COL_TYPE_ROAD});
                         }
                     }
                 }
@@ -474,7 +474,7 @@ bool ObjectObakeManager::checkSphereFullPushImpl(f32 radius, const EGG::Vector3f
                         if (maskOut) {
                             auto *colDir = CollisionDirector::Instance();
                             colDir->pushCollisionEntry(dist.length(), maskOut,
-                                    KCL_TYPE_BIT(COL_TYPE_SPECIAL_WALL), COL_TYPE_SPECIAL_WALL);
+                                    KCL_TYPE_BIT(COL_TYPE_SPECIAL_WALL), {COL_TYPE_SPECIAL_WALL});
                             colDir->setCurrentCollisionVariant(2);
                         }
                     }
@@ -504,7 +504,7 @@ bool ObjectObakeManager::checkSphereFullPushImpl(f32 radius, const EGG::Vector3f
                         if (maskOut) {
                             auto *colDir = CollisionDirector::Instance();
                             colDir->pushCollisionEntry(dist.length(), maskOut,
-                                    KCL_TYPE_BIT(COL_TYPE_ROAD), COL_TYPE_ROAD);
+                                    KCL_TYPE_BIT(COL_TYPE_ROAD), {COL_TYPE_ROAD});
                         }
                     }
                 }

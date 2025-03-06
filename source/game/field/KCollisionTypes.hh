@@ -69,7 +69,6 @@ typedef enum {
     COL_TYPE_COUNT
 } KColType;
 
-#define KCL_SOFT_WALL_MASK 0x8000
 #define KCL_ANY 0xffffffff
 #define KCL_NONE 0x00000000
 
@@ -189,6 +188,85 @@ struct KColHeader {
     f32 sphere_radius;          ///< Clamps the sphere we check collision against. @see searchBlock.
 };
 STATIC_ASSERT(sizeof(KColHeader) == 0x3c);
+
+/// @brief Corresponds with the "KCL flag" bitfield shown at https://wiki.tockdom.com/wiki/KCL_flag
+
+struct KCLAttribute {
+    void setTrickable(bool isSet) {
+        if (isSet) {
+            m_val |= 1 << 0xd;
+        } else {
+            m_val &= 0xdfff;
+        }
+    }
+
+    void setRejectRoad(bool isSet) {
+        if (isSet) {
+            m_val |= 1 << 0xe;
+        } else {
+            m_val &= 0xbfff;
+        }
+    }
+
+    void setSoftWall(bool isSet) {
+        if (isSet) {
+            m_val |= 1 << 0xf;
+        } else {
+            m_val &= 0x7fff;
+        }
+    }
+
+    void setWheelDepth(u16 val) {
+        m_val &= 0xe7ff;
+        m_val |= (val & 0x3) << 0xb;
+    }
+
+    void setBlightIdx(u16 val) {
+        m_val &= 0xf8ff;
+        m_val |= (val & 0x7) << 0x8;
+    }
+
+    void setVariant(u16 val) {
+        m_val &= 0xff1f;
+        m_val |= (val & 0x7) << 0x5;
+    }
+
+    void setType(u16 val) {
+        m_val &= 0xffe0;
+        m_val |= (val & 0x1f);
+    }
+
+    [[nodiscard]] bool trickable() const {
+        return (m_val >> 0xd) & 0x1;
+    }
+
+    [[nodiscard]] bool rejectRoad() const {
+        return (m_val >> 0xe) & 0x1;
+    }
+
+    [[nodiscard]] bool softWall() const {
+        return (m_val >> 0xf) & 0x1;
+    }
+
+    [[nodiscard]] u16 wheelDepth() const {
+        return (m_val >> 0xb) & 0x3;
+    }
+
+    [[nodiscard]] u16 blightIdx() const {
+        return (m_val >> 0x8) & 0x7;
+    }
+
+    [[nodiscard]] u16 variant() const {
+        return (m_val >> 0x5) & 0x7;
+    }
+
+    [[nodiscard]] u16 type() const {
+        return m_val & 0x1f;
+    }
+
+    u16 m_val;
+};
+STATIC_ASSERT(sizeof(KCLAttribute) == sizeof(u16));
 
 typedef u32 KCLTypeMask;
 

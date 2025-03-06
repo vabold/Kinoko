@@ -213,10 +213,10 @@ void CollisionDirector::resetCollisionEntries(KCLTypeMask *ptr) {
 /// @addr{0x807BDA9C}
 /// @param dist Distance from player to the KCL traingle center
 /// @param typeMask Updated to include kclTypeBit
-/// @param kclTypeBit The attribute and additional info about the tri we are colliding with
-/// @param attribute The base type of the tri we are colliding with
+/// @param kclTypeBit The base type of the tri we are colliding with
+/// @param attribute The full tri's KCL flags
 void CollisionDirector::pushCollisionEntry(f32 dist, KCLTypeMask *typeMask, KCLTypeMask kclTypeBit,
-        u16 attribute) {
+        KCLAttribute attribute) {
     *typeMask = *typeMask | kclTypeBit;
     if (m_collisionEntryCount >= m_entries.size()) {
         m_collisionEntryCount = m_entries.size() - 1;
