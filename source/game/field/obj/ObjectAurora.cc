@@ -193,8 +193,11 @@ bool ObjectAurora::checkSpherePartialImpl(f32 radius, const EGG::Vector3f &v0,
         auto *colDirector = CollisionDirector::Instance();
 
         if (push) {
+            Attribute road2Attr = {0};
+            road2Attr.setType(COL_TYPE_ROAD2);
+
             colDirector->pushCollisionEntry(dist, pFlagsOut, KCL_TYPE_BIT(COL_TYPE_ROAD2),
-                    COL_TYPE_ROAD2);
+                    road2Attr);
             colDirector->setCurrentCollisionVariant(7);
             colDirector->setCurrentCollisionTrickable(true);
         } else {
@@ -203,8 +206,11 @@ bool ObjectAurora::checkSpherePartialImpl(f32 radius, const EGG::Vector3f &v0,
 
         if (vel.z > COLLISION_SIZE.z - 600.0f * 4.0f) {
             if (push) {
+                Attribute boostRampAttr = {0};
+                boostRampAttr.setType(COL_TYPE_BOOST_RAMP);
+
                 colDirector->pushCollisionEntry(dist, pFlagsOut, KCL_TYPE_BIT(COL_TYPE_BOOST_RAMP),
-                        COL_TYPE_BOOST_RAMP);
+                        boostRampAttr);
             } else {
                 *pFlagsOut |= KCL_TYPE_BIT(COL_TYPE_ROAD2) | KCL_TYPE_BIT(COL_TYPE_BOOST_RAMP);
             }
@@ -250,8 +256,11 @@ bool ObjectAurora::checkSphereFullImpl(f32 radius, const EGG::Vector3f &v0,
         auto *colDirector = CollisionDirector::Instance();
 
         if (push) {
+            Attribute road2Attr = {0};
+            road2Attr.setType(COL_TYPE_ROAD2);
+
             colDirector->pushCollisionEntry(dist, pFlagsOut, KCL_TYPE_BIT(COL_TYPE_ROAD2),
-                    COL_TYPE_ROAD2);
+                    road2Attr);
             colDirector->setCurrentCollisionVariant(7);
             colDirector->setCurrentCollisionTrickable(true);
         } else {
@@ -260,8 +269,11 @@ bool ObjectAurora::checkSphereFullImpl(f32 radius, const EGG::Vector3f &v0,
 
         if (vel.z > COLLISION_SIZE.z - 600.0f * 4.0f) {
             if (push) {
+                Attribute boostRampAttr = {0};
+                boostRampAttr.setType(COL_TYPE_BOOST_RAMP);
+
                 colDirector->pushCollisionEntry(dist, pFlagsOut, KCL_TYPE_BIT(COL_TYPE_BOOST_RAMP),
-                        COL_TYPE_BOOST_RAMP);
+                        boostRampAttr);
             } else {
                 *pFlagsOut |= KCL_TYPE_BIT(COL_TYPE_ROAD2) | KCL_TYPE_BIT(COL_TYPE_BOOST_RAMP);
             }
