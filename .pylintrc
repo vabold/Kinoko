@@ -1,0 +1,14 @@
+[MESSAGES CONTROL]
+disable=missing-module-docstring,
+        missing-class-docstring,
+        missing-function-docstring,
+        fixme,
+        global-statement,
+        invalid-name,
+        import-error,
+        too-few-public-methods,
+        too-many-locals,
+        too-many-return-statements      
+
+[FORMAT]
+max-line-length=100
