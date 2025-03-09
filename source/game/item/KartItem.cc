@@ -33,7 +33,7 @@ void KartItem::calc() {
 
     if (m_flags.onBit(eFlags::Lockout)) {
         if (!state()->isBeforeRespawn() && !state()->isInAction() && !state()->isTriggerRespawn() &&
-                !state()->isCannonStart() && !state()->isInCannon()) {
+                !state()->isCannonStart() && !state()->isInCannon() && !state()->isAfterCannon()) {
             m_flags.resetBit(eFlags::Lockout);
         }
     } else {
