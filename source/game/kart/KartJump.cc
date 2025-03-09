@@ -118,7 +118,8 @@ void KartJump::calc() {
 }
 
 bool KartJump::someFlagCheck() {
-    return state()->isTrickStart() || state()->isInATrick();
+    return state()->isInAction() || state()->isTrickStart() || state()->isInATrick() ||
+            state()->isOverZipper();
 }
 
 /// @addr{0x80575B38}
