@@ -118,13 +118,13 @@ void KColData::computeBBox() {
 }
 
 /// @addr{0x807C1F80}
-bool KColData::checkPointCollision(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut) {
+bool KColData::checkPointCollision(f32 *distOut, EGG::Vector3f *fnrmOut, Attribute *flagsOut) {
     return std::isfinite(m_prevPos.y) ? checkPointMovement(distOut, fnrmOut, flagsOut) :
                                         checkPoint(distOut, fnrmOut, flagsOut);
 }
 
 /// @addr{0x807C2410}
-bool KColData::checkSphereCollision(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut) {
+bool KColData::checkSphereCollision(f32 *distOut, EGG::Vector3f *fnrmOut, Attribute *flagsOut) {
     return std::isfinite(m_prevPos.y) ? checkSphereMovement(distOut, fnrmOut, flagsOut) :
                                         checkSphere(distOut, fnrmOut, flagsOut);
 }
@@ -135,7 +135,7 @@ bool KColData::checkSphereCollision(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *f
 /// @param fnrmOut If colliding, returns the floor normal of the triangle
 /// @param flagsOut If colliding, returns the KCL attributes for that triangle
 /// @return whether or not the player is colliding with the triangle
-bool KColData::checkSphere(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut) {
+bool KColData::checkSphere(f32 *distOut, EGG::Vector3f *fnrmOut, Attribute *flagsOut) {
     // If there's no list of triangles to check, there's no collision
     if (!m_prismIter) {
         return false;
@@ -155,7 +155,7 @@ bool KColData::checkSphere(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut) 
 }
 
 /// @addr{0x807C0F00}
-bool KColData::checkSphereSingle(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut) {
+bool KColData::checkSphereSingle(f32 *distOut, EGG::Vector3f *fnrmOut, Attribute *flagsOut) {
     if (!m_prismIter) {
         return false;
     }
@@ -325,7 +325,7 @@ void KColData::preloadPrisms() {
         prism.enrm1_i = stream.read_u16();
         prism.enrm2_i = stream.read_u16();
         prism.enrm3_i = stream.read_u16();
-        prism.attribute = stream.read_u16();
+        prism.attribute.m_val = stream.read_u16();
     }
 }
 
@@ -367,7 +367,7 @@ void KColData::preloadVertices() {
 /// 2. A collision with the triangle plane (0x807C1514)
 /// 3. A collision such that we are inside the triangle (0x807C0884)
 bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::Vector3f *fnrmOut,
-        u16 *flagsOut, CollisionCheckType type) {
+        Attribute *flagsOut, CollisionCheckType type) {
     // Responsible for updating the output params
     auto out = [&](f32 dist) {
         if (distOut) {
@@ -384,7 +384,7 @@ bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::V
 
     // The flag check occurs earlier than in the base game here. We don't want to do math if the tri
     // we're checking doesn't have matching flags.
-    u32 attributeMask = KCL_ATTRIBUTE_TYPE_BIT(prism.attribute);
+    KCLTypeMask attributeMask = KCL_TYPE_BIT(prism.attribute.type());
     if (!(attributeMask & m_typeMask)) {
         return false;
     }
@@ -554,8 +554,8 @@ bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::V
 /// @brief This is a combination of two point collision check functions. They only vary based on
 /// whether we are checking movement.
 bool KColData::checkPointCollision(const KCollisionPrism &prism, f32 *distOut,
-        EGG::Vector3f *fnrmOut, u16 *flagsOut, bool movement) {
-    KCLTypeMask attrMask = KCL_ATTRIBUTE_TYPE_BIT(prism.attribute);
+        EGG::Vector3f *fnrmOut, Attribute *flagsOut, bool movement) {
+    KCLTypeMask attrMask = KCL_TYPE_BIT(prism.attribute.type());
     if (!(attrMask & m_typeMask)) {
         return false;
     }
@@ -616,7 +616,7 @@ bool KColData::checkPointCollision(const KCollisionPrism &prism, f32 *distOut,
 /// @param fnrmOut If colliding, returns the floor normal of the triangle
 /// @param attributeOut If colliding, returns the KCL attributes for that triangle
 /// @return Whether or not a collision has occurred
-bool KColData::checkSphereMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut) {
+bool KColData::checkSphereMovement(f32 *distOut, EGG::Vector3f *fnrmOut, Attribute *attributeOut) {
     // If there's no list of triangles to check, there's no collision
     if (!m_prismIter) {
         return false;
@@ -636,7 +636,7 @@ bool KColData::checkSphereMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *at
 }
 
 /// @addr{0x807C21F4}
-bool KColData::checkPoint(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut) {
+bool KColData::checkPoint(f32 *distOut, EGG::Vector3f *fnrmOut, Attribute *attributeOut) {
     // If there's no list of triangles to check, there's no collision
     if (!m_prismIter) {
         return false;
@@ -656,7 +656,7 @@ bool KColData::checkPoint(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOu
 }
 
 /// @addr{0x807C1F80}
-bool KColData::checkPointMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut) {
+bool KColData::checkPointMovement(f32 *distOut, EGG::Vector3f *fnrmOut, Attribute *attributeOut) {
     // If there's no list of triangles to check, there's no collision
     if (!m_prismIter) {
         return false;
