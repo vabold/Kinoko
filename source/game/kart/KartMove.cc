@@ -2132,6 +2132,7 @@ void KartMove::exitCannon() {
 
     state()->setInCannon(false);
     state()->setSkipWheelCalc(false);
+    state()->setAfterCannon(true);
     dynamics()->setIntVel(m_cannonEntryOfs * m_speed);
 }
 

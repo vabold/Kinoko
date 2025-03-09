@@ -319,6 +319,7 @@ void KartState::calcCollisions() {
         m_top.normalise();
 
         m_bTouchingGround = true;
+        m_bAfterCannon = false;
 
         if (!m_bInAction) {
             m_bEndHalfPipe = false;
@@ -489,6 +490,7 @@ void KartState::clearBitfield3() {
     m_bSomethingWallCollision = false;
     m_bSoftWallDrift = false;
     m_bHWG = false;
+    m_bAfterCannon = false;
     m_bChargeStartBoost = false;
     m_bEndHalfPipe = false;
 }

@@ -231,6 +231,10 @@ public:
         m_bHWG = isSet;
     }
 
+    void setAfterCannon(bool isSet) {
+        m_bAfterCannon = isSet;
+    }
+
     void setEndHalfPipe(bool isSet) {
         m_bEndHalfPipe = isSet;
     }
@@ -343,6 +347,10 @@ public:
 
     [[nodiscard]] bool isHWG() const {
         return m_bHWG;
+    }
+
+    [[nodiscard]] bool isAfterCannon() const {
+        return m_bAfterCannon;
     }
 
     [[nodiscard]] bool isChargeStartBoost() const {
@@ -637,7 +645,8 @@ private:
     bool m_bUNK2;
     bool m_bSomethingWallCollision;
     bool m_bSoftWallDrift;
-    bool m_bHWG;              ///< Set when "Horizontal Wall Glitch" is active.
+    bool m_bHWG; ///< Set when "Horizontal Wall Glitch" is active.
+    bool m_bAfterCannon;
     bool m_bChargeStartBoost; ///< Like @ref m_bAccelerate but during countdown.
     bool m_bEndHalfPipe;
     /// @}
