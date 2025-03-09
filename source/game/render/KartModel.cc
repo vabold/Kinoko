@@ -39,7 +39,8 @@ void KartModel::vf_1c() {
     }
 
     f32 xStick = inputs()->currentState().stick.x;
-    f32 fVar2 = 0.1f;
+    bool isInCannon = state()->isInCannon();
+    f32 fVar2 = isInCannon ? 0.02f : 0.1f;
 
     f32 local_f31 = _58;
     if (xStick <= 0.2f) {
@@ -51,6 +52,11 @@ void KartModel::vf_1c() {
     }
 
     xStick = EGG::Mathf::abs(xStick);
+
+    if (isInCannon) {
+        xStick *= 0.8f;
+        fVar2 = 0.05f;
+    }
 
     _54 += fVar2 * (xStick - _54);
 
