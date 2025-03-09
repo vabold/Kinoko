@@ -332,6 +332,7 @@ void KartCollide::calcTriggers(Field::KCLTypeMask *mask, const EGG::Vector3f &po
 /// @addr{0x8056F510}
 void KartCollide::handleTriggers(Field::KCLTypeMask *mask) {
     calcFallBoundary(mask, false);
+    processCannon(mask);
 
     if (*mask & KCL_TYPE_BIT(COL_TYPE_EFFECT_TRIGGER)) {
         auto *colDir = Field::CollisionDirector::Instance();
@@ -588,12 +589,7 @@ void KartCollide::processBody(CollisionData &collisionData, Hitbox &hitbox,
         calcSideCollision(collisionData, hitbox, colInfo);
     }
 
-    auto *colDirector = Field::CollisionDirector::Instance();
-    if (colDirector->findClosestCollisionEntry(maskOut, KCL_TYPE_BIT(COL_TYPE_CANNON_TRIGGER))) {
-        state()->setCannonPointId(
-                KCL_VARIANT_TYPE(colDirector->closestCollisionEntry()->attribute));
-        state()->setCannonStart(true);
-    }
+    processCannon(maskOut);
 }
 
 /// @addr{0x8056F184}
@@ -709,6 +705,17 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
             state()->setJumpPadVariant(KCL_VARIANT_TYPE(closestColEntry->attribute));
         }
         collisionData.bTrickable = true;
+    }
+}
+
+/// @addr{0x8056F490}
+/// @brief Checks if we are colliding with a cannon trigger and sets the state flag if so.
+void KartCollide::processCannon(Field::KCLTypeMask *maskOut) {
+    auto *colDirector = Field::CollisionDirector::Instance();
+    if (colDirector->findClosestCollisionEntry(maskOut, KCL_TYPE_BIT(COL_TYPE_CANNON_TRIGGER))) {
+        state()->setCannonPointId(
+                KCL_VARIANT_TYPE(colDirector->closestCollisionEntry()->attribute));
+        state()->setCannonStart(true);
     }
 }
 

@@ -96,6 +96,7 @@ public:
     [[nodiscard]] bool processWall(CollisionData &collisionData, Field::KCLTypeMask *maskOut);
     void processFloor(CollisionData &collisionData, Hitbox &hitbox, Field::CollisionInfo *colInfo,
             Field::KCLTypeMask *maskOut, bool wheel);
+    void processCannon(Field::KCLTypeMask *maskOut);
 
     void applySomeFloorMoment(f32 down, f32 rate, CollisionGroup *hitboxGroup,
             const EGG::Vector3f &forward, const EGG::Vector3f &nextDir, const EGG::Vector3f &speed,
