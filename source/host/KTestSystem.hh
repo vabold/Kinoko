@@ -20,7 +20,7 @@ public:
     static KTestSystem *CreateInstance();
     static void DestroyInstance();
 
-    static KTestSystem *Instance() {
+    [[nodiscard]] static KTestSystem *Instance() {
         return static_cast<KTestSystem *>(s_instance);
     }
 
@@ -126,13 +126,13 @@ private:
     bool popTestCase();
 
     bool calcTest();
-    TestData findCurrentFrameEntry();
+    [[nodiscard]] TestData findCurrentFrameEntry();
     void testFrame(const TestData &data);
 
     bool runTest();
     void writeTestOutput() const;
 
-    const TestCase &getCurrentTestCase() const;
+    [[nodiscard]] const TestCase &getCurrentTestCase() const;
 
     static void OnInit(System::RaceConfig *config, void *arg);
 

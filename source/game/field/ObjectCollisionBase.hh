@@ -28,8 +28,8 @@ public:
 
     virtual void transform(const EGG::Matrix34f &mat, const EGG::Vector3f &scale,
             const EGG::Vector3f &speed) = 0;
-    virtual const EGG::Vector3f &getSupport(const EGG::Vector3f &v) const = 0;
-    virtual f32 getBoundingRadius() const = 0;
+    [[nodiscard]] virtual const EGG::Vector3f &getSupport(const EGG::Vector3f &v) const = 0;
+    [[nodiscard]] virtual f32 getBoundingRadius() const = 0;
 
     bool check(ObjectCollisionBase &rhs, EGG::Vector3f &distance);
 
@@ -37,12 +37,12 @@ protected:
     EGG::Vector3f m_translation;
 
 private:
-    bool enclosesOrigin(const GJKState &state, u32 idx) const;
+    [[nodiscard]] bool enclosesOrigin(const GJKState &state, u32 idx) const;
     void FUN_808350e4(GJKState &state, EGG::Vector3f &v) const;
     bool getNearestSimplex(GJKState &state, EGG::Vector3f &v) const;
     void getNearestPoint(GJKState &state, u32 idx, EGG::Vector3f &v0, EGG::Vector3f &v1) const;
-    bool FUN_808357e4(const GJKState &state, u32 idx) const;
-    bool inSimplex(const GJKState &state, const EGG::Vector3f &v) const;
+    [[nodiscard]] bool FUN_808357e4(const GJKState &state, u32 idx) const;
+    [[nodiscard]] bool inSimplex(const GJKState &state, const EGG::Vector3f &v) const;
     void getNearestPoint(const GJKState &state, u32 idx, EGG::Vector3f &v) const;
     void calcSimplex(GJKState &state) const;
 

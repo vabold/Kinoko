@@ -46,7 +46,7 @@ public:
     ObjectFlowTable(const char *filename);
     ~ObjectFlowTable();
 
-    const SObjectCollisionSet *set(s16 slot) const {
+    [[nodiscard]] const SObjectCollisionSet *set(s16 slot) const {
         return slot == -1 ? nullptr : slot < m_count ? &m_sets[slot] : nullptr;
     }
 

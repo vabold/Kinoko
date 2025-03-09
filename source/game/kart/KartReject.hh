@@ -13,7 +13,7 @@ public:
     void reset();
 
     void calcRejectRoad();
-    bool calcRejection();
+    [[nodiscard]] bool calcRejection();
 
 private:
     f32 m_rejectSign;

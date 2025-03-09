@@ -63,16 +63,16 @@ struct Quatf {
         return *this = *this * q;
     }
 
-    bool operator==(const Quatf &rhs) const {
+    [[nodiscard]] bool operator==(const Quatf &rhs) const {
         return w == rhs.w && v == rhs.v;
     }
 
-    bool operator!=(const Quatf &rhs) const {
+    [[nodiscard]] bool operator!=(const Quatf &rhs) const {
         return !(*this == rhs);
     }
 
     /// @brief A conversion function that allows for string representation of a quaternion.
-    explicit operator std::string() const {
+    [[nodiscard]] explicit operator std::string() const {
         return std::format("[0x{:08X}, 0x{:08X}, 0x{:08X}, 0x{:08X}] | [{}, {}, {}, {}]", f2u(v.x),
                 f2u(v.y), f2u(v.z), f2u(w), v.x, v.y, v.z, w);
     }
@@ -82,33 +82,33 @@ struct Quatf {
     void makeVectorRotation(const Vector3f &from, const Vector3f &to);
 
     /// @brief Computes \f$conj(a+bi+cj+dk) = a-bi-cj-dk\f$
-    Quatf conjugate() const {
+    [[nodiscard]] Quatf conjugate() const {
         return Quatf(w, -v);
     }
 
-    Vector3f rotateVector(const Vector3f &vec) const;
-    Vector3f rotateVectorInv(const Vector3f &vec) const;
-    Quatf slerpTo(const Quatf &q2, f32 t) const;
+    [[nodiscard]] Vector3f rotateVector(const Vector3f &vec) const;
+    [[nodiscard]] Vector3f rotateVectorInv(const Vector3f &vec) const;
+    [[nodiscard]] Quatf slerpTo(const Quatf &q2, f32 t) const;
 
     /// @addr{0x8023A138}
     /// @brief Computes \f$this \cdot this = w^2 + x^2 + y^2 + z^2\f$
-    f32 squaredNorm() const {
+    [[nodiscard]] f32 squaredNorm() const {
         return w * w + v.squaredLength();
     }
 
-    f32 norm() const {
+    [[nodiscard]] f32 norm() const {
         return Mathf::sqrt(squaredNorm());
     }
 
     /// @brief Computes \f$this \cdot rhs = w \times rhs.w + x \times rhs.x + y \times rhs.y + z
     /// \times rhs.z\f$
-    f32 dot(const Quatf &q) const {
+    [[nodiscard]] f32 dot(const Quatf &q) const {
         return w * q.w + v.dot(q.v);
     }
 
     void setAxisRotation(f32 angle, const Vector3f &axis);
-    Quatf multSwap(const Vector3f &v) const;
-    Quatf multSwap(const Quatf &q) const;
+    [[nodiscard]] Quatf multSwap(const Vector3f &v) const;
+    [[nodiscard]] Quatf multSwap(const Quatf &q) const;
 
     void read(Stream &stream);
 

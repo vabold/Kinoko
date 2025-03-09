@@ -86,7 +86,7 @@ public:
     bool calcZipperCollision(f32 radius, f32 scale, EGG::Vector3f &pos, EGG::Vector3f &upLocal,
             const EGG::Vector3f &prevPos, Field::CollisionInfo *colInfo,
             Field::KCLTypeMask *maskOut, Field::KCLTypeMask flags) const;
-    f32 calcSlerpRate(f32 scale, const EGG::Quatf &from, const EGG::Quatf &to) const;
+    [[nodiscard]] f32 calcSlerpRate(f32 scale, const EGG::Quatf &from, const EGG::Quatf &to) const;
     virtual void calcVehicleRotation(f32 turn);
     virtual void hop();
     virtual void onHop() {}
@@ -102,12 +102,12 @@ public:
     }
 
     /// @addr{0x8058758C}
-    virtual bool canWheelie() const {
+    [[nodiscard]] virtual bool canWheelie() const {
         return false;
     }
 
     /// @addr{0x8057DA18}
-    virtual bool canHop() const {
+    [[nodiscard]] virtual bool canHop() const {
         if (!state()->isHopStart() || !state()->isTouchingGround()) {
             return false;
         }
@@ -120,7 +120,7 @@ public:
     }
 
     /// @addr{0x8057EA94}
-    bool canStartDrift() const {
+    [[nodiscard]] bool canStartDrift() const {
         constexpr f32 MINIMUM_DRIFT_THRESOLD = 0.55f;
 
         return m_speed > MINIMUM_DRIFT_THRESOLD * m_baseSpeed;

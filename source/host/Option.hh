@@ -15,7 +15,7 @@ enum class EOption {
 
 namespace Option {
 
-std::optional<EOption> CheckFlag(const char *arg);
+[[nodiscard]] std::optional<EOption> CheckFlag(const char *arg);
 
 } // namespace Option
 } // namespace Host
