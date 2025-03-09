@@ -140,7 +140,7 @@ void KartHalfPipe::calcRot() {
     case StuntType::Frontside: {
         EGG::Quatf rpy;
         rpy.setRPY(EGG::Vector3f(0.0f, 0.0f, DEG2RAD * (0.2f * -m_rotSign * m_stuntManager.angle)));
-        EGG::Vector3f rot = rpy.rotateVector(EGG::Vector3f::ez);
+        EGG::Vector3f rot = rpy.rotateVector(EGG::Vector3f::ey);
         m_stuntRot.setAxisRotation(angle, rot);
     } break;
     case StuntType::Frontflip:
