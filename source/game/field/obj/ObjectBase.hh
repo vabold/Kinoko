@@ -5,12 +5,21 @@
 
 #include "game/system/map/MapdataGeoObj.hh"
 
+#include <egg/core/BitFlag.hh>
 #include <egg/math/Matrix.hh>
 
 namespace Field {
 
 class ObjectBase {
 public:
+    enum class eDirtyFlags {
+        Position = 0,
+        Rotation = 1,
+        Matrix = 2,
+        Scale = 3,
+    };
+    typedef EGG::TBitFlag<u16, eDirtyFlags> DirtyFlags;
+
     ObjectBase(const System::MapdataGeoObj &params);
     virtual ~ObjectBase();
 
@@ -47,7 +56,7 @@ protected:
 
     ObjectId m_id;
     BoxColUnit *m_boxColUnit;
-    u16 m_flags;
+    DirtyFlags m_dirtyFlags;
     EGG::Vector3f m_pos;
     EGG::Vector3f m_rot;
     EGG::Vector3f m_scale;
