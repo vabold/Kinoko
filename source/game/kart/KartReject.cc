@@ -72,23 +72,22 @@ void KartReject::calcRejectRoad() {
         return;
     }
 
-    if (!state()->isRejectRoad() || state()->isZipperInvisibleWall()) {
-        return;
-    }
+    if (state()->isRejectRoad() && !state()->isZipperInvisibleWall() && !state()->isOverZipper() &&
+            !state()->isHalfPipeRamp()) {
+        EGG::Vector3f upXZ = move()->up();
+        upXZ.y = 0.0f;
 
-    EGG::Vector3f upXZ = move()->up();
-    upXZ.y = 0.0f;
+        if (upXZ.length() > 0.0f && speed() > 0.0f) {
+            upXZ.normalise();
+            EGG::Vector3f local_88 = move()->lastDir().perpInPlane(upXZ, true);
 
-    if (upXZ.length() > 0.0f && speed() > 0.0f) {
-        upXZ.normalise();
-        EGG::Vector3f local_88 = move()->lastDir().perpInPlane(upXZ, true);
+            if (local_88.y > 0.0f) {
+                EGG::Vector3f upCross = EGG::Vector3f::ey.cross(local_88);
+                m_rejectSign = upCross.dot(move()->up()) > 0.0f ? 1.0f : -1.0f;
 
-        if (local_88.y > 0.0f) {
-            EGG::Vector3f upCross = EGG::Vector3f::ey.cross(local_88);
-            m_rejectSign = upCross.dot(move()->up()) > 0.0f ? 1.0f : -1.0f;
-
-            state()->setHop(false);
-            state()->setRejectRoadTrigger(true);
+                state()->setHop(false);
+                state()->setRejectRoadTrigger(true);
+            }
         }
     }
 }
