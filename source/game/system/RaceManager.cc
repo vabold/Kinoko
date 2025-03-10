@@ -143,7 +143,7 @@ void RaceManager::Player::calc() {
     const auto *kart = Kart::KartObjectManager::Instance()->object(0);
 
     if (courseMap->getCheckPointCount() == 0 || courseMap->getCheckPathCount() == 0 ||
-            kart->state()->isBeforeRespawn()) {
+            kart->status().onBit(Kart::eStatus::BeforeRespawn)) {
         return;
     }
 
