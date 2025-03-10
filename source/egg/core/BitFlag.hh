@@ -489,7 +489,7 @@ private:
     [[nodiscard]] constexpr std::pair<T, T> makeMask_(E e) const {
         EI ei = static_cast<EI>(e);
         ASSERT(ei < N);
-        return std::pair(bits[ei / C], static_cast<T>(1) << (ei % C));
+        return std::pair<T, T>(bits[ei / C], static_cast<T>(1) << (ei % C));
     }
 
     /// @brief Gets bit index and mask for a specific bit.
@@ -499,7 +499,7 @@ private:
     [[nodiscard]] constexpr std::pair<T &, T> makeMask_(E e) {
         EI ei = static_cast<EI>(e);
         ASSERT(ei < N);
-        return std::pair(bits[ei / C], static_cast<T>(1) << (ei % C));
+        return std::pair<T &, T>(bits[ei / C], static_cast<T>(1) << (ei % C));
     }
 
     static constexpr size_t C = 8 * sizeof(T);

@@ -28,12 +28,9 @@ static constexpr std::array<StartBoostEntry, 6> START_BOOST_ENTRIES = {{
 
 /// @addr{0x805943B4}
 KartState::KartState() {
-    clearBitfield0();
-    clearBitfield1();
-    clearBitfield2();
-    clearBitfield3();
+    m_status.makeAllZero();
 
-    m_bAutoDrift = inputs()->driftIsAuto();
+    m_status.changeBit(inputs()->driftIsAuto(), eStatus::AutoDrift);
 
     m_airtime = 0;
     m_cannonPointId = 0;
@@ -47,10 +44,9 @@ void KartState::init() {
 
 /// @addr{0x80594594}
 void KartState::reset() {
-    clearBitfield3();
-    clearBitfield2();
-    clearBitfield1();
-    clearBitfield0();
+    // In the base game, we only wipe bitfield 0, 1, 2, and 3, so we need to bring back bitfield4.
+    bool isAutoDrift = m_status.onBit(eStatus::AutoDrift);
+    m_status.makeAllZero().changeBit(isAutoDrift, eStatus::AutoDrift);
 
     m_airtime = 0;
     m_top.setZero();
@@ -70,29 +66,31 @@ void KartState::reset() {
 void KartState::calcInput() {
     const auto *raceMgr = System::RaceManager::Instance();
     if (raceMgr->isStageReached(System::RaceManager::Stage::Race)) {
-        if (!m_bInAction && !m_bBeforeRespawn && !m_bCannonStart && !m_bInCannon &&
-                !m_bOverZipper) {
+        if (m_status.offBit(eStatus::InAction, eStatus::BeforeRespawn, eStatus::CannonStart,
+                    eStatus::InCannon, eStatus::OverZipper)) {
             const auto &currentState = inputs()->currentState();
             const auto &lastState = inputs()->lastState();
             m_stickX = currentState.stick.x;
             m_stickY = currentState.stick.y;
 
-            if (!m_bRejectRoadTrigger) {
+            if (m_status.offBit(eStatus::RejectRoadTrigger)) {
                 if (m_stickX < 0.0f) {
-                    m_bStickLeft = true;
+                    m_status.setBit(eStatus::StickLeft);
                 } else if (m_stickX > 0.0f) {
-                    m_bStickRight = true;
+                    m_status.setBit(eStatus::StickRight);
                 }
             }
 
-            if (!m_bBurnout) {
-                m_bAccelerate = currentState.accelerate();
-                m_bAccelerateStart = m_bAccelerate && !lastState.accelerate();
-                m_bBrake = currentState.brake();
+            if (m_status.offBit(eStatus::Burnout)) {
+                m_status.changeBit(currentState.accelerate(), eStatus::Accelerate)
+                        .changeBit(currentState.accelerate() && !lastState.accelerate(),
+                                eStatus::AccelerateStart)
+                        .changeBit(currentState.brake(), eStatus::Brake);
 
-                if (!m_bAutoDrift) {
-                    m_bDriftInput = currentState.drift();
-                    m_bHopStart = m_bDriftInput && !lastState.drift();
+                if (m_status.offBit(eStatus::AutoDrift)) {
+                    m_status.changeBit(currentState.drift(), eStatus::DriftInput)
+                            .changeBit(currentState.drift() && !lastState.drift(),
+                                    eStatus::HopStart);
                 }
             }
         }
@@ -105,7 +103,7 @@ void KartState::calcInput() {
 
         const auto &currentState = inputs()->currentState();
         m_stickX = currentState.stick.x;
-        m_bChargeStartBoost = currentState.accelerate();
+        m_status.changeBit(currentState.accelerate(), eStatus::ChargeStartBoost);
 
         calcStartBoost();
     }
@@ -125,21 +123,11 @@ void KartState::calc() {
 
 /// @addr{0x80594704}
 void KartState::resetFlags() {
-    m_bAccelerate = false;
-    m_bBrake = false;
-    m_bDriftInput = false;
-    m_bHopStart = false;
-    m_bAccelerateStart = false;
-    m_bGroundStart = false;
-    m_bStickLeft = false;
-    m_bWallCollisionStart = false;
-    m_bAirStart = false;
-    m_bStickRight = false;
-
-    m_bZipperInvisibleWall = false;
-
-    m_bCollidingOffroad = false;
-    m_bJumpPadDisableYsusForce = false;
+    m_status.resetBit(eStatus::Accelerate, eStatus::Brake, eStatus::DriftInput, eStatus::HopStart,
+            eStatus::AccelerateStart, eStatus::GroundStart, eStatus::StickLeft,
+            eStatus::WallCollisionStart, eStatus::AirStart, eStatus::StickRight,
+            eStatus::ZipperInvisibleWall, eStatus::JumpPadDisableYsusForce,
+            eStatus::CollidingOffroad, eStatus::JumpPadDisableYsusForce);
 
     m_stickY = 0.0f;
     m_stickX = 0.0f;
@@ -153,20 +141,16 @@ void KartState::resetFlags() {
 /// "All Wheels Collision" bit is set. Tracks airtime and computes the appropriate
 /// top vector, given the floor normals of all colliding floor KCLs.
 void KartState::calcCollisions() {
-    bool wasTouchingGround = m_bTouchingGround;
-    bool wasWallCollision = m_bWallCollision || m_bWall3Collision;
+    bool wasTouchingGround = m_status.onBit(eStatus::TouchingGround);
+    bool wasWallCollision = m_status.onBit(eStatus::WallCollision, eStatus::Wall3Collision);
 
-    m_bWall3Collision = false;
-    m_bWallCollision = false;
-    m_bVehicleBodyFloorCollision = false;
-    m_bAnyWheelCollision = false;
-    m_bAllWheelsCollision = false;
-    m_bTouchingGround = false;
+    m_status.resetBit(eStatus::Wall3Collision, eStatus::WallCollision,
+            eStatus::VehicleBodyFloorCollision, eStatus::AnyWheelCollision,
+            eStatus::AllWheelsCollision, eStatus::TouchingGround);
 
     if (m_hwgTimer > 0) {
         if (--m_hwgTimer == 0) {
-            m_bUNK2 = false;
-            m_bSomethingWallCollision = false;
+            m_status.resetBit(eStatus::UNK2, eStatus::SomethingWallCollision);
         }
     }
 
@@ -183,7 +167,7 @@ void KartState::calcCollisions() {
                     static_cast<f32>(collide()->someNonSoftWallTimer());
 
             if (softSusp - nonSusp >= 40.0f) {
-                m_bSoftWallDrift = false;
+                m_status.resetBit(eStatus::SoftWallDrift);
             } else {
                 softWallCollision = true;
             }
@@ -210,19 +194,19 @@ void KartState::calcCollisions() {
     }
 
     if (wheelCollisions > 0) {
-        m_bAnyWheelCollision = true;
+        m_status.setBit(eStatus::AnyWheelCollision);
         if (wheelCollisions == tireCount()) {
-            m_bAllWheelsCollision = true;
+            m_status.setBit(eStatus::AllWheelsCollision);
         }
     }
 
     CollisionData &colData = collisionData();
     if (colData.bFloor) {
-        m_bVehicleBodyFloorCollision = true;
+        m_status.setBit(eStatus::VehicleBodyFloorCollision);
         m_top += colData.floorNrm;
         trickable = trickable || colData.bTrickable;
 
-        if (m_bOverZipper && !m_bHalfpipeMidair) {
+        if (m_status.onBit(eStatus::OverZipper) && m_status.offBit(eStatus::HalfpipeMidair)) {
             halfPipe()->end(true);
         }
     }
@@ -243,21 +227,20 @@ void KartState::calcCollisions() {
 
     if ((colData.bWall || colData.bWall3) && !bVar3) {
         if (colData.bWall) {
-            m_bWallCollision = true;
+            status().setBit(eStatus::WallCollision);
         }
 
         if (colData.bWall3) {
-            m_bWall3Collision = true;
+            m_status.setBit(eStatus::Wall3Collision);
         }
 
         if (!wasWallCollision) {
-            m_bWallCollisionStart = true;
+            m_status.setBit(eStatus::WallCollisionStart);
 
             if (wallKclType() == COL_TYPE_SPECIAL_WALL && wallKclVariant() == 0) {
-                if (!state()->isTriggerRespawn() && !state()->isInRespawn() &&
-                        !state()->isAfterRespawn() && !state()->isBeforeRespawn() &&
-                        !state()->isInAction() && !state()->isCannonStart() &&
-                        !state()->isInCannon()) {
+                if (m_status.offBit(eStatus::TriggerRespawn, eStatus::InRespawn,
+                            eStatus::AfterRespawn, eStatus::BeforeRespawn, eStatus::InAction,
+                            eStatus::CannonStart, eStatus::InCannon)) {
                     action()->start(Kart::Action::UNK_1);
                 }
             }
@@ -287,25 +270,25 @@ void KartState::calcCollisions() {
         }
     }
 
-    if (colData.bInvisibleWall && m_bHalfPipeRamp &&
+    if (colData.bInvisibleWall && m_status.onBit(eStatus::HalfPipeRamp) &&
             collide()->surfaceFlags().offBit(KartCollide::eSurfaceFlags::StopHalfPipeState)) {
-        m_bZipperInvisibleWall = true;
+        m_status.setBit(eStatus::ZipperInvisibleWall);
     }
 
     if (softWallCount > 0 || hwg) {
-        m_bUNK2 = true;
+        m_status.setBit(eStatus::UNK2);
         m_softWallSpeed = wallNrm;
         m_softWallSpeed.normalise();
-        if (softWallCount > 0 && !m_bHop) {
-            m_bSoftWallDrift = true;
+        if (softWallCount > 0 && m_status.offBit(eStatus::Hop)) {
+            m_status.setBit(eStatus::SoftWallDrift);
         }
 
         if (hwg) {
-            m_bHWG = true;
+            m_status.setBit(eStatus::HWG);
         }
 
         if (hitboxGroupSoftWallCollision || hwg || isBike()) {
-            m_bSomethingWallCollision = true;
+            m_status.setBit(eStatus::SomethingWallCollision);
             m_hwgTimer = 10;
 
             if (hwg) {
@@ -314,29 +297,27 @@ void KartState::calcCollisions() {
         }
     }
 
-    m_bAirtimeOver20 = false;
+    m_status.resetBit(eStatus::AirtimeOver20);
     m_trickableTimer = std::max(0, m_trickableTimer - 1);
 
     if (wheelCollisions < 1 && !colData.bFloor) {
         if (wasTouchingGround) {
-            m_bAirStart = true;
+            m_status.setBit(eStatus::AirStart);
         }
 
         if (++m_airtime > 20) {
-            m_bAirtimeOver20 = true;
+            m_status.setBit(eStatus::AirtimeOver20);
         }
     } else {
         m_top.normalise();
 
-        m_bTouchingGround = true;
-        m_bAfterCannon = false;
+        m_status.setBit(eStatus::TouchingGround).resetBit(eStatus::AfterCannon);
 
-        if (!m_bInAction) {
-            m_bActionMidZipper = false;
-            m_bEndHalfPipe = false;
+        if (m_status.offBit(eStatus::InAction)) {
+            m_status.resetBit(eStatus::ActionMidZipper, eStatus::EndHalfPipe);
         }
 
-        if (m_bOverZipper) {
+        if (m_status.onBit(eStatus::OverZipper)) {
             halfPipe()->end(true);
         }
 
@@ -344,17 +325,17 @@ void KartState::calcCollisions() {
             m_trickableTimer = 3;
         }
 
-        m_bTrickable = m_trickableTimer > 0;
+        m_status.changeBit(m_trickableTimer > 0, eStatus::Trickable);
 
-        if (!m_bJumpPad) {
-            m_bJumpPadMushroomCollision = false;
+        if (m_status.offBit(eStatus::JumpPad)) {
+            m_status.resetBit(eStatus::JumpPadMushroomCollision);
         }
 
         if (!wasTouchingGround) {
-            m_bGroundStart = true;
+            m_status.setBit(eStatus::GroundStart);
         }
 
-        if (m_bInATrick && jump()->cooldown() == 0) {
+        if (m_status.onBit(eStatus::InATrick) && jump()->cooldown() == 0) {
             move()->landTrick();
             dynamics()->setForceUpright(true);
             jump()->end();
@@ -373,7 +354,7 @@ void KartState::calcStartBoost() {
     constexpr f32 START_BOOST_DELTA_TWO = 0.002f;
     constexpr f32 START_BOOST_FALLOFF = 0.96f;
 
-    if (m_bChargeStartBoost) {
+    if (m_status.onBit(eStatus::ChargeStartBoost)) {
         m_startBoostCharge += START_BOOST_DELTA_ONE -
                 (START_BOOST_DELTA_ONE - START_BOOST_DELTA_TWO) * m_startBoostCharge;
     } else {
@@ -391,7 +372,7 @@ void KartState::calcHandleStartBoost() {
         return;
     }
 
-    if (m_bAccelerate) {
+    if (m_status.onBit(eStatus::Accelerate)) {
         if (m_startBoostCharge > START_BOOST_ENTRIES.back().range) {
             m_startBoostIdx = std::numeric_limits<size_t>::max();
         } else if (m_startBoostCharge > START_BOOST_ENTRIES.front().range) {
@@ -411,7 +392,7 @@ void KartState::calcHandleStartBoost() {
     }
 
     handleStartBoost(m_startBoostIdx);
-    m_bChargeStartBoost = false;
+    m_status.resetBit(eStatus::ChargeStartBoost);
 }
 
 /// @brief Applies the relevant start boost duration.
@@ -428,95 +409,7 @@ void KartState::handleStartBoost(size_t idx) {
 /// @brief Resets certain bitfields pertaining to ejections (reject road, half pipe zippers, etc.)
 /// @addr{0x805958F0}
 void KartState::resetEjection() {
-    m_bHalfPipeRamp = false;
-    m_bRejectRoad = false;
-}
-
-/// @brief Helper function to clear all bit flags at 0x4-0x7 in KartState.
-void KartState::clearBitfield0() {
-    m_bAccelerate = false;
-    m_bBrake = false;
-    m_bDriftInput = false;
-    m_bDriftManual = false;
-    m_bBeforeRespawn = false;
-    m_bWall3Collision = false;
-    m_bWallCollision = false;
-    m_bHopStart = false;
-    m_bAccelerateStart = false;
-    m_bGroundStart = false;
-    m_bVehicleBodyFloorCollision = false;
-    m_bAnyWheelCollision = false;
-    m_bAllWheelsCollision = false;
-    m_bStickLeft = false;
-    m_bWallCollisionStart = false;
-    m_bAirtimeOver20 = false;
-    m_bStickyRoad = false;
-    m_bTouchingGround = false;
-    m_bHop = false;
-    m_bBoost = false;
-    m_bAirStart = false;
-    m_bStickRight = false;
-    m_bLargeFlipHit = false;
-    m_bMushroomBoost = false;
-    m_bDriftAuto = false;
-    m_bSlipdriftCharge = false;
-    m_bWheelie = false;
-    m_bJumpPad = false;
-    m_bRampBoost = false;
-}
-
-/// @brief Helper function to clear all bit flags at 0x8-0xB in KartState.
-void KartState::clearBitfield1() {
-    m_bInAction = false;
-    m_bTriggerRespawn = false;
-    m_bCannonStart = false;
-    m_bInCannon = false;
-    m_bTrickStart = false;
-    m_bInATrick = false;
-    m_bBoostOffroadInvincibility = false;
-    m_bHalfPipeRamp = false;
-    m_bOverZipper = false;
-    m_bJumpPadMushroomCollision = false;
-    m_bZipperInvisibleWall = false;
-    m_bDisableBackwardsAccel = false;
-    m_bZipperBoost = false;
-    m_bZipperStick = false;
-    m_bZipperTrick = false;
-    m_bRespawnKillY = false;
-    m_bBurnout = false;
-    m_bTrickRot = false;
-    m_bJumpPadMushroomVelYInc = false;
-    m_bChargingSsmt = false;
-    m_bRejectRoad = false;
-    m_bRejectRoadTrigger = false;
-    m_bTrickable = false;
-}
-
-/// @brief Helper function to clear all bit flags at 0xC-0xF in KartState.
-void KartState::clearBitfield2() {
-    m_bWheelieRot = false;
-    m_bSkipWheelCalc = false;
-    m_bJumpPadMushroomTrigger = false;
-    m_bNoSparkInvisibleWall = false;
-    m_bCollidingOffroad = false;
-    m_bInRespawn = false;
-    m_bAfterRespawn = false;
-    m_bCrushed = false;
-    m_bJumpPadFixedSpeed = false;
-    m_bJumpPadDisableYsusForce = false;
-    m_bHalfpipeMidair = false;
-}
-
-/// @brief Helper function to clear all bit flags at 0x10-0x13 in KartState.
-void KartState::clearBitfield3() {
-    m_bUNK2 = false;
-    m_bSomethingWallCollision = false;
-    m_bSoftWallDrift = false;
-    m_bHWG = false;
-    m_bAfterCannon = false;
-    m_bActionMidZipper = false;
-    m_bChargeStartBoost = false;
-    m_bEndHalfPipe = false;
+    m_status.resetBit(eStatus::HalfPipeRamp, eStatus::RejectRoad);
 }
 
 } // namespace Kart

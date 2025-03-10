@@ -1,5 +1,7 @@
 #pragma once
 
+#include "game/kart/Status.hh"
+
 #include "game/field/KCollisionTypes.hh"
 
 #include "game/system/KPadController.hh"
@@ -156,6 +158,8 @@ public:
     [[nodiscard]] bool isInRespawn() const;
     [[nodiscard]] Field::KCLTypeMask wallKclType() const;
     [[nodiscard]] u32 wallKclVariant() const;
+    [[nodiscard]] Status &status();
+    [[nodiscard]] const Status &status() const;
 
     [[nodiscard]] static std::list<KartObjectProxy *> &proxyList() {
         return s_proxyList;
