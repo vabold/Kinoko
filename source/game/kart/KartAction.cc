@@ -49,12 +49,14 @@ void KartAction::calcVehicleSpeed() {
 bool KartAction::start(Action action) {
     ASSERT(action != Action::None);
 
-    if (state()->isInRespawn() || state()->isAfterRespawn() || state()->isBeforeRespawn() ||
-            state()->isInCannon()) {
+    auto &status = KartObjectProxy::status();
+
+    if (status.onBit(eStatus::InRespawn, eStatus::AfterRespawn, eStatus::BeforeRespawn,
+                eStatus::InCannon)) {
         return false;
     }
 
-    if (state()->isZipperStick()) {
+    if (status.onBit(eStatus::ZipperStick)) {
         switch (action) {
         case Action::UNK_2:
         case Action::UNK_3:
@@ -81,7 +83,7 @@ bool KartAction::start(Action action) {
     m_onStart = s_onStart[actionIdx];
     m_onCalc = s_onCalc[actionIdx];
     m_onEnd = s_onEnd[actionIdx];
-    state()->setInAction(true);
+    status.setBit(eStatus::InAction);
     m_frame = 0;
     m_flags.makeAllZero();
     m_up = move()->up();
@@ -141,8 +143,7 @@ void KartAction::calcSideFromHitDepthAndTranslation() {
 
 /// @addr{0x80567B98}
 void KartAction::end() {
-    state()->setInAction(false);
-    state()->setLargeFlipHit(false);
+    status().resetBit(eStatus::InAction, eStatus::LargeFlipHit);
     dynamics()->setForceUpright(true);
 
     m_currentAction = Action::None;
@@ -205,7 +206,7 @@ void KartAction::calcUp() {
 }
 
 void KartAction::calcLanding() {
-    if (m_currentAngle < m_targetRot || !state()->isTouchingGround()) {
+    if (m_currentAngle < m_targetRot || status().offBit(eStatus::TouchingGround)) {
         return;
     }
 
@@ -326,7 +327,7 @@ void KartAction::startLargeFlipAction() {
     m_flipPhase = 0.0f;
     m_framesFlipping = 0;
 
-    state()->setLargeFlipHit(true);
+    status().setBit(eStatus::LargeFlipHit);
 }
 
 /// @addr{0x80568000}
@@ -433,21 +434,22 @@ bool KartAction::calcLargeFlipAction() {
     }
 
     bool actionEnded = false;
+    auto &status = KartObjectProxy::status();
+    bool touchingGround = status.onBit(eStatus::TouchingGround);
 
-    if (m_flags.offBit(eFlags::LandingFromFlip) && state()->isTouchingGround() &&
-            move()->up().y > 0.0f && m_frame > 50) {
+    if (m_flags.offBit(eFlags::LandingFromFlip) && touchingGround && move()->up().y > 0.0f &&
+            m_frame > 50) {
         m_flags.setBit(eFlags::LandingFromFlip);
         dynamics()->setExtVel(move()->up().proj(EGG::Vector3f::ey) * BOUNCE_FACTOR);
     }
 
-    if (m_frame < 10 || !state()->isTouchingGround()) {
+    if (m_frame < 10 || !touchingGround) {
         dynamics()->setExtVel(EGG::Vector3f(0.0f, dynamics()->extVel().y, 0.0f));
     }
 
-    if ((state()->isTouchingGround() && move()->up().dot(EGG::Vector3f::ey) > 0.0f) ||
-            m_frame >= 300) {
+    if ((touchingGround && move()->up().dot(EGG::Vector3f::ey) > 0.0f) || m_frame >= 300) {
         if (m_frame >= 40) {
-            state()->setLargeFlipHit(false);
+            status.resetBit(eStatus::LargeFlipHit);
         }
 
         if (m_frame <= 120) {
@@ -459,7 +461,7 @@ bool KartAction::calcLargeFlipAction() {
                 if (m_frame >= 40 && m_frame <= 80) {
                     decayingRot = true;
                     m_flags.setBit(eFlags::Rotating);
-                    state()->setLargeFlipHit(false);
+                    status.resetBit(eStatus::LargeFlipHit);
                 }
             }
         } else {
