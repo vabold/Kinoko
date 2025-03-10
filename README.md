@@ -21,6 +21,18 @@ To see the current list of test cases and progress, visit [STATUS.md](STATUS.md)
 - g++ 13.1 (C++23)
 - ninja 1.3
 - Python 3.6
+- Mario Kart Wii disc
+
+### Extracting Files
+
+Kinoko relies on files from the base game to run, with the same paths relative to the executable. Dolphin is the preferred method of extracting these files.
+
+1. Make sure Mario Kart Wii is in the Dolphin game list. If it's not, click on Config, navigate to the Paths tab, and click "Add...". Find the folder Mario Kart Wii is in, and if needed, close out of the Config menu and click "Refresh".
+2. Right click Mario Kart Wii in the game tab, and click "Properties".
+3. Navigate to the "Filesystem" tab using the arrow keys in the top right of the properties window.
+4. If "Data Partition (0)" is not already open, click the arrow next to the name to open it.
+5. Right click on the "Race" folder, and click "Extract Files...".
+6. Select the folder the Kinoko executable is placed in. For developers, this is most commonly in the "out" folder after building the project.
 
 ### Process
 
@@ -40,7 +52,7 @@ Run Kinoko:
 
 ```bash
 cd out
-./kinoko -s testCases.bin
+./kinoko -m test -s testCases.bin
 ```
 
 ## Creating New Test Cases
