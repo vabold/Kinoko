@@ -9,16 +9,7 @@
 namespace System {
 
 static constexpr size_t RKG_HEADER_SIZE = 0x88;
-static constexpr size_t RKG_INPUT_DATA_HEADER_SIZE = 0x8;
 static constexpr size_t RKG_UNCOMPRESSED_INPUT_DATA_SECTION_SIZE = 0x2774;
-static constexpr size_t RKG_INPUT_DATA_SIZE =
-        RKG_UNCOMPRESSED_INPUT_DATA_SECTION_SIZE - RKG_INPUT_DATA_HEADER_SIZE;
-static constexpr size_t RKG_UNCOMPRESSED_FILE_SIZE =
-        RKG_HEADER_SIZE + RKG_UNCOMPRESSED_INPUT_DATA_SECTION_SIZE;
-static constexpr size_t RKG_USER_DATA_OFFSET = 0x20;
-static constexpr size_t RKG_USER_DATA_SIZE = 0x14;
-static constexpr size_t RKG_MII_DATA_OFFSET = 0x3C;
-static constexpr size_t RKG_MII_DATA_SIZE = 0x4A;
 
 /// @brief The binary data of a ghost saved to a file.
 /// Offset  | Size | Description
@@ -77,9 +68,9 @@ private:
         return ((*(rkg + 0xC) >> 3) & 1) == 1;
     }
 
-    u8 m_buffer[RKG_UNCOMPRESSED_FILE_SIZE];
+    u8 m_buffer[0x2800];
 };
-STATIC_ASSERT(sizeof(RawGhostFile) == RKG_UNCOMPRESSED_FILE_SIZE);
+STATIC_ASSERT(sizeof(RawGhostFile) == 0x2800);
 
 /// @brief Parsed representation of a binary ghost file.
 /// @nosubgrouping

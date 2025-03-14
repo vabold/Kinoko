@@ -19,6 +19,9 @@ GhostFile::~GhostFile() = default;
 
 /// @addr{0x8051C530}
 void GhostFile::read(EGG::RamStream &stream) {
+    constexpr size_t RKG_MII_DATA_SIZE = 0x4A;
+    constexpr size_t RKG_USER_DATA_SIZE = 0x14;
+
     stream.skip(0x4); // RKGD
 
     // 0x04 - 0x07
@@ -59,7 +62,7 @@ void GhostFile::read(EGG::RamStream &stream) {
 }
 
 RawGhostFile::RawGhostFile() {
-    memset(m_buffer, 0, RKG_UNCOMPRESSED_FILE_SIZE);
+    memset(m_buffer, 0, sizeof(m_buffer));
 }
 
 RawGhostFile::RawGhostFile(const u8 *rkg) {
@@ -84,7 +87,7 @@ void RawGhostFile::init(const u8 *rkg) {
             PANIC("Failed to decompress RKG!");
         }
     } else {
-        memcpy(m_buffer, rkg, RKG_UNCOMPRESSED_FILE_SIZE);
+        memcpy(m_buffer, rkg, sizeof(m_buffer));
     }
 }
 
