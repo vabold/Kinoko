@@ -64,7 +64,7 @@ void KReplaySystem::parseOptions(int argc, char **argv) {
             m_currentRawGhost = Abstract::File::Load(m_currentGhostFileName, m_currentRawGhostSize);
 
             if (m_currentRawGhostSize < System::RKG_HEADER_SIZE ||
-                    m_currentRawGhostSize > System::RKG_UNCOMPRESSED_INPUT_DATA_SECTION_SIZE) {
+                    m_currentRawGhostSize > sizeof(System::RawGhostFile)) {
                 PANIC("File cannot be a ghost! Check the file size.");
             }
 
