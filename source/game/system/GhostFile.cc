@@ -115,26 +115,46 @@ bool RawGhostFile::decompress(const u8 *rkg) {
 }
 
 /// @addr{0x8051C120}
-/// @todo Check for valid controller type?
-/// @todo Check lap times sum to race time?
 bool RawGhostFile::isValid(const u8 *rkg) const {
     if (strncmp(reinterpret_cast<const char *>(rkg), "RKGD", 4) != 0) {
         PANIC("RKG header malformed");
         return false;
     }
+    
+    u8 laps = *(rkg+0x10);
+    
+    if (laps > 5) {
+        return false;
+    }
+    
+    Timer finalTime = Timer(parse<u32>(*reinterpret_cast<const u32*>(rkg+0x4)));
+    Timer lapSum = Timer();
+    for (u8 i = 0; i < laps; i++) {
+        Timer lapTime = Timer(parse<u32>(*reinterpret_cast<const u32*>(rkg + 0x11 + (i*3))));
+        lapSum += lapTime;
+    }
 
+    if (finalTime != lapSum) {
+        return false;
+    }
+    
     u32 ids = parse<u32>(*reinterpret_cast<const u32 *>(rkg + 0x8));
     Vehicle vehicle = static_cast<Vehicle>(ids >> 0x1a);
     Character character = static_cast<Character>((ids >> 0x14) & 0x3f);
     u8 year = (ids >> 0xd) & 0x7f;
-    u8 day = (ids >> 0x4) & 0x1f;
     u8 month = (ids >> 0x9) & 0xf;
+    u8 day = (ids >> 0x4) & 0x1f;
+    u8 controllerType = ids & 0xf;
 
     if (vehicle >= Vehicle::Max || character >= Character::Max) {
         return false;
     }
 
     if (year >= 100 || day >= 32 || month > 12) {
+        return false;
+    }
+    
+    if (controllerType > 3) {
         return false;
     }
 
