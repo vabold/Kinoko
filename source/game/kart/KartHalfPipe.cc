@@ -1,5 +1,6 @@
 #include "KartHalfPipe.hh"
 
+#include "game/kart/KartCollide.hh"
 #include "game/kart/KartDynamics.hh"
 #include "game/kart/KartMove.hh"
 #include "game/kart/KartParam.hh"
@@ -37,7 +38,8 @@ void KartHalfPipe::calc() {
 
     calcTrick();
 
-    if (m_touchingZipper && state()->isAirStart()) {
+    if (collide()->surfaceFlags().offBit(KartCollide::eSurfaceFlags::StopHalfPipeState) &&
+            m_touchingZipper && state()->isAirStart()) {
         dynamics()->setExtVel(EGG::Vector3f::zero);
         state()->setOverZipper(true);
 
@@ -138,7 +140,7 @@ void KartHalfPipe::calcRot() {
     case StuntType::Frontside: {
         EGG::Quatf rpy;
         rpy.setRPY(EGG::Vector3f(0.0f, 0.0f, DEG2RAD * (0.2f * -m_rotSign * m_stuntManager.angle)));
-        EGG::Vector3f rot = rpy.rotateVector(EGG::Vector3f::ez);
+        EGG::Vector3f rot = rpy.rotateVector(EGG::Vector3f::ey);
         m_stuntRot.setAxisRotation(angle, rot);
     } break;
     case StuntType::Frontflip:
@@ -163,8 +165,8 @@ void KartHalfPipe::calcLanding(bool) {
 
     constexpr f32 COS_PI_OVER_4 = 0.707f;
 
-    Field::CourseColMgr::CollisionInfo colInfo;
-    Field::CourseColMgr::CollisionInfo colInfo2;
+    Field::CollisionInfo colInfo;
+    Field::CollisionInfo colInfo2;
     Field::KCLTypeMask maskOut;
     EGG::Vector3f pos;
     EGG::Vector3f upLocal;
@@ -264,7 +266,7 @@ void KartHalfPipe::end(bool boost) {
     }
 
     if (state()->isZipperTrick()) {
-        physics()->composeDecayingRot(m_stuntRot);
+        physics()->composeDecayingStuntRot(m_stuntRot);
     }
 
     if (state()->isOverZipper()) {

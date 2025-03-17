@@ -25,13 +25,22 @@ public:
         [[nodiscard]] size_t getGroupSize(u16 groupID) const;
         void addSize(u16 groupID, size_t size);
 
+        [[nodiscard]] constexpr size_t size() const {
+            return m_entries.size();
+        }
+
     private:
         std::array<size_t, 256> m_entries;
     };
 
     ~ExpHeap() override;
     void destroy() override;
-    [[nodiscard]] Kind getHeapKind() const override;
+
+    /// @addr{0x80226EFC}
+    [[nodiscard]] Kind getHeapKind() const override {
+        return Heap::Kind::Expanded;
+    }
+
     [[nodiscard]] void *alloc(size_t size, s32 align) override;
     void free(void *block) override;
     [[nodiscard]] u32 getAllocatableSize(s32 align = 4) const override;
@@ -40,6 +49,7 @@ public:
     void calcGroupSize(GroupSizeRecord *record);
 
     void setGroupID(u16 groupID);
+    [[nodiscard]] u16 getGroupID() const;
 
     [[nodiscard]] Abstract::Memory::MEMiExpHeapHead *dynamicCastHandleToExp();
     [[nodiscard]] const Abstract::Memory::MEMiExpHeapHead *dynamicCastHandleToExp() const;

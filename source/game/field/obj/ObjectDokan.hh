@@ -11,10 +11,16 @@ public:
 
     void init() override;
     void calc() override;
-    [[nodiscard]] u32 loadFlags() const override;
+
+    /// @addr{0x80778FE4}
+    [[nodiscard]] u32 loadFlags() const override {
+        return 1;
+    }
+
+    void calcCollisionTransform() override;
 
     Kart::Reaction onCollision(Kart::KartObject *kartObj, Kart::Reaction reactionOnKart,
-            Kart::Reaction reactionOnObj, const EGG::Vector3f &hitDepth) override;
+            Kart::Reaction reactionOnObj, EGG::Vector3f &hitDepth) override;
 
 private:
     void calcFloor();

@@ -10,6 +10,7 @@ public:
     ~ObjectNoImpl() override;
 
     void load() override;
+    void createCollision() override {}
     void calcCollisionTransform() override {}
 };
 

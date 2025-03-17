@@ -1,16 +1,6 @@
 #include "Quat.hh"
 
-#include "egg/math/Math.hh"
-
 namespace EGG {
-
-Quatf::Quatf() : w(1.0f) {}
-
-Quatf::Quatf(f32 w_, const Vector3f &v_) : v(v_), w(w_) {}
-
-Quatf::Quatf(f32 w_, f32 x_, f32 y_, f32 z_) : v(x_, y_, z_), w(w_) {}
-
-Quatf::~Quatf() = default;
 
 /// @addr{0x80239E10}
 /// @brief Sets roll, pitch, and yaw.
@@ -31,7 +21,7 @@ void Quatf::setRPY(const Vector3f &rpy) {
 /// @addr{0x8023A168}
 /// @brief Scales the quaternion to a unit length.
 void Quatf::normalise() {
-    f32 len = dot() > std::numeric_limits<f32>::epsilon() ? Mathf::sqrt(dot()) : 0.0f;
+    f32 len = squaredNorm() > std::numeric_limits<f32>::epsilon() ? norm() : 0.0f;
 
     if (len != 0.0f) {
         f32 inv = 1.0f / len;
@@ -53,11 +43,6 @@ void Quatf::makeVectorRotation(const Vector3f &from, const Vector3f &to) {
         w = t0 * 0.5f;
         v = from.cross(to) * inv;
     }
-}
-
-/// @brief Computes \f$conj(a+bi+cj+dk) = a-bi-cj-dk\f$
-Quatf Quatf::conjugate() const {
-    return Quatf(w, -v);
 }
 
 /// @addr{0x8023A2D0}
@@ -114,18 +99,6 @@ Quatf Quatf::slerpTo(const Quatf &q1, f32 t) const {
     }
 
     return Quatf(s * w + t * q1.w, s * v + t * q1.v);
-}
-
-/// @addr{0x8023A138}
-/// @brief Computes \f$this \cdot this = w^2 + x^2 + y^2 + z^2\f$
-f32 Quatf::dot() const {
-    return w * w + v.dot();
-}
-
-/// @brief Computes \f$this \cdot rhs = w \times rhs.w + x \times rhs.x + y \times rhs.y + z \times
-/// rhs.z\f$
-f32 Quatf::dot(const Quatf &q) const {
-    return w * q.w + v.dot(q.v);
 }
 
 /// @addr{0x8023A0A0}

@@ -26,17 +26,37 @@ public:
     virtual void loadAABB(f32 radius, f32 maxSpeed);
     virtual void processKartReactions(Kart::KartObject *kartObj, Kart::Reaction &reactionOnKart,
             Kart::Reaction &reactionOnObj);
-    virtual Kart::Reaction onCollision(Kart::KartObject *kartObj, Kart::Reaction reactionOnKart,
-            Kart::Reaction reactionOnObj, const EGG::Vector3f &hitDepth);
+
+    /// @addr{0x8068179C}
+    virtual Kart::Reaction onCollision(Kart::KartObject * /*kartObj*/,
+            Kart::Reaction reactionOnKart, Kart::Reaction /*reactionOnObj*/,
+            EGG::Vector3f & /*hitDepth*/) {
+        return reactionOnKart;
+    }
+
     virtual void onWallCollision(Kart::KartObject *, const EGG::Vector3f &) {}
     virtual void onObjectCollision(Kart::KartObject *) {}
+
+    /// @addr{0x80681748}
     virtual bool checkCollision(ObjectCollisionBase *lhs, EGG::Vector3f &dist);
-    virtual const EGG::Vector3f &getCollisionTranslation() const;
-    [[nodiscard]] virtual ObjectCollisionBase *collision() const;
+
+    /// @addr{0x8068173C}
+    virtual const EGG::Vector3f &getCollisionTranslation() const {
+        return EGG::Vector3f::zero;
+    }
+
+    /// @addr{0x80573518}
+    [[nodiscard]] virtual ObjectCollisionBase *collision() const {
+        return m_collision;
+    }
 
 protected:
-    virtual void createCollision();
-    virtual const EGG::Vector3f &collisionCenter() const;
+    void createCollision() override;
+
+    /// @addr{0x806816B8}
+    virtual const EGG::Vector3f &collisionCenter() const {
+        return EGG::Vector3f::zero;
+    }
 
     ObjectCollisionBase *m_collision;
 };

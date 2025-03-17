@@ -57,6 +57,7 @@ public:
         GroundBoostPanelOrRamp = 7,
         Trickable = 11,
         NotTrickable = 12,
+        StopHalfPipeState = 16,
     };
     typedef EGG::TBitFlag<u32, eSurfaceFlags> SurfaceFlags;
 
@@ -83,18 +84,19 @@ public:
     void calcWheelCollision(u16 wheelIdx, CollisionGroup *hitboxGroup, const EGG::Vector3f &colVel,
             const EGG::Vector3f &center, f32 radius);
     void calcSideCollision(CollisionData &collisionData, Hitbox &hitbox,
-            Field::CourseColMgr::CollisionInfo *colInfo);
+            Field::CollisionInfo *colInfo);
     void calcBoundingRadius();
     void calcObjectCollision();
     void calcPoleTimer();
 
-    void processWheel(CollisionData &collisionData, Hitbox &hitbox,
-            Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut);
-    void processBody(CollisionData &collisionData, Hitbox &hitbox,
-            Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut);
+    void processWheel(CollisionData &collisionData, Hitbox &hitbox, Field::CollisionInfo *colInfo,
+            Field::KCLTypeMask *maskOut);
+    void processBody(CollisionData &collisionData, Hitbox &hitbox, Field::CollisionInfo *colInfo,
+            Field::KCLTypeMask *maskOut);
     [[nodiscard]] bool processWall(CollisionData &collisionData, Field::KCLTypeMask *maskOut);
-    void processFloor(CollisionData &collisionData, Hitbox &hitbox,
-            Field::CourseColMgr::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut, bool wheel);
+    void processFloor(CollisionData &collisionData, Hitbox &hitbox, Field::CollisionInfo *colInfo,
+            Field::KCLTypeMask *maskOut, bool wheel);
+    void processCannon(Field::KCLTypeMask *maskOut);
 
     void applySomeFloorMoment(f32 down, f32 rate, CollisionGroup *hitboxGroup,
             const EGG::Vector3f &forward, const EGG::Vector3f &nextDir, const EGG::Vector3f &speed,
@@ -102,9 +104,12 @@ public:
 
     [[nodiscard]] bool FUN_805B6A9C(CollisionData &collisionData, const Hitbox &hitbox,
             EGG::BoundBox3f &minMax, EGG::Vector3f &relPos, s32 &count,
-            const Field::KCLTypeMask &maskOut, const Field::CourseColMgr::CollisionInfo &colInfo);
+            const Field::KCLTypeMask &maskOut, const Field::CollisionInfo &colInfo);
     void applyBodyCollision(CollisionData &collisionData, const EGG::Vector3f &movement,
             const EGG::Vector3f &posRel, s32 count);
+
+    void startFloorMomentRate();
+    void calcFloorMomentRate();
 
     /// Object collision functions
     Action handleReactNone(size_t idx);
@@ -126,28 +131,70 @@ public:
     Action handleReactExplosionLoseItem(size_t idx);
 
     /// @beginSetters
+    /// @addr{0x805B78D0}
     void setFloorColInfo(CollisionData &collisionData, const EGG::Vector3f &relPos,
-            const EGG::Vector3f &vel, const EGG::Vector3f &floorNrm);
-    void setTangentOff(const EGG::Vector3f &v);
-    void setMovement(const EGG::Vector3f &v);
+            const EGG::Vector3f &vel, const EGG::Vector3f &floorNrm) {
+        collisionData.relPos = relPos;
+        collisionData.vel = vel;
+        collisionData.floorNrm = floorNrm;
+        collisionData.bFloor = true;
+    }
+
+    void setTangentOff(const EGG::Vector3f &v) {
+        m_tangentOff = v;
+    }
+    void setMovement(const EGG::Vector3f &v) {
+        m_movement = v;
+    }
     /// @endSetters
 
     /// @beginGetters
-    [[nodiscard]] f32 boundingRadius() const;
-    [[nodiscard]] const SurfaceFlags &surfaceFlags() const;
-    [[nodiscard]] const EGG::Vector3f &tangentOff() const;
-    [[nodiscard]] const EGG::Vector3f &movement() const;
-    [[nodiscard]] f32 suspBottomHeightSoftWall() const;
-    [[nodiscard]] u16 someSoftWallTimer() const;
-    [[nodiscard]] f32 suspBottomHeightNonSoftWall() const;
-    [[nodiscard]] u16 someNonSoftWallTimer() const;
-    [[nodiscard]] f32 colPerpendicularity() const;
+    [[nodiscard]] f32 boundingRadius() const {
+        return m_boundingRadius;
+    }
+
+    [[nodiscard]] f32 floorMomentRate() const {
+        return m_floorMomentRate;
+    }
+
+    [[nodiscard]] const SurfaceFlags &surfaceFlags() const {
+        return m_surfaceFlags;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &tangentOff() const {
+        return m_tangentOff;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &movement() const {
+        return m_movement;
+    }
+
+    [[nodiscard]] f32 suspBottomHeightSoftWall() const {
+        return m_suspBottomHeightSoftWall;
+    }
+
+    [[nodiscard]] u16 someSoftWallTimer() const {
+        return m_someSoftWallTimer;
+    }
+
+    [[nodiscard]] f32 suspBottomHeightNonSoftWall() const {
+        return m_suspBottomHeightNonSoftWall;
+    }
+
+    [[nodiscard]] u16 someNonSoftWallTimer() const {
+        return m_someNonSoftWallTimer;
+    }
+
+    [[nodiscard]] f32 colPerpendicularity() const {
+        return m_colPerpendicularity;
+    }
     /// @endGetters
 
 private:
     typedef Action (KartCollide::*ObjectCollisionHandler)(size_t idx);
 
     f32 m_boundingRadius;
+    f32 m_floorMomentRate;
     EGG::Vector3f m_totalReactionWallNrm;
     SurfaceFlags m_surfaceFlags;
     EGG::Vector3f m_tangentOff;

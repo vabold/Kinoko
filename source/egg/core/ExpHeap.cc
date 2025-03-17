@@ -72,11 +72,6 @@ void ExpHeap::destroy() {
     }
 }
 
-/// @addr{0x80226EFC}
-Heap::Kind ExpHeap::getHeapKind() const {
-    return Heap::Kind::Expanded;
-}
-
 /// @addr{0x80226C04}
 void *ExpHeap::alloc(size_t size, s32 align) {
     if (tstDisableAllocation()) {
@@ -115,6 +110,10 @@ void ExpHeap::calcGroupSize(GroupSizeRecord *record) {
 /// @addr{0x80226C98}
 void ExpHeap::setGroupID(u16 groupID) {
     return dynamicCastHandleToExp()->setGroupID(groupID);
+}
+
+u16 ExpHeap::getGroupID() const {
+    return dynamicCastHandleToExp()->getGroupID();
 }
 
 MEMiExpHeapHead *ExpHeap::dynamicCastHandleToExp() {

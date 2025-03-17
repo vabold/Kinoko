@@ -21,12 +21,13 @@ void ItemInventory::useItem(int count) {
         return;
     }
 
-    m_currentId = ItemId::NONE;
-    m_currentCount = 0;
+    clear();
 }
 
-ItemId ItemInventory::id() const {
-    return m_currentId;
+/// @addr{0x807BC9C0}
+void ItemInventory::clear() {
+    m_currentId = ItemId::NONE;
+    m_currentCount = 0;
 }
 
 int ItemInventory::currentCount() const {

@@ -29,11 +29,14 @@ public:
     void tryEndHWG();
 
     /// @beginGetters
-    [[nodiscard]] f32 someScale();
+    [[nodiscard]] f32 someScale() {
+        return m_someScale;
+    }
     /// @endGetters
 
 private:
     KartMove *m_move;
+    KartAction *m_action;
     KartCollide *m_collide;
     KartState *m_state;
     EGG::Vector3f m_maxSuspOvertravel;

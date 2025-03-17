@@ -25,6 +25,7 @@ KartObject::~KartObject() {
     delete m_pointers.body;
     delete m_pointers.sub;
     delete m_pointers.model;
+    delete m_pointers.objectCollisionKart;
 
     for (auto *susp : m_pointers.suspensions) {
         delete susp;

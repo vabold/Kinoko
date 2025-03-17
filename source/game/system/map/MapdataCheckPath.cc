@@ -4,8 +4,7 @@ namespace System {
 
 /// @addr{0x80515098}
 MapdataCheckPath::MapdataCheckPath(const SData *data) : m_rawData(data), m_depth(-1) {
-    u8 *unsafeData = reinterpret_cast<u8 *>(const_cast<SData *>(data));
-    EGG::RamStream stream = EGG::RamStream(unsafeData, sizeof(SData));
+    EGG::RamStream stream = EGG::RamStream(data, sizeof(SData));
     read(stream);
     m_oneOverCount = 1.0f / m_size;
 }
@@ -39,34 +38,6 @@ void MapdataCheckPath::findDepth(s8 depth, const MapdataCheckPathAccessor &acces
 
         accessor.get(nextID)->findDepth(depth + 1, accessor);
     }
-}
-
-bool MapdataCheckPath::isPointInPath(u16 checkpointId) const {
-    return m_start <= checkpointId && checkpointId <= end();
-}
-
-u8 MapdataCheckPath::start() const {
-    return m_start;
-}
-
-u8 MapdataCheckPath::end() const {
-    return m_start + m_size - 1;
-}
-
-const std::array<u8, MapdataCheckPath::MAX_NEIGHBORS> &MapdataCheckPath::next() const {
-    return m_next;
-}
-
-const std::array<u8, MapdataCheckPath::MAX_NEIGHBORS> &MapdataCheckPath::prev() const {
-    return m_prev;
-}
-
-s8 MapdataCheckPath::depth() const {
-    return m_depth;
-}
-
-f32 MapdataCheckPath::oneOverCount() const {
-    return m_oneOverCount;
 }
 
 /// @addr{Inlined in 0x8051377C}

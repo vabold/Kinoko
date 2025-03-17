@@ -19,6 +19,9 @@ GhostFile::~GhostFile() = default;
 
 /// @addr{0x8051C530}
 void GhostFile::read(EGG::RamStream &stream) {
+    constexpr size_t RKG_MII_DATA_SIZE = 0x4A;
+    constexpr size_t RKG_USER_DATA_SIZE = 0x14;
+
     stream.skip(0x4); // RKGD
 
     // 0x04 - 0x07
@@ -58,37 +61,8 @@ void GhostFile::read(EGG::RamStream &stream) {
     stream.read(m_miiData.data(), RKG_MII_DATA_SIZE);
 }
 
-const Timer &GhostFile::lapTimer(size_t i) const {
-    ASSERT(i < m_lapTimes.size());
-    return m_lapTimes[i];
-}
-
-const Timer &GhostFile::raceTimer() const {
-    return m_raceTime;
-}
-
-Character GhostFile::character() const {
-    return m_character;
-}
-
-Vehicle GhostFile::vehicle() const {
-    return m_vehicle;
-}
-
-Course GhostFile::course() const {
-    return m_course;
-}
-
-const u8 *GhostFile::inputs() const {
-    return m_inputs;
-}
-
-bool GhostFile::driftIsAuto() const {
-    return m_driftIsAuto;
-}
-
 RawGhostFile::RawGhostFile() {
-    memset(m_buffer, 0, RKG_UNCOMPRESSED_FILE_SIZE);
+    memset(m_buffer, 0, sizeof(m_buffer));
 }
 
 RawGhostFile::RawGhostFile(const u8 *rkg) {
@@ -113,7 +87,7 @@ void RawGhostFile::init(const u8 *rkg) {
             PANIC("Failed to decompress RKG!");
         }
     } else {
-        memcpy(m_buffer, rkg, RKG_UNCOMPRESSED_FILE_SIZE);
+        memcpy(m_buffer, rkg, sizeof(m_buffer));
     }
 }
 
@@ -179,19 +153,6 @@ bool RawGhostFile::isValid(const u8 *rkg) const {
     }
 
     return true;
-}
-
-const u8 *RawGhostFile::buffer() const {
-    return m_buffer;
-}
-
-template <typename T>
-T RawGhostFile::parseAt(size_t offset) const {
-    return parse<T>(*reinterpret_cast<const T *>(m_buffer + offset));
-}
-
-bool RawGhostFile::compressed(const u8 *rkg) const {
-    return ((*(rkg + 0xC) >> 3) & 1) == 1;
 }
 
 } // namespace System

@@ -12,7 +12,7 @@ ObjectHitTable::ObjectHitTable(const char *filename) {
     void *file =
             System::ResourceManager::Instance()->getFile(filename, &size, System::ArchiveId::Core);
 
-    EGG::RamStream stream = EGG::RamStream(reinterpret_cast<u8 *>(file), size);
+    EGG::RamStream stream = EGG::RamStream(file, size);
 
     m_count = stream.read_s16();
     m_fieldCount = stream.read_s16();
@@ -28,7 +28,9 @@ ObjectHitTable::ObjectHitTable(const char *filename) {
 }
 
 /// @addr{0x807F9348}
-ObjectHitTable::~ObjectHitTable() = default;
+ObjectHitTable::~ObjectHitTable() {
+    delete m_reactions.data();
+}
 
 Kart::Reaction ObjectHitTable::reaction(s16 i) const {
     ASSERT(i != -1);

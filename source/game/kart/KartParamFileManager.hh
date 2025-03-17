@@ -2,6 +2,8 @@
 
 #include "game/kart/KartParam.hh"
 
+#include "game/system/ResourceManager.hh"
+
 namespace Kart {
 
 /// @brief Abstraction for the process of retrieving kart parameters from files.
@@ -18,7 +20,10 @@ public:
 
     static KartParamFileManager *CreateInstance();
     static void DestroyInstance();
-    [[nodiscard]] static KartParamFileManager *Instance();
+
+    [[nodiscard]] static KartParamFileManager *Instance() {
+        return s_instance;
+    }
 
 private:
     template <typename T>
@@ -28,8 +33,15 @@ private:
     };
 
     struct FileInfo {
-        void clear();
-        void load(const char *filename);
+        void clear() {
+            file = nullptr;
+            size = 0;
+        }
+
+        void load(const char *filename) {
+            auto *resourceManager = System::ResourceManager::Instance();
+            file = resourceManager->getFile(filename, &size, System::ArchiveId::Core);
+        }
 
         void *file;
         size_t size;

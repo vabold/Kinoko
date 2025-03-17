@@ -24,22 +24,42 @@ void KartItem::init(size_t playerIdx) {
 /// @addr{0x80797928}
 void KartItem::calc() {
     bool prevButton = m_flags.onBit(eFlags::ItemButtonHold);
-    m_flags.makeAllZero();
+    m_flags.resetBit(eFlags::ItemButtonHold, eFlags::ItemButtonActivation);
 
     const auto &currentInputs = inputs()->currentState();
     if (currentInputs.item()) {
         m_flags.setBit(eFlags::ItemButtonHold).changeBit(!prevButton, eFlags::ItemButtonActivation);
     }
 
-    const auto *raceMgr = System::RaceManager::Instance();
-    bool canUse = m_flags.onBit(eFlags::ItemButtonActivation);
-    canUse = canUse && raceMgr->isStageReached(System::RaceManager::Stage::Race);
-    canUse = canUse && !state()->isBurnout();
-    canUse = canUse && (m_inventory.id() != ItemId::NONE);
+    if (m_flags.onBit(eFlags::Lockout)) {
+        if (!state()->isBeforeRespawn() && !state()->isInAction() && !state()->isTriggerRespawn() &&
+                !state()->isCannonStart() && !state()->isInCannon() && !state()->isAfterCannon()) {
+            m_flags.resetBit(eFlags::Lockout);
+        }
+    } else {
+        if (state()->isInRespawn() || state()->isInAction() || state()->isTriggerRespawn() ||
+                state()->isCannonStart() || state()->isInCannon()) {
+            m_flags.setBit(eFlags::Lockout);
+        } else {
+            const auto *raceMgr = System::RaceManager::Instance();
+            bool canUse = m_flags.onBit(eFlags::ItemButtonActivation);
+            canUse = canUse && raceMgr->isStageReached(System::RaceManager::Stage::Race);
+            canUse = canUse && !state()->isInAction();
+            canUse = canUse && !state()->isBurnout();
+            canUse = canUse && (m_inventory.id() != ItemId::NONE);
 
-    if (canUse) {
-        // For now, assume only time trials are valid and use a mushroom
-        useMushroom();
+            if (canUse) {
+                // For now, assume only time trials are valid and use a mushroom
+                useMushroom();
+            }
+        }
+    }
+}
+
+/// @addr{0x80798848}
+void KartItem::clear() {
+    if (m_inventory.id() != ItemId::NONE) {
+        m_inventory.clear();
     }
 }
 
@@ -52,10 +72,6 @@ void KartItem::activateMushroom() {
 void KartItem::useMushroom() {
     activateMushroom();
     m_inventory.useItem(1);
-}
-
-ItemInventory &KartItem::inventory() {
-    return m_inventory;
 }
 
 } // namespace Item

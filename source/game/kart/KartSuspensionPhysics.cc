@@ -115,66 +115,6 @@ void WheelPhysics::updateCollision(const EGG::Vector3f &bottom, const EGG::Vecto
     }
 }
 
-void WheelPhysics::setSuspTravel(f32 suspTravel) {
-    m_suspTravel = suspTravel;
-}
-
-void WheelPhysics::setPos(const EGG::Vector3f &pos) {
-    m_pos = pos;
-}
-
-void WheelPhysics::setLastPos(const EGG::Vector3f &pos) {
-    m_lastPos = pos;
-}
-
-void WheelPhysics::setLastPosDiff(const EGG::Vector3f &pos) {
-    m_lastPosDiff = pos;
-}
-
-void WheelPhysics::setWheelEdgePos(const EGG::Vector3f &pos) {
-    m_wheelEdgePos = pos;
-}
-
-void WheelPhysics::setColVel(const EGG::Vector3f &vec) {
-    m_colVel = vec;
-}
-
-const EGG::Vector3f &WheelPhysics::pos() const {
-    return m_pos;
-}
-
-const EGG::Vector3f &WheelPhysics::lastPosDiff() const {
-    return m_lastPosDiff;
-}
-
-f32 WheelPhysics::suspTravel() {
-    return m_suspTravel;
-}
-
-const EGG::Vector3f &WheelPhysics::topmostPos() const {
-    return m_topmostPos;
-}
-
-CollisionGroup *WheelPhysics::hitboxGroup() {
-    return m_hitboxGroup;
-}
-
-const CollisionGroup *WheelPhysics::hitboxGroup() const {
-    return m_hitboxGroup;
-}
-
-const EGG::Vector3f &WheelPhysics::speed() const {
-    return m_speed;
-}
-
-f32 WheelPhysics::effectiveRadius() const {
-    return m_effectiveRadius;
-}
-
-f32 WheelPhysics::_74() const {
-    return m_74;
-}
-
 /// @addr{0x80599ED4}
 KartSuspensionPhysics::KartSuspensionPhysics(u16 wheelIdx, TireType tireType, u16 bspWheelIdx)
     : m_tirePhysics(nullptr), m_tireType(tireType), m_bspWheelIdx(bspWheelIdx),
@@ -288,7 +228,7 @@ void KartSuspensionPhysics::calcSuspension(const EGG::Vector3f &forward,
 
     dynamics()->applySuspensionWrench(m_topmostPos, fLinear, fRot, state()->isWheelieRot());
 
-    f32 rate = state()->isSomethingWallCollision() ? 0.01f : 0.8f;
+    f32 rate = state()->isSomethingWallCollision() ? 0.01f : collide()->floorMomentRate();
 
     collide()->applySomeFloorMoment(0.1f, rate, hitboxGroup, forward, move()->dir(),
             m_tirePhysics->speed(), true, true, !state()->isWheelieRot());

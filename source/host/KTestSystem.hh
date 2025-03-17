@@ -19,7 +19,10 @@ public:
 
     static KTestSystem *CreateInstance();
     static void DestroyInstance();
-    static KTestSystem *Instance();
+
+    static KTestSystem *Instance() {
+        return static_cast<KTestSystem *>(s_instance);
+    }
 
 private:
     struct TestCase {
@@ -78,6 +81,8 @@ private:
             return;
         }
 
+        m_sceneMgr->currentScene()->heap()->enableAllocation();
+
         if (m_sync) {
             REPORT("Test Case Failed: %s [%d / %d]", getCurrentTestCase().name.c_str(),
                     m_currentFrame, m_frameCount);
@@ -89,6 +94,8 @@ private:
         REPORT("Expected: %s", s0.c_str());
         REPORT("Observed: %s", s1.c_str());
 
+        m_sceneMgr->currentScene()->heap()->disableAllocation();
+
         m_sync = false;
     }
 
@@ -96,6 +103,8 @@ private:
         if (t0 == t1) {
             return;
         }
+
+        m_sceneMgr->currentScene()->heap()->enableAllocation();
 
         if (m_sync) {
             REPORT("Test Case Failed: %s [%d / %d]", getCurrentTestCase().name.c_str(),
@@ -107,6 +116,8 @@ private:
         std::string s1 = std::to_string(t1);
         REPORT("Expected: 0x%08X | %s", f2u(t0), s0.c_str());
         REPORT("Observed: 0x%08X | %s", f2u(t1), s1.c_str());
+
+        m_sceneMgr->currentScene()->heap()->disableAllocation();
 
         m_sync = false;
     }

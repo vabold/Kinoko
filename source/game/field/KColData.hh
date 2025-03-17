@@ -9,6 +9,40 @@
 
 namespace Field {
 
+struct CollisionInfoPartial {
+    EGG::BoundBox3f bbox;
+    EGG::Vector3f tangentOff;
+};
+
+struct CollisionInfo {
+    EGG::BoundBox3f bbox;
+    EGG::Vector3f tangentOff;
+    EGG::Vector3f floorNrm;
+    EGG::Vector3f wallNrm;
+    EGG::Vector3f _3c;
+    f32 floorDist;
+    f32 wallDist;
+    f32 _50;
+    f32 perpendicularity;
+
+    void updateFloor(f32 dist, const EGG::Vector3f &fnrm) {
+        if (dist > floorDist) {
+            floorDist = dist;
+            floorNrm = fnrm;
+        }
+    }
+
+    void updateWall(f32 dist, const EGG::Vector3f &fnrm) {
+        if (dist > wallDist) {
+            wallDist = dist;
+            wallNrm = fnrm;
+        }
+    }
+
+    void update(f32 now_dist, const EGG::Vector3f &offset, const EGG::Vector3f &fnrm,
+            u32 kclAttributeTypeBit);
+};
+
 /// @brief Performs lookups for KCL triangles
 /// @nosubgrouping
 class KColData {
@@ -41,10 +75,12 @@ public:
     void narrowPolygon_EachBlock(const u16 *prismArray);
 
     void computeBBox();
+    [[nodiscard]] bool checkPointCollision(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut);
     [[nodiscard]] bool checkSphereCollision(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut);
     [[nodiscard]] bool checkSphere(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut);
     [[nodiscard]] bool checkSphereSingle(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut);
 
+    void lookupPoint(const EGG::Vector3f &pos, const EGG::Vector3f &prevPos, KCLTypeMask typeMask);
     void lookupSphere(f32 radius, const EGG::Vector3f &pos, const EGG::Vector3f &prevPos,
             KCLTypeMask typeMask);
     void lookupSphereCached(const EGG::Vector3f &p1, const EGG::Vector3f &p2, u32 typeMask,
@@ -66,7 +102,11 @@ private:
 
     [[nodiscard]] bool checkCollision(const KCollisionPrism &prism, f32 *distOut,
             EGG::Vector3f *fnrmOut, u16 *flagsOut, CollisionCheckType type);
+    [[nodiscard]] bool checkPointCollision(const KCollisionPrism &prism, f32 *distOut,
+            EGG::Vector3f *fnrmOut, u16 *flagsOut, bool movement);
     [[nodiscard]] bool checkSphereMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut);
+    [[nodiscard]] bool checkPointMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut);
+    [[nodiscard]] bool checkPoint(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut);
 
     const void *m_posData;
     const void *m_nrmData;

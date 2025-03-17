@@ -17,16 +17,20 @@ public:
 
     void init(size_t playerIdx);
     void calc();
+    void clear();
 
     void activateMushroom();
     void useMushroom();
 
     /// @beginGetters
-    [[nodiscard]] ItemInventory &inventory();
+    [[nodiscard]] ItemInventory &inventory() {
+        return m_inventory;
+    }
     /// @endGetters
 
 private:
     enum class eFlags {
+        Lockout = 10,
         ItemButtonHold = 12,
         ItemButtonActivation = 14,
     };

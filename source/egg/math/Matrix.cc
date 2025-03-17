@@ -6,9 +6,13 @@ namespace EGG {
 
 using namespace Mathf;
 
+#ifdef BUILD_DEBUG
 Matrix34f::Matrix34f() {
-    makeZero();
+    a.fill(std::numeric_limits<f32>::signaling_NaN());
 }
+#else
+Matrix34f::Matrix34f() = default;
+#endif
 
 Matrix34f::Matrix34f(f32 _e00, f32 _e01, f32 _e02, f32 _e03, f32 _e10, f32 _e11, f32 _e12, f32 _e13,
         f32 _e20, f32 _e21, f32 _e22, f32 _e23) {
@@ -25,8 +29,6 @@ Matrix34f::Matrix34f(f32 _e00, f32 _e01, f32 _e02, f32 _e03, f32 _e10, f32 _e11,
     mtx[2][2] = _e22;
     mtx[2][3] = _e23;
 }
-
-Matrix34f::~Matrix34f() = default;
 
 /// @addr{0x80230118}
 /// @brief Sets matrix from rotation and position.
@@ -150,11 +152,6 @@ void Matrix34f::makeS(const Vector3f &s) {
     mtx[2][2] = s.z;
 }
 
-/// @brief Zeroes every element of the matrix.
-void Matrix34f::makeZero() {
-    *this = Matrix34f::zero;
-}
-
 /// @addr{0x805AE7B4}
 /// @brief Sets a 3x3 orthonormal basis for a local coordinate system.
 /// @details In a vector's orthogonal space, there are infinitely many vector pairs orthogonal to
@@ -257,7 +254,7 @@ Vector3f Matrix34f::multVector33(const Vector3f &vec) const {
 /// @brief Inverts the 3x3 portion of the 3x4 matrix.
 /// @details Unlike a typical matrix inversion, if the determinant is 0, then this function returns
 /// the identity matrix.
-Matrix34f Matrix34f::inverseTo33() const {
+void Matrix34f::inverseTo33(Matrix34f &out) const {
     f32 determinant = ((((mtx[2][1] * (mtx[0][2] * mtx[1][0])) +
                                 ((mtx[2][2] * (mtx[0][0] * mtx[1][1])) +
                                         (mtx[2][0] * (mtx[0][1] * mtx[1][2])))) -
@@ -266,24 +263,21 @@ Matrix34f Matrix34f::inverseTo33() const {
             (mtx[1][2] * (mtx[0][0] * mtx[2][1]));
 
     if (determinant == 0.0f) {
-        return Matrix34f::ident;
+        out = Matrix34f::ident;
+        return;
     }
 
     f32 invDet = 1.0f / determinant;
 
-    Matrix34f ret;
-
-    ret[0, 2] = (mtx[0][1] * mtx[1][2] - mtx[1][1] * mtx[0][2]) * invDet;
-    ret[1, 2] = -(mtx[0][0] * mtx[1][2] - mtx[0][2] * mtx[1][0]) * invDet;
-    ret[2, 1] = -(mtx[0][0] * mtx[2][1] - mtx[2][0] * mtx[0][1]) * invDet;
-    ret[2, 2] = (mtx[0][0] * mtx[1][1] - mtx[1][0] * mtx[0][1]) * invDet;
-    ret[2, 0] = (mtx[1][0] * mtx[2][1] - mtx[2][0] * mtx[1][1]) * invDet;
-    ret[0, 0] = (mtx[1][1] * mtx[2][2] - mtx[2][1] * mtx[1][2]) * invDet;
-    ret[0, 1] = -(mtx[0][1] * mtx[2][2] - mtx[2][1] * mtx[0][2]) * invDet;
-    ret[1, 0] = -(mtx[1][0] * mtx[2][2] - mtx[2][0] * mtx[1][2]) * invDet;
-    ret[1, 1] = (mtx[0][0] * mtx[2][2] - mtx[2][0] * mtx[0][2]) * invDet;
-
-    return ret;
+    out[0, 2] = (mtx[0][1] * mtx[1][2] - mtx[1][1] * mtx[0][2]) * invDet;
+    out[1, 2] = -(mtx[0][0] * mtx[1][2] - mtx[0][2] * mtx[1][0]) * invDet;
+    out[2, 1] = -(mtx[0][0] * mtx[2][1] - mtx[2][0] * mtx[0][1]) * invDet;
+    out[2, 2] = (mtx[0][0] * mtx[1][1] - mtx[1][0] * mtx[0][1]) * invDet;
+    out[2, 0] = (mtx[1][0] * mtx[2][1] - mtx[2][0] * mtx[1][1]) * invDet;
+    out[0, 0] = (mtx[1][1] * mtx[2][2] - mtx[2][1] * mtx[1][2]) * invDet;
+    out[0, 1] = -(mtx[0][1] * mtx[2][2] - mtx[2][1] * mtx[0][2]) * invDet;
+    out[1, 0] = -(mtx[1][0] * mtx[2][2] - mtx[2][0] * mtx[1][2]) * invDet;
+    out[1, 1] = (mtx[0][0] * mtx[2][2] - mtx[2][0] * mtx[0][2]) * invDet;
 }
 
 /// @brief Transposes the 3x3 portion of the matrix.

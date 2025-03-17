@@ -33,10 +33,6 @@ void ItemDirector::DestroyInstance() {
     delete instance;
 }
 
-ItemDirector *ItemDirector::Instance() {
-    return s_instance;
-}
-
 ItemInventory &ItemDirector::itemInventory(s16 idx) {
     return m_karts[idx].inventory();
 }

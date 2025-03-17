@@ -46,23 +46,58 @@ public:
     [[nodiscard]] f32 getEntryOffsetExact(const EGG::Vector2f &prevPos,
             const EGG::Vector2f &pos) const;
 
-    [[nodiscard]] bool isNormalCheckpoint() const;
-    [[nodiscard]] bool isFinishLine() const;
+    [[nodiscard]] bool isNormalCheckpoint() const {
+        return static_cast<CheckArea>(m_checkArea) == CheckArea::NormalCheckpoint;
+    }
+
+    [[nodiscard]] bool isFinishLine() const {
+        return static_cast<CheckArea>(m_checkArea) == CheckArea::FinishLine;
+    }
 
     /// @beginSetters
-    void setSearched();
-    void clearSearched();
+    void setSearched() {
+        m_searched = true;
+    }
+
+    void clearSearched() {
+        m_searched = false;
+    }
     /// @endSetters
 
     /// @beginGetters
-    [[nodiscard]] bool searched() const;
-    [[nodiscard]] s8 jugemIndex() const;
-    [[nodiscard]] s8 checkArea() const;
-    [[nodiscard]] u16 nextCount() const;
-    [[nodiscard]] u16 prevCount() const;
-    [[nodiscard]] u16 id() const;
-    [[nodiscard]] MapdataCheckPoint *prevPoint(size_t i) const;
-    [[nodiscard]] MapdataCheckPoint *nextPoint(size_t i) const;
+    [[nodiscard]] bool searched() const {
+        return m_searched;
+    }
+
+    [[nodiscard]] s8 jugemIndex() const {
+        return m_jugemIndex;
+    }
+
+    [[nodiscard]] s8 checkArea() const {
+        return m_checkArea;
+    }
+
+    [[nodiscard]] u16 nextCount() const {
+        return m_nextCount;
+    }
+
+    [[nodiscard]] u16 prevCount() const {
+        return m_prevCount;
+    }
+
+    [[nodiscard]] u16 id() const {
+        return m_id;
+    }
+
+    [[nodiscard]] MapdataCheckPoint *prevPoint(size_t i) const {
+        ASSERT(i < m_prevPoints.size());
+        return m_prevPoints[i];
+    }
+
+    [[nodiscard]] MapdataCheckPoint *nextPoint(size_t i) const {
+        ASSERT(i < m_nextPoints.size());
+        return m_nextPoints[i].checkpoint;
+    }
     /// @endGetters
 
     enum class CheckArea {
@@ -110,7 +145,9 @@ public:
     MapdataCheckPointAccessor(const MapSectionHeader *header);
     ~MapdataCheckPointAccessor() override;
 
-    [[nodiscard]] s8 lastKcpType() const;
+    [[nodiscard]] s8 lastKcpType() const {
+        return m_lastKcpType;
+    }
 
 private:
     void init();

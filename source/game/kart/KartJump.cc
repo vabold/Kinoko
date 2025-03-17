@@ -118,7 +118,8 @@ void KartJump::calc() {
 }
 
 bool KartJump::someFlagCheck() {
-    return state()->isTrickStart() || state()->isInATrick();
+    return state()->isInAction() || state()->isTrickStart() || state()->isInATrick() ||
+            state()->isOverZipper();
 }
 
 /// @addr{0x80575B38}
@@ -153,7 +154,7 @@ void KartJump::calcInput() {
 /// @addr{0x805766B8}
 void KartJump::end() {
     if (state()->isTrickRot()) {
-        physics()->composeDecayingRot(m_rot);
+        physics()->composeDecayingStuntRot(m_rot);
     }
 
     state()->setInATrick(false);
@@ -183,7 +184,7 @@ void KartJump::setAngle(const EGG::Vector3f &left) {
 
     f32 vel1YDot = m_move->vel1Dir().dot(EGG::Vector3f::ey);
     EGG::Vector3f vel1YCross = m_move->vel1Dir().cross(EGG::Vector3f::ey);
-    f32 vel1YCrossMag = EGG::Mathf::sqrt(vel1YCross.dot());
+    f32 vel1YCrossMag = vel1YCross.length();
     f32 pitch = EGG::Mathf::abs(EGG::Mathf::atan2(vel1YCrossMag, vel1YDot));
     f32 angle = 90.0f - (pitch * RAD2DEG);
     u32 weightClass = static_cast<u32>(param()->stats().weightClass);
@@ -203,26 +204,6 @@ void KartJump::setAngle(const EGG::Vector3f &left) {
     nextDir.setAxisRotation(-rotAngle * DEG2RAD, left);
     m_move->setDir(nextDir.ps_multVector(m_move->dir()));
     m_move->setVel1Dir(m_move->dir());
-}
-
-void KartJump::setBoostRampEnabled(bool isSet) {
-    m_boostRampEnabled = isSet;
-}
-
-bool KartJump::isBoostRampEnabled() const {
-    return m_boostRampEnabled;
-}
-
-TrickType KartJump::type() const {
-    return m_type;
-}
-
-SurfaceVariant KartJump::variant() const {
-    return m_variant;
-}
-
-s16 KartJump::cooldown() const {
-    return m_cooldown;
 }
 
 /// @addr{0x80575EE8}

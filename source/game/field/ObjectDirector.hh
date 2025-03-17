@@ -4,6 +4,7 @@
 #include "game/field/ObjectFlowTable.hh"
 #include "game/field/ObjectHitTable.hh"
 #include "game/field/obj/ObjectCollidable.hh"
+#include "game/field/obj/ObjectNoImpl.hh"
 
 #include <vector>
 
@@ -14,25 +15,43 @@ public:
     void init();
     void calc();
     void addObject(ObjectCollidable *obj);
+    void addObjectNoImpl(ObjectNoImpl *obj);
 
     size_t checkKartObjectCollision(Kart::KartObject *kartObj,
             ObjectCollisionConvexHull *convexHull);
 
-    const ObjectFlowTable &flowTable() const;
-    const ObjectBase *collidingObject(size_t idx) const;
-    Kart::Reaction reaction(size_t idx) const;
-    const EGG::Vector3f &hitDepth(size_t idx) const;
+    [[nodiscard]] const ObjectFlowTable &flowTable() const {
+        return m_flowTable;
+    }
+
+    [[nodiscard]] const ObjectBase *collidingObject(size_t idx) const {
+        ASSERT(idx < m_collidingObjects.size());
+        return m_collidingObjects[idx];
+    }
+
+    [[nodiscard]] Kart::Reaction reaction(size_t idx) const {
+        ASSERT(idx < m_reactions.size());
+        return m_reactions[idx];
+    }
+
+    [[nodiscard]] const EGG::Vector3f &hitDepth(size_t idx) const {
+        ASSERT(idx < m_hitDepths.size());
+        return m_hitDepths[idx];
+    }
 
     static ObjectDirector *CreateInstance();
     static void DestroyInstance();
-    static ObjectDirector *Instance();
+
+    [[nodiscard]] static ObjectDirector *Instance() {
+        return s_instance;
+    }
 
 private:
     ObjectDirector();
     ~ObjectDirector() override;
 
     void createObjects();
-    ObjectBase *createObject(const System::MapdataGeoObj &params);
+    [[nodiscard]] ObjectBase *createObject(const System::MapdataGeoObj &params);
 
     ObjectFlowTable m_flowTable;
     ObjectHitTable m_hitTableKart;

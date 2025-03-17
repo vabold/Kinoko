@@ -1,5 +1,7 @@
 #pragma once
 
+#include "egg/math/Math.hh"
+
 #include "egg/util/Stream.hh"
 
 #include <format>
@@ -8,9 +10,15 @@ namespace EGG {
 
 /// @brief A 2D float vector.
 struct Vector2f {
-    Vector2f(f32 x_, f32 y_);
-    Vector2f();
-    ~Vector2f();
+#ifdef BUILD_DEBUG
+    constexpr Vector2f()
+        : x(std::numeric_limits<f32>::signaling_NaN()),
+          y(std::numeric_limits<f32>::signaling_NaN()) {}
+#else
+    constexpr Vector2f() = default;
+#endif
+    constexpr Vector2f(f32 x_, f32 y_) : x(x_), y(y_) {}
+    ~Vector2f() = default;
 
     inline void set(f32 val) {
         x = y = val;
@@ -44,10 +52,22 @@ struct Vector2f {
         return Vector2f(scalar * rhs.x, scalar * rhs.y);
     }
 
-    [[nodiscard]] f32 cross(const Vector2f &rhs) const;
-    [[nodiscard]] f32 dot(const Vector2f &rhs) const;
-    [[nodiscard]] f32 dot() const;
-    [[nodiscard]] f32 length() const;
+    [[nodiscard]] f32 cross(const Vector2f &rhs) const {
+        return x * rhs.y - y * rhs.x;
+    }
+
+    [[nodiscard]] f32 dot(const Vector2f &rhs) const {
+        return x * rhs.x + y * rhs.y;
+    }
+
+    [[nodiscard]] f32 dot() const {
+        return x * x + y * y;
+    }
+
+    [[nodiscard]] f32 length() const {
+        return dot() > std::numeric_limits<f32>::epsilon() ? Mathf::sqrt(dot()) : 0.0f;
+    }
+
     f32 normalise();
 
     void read(Stream &stream);
@@ -61,8 +81,16 @@ struct Vector2f {
 
 /// @brief A 3D float vector.
 struct Vector3f {
+#ifdef BUILD_DEBUG
+    constexpr Vector3f()
+        : x(std::numeric_limits<f32>::signaling_NaN()),
+          y(std::numeric_limits<f32>::signaling_NaN()),
+          z(std::numeric_limits<f32>::signaling_NaN()) {}
+#else
+    constexpr Vector3f() = default;
+#endif
     constexpr Vector3f(f32 x_, f32 y_, f32 z_) : x(x_), y(y_), z(z_) {}
-    constexpr Vector3f() : x(0.0f), y(0.0f), z(0.0f) {}
+
     // NOTE: Defining the destructor in the header ensures the struct is trivially destructible
     ~Vector3f() = default;
 
@@ -140,22 +168,61 @@ struct Vector3f {
                 x, y, z);
     }
 
-    [[nodiscard]] Vector3f cross(const EGG::Vector3f &rhs) const;
-    [[nodiscard]] f32 dot() const;
-    [[nodiscard]] f32 dot(const EGG::Vector3f &rhs) const;
+    /// @addr{0x80214968}
+    [[nodiscard]] Vector3f cross(const Vector3f &rhs) const {
+        return Vector3f(y * rhs.z - z * rhs.y, z * rhs.x - x * rhs.z, x * rhs.y - y * rhs.x);
+    }
+
+    /// @brief The dot product between the vector and itself.
+    [[nodiscard]] f32 squaredLength() const {
+        return x * x + y * y + z * z;
+    }
+
+    /// @brief The dot product between two vectors.
+    [[nodiscard]] f32 dot(const Vector3f &rhs) const {
+        return x * rhs.x + y * rhs.y + z * rhs.z;
+    }
+
+    /// @brief The square root of the vector's dot product.
+    [[nodiscard]] f32 length() const {
+        return Mathf::sqrt(squaredLength());
+    }
+
+    /// @addr{0x805AEB88}
+    /// @brief The projection of this vector onto rhs.
+    [[nodiscard]] Vector3f proj(const Vector3f &rhs) const {
+        return rhs * rhs.dot(*this);
+    }
+
+    /// @addr{0x805AEBD0}
+    /// @brief The rejection of this vector onto rhs.
+    [[nodiscard]] Vector3f rej(const Vector3f &rhs) const {
+        return *this - proj(rhs);
+    }
+
+    /// @addr{0x805AEC24}
+    [[nodiscard]] std::pair<Vector3f, Vector3f> projAndRej(const Vector3f &rhs) const {
+        return std::pair(proj(rhs), rej(rhs));
+    }
+
+    /// @brief Returns the absolute value of each element of the vector.
+    [[nodiscard]] Vector3f abs() const {
+        return Vector3f(Mathf::abs(x), Mathf::abs(y), Mathf::abs(z));
+    }
+
+    /// @brief The square of the distance between two vectors.
+    [[nodiscard]] f32 sqDistance(const Vector3f &rhs) const {
+        const EGG::Vector3f diff = *this - rhs;
+        return diff.squaredLength();
+    }
+
     [[nodiscard]] f32 ps_dot() const;
     [[nodiscard]] f32 ps_dot(const EGG::Vector3f &rhs) const;
     [[nodiscard]] f32 ps_squareMag() const;
-    [[nodiscard]] f32 length() const;
     f32 normalise();
     [[nodiscard]] Vector3f maximize(const Vector3f &rhs) const;
     [[nodiscard]] Vector3f minimize(const Vector3f &rhs) const;
-    [[nodiscard]] Vector3f proj(const Vector3f &rhs) const;
-    [[nodiscard]] Vector3f rej(const Vector3f &rhs) const;
-    [[nodiscard]] std::pair<Vector3f, Vector3f> projAndRej(const Vector3f &rhs) const;
-    [[nodiscard]] f32 sqDistance(const Vector3f &rhs) const;
     [[nodiscard]] f32 ps_sqDistance(const Vector3f &rhs) const;
-    [[nodiscard]] Vector3f abs() const;
     [[nodiscard]] Vector3f perpInPlane(const EGG::Vector3f &rhs, bool normalise) const;
 
     void read(Stream &stream);

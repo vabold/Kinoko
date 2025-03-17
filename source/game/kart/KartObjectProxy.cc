@@ -42,6 +42,16 @@ void KartObjectProxy::setInertiaScale(const EGG::Vector3f &scale) {
     dynamics()->setInertia(cuboids[0] * scale, cuboids[1] * scale);
 }
 
+/// @addr{0x80590D20}
+KartAction *KartObjectProxy::action() {
+    return m_accessor->action;
+}
+
+/// @addr{0x80590D20}
+const KartAction *KartObjectProxy::action() const {
+    return m_accessor->action;
+}
+
 /// @addr{0x8059069C}
 KartBody *KartObjectProxy::body() {
     return m_accessor->body;
@@ -390,10 +400,6 @@ f32 KartObjectProxy::speedRatioCapped() const {
 /// @addr{0x805914F4}
 bool KartObjectProxy::isInRespawn() const {
     return move()->respawnTimer() > 0 || move()->respawnPostLandTimer() > 0;
-}
-
-std::list<KartObjectProxy *> &KartObjectProxy::proxyList() {
-    return s_proxyList;
 }
 
 /// @addr{0x805901D0}

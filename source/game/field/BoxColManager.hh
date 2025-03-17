@@ -12,6 +12,7 @@ class KartObject;
 namespace Field {
 
 class ObjectCollidable;
+class ObjectDrivable;
 
 /// @brief A bitfield that represents the state and type of a given BoxColUnit.
 /// @details The lower 8 bits represent the type, while the remaining bits represent the state.
@@ -72,7 +73,7 @@ public:
     void calc();
 
     [[nodiscard]] ObjectCollidable *getNextObject();
-    [[nodiscard]] void *getNextDrivable();
+    [[nodiscard]] ObjectDrivable *getNextDrivable();
 
     void resetIterators();
 
@@ -86,6 +87,9 @@ public:
     void reinsertUnit(BoxColUnit *unit);
     void search(BoxColUnit *unit, const BoxColFlag &flag);
     void search(f32 radius, const EGG::Vector3f &pos, const BoxColFlag &flag);
+
+    [[nodiscard]] bool isSphereInSpatialCache(f32 radius, const EGG::Vector3f &pos,
+            const BoxColFlag &flag) const;
 
     static BoxColManager *CreateInstance();
     static void DestroyInstance();

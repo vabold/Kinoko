@@ -13,11 +13,14 @@ public:
     /// @beginSetters
     void setItem(ItemId id);
     void useItem(int count);
+    void clear();
     /// @endSetters
 
     /// @beginGetters
-    [[nodiscard]] ItemId id() const;
     [[nodiscard]] int currentCount() const;
+    [[nodiscard]] ItemId id() const {
+        return m_currentId;
+    }
     /// @endGetters
 
 private:

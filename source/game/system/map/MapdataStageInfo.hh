@@ -20,8 +20,13 @@ public:
 
     void read(EGG::Stream &stream);
 
-    [[nodiscard]] u8 polePosition() const;
-    [[nodiscard]] u8 translationMode() const;
+    [[nodiscard]] u8 polePosition() const {
+        return m_rawData->polePosition;
+    }
+
+    [[nodiscard]] u8 translationMode() const {
+        return m_rawData->translationMode;
+    }
 
 private:
     const SData *m_rawData;

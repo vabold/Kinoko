@@ -32,15 +32,22 @@ void ObjectDokan::calc() {
     calcFloor();
 }
 
-/// @addr{0x80778FE4}
-u32 ObjectDokan::loadFlags() const {
-    return 1;
+/// @addr{0x80778D50}
+void ObjectDokan::calcCollisionTransform() {
+    if (m_id == ObjectId::DokanSFC) {
+        ObjectCollidable::calcCollisionTransform();
+    } else {
+        // rMR piranhas
+        calcTransform();
+        EGG::Matrix34f mat = m_transform;
+        mat.setBase(3, mat.translation() + EGG::Vector3f::ey * 300.0f);
+        m_collision->transform(mat, m_scale, getCollisionTranslation());
+    }
 }
 
 /// @addr{0x80778C0C}
 Kart::Reaction ObjectDokan::onCollision(Kart::KartObject * /*kartObj*/,
-        Kart::Reaction reactionOnKart, Kart::Reaction reactionOnObj,
-        const EGG::Vector3f & /*hitDepth*/) {
+        Kart::Reaction reactionOnKart, Kart::Reaction reactionOnObj, EGG::Vector3f & /*hitDepth*/) {
     constexpr f32 INITIAL_VELOCITY = 100.0f;
 
     if (reactionOnObj == Kart::Reaction::UNK_3 || reactionOnObj == Kart::Reaction::UNK_5) {
@@ -59,7 +66,7 @@ void ObjectDokan::calcFloor() {
     constexpr f32 PIPE_SQRT_RADIUS = 10.0f;
     constexpr f32 ACCELERATION = 0.2f;
 
-    CourseColMgr::CollisionInfo colInfo;
+    CollisionInfo colInfo;
     EGG::Vector3f pos = m_pos;
     pos.y += PIPE_RADIUS;
     KCLTypeMask typeMask;

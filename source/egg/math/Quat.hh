@@ -1,5 +1,6 @@
 #pragma once
 
+#include "egg/math/Math.hh"
 #include "egg/math/Vector.hh"
 
 namespace EGG {
@@ -9,10 +10,14 @@ namespace EGG {
 /// The vector is used to represent the axis of rotation, while
 /// the scalar is used to represent the amount of rotation.
 struct Quatf {
-    Quatf();
-    Quatf(f32 w_, const Vector3f &v_);
-    Quatf(f32 w_, f32 x_, f32 y_, f32 z_);
-    ~Quatf();
+#ifdef BUILD_DEBUG
+    constexpr Quatf() : w(std::numeric_limits<f32>::signaling_NaN()) {}
+#else
+    constexpr Quatf() = default;
+#endif
+    constexpr Quatf(f32 w_, const Vector3f &v_) : v(v_), w(w_) {}
+    constexpr Quatf(f32 w_, f32 x_, f32 y_, f32 z_) : v(x_, y_, z_), w(w_) {}
+    ~Quatf() = default;
 
     Quatf &operator=(const Quatf &q) {
         w = q.w;
@@ -75,12 +80,32 @@ struct Quatf {
     void setRPY(const Vector3f &rpy);
     void normalise();
     void makeVectorRotation(const Vector3f &from, const Vector3f &to);
-    Quatf conjugate() const;
+
+    /// @brief Computes \f$conj(a+bi+cj+dk) = a-bi-cj-dk\f$
+    Quatf conjugate() const {
+        return Quatf(w, -v);
+    }
+
     Vector3f rotateVector(const Vector3f &vec) const;
     Vector3f rotateVectorInv(const Vector3f &vec) const;
     Quatf slerpTo(const Quatf &q2, f32 t) const;
-    f32 dot() const;
-    f32 dot(const Quatf &q) const;
+
+    /// @addr{0x8023A138}
+    /// @brief Computes \f$this \cdot this = w^2 + x^2 + y^2 + z^2\f$
+    f32 squaredNorm() const {
+        return w * w + v.squaredLength();
+    }
+
+    f32 norm() const {
+        return Mathf::sqrt(squaredNorm());
+    }
+
+    /// @brief Computes \f$this \cdot rhs = w \times rhs.w + x \times rhs.x + y \times rhs.y + z
+    /// \times rhs.z\f$
+    f32 dot(const Quatf &q) const {
+        return w * q.w + v.dot(q.v);
+    }
+
     void setAxisRotation(f32 angle, const Vector3f &axis);
     Quatf multSwap(const Vector3f &v) const;
     Quatf multSwap(const Quatf &q) const;

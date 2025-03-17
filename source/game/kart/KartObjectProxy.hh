@@ -24,6 +24,7 @@ namespace Kart {
 
 class CollisionGroup;
 struct CollisionData;
+class KartAction;
 class KartBody;
 class KartCollide;
 class KartDynamics;
@@ -47,6 +48,7 @@ struct KartAccessor {
     Render::KartModel *model;
     KartSub *sub;
     KartMove *move;
+    KartAction *action;
     KartCollide *collide;
     Field::ObjectCollisionKart *objectCollisionKart;
     KartState *state;
@@ -73,6 +75,8 @@ public:
     /// @endSetters
 
     /// @beginGetters
+    [[nodiscard]] KartAction *action();
+    [[nodiscard]] const KartAction *action() const;
     [[nodiscard]] KartBody *body();
     [[nodiscard]] const KartBody *body() const;
     [[nodiscard]] KartCollide *collide();
@@ -146,7 +150,9 @@ public:
     [[nodiscard]] f32 speedRatioCapped() const;
     [[nodiscard]] bool isInRespawn() const;
 
-    [[nodiscard]] static std::list<KartObjectProxy *> &proxyList();
+    [[nodiscard]] static std::list<KartObjectProxy *> &proxyList() {
+        return s_proxyList;
+    }
     /// @endGetters
 
 protected:

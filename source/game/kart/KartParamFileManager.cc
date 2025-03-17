@@ -1,7 +1,5 @@
 #include "KartParamFileManager.hh"
 
-#include "game/system/ResourceManager.hh"
-
 namespace Kart {
 
 /// @addr{0x80591C9C}
@@ -63,9 +61,7 @@ EGG::RamStream KartParamFileManager::getDriverStream(Character character) const 
 
     auto *file = reinterpret_cast<ParamFile<KartParam::Stats> *>(m_driverParam.file);
     ASSERT(file);
-    void *offset = &file->params[idx];
-    u32 size = sizeof(KartParam::Stats);
-    return EGG::RamStream(reinterpret_cast<u8 *>(offset), size);
+    return EGG::RamStream(&file->params[idx], sizeof(KartParam::Stats));
 }
 
 EGG::RamStream KartParamFileManager::getVehicleStream(Vehicle vehicle) const {
@@ -76,9 +72,7 @@ EGG::RamStream KartParamFileManager::getVehicleStream(Vehicle vehicle) const {
     s32 idx = static_cast<s32>(vehicle);
     auto *file = reinterpret_cast<ParamFile<KartParam::Stats> *>(m_kartParam.file);
     ASSERT(file);
-    void *offset = &file->params[idx];
-    u32 size = sizeof(KartParam::Stats);
-    return EGG::RamStream(reinterpret_cast<u8 *>(offset), size);
+    return EGG::RamStream(&file->params[idx], sizeof(KartParam::Stats));
 }
 
 EGG::RamStream KartParamFileManager::getHitboxStream(Vehicle vehicle) const {
@@ -92,7 +86,7 @@ EGG::RamStream KartParamFileManager::getHitboxStream(Vehicle vehicle) const {
     auto *file = resourceManager->getBsp(vehicle, &size);
     ASSERT(file);
     ASSERT(size == sizeof(BSP));
-    return EGG::RamStream(reinterpret_cast<u8 *>(file), size);
+    return EGG::RamStream(file, size);
 }
 
 EGG::RamStream KartParamFileManager::getBikeDispParamsStream(Vehicle vehicle) const {
@@ -106,9 +100,7 @@ EGG::RamStream KartParamFileManager::getBikeDispParamsStream(Vehicle vehicle) co
 
     auto *file = reinterpret_cast<ParamFile<KartParam::BikeDisp> *>(m_bikeDispParam.file);
     ASSERT(file);
-    void *offset = &file->params[idx];
-    u32 size = sizeof(KartParam::BikeDisp);
-    return EGG::RamStream(reinterpret_cast<u8 *>(offset), size);
+    return EGG::RamStream(&file->params[idx], sizeof(KartParam::BikeDisp));
 }
 
 KartParamFileManager *KartParamFileManager::CreateInstance() {
@@ -122,10 +114,6 @@ void KartParamFileManager::DestroyInstance() {
     auto *instance = s_instance;
     s_instance = nullptr;
     delete instance;
-}
-
-KartParamFileManager *KartParamFileManager::Instance() {
-    return s_instance;
 }
 
 KartParamFileManager::KartParamFileManager() {
@@ -172,16 +160,6 @@ bool KartParamFileManager::validate() const {
     }
 
     return true;
-}
-
-void KartParamFileManager::FileInfo::clear() {
-    file = nullptr;
-    size = 0;
-}
-
-void KartParamFileManager::FileInfo::load(const char *filename) {
-    auto *resourceManager = System::ResourceManager::Instance();
-    file = resourceManager->getFile(filename, &size, System::ArchiveId::Core);
 }
 
 KartParamFileManager *KartParamFileManager::s_instance = nullptr;

@@ -56,11 +56,6 @@ void RaceConfig::initGhost() {
     KPadDirector::Instance()->setGhostPad(ghost.inputs(), ghost.driftIsAuto());
 }
 
-void RaceConfig::RegisterInitCallback(const InitCallback &callback, void *arg) {
-    s_onInitCallback = callback;
-    s_onInitCallbackArg = arg;
-}
-
 /// @addr{0x8052FE58}
 RaceConfig *RaceConfig::CreateInstance() {
     ASSERT(!s_instance);
@@ -74,10 +69,6 @@ void RaceConfig::DestroyInstance() {
     auto *instance = s_instance;
     s_instance = nullptr;
     delete instance;
-}
-
-RaceConfig *RaceConfig::Instance() {
-    return s_instance;
 }
 
 /// @addr{0x8053015C}

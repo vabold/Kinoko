@@ -175,10 +175,6 @@ void KTestSystem::DestroyInstance() {
     delete instance;
 }
 
-KTestSystem *KTestSystem::Instance() {
-    return static_cast<KTestSystem *>(s_instance);
-}
-
 KTestSystem::KTestSystem() = default;
 
 KTestSystem::~KTestSystem() {
@@ -354,6 +350,9 @@ bool KTestSystem::runTest() {
         calc();
     }
 
+    // TODO: Use a system heap! std::string relies on heap allocation
+    // The heap is destroyed after this and there is no further allocation, so it's not re-disabled
+    m_sceneMgr->currentScene()->heap()->enableAllocation();
     writeTestOutput();
     return m_sync;
 }

@@ -34,7 +34,9 @@ void KartDynamics::init() {
     m_extVel = EGG::Vector3f::zero;
     m_acceleration = EGG::Vector3f::zero;
     m_angVel0 = EGG::Vector3f::zero;
+    m_movingObjVel = EGG::Vector3f::zero;
     m_angVel1 = EGG::Vector3f::zero;
+    m_movingRoadVel = EGG::Vector3f::zero;
     m_velocity = EGG::Vector3f::zero;
     m_speedNorm = 0.0f;
     m_angVel2 = EGG::Vector3f::zero;
@@ -56,10 +58,6 @@ void KartDynamics::init() {
     m_angVel0YFactor = 0.0f;
 }
 
-void KartDynamics::resetInternalVelocity() {
-    m_intVel.setZero();
-}
-
 /// @addr{0x805B4E84}
 void KartDynamics::setInertia(const EGG::Vector3f &m, const EGG::Vector3f &n) {
     constexpr f32 TWELFTH = 1.0f / 12.0f;
@@ -68,7 +66,7 @@ void KartDynamics::setInertia(const EGG::Vector3f &m, const EGG::Vector3f &n) {
     m_inertiaTensor[0, 0] = (m.y * m.y + m.z * m.z) * TWELFTH + n.y * n.y + n.z * n.z;
     m_inertiaTensor[1, 1] = (m.z * m.z + m.x * m.x) * TWELFTH + n.z * n.z + n.x * n.x;
     m_inertiaTensor[2, 2] = (m.x * m.x + m.y * m.y) * TWELFTH + n.x * n.x + n.y * n.y;
-    m_invInertiaTensor = m_inertiaTensor.inverseTo33();
+    m_inertiaTensor.inverseTo33(m_invInertiaTensor);
 }
 
 /// @brief On init, takes elements from the kart's BSP and computes the moment of inertia tensor.
@@ -89,7 +87,9 @@ void KartDynamics::setBspParams(f32 rotSpeed, const EGG::Vector3f &m, const EGG:
 /// @addr{0x805B5170}
 /// @param dt Delta time. It's always 1.0f.
 /// @param maxSpeed Always 120.0f.
-void KartDynamics::calc(f32 dt, f32 maxSpeed, bool /*air*/) {
+void KartDynamics::calc(f32 dt, f32 maxSpeed, bool air) {
+    constexpr f32 TERMINAL_Y_VEL = 120.0f;
+
     if (!m_noGravity) {
         m_totalForce.y += m_gravity;
     }
@@ -108,13 +108,13 @@ void KartDynamics::calc(f32 dt, f32 maxSpeed, bool /*air*/) {
     EGG::Vector3f playerBackHoriz = playerBack;
     playerBackHoriz.y = 0.0f;
 
-    if (std::numeric_limits<f32>::epsilon() < playerBackHoriz.dot()) {
+    if (std::numeric_limits<f32>::epsilon() < playerBackHoriz.squaredLength()) {
         playerBackHoriz.normalise();
         const auto [proj, rej] = m_extVel.projAndRej(playerBackHoriz);
         const EGG::Vector3f &speedBack = proj;
         m_extVel = rej;
 
-        f32 norm = speedBack.dot();
+        f32 norm = speedBack.squaredLength();
         if (std::numeric_limits<f32>::epsilon() < norm) {
             norm = EGG::Mathf::sqrt(norm);
         } else {
@@ -125,6 +125,10 @@ void KartDynamics::calc(f32 dt, f32 maxSpeed, bool /*air*/) {
         if (speedBack.dot(playerBackHoriz) < 0.0f) {
             m_speedFix = -m_speedFix;
         }
+    }
+
+    if (air) {
+        m_intVel.y = std::min(TERMINAL_Y_VEL, m_intVel.y);
     }
 
     m_velocity = m_extVel * dt + m_intVel + m_movingObjVel + m_movingRoadVel;
@@ -145,10 +149,10 @@ void KartDynamics::calc(f32 dt, f32 maxSpeed, bool /*air*/) {
 
     EGG::Vector3f angVelSum = m_angVel2 + m_angVel1 + m_angVel0Factor * m_angVel0;
 
-    if (std::numeric_limits<f32>::epsilon() < angVelSum.dot()) {
+    if (std::numeric_limits<f32>::epsilon() < angVelSum.squaredLength()) {
         m_mainRot += m_mainRot.multSwap(angVelSum) * (dt * 0.5f);
 
-        if (EGG::Mathf::abs(m_mainRot.dot()) < std::numeric_limits<f32>::epsilon()) {
+        if (EGG::Mathf::abs(m_mainRot.norm()) < std::numeric_limits<f32>::epsilon()) {
             m_mainRot = EGG::Quatf::ident;
         } else {
             m_mainRot.normalise();
@@ -159,7 +163,7 @@ void KartDynamics::calc(f32 dt, f32 maxSpeed, bool /*air*/) {
         stabilize();
     }
 
-    if (EGG::Mathf::abs(m_mainRot.dot()) < std::numeric_limits<f32>::epsilon()) {
+    if (EGG::Mathf::abs(m_mainRot.norm()) < std::numeric_limits<f32>::epsilon()) {
         m_mainRot = EGG::Quatf::ident;
     } else {
         m_mainRot.normalise();
@@ -219,130 +223,6 @@ void KartDynamics::applyWrenchScaled(const EGG::Vector3f &p, const EGG::Vector3f
     EGG::Vector3f invPosRot = m_fullRot.rotateVectorInv(relPos);
 
     m_totalTorque += invPosRot.cross(invForceRot) * scale;
-}
-
-void KartDynamics::setPos(const EGG::Vector3f &pos) {
-    m_pos = pos;
-}
-
-void KartDynamics::setGravity(f32 gravity) {
-    m_gravity = gravity;
-}
-
-void KartDynamics::setMainRot(const EGG::Quatf &q) {
-    m_mainRot = q;
-}
-
-void KartDynamics::setFullRot(const EGG::Quatf &q) {
-    m_fullRot = q;
-}
-
-void KartDynamics::setSpecialRot(const EGG::Quatf &q) {
-    m_specialRot = q;
-}
-
-void KartDynamics::setExtraRot(const EGG::Quatf &q) {
-    m_extraRot = q;
-}
-
-void KartDynamics::setIntVel(const EGG::Vector3f &v) {
-    m_intVel = v;
-}
-
-void KartDynamics::setTop(const EGG::Vector3f &v) {
-    m_top = v;
-}
-
-void KartDynamics::setStabilizationFactor(f32 val) {
-    m_stabilizationFactor = val;
-}
-
-void KartDynamics::setTotalForce(const EGG::Vector3f &v) {
-    m_totalForce = v;
-}
-
-void KartDynamics::setExtVel(const EGG::Vector3f &v) {
-    m_extVel = v;
-}
-
-void KartDynamics::setAngVel0(const EGG::Vector3f &v) {
-    m_angVel0 = v;
-}
-
-void KartDynamics::setAngVel2(const EGG::Vector3f &v) {
-    m_angVel2 = v;
-}
-
-void KartDynamics::setAngVel0YFactor(f32 val) {
-    m_angVel0YFactor = val;
-}
-
-void KartDynamics::setTop_(const EGG::Vector3f &v) {
-    m_top_ = v;
-}
-
-void KartDynamics::setForceUpright(bool isSet) {
-    m_forceUpright = isSet;
-}
-
-void KartDynamics::setNoGravity(bool isSet) {
-    m_noGravity = isSet;
-}
-
-void KartDynamics::setKillExtVelY(bool isSet) {
-    m_killExtVelY = isSet;
-}
-
-const EGG::Matrix34f &KartDynamics::invInertiaTensor() const {
-    return m_invInertiaTensor;
-}
-
-f32 KartDynamics::angVel0Factor() const {
-    return m_angVel0Factor;
-}
-
-const EGG::Vector3f &KartDynamics::pos() const {
-    return m_pos;
-}
-
-const EGG::Vector3f &KartDynamics::velocity() const {
-    return m_velocity;
-}
-
-f32 KartDynamics::gravity() const {
-    return m_gravity;
-}
-
-const EGG::Vector3f &KartDynamics::intVel() const {
-    return m_intVel;
-}
-
-const EGG::Quatf &KartDynamics::mainRot() const {
-    return m_mainRot;
-}
-
-const EGG::Quatf &KartDynamics::fullRot() const {
-    return m_fullRot;
-}
-
-const EGG::Vector3f &KartDynamics::totalForce() const {
-    return m_totalForce;
-}
-
-const EGG::Vector3f &KartDynamics::extVel() const {
-    return m_extVel;
-}
-
-const EGG::Vector3f &KartDynamics::angVel0() const {
-    return m_angVel0;
-}
-
-const EGG::Vector3f &KartDynamics::angVel2() const {
-    return m_angVel2;
-}
-
-f32 KartDynamics::speedFix() const {
-    return m_speedFix;
 }
 
 KartDynamicsBike::KartDynamicsBike() = default;

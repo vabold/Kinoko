@@ -40,8 +40,7 @@ static constexpr s8 Z_TRANSLATION_TABLE[12][12] = {
 };
 
 MapdataStartPoint::MapdataStartPoint(const SData *data) : m_rawData(data) {
-    u8 *unsafeData = reinterpret_cast<u8 *>(const_cast<SData *>(data));
-    EGG::RamStream stream = EGG::RamStream(unsafeData, sizeof(SData));
+    EGG::RamStream stream = EGG::RamStream(data, sizeof(SData));
     read(stream);
 }
 
