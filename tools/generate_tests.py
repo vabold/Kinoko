@@ -14,7 +14,7 @@ def generate_tests(filename = 'testCases.json', out_filename = 'out/testCases.bi
     # Parse test cases from JSON
     tests = []
 
-    with open(filename) as f:
+    with open(filename, encoding="utf-8") as f:
         data = json.load(f)
 
         for key, value in data.items():
