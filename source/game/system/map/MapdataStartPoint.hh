@@ -22,7 +22,7 @@ public:
             u8 playerCount);
 
 private:
-    const SData *m_rawData;
+    [[maybe_unused]] const SData *m_rawData;
     EGG::Vector3f m_position;
     EGG::Vector3f m_rotation;
     s16 m_playerIndex;

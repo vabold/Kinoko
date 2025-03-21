@@ -17,6 +17,7 @@ public:
     /// @endSetters
 
     /// @beginGetters
+    [[nodiscard]] int currentCount() const;
     [[nodiscard]] ItemId id() const {
         return m_currentId;
     }
