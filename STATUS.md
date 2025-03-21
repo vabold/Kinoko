@@ -39,7 +39,7 @@ Test Case                                                 | Frames      |     | 
 [`rsl-ng-rta-2-03-750`](https://youtu.be/ahNGAaUzm6s)     | 7829 / 7829 | ✔️ |
 [`rsgb-rta-1-14-513`](https://youtu.be/lgfw-zswqIM)       | 4878 / 4878 | ✔️ |
 [`rsgb-ng-rta-1-21-363`](https://youtu.be/SjXUPXT8n8g)    | 5288 / 5288 | ✔️ |
-[`rds-rta-2-03-525`](https://youtu.be/a9Mnd2W7JXI)        | 2306 / 7816 | ❌ | Drawbridge
+[`rds-rta-2-03-525`](https://youtu.be/a9Mnd2W7JXI)        | 7816 / 7816 | ✔️ |
 [`rws-rta-1-31-987`](https://youtu.be/2rDSx5pgQ9A)        | 5925 / 5925 | ✔️ |
 [`rws-ng-rta-1-48-193`](https://youtu.be/4PU4zpCU_q4)     | 6897 / 6897 | ✔️ |
 [`rdh-rta-1-30-425`](https://youtu.be/v5Qj0DnqVo0)        | 5832 / 5832 | ✔️ |
