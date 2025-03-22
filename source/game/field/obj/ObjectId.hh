@@ -10,6 +10,7 @@ enum class ObjectId {
     CastleTree1c = 0x130,
     PalmTree = 0x145,
     DKtreeA64c = 0x158,
+    TownTreeDsc = 0x15b,
     OilSFC = 0x15d,
     ParasolR = 0x16e,
     PuchiPakkun = 0x1aa,
