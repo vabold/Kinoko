@@ -190,6 +190,7 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
     case ObjectId::CastleTree1c:
     case ObjectId::PalmTree:
     case ObjectId::DKtreeA64c:
+    case ObjectId::TownTreeDsc:
         return new ObjectCollidable(params);
     case ObjectId::Mdush:
         return new ObjectKCL(params);
