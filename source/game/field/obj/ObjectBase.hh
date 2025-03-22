@@ -29,6 +29,8 @@ public:
         return 0;
     }
 
+    [[nodiscard]] virtual const char *getKclName() const;
+
     /// @addr{0x80681598}
     [[nodiscard]] virtual const EGG::Vector3f &getPosition() const {
         return m_pos;

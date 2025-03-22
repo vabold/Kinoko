@@ -14,6 +14,7 @@ enum class ObjectId {
     ParasolR = 0x16e,
     PuchiPakkun = 0x1aa,
     Aurora = 0x204,
+    Mdush = 0x217,
 };
 
 enum class BlacklistedObjectId {
