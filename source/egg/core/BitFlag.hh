@@ -2,9 +2,15 @@
 
 #include <Logger.hh>
 
+#include <array>
 #include <cstddef>
+#include <cstdint>
+#include <cstdlib>
 #include <limits>
 #include <type_traits>
+
+// We can't include Common.hh, because we have a cyclic dependency
+typedef uint32_t u32;
 
 namespace EGG {
 
@@ -263,6 +269,147 @@ private:
     }
 
     T bits; ///< The bit mask representing the flags.
+};
+
+/// @brief Wrapper around a variable length bitfield with an enum corresponding to its bits.
+/// @tparam N The number of bits in the bitfield. Must be >= 64 to distinguish from TBitFlag.
+/// @tparam E The enum to correspond to.
+template <size_t N, typename E>
+    requires(std::is_enum_v<E> && N > 64)
+class TBitFlagExt {
+public:
+    /// @brief Default constructor, initializes all flags to off.
+    /// @details Matches the expression `bits = 0`.
+    constexpr TBitFlagExt() {
+        makeAllZero();
+    }
+
+    /// @brief Resets all the bits to zero across the entire bitfield array.
+    /// @return Reference for chaining.
+    constexpr TBitFlagExt<N, E> &makeAllZero() {
+        std::fill(bits.begin(), bits.end(), 0);
+        return *this;
+    }
+
+    /// @brief Sets the corresponding bits for the provided enum values.
+    /// @details Matches the expression `bits |= mask`.
+    /// @tparam ...Es Variadic template for packing.
+    /// @param ...es Enum values representing the bits to set.
+    /// @return Reference for chaining.
+    template <typename... Es>
+        requires(std::is_same_v<Es, E> && ...)
+    constexpr TBitFlagExt<N, E> &setBit(Es... es) {
+        (setBit_(es), ...);
+        return *this;
+    }
+
+    /// @brief Resets the corresponding bits for the provided enum values.
+    /// @tparam ...Es Variadic template for packing.
+    /// @param ...es Enum values representing the bits to reset.
+    /// @return Reference for chaining.
+    template <typename... Es>
+        requires(std::is_same_v<Es, E> && ...)
+    constexpr TBitFlagExt<N, E> &resetBit(Es... es) {
+        (resetBit_(es), ...);
+        return *this;
+    }
+
+    /// @brief Changes the state of the corresponding bits for the provided enum values.
+    /// @tparam ...Es Variadic template for packing.
+    /// @param on Determines whether to set or reset the bits.
+    /// @param ...es Enum values representing the bits to change.
+    /// @return Reference for chaining.
+    template <typename... Es>
+        requires(std::is_same_v<Es, E> && ...)
+    constexpr TBitFlagExt<N, E> &changeBit(bool on, Es... es) {
+        (changeBit_(on, es), ...);
+        return *this;
+    }
+
+    /// @brief Checks if any of the corresponding bits for the provided enum values are on.
+    /// @details Matches the expression `(bits & mask) != 0`.
+    /// @tparam ...Es Variadic template for packing.
+    /// @param ...es Enum values representing the bits to check.
+    /// @return True if one of the specified bits are on, otherwise false.
+    template <typename... Es>
+        requires(std::is_same_v<Es, E> && ...)
+    [[nodiscard]] constexpr bool onBit(Es... es) const {
+        return (onBit_(es) || ...);
+    }
+
+    /// @brief Checks if all of the corresponding bits for the provided enum values are off.
+    /// @details Matches the expression `(bits & mask) == 0`.
+    /// @tparam ...Es Variadic template for packing.
+    /// @param ...es Enum values representing the bits to check.
+    /// @return True if all of the specified bits are off, otherwise false.
+    template <typename... Es>
+        requires(std::is_same_v<Es, E> && ...)
+    [[nodiscard]] constexpr bool offBit(Es... es) const {
+        return (offBit_(es) && ...);
+    }
+
+private:
+    typedef std::underlying_type_t<E> EI;
+
+    /// @brief Internal. Sets a specific bit.
+    /// @details Validates that `e` is in the range of `N`.
+    /// @param e Enum value representing the bit to set.
+    constexpr void setBit_(E e) {
+        EI ei = static_cast<EI>(e);
+        ASSERT(ei < N);
+        bits[ei / C] |= makeMask_(ei % C);
+    }
+
+    /// @brief Internal. Resets a specific bit.
+    /// @details Validates that `e` is in the range of `N`.
+    /// @param e Enum value representing the bit to set.
+    constexpr void resetBit_(E e) {
+        EI ei = static_cast<EI>(e);
+        ASSERT(ei < N);
+        bits[ei / C] &= ~makeMask_(ei % C);
+    }
+
+    /// @brief Internal. Changes a specific bit.
+    /// @details Validates that `e` is in the range of `N`.
+    /// @param on Determines whether to set or reset the bit.
+    /// @param e Enum value respresenting the bit to change.
+    [[nodiscard]] constexpr void changeBit_(bool on, E e) {
+        on ? setBit_(e) : resetBit_(e);
+    }
+
+    /// @brief Checks if a specific bit is on.
+    /// @details Validates that `e` is in the range of `N`.
+    /// @param e Enum value representing the bit to change.
+    /// @return True if the specified bit is on, otherwise false.
+    [[nodiscard]] constexpr bool onBit_(E e) const {
+        EI ei = static_cast<EI>(e);
+        ASSERT(ei < N);
+        return (bits[ei / C] & makeMask_(ei % C)) != 0;
+    }
+
+    /// @brief Checks if a specific bit is off.
+    /// @details Validates that `e` is in the range of `N`.
+    /// @param e Enum value representing the bit to change.
+    /// @return True if the specified bit is off, otherwise false.
+    [[nodiscard]] constexpr bool offBit_(E e) const {
+        EI ei = static_cast<EI>(e);
+        ASSERT(ei < N);
+        return (bits[ei / C] & makeMask_(ei % C)) == 0;
+    }
+
+    typedef u32 T;
+
+    /// @brief Creates a mask for a specific bit.
+    /// @details Matches the expression `(1 << e)`. Validates that `e` is in the range of T.
+    /// @param e
+    /// @return The mask for the specified bit.
+    [[nodiscard]] constexpr T makeMask_(size_t e) const {
+        ASSERT(static_cast<EI>(e) < C);
+        return static_cast<T>(1) << e;
+    }
+
+    static constexpr size_t C = 8 * sizeof(T);
+    std::array<T, (N + C - 1) / sizeof(T)> bits;
 };
 
 } // namespace EGG

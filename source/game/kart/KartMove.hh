@@ -108,11 +108,11 @@ public:
 
     /// @addr{0x8057DA18}
     virtual bool canHop() const {
-        if (!state()->isHopStart() || !state()->isTouchingGround()) {
+        if (status().offBit(eStatus::HopStart) || status().offBit(eStatus::TouchingGround)) {
             return false;
         }
 
-        if (state()->isInAction()) {
+        if (status().onBit(eStatus::InAction)) {
             return false;
         }
 
@@ -457,14 +457,14 @@ public:
     /// @addr{0x80588324}
     [[nodiscard]] f32 getWheelieSoftSpeedLimitBonus() const override {
         constexpr f32 WHEELIE_SPEED_BONUS = 0.15f;
-        return state()->isWheelie() ? WHEELIE_SPEED_BONUS : 0.0f;
+        return status().onBit(eStatus::Wheelie) ? WHEELIE_SPEED_BONUS : 0.0f;
     }
 
     /// @addr{0x80588860}
     [[nodiscard]] f32 wheelieRotFactor() const {
         constexpr f32 WHEELIE_ROTATION_FACTOR = 0.2f;
 
-        return state()->isWheelie() ? WHEELIE_ROTATION_FACTOR : 1.0f;
+        return status().onBit(eStatus::Wheelie) ? WHEELIE_ROTATION_FACTOR : 1.0f;
     }
 
     void tryStartWheelie();
