@@ -4,6 +4,8 @@
 #include "game/field/RailInterpolator.hh"
 #include "game/field/obj/ObjectId.hh"
 
+#include "game/render/DrawMdl.hh"
+
 #include "game/system/map/MapdataGeoObj.hh"
 
 #include <egg/math/Matrix.hh>
@@ -19,6 +21,9 @@ public:
     virtual void calc() {}
     virtual void calcModel();
     virtual void load() = 0;
+    [[nodiscard]] virtual const char *getResources() const;
+    virtual void loadGraphics();
+    virtual void loadAnims() {}
     virtual void createCollision() = 0;
     virtual void loadRail();
     virtual void calcCollisionTransform() = 0;
@@ -48,7 +53,10 @@ public:
 
 protected:
     void calcTransform();
+    void linkAnims(const std::span<const char *> &names, const std::span<Render::AnmType> types);
 
+    Render::DrawMdl *m_drawMdl;
+    Abstract::g3d::ResFile *m_resFile;
     ObjectId m_id;
     RailInterpolator *m_railInterpolator;
     BoxColUnit *m_boxColUnit;
