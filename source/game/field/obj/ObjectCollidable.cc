@@ -19,6 +19,8 @@ ObjectCollidable::~ObjectCollidable() {
 
 /// @addr{0x8081F0A0}
 void ObjectCollidable::load() {
+    loadGraphics();
+    loadAnims();
     createCollision();
 
     if (m_collision) {
