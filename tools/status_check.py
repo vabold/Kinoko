@@ -1,13 +1,13 @@
-# Validate that the framecounts in STATUS.md are up-to-date. This is done by trying to run the entire test case and
-# asserting that the sync framecount is the highest it currently can be. This helps us capture when changes focused
-# on one test case actually benefit a different test case.
+# Validate that the framecounts in STATUS.md are up-to-date. This is done by trying to run the
+# entire test case and asserting that the sync framecount is the highest it currently can be. This
+# helps us capture when changes focused on one test case actually benefit a different test case.
 
-from generate_tests import generate_tests
 import json
 import os
 import subprocess
 import sys
 from typing import Dict, TypedDict
+from generate_tests import generate_tests
 
 STATUS_TEST_CASE_FILENAME = 'statusTestCases.json'
 
@@ -72,42 +72,49 @@ class KinokoOutputValidator:
     def get_test_case_name(self) -> str:
         return self.current_line.split(':')[3].split(' ')[1]
 
-    # e.g. Get the "814" from [TestDirector.hh:55] REPORT: Test Case Failed: rr-ng-rta-2-24-281 [814 / 9060]
+    # e.g. Get the "814" from
+    # [TestDirector.hh:55] REPORT: Test Case Failed: rr-ng-rta-2-24-281 [814 / 9060]
     def get_test_case_frame_lower_bound(self) -> int:
         return int(self.current_line.split(':')[3].split('[')[1].split(' ')[0])
 
     def validate_test_case(self, test_case: TestCase) -> bool:
         desync_frame = self.test_cases[test_case.name]
 
+        case_name_just = test_case.name.ljust(20)
+
         if desync_frame == test_case.total_frames:
             if test_case.sync_frame == test_case.total_frames:
                 if test_case.emoji != '✔️':
                     # Wrong emoji. It should be a checkmark.
-                    print(f"{test_case.name.ljust(20)}\t❌\t->\t✔️\t[EMOJI]")
+                    print(f"{case_name_just}\t❌\t->\t✔️\t[EMOJI]")
                     return False
 
                 if test_case.has_description:
                     # There should be no desync reason for a synced test case.
                     print(
-                        f"{test_case.name.ljust(20)}\tSynchronized runs should not have a desync reason [REASON]")
+                        case_name_just + \
+                        "\tSynchronized runs should not have a desync reason [REASON]")
                     return False
                 return True
 
             # We have a synced test case, but the label is incorrect
-            print(
-                f"{test_case.name.ljust(20)}\t{test_case.sync_frame}\t->\t{test_case.total_frames}\t[LABEL]")
+            msg = [
+                case_name_just, test_case.sync_frame,
+                "->", test_case.total_frames, "[LABEL]"
+            ]
+            print("\t".join(msg))
             return False
 
         if desync_frame - 1 == test_case.sync_frame:
             if test_case.emoji != '❌':
                 # Wrong emoji. It should be an x.
-                print(f"{test_case.name.ljust(20)}\t✔️\t->\t❌\t[EMOJI]")
+                print(f"{case_name_just}\t✔️\t->\t❌\t[EMOJI]")
                 return False
 
             if not test_case.has_description:
                 # There should be a desync reason if we haven't synced the full test case.
                 print(
-                    f"{test_case.name.ljust(20)}\tDesynchronized runs should have a desync reason [REASON]")
+                    f"{case_name_just}\tDesynchronized runs should have a desync reason [REASON]")
                 return False
             return True
 
@@ -115,7 +122,7 @@ class KinokoOutputValidator:
         # earlier than captured in STATUS.md
         early_or_late = "EARLY" if (desync_frame - 1 < test_case.sync_frame) else "LATER"
         print(
-            f"{test_case.name.ljust(20)}\t{test_case.sync_frame}\t->\t{desync_frame - 1}\t[{early_or_late}]")
+            f"{case_name_just}\t{test_case.sync_frame}\t->\t{desync_frame - 1}\t[{early_or_late}]")
 
         return False
 
@@ -125,7 +132,7 @@ def get_test_cases_from_status_md() -> Dict[str, TestCase]:
     # Read STATUS.md and parse test cases to dictionary
     with open('STATUS.md', 'r', encoding='utf-8') as f:
         # Skip the first 4 lines to get to first test case line
-        for i in range(4):
+        for _ in range(4):
             next(f)
 
         for line in f:
@@ -151,7 +158,7 @@ def create_json_file(test_cases: Dict[str, TestCase]):
     for key, value in test_cases.items():
         test_case_dict[key] = value.to_json()
 
-    with open(STATUS_TEST_CASE_FILENAME, 'w') as f:
+    with open(STATUS_TEST_CASE_FILENAME, 'w', encoding="utf-8") as f:
         f.write(json.dumps(test_case_dict, indent=4))
 
 
@@ -165,7 +172,7 @@ def main():
     generate_tests(STATUS_TEST_CASE_FILENAME)
 
     # Run Kinoko. subprocess.run shell behavior varies between Windows and Linux
-    exec = os.path.join('.', 'kinoko')
+    exec = os.path.join('.', 'kinoko') # pylint: disable=redefined-builtin
     args = [
         exec,
         "-m",
@@ -173,7 +180,9 @@ def main():
         "-s",
         "testCases.bin",
     ] if sys.platform.startswith('win32') else exec + " -m test -s testCases.bin"
-    result = subprocess.run(args, cwd='out', shell=True, capture_output=True, text=True)
+    result = subprocess.run(
+        args, cwd='out', shell=True, capture_output=True, text=True, check=False
+    )
 
     # Check each test case is up-to-date. If not, return non-zero exit code so
     # our build action is aware.
