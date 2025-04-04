@@ -54,6 +54,13 @@ public:
 protected:
     void calcTransform();
     void linkAnims(const std::span<const char *> &names, const std::span<Render::AnmType> types);
+    void setMatrixTangentTo(const EGG::Vector3f &up, const EGG::Vector3f &tangent);
+    void FUN_808218B0(const EGG::Vector3f &v);
+    [[nodiscard]] EGG::Matrix34f FUN_806B3CA4(const EGG::Vector3f &v);
+
+    [[nodiscard]] Render::DrawMdl *drawMdl() {
+        return m_drawMdl;
+    }
 
     Render::DrawMdl *m_drawMdl;
     Abstract::g3d::ResFile *m_resFile;

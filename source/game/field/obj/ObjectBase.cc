@@ -110,4 +110,46 @@ void ObjectBase::linkAnims(const std::span<const char *> &names,
     }
 }
 
+/// @addr{0x80821910}
+void ObjectBase::setMatrixTangentTo(const EGG::Vector3f &up, const EGG::Vector3f &tangent) {
+    m_flags |= 4;
+    m_transform.setRotTangentHorizontal(up, tangent);
+    m_transform.setBase(3, m_pos);
+}
+
+/// @addr{0x808218B0}
+void ObjectBase::FUN_808218B0(const EGG::Vector3f &v) {
+    m_flags |= 4;
+    m_transform = FUN_806B3CA4(v);
+    m_transform.setBase(3, m_pos);
+}
+
+/// @addr{0x806B3CA4}
+EGG::Matrix34f ObjectBase::FUN_806B3CA4(const EGG::Vector3f &v) {
+    EGG::Vector3f local_20 = v;
+
+    if (EGG::Mathf::abs(local_20.y) < 0.001f) {
+        local_20.y = 0.001f;
+    }
+
+    EGG::Vector3f local_2c = v;
+    local_2c.y = 0.0f;
+    local_2c.normalise2();
+    EGG::Vector3f local_38 = local_2c.cross(local_20);
+
+    if (local_20.y > 0.0f) {
+        local_38 = -local_38;
+    }
+
+    local_38.normalise2();
+
+    EGG::Matrix34f mat;
+    mat.setBase(3, EGG::Vector3f::zero);
+    mat.setBase(0, local_38);
+    mat.setBase(1, local_20.cross(local_38));
+    mat.setBase(2, local_20);
+
+    return mat;
+}
+
 } // namespace Field

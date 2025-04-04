@@ -41,6 +41,7 @@ public:
     void setAxisRotation(f32 angle, const Vector3f &axis);
     void mulRow33(size_t rowIdx, const Vector3f &row);
     void setBase(size_t col, const Vector3f &base);
+    void setRotTangentHorizontal(const Vector3f &up, const Vector3f &tangent);
 
     [[nodiscard]] Matrix34f multiplyTo(const Matrix34f &rhs) const;
     [[nodiscard]] Vector3f multVector(const Vector3f &vec) const;
@@ -53,6 +54,12 @@ public:
 
     [[nodiscard]] Vector3f translation() const {
         return Vector3f(mtx[0][3], mtx[1][3], mtx[2][3]);
+    }
+
+    /// @addr{0x80537B80}
+    /// @brief Get a particular column from a matrix.
+    Vector3f base(size_t col) const {
+        return Vector3f(mtx[0][col], mtx[1][col], mtx[2][col]);
     }
 
     static const Matrix34f ident;
