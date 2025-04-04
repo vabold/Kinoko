@@ -27,6 +27,8 @@ void ObjectCollidable::load() {
         loadAABB(0.0f);
     }
 
+    loadRail();
+
     ObjectDirector::Instance()->addObject(this);
 }
 

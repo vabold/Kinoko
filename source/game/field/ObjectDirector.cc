@@ -180,6 +180,8 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
         return new ObjectOilSFC(params);
     case ObjectId::ParasolR:
         return new ObjectParasolR(params);
+    case ObjectId::Kuribo:
+        return new ObjectKuribo(params);
     case ObjectId::PuchiPakkun:
         return new ObjectPuchiPakkun(params);
     case ObjectId::Aurora:
