@@ -110,4 +110,22 @@ void ObjectBase::linkAnims(const std::span<const char *> &names,
     }
 }
 
+/// @addr{0x80821910}
+void ObjectBase::setMatrixTangentTo(const EGG::Vector3f &up, const EGG::Vector3f &tangent) {
+    m_flags |= 4;
+    SetRotTangentHorizontal(m_transform, up, tangent);
+    m_transform.setBase(3, m_pos);
+}
+
+/// @addr{0x806B41E0}
+void ObjectBase::SetRotTangentHorizontal(EGG::Matrix34f &mat, const EGG::Vector3f &up,
+        const EGG::Vector3f &tangent) {
+    EGG::Vector3f vec = tangent - up * tangent.dot(up);
+    vec.normalise2();
+
+    mat.setBase(0, up.cross(vec));
+    mat.setBase(1, up);
+    mat.setBase(2, vec);
+}
+
 } // namespace Field

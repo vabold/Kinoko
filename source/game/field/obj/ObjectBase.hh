@@ -54,6 +54,10 @@ public:
 protected:
     void calcTransform();
     void linkAnims(const std::span<const char *> &names, const std::span<Render::AnmType> types);
+    void setMatrixTangentTo(const EGG::Vector3f &up, const EGG::Vector3f &tangent);
+
+    static void SetRotTangentHorizontal(EGG::Matrix34f &mat, const EGG::Vector3f &up,
+            const EGG::Vector3f &tangent);
 
     Render::DrawMdl *m_drawMdl;
     Abstract::g3d::ResFile *m_resFile;
