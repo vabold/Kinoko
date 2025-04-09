@@ -105,7 +105,7 @@ void ObjectCollidable::createCollision() {
 
     if (!collisionSet) {
         PANIC("Invalid object ID when creating primitive collision! ID: %d",
-                static_cast<size_t>(m_id));
+                static_cast<size_t>(id()));
     }
 
     switch (static_cast<CollisionMode>(parse<s16>(collisionSet->mode))) {
@@ -124,7 +124,7 @@ void ObjectCollidable::createCollision() {
         break;
     default:
         PANIC("Invalid collision mode when creating primitive collision! ID: %d; Mode: %d",
-                static_cast<size_t>(m_id), parse<s16>(collisionSet->mode));
+                static_cast<size_t>(id()), parse<s16>(collisionSet->mode));
         break;
     }
 }

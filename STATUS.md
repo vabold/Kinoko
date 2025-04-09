@@ -23,7 +23,7 @@ Test Case                                                 | Frames      |     | 
 [`gv-rta-0-15-425`](https://youtu.be/bB0oUzdCHTA)         | 1336 / 1336 | ✔️ |
 [`gv-ng-rta-1-32-914`](https://youtu.be/J55Fo2ZMz9M)      | 5981 / 5981 | ✔️ |
 [`gv-nosc-rta-1-50-927`](https://youtu.be/R7oK3U7iZrk)    | 7060 / 7060 | ✔️ |
-[`ddr-rta-1-46-400`](https://youtu.be/nVcVbd4n3yM)        | 3392 / 6789 | ❌ | KMP
+[`ddr-rta-1-46-400`](https://youtu.be/nVcVbd4n3yM)        | 6789 / 6789 | ✔️ |
 [`mh-rta-1-42-872`](https://youtu.be/CellUlOYgnc)         | 6578 / 6578 | ✔️ |
 [`bc-rta-2-08-697`](https://youtu.be/1DEReKemoeI)         | 2776 / 8126 | ❌ | Lava pillars
 [`bc-ng-rta-2-20-001`](https://youtu.be/028nClzy7B4)      | 2973 / 8803 | ❌ | Lava pillars
