@@ -243,6 +243,9 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
         return new ObjectKinokoUd(params);
     case ObjectId::KinokoBend:
         return new ObjectKinokoBend(params);
+    case ObjectId::BulldozerL:
+    case ObjectId::BulldozerR:
+        return new ObjectBulldozer(params);
     case ObjectId::KinokoNm:
         return new ObjectKinokoNm(params);
     case ObjectId::Crane:
