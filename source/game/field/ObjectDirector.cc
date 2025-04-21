@@ -216,6 +216,10 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
         return new ObjectWoodbox(params);
     case ObjectId::WLWallGC:
         return new ObjectWLWallGC(params);
+    case ObjectId::CarA1:
+    case ObjectId::CarA2:
+    case ObjectId::CarA3:
+        return new ObjectCarA(params);
     case ObjectId::KartTruck:
     case ObjectId::CarBody:
         return new ObjectCarTGE(params);
