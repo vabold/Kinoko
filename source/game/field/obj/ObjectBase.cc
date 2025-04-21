@@ -136,6 +136,13 @@ void ObjectBase::setMatrixTangentTo(const EGG::Vector3f &up, const EGG::Vector3f
     m_transform.setBase(3, m_pos);
 }
 
+/// @addr{0x808218B0}
+void ObjectBase::setMatrixFromOrthonormalBasisAndPos(const EGG::Vector3f &v) {
+    m_flags.setBit(eFlags::Matrix);
+    m_transform = OrthonormalBasis(v);
+    m_transform.setBase(3, m_pos);
+}
+
 /// @addr{0x806B38A8}
 /// @brief Calculates on what side of line segment ab point lies.
 f32 ObjectBase::CheckPointAgainstLineSegment(const EGG::Vector3f &point, const EGG::Vector3f &a,
