@@ -106,6 +106,7 @@ protected:
     void calcTransform();
     void linkAnims(const std::span<const char *> &names, const std::span<Render::AnmType> types);
     void setMatrixTangentTo(const EGG::Vector3f &up, const EGG::Vector3f &tangent);
+    void setMatrixFromOrthonormalBasisAndPos(const EGG::Vector3f &v);
 
     [[nodiscard]] static f32 CheckPointAgainstLineSegment(const EGG::Vector3f &point,
             const EGG::Vector3f &a, const EGG::Vector3f &b);
