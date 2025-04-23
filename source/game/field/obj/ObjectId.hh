@@ -6,8 +6,10 @@ namespace Field {
 
 enum class ObjectId {
     DummyPole = 0x066,
+    WLWallGC = 0xcb,
     DokanSFC = 0x12e,
     CastleTree1c = 0x130,
+    WLDokanGC = 0x13f,
     PalmTree = 0x145,
     DKtreeA64c = 0x158,
     TownTreeDsc = 0x15b,
