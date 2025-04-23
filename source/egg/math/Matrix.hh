@@ -57,7 +57,7 @@ public:
 
     /// @addr{0x80537B80}
     /// @brief Get a particular column from a matrix.
-    Vector3f base(size_t col) const {
+    [[nodiscard]] Vector3f base(size_t col) const {
         return Vector3f(mtx[0][col], mtx[1][col], mtx[2][col]);
     }
 
