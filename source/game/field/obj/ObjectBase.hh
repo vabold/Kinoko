@@ -59,6 +59,12 @@ protected:
     static void SetRotTangentHorizontal(EGG::Matrix34f &mat, const EGG::Vector3f &up,
             const EGG::Vector3f &tangent);
 
+    /// @addr{0x8086C098}
+    [[nodiscard]] static EGG::Vector3f Interpolate(f32 t, const EGG::Vector3f &v0,
+            const EGG::Vector3f &v1) {
+        return v0 + (v1 - v0) * t;
+    }
+
     Render::DrawMdl *m_drawMdl;
     Abstract::g3d::ResFile *m_resFile;
     ObjectId m_id;

@@ -243,6 +243,12 @@ void KartCollide::calcBodyCollision(f32 totalScale, f32 sinkDepth, const EGG::Qu
 
             if (!FUN_805B6A9C(collisionData, hitbox, minMax, posRel, count, maskOut, colInfo)) {
                 bVar1 = true;
+
+                if (colInfo.movingFloorDist > -std::numeric_limits<f32>::min()) {
+                    collisionData.bHasRoadVel = true;
+                    collisionData.roadVelocity = colInfo.roadVelocity;
+                }
+
                 processBody(collisionData, hitbox, &colInfo, &maskOut);
             }
         }
@@ -443,6 +449,11 @@ void KartCollide::calcWheelCollision(u16 /*wheelIdx*/, CollisionGroup *hitboxGro
 
     collisionData.relPos = firstHitbox.worldPos() - pos();
     collisionData.vel = colVel;
+
+    if (colInfo.movingFloorDist > -std::numeric_limits<f32>::min()) {
+        collisionData.bHasRoadVel = true;
+        collisionData.roadVelocity = colInfo.roadVelocity;
+    }
 
     processWheel(collisionData, firstHitbox, &colInfo, &kclOut);
 

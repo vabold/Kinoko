@@ -174,6 +174,8 @@ void ObjectDirector::createObjects() {
 ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
     ObjectId id = static_cast<ObjectId>(params.id());
     switch (id) {
+    case ObjectId::WLWallGC:
+        return new ObjectWLWallGC(params);
     case ObjectId::DokanSFC:
         return new ObjectDokan(params);
     case ObjectId::OilSFC:
@@ -200,6 +202,7 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
     case ObjectId::DKtreeA64c:
     case ObjectId::TownTreeDsc:
         return new ObjectCollidable(params);
+    case ObjectId::WLDokanGC:
     case ObjectId::Mdush:
         return new ObjectKCL(params);
     default:
