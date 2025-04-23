@@ -75,6 +75,10 @@ public:
     void setScale(f32 val) {
         m_kclScale = val;
     }
+
+    void setMovingObjVel(const EGG::Vector3f &v) {
+        m_movingObjVel = v;
+    }
     /// @endSetters
 
 private:
@@ -82,6 +86,7 @@ private:
     EGG::Matrix34f m_mtx;
     EGG::Matrix34f m_mtxInv;
     f32 m_kclScale;
+    EGG::Vector3f m_movingObjVel;
 };
 
 } // namespace Field

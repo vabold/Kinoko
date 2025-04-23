@@ -53,6 +53,18 @@ public:
         m_decayingExtraRot *= rot;
     }
 
+    /// @addr{0x805A0050}
+    void composeMovingObjVel(const EGG::Vector3f &v, f32 scalar) {
+        m_movingObjVel += (v - m_movingObjVel) * scalar;
+        dynamics()->setMovingObjVel(m_movingObjVel);
+    }
+
+    /// @addr{0x805A00D0}
+    void composeDecayingMovingObjVel(f32 floorScalar, f32 airScalar, bool floor) {
+        m_movingObjVel *= floor ? floorScalar : airScalar;
+        dynamics()->setMovingObjVel(m_movingObjVel);
+    }
+
     /// @addr{0x805A0410}
     void clearDecayingRot() {
         m_decayingStuntRot = EGG::Quatf::ident;
@@ -111,6 +123,7 @@ private:
     EGG::Quatf m_decayingExtraRot;
     EGG::Quatf m_instantaneousExtraRot;
     EGG::Quatf m_extraRot;
+    EGG::Vector3f m_movingObjVel;
     EGG::Matrix34f m_pose;    ///< The kart's current rotation and position.
     EGG::Vector3f m_xAxis;    ///< The first column of the pose.
     EGG::Vector3f m_yAxis;    ///< The second column of the pose.

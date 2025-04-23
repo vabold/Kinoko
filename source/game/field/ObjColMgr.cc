@@ -6,7 +6,8 @@ namespace Field {
 
 /// @addr{0x807C4CE8}
 ObjColMgr::ObjColMgr(const void *file)
-    : m_mtx(EGG::Matrix34f::ident), m_mtxInv(EGG::Matrix34f::ident), m_kclScale(1.0f) {
+    : m_mtx(EGG::Matrix34f::ident), m_mtxInv(EGG::Matrix34f::ident), m_kclScale(1.0f),
+      m_movingObjVel(EGG::Vector3f::zero) {
     m_data = new KColData(file);
 }
 
@@ -129,7 +130,7 @@ bool ObjColMgr::checkPointFull(const EGG::Vector3f &pos, const EGG::Vector3f &pr
 
         if (courseColMgr->checkPointFull(m_kclScale, m_data, posWrtModel, prevPosWrtModel, flags,
                     &tempInfo, typeMaskOut)) {
-            info->transformInfo(tempInfo, m_mtx);
+            info->transformInfo(tempInfo, m_mtx, m_movingObjVel);
 
             return true;
         }
@@ -159,7 +160,7 @@ bool ObjColMgr::checkPointFullPush(const EGG::Vector3f &pos, const EGG::Vector3f
 
         if (courseColMgr->checkPointFullPush(m_kclScale, m_data, posWrtModel, prevPosWrtModel,
                     flags, &tempInfo, typeMaskOut)) {
-            info->transformInfo(tempInfo, m_mtx);
+            info->transformInfo(tempInfo, m_mtx, m_movingObjVel);
 
             return true;
         }
@@ -267,7 +268,7 @@ bool ObjColMgr::checkSphereFull(f32 radius, const EGG::Vector3f &pos, const EGG:
 
         if (courseColMgr->checkSphereFull(m_kclScale, radius, m_data, posWrtModel, prevPosWrtModel,
                     flags, &tempInfo, typeMaskOut)) {
-            info->transformInfo(tempInfo, m_mtx);
+            info->transformInfo(tempInfo, m_mtx, m_movingObjVel);
 
             return true;
         }
@@ -298,7 +299,7 @@ bool ObjColMgr::checkSphereFullPush(f32 radius, const EGG::Vector3f &pos,
 
         if (courseColMgr->checkSphereFullPush(m_kclScale, radius, m_data, posWrtModel,
                     prevPosWrtModel, flags, &tempInfo, typeMaskOut)) {
-            info->transformInfo(tempInfo, m_mtx);
+            info->transformInfo(tempInfo, m_mtx, m_movingObjVel);
 
             return true;
         }
@@ -416,7 +417,7 @@ bool ObjColMgr::checkPointCachedFull(const EGG::Vector3f &pos, const EGG::Vector
 
         if (courseColMgr->checkPointCachedFull(m_kclScale, m_data, posWrtModel, prevPosWrtModel,
                     flags, &tempInfo, typeMaskOut)) {
-            info->transformInfo(tempInfo, m_mtx);
+            info->transformInfo(tempInfo, m_mtx, m_movingObjVel);
 
             return true;
         }
@@ -450,7 +451,7 @@ bool ObjColMgr::checkPointCachedFullPush(const EGG::Vector3f &pos, const EGG::Ve
 
         if (courseColMgr->checkPointCachedFullPush(m_kclScale, m_data, posWrtModel, prevPosWrtModel,
                     flags, &tempInfo, typeMaskOut)) {
-            info->transformInfo(tempInfo, m_mtx);
+            info->transformInfo(tempInfo, m_mtx, m_movingObjVel);
 
             return true;
         }
@@ -571,7 +572,7 @@ bool ObjColMgr::checkSphereCachedFull(f32 radius, const EGG::Vector3f &pos,
 
         if (courseColMgr->checkSphereCachedFull(m_kclScale, radius, m_data, posWrtModel,
                     prevPosWrtModel, typeflags, &tempInfo, typeMaskOut)) {
-            info->transformInfo(tempInfo, m_mtx);
+            info->transformInfo(tempInfo, m_mtx, m_movingObjVel);
 
             return true;
         }
@@ -606,7 +607,7 @@ bool ObjColMgr::checkSphereCachedFullPush(f32 radius, const EGG::Vector3f &pos,
 
         if (courseColMgr->checkSphereCachedFullPush(m_kclScale, radius, m_data, posWrtModel,
                     prevPosWrtModel, typeflags, &tempInfo, typeMaskOut)) {
-            info->transformInfo(tempInfo, m_mtx);
+            info->transformInfo(tempInfo, m_mtx, m_movingObjVel);
 
             return true;
         }

@@ -20,10 +20,10 @@ struct CollisionInfo {
     EGG::Vector3f tangentOff;
     EGG::Vector3f floorNrm;
     EGG::Vector3f wallNrm;
-    EGG::Vector3f _3c;
+    EGG::Vector3f roadVelocity;
     f32 floorDist;
     f32 wallDist;
-    f32 _50;
+    f32 movingFloorDist;
     f32 perpendicularity;
 
     void updateFloor(f32 dist, const EGG::Vector3f &fnrm) {
@@ -42,6 +42,7 @@ struct CollisionInfo {
 
     void reset() {
         bbox.setZero();
+        movingFloorDist = -std::numeric_limits<f32>::min();
         wallDist = -std::numeric_limits<f32>::min();
         floorDist = -std::numeric_limits<f32>::min();
         perpendicularity = 0.0f;
@@ -49,7 +50,7 @@ struct CollisionInfo {
 
     void update(f32 now_dist, const EGG::Vector3f &offset, const EGG::Vector3f &fnrm,
             u32 kclAttributeTypeBit);
-    void transformInfo(CollisionInfo &rhs, const EGG::Matrix34f &mtx);
+    void transformInfo(CollisionInfo &rhs, const EGG::Matrix34f &mtx, const EGG::Vector3f &v);
 };
 
 /// @brief Performs lookups for KCL triangles
