@@ -49,10 +49,10 @@ public:
     [[nodiscard]] bool checkSpherePartialPush(f32 scale, f32 radius, KColData *data,
             const EGG::Vector3f &pos, const EGG::Vector3f &prevPos, KCLTypeMask mask,
             CollisionInfoPartial *info, KCLTypeMask *maskOut);
-    [[nodiscard]] bool checkSphereFull(f32 scalar, f32 radius, KColData *data,
+    [[nodiscard]] bool checkSphereFull(f32 scale, f32 radius, KColData *data,
             const EGG::Vector3f &pos, const EGG::Vector3f &prevPos, KCLTypeMask mask,
             CollisionInfo *info, KCLTypeMask *maskOut);
-    [[nodiscard]] bool checkSphereFullPush(f32 scalar, f32 radius, KColData *data,
+    [[nodiscard]] bool checkSphereFullPush(f32 scale, f32 radius, KColData *data,
             const EGG::Vector3f &pos, const EGG::Vector3f &prevPos, KCLTypeMask mask,
             CollisionInfo *info, KCLTypeMask *maskOut);
 
