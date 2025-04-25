@@ -23,7 +23,8 @@ void CourseColMgr::scaledNarrowScopeLocal(f32 scale, f32 radius, KColData *data,
         data = m_data;
     }
 
-    data->narrowScopeLocal(pos / scale, radius / scale, mask);
+    f32 invScale = 1.0f / scale;
+    data->narrowScopeLocal(pos * invScale, radius * invScale, mask);
 }
 
 /// @addr{0x807C2A60}
@@ -36,7 +37,8 @@ bool CourseColMgr::checkPointPartial(f32 scale, KColData *data, const EGG::Vecto
 
     m_kclScale = scale;
 
-    data->lookupPoint(v0 / scale, v1 / scale, mask);
+    f32 invScale = 1.0f / scale;
+    data->lookupPoint(v0 * invScale, v1 * invScale, mask);
 
     if (info) {
         return doCheckWithPartialInfo(data, &KColData::checkPointCollision, info, maskOut);
@@ -55,7 +57,8 @@ bool CourseColMgr::checkPointPartialPush(f32 scale, KColData *data, const EGG::V
 
     m_kclScale = scale;
 
-    data->lookupPoint(v0 / scale, v1 / scale, mask);
+    f32 invScale = 1.0f / scale;
+    data->lookupPoint(v0 * invScale, v1 * invScale, mask);
 
     if (info) {
         return doCheckWithPartialInfoPush(data, &KColData::checkPointCollision, info, maskOut);
@@ -72,7 +75,8 @@ bool CourseColMgr::checkPointFull(f32 scale, KColData *data, const EGG::Vector3f
 
     m_kclScale = scale;
 
-    data->lookupPoint(v0 / scale, v1 / scale, mask);
+    f32 invScale = 1.0f / scale;
+    data->lookupPoint(v0 * invScale, v1 * invScale, mask);
 
     if (info) {
         return doCheckWithFullInfo(data, &KColData::checkPointCollision, info, maskOut);
@@ -89,7 +93,8 @@ bool CourseColMgr::checkPointFullPush(f32 scale, KColData *data, const EGG::Vect
 
     m_kclScale = scale;
 
-    data->lookupPoint(v0 / scale, v1 / scale, mask);
+    f32 invScale = 1.0f / scale;
+    data->lookupPoint(v0 * invScale, v1 * invScale, mask);
 
     if (info) {
         return doCheckWithFullInfoPush(data, &KColData::checkPointCollision, info, maskOut);
@@ -107,7 +112,8 @@ bool CourseColMgr::checkSpherePartial(f32 scale, f32 radius, KColData *data,
 
     m_kclScale = scale;
 
-    data->lookupSphere(radius, v0 / scale, v1 / scale, mask);
+    f32 invScale = 1.0f / scale;
+    data->lookupSphere(radius, v0 * invScale, v1 * invScale, mask);
 
     if (info) {
         return doCheckWithPartialInfo(data, &KColData::checkSphereCollision, info, maskOut);
@@ -125,7 +131,8 @@ bool CourseColMgr::checkSpherePartialPush(f32 scale, f32 radius, KColData *data,
 
     m_kclScale = scale;
 
-    data->lookupSphere(radius, v0 / scale, v1 / scale, mask);
+    f32 invScale = 1.0f / scale;
+    data->lookupSphere(radius, v0 * invScale, v1 * invScale, mask);
 
     if (info) {
         return doCheckWithPartialInfoPush(data, &KColData::checkSphereCollision, info, maskOut);
@@ -134,15 +141,16 @@ bool CourseColMgr::checkSpherePartialPush(f32 scale, f32 radius, KColData *data,
 }
 
 /// @addr{0x807C3CF0}
-bool CourseColMgr::checkSphereFull(f32 scalar, f32 radius, KColData *data, const EGG::Vector3f &v0,
+bool CourseColMgr::checkSphereFull(f32 scale, f32 radius, KColData *data, const EGG::Vector3f &v0,
         const EGG::Vector3f &v1, KCLTypeMask mask, CollisionInfo *info, KCLTypeMask *maskOut) {
     if (!data) {
         data = m_data;
     }
 
-    m_kclScale = scalar;
+    m_kclScale = scale;
 
-    data->lookupSphere(radius, v0 / scalar, v1 / scalar, mask);
+    f32 invScale = 1.0f / scale;
+    data->lookupSphere(radius, v0 * invScale, v1 * invScale, mask);
 
     if (info) {
         return doCheckWithFullInfo(data, &KColData::checkSphereCollision, info, maskOut);
@@ -151,16 +159,17 @@ bool CourseColMgr::checkSphereFull(f32 scalar, f32 radius, KColData *data, const
 }
 
 /// @addr{0x807C3E84}
-bool CourseColMgr::checkSphereFullPush(f32 scalar, f32 radius, KColData *data,
+bool CourseColMgr::checkSphereFullPush(f32 scale, f32 radius, KColData *data,
         const EGG::Vector3f &v0, const EGG::Vector3f &v1, KCLTypeMask mask, CollisionInfo *info,
         KCLTypeMask *maskOut) {
     if (!data) {
         data = m_data;
     }
 
-    m_kclScale = scalar;
+    m_kclScale = scale;
 
-    data->lookupSphere(radius, v0 / scalar, v1 / scalar, mask);
+    f32 invScale = 1.0f / scale;
+    data->lookupSphere(radius, v0 * invScale, v1 * invScale, mask);
 
     if (info) {
         return doCheckWithFullInfoPush(data, &KColData::checkSphereCollision, info, maskOut);
@@ -178,7 +187,8 @@ bool CourseColMgr::checkPointCachedPartial(f32 scale, KColData *data, const EGG:
 
     m_kclScale = scale;
 
-    data->lookupPoint(v0 / scale, v1 / scale, mask);
+    f32 invScale = 1.0f / scale;
+    data->lookupPoint(v0 * invScale, v1 * invScale, mask);
 
     if (info) {
         return doCheckWithPartialInfo(data, &KColData::checkPointCollision, info, maskOut);
@@ -200,7 +210,8 @@ bool CourseColMgr::checkPointCachedPartialPush(f32 scale, KColData *data, const 
 
     m_kclScale = scale;
 
-    data->lookupPoint(v0 / scale, v1 / scale, mask);
+    f32 invScale = 1.0f / scale;
+    data->lookupPoint(v0 * invScale, v1 * invScale, mask);
 
     if (info) {
         return doCheckWithPartialInfoPush(data, &KColData::checkPointCollision, info, maskOut);
@@ -221,7 +232,8 @@ bool CourseColMgr::checkPointCachedFull(f32 scale, KColData *data, const EGG::Ve
 
     m_kclScale = scale;
 
-    data->lookupPoint(v0 / scale, v1 / scale, mask);
+    f32 invScale = 1.0f / scale;
+    data->lookupPoint(v0 * invScale, v1 * invScale, mask);
 
     if (pInfo) {
         return doCheckWithFullInfo(data, &KColData::checkPointCollision, pInfo, maskOut);
@@ -242,7 +254,8 @@ bool CourseColMgr::checkPointCachedFullPush(f32 scale, KColData *data, const EGG
 
     m_kclScale = scale;
 
-    data->lookupPoint(v0 / scale, v1 / scale, mask);
+    f32 invScale = 1.0f / scale;
+    data->lookupPoint(v0 * invScale, v1 * invScale, mask);
 
     if (pInfo) {
         return doCheckWithFullInfoPush(data, &KColData::checkPointCollision, pInfo, maskOut);
@@ -264,7 +277,8 @@ bool CourseColMgr::checkSphereCachedPartial(f32 scale, f32 radius, KColData *dat
 
     m_kclScale = scale;
 
-    data->lookupSphereCached(pos / scale, prevPos / scale, mask, radius / scale);
+    f32 invScale = 1.0f / scale;
+    data->lookupSphereCached(pos * invScale, prevPos * invScale, mask, radius * invScale);
 
     if (info) {
         return doCheckWithPartialInfo(data, &KColData::checkSphereCollision, info, maskOut);
@@ -287,7 +301,8 @@ bool CourseColMgr::checkSphereCachedPartialPush(f32 scale, f32 radius, KColData 
 
     m_kclScale = scale;
 
-    data->lookupSphereCached(pos / scale, prevPos / scale, mask, radius / scale);
+    f32 invScale = 1.0f / scale;
+    data->lookupSphereCached(pos * invScale, prevPos * invScale, mask, radius * invScale);
 
     if (info) {
         return doCheckWithPartialInfoPush(data, &KColData::checkSphereCollision, info, maskOut);
@@ -310,7 +325,8 @@ bool CourseColMgr::checkSphereCachedFull(f32 scale, f32 radius, KColData *data,
 
     m_kclScale = scale;
 
-    data->lookupSphereCached(pos / scale, prevPos / scale, mask, radius / scale);
+    f32 invScale = 1.0f / scale;
+    data->lookupSphereCached(pos * invScale, prevPos * invScale, mask, radius * invScale);
 
     if (pInfo) {
         return doCheckWithFullInfo(data, &KColData::checkSphereCollision, pInfo, maskOut);
@@ -333,7 +349,8 @@ bool CourseColMgr::checkSphereCachedFullPush(f32 scale, f32 radius, KColData *da
 
     m_kclScale = scale;
 
-    data->lookupSphereCached(pos / scale, prevPos / scale, mask, radius / scale);
+    f32 invScale = 1.0f / scale;
+    data->lookupSphereCached(pos * invScale, prevPos * invScale, mask, radius * invScale);
 
     if (colInfo) {
         return doCheckWithFullInfoPush(data, &KColData::checkSphereCollision, colInfo, maskOut);
