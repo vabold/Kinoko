@@ -278,7 +278,7 @@ bool CourseColMgr::checkSphereCachedPartial(f32 scale, f32 radius, KColData *dat
     m_kclScale = scale;
 
     f32 invScale = 1.0f / scale;
-    data->lookupSphereCached(pos * invScale, prevPos * invScale, mask, radius / scale);
+    data->lookupSphereCached(pos * invScale, prevPos * invScale, mask, radius * invScale);
 
     if (info) {
         return doCheckWithPartialInfo(data, &KColData::checkSphereCollision, info, maskOut);
@@ -302,7 +302,7 @@ bool CourseColMgr::checkSphereCachedPartialPush(f32 scale, f32 radius, KColData 
     m_kclScale = scale;
 
     f32 invScale = 1.0f / scale;
-    data->lookupSphereCached(pos * invScale, prevPos * invScale, mask, radius / scale);
+    data->lookupSphereCached(pos * invScale, prevPos * invScale, mask, radius * invScale);
 
     if (info) {
         return doCheckWithPartialInfoPush(data, &KColData::checkSphereCollision, info, maskOut);
@@ -326,7 +326,7 @@ bool CourseColMgr::checkSphereCachedFull(f32 scale, f32 radius, KColData *data,
     m_kclScale = scale;
 
     f32 invScale = 1.0f / scale;
-    data->lookupSphereCached(pos * invScale, prevPos * invScale, mask, radius / scale);
+    data->lookupSphereCached(pos * invScale, prevPos * invScale, mask, radius * invScale);
 
     if (pInfo) {
         return doCheckWithFullInfo(data, &KColData::checkSphereCollision, pInfo, maskOut);
@@ -350,7 +350,7 @@ bool CourseColMgr::checkSphereCachedFullPush(f32 scale, f32 radius, KColData *da
     m_kclScale = scale;
 
     f32 invScale = 1.0f / scale;
-    data->lookupSphereCached(pos * invScale, prevPos * invScale, mask, radius / scale);
+    data->lookupSphereCached(pos * invScale, prevPos * invScale, mask, radius * invScale);
 
     if (colInfo) {
         return doCheckWithFullInfoPush(data, &KColData::checkSphereCollision, colInfo, maskOut);
