@@ -1,5 +1,6 @@
 # KRKG File Format
-KRKG files contain information required to sync Time Trial ghosts in Kinoko.
+KRKG files contain information required to sync Time Trial ghosts in Kinoko. Instructions on generating KRKG files can be found [here](https://github.com/vabold/Kinoko/blob/main/README.md#create-krkg), and the source code for the build can be found [here](https://github.com/vabold/mkw-sp/tree/krkg).
+KRKG files are big-endian.
 
 ## Header
 A KRKG file begins with a 16 byte header.
