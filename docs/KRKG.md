@@ -15,7 +15,7 @@ A KRKG file begins with a 16 byte header.
 |0x10|||End of header; start of packet data|
 
 ## Packet Data
-Packets are `0x64` (100) bytes in length.
+Packets are `0x64` (100) bytes in length. Each packet corresponds to a frame. The first packet consists of data immediately after initialization, and subsequent packets map to each subsequent per-frame update. Frame data is polled at the end of `RaceScene::calcEnginesUnpaused`.
 |Offset|Type|Length|Description|Version Added|
 |---|---|---|---|---|
 |0x00|`EGG::Vector3f`|12|`pos`|0.1|
