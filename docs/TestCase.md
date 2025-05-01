@@ -12,7 +12,7 @@ Test suite files have an 6 byte header.
 |0x06|||End of header; start of test cases|
 
 ## Test Case Format
-Test cases specify the target sync frame and which RKG and KRKG files to sync.
+Test cases specify the target sync frame and which RKG and KRKG files to sync. Padding and alignment _do not apply_. The total length of a given test case is variable.
 |Offset|Type|Length|Description|
 |---|---|---|---|
 |0x00|u32|4|Case signature; `0x54535448` (TSTH)|
