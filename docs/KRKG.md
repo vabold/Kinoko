@@ -31,3 +31,5 @@ Packets are `0x64` (100) bytes in length. Each packet corresponds to a frame. Th
 |0x60|u16|2|`checkpointId`|0.6|
 |0x62|u8|1|`jugemId`|0.6|
 |0x63|u8|1|Padding|0.6|
+
+`angVel2` is always 0, and is scheduled to be removed in the next major version bump.
