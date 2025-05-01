@@ -1,5 +1,5 @@
 # Test Suite Binary Format
-Test suite binary files contain a suite of test cases to test in Kinoko.
+Test suite binary files contain a suite of test cases to test in Kinoko. They are generated via Python script [here](https://github.com/vabold/Kinoko/blob/main/tools/generate_tests.py).
 Suite files are big-endian.
 
 ## Header
