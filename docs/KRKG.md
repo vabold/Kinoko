@@ -6,7 +6,7 @@ KRKG files are big-endian.
 A KRKG file begins with a 16 byte header.
 |Offset|Type|Length|Description|
 |---|---|---|---|
-|0x00|u32|4|Magic; should be `0x4b524b47` (KRKG)|
+|0x00|u32|4|Signature; always `0x4b524b47` (KRKG)|
 |0x04|u16|2|BOM; `0xFEFF` in big-endian|
 |0x06|u16|2|Frame count|
 |0x08|u16|2|Major version|
