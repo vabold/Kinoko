@@ -92,7 +92,6 @@ void ObjectBase::calcTransform() {
         m_flags &= ~0x3;
     } else if (m_flags & 1) {
         m_transform.setBase(3, m_pos);
-        m_flags |= 4;
     }
 }
 
@@ -115,6 +114,15 @@ void ObjectBase::setMatrixTangentTo(const EGG::Vector3f &up, const EGG::Vector3f
     m_flags |= 4;
     SetRotTangentHorizontal(m_transform, up, tangent);
     m_transform.setBase(3, m_pos);
+}
+
+/// @addr{0x806B3AC4}
+EGG::Vector3f ObjectBase::RotateAxisAngle(f32 angle, const EGG::Vector3f &axis,
+        const EGG::Vector3f &v1) {
+    EGG::Matrix34f mat;
+    mat.setBase(3, EGG::Vector3f::zero);
+    mat.setAxisRotation(angle, axis);
+    return mat.ps_multVector(v1);
 }
 
 /// @addr{0x806B41E0}

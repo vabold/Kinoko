@@ -10,7 +10,8 @@
 namespace Field {
 
 /// @addr{0x8081EFEC}
-ObjectCollidable::ObjectCollidable(const System::MapdataGeoObj &params) : ObjectBase(params) {}
+ObjectCollidable::ObjectCollidable(const System::MapdataGeoObj &params)
+    : ObjectBase(params), m_collision(nullptr) {}
 
 /// @addr{0x8067E384}
 ObjectCollidable::~ObjectCollidable() {
@@ -95,7 +96,7 @@ bool ObjectCollidable::checkCollision(ObjectCollisionBase *lhs, EGG::Vector3f &d
 /// @addr{0x8081F224}
 void ObjectCollidable::createCollision() {
     const auto &flowTable = ObjectDirector::Instance()->flowTable();
-    const auto *collisionSet = flowTable.set(flowTable.slot(m_id));
+    const auto *collisionSet = flowTable.set(flowTable.slot(id()));
 
     if (!collisionSet) {
         PANIC("Invalid object ID when creating primitive collision! ID: %d",
