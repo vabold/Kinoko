@@ -195,6 +195,11 @@ void KartAction::startAction1() {
     startRotation(2);
 }
 
+/// @addr{0x80568000}
+void KartAction::startAction9() {
+    startRotation(2);
+}
+
 /* ================================ *
  *     CALC FUNCTIONS
  * ================================ */
@@ -269,7 +274,7 @@ const std::array<KartAction::StartActionFunc, KartAction::MAX_ACTION> KartAction
         &KartAction::startStub,
         &KartAction::startStub,
         &KartAction::startStub,
-        &KartAction::startStub,
+        &KartAction::startAction9,
         &KartAction::startStub,
         &KartAction::startStub,
         &KartAction::startStub,
@@ -290,7 +295,7 @@ const std::array<KartAction::CalcActionFunc, KartAction::MAX_ACTION> KartAction:
         &KartAction::calcStub,
         &KartAction::calcStub,
         &KartAction::calcStub,
-        &KartAction::calcStub,
+        &KartAction::calcAction1,
         &KartAction::calcStub,
         &KartAction::calcStub,
         &KartAction::calcStub,
@@ -311,7 +316,7 @@ const std::array<KartAction::EndActionFunc, KartAction::MAX_ACTION> KartAction::
         &KartAction::endStub,
         &KartAction::endStub,
         &KartAction::endStub,
-        &KartAction::endStub,
+        &KartAction::endAction1,
         &KartAction::endStub,
         &KartAction::endStub,
         &KartAction::endStub,

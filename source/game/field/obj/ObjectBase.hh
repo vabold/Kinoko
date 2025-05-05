@@ -51,11 +51,18 @@ public:
         return m_id;
     }
 
+    void setPos(const EGG::Vector3f &pos) {
+        m_flags |= 0x1;
+        m_pos = pos;
+    }
+
 protected:
     void calcTransform();
     void linkAnims(const std::span<const char *> &names, const std::span<Render::AnmType> types);
     void setMatrixTangentTo(const EGG::Vector3f &up, const EGG::Vector3f &tangent);
 
+    static EGG::Vector3f RotateAxisAngle(f32 angle, const EGG::Vector3f &axis,
+            const EGG::Vector3f &v1);
     static void SetRotTangentHorizontal(EGG::Matrix34f &mat, const EGG::Vector3f &up,
             const EGG::Vector3f &tangent);
 
