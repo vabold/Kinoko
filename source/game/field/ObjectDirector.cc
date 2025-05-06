@@ -232,10 +232,17 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
     // However, we need to specify an impl, so we don't use default
     case ObjectId::DummyPole:
     case ObjectId::CastleTree1c:
+    case ObjectId::PeachTreeGCc:
+    case ObjectId::MarioGo64c:
+    case ObjectId::KinokoT1:
     case ObjectId::PalmTree:
+    case ObjectId::Parasol:
+    case ObjectId::HeyhoTreeGBAc:
     case ObjectId::GardenTreeDSc:
     case ObjectId::DKtreeA64c:
+    case ObjectId::DKTreeB64c:
     case ObjectId::TownTreeDsc:
+    case ObjectId::PakkunDokan:
         return new ObjectCollidable(params);
     case ObjectId::WLDokanGC:
     case ObjectId::Mdush:
