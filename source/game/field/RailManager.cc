@@ -25,7 +25,22 @@ void RailManager::DestroyInstance() {
 RailManager::RailManager() = default;
 
 /// @addr{0x806F0A98}
-RailManager::~RailManager() = default;
+RailManager::~RailManager() {
+    if (s_instance) {
+        s_instance = nullptr;
+        WARN("RailManager instance not explicitly handled!");
+    }
+
+    for (auto *&rail : m_rails) {
+        delete rail;
+    }
+
+    for (auto *&interpolator : m_interpolators) {
+        delete interpolator;
+    }
+
+    delete m_interpolators.data();
+}
 
 /// @addr{0x806F0AD8}
 void RailManager::createPaths() {
@@ -44,6 +59,11 @@ void RailManager::createPaths() {
     // The base game indexes based on i and j, so we need to resize regardless of isObjectRoute.
     m_interpolators = std::span<RailInterpolator *>(new RailInterpolator *[m_interpolatorTotal],
             m_interpolatorTotal);
+
+    // Avoid deallocation headache later
+    for (auto *&interpolator : m_interpolators) {
+        interpolator = nullptr;
+    }
 
     for (u16 i = 0; i < m_pointCount; ++i) {
         bool isObjectRoute = false;
