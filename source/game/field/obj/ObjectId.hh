@@ -17,6 +17,7 @@ enum class ObjectId {
     ParasolR = 0x16e,
     Kuribo = 0x191,
     WLFirebarGC = 0x195,
+    WLFireRingGC = 0x1a1,
     PuchiPakkun = 0x1aa,
     KinokoUd = 0x1f5,
     KinokoBend = 0x1f6,
