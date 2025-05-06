@@ -93,6 +93,11 @@ void *Heap::alloc(size_t size, int align, Heap *pHeap) {
 
 /// @addr{0x80229B84}
 void Heap::free(void *block, Heap *pHeap) {
+    // Deleting nullptr should be no-op
+    if (!block) {
+        return;
+    }
+
     if (!pHeap) {
         MEMiHeapHead *handle = MEMiHeapHead::findContainHeap(block);
         if (!handle) {
