@@ -135,6 +135,9 @@ void KartObject::prepareTiresAndSuspensions() {
 
     m_pointers.param->setTireCount(wheelCount);
     m_pointers.param->setSuspCount(wheelCount);
+
+    m_pointers.tires.reserve(wheelCount);
+    m_pointers.suspensions.reserve(wheelCount);
 }
 
 /// @addr{0x8058E724}
