@@ -51,6 +51,12 @@ public:
     bool ps_inverse(Matrix34f &out) const;
     [[nodiscard]] Matrix34f transpose() const;
 
+    /// @addr{0x80537B80}
+    /// @brief Get a particular column from a matrix.
+    [[nodiscard]] Vector3f base(size_t col) const {
+        return EGG::Vector3f(mtx[0][col], mtx[1][col], mtx[2][col]);
+    }
+
     [[nodiscard]] Vector3f translation() const {
         return Vector3f(mtx[0][3], mtx[1][3], mtx[2][3]);
     }
