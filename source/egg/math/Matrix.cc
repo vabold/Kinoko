@@ -192,6 +192,16 @@ void Matrix34f::setBase(size_t col, const Vector3f &base) {
     mtx[2][col] = base.z;
 }
 
+/// @addr{0x806B41E0}
+void Matrix34f::setRotTangentHorizontal(const Vector3f &up, const Vector3f &tangent) {
+    EGG::Vector3f vec = tangent - up * tangent.dot(up);
+    vec.normalise2();
+
+    setBase(0, up.cross(vec));
+    setBase(1, up);
+    setBase(2, vec);
+}
+
 /// @addr{0x80230410}
 /// @brief Multiplies two matrices.
 Matrix34f Matrix34f::multiplyTo(const Matrix34f &rhs) const {
