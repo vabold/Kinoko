@@ -8,6 +8,10 @@ class DrawMdl {
 public:
     DrawMdl() : m_anmMgr(nullptr) {}
 
+    ~DrawMdl() {
+        delete m_anmMgr;
+    }
+
     void linkAnims(size_t idx, const Abstract::g3d::ResFile *resFile, const char *name,
             AnmType anmType);
 

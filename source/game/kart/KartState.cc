@@ -447,6 +447,7 @@ void KartState::clearBitfield0() {
     m_bBoost = false;
     m_bAirStart = false;
     m_bStickRight = false;
+    m_bLargeFlipHit = false;
     m_bMushroomBoost = false;
     m_bDriftAuto = false;
     m_bSlipdriftCharge = false;

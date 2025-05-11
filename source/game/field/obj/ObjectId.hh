@@ -12,6 +12,7 @@ enum class ObjectId {
     SunDS = 0x72,
     WLWallGC = 0xcb,
     CarA1 = 0xcc,
+    KoopaBall = 0xcf,
     KartTruck = 0xd0,
     CarBody = 0xd1,
     W_Woodbox = 0xd3,

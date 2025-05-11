@@ -87,6 +87,10 @@ public:
         m_bBoost = isSet;
     }
 
+    void setLargeFlipHit(bool isSet) {
+        m_bLargeFlipHit = isSet;
+    }
+
     void setMushroomBoost(bool isSet) {
         m_bMushroomBoost = isSet;
     }
@@ -405,6 +409,10 @@ public:
         return m_bStickRight;
     }
 
+    [[nodiscard]] bool isLargeFlipHit() const {
+        return m_bLargeFlipHit;
+    }
+
     [[nodiscard]] bool isMushroomBoost() const {
         return m_bMushroomBoost;
     }
@@ -658,6 +666,7 @@ private:
     bool m_bBoost;              ///< Set while in a boost.
     bool m_bAirStart;
     bool m_bStickRight;    ///< Set on right stick input. Mutually exclusive to @ref m_bStickLeft.
+    bool m_bLargeFlipHit;  ///< Set when hitting an exploding object.
     bool m_bMushroomBoost; ///< Set while we are in a mushroom boost.
     bool m_bDriftAuto;     ///< Currently in a drift w/ automatic.
     bool m_bSlipdriftCharge;
