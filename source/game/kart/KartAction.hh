@@ -27,6 +27,7 @@ public:
     enum class eFlags {
         Landing = 0,
         Rotating = 3,
+        LandingFromFlip = 5,
     };
     typedef EGG::TBitFlag<u32, eFlags> Flags;
 
@@ -99,6 +100,7 @@ private:
     void startAction2();
     void startAction3();
     void startAction5();
+    void startLargeFlipAction();
     void startAction9();
     void startLongPressAction();
     void startShortPressAction();
@@ -110,6 +112,7 @@ private:
     bool calcStub();
     bool calcAction1();
     bool calcLaunchAction();
+    bool calcLargeFlipAction();
     bool calcPressAction();
 
     /* ================================ *
@@ -128,6 +131,11 @@ private:
     EGG::Vector3f m_rotAxis;
     EGG::Vector3f m_translation;
 
+    f32 m_velPitch;
+    f32 m_pitch;
+    f32 m_deltaPitch;
+    f32 m_flipPhase;
+
     StartActionFunc m_onStart;
     CalcActionFunc m_onCalc;
     EndActionFunc m_onEnd;
@@ -144,6 +152,7 @@ private:
     f32 m_finalAngle;
     const RotationParams *m_rotationParams;
     EGG::Vector3f m_up;
+    u16 m_framesFlipping;
     s16 m_priority;
 
     static constexpr size_t MAX_ACTION = static_cast<size_t>(Action::Max);

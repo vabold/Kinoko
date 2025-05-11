@@ -235,6 +235,8 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
     case ObjectId::KartTruck:
     case ObjectId::CarBody:
         return new ObjectCarTGE(params);
+    case ObjectId::KoopaBall:
+        return new ObjectKoopaBall(params);
     case ObjectId::W_Woodbox:
         return new ObjectWoodboxW(params);
     case ObjectId::SunDS:
