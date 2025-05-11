@@ -116,6 +116,14 @@ void WheelPhysics::updateCollision(const EGG::Vector3f &bottom, const EGG::Vecto
     }
 }
 
+/// @addr{0x80599DC0}
+void WheelPhysics::calcSuspension(const EGG::Vector3f &forward) {
+    f32 rate = state()->isSomethingWallCollision() ? 0.01f : collide()->floorMomentRate();
+
+    collide()->applySomeFloorMoment(0.1f, rate, m_hitboxGroup, forward, move()->dir(), speed(),
+            true, true, !state()->isLargeFlipHit() && !state()->isWheelieRot());
+}
+
 /// @addr{0x80599ED4}
 KartSuspensionPhysics::KartSuspensionPhysics(u16 wheelIdx, TireType tireType, u16 bspWheelIdx)
     : m_tirePhysics(nullptr), m_tireType(tireType), m_bspWheelIdx(bspWheelIdx),
@@ -194,8 +202,7 @@ void KartSuspensionPhysics::calcSuspension(const EGG::Vector3f &forward,
 
     m_tirePhysics->realign(m_bottomDir, vehicleMovement);
 
-    CollisionGroup *hitboxGroup = m_tirePhysics->hitboxGroup();
-    CollisionData &collisionData = hitboxGroup->collisionData();
+    CollisionData &collisionData = m_tirePhysics->hitboxGroup()->collisionData();
     if (!collisionData.bFloor) {
         return;
     }
@@ -229,10 +236,7 @@ void KartSuspensionPhysics::calcSuspension(const EGG::Vector3f &forward,
 
     dynamics()->applySuspensionWrench(m_topmostPos, fLinear, fRot, state()->isWheelieRot());
 
-    f32 rate = state()->isSomethingWallCollision() ? 0.01f : collide()->floorMomentRate();
-
-    collide()->applySomeFloorMoment(0.1f, rate, hitboxGroup, forward, move()->dir(),
-            m_tirePhysics->speed(), true, true, !state()->isWheelieRot());
+    m_tirePhysics->calcSuspension(forward);
 }
 
 } // namespace Kart

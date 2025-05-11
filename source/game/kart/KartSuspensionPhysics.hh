@@ -22,6 +22,7 @@ public:
     void realign(const EGG::Vector3f &bottom, const EGG::Vector3f &vehicleMovement);
 
     void updateCollision(const EGG::Vector3f &bottom, const EGG::Vector3f &topmostPos);
+    void calcSuspension(const EGG::Vector3f &forward);
 
     /// @beginSetters
     void setSuspTravel(f32 suspTravel) {
