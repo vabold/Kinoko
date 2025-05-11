@@ -1707,6 +1707,23 @@ f32 KartMove::calcSlerpRate(f32 scale, const EGG::Quatf &from, const EGG::Quatf 
     return acos > 0.0f ? std::min(0.1f, scale / acos) : 0.1f;
 }
 
+/// @addr{0x80586DB4}
+void KartMove::applyForce(f32 force, const EGG::Vector3f &hitDir, bool stop) {
+    if (m_bumpTimer >= 1) {
+        return;
+    }
+
+    dynamics()->addForce(force * hitDir.perpInPlane(m_up, true));
+
+    collide()->startFloorMomentRate();
+
+    m_bumpTimer = 5;
+
+    if (stop) {
+        m_speed = 0.0f;
+    }
+}
+
 /// @addr{0x8057CF0C}
 /// @brief Every frame, calculates rotation, EV, and angular velocity for the kart.
 void KartMove::calcVehicleRotation(f32 turn) {

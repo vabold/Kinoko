@@ -2,6 +2,7 @@
 
 #include "game/field/obj/ObjectAmi.hh"
 #include "game/field/obj/ObjectAurora.hh"
+#include "game/field/obj/ObjectBasabasa.hh"
 #include "game/field/obj/ObjectBeltCrossing.hh"
 #include "game/field/obj/ObjectBeltCurveA.hh"
 #include "game/field/obj/ObjectBeltEasy.hh"
@@ -44,3 +45,4 @@
 #include "game/field/obj/ObjectWLWallGC.hh"
 #include "game/field/obj/ObjectWoodbox.hh"
 #include "game/field/obj/ObjectWoodboxW.hh"
+

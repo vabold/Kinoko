@@ -87,6 +87,7 @@ public:
             const EGG::Vector3f &prevPos, Field::CollisionInfo *colInfo,
             Field::KCLTypeMask *maskOut, Field::KCLTypeMask flags) const;
     f32 calcSlerpRate(f32 scale, const EGG::Quatf &from, const EGG::Quatf &to) const;
+    void applyForce(f32 force, const EGG::Vector3f &hitDir, bool stop);
     virtual void calcVehicleRotation(f32 turn);
     virtual void hop();
     virtual void onHop() {}
@@ -423,7 +424,7 @@ protected:
     s16 m_respawnPreLandTimer;  ///< Counts down from 4 when pressing A before landing from respawn.
     s16 m_respawnPostLandTimer; ///< Counts up to 4 if not accelerating after respawn landing.
     s16 m_respawnTimer;
-    s16 m_bumpTimer;
+    s16 m_bumpTimer;                     ///< Set when a @ref Reaction::SmallBump collision occurs.
     DrivingDirection m_drivingDirection; ///< Current state of driver's direction.
     s16 m_backwardsAllowCounter;         ///< Tracks the 15f delay before reversing.
     PadType m_padType;
