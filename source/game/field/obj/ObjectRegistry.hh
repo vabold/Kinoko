@@ -2,6 +2,7 @@
 
 #include "game/field/obj/ObjectAmi.hh"
 #include "game/field/obj/ObjectAurora.hh"
+#include "game/field/obj/ObjectBasabasa.hh"
 #include "game/field/obj/ObjectBeltCrossing.hh"
 #include "game/field/obj/ObjectBeltCurveA.hh"
 #include "game/field/obj/ObjectBeltEasy.hh"
