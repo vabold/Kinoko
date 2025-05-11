@@ -230,6 +230,8 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
     case ObjectId::CarA2:
     case ObjectId::CarA3:
         return new ObjectCarA(params);
+    case ObjectId::Basabasa:
+        return new ObjectBasabasa(params);
     case ObjectId::KartTruck:
     case ObjectId::CarBody:
         return new ObjectCarTGE(params);
