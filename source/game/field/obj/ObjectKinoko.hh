@@ -86,13 +86,9 @@ public:
     [[nodiscard]] void calcScale(u32 timeOffset) override;
 
 private:
-    f32 m_pos_x;
-    f32 m_rot_x;
-    f32 m_scale_x;
     s16 _158;
     s16 m_period_denom;
     f32 _15c;
-    u16 _160;
     f32 m_bend_period;
 };
 

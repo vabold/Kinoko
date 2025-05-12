@@ -86,13 +86,8 @@ ObjectKinokoBend::ObjectKinokoBend(const System::MapdataGeoObj &params) : Object
 
     _158 = params.setting(3);
     _15c = (f32)params.setting(1) * DEG2RAD;
-    //_160 = params.setting(4);
 
     m_period_denom = period_denom;
-
-    //m_pos_x = m_pos.x;
-    //m_scale_x = m_pos.z;
-    //m_rot_x = m_pos.y - (f32)_160;
     m_bend_period = F_TAU / (f32)period_denom;
 }
 

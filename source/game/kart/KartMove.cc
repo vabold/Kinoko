@@ -1358,7 +1358,6 @@ void KartMove::calcAcceleration() {
     const f32 boostSpdLimit = m_boost.speedLimit();
     m_jumpPadBoostMultiplier = boostMultiplier;
 
-    
     if (!state()->isJumpPadFixedSpeed()) {
         speedLimit *= (boostMultiplier + getWheelieSoftSpeedLimitBonus()) * m_kclSpeedFactor;
     }
@@ -1856,12 +1855,13 @@ void KartMove::tryStartJumpPad() {
     m_jumpPadProperties = &JUMP_PAD_PROPERTIES[jumpPadVariant];
 
     if (jumpPadVariant == 3 || jumpPadVariant == 4) {
-        if (1.3f < m_jumpPadBoostMultiplier || 110.0f < m_jumpPadSoftSpeedLimit) { // Gets triggered when using a mushroom
-            static constexpr std::array<JumpPadProperties, 2> JUMP_PAD_PROPERTIES_BOOST = {{
+        if (1.3f < m_jumpPadBoostMultiplier || 110.0f < m_jumpPadSoftSpeedLimit) {
+            // Set speed too 100 when a mushroom got used on a jump pad
+            static constexpr std::array<JumpPadProperties, 2> JUMP_PAD_PROPERTIES_SHROOM_BOOST = {{
                     {100.0f, 100.0f, 70.0f},
                     {100.0f, 100.0f, 65.0f},
             }};
-            m_jumpPadProperties = &JUMP_PAD_PROPERTIES_BOOST[jumpPadVariant != 3];
+            m_jumpPadProperties = &JUMP_PAD_PROPERTIES_SHROOM_BOOST[jumpPadVariant != 3];
         }
         state()->setJumpPadFixedSpeed(true);
     }
