@@ -339,6 +339,10 @@ void KartState::calcCollisions() {
             m_bGroundStart = true;
         }
 
+        if (!state()->isJumpPad()) {
+            m_bJumpPadMushroomCollision = false;
+        }
+
         if (m_bInATrick && jump()->cooldown() == 0) {
             move()->landTrick();
             dynamics()->setForceUpright(true);
@@ -460,6 +464,7 @@ void KartState::clearBitfield1() {
     m_bBoostOffroadInvincibility = false;
     m_bHalfPipeRamp = false;
     m_bOverZipper = false;
+    m_bJumpPadMushroomCollision = false;
     m_bZipperInvisibleWall = false;
     m_bDisableBackwardsAccel = false;
     m_bZipperBoost = false;
@@ -468,6 +473,7 @@ void KartState::clearBitfield1() {
     m_bRespawnKillY = false;
     m_bBurnout = false;
     m_bTrickRot = false;
+    m_bJumpPadMushroomVelYInc = false;
     m_bChargingSsmt = false;
     m_bRejectRoad = false;
     m_bRejectRoadTrigger = false;
@@ -478,9 +484,11 @@ void KartState::clearBitfield1() {
 void KartState::clearBitfield2() {
     m_bWheelieRot = false;
     m_bSkipWheelCalc = false;
+    m_bJumpPadMushroomTrigger = false;
     m_bNoSparkInvisibleWall = false;
     m_bInRespawn = false;
     m_bAfterRespawn = false;
+    m_bJumpPadFixedSpeed = false;
     m_bJumpPadDisableYsusForce = false;
 }
 
