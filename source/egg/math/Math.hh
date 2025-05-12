@@ -5,6 +5,7 @@
 #include <cmath>
 
 static constexpr f32 F_PI = 3.1415927f;      ///< Floating point representation of pi
+static constexpr f32 F_TAU = 6.283185f;      ///< Floating point representation of tau/2pi
 static constexpr f32 DEG2RAD = 0.017453292f; ///< F_PI / 180.0f. Double precision and casted down.
 static constexpr f32 DEG2RAD360 = 0.034906585f; ///< F_PI / 360.0f. Double precision, casted down.
 static constexpr f32 RAD2DEG = 57.2957795f; ///< 180.0f / F_PI. Double precision and casted down.
