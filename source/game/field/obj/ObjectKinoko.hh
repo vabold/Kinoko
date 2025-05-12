@@ -39,8 +39,10 @@ public:
 
     [[nodiscard]] void init() override;
     [[nodiscard]] void calc() override;
+    [[nodiscard]] u32 loadFlags() const override;
     [[nodiscard]] const char *getKclName() const override;
     virtual void calcOscillation() = 0;
+
 protected:
     KinokoType m_type;
     EGG::Vector3f m_obj_pos;
@@ -65,6 +67,7 @@ public:
 
     [[nodiscard]] const char *getKclName() const override;
     [[nodiscard]] void calcOscillation() override;
+    [[nodiscard]] void calcScale(u32 timeOffset) override;
 
 private:
     u16 _14c;
@@ -80,6 +83,7 @@ public:
     ObjectKinokoBend(const System::MapdataGeoObj &params);
     ~ObjectKinokoBend() override;
     [[nodiscard]] void calcOscillation() override;
+    [[nodiscard]] void calcScale(u32 timeOffset) override;
 
 private:
     f32 m_pos_x;

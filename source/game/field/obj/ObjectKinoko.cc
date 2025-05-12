@@ -14,15 +14,18 @@ m_obj_rot(m_rot)
     _132 = 10;
     _12c = 1 % 40;
     _134 = 0.1f;
-    m_period = _144 * F_PI / _130;
+    m_period = 6.0f * F_PI / 40.0f;
     _13c = 0.0008f;
     _146 = 0;
 
     m_stem_obj = new ObjectKinokoStem(params, m_type);
-    load();
 }
 
 void ObjectKinoko::init() {}
+
+u32 ObjectKinoko::loadFlags() const {
+    return 1;
+}
 
 // 8080782c
 void ObjectKinoko::calc() {
@@ -59,7 +62,7 @@ ObjectKinoko::~ObjectKinoko() = default;
 
 void ObjectKinokoUd::calcOscillation() {
     m_flags |= 1; // |= POSITION_DIRTY;
-    m_obj_pos.y = m_pos.y + (f32)_152 * (EGG::Mathf::cos(m_ud_period * (f32)_146) + 1.0f) * 0.5f;
+    m_obj_pos.y = m_pos.y + (f32)_152 * (EGG::Mathf::cos(m_ud_period * (f32)_146) + 1.0f) / 2.0f;
     
     if (_14c == 0) {
         _146++;
@@ -67,13 +70,15 @@ void ObjectKinokoUd::calcOscillation() {
     if (_146 == (_14e / 2)) {
         _14c++;
     }
-    if (_150 < _14c) {
+    if (_14c > _150) {
         _14c = 0;
     }
-    if (_14e < _146) {
+    if (_146 > _14e) {
         _146 = 0;
     }
 }
+
+void ObjectKinokoUd::calcScale(u32) {}
 
 ObjectKinokoBend::ObjectKinokoBend(const System::MapdataGeoObj &params) : ObjectKinoko(params) {
     const s16 setting2 = params.setting(2);
@@ -81,13 +86,13 @@ ObjectKinokoBend::ObjectKinokoBend(const System::MapdataGeoObj &params) : Object
 
     _158 = params.setting(3);
     _15c = (f32)params.setting(1) * DEG2RAD;
-    _160 = params.setting(4);
+    //_160 = params.setting(4);
 
     m_period_denom = period_denom;
 
-    m_pos_x = m_pos.x;
-    m_scale_x = m_pos.z;
-    m_rot_x = m_pos.y - (f32)_160;
+    //m_pos_x = m_pos.x;
+    //m_scale_x = m_pos.z;
+    //m_rot_x = m_pos.y - (f32)_160;
     m_bend_period = F_TAU / (f32)period_denom;
 }
 
@@ -107,6 +112,8 @@ void ObjectKinokoBend::calcOscillation() {
     }
 }
 
+void ObjectKinokoBend::calcScale(u32) {}
+
 const char *ObjectKinoko::getKclName() const {
     return m_type == KinokoType::Light ? "kinoko_r" : "kinoko_d_r";
 }
@@ -125,6 +132,7 @@ const char *ObjectKinokoStem::getKclName() const {
 
 ObjectKinokoStem::ObjectKinokoStem(const System::MapdataGeoObj &params, KinokoType type) : ObjectCollidable(params) {
     m_type = type;
+    load();
 }
 
 ObjectKinokoStem::~ObjectKinokoStem() = default;
