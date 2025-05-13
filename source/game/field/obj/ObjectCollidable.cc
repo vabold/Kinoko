@@ -10,7 +10,8 @@
 namespace Field {
 
 /// @addr{0x8081EFEC}
-ObjectCollidable::ObjectCollidable(const System::MapdataGeoObj &params) : ObjectBase(params), m_collision(nullptr) {}
+ObjectCollidable::ObjectCollidable(const System::MapdataGeoObj &params)
+    : ObjectBase(params), m_collision(nullptr) {}
 
 /// @addr{0x8067E384}
 ObjectCollidable::~ObjectCollidable() {

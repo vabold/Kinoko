@@ -78,8 +78,7 @@ void KartMove::calcTurn() {
         m_rawTurn = -state()->stickX();
         if (state()->isJumpPadMushroomCollision()) {
             m_rawTurn *= 0.35f;
-        }
-        else if (state()->isAirtimeOver20()) {
+        } else if (state()->isAirtimeOver20()) {
             m_rawTurn *= 0.01f;
         }
     } else {
@@ -512,8 +511,7 @@ void KartMove::calcDirs() {
             (((state()->isTouchingGround() || !state()->isRampBoost() ||
                       !m_jump->isBoostRampEnabled()) &&
                      !state()->isJumpPad() && state()->airtime() <= 5) ||
-                     state()->isJumpPadMushroomCollision() ||
-                    state()->isNoSparkInvisibleWall())) {
+                    state()->isJumpPadMushroomCollision() || state()->isNoSparkInvisibleWall())) {
         if (state()->isHop()) {
             local_88 = m_hopDir;
         }
@@ -1365,7 +1363,7 @@ void KartMove::calcAcceleration() {
     if (!state()->isJumpPad()) {
         speedLimit = std::max(speedLimit, boostSpdLimit * m_kclSpeedFactor);
     }
-    m_jumpPadSoftSpeedLimit =  boostSpdLimit * m_kclSpeedFactor;
+    m_jumpPadSoftSpeedLimit = boostSpdLimit * m_kclSpeedFactor;
 
     if (state()->isRampBoost()) {
         speedLimit = std::max(speedLimit, 100.0f);
@@ -1856,7 +1854,8 @@ void KartMove::tryStartJumpPad() {
 
     if (jumpPadVariant == 3 || jumpPadVariant == 4) {
         if (m_jumpPadBoostMultiplier > 1.3f || m_jumpPadSoftSpeedLimit > 110.0f) {
-            // Set speed too 100 if the player has boost from a boost panel or mushroom(item) before hitting the jump pad
+            // Set speed too 100 if the player has boost from a boost panel or mushroom(item) before
+            // hitting the jump pad
             static constexpr std::array<JumpPadProperties, 2> JUMP_PAD_PROPERTIES_SHROOM_BOOST = {{
                     {100.0f, 100.0f, 70.0f},
                     {100.0f, 100.0f, 65.0f},
@@ -1870,8 +1869,7 @@ void KartMove::tryStartJumpPad() {
         state()->setJumpPadMushroomTrigger(true);
         state()->setJumpPadMushroomVelYInc(true);
         state()->setJumpPadMushroomCollision(true);
-    }
-    else {
+    } else {
         EGG::Vector3f extVel = dynamics()->extVel();
         EGG::Vector3f totalForce = dynamics()->totalForce();
 
@@ -1903,7 +1901,7 @@ void KartMove::tryEndJumpPad() {
         if (state()->isGroundStart()) {
             state()->setJumpPadMushroomTrigger(false);
             state()->setJumpPadFixedSpeed(false);
-            state()->setJumpPadMushroomVelYInc(false); 
+            state()->setJumpPadMushroomVelYInc(false);
         }
 
         if (state()->isJumpPadMushroomVelYInc()) {

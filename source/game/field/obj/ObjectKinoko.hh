@@ -1,8 +1,8 @@
 #pragma once
 
 #include "egg/math/Vector.hh"
-#include "game/field/obj/ObjectKCL.hh"
 #include "game/field/obj/ObjectCollidable.hh"
+#include "game/field/obj/ObjectKCL.hh"
 
 namespace Field {
 
@@ -18,6 +18,7 @@ public:
     ~ObjectKinokoStem() override;
 
     [[nodiscard]] const char *getKclName() const override;
+
 private:
     KinokoType m_type;
 };
@@ -29,6 +30,7 @@ public:
     ~ObjectKinokoNm() override;
 
     [[nodiscard]] const char *getKclName() const override;
+
 private:
     KinokoType m_type;
     ObjectKinokoStem *m_stemObj;
@@ -62,7 +64,8 @@ protected:
 };
 
 /// @brief Mushrooms which oscillate up and down. The stem does not move.
-/// @details This represents the first two mushrooms on MG, even though they don't oscillate up or down.
+/// @details This represents the first two mushrooms on MG, even though they don't oscillate up or
+/// down.
 class ObjectKinokoUd : public ObjectKinoko {
 public:
     ObjectKinokoUd(const System::MapdataGeoObj &params);
@@ -96,4 +99,4 @@ private:
     f32 m_bendPeriod;
 };
 
-}
+} // namespace Field

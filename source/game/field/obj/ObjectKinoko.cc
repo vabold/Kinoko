@@ -2,7 +2,8 @@
 
 namespace Field {
 
-ObjectKinokoStem::ObjectKinokoStem(const System::MapdataGeoObj &params, KinokoType type) : ObjectCollidable(params) {
+ObjectKinokoStem::ObjectKinokoStem(const System::MapdataGeoObj &params, KinokoType type)
+    : ObjectCollidable(params) {
     m_type = type;
     load();
 }
@@ -11,7 +12,7 @@ ObjectKinokoStem::ObjectKinokoStem(const System::MapdataGeoObj &params, KinokoTy
 ObjectKinokoStem::~ObjectKinokoStem() = default;
 
 /// @addr{0x80807e64}
-const char *ObjectKinokoStem::getKclName() const { 
+const char *ObjectKinokoStem::getKclName() const {
     return m_type == KinokoType::Light ? "kinoko_kuki" : "kinoko_d_kuki";
 }
 
@@ -24,15 +25,13 @@ ObjectKinokoNm::ObjectKinokoNm(const System::MapdataGeoObj &params) : ObjectKCL(
 ObjectKinokoNm::~ObjectKinokoNm() = default;
 
 /// @addr{0x80827a74}
-const char *ObjectKinokoNm::getKclName() const { 
+const char *ObjectKinokoNm::getKclName() const {
     return m_type == KinokoType::Light ? "kinoko_g" : "kinoko_d_g";
 }
 
 /// @addr{0x8080761c}
-ObjectKinoko::ObjectKinoko(const System::MapdataGeoObj &params) : ObjectKCL(params),
-m_objPos(m_pos),
-m_objRot(m_rot)
-{
+ObjectKinoko::ObjectKinoko(const System::MapdataGeoObj &params)
+    : ObjectKCL(params), m_objPos(m_pos), m_objRot(m_rot) {
     m_type = static_cast<KinokoType>(params.setting(0));
 
     _12e = 0;
@@ -48,7 +47,7 @@ m_objRot(m_rot)
     m_stemObj = new ObjectKinokoStem(params, m_type);
 }
 
-/// @adrr{0x80807a54} 
+/// @adrr{0x80807a54}
 ObjectKinoko::~ObjectKinoko() = default;
 
 /// @addr{0x80807d8c}
@@ -94,12 +93,12 @@ ObjectKinokoUd::ObjectKinokoUd(const System::MapdataGeoObj &params) : ObjectKino
     m_udPeriod = F_TAU / static_cast<f32>(periodDenom);
 }
 
-/// @addr{0x80807e1c} 
+/// @addr{0x80807e1c}
 ObjectKinokoUd::~ObjectKinokoUd() = default;
 
 /// @addr{0x80807dfc}
-/// @details The base game does check for the light type, however since it never get's written to
-/// it'll always be 0 and this this will always return "kinoko_r"
+/// @details The base game does check for the light type, however since m_type never gets set
+/// it'll always be 0 which means it always returns "kinoko_r"
 const char *ObjectKinokoUd::getKclName() const {
     return "kinoko_r";
 }
@@ -107,8 +106,10 @@ const char *ObjectKinokoUd::getKclName() const {
 /// @addr{0x80807a54}
 void ObjectKinokoUd::calcOscillation() {
     m_flags |= 1; // |= POSITION_DIRTY;
-    m_pos.y = m_objPos.y + static_cast<f32>(_152) * (EGG::Mathf::cos(m_udPeriod * static_cast<f32>(_146)) + 1.0f) * 0.5f;
-    
+    m_pos.y = m_objPos.y +
+            static_cast<f32>(_152) * (EGG::Mathf::cos(m_udPeriod * static_cast<f32>(_146)) + 1.0f) *
+                    0.5f;
+
     if (_14c == 0) {
         _146++;
     }
@@ -160,4 +161,4 @@ void ObjectKinokoBend::calcOscillation() {
 /// @addr{0x80807d88}
 void ObjectKinokoBend::calcScale(u32) {}
 
-}
+} // namespace Field

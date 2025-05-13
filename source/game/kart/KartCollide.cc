@@ -699,7 +699,8 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
 
     Field::KCLTypeMask jumpPadMask = KCL_TYPE_BIT(COL_TYPE_JUMP_PAD);
     if (*maskOut & jumpPadMask && colDirector->findClosestCollisionEntry(maskOut, jumpPadMask)) {
-        if ((!state()->isTouchingGround() || !state()->isJumpPad()) && !state()->isJumpPadMushroomVelYInc()) {
+        if ((!state()->isTouchingGround() || !state()->isJumpPad()) &&
+                !state()->isJumpPadMushroomVelYInc()) {
             move()->padType().setBit(KartMove::ePadType::JumpPad);
             closestColEntry = colDirector->closestCollisionEntry();
             state()->setJumpPadVariant(KCL_VARIANT_TYPE(closestColEntry->attribute));
