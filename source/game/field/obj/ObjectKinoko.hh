@@ -55,7 +55,7 @@ public:
     }
 
     /// @addr{0x80807D8C}
-    [[nodiscard]] const char *getKclName() const {
+    [[nodiscard]] const char *getKclName() const override {
         return m_type == KinokoType::Light ? "kinoko_r" : "kinoko_d_r";
     }
     virtual void calcOscillation() = 0;
@@ -89,7 +89,7 @@ public:
     /// @addr{0x80807DFC}
     /// @details The base game does check for the light type, however since m_type never gets set
     /// it'll always be 0 which means it always returns "kinoko_r"
-    [[nodiscard]] const char *getKclName() const {
+    [[nodiscard]] const char *getKclName() const override {
         return "kinoko_r";
     }
 
