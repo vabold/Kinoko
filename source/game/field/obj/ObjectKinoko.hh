@@ -1,6 +1,5 @@
 #pragma once
 
-#include "egg/math/Vector.hh"
 #include "game/field/obj/ObjectCollidable.hh"
 #include "game/field/obj/ObjectKCL.hh"
 
@@ -11,13 +10,16 @@ enum class KinokoType : u16 {
     Dark = 1,
 };
 
-/// @brief The class that's responsible for loading the collision data for the mushroom objects
+/// @brief The class that represents the mushroom's stem
 class ObjectKinokoStem : public ObjectCollidable {
 public:
     ObjectKinokoStem(const System::MapdataGeoObj &params, KinokoType type);
     ~ObjectKinokoStem() override;
 
-    [[nodiscard]] const char *getKclName() const override;
+    /// @addr{0x80807E64}
+    [[nodiscard]] const char *getKclName() const override {
+        return m_type == KinokoType::Light ? "kinoko_kuki" : "kinoko_d_kuki";
+    }
 
 private:
     KinokoType m_type;
@@ -29,7 +31,10 @@ public:
     ObjectKinokoNm(const System::MapdataGeoObj &params);
     ~ObjectKinokoNm() override;
 
-    [[nodiscard]] const char *getKclName() const override;
+    /// @addr{0x80827A74}
+    [[nodiscard]] const char *getKclName() const override {
+        return m_type == KinokoType::Light ? "kinoko_g" : "kinoko_d_g";
+    }
 
 private:
     KinokoType m_type;
@@ -43,8 +48,16 @@ public:
     ~ObjectKinoko() override;
 
     [[nodiscard]] void calc() override;
-    [[nodiscard]] u32 loadFlags() const override;
-    [[nodiscard]] const char *getKclName() const override;
+
+    /// @addr {0x80807DAC}
+    [[nodiscard]] u32 loadFlags() const override {
+        return 1;
+    }
+
+    /// @addr{0x80807D8C}
+    [[nodiscard]] const char *getKclName() const {
+        return m_type == KinokoType::Light ? "kinoko_r" : "kinoko_d_r";
+    }
     virtual void calcOscillation() = 0;
 
 protected:
@@ -71,9 +84,17 @@ public:
     ObjectKinokoUd(const System::MapdataGeoObj &params);
     ~ObjectKinokoUd() override;
 
-    [[nodiscard]] const char *getKclName() const override;
     [[nodiscard]] void calcOscillation() override;
-    [[nodiscard]] void calcScale(u32 timeOffset) override;
+
+    /// @addr{0x80807DFC}
+    /// @details The base game does check for the light type, however since m_type never gets set
+    /// it'll always be 0 which means it always returns "kinoko_r"
+    [[nodiscard]] const char *getKclName() const {
+        return "kinoko_r";
+    }
+
+    /// @addr{0x80807DF8}
+    [[nodiscard]] void calcScale(u32 timeOffset) override {}
 
 private:
     u16 _14c;
@@ -90,7 +111,9 @@ public:
     ObjectKinokoBend(const System::MapdataGeoObj &params);
     ~ObjectKinokoBend() override;
     [[nodiscard]] void calcOscillation() override;
-    [[nodiscard]] void calcScale(u32 timeOffset) override;
+
+    /// @addr{0x80807D88}
+    [[nodiscard]] void calcScale(u32 timeOffset) override {}
 
 private:
     s16 _158;

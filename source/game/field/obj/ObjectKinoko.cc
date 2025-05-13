@@ -8,28 +8,18 @@ ObjectKinokoStem::ObjectKinokoStem(const System::MapdataGeoObj &params, KinokoTy
     load();
 }
 
-/// @addr{0x80807e90}
+/// @addr{0x80807E90}
 ObjectKinokoStem::~ObjectKinokoStem() = default;
-
-/// @addr{0x80807e64}
-const char *ObjectKinokoStem::getKclName() const {
-    return m_type == KinokoType::Light ? "kinoko_kuki" : "kinoko_d_kuki";
-}
 
 ObjectKinokoNm::ObjectKinokoNm(const System::MapdataGeoObj &params) : ObjectKCL(params) {
     m_type = static_cast<KinokoType>(params.setting(0));
     m_stemObj = new ObjectKinokoStem(params, m_type);
 }
 
-/// @addr{0x80827a9c}
+/// @addr{0x80827A9C}
 ObjectKinokoNm::~ObjectKinokoNm() = default;
 
-/// @addr{0x80827a74}
-const char *ObjectKinokoNm::getKclName() const {
-    return m_type == KinokoType::Light ? "kinoko_g" : "kinoko_d_g";
-}
-
-/// @addr{0x8080761c}
+/// @addr{0x8080761C}
 ObjectKinoko::ObjectKinoko(const System::MapdataGeoObj &params)
     : ObjectKCL(params), m_objPos(m_pos), m_objRot(m_rot) {
     m_type = static_cast<KinokoType>(params.setting(0));
@@ -47,20 +37,10 @@ ObjectKinoko::ObjectKinoko(const System::MapdataGeoObj &params)
     m_stemObj = new ObjectKinokoStem(params, m_type);
 }
 
-/// @adrr{0x80807a54}
+/// @adrr{0x80807A54}
 ObjectKinoko::~ObjectKinoko() = default;
 
-/// @addr{0x80807d8c}
-const char *ObjectKinoko::getKclName() const {
-    return m_type == KinokoType::Light ? "kinoko_r" : "kinoko_d_r";
-}
-
-/// @addr {0x80807dac}
-u32 ObjectKinoko::loadFlags() const {
-    return 1;
-}
-
-/// @addr{0x8080782c}
+/// @addr{0x8080782C}
 void ObjectKinoko::calc() {
     if (_12e == 0) {
         _12c++;
@@ -84,26 +64,18 @@ void ObjectKinoko::calc() {
 
 /// @addr{0x80807950}
 ObjectKinokoUd::ObjectKinokoUd(const System::MapdataGeoObj &params) : ObjectKinoko(params) {
-    const u16 periodDenom = std::max<u16>(params.setting(2), 2);
     _14c = 0;
     _146 = params.setting(3);
     _150 = params.setting(4);
     _152 = params.setting(1);
-    m_periodDenom = periodDenom;
-    m_udPeriod = F_TAU / static_cast<f32>(periodDenom);
+    m_periodDenom = std::max<u16>(params.setting(2), 2);
+    m_udPeriod = F_TAU / static_cast<f32>(m_periodDenom);
 }
 
-/// @addr{0x80807e1c}
+/// @addr{0x80807E1C}
 ObjectKinokoUd::~ObjectKinokoUd() = default;
 
-/// @addr{0x80807dfc}
-/// @details The base game does check for the light type, however since m_type never gets set
-/// it'll always be 0 which means it always returns "kinoko_r"
-const char *ObjectKinokoUd::getKclName() const {
-    return "kinoko_r";
-}
-
-/// @addr{0x80807a54}
+/// @addr{0x80807A54}
 void ObjectKinokoUd::calcOscillation() {
     m_flags |= 1; // |= POSITION_DIRTY;
     m_pos.y = m_objPos.y +
@@ -124,24 +96,19 @@ void ObjectKinokoUd::calcOscillation() {
     }
 }
 
-/// @addr{0x80807df8}
-void ObjectKinokoUd::calcScale(u32) {}
-
-/// @addr{0x80807b7c}
+/// @addr{0x80807B7C}
 ObjectKinokoBend::ObjectKinokoBend(const System::MapdataGeoObj &params) : ObjectKinoko(params) {
-    const s16 periodDenom = std::max<u16>(params.setting(2), 2);
-
     _158 = params.setting(3);
     _15c = static_cast<f32>(params.setting(1)) * DEG2RAD;
 
-    m_periodDenom = periodDenom;
-    m_bendPeriod = F_TAU / static_cast<f32>(periodDenom);
+    m_periodDenom = std::max<u16>(params.setting(2), 2);
+    m_bendPeriod = F_TAU / static_cast<f32>(m_periodDenom);
 }
 
-/// @addr{0x80807db4}
+/// @addr{0x80807DB4}
 ObjectKinokoBend::~ObjectKinokoBend() = default;
 
-/// @addr{0x80807c98}
+/// @addr{0x80807C98}
 void ObjectKinokoBend::calcOscillation() {
     const f32 s = EGG::Mathf::sin(m_bendPeriod * static_cast<f32>(_158));
     EGG::Vector3f v1(EGG::Vector3f::ez * s);
@@ -157,8 +124,5 @@ void ObjectKinokoBend::calcOscillation() {
         _158 = 0;
     }
 }
-
-/// @addr{0x80807d88}
-void ObjectKinokoBend::calcScale(u32) {}
 
 } // namespace Field
