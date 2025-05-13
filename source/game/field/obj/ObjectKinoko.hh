@@ -10,22 +10,7 @@ enum class KinokoType : u16 {
     Dark = 1,
 };
 
-/// @brief The class that represents the mushroom's stem
-class ObjectKinokoStem : public ObjectCollidable {
-public:
-    ObjectKinokoStem(const System::MapdataGeoObj &params, KinokoType type);
-    ~ObjectKinokoStem() override;
-
-    /// @addr{0x80807E64}
-    [[nodiscard]] const char *getKclName() const override {
-        return m_type == KinokoType::Light ? "kinoko_kuki" : "kinoko_d_kuki";
-    }
-
-private:
-    KinokoType m_type;
-};
-
-/// @brief The base class for a mushroom object with normal road properties, for the most part
+/// @brief The class for a mushroom object with normal road properties, for the most part
 class ObjectKinokoNm : public ObjectKCL {
 public:
     ObjectKinokoNm(const System::MapdataGeoObj &params);
@@ -38,7 +23,6 @@ public:
 
 private:
     KinokoType m_type;
-    ObjectKinokoStem *m_stemObj;
 };
 
 /// @brief The base class for a mushroom object with jump pad properties
@@ -64,7 +48,6 @@ protected:
     KinokoType m_type;
     EGG::Vector3f m_objPos;
     EGG::Vector3f m_objRot;
-    ObjectKinokoStem *m_stemObj;
     s16 _12c;
     s16 _12e;
     s16 _130;

@@ -2,18 +2,8 @@
 
 namespace Field {
 
-ObjectKinokoStem::ObjectKinokoStem(const System::MapdataGeoObj &params, KinokoType type)
-    : ObjectCollidable(params) {
-    m_type = type;
-    load();
-}
-
-/// @addr{0x80807E90}
-ObjectKinokoStem::~ObjectKinokoStem() = default;
-
 ObjectKinokoNm::ObjectKinokoNm(const System::MapdataGeoObj &params) : ObjectKCL(params) {
     m_type = static_cast<KinokoType>(params.setting(0));
-    m_stemObj = new ObjectKinokoStem(params, m_type);
 }
 
 /// @addr{0x80827A9C}
@@ -33,8 +23,6 @@ ObjectKinoko::ObjectKinoko(const System::MapdataGeoObj &params)
     m_period = 6.0f * F_PI / 40.0f;
     _13c = 0.0008f;
     _146 = 0;
-
-    m_stemObj = new ObjectKinokoStem(params, m_type);
 }
 
 /// @adrr{0x80807A54}
