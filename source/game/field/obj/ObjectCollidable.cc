@@ -10,8 +10,7 @@
 namespace Field {
 
 /// @addr{0x8081EFEC}
-ObjectCollidable::ObjectCollidable(const System::MapdataGeoObj &params)
-    : ObjectBase(params), m_collision(nullptr) {}
+ObjectCollidable::ObjectCollidable(const System::MapdataGeoObj &params) : ObjectBase(params) {}
 
 /// @addr{0x8067E384}
 ObjectCollidable::~ObjectCollidable() {
@@ -116,8 +115,6 @@ void ObjectCollidable::createCollision() {
         m_collision = new ObjectCollisionBox(parse<s16>(collisionSet->params.box.x),
                 parse<s16>(collisionSet->params.box.y), parse<s16>(collisionSet->params.box.z),
                 collisionCenter());
-        break;
-    case CollisionMode::Ground:
         break;
     default:
         PANIC("Invalid collision mode when creating primitive collision! ID: %d; Mode: %d",
