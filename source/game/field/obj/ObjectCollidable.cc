@@ -116,6 +116,8 @@ void ObjectCollidable::createCollision() {
                 parse<s16>(collisionSet->params.box.y), parse<s16>(collisionSet->params.box.z),
                 collisionCenter());
         break;
+    case CollisionMode::Ground:
+        break;
     default:
         PANIC("Invalid collision mode when creating primitive collision! ID: %d; Mode: %d",
                 static_cast<size_t>(m_id), parse<s16>(collisionSet->mode));

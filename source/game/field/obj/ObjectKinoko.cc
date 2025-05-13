@@ -1,12 +1,39 @@
 #include "game/field/obj/ObjectKinoko.hh"
 
 namespace Field {
+
+ObjectKinokoStem::ObjectKinokoStem(const System::MapdataGeoObj &params, KinokoType type) : ObjectCollidable(params) {
+    m_type = type;
+    load();
+}
+
+/// @addr{0x80807e90}
+ObjectKinokoStem::~ObjectKinokoStem() = default;
+
+/// @addr{0x80807e64}
+const char *ObjectKinokoStem::getKclName() const { 
+    return m_type == KinokoType::Light ? "kinoko_kuki" : "kinoko_d_kuki";
+}
+
+ObjectKinokoNm::ObjectKinokoNm(const System::MapdataGeoObj &params) : ObjectKCL(params) {
+    m_type = static_cast<KinokoType>(params.setting(0));
+    m_stemObj = new ObjectKinokoStem(params, m_type);
+}
+
+/// @addr{0x80827a9c}
+ObjectKinokoNm::~ObjectKinokoNm() = default;
+
+/// @addr{0x80827a74}
+const char *ObjectKinokoNm::getKclName() const { 
+    return m_type == KinokoType::Light ? "kinoko_g" : "kinoko_d_g";
+}
+
+/// @addr{0x8080761c}
 ObjectKinoko::ObjectKinoko(const System::MapdataGeoObj &params) : ObjectKCL(params),
-m_obj_pos(m_pos),
-m_obj_scale(m_scale),
-m_obj_rot(m_rot)
+m_objPos(m_pos),
+m_objRot(m_rot)
 {
-    m_type = (KinokoType)params.setting(0);
+    m_type = static_cast<KinokoType>(params.setting(0));
 
     _12e = 0;
     _144 = 6;
@@ -18,16 +45,23 @@ m_obj_rot(m_rot)
     _13c = 0.0008f;
     _146 = 0;
 
-    m_stem_obj = new ObjectKinokoStem(params, m_type);
+    m_stemObj = new ObjectKinokoStem(params, m_type);
 }
 
-void ObjectKinoko::init() {}
+/// @adrr{0x80807a54} 
+ObjectKinoko::~ObjectKinoko() = default;
 
+/// @addr{0x80807d8c}
+const char *ObjectKinoko::getKclName() const {
+    return m_type == KinokoType::Light ? "kinoko_r" : "kinoko_d_r";
+}
+
+/// @addr {0x80807dac}
 u32 ObjectKinoko::loadFlags() const {
     return 1;
 }
 
-// 8080782c
+/// @addr{0x8080782c}
 void ObjectKinoko::calc() {
     if (_12e == 0) {
         _12c++;
@@ -42,105 +76,88 @@ void ObjectKinoko::calc() {
         _12c = 0;
     }
 
-    _134 = _13c * (f32)(_130 - _12c);
-    m_flags |= 8; // SCALE_DIRTY
-    m_scale.set(_134 * EGG::Mathf::sin(m_period * (f32)_12c) + 1.0f);
+    _134 = _13c * static_cast<f32>(_130 - _12c);
+    m_flags |= 8; // |= SCALE_DIRTY
+    m_scale.set(_134 * EGG::Mathf::sin(m_period * static_cast<f32>(_12c)) + 1.0f);
 
     calcOscillation();
 }
 
+/// @addr{0x80807950}
 ObjectKinokoUd::ObjectKinokoUd(const System::MapdataGeoObj &params) : ObjectKinoko(params) {
+    const u16 periodDenom = std::max<u16>(params.setting(2), 2);
     _14c = 0;
     _146 = params.setting(3);
-    _14e = params.setting(2);
     _150 = params.setting(4);
     _152 = params.setting(1);
-    m_ud_period = F_TAU / (f32)_14e;
+    m_periodDenom = periodDenom;
+    m_udPeriod = F_TAU / static_cast<f32>(periodDenom);
 }
 
-ObjectKinoko::~ObjectKinoko() = default;
+/// @addr{0x80807e1c} 
+ObjectKinokoUd::~ObjectKinokoUd() = default;
 
+/// @addr{0x80807dfc}
+/// @details The base game does check for the light type, however since it never get's written to
+/// it'll always be 0 and this this will always return "kinoko_r"
+const char *ObjectKinokoUd::getKclName() const {
+    return "kinoko_r";
+}
+
+/// @addr{0x80807a54}
 void ObjectKinokoUd::calcOscillation() {
     m_flags |= 1; // |= POSITION_DIRTY;
-    m_obj_pos.y = m_pos.y + (f32)_152 * (EGG::Mathf::cos(m_ud_period * (f32)_146) + 1.0f) / 2.0f;
+    m_pos.y = m_objPos.y + static_cast<f32>(_152) * (EGG::Mathf::cos(m_udPeriod * static_cast<f32>(_146)) + 1.0f) * 0.5f;
     
     if (_14c == 0) {
         _146++;
     }
-    if (_146 == (_14e / 2)) {
+    if (_146 == (m_periodDenom / 2)) {
         _14c++;
     }
     if (_14c > _150) {
         _14c = 0;
     }
-    if (_146 > _14e) {
+    if (_146 > m_periodDenom) {
         _146 = 0;
     }
 }
 
+/// @addr{0x80807df8}
 void ObjectKinokoUd::calcScale(u32) {}
 
+/// @addr{0x80807b7c}
 ObjectKinokoBend::ObjectKinokoBend(const System::MapdataGeoObj &params) : ObjectKinoko(params) {
-    const s16 setting2 = params.setting(2);
-    const s16 period_denom = setting2 >= 2 ? setting2 : 2;
+    const s16 periodDenom = std::max<u16>(params.setting(2), 2);
 
     _158 = params.setting(3);
-    _15c = (f32)params.setting(1) * DEG2RAD;
+    _15c = static_cast<f32>(params.setting(1)) * DEG2RAD;
 
-    m_period_denom = period_denom;
-    m_bend_period = F_TAU / (f32)period_denom;
+    m_periodDenom = periodDenom;
+    m_bendPeriod = F_TAU / static_cast<f32>(periodDenom);
 }
 
+/// @addr{0x80807db4}
+ObjectKinokoBend::~ObjectKinokoBend() = default;
+
+/// @addr{0x80807c98}
 void ObjectKinokoBend::calcOscillation() {
-    const f32 s = EGG::Mathf::sin(m_bend_period * (f32)_158);
+    const f32 s = EGG::Mathf::sin(m_bendPeriod * static_cast<f32>(_158));
     EGG::Vector3f v1(EGG::Vector3f::ez * s);
-    EGG::Vector3f v2(v1 * (f32)_15c);
-    EGG::Vector3f v3(m_obj_rot + v2);
+    EGG::Vector3f v2(v1 * static_cast<f32>(_15c));
+    EGG::Vector3f v3(m_objRot + v2);
 
     calcTransform();
 
     m_flags |= 2; // |= ROTATION_DIRTY;
     m_rot = m_transform.multVector33(v3);
 
-    if (++_158 >= m_period_denom) {
+    if (++_158 >= m_periodDenom) {
         _158 = 0;
     }
 }
 
+/// @addr{0x80807d88}
 void ObjectKinokoBend::calcScale(u32) {}
-
-const char *ObjectKinoko::getKclName() const {
-    return m_type == KinokoType::Light ? "kinoko_r" : "kinoko_d_r";
-}
-
-ObjectKinokoBend::~ObjectKinokoBend() = default;
-
-const char *ObjectKinokoUd::getKclName() const {
-    return "kinoko_r";
-}
-
-ObjectKinokoUd::~ObjectKinokoUd() = default;
-
-const char *ObjectKinokoStem::getKclName() const { 
-    return m_type == KinokoType::Light ? "kinoko_kuki" : "kinoko_d_kuki";
-}
-
-ObjectKinokoStem::ObjectKinokoStem(const System::MapdataGeoObj &params, KinokoType type) : ObjectCollidable(params) {
-    m_type = type;
-    load();
-}
-
-ObjectKinokoStem::~ObjectKinokoStem() = default;
-
-const char *ObjectKinokoNm::getKclName() const { 
-    return m_type == KinokoType::Light ? "kinoko_g" : "kinoko_d_g";
-}
-
-ObjectKinokoNm::ObjectKinokoNm(const System::MapdataGeoObj &params) : ObjectKCL(params) {
-    m_type = (KinokoType)params.setting(0);
-    m_stem_obj = new ObjectKinokoStem(params, m_type);
-}
-
-ObjectKinokoNm::~ObjectKinokoNm() = default;
 
 }

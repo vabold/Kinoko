@@ -11,6 +11,7 @@ enum class KinokoType : u16 {
     Dark = 1,
 };
 
+/// @brief The class that's responsible for loading the collision data for the mushroom objects
 class ObjectKinokoStem : public ObjectCollidable {
 public:
     ObjectKinokoStem(const System::MapdataGeoObj &params, KinokoType type);
@@ -21,6 +22,7 @@ private:
     KinokoType m_type;
 };
 
+/// @brief The base class for a mushroom object with normal road properties, for the most part
 class ObjectKinokoNm : public ObjectKCL {
 public:
     ObjectKinokoNm(const System::MapdataGeoObj &params);
@@ -29,15 +31,15 @@ public:
     [[nodiscard]] const char *getKclName() const override;
 private:
     KinokoType m_type;
-    ObjectKinokoStem *m_stem_obj;
+    ObjectKinokoStem *m_stemObj;
 };
 
+/// @brief The base class for a mushroom object with jump pad properties
 class ObjectKinoko : public ObjectKCL {
 public:
     ObjectKinoko(const System::MapdataGeoObj &params);
     ~ObjectKinoko() override;
 
-    [[nodiscard]] void init() override;
     [[nodiscard]] void calc() override;
     [[nodiscard]] u32 loadFlags() const override;
     [[nodiscard]] const char *getKclName() const override;
@@ -45,10 +47,9 @@ public:
 
 protected:
     KinokoType m_type;
-    EGG::Vector3f m_obj_pos;
-    EGG::Vector3f m_obj_scale;
-    EGG::Vector3f m_obj_rot;
-    ObjectKinokoStem *m_stem_obj;
+    EGG::Vector3f m_objPos;
+    EGG::Vector3f m_objRot;
+    ObjectKinokoStem *m_stemObj;
     s16 _12c;
     s16 _12e;
     s16 _130;
@@ -60,6 +61,8 @@ protected:
     u16 _146;
 };
 
+/// @brief Mushrooms which oscillate up and down. The stem does not move.
+/// @details This represents the first two mushrooms on MG, even though they don't oscillate up or down.
 class ObjectKinokoUd : public ObjectKinoko {
 public:
     ObjectKinokoUd(const System::MapdataGeoObj &params);
@@ -71,13 +74,14 @@ public:
 
 private:
     u16 _14c;
-    s16 _14e;
+    s16 m_periodDenom;
     s16 _150;
     s16 _152;
-    //KinokoType m_ud_type;
-    f32 m_ud_period;
+    f32 m_udPeriod;
 };
 
+/// @brief Mushrooms which bend in a certain direction
+/// @details This functionality didn't get used in the base game?
 class ObjectKinokoBend : public ObjectKinoko {
 public:
     ObjectKinokoBend(const System::MapdataGeoObj &params);
@@ -87,9 +91,9 @@ public:
 
 private:
     s16 _158;
-    s16 m_period_denom;
+    s16 m_periodDenom;
     f32 _15c;
-    f32 m_bend_period;
+    f32 m_bendPeriod;
 };
 
 }
