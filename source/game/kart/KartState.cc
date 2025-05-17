@@ -335,12 +335,12 @@ void KartState::calcCollisions() {
 
         m_bTrickable = m_trickableTimer > 0;
 
-        if (!wasTouchingGround) {
-            m_bGroundStart = true;
+        if (!m_bJumpPad) {
+            m_bJumpPadMushroomCollision = false;
         }
 
-        if (!state()->isJumpPad()) {
-            m_bJumpPadMushroomCollision = false;
+        if (!wasTouchingGround) {
+            m_bGroundStart = true;
         }
 
         if (m_bInATrick && jump()->cooldown() == 0) {
