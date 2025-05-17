@@ -4,15 +4,18 @@
 #include "game/kart/KartPhysics.hh"
 #include "game/kart/KartState.hh"
 
+#include "game/item/ItemDirector.hh"
+#include "game/item/KartItem.hh"
+
 #include <egg/math/Math.hh>
 
 namespace Kart {
 
 /// @addr{0x805672CC}
 KartAction::KartAction()
-    : m_currentAction(Action::None), m_hitDepth(EGG::Vector3f::zero), m_onStart(nullptr),
-      m_onCalc(nullptr), m_onEnd(nullptr), m_actionParams(nullptr), m_rotationParams(nullptr),
-      m_priority(0) {}
+    : m_currentAction(Action::None), m_hitDepth(EGG::Vector3f::zero),
+      m_translation(EGG::Vector3f::ez), m_onStart(nullptr), m_onCalc(nullptr), m_onEnd(nullptr),
+      m_actionParams(nullptr), m_rotationParams(nullptr), m_priority(0) {}
 
 /// @addr{0x8056A1A8}
 KartAction::~KartAction() = default;
@@ -92,12 +95,33 @@ void KartAction::startRotation(size_t idx) {
     m_flags.setBit(eFlags::Rotating);
 }
 
-void KartAction::setHitDepth(const EGG::Vector3f &hitDepth) {
-    m_hitDepth = hitDepth;
+/// @addr{0x80569AE8}
+void KartAction::calcSideFromHitDepth() {
+    m_hitDepth.normalise();
+    m_side = m_hitDepth.perpInPlane(move()->smoothedUp(), true);
+
+    if (m_side.squaredLength() <= std::numeric_limits<f32>::epsilon()) {
+        m_side = EGG::Vector3f::ey;
+    }
 }
 
-const KartAction::Flags &KartAction::flags() const {
-    return m_flags;
+/// @addr{0x80569B94}
+void KartAction::calcSideFromHitDepthAndTranslation() {
+    calcSideFromHitDepth();
+
+    EGG::Vector3f cross = m_translation.cross(m_side);
+    f32 sign = (cross.y > 0.0f) ? 1.0f : -1.0f;
+
+    EGG::Vector3f worldSide = EGG::Vector3f::ey.cross(m_translation);
+    worldSide.normalise();
+
+    m_side = worldSide.perpInPlane(move()->smoothedUp(), true);
+
+    if (m_side.squaredLength() > std::numeric_limits<f32>::epsilon()) {
+        m_side *= sign;
+    } else {
+        m_side = EGG::Vector3f::ey;
+    }
 }
 
 /// @addr{0x80567B98}
@@ -164,6 +188,51 @@ void KartAction::calcUp() {
     m_up.normalise();
 }
 
+void KartAction::calcLanding() {
+    if (m_currentAngle < m_targetRot || !state()->isTouchingGround()) {
+        return;
+    }
+
+    m_flags.setBit(eFlags::Landing);
+
+    if (!isBike()) {
+        dynamics()->setForceUpright(false);
+    }
+
+    physics()->composeDecayingExtraRot(m_rotation);
+}
+
+/// @addr{0x80568794}
+void KartAction::startLaunch(f32 extVelScalar, f32 extVelKart, f32 extVelBike, f32 numRotations,
+        u32 param6) {
+    m_targetRot = 360.0f * numRotations;
+
+    EGG::Vector3f extVel = EGG::Vector3f::zero;
+    extVel.y = isBike() ? extVelBike : extVelKart;
+
+    if (param6 == 0) {
+        m_hitDepth = move()->dir();
+        calcSideFromHitDepth();
+    } else if (param6 == 1) {
+        calcSideFromHitDepth();
+        extVel += extVelScalar * m_side;
+    } else if (param6 == 2) {
+        calcSideFromHitDepthAndTranslation();
+        extVel += extVelScalar * m_side;
+    }
+
+    setRotation(static_cast<size_t>(numRotations + 3.0f));
+    m_rotAxis = move()->smoothedUp().cross(m_side);
+
+    dynamics()->setExtVel(dynamics()->extVel() + extVel);
+}
+
+/// @addr{0x805696CC}
+void KartAction::activateCrush(u16 timer) {
+    move()->activateCrush(m_crushTimer + timer);
+    Item::ItemDirector::Instance()->kartItem(0).clear();
+}
+
 /// @addr{0x80567C68}
 void KartAction::applyStartSpeed() {
     move()->setSpeed(m_actionParams->startSpeedMult * move()->speed());
@@ -195,9 +264,28 @@ void KartAction::startAction1() {
     startRotation(2);
 }
 
+/// @addr{0x80568FA4}
+void KartAction::startAction5() {
+    constexpr f32 EXT_VEL_SCALAR = 13.0f;
+    constexpr f32 EXT_VEL_KART = 40.0f;
+    constexpr f32 EXT_VEL_BIKE = 45.0f;
+    constexpr f32 NUM_ROTATIONS = 1.0f;
+
+    startLaunch(EXT_VEL_SCALAR, EXT_VEL_KART, EXT_VEL_BIKE, NUM_ROTATIONS, 2);
+}
+
 /// @addr{0x80568000}
 void KartAction::startAction9() {
     startRotation(2);
+}
+
+/// @addr{0x80569978}
+void KartAction::startAction14() {
+    constexpr u32 ACTION_DURATION = 30;
+    constexpr u16 CRUSH_DURATION = 240;
+
+    m_crushTimer = ACTION_DURATION;
+    activateCrush(CRUSH_DURATION);
 }
 
 /* ================================ *
@@ -218,6 +306,38 @@ bool KartAction::calcAction1() {
     return finished;
 }
 
+/// @addr{0x80568AA8}
+bool KartAction::calcAction5() {
+    constexpr u32 ACTION_DURATION = 100;
+
+    if (m_flags.offBit(eFlags::Landing)) {
+        calcRotation();
+        calcLanding();
+    }
+
+    bool actionEnded = m_frame >= ACTION_DURATION;
+
+    if (actionEnded) {
+        if (m_flags.offBit(eFlags::Landing)) {
+            physics()->composeDecayingExtraRot(m_rotation);
+        }
+    } else if (m_flags.offBit(eFlags::Landing)) {
+        m_rotation.setAxisRotation(DEG2RAD * m_currentAngle, m_rotAxis);
+        physics()->composeExtraRot(m_rotation);
+    }
+
+    return actionEnded;
+}
+
+/// @addr{0x80569A1C}
+bool KartAction::calcAction14() {
+    EGG::Vector3f extVel = KartObjectProxy::extVel();
+    extVel.y = std::min(0.0f, extVel.y);
+    dynamics()->setExtVel(extVel);
+
+    return m_frame > m_crushTimer;
+}
+
 /* ================================ *
  *     END FUNCTIONS
  * ================================ */
@@ -226,6 +346,13 @@ void KartAction::endStub(bool /*arg*/) {}
 
 /// @addr{0x8056837C}
 void KartAction::endAction1(bool arg) {
+    if (arg) {
+        physics()->composeDecayingExtraRot(m_rotation);
+    }
+}
+
+/// @addr{0x80568C7C}
+void KartAction::endAction5(bool arg) {
     if (arg) {
         physics()->composeDecayingExtraRot(m_rotation);
     }
@@ -270,7 +397,7 @@ const std::array<KartAction::StartActionFunc, KartAction::MAX_ACTION> KartAction
         &KartAction::startStub,
         &KartAction::startStub,
         &KartAction::startStub,
-        &KartAction::startStub,
+        &KartAction::startAction5,
         &KartAction::startStub,
         &KartAction::startStub,
         &KartAction::startStub,
@@ -279,7 +406,7 @@ const std::array<KartAction::StartActionFunc, KartAction::MAX_ACTION> KartAction
         &KartAction::startStub,
         &KartAction::startStub,
         &KartAction::startStub,
-        &KartAction::startStub,
+        &KartAction::startAction14,
         &KartAction::startStub,
         &KartAction::startStub,
         &KartAction::startStub,
@@ -291,7 +418,7 @@ const std::array<KartAction::CalcActionFunc, KartAction::MAX_ACTION> KartAction:
         &KartAction::calcStub,
         &KartAction::calcStub,
         &KartAction::calcStub,
-        &KartAction::calcStub,
+        &KartAction::calcAction5,
         &KartAction::calcStub,
         &KartAction::calcStub,
         &KartAction::calcStub,
@@ -300,7 +427,7 @@ const std::array<KartAction::CalcActionFunc, KartAction::MAX_ACTION> KartAction:
         &KartAction::calcStub,
         &KartAction::calcStub,
         &KartAction::calcStub,
-        &KartAction::calcStub,
+        &KartAction::calcAction14,
         &KartAction::calcStub,
         &KartAction::calcStub,
         &KartAction::calcStub,
@@ -312,7 +439,7 @@ const std::array<KartAction::EndActionFunc, KartAction::MAX_ACTION> KartAction::
         &KartAction::endStub,
         &KartAction::endStub,
         &KartAction::endStub,
-        &KartAction::endStub,
+        &KartAction::endAction5,
         &KartAction::endStub,
         &KartAction::endStub,
         &KartAction::endStub,

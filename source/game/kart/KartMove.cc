@@ -185,6 +185,7 @@ void KartMove::init(bool b1, bool b2) {
         m_totalScale = 1.0f;
         m_hitboxScale = 1.0f;
         m_mushroomBoostTimer = 0;
+        m_crushTimer = 0;
     }
 
     m_jumpPadMinSpeed = 0.0f;
@@ -303,6 +304,7 @@ void KartMove::calc() {
     calcBoost();
     calcMushroomBoost();
     calcZipperBoost();
+    calcCrushed();
     calcScale();
 
     if (state()->isInCannon()) {
@@ -1368,13 +1370,21 @@ void KartMove::calcAcceleration() {
     const f32 boostSpdLimit = m_boost.speedLimit();
     m_jumpPadBoostMultiplier = boostMultiplier;
 
-    if (!state()->isJumpPadFixedSpeed()) {
-        speedLimit *= (boostMultiplier + getWheelieSoftSpeedLimitBonus()) * m_kclSpeedFactor;
+    f32 crushMultiplier = state()->isCrushed() ? 0.7f : 1.0f;
+    f32 wheelieBonus = boostMultiplier + getWheelieSoftSpeedLimitBonus();
+    speedLimit *= state()->isJumpPadFixedSpeed() ?
+            1.0f :
+            crushMultiplier * (wheelieBonus * m_kclSpeedFactor);
+
+    bool ignoreCrushSpeed = state()->isRampBoost() || state()->isZipperInvisibleWall() ||
+            state()->isOverZipper() || state()->isHalfPipeRamp();
+    f32 boostSpeed = ignoreCrushSpeed ? 1.0f : crushMultiplier;
+    boostSpeed *= boostSpdLimit * m_kclSpeedFactor;
+
+    if (!state()->isJumpPad() && boostSpeed > 0.0f && boostSpeed > speedLimit) {
+        speedLimit = boostSpeed;
     }
 
-    if (!state()->isJumpPad()) {
-        speedLimit = std::max(speedLimit, boostSpdLimit * m_kclSpeedFactor);
-    }
     m_jumpPadSoftSpeedLimit = boostSpdLimit * m_kclSpeedFactor;
 
     if (state()->isRampBoost()) {
@@ -2082,6 +2092,25 @@ void KartMove::landTrick() {
     }
 
     activateBoost(KartBoost::Type::TrickAndZipper, duration);
+}
+
+/// @addr{0x80580F28}
+void KartMove::activateCrush(u16 timer) {
+    state()->setCrushed(true);
+    m_crushTimer = timer;
+    m_kartScale->startCrush();
+}
+
+/// @addr{0x80580F9C}
+void KartMove::calcCrushed() {
+    if (!state()->isCrushed()) {
+        return;
+    }
+
+    if (--m_crushTimer == 0) {
+        state()->setCrushed(false);
+        m_kartScale->startUncrush();
+    }
 }
 
 /// @addr{0x8058160C}

@@ -8,6 +8,7 @@
 namespace Field {
 
 class ObjectCarTGE;
+class ObjectHighwayManager;
 
 template <>
 class StateManager<ObjectCarTGE> : public StateManagerBase<ObjectCarTGE> {
@@ -53,13 +54,14 @@ public:
     void createCollision() override;
     void calcCollisionTransform() override;
     [[nodiscard]] f32 getCollisionRadius() const override;
-
-    /// @addr{0x806D7328}
     Kart::Reaction onCollision(Kart::KartObject *kartObj, Kart::Reaction reactionOnKart,
             Kart::Reaction reactionOnObj, EGG::Vector3f &hitDepth) override;
-
     bool checkCollision(ObjectCollisionBase *lhs, EGG::Vector3f &dist) override;
-    const EGG::Vector3f &collisionCenter() const override;
+    [[nodiscard]] const EGG::Vector3f &collisionCenter() const override;
+
+    void setHighwayManager(const ObjectHighwayManager *highwayMgr) {
+        m_highwayMgr = highwayMgr;
+    }
 
     /// @addr{0x806D9A04}
     void reset() {
@@ -80,6 +82,7 @@ private:
 
     void calcPos();
 
+    const ObjectHighwayManager *m_highwayMgr;
     ObjectCollisionBase *m_auxCollision;
     f32 m_highwayVel; ///< Speed while on the highway
     f32 m_localVel;   ///< Speed while off the highway

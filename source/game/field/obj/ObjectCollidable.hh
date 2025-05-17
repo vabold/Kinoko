@@ -54,7 +54,7 @@ protected:
     void createCollision() override;
 
     /// @addr{0x806816B8}
-    virtual const EGG::Vector3f &collisionCenter() const {
+    [[nodiscard]] virtual const EGG::Vector3f &collisionCenter() const {
         return EGG::Vector3f::zero;
     }
 

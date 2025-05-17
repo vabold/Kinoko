@@ -1007,7 +1007,8 @@ Action KartCollide::handleReactWeakWall(size_t /*idx*/) {
 }
 
 /// @addr{0x805733F4}
-Action KartCollide::handleReactLaunchSpin(size_t /*idx*/) {
+Action KartCollide::handleReactLaunchSpin(size_t idx) {
+    action()->setTranslation(objectCollisionKart()->translation(idx));
     return Action::UNK_5;
 }
 
@@ -1015,6 +1016,14 @@ Action KartCollide::handleReactLaunchSpin(size_t /*idx*/) {
 Action KartCollide::handleReactWallSpark(size_t idx) {
     m_totalReactionWallNrm += Field::ObjectCollisionKart::GetHitDirection(idx);
     m_surfaceFlags.setBit(eSurfaceFlags::ObjectWall3);
+
+    return Action::None;
+}
+
+/// @addr{0x805735EC}
+Action KartCollide::handleReactUntrickableJumpPad(size_t /*idx*/) {
+    move()->setPadType(KartMove::PadType(KartMove::ePadType::JumpPad));
+    state()->setJumpPadVariant(0);
 
     return Action::None;
 }
@@ -1064,7 +1073,7 @@ std::array<KartCollide::ObjectCollisionHandler, 33> KartCollide::s_objectCollisi
         &KartCollide::handleReactWallSpark,
         &KartCollide::handleReactNone,
         &KartCollide::handleReactNone,
-        &KartCollide::handleReactNone,
+        &KartCollide::handleReactUntrickableJumpPad,
         &KartCollide::handleReactShortCrushLoseItem,
         &KartCollide::handleReactCrushRespawn,
         &KartCollide::handleReactExplosionLoseItem,

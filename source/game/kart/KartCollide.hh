@@ -126,6 +126,7 @@ public:
     Action handleReactWeakWall(size_t idx);
     Action handleReactLaunchSpin(size_t idx);
     Action handleReactWallSpark(size_t idx);
+    Action handleReactUntrickableJumpPad(size_t idx);
     Action handleReactShortCrushLoseItem(size_t idx);
     Action handleReactCrushRespawn(size_t idx);
     Action handleReactExplosionLoseItem(size_t idx);

@@ -381,4 +381,10 @@ constexpr std::span<const EGG::Vector3f> ObjectCollisionKart::GetVehicleVertices
     }
 }
 
+/// @addr{0x80573464}
+const EGG::Vector3f &ObjectCollisionKart::translation(size_t idx) {
+    const auto *objCol = ObjectDirector::Instance()->collidingObject(idx)->collision();
+    return objCol ? objCol->translation() : EGG::Vector3f::zero;
+}
+
 } // namespace Field

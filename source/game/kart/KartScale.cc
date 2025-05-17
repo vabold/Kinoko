@@ -14,55 +14,55 @@ KartScale::~KartScale() = default;
 
 /// @addr{0x8056AF10}
 void KartScale::reset() {
-    m_pressState = PressState::None;
-    m_calcPress = false;
-    m_pressUpAnmFrame = 0.0f;
+    m_crushState = CrushState::None;
+    m_calcCrush = false;
+    m_uncrushAnmFrame = 0.0f;
     m_currScale = EGG::Vector3f(1.0f, 1.0f, 1.0f);
 }
 
 /// @addr{0x8056B218}
 void KartScale::calc() {
-    calcPress();
+    calcCrush();
 }
 
 /// @addr{0x8056B060}
-void KartScale::startPressDown() {
-    m_pressState = PressState::Down;
+void KartScale::startCrush() {
+    m_crushState = CrushState::Crush;
     m_currScale = EGG::Vector3f(1.0f, 1.0f, 1.0f);
-    m_pressUpAnmFrame = 0.0f;
-    m_calcPress = true;
+    m_uncrushAnmFrame = 0.0f;
+    m_calcCrush = true;
 }
 
 /// @addr{0x8056B094}
-void KartScale::startPressUp() {
-    m_pressState = PressState::Up;
+void KartScale::startUncrush() {
+    m_crushState = CrushState::Uncrush;
     m_currScale = EGG::Vector3f(1.0f, CRUSH_SCALE, 1.0f);
-    m_pressUpAnmFrame = 0.0f;
-    m_calcPress = true;
+    m_uncrushAnmFrame = 0.0f;
+    m_calcCrush = true;
 }
 
 /// @addr{0x8056B45C}
-void KartScale::calcPress() {
+void KartScale::calcCrush() {
     constexpr f32 SCALE_SPEED = 0.2f;
 
-    if (!m_calcPress || m_pressState == PressState::None) {
+    if (!m_calcCrush || m_crushState == CrushState::None) {
         return;
     }
 
-    if (m_pressState == PressState::Down) {
+    if (m_crushState == CrushState::Crush) {
         m_currScale.y -= SCALE_SPEED;
         if (m_currScale.y < CRUSH_SCALE) {
             m_currScale.y = CRUSH_SCALE;
-            m_calcPress = false;
+            m_calcCrush = false;
         }
     } else {
-        m_currScale = getAnmScale(m_pressUpAnmFrame);
+        m_currScale = getAnmScale(m_uncrushAnmFrame);
 
         const auto *scaleAnm = KartObjectManager::PressScaleUpAnmChr();
         ASSERT(scaleAnm);
 
-        if (++m_pressUpAnmFrame > static_cast<f32>(scaleAnm->frameCount())) {
-            m_calcPress = false;
+        if (++m_uncrushAnmFrame > static_cast<f32>(scaleAnm->frameCount())) {
+            m_calcCrush = false;
         }
     }
 }
