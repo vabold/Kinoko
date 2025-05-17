@@ -227,6 +227,10 @@ public:
         m_bAfterRespawn = isSet;
     }
 
+    void setCrushed(bool isSet) {
+        m_bCrushed = isSet;
+    }
+
     void setJumpPadFixedSpeed(bool isSet) {
         m_bJumpPadFixedSpeed = isSet;
     }
@@ -537,6 +541,10 @@ public:
         return m_bAfterRespawn;
     }
 
+    [[nodiscard]] bool isCrushed() const {
+        return m_bCrushed;
+    }
+
     [[nodiscard]] bool isJumpPadFixedSpeed() const {
         return m_bJumpPadFixedSpeed;
     }
@@ -679,6 +687,7 @@ private:
     bool m_bNoSparkInvisibleWall;
     bool m_bInRespawn;
     bool m_bAfterRespawn;
+    bool m_bCrushed;
     bool m_bJumpPadFixedSpeed;
     bool m_bJumpPadDisableYsusForce;
     /// @}

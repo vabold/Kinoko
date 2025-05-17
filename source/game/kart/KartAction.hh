@@ -25,6 +25,7 @@ enum class Action {
 class KartAction : KartObjectProxy {
 public:
     enum class eFlags {
+        Landing = 1,
         Rotating = 3,
     };
     typedef EGG::TBitFlag<u32, eFlags> Flags;
@@ -38,9 +39,17 @@ public:
     bool start(Action action);
     void startRotation(size_t idx);
 
-    void setHitDepth(const EGG::Vector3f &hitDepth);
+    void setHitDepth(const EGG::Vector3f &hitDepth) {
+        m_hitDepth = hitDepth;
+    }
 
-    const Flags &flags() const;
+    void setTranslation(const EGG::Vector3f &v) {
+        m_translation = v;
+    }
+
+    [[nodiscard]] const Flags &flags() const {
+        return m_flags;
+    }
 
 private:
     /// @brief Parameters specific to an action ID.
@@ -64,12 +73,19 @@ private:
     typedef bool (KartAction::*CalcActionFunc)();
     typedef void (KartAction::*EndActionFunc)(bool arg);
 
+    void calcSideFromHitDepth();
+    void calcSideFromHitDepthAndTranslation();
+
     void end();
 
     bool calcCurrentAction();
     void calcEndAction(bool endArg);
     bool calcRotation();
     void calcUp();
+    void calcLanding();
+    void startLaunch(f32 extVelScalar, f32 extVelKart, f32 extVelBike, f32 numRotations,
+            u32 param6);
+    void activateCrush(u16 timer);
 
     void applyStartSpeed();
     void setRotation(size_t idx);
@@ -80,7 +96,9 @@ private:
 
     void startStub();
     void startAction1();
+    void startAction5();
     void startAction9();
+    void startAction14();
 
     /* ================================ *
      *     CALC FUNCTIONS
@@ -88,6 +106,8 @@ private:
 
     bool calcStub();
     bool calcAction1();
+    bool calcAction5();
+    bool calcAction14();
 
     /* ================================ *
      *     END FUNCTIONS
@@ -95,10 +115,15 @@ private:
 
     void endStub(bool arg);
     void endAction1(bool arg);
+    void endAction5(bool arg);
 
+    EGG::Vector3f m_side;
     Action m_currentAction;
     f32 m_rotationDirection;
+    f32 m_targetRot;
     EGG::Vector3f m_hitDepth;
+    EGG::Vector3f m_rotAxis;
+    EGG::Vector3f m_translation;
 
     StartActionFunc m_onStart;
     CalcActionFunc m_onCalc;
@@ -107,6 +132,7 @@ private:
     EGG::Quatf m_rotation;
     const ActionParams *m_actionParams;
     u32 m_frame;
+    u32 m_crushTimer;
     Flags m_flags;
     f32 m_currentAngle;
     f32 m_angleIncrement;

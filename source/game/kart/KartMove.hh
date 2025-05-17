@@ -141,6 +141,8 @@ public:
     void calcMushroomBoost();
     void calcZipperBoost();
     void landTrick();
+    void activateCrush(u16 timer);
+    void calcCrushed();
     void calcScale();
 
     void enterCannon();
@@ -192,6 +194,10 @@ public:
     /// @addr{0x80581720}
     void setScale(const EGG::Vector3f &v) {
         m_scale = v;
+    }
+
+    void setPadType(PadType type) {
+        m_padType = type;
     }
     /// @endSetters
 
@@ -393,6 +399,7 @@ protected:
     f32 m_totalScale;      ///< @unused Always 1.0f
     f32 m_hitboxScale;
     u16 m_mushroomBoostTimer; ///< Number of frames until the mushroom boost runs out.
+    u16 m_crushTimer;         ///< Number of frames until player will be uncrushed.
     u32 m_nonZipperAirtime;
     f32 m_jumpPadMinSpeed; ///< Snaps the player to a minimum speed when first touching a jump pad.
     f32 m_jumpPadMaxSpeed;

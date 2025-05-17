@@ -6,6 +6,7 @@
 #include "game/field/obj/ObjectDokan.hh"
 #include "game/field/obj/ObjectFireRing.hh"
 #include "game/field/obj/ObjectFirebar.hh"
+#include "game/field/obj/ObjectHighwayManager.hh"
 #include "game/field/obj/ObjectKCL.hh"
 #include "game/field/obj/ObjectKinoko.hh"
 #include "game/field/obj/ObjectKuribo.hh"

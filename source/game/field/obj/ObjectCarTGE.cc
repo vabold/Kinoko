@@ -3,6 +3,7 @@
 #include "game/field/ObjectCollisionCylinder.hh"
 #include "game/field/ObjectDirector.hh"
 #include "game/field/RailManager.hh"
+#include "game/field/obj/ObjectHighwayManager.hh"
 
 #include "game/kart/KartObject.hh"
 
@@ -220,6 +221,8 @@ f32 ObjectCarTGE::getCollisionRadius() const {
 /// @addr{0x806D7328}
 Kart::Reaction ObjectCarTGE::onCollision(Kart::KartObject *kartObj, Kart::Reaction reactionOnKart,
         Kart::Reaction /*reactionOnObj*/, EGG::Vector3f &hitDepth) {
+    constexpr u32 SQUASH_INVULNERABILITY = 200;
+
     if (!m_hasAuxCollision) {
         EGG::Vector3f hitDepthNorm = hitDepth;
         hitDepthNorm.normalise2();
@@ -227,6 +230,11 @@ Kart::Reaction ObjectCarTGE::onCollision(Kart::KartObject *kartObj, Kart::Reacti
         if (hitDepthNorm.y > 0.9f) {
             return Kart::Reaction::UntrickableJumpPad;
         }
+    }
+
+    if (m_highwayMgr && m_highwayMgr->squashTimer() < SQUASH_INVULNERABILITY) {
+        const auto &hitTable = ObjectDirector::Instance()->hitTableKart();
+        reactionOnKart = hitTable.reaction(hitTable.slot(static_cast<ObjectId>(m_dummyId)));
     }
 
     // In the base game, behavior branches on reactionOnObj, but for time trials it's always 0.

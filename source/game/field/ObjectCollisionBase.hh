@@ -33,6 +33,11 @@ public:
 
     bool check(ObjectCollisionBase &rhs, EGG::Vector3f &distance);
 
+    /// @addr{0x80573520}
+    [[nodiscard]] const EGG::Vector3f &translation() const {
+        return m_translation;
+    }
+
 protected:
     EGG::Vector3f m_translation;
 
