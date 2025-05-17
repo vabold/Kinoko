@@ -1854,7 +1854,7 @@ void KartMove::tryStartJumpPad() {
 
     if (jumpPadVariant == 3 || jumpPadVariant == 4) {
         if (m_jumpPadBoostMultiplier > 1.3f || m_jumpPadSoftSpeedLimit > 110.0f) {
-            // Set speed too 100 if the player has boost from a boost panel or mushroom(item) before
+            // Set speed to 100 if the player has boost from a boost panel or mushroom(item) before
             // hitting the jump pad
             static constexpr std::array<JumpPadProperties, 2> JUMP_PAD_PROPERTIES_SHROOM_BOOST = {{
                     {100.0f, 100.0f, 70.0f},

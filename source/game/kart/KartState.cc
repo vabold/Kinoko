@@ -339,7 +339,7 @@ void KartState::calcCollisions() {
             m_bGroundStart = true;
         }
 
-        if (!state()->isJumpPad()) {
+        if (!m_bJumpPad) {
             m_bJumpPadMushroomCollision = false;
         }
 
