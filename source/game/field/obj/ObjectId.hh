@@ -15,6 +15,9 @@ enum class ObjectId {
     ParasolR = 0x16e,
     Kuribo = 0x191,
     PuchiPakkun = 0x1aa,
+    KinokoUd = 0x1f5,
+    KinokoBend = 0x1f6,
+    KinokoNm = 0x1fa,
     Aurora = 0x204,
     Mdush = 0x217,
 };

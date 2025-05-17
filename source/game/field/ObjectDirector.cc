@@ -184,6 +184,12 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
         return new ObjectKuribo(params);
     case ObjectId::PuchiPakkun:
         return new ObjectPuchiPakkun(params);
+    case ObjectId::KinokoUd:
+        return new ObjectKinokoUd(params);
+    case ObjectId::KinokoBend:
+        return new ObjectKinokoBend(params);
+    case ObjectId::KinokoNm:
+        return new ObjectKinokoNm(params);
     case ObjectId::Aurora:
         return new ObjectAurora(params);
     // Non-specified objects are stock collidable objects by default
