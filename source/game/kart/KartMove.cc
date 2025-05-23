@@ -214,6 +214,10 @@ void KartMove::init(bool b1, bool b2) {
 
 /// @addr{0x8058348C}
 void KartMove::clear() {
+    if (state()->isOverZipper()) {
+        state()->setActionMidZipper(true);
+    }
+
     clearBoost();
     clearJumpPad();
     clearRampBoost();

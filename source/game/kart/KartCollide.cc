@@ -62,7 +62,8 @@ void KartCollide::calcHitboxes() {
 /// @stage All
 /// @addr{0x80572C20}
 void KartCollide::findCollision() {
-    const EGG::Quatf &rot = state()->isEndHalfPipe() ? mainRot() : fullRot();
+    bool wasHalfPipe = state()->isEndHalfPipe() || state()->isActionMidZipper();
+    const EGG::Quatf &rot = wasHalfPipe ? mainRot() : fullRot();
     calcBodyCollision(move()->totalScale(), body()->sinkDepth(), rot, scale());
 
     auto &colData = collisionData();
@@ -150,7 +151,7 @@ void KartCollide::FUN_805B72B8(f32 param_1, f32 param_2, bool lockXZ, bool addEx
     EGG::Vector3f step1 = relPos.cross(collisionDir);
     EGG::Vector3f step2 = rotMat.multVector33(step1);
     EGG::Vector3f step3 = step2.cross(relPos);
-    f32 val = (-directionalVelocity * (param_2 + 1.0f)) / (1.0f + collisionDir.dot(step3));
+    f32 val = (-directionalVelocity * (1.0f + param_2)) / (1.0f + collisionDir.dot(step3));
     EGG::Vector3f step4 = collisionDir.cross(-colData.vel);
     EGG::Vector3f step5 = step4.cross(collisionDir);
     step5.normalise();
