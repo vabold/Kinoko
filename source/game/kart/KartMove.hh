@@ -92,7 +92,7 @@ public:
     virtual void onHop() {}
     virtual void onWallCollision() {}
     virtual void calcMtCharge();
-    virtual void initOob() {}
+    virtual void initOob();
 
     /// @stage 2
     /// @brief Returns the % speed boost from wheelies. For karts, this is always 0.
