@@ -1810,7 +1810,7 @@ void KartMove::hop() {
 void KartMove::tryStartBoostPanel() {
     constexpr s16 BOOST_PANEL_DURATION = 60;
 
-    if (state()->isBeforeRespawn()) {
+    if (state()->isBeforeRespawn() || state()->isInAction()) {
         return;
     }
 
@@ -1824,7 +1824,7 @@ void KartMove::tryStartBoostPanel() {
 void KartMove::tryStartBoostRamp() {
     constexpr s16 BOOST_RAMP_DURATION = 60;
 
-    if (state()->isBeforeRespawn()) {
+    if (state()->isBeforeRespawn() || state()->isInAction()) {
         return;
     }
 
