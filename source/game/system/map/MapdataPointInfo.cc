@@ -55,7 +55,7 @@ void MapdataPointInfoAccessor::init(const MapdataPointInfo::SData *start, u16 co
     for (u16 i = 0; i < count; ++i) {
         m_entries[i] = new MapdataPointInfo(reinterpret_cast<MapdataPointInfo::SData *>(data));
         data += m_entries[i]->pointCount() * sizeof(MapdataPointInfo::Point) +
-                offsetof(MapdataPointInfo::SData, MapdataPointInfo::SData::points);
+                offsetof(MapdataPointInfo::SData, points);
     }
 }
 

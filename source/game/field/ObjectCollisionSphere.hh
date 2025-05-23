@@ -19,7 +19,7 @@ public:
     }
 
 private:
-    f32 m_radius;
+    [[maybe_unused]] f32 m_radius;
     EGG::Vector3f m_pos;
     f32 m_scaledRadius;
     EGG::Vector3f m_scaledPos;
