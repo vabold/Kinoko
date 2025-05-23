@@ -1777,6 +1777,16 @@ void KartMove::calcMtCharge() {
     }
 }
 
+/// @addr{0x80583658}
+void KartMove::initOob() {
+    clearBoost();
+    clearJumpPad();
+    clearRampBoost();
+    clearZipperBoost();
+    clearSsmt();
+    clearOffroadInvincibility();
+}
+
 /// @stage 2
 /// @brief Initializes hop information, resets upwards EV and clears upwards force.
 /// @addr{0x8057DA5C}
@@ -2492,12 +2502,7 @@ void KartMoveBike::calcMtCharge() {
 
 /// @addr{0x80588B58}
 void KartMoveBike::initOob() {
-    clearBoost();
-    clearJumpPad();
-    clearRampBoost();
-    clearZipperBoost();
-    clearSsmt();
-    clearOffroadInvincibility();
+    KartMove::initOob();
     cancelWheelie();
 }
 
