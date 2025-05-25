@@ -27,7 +27,7 @@ n.variable('compiler', 'g++')
 n.newline()
 
 common_ccflags = [
-    '-DREVOLUTION',
+    '-DREVOLUTION'
     '-fno-asynchronous-unwind-tables',
     '-fno-exceptions',
     '-fno-rtti',
@@ -75,7 +75,7 @@ n.rule(
     description='LD $out',
 )
 
-code_in_files = [file for file in glob('**/*.cc', recursive=True)]
+code_in_files = list(glob('**/*.cc', recursive=True))
 
 target_code_out_files = []
 debug_code_out_files = []
@@ -149,6 +149,6 @@ n.build(
     ],
 )
 
-with open('build.ninja', 'w') as out_file:
+with open('build.ninja', 'w', encoding="utf-8") as out_file:
     out_file.write(out_buf.getvalue())
 n.close()
