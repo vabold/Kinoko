@@ -26,8 +26,26 @@ n.newline()
 n.variable('compiler', 'g++')
 n.newline()
 
+n.variable('generate_version', os.path.join('tools', 'generate_version.py'))
+n.newline()
+
+# Hack to force execution every time ninja runs
+n.build('FORCE', 'phony')
+n.newline()
+
+n.rule(
+    'generate_version',
+    command=f'{sys.executable} $generate_version',
+    description='GEN $out',
+)
+
+n.build(
+    'include/Version.hh',
+    'generate_version',
+    implicit=['FORCE'],
+)
+
 common_ccflags = [
-    '-DREVOLUTION',
     '-fno-asynchronous-unwind-tables',
     '-fno-exceptions',
     '-fno-rtti',

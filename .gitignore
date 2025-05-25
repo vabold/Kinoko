@@ -7,3 +7,4 @@ out
 *.szs
 statusTestCases.json
 .env
+include/Version.hh
