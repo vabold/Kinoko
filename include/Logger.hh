@@ -40,6 +40,11 @@
         printf("[" FILE_NAME ":" TOSTRING(__LINE__) "] REPORT: " m "\n", ##__VA_ARGS__); \
     } while (0)
 
+#define PRINT(m, ...) \
+    do { \
+        printf(m, ##__VA_ARGS__); \
+    } while (0)
+
 #ifdef BUILD_DEBUG
 #define DEBUG(m, ...) \
     do { \

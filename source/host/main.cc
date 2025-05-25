@@ -2,6 +2,8 @@
 #include "host/KTestSystem.hh"
 #include "host/Option.hh"
 
+#include <Version.hh>
+
 #include <egg/core/ExpHeap.hh>
 
 #if defined(__arm64__) || defined(__aarch64__)
@@ -38,6 +40,10 @@ static void InitMemory() {
     EGG::SceneManager::SetRootHeap(s_rootHeap);
 }
 
+static void DisplayVersion() {
+    PRINT("Kinoko v%s\nCommit: %s\n", GIT_VERSION, GIT_COMMIT_HASH);
+}
+
 int main(int argc, char **argv) {
     FlushDenormalsToZero();
     InitMemory();
@@ -50,12 +56,8 @@ int main(int argc, char **argv) {
             {"replay", []() -> KSystem * { return KReplaySystem::CreateInstance(); }},
     };
 
-    if (argc < 3) {
-        PANIC("Too few arguments!");
-    }
-
     // The first argument is the executable, so we ignore it
-    // The second argument is the mode flag
+    // The second argument is the mode flag, or the version flag
     // The third argument is the mode arg
     // TODO: Iterate until we find the index of the mode flag
     std::optional<Host::EOption> flag = Host::Option::CheckFlag(argv[1]);
@@ -63,8 +65,17 @@ int main(int argc, char **argv) {
         PANIC("Not a flag!");
     }
 
+    if (*flag == Host::EOption::Version) {
+        DisplayVersion();
+        return 0;
+    }
+
     if (*flag != Host::EOption::Mode) {
         PANIC("First flag expected to be mode!");
+    }
+
+    if (argc < 3) {
+        PANIC("Too few arguments!");
     }
 
     KSystem *sys = nullptr;
