@@ -80,6 +80,7 @@ private:
 
     void startStub();
     void startAction1();
+    void startAction9();
 
     /* ================================ *
      *     CALC FUNCTIONS

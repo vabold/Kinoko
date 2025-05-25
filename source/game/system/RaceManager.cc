@@ -88,7 +88,8 @@ void RaceManager::DestroyInstance() {
 }
 
 /// @addr{0x805327A0}
-RaceManager::RaceManager() : m_stage(Stage::Intro), m_introTimer(0), m_timer(0) {}
+RaceManager::RaceManager()
+    : m_random(RNG_SEED), m_stage(Stage::Intro), m_introTimer(0), m_timer(0) {}
 
 /// @addr{0x80532E3C}
 RaceManager::~RaceManager() {

@@ -223,6 +223,10 @@ ObjectDrivableDirector::~ObjectDrivableDirector() {
         s_instance = nullptr;
         WARN("ObjectDrivableDirector instance not explicitly handled!");
     }
+
+    for (auto *&obj : m_objects) {
+        delete obj;
+    }
 }
 
 ObjectDrivableDirector *ObjectDrivableDirector::s_instance = nullptr; ///< @addr{0x809C4310}

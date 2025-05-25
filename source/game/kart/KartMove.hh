@@ -92,7 +92,7 @@ public:
     virtual void onHop() {}
     virtual void onWallCollision() {}
     virtual void calcMtCharge();
-    virtual void initOob() {}
+    virtual void initOob();
 
     /// @stage 2
     /// @brief Returns the % speed boost from wheelies. For karts, this is always 0.
@@ -386,6 +386,8 @@ protected:
     u32 m_nonZipperAirtime;
     f32 m_jumpPadMinSpeed; ///< Snaps the player to a minimum speed when first touching a jump pad.
     f32 m_jumpPadMaxSpeed;
+    f32 m_jumpPadBoostMultiplier;
+    f32 m_jumpPadSoftSpeedLimit;
     const JumpPadProperties *m_jumpPadProperties;
     u16 m_rampBoost;
     f32 m_autoDriftAngle;

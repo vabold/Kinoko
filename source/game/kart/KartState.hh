@@ -147,6 +147,10 @@ public:
         m_bOverZipper = isSet;
     }
 
+    void setJumpPadMushroomCollision(bool isSet) {
+        m_bJumpPadMushroomCollision = isSet;
+    }
+
     void setZipperInvisibleWall(bool isSet) {
         m_bZipperInvisibleWall = isSet;
     }
@@ -179,6 +183,10 @@ public:
         m_bTrickRot = isSet;
     }
 
+    void setJumpPadMushroomVelYInc(bool isSet) {
+        m_bJumpPadMushroomVelYInc = isSet;
+    }
+
     void setChargingSsmt(bool isSet) {
         m_bChargingSsmt = isSet;
     }
@@ -203,6 +211,10 @@ public:
         m_bSkipWheelCalc = isSet;
     }
 
+    void setJumpPadMushroomTrigger(bool isSet) {
+        m_bJumpPadMushroomTrigger = isSet;
+    }
+
     void setNoSparkInvisibleWall(bool isSet) {
         m_bNoSparkInvisibleWall = isSet;
     }
@@ -213,6 +225,10 @@ public:
 
     void setAfterRespawn(bool isSet) {
         m_bAfterRespawn = isSet;
+    }
+
+    void setJumpPadFixedSpeed(bool isSet) {
+        m_bJumpPadFixedSpeed = isSet;
     }
 
     void setJumpPadDisableYsusForce(bool isSet) {
@@ -233,6 +249,10 @@ public:
 
     void setAfterCannon(bool isSet) {
         m_bAfterCannon = isSet;
+    }
+
+    void setActionMidZipper(bool isSet) {
+        m_bActionMidZipper = isSet;
     }
 
     void setEndHalfPipe(bool isSet) {
@@ -353,6 +373,10 @@ public:
         return m_bAfterCannon;
     }
 
+    [[nodiscard]] bool isActionMidZipper() const {
+        return m_bActionMidZipper;
+    }
+
     [[nodiscard]] bool isChargeStartBoost() const {
         return m_bChargeStartBoost;
     }
@@ -429,6 +453,10 @@ public:
         return m_bOverZipper;
     }
 
+    [[nodiscard]] bool isJumpPadMushroomCollision() const {
+        return m_bJumpPadMushroomCollision;
+    }
+
     [[nodiscard]] bool isZipperInvisibleWall() const {
         return m_bZipperInvisibleWall;
     }
@@ -461,6 +489,10 @@ public:
         return m_bTrickRot;
     }
 
+    [[nodiscard]] bool isJumpPadMushroomVelYInc() const {
+        return m_bJumpPadMushroomVelYInc;
+    }
+
     [[nodiscard]] bool isChargingSsmt() const {
         return m_bChargingSsmt;
     }
@@ -489,6 +521,10 @@ public:
         return m_bSkipWheelCalc;
     }
 
+    [[nodiscard]] bool isJumpPadMushroomTrigger() const {
+        return m_bJumpPadMushroomTrigger;
+    }
+
     [[nodiscard]] bool isNoSparkInvisibleWall() const {
         return m_bNoSparkInvisibleWall;
     }
@@ -499,6 +535,10 @@ public:
 
     [[nodiscard]] bool isAfterRespawn() const {
         return m_bAfterRespawn;
+    }
+
+    [[nodiscard]] bool isJumpPadFixedSpeed() const {
+        return m_bJumpPadFixedSpeed;
     }
 
     [[nodiscard]] bool isUNK2() const {
@@ -614,14 +654,16 @@ private:
     bool m_bBoostOffroadInvincibility; ///< Set if we should ignore offroad slowdown this frame.
     bool m_bHalfPipeRamp;              ///< Set while colliding with zipper KCL.
     bool m_bOverZipper;                ///< Set while mid-air from a zipper.
-    bool m_bZipperInvisibleWall;       ///< Set when colliding with invisible wall above a zipper.
-    bool m_bZipperBoost;               ///< Set when boosting after landing from a zipper.
-    bool m_bZipperStick;               ///< Set while mid-air and still influenced by the zipper.
-    bool m_bZipperTrick;               ///< Set while tricking mid-air from a zipper.
-    bool m_bDisableBackwardsAccel;     ///< Enforces a 20f delay when reversing after charging SSMT.
-    bool m_bRespawnKillY;              ///< Set while respawning to cap external velocity at 0.
-    bool m_bBurnout;                   ///< Set during a burnout on race start.
+    bool m_bJumpPadMushroomCollision;
+    bool m_bZipperInvisibleWall;   ///< Set when colliding with invisible wall above a zipper.
+    bool m_bZipperBoost;           ///< Set when boosting after landing from a zipper.
+    bool m_bZipperStick;           ///< Set while mid-air and still influenced by the zipper.
+    bool m_bZipperTrick;           ///< Set while tricking mid-air from a zipper.
+    bool m_bDisableBackwardsAccel; ///< Enforces a 20f delay when reversing after charging SSMT.
+    bool m_bRespawnKillY;          ///< Set while respawning to cap external velocity at 0.
+    bool m_bBurnout;               ///< Set during a burnout on race start.
     bool m_bTrickRot;
+    bool m_bJumpPadMushroomVelYInc;
     bool m_bChargingSsmt;      ///< Tracks whether we are charging a stand-still mini-turbo.
     bool m_bRejectRoad;        ///< Collision which causes a change in the player's pos and rot.
     bool m_bRejectRoadTrigger; ///< e.g. DK Summit ending, and Maple Treeway side walls.
@@ -633,9 +675,11 @@ private:
     /// @{
     bool m_bWheelieRot;
     bool m_bSkipWheelCalc;
+    bool m_bJumpPadMushroomTrigger;
     bool m_bNoSparkInvisibleWall;
     bool m_bInRespawn;
     bool m_bAfterRespawn;
+    bool m_bJumpPadFixedSpeed;
     bool m_bJumpPadDisableYsusForce;
     /// @}
 
@@ -647,6 +691,7 @@ private:
     bool m_bSoftWallDrift;
     bool m_bHWG; ///< Set when "Horizontal Wall Glitch" is active.
     bool m_bAfterCannon;
+    bool m_bActionMidZipper;
     bool m_bChargeStartBoost; ///< Like @ref m_bAccelerate but during countdown.
     bool m_bEndHalfPipe;
     /// @}

@@ -10,6 +10,7 @@ void CollisionData::reset() {
     vel.setZero();
     relPos.setZero();
     movement.setZero();
+    roadVelocity.setZero();
     speedFactor = 1.0f;
     rotFactor = 0.0f;
     closestFloorFlags = 0;
@@ -24,6 +25,7 @@ void CollisionData::reset() {
     bInvisibleWallOnly = false;
     bSoftWall = false;
     bTrickable = false;
+    bHasRoadVel = false;
     bWallAtLeftCloser = false;
     bWallAtRightCloser = false;
 }

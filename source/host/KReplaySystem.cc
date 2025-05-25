@@ -148,12 +148,14 @@ bool KReplaySystem::success() const {
 
     const auto *raceManager = System::RaceManager::Instance();
     if (raceManager->stage() != System::RaceManager::Stage::FinishGlobal) {
+        m_sceneMgr->currentScene()->heap()->enableAllocation();
         reportFail("Race didn't finish");
         return false;
     }
 
     s32 desyncingTimerIdx = getDesyncingTimerIdx();
     if (desyncingTimerIdx != -1) {
+        m_sceneMgr->currentScene()->heap()->enableAllocation();
         std::string msg;
 
         const auto [correct, incorrect] = getDesyncingTimer(desyncingTimerIdx);

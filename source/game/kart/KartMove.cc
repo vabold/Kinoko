@@ -76,7 +76,9 @@ void KartMove::calcTurn() {
 
     if (!state()->isHop() || m_hopStickX == 0) {
         m_rawTurn = -state()->stickX();
-        if (state()->isAirtimeOver20()) {
+        if (state()->isJumpPadMushroomCollision()) {
+            m_rawTurn *= 0.35f;
+        } else if (state()->isAirtimeOver20()) {
             m_rawTurn *= 0.01f;
         }
     } else {
@@ -125,7 +127,7 @@ void KartMove::setTurnParams() {
 void KartMove::init(bool b1, bool b2) {
     m_lastSpeed = 0.0f;
     m_baseSpeed = param()->stats().speed;
-    m_softSpeedLimit = param()->stats().speed;
+    m_jumpPadSoftSpeedLimit = m_softSpeedLimit = param()->stats().speed;
     m_speed = 0.0f;
     setKartSpeedLimit();
     m_acceleration = 0.0f;
@@ -183,6 +185,7 @@ void KartMove::init(bool b1, bool b2) {
 
     m_jumpPadMinSpeed = 0.0f;
     m_jumpPadMaxSpeed = 0.0f;
+    m_jumpPadBoostMultiplier = 0.0f;
     m_jumpPadProperties = nullptr;
     m_rampBoost = 0;
     m_autoDriftAngle = 0.0f;
@@ -211,6 +214,10 @@ void KartMove::init(bool b1, bool b2) {
 
 /// @addr{0x8058348C}
 void KartMove::clear() {
+    if (state()->isOverZipper()) {
+        state()->setActionMidZipper(true);
+    }
+
     clearBoost();
     clearJumpPad();
     clearRampBoost();
@@ -508,7 +515,7 @@ void KartMove::calcDirs() {
             (((state()->isTouchingGround() || !state()->isRampBoost() ||
                       !m_jump->isBoostRampEnabled()) &&
                      !state()->isJumpPad() && state()->airtime() <= 5) ||
-                    state()->isNoSparkInvisibleWall())) {
+                    state()->isJumpPadMushroomCollision() || state()->isNoSparkInvisibleWall())) {
         if (state()->isHop()) {
             local_88 = m_hopDir;
         }
@@ -916,6 +923,7 @@ void KartMove::calcManualDrift() {
 
         if (!state()->isTouchingGround() &&
                 param()->stats().driftType != KartParam::Stats::DriftType::Inside_Drift_Bike &&
+                !state()->isJumpPadMushroomCollision() &&
                 (state()->isDriftManual() || state()->isSlipdriftCharge()) &&
                 m_flags.onBit(eFlags::LaunchBoost)) {
             const EGG::Vector3f up = dynamics()->mainRot().rotateVector(EGG::Vector3f::ey);
@@ -1085,7 +1093,7 @@ void KartMove::controlOutsideDriftAngle() {
 /// @addr{0x8057C69C}
 void KartMove::calcRotation() {
     f32 turn;
-    bool drifting = state()->isDrifting();
+    bool drifting = state()->isDrifting() && !state()->isJumpPadMushroomCollision();
     bool autoDrift = state()->isAutoDrift();
     const auto &stats = param()->stats();
 
@@ -1154,7 +1162,7 @@ void KartMove::calcRotation() {
         if (!state()->isTouchingGround()) {
             if (state()->isRampBoost() && m_jump->isBoostRampEnabled()) {
                 turn = 0.0f;
-            } else {
+            } else if (!state()->isJumpPadMushroomCollision()) {
                 u32 airtime = state()->airtime();
                 if (airtime >= 70) {
                     turn = 0.0f;
@@ -1347,23 +1355,33 @@ void KartMove::calcAcceleration() {
         }
     }
 
-    f32 dVar17 = state()->isJumpPad() ? m_jumpPadMaxSpeed : m_baseSpeed;
-    dVar17 *= (m_boost.multiplier() + getWheelieSoftSpeedLimitBonus()) * m_kclSpeedFactor;
-    dVar17 = std::max(dVar17, m_boost.speedLimit() * m_kclSpeedFactor);
+    f32 speedLimit = state()->isJumpPad() ? m_jumpPadMaxSpeed : m_baseSpeed;
+    const f32 boostMultiplier = m_boost.multiplier();
+    const f32 boostSpdLimit = m_boost.speedLimit();
+    m_jumpPadBoostMultiplier = boostMultiplier;
+
+    if (!state()->isJumpPadFixedSpeed()) {
+        speedLimit *= (boostMultiplier + getWheelieSoftSpeedLimitBonus()) * m_kclSpeedFactor;
+    }
+
+    if (!state()->isJumpPad()) {
+        speedLimit = std::max(speedLimit, boostSpdLimit * m_kclSpeedFactor);
+    }
+    m_jumpPadSoftSpeedLimit = boostSpdLimit * m_kclSpeedFactor;
 
     if (state()->isRampBoost()) {
-        dVar17 = std::max(dVar17, 100.0f);
+        speedLimit = std::max(speedLimit, 100.0f);
     }
 
     m_lastDir = (m_speed > 0.0f) ? 1.0f * m_dir : -1.0f * m_dir;
 
     f32 local_c8 = 1.0f;
-    dVar17 *= calcWallCollisionSpeedFactor(local_c8);
+    speedLimit *= calcWallCollisionSpeedFactor(local_c8);
 
     if (!state()->isWallCollision() && !state()->isWall3Collision()) {
-        m_softSpeedLimit = std::max(m_softSpeedLimit - 3.0f, dVar17);
+        m_softSpeedLimit = std::max(m_softSpeedLimit - 3.0f, speedLimit);
     } else {
-        m_softSpeedLimit = dVar17;
+        m_softSpeedLimit = speedLimit;
     }
 
     m_softSpeedLimit = std::min(m_hardSpeedLimit, m_softSpeedLimit);
@@ -1759,6 +1777,16 @@ void KartMove::calcMtCharge() {
     }
 }
 
+/// @addr{0x80583658}
+void KartMove::initOob() {
+    clearBoost();
+    clearJumpPad();
+    clearRampBoost();
+    clearZipperBoost();
+    clearSsmt();
+    clearOffroadInvincibility();
+}
+
 /// @stage 2
 /// @brief Initializes hop information, resets upwards EV and clears upwards force.
 /// @addr{0x8057DA5C}
@@ -1792,7 +1820,7 @@ void KartMove::hop() {
 void KartMove::tryStartBoostPanel() {
     constexpr s16 BOOST_PANEL_DURATION = 60;
 
-    if (state()->isBeforeRespawn()) {
+    if (state()->isBeforeRespawn() || state()->isInAction()) {
         return;
     }
 
@@ -1806,7 +1834,7 @@ void KartMove::tryStartBoostPanel() {
 void KartMove::tryStartBoostRamp() {
     constexpr s16 BOOST_RAMP_DURATION = 60;
 
-    if (state()->isBeforeRespawn()) {
+    if (state()->isBeforeRespawn() || state()->isInAction()) {
         return;
     }
 
@@ -1838,7 +1866,24 @@ void KartMove::tryStartJumpPad() {
     s32 jumpPadVariant = state()->jumpPadVariant();
     m_jumpPadProperties = &JUMP_PAD_PROPERTIES[jumpPadVariant];
 
-    if (jumpPadVariant != 4) {
+    if (jumpPadVariant == 3 || jumpPadVariant == 4) {
+        if (m_jumpPadBoostMultiplier > 1.3f || m_jumpPadSoftSpeedLimit > 110.0f) {
+            // Set speed to 100 if the player has boost from a boost panel or mushroom(item) before
+            // hitting the jump pad
+            static constexpr std::array<JumpPadProperties, 2> JUMP_PAD_PROPERTIES_SHROOM_BOOST = {{
+                    {100.0f, 100.0f, 70.0f},
+                    {100.0f, 100.0f, 65.0f},
+            }};
+            m_jumpPadProperties = &JUMP_PAD_PROPERTIES_SHROOM_BOOST[jumpPadVariant != 3];
+        }
+        state()->setJumpPadFixedSpeed(true);
+    }
+
+    if (jumpPadVariant == 4) {
+        state()->setJumpPadMushroomTrigger(true);
+        state()->setJumpPadMushroomVelYInc(true);
+        state()->setJumpPadMushroomCollision(true);
+    } else {
         EGG::Vector3f extVel = dynamics()->extVel();
         EGG::Vector3f totalForce = dynamics()->totalForce();
 
@@ -1866,7 +1911,25 @@ void KartMove::tryStartJumpPad() {
 
 /// @addr{0x80582530}
 void KartMove::tryEndJumpPad() {
-    if (state()->isGroundStart()) {
+    if (state()->isJumpPadMushroomTrigger()) {
+        if (state()->isGroundStart()) {
+            state()->setJumpPadMushroomTrigger(false);
+            state()->setJumpPadFixedSpeed(false);
+            state()->setJumpPadMushroomVelYInc(false);
+        }
+
+        if (state()->isJumpPadMushroomVelYInc()) {
+            EGG::Vector3f newExtVel = dynamics()->extVel();
+            newExtVel.y += 20.0f;
+            if (m_jumpPadProperties->velY < newExtVel.y) {
+                newExtVel.y = m_jumpPadProperties->velY;
+                state()->setJumpPadMushroomVelYInc(false);
+            }
+            dynamics()->setExtVel(newExtVel);
+        }
+    }
+
+    if (state()->isGroundStart() && !state()->isJumpPadMushroomTrigger()) {
         cancelJumpPad();
     }
 }
@@ -2439,12 +2502,7 @@ void KartMoveBike::calcMtCharge() {
 
 /// @addr{0x80588B58}
 void KartMoveBike::initOob() {
-    clearBoost();
-    clearJumpPad();
-    clearRampBoost();
-    clearZipperBoost();
-    clearSsmt();
-    clearOffroadInvincibility();
+    KartMove::initOob();
     cancelWheelie();
 }
 
