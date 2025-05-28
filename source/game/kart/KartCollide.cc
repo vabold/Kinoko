@@ -931,7 +931,11 @@ void KartCollide::startFloorMomentRate() {
 
 /// @addr{0x805713FC}
 void KartCollide::calcFloorMomentRate() {
-    m_floorMomentRate = state()->isInAction() ? 0.01f : std::min(m_floorMomentRate + 0.01f, 0.8f);
+    if (state()->isInAction() && action()->flags().onBit(KartAction::eFlags::Rotating)) {
+        m_floorMomentRate = 0.01f;
+    } else {
+        m_floorMomentRate = std::min(m_floorMomentRate + 0.01f, 0.8f);
+    }
 }
 
 /// @addr{0x8056E564}

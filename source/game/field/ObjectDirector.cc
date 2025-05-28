@@ -41,7 +41,11 @@ void ObjectDirector::addObject(ObjectCollidable *obj) {
         m_calcObjects.push_back(obj);
     }
 
-    if (m_flowTable.set(m_flowTable.slot(obj->id()))->mode != 0) {
+    const auto *set = m_flowTable.set(m_flowTable.slot(obj->id()));
+
+    // In the base game, it's possible an object here will access slot -1 (e.g. Moonview Highway
+    // cars). We add a nullptr check here to prevent this.
+    if (set && set->mode != 0) {
         if (obj->collision()) {
             m_collisionObjects.push_back(obj);
         }

@@ -253,7 +253,7 @@ void KartSub::calcPass1() {
     }
 
     EGG::Vector3f forward = fullRot().rotateVector(EGG::Vector3f::ez);
-    m_someScale = scale().y;
+    m_someScale = std::max(scale().y, param()->stats().wheelDistance);
 
     const EGG::Vector3f gravity(0.0f, -1.3f, 0.0f);
     f32 speedFactor = 1.0f;

@@ -63,7 +63,7 @@ private:
 
     static constexpr size_t MAX_UNIT_COUNT = 0x100;
 
-    std::array<ObjectBase *, MAX_UNIT_COUNT>
+    std::array<ObjectCollidable *, MAX_UNIT_COUNT>
             m_collidingObjects; ///< Objects we are currently colliding with
     std::array<EGG::Vector3f, MAX_UNIT_COUNT> m_hitDepths;
     std::array<Kart::Reaction, MAX_UNIT_COUNT> m_reactions;
