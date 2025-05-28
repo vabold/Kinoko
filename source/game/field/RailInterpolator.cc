@@ -19,7 +19,7 @@ RailInterpolator::~RailInterpolator() = default;
 
 /// @addr{0806ED24C}
 const EGG::Vector3f &RailInterpolator::floorNrm(size_t idx) const {
-    return RailManager::Instance()->rail(idx)->floorNrm(idx);
+    return RailManager::Instance()->rail(m_railIdx)->floorNrm(idx);
 }
 
 /// @addr{0x806ED30C}

@@ -45,7 +45,7 @@ void ObjectCollidable::calcCollisionTransform() {
 /// This does not imply that all collidable objects are boxes!
 f32 ObjectCollidable::getCollisionRadius() const {
     const auto &flowTable = ObjectDirector::Instance()->flowTable();
-    const auto *collisionSet = flowTable.set(flowTable.slot(m_id));
+    const auto *collisionSet = flowTable.set(flowTable.slot(id()));
 
     f32 zRadius = m_scale.z * static_cast<f32>(parse<s16>(collisionSet->params.box.z));
     f32 xRadius = m_scale.x * static_cast<f32>(parse<s16>(collisionSet->params.box.x));
