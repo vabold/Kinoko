@@ -77,110 +77,119 @@ namespace EGG::Mathf {
             static_cast<f64>(x) * force25Bit(static_cast<f64>(y)) - static_cast<f64>(z));
 }
 
-// frsqrte matching
+// frsqrte matching courtesy of Geotale, with reference to https://achurch.org/cpu-tests/ppc750cl.s
 struct BaseAndDec {
-    int base;
-    int dec;
+    u64 base;
+    s64 dec;
 };
 
 union c64 {
-    c64(const f64 p) {
+    constexpr c64(const f64 p) {
         f = p;
     }
 
-    [[nodiscard]] u64 _hex() const {
-        return u;
+    constexpr c64(const u64 p) {
+        u = p;
     }
 
     u64 u;
     f64 f;
 };
 
-static const std::array<BaseAndDec, 32> frsqrte_expected = {{
-        {0x3ffa000, 0x7a4},
-        {0x3c29000, 0x700},
-        {0x38aa000, 0x670},
-        {0x3572000, 0x5f2},
-        {0x3279000, 0x584},
-        {0x2fb7000, 0x524},
-        {0x2d26000, 0x4cc},
-        {0x2ac0000, 0x47e},
-        {0x2881000, 0x43a},
-        {0x2665000, 0x3fa},
-        {0x2468000, 0x3c2},
-        {0x2287000, 0x38e},
-        {0x20c1000, 0x35e},
-        {0x1f12000, 0x332},
-        {0x1d79000, 0x30a},
-        {0x1bf4000, 0x2e6},
-        {0x1a7e800, 0x568},
-        {0x17cb800, 0x4f3},
-        {0x1552800, 0x48d},
-        {0x130c000, 0x435},
-        {0x10f2000, 0x3e7},
-        {0x0eff000, 0x3a2},
-        {0x0d2e000, 0x365},
-        {0x0b7c000, 0x32e},
-        {0x09e5000, 0x2fc},
-        {0x0867000, 0x2d0},
-        {0x06ff000, 0x2a8},
-        {0x05ab800, 0x283},
-        {0x046a000, 0x261},
-        {0x0339800, 0x243},
-        {0x0218800, 0x226},
-        {0x0105800, 0x20b},
+static constexpr u64 EXPONENT_SHIFT_F64 = 52;
+static constexpr u64 MANTISSA_MASK_F64 = 0x000fffffffffffffULL;
+static constexpr u64 EXPONENT_MASK_F64 = 0x7ff0000000000000ULL;
+static constexpr u64 SIGN_MASK_F64 = 0x8000000000000000ULL;
+
+static constexpr std::array<BaseAndDec, 32> RSQRTE_TABLE = {{
+        {0x69fa000000000ULL, -0x15a0000000LL},
+        {0x5f2e000000000ULL, -0x13cc000000LL},
+        {0x554a000000000ULL, -0x1234000000LL},
+        {0x4c30000000000ULL, -0x10d4000000LL},
+        {0x43c8000000000ULL, -0x0f9c000000LL},
+        {0x3bfc000000000ULL, -0x0e88000000LL},
+        {0x34b8000000000ULL, -0x0d94000000LL},
+        {0x2df0000000000ULL, -0x0cb8000000LL},
+        {0x2794000000000ULL, -0x0bf0000000LL},
+        {0x219c000000000ULL, -0x0b40000000LL},
+        {0x1bfc000000000ULL, -0x0aa0000000LL},
+        {0x16ae000000000ULL, -0x0a0c000000LL},
+        {0x11a8000000000ULL, -0x0984000000LL},
+        {0x0ce6000000000ULL, -0x090c000000LL},
+        {0x0862000000000ULL, -0x0898000000LL},
+        {0x0416000000000ULL, -0x082c000000LL},
+        {0xffe8000000000ULL, -0x1e90000000LL},
+        {0xf0a4000000000ULL, -0x1c00000000LL},
+        {0xe2a8000000000ULL, -0x19c0000000LL},
+        {0xd5c8000000000ULL, -0x17c8000000LL},
+        {0xc9e4000000000ULL, -0x1610000000LL},
+        {0xbedc000000000ULL, -0x1490000000LL},
+        {0xb498000000000ULL, -0x1330000000LL},
+        {0xab00000000000ULL, -0x11f8000000LL},
+        {0xa204000000000ULL, -0x10e8000000LL},
+        {0x9994000000000ULL, -0x0fe8000000LL},
+        {0x91a0000000000ULL, -0x0f08000000LL},
+        {0x8a1c000000000ULL, -0x0e38000000LL},
+        {0x8304000000000ULL, -0x0d78000000LL},
+        {0x7c48000000000ULL, -0x0cc8000000LL},
+        {0x75e4000000000ULL, -0x0c28000000LL},
+        {0x6fd0000000000ULL, -0x0b98000000LL},
 }};
 
 [[nodiscard]] static inline f64 frsqrte(const f64 val) {
-    c64 input(val);
+    c64 bits(val);
 
-    u64 mantissa = input._hex() & ((1LL << 52) - 1);
-    const u64 sign = input._hex() & (1ULL << 63);
-    u64 exponent = input._hex() & (0x7FFLL << 52);
+    u64 mantissa = bits.u & MANTISSA_MASK_F64;
+    s64 exponent = bits.u & EXPONENT_MASK_F64;
+    bool sign = (bits.u & SIGN_MASK_F64) != 0;
 
-    // Special case 0
+    // Handle 0 case
     if (mantissa == 0 && exponent == 0) {
-        return sign ? -std::numeric_limits<f64>::infinity() : std::numeric_limits<f64>::infinity();
+        return std::copysign(std::numeric_limits<f64>::infinity(), bits.f);
     }
 
-    // Special case NaN-ish numbers
-    if (exponent == (0x7FFLL << 52)) {
+    // Handle NaN-like
+    if (exponent == EXPONENT_MASK_F64) {
         if (mantissa == 0) {
-            if (sign) {
-                return std::numeric_limits<f64>::quiet_NaN();
-            }
-
-            return 0.0;
+            return sign ? std::numeric_limits<f64>::quiet_NaN() : 0.0;
         }
 
-        return 0.0 + val;
+        return val;
     }
 
-    // Negative numbers return NaN
+    // Handle negative inputs
     if (sign) {
         return std::numeric_limits<f64>::quiet_NaN();
     }
 
-    if (!exponent) {
-        // "Normalize" denormal values
-        do {
-            exponent -= 1LL << 52;
-            mantissa <<= 1;
-        } while (!(mantissa & (1LL << 52)));
-        mantissa &= (1LL << 52) - 1;
-        exponent += 1LL << 52;
+    if (exponent == 0) {
+        // Shift so one bit goes to where the exponent would be,
+        // then clear that bit to mimick a not-subnormal number!
+        // Aka, if there are 12 leading zeroes, shift left once
+        u32 shift = std::countl_zero(mantissa) - static_cast<u32>(63 - EXPONENT_SHIFT_F64);
+
+        mantissa <<= shift;
+        mantissa &= MANTISSA_MASK_F64;
+        // The shift is subtracted by 1 because denormals by default
+        // are offset by 1 (exponent 0 doesn't have implied 1 bit)
+        exponent -= static_cast<s64>(shift - 1) << EXPONENT_SHIFT_F64;
     }
 
-    const bool odd_exponent = !(exponent & (1LL << 52));
-    exponent = ((0x3FFLL << 52) - ((exponent - (0x3FELL << 52)) / 2)) & (0x7FFLL << 52);
-    input.u = sign | exponent;
+    // In reality this doesn't get the full exponent -- Only the least significant bit
+    // Only that's needed because square roots of higher exponent bits simply multiply the
+    // result by 2!!
+    u32 key = static_cast<u32>((static_cast<u64>(exponent) | mantissa) >> 37);
+    u64 new_exp =
+            (static_cast<u64>((0xbfcLL << EXPONENT_SHIFT_F64) - exponent) >> 1) & EXPONENT_MASK_F64;
 
-    const int i = static_cast<int>(mantissa >> 37);
-    const int index = i / 2048 + (odd_exponent ? 16 : 0);
-    const auto &entry = frsqrte_expected[index];
-    input.u |= static_cast<uint64_t>(entry.base - entry.dec * (i % 2048)) << 26;
+    // Remove the bits relating to anything higher than the LSB of the exponent
+    const auto &entry = RSQRTE_TABLE[0x1f & (key >> 11)];
 
-    return input.f;
+    // The result is given by an estimate then an adjustment based on the original
+    // key that was computed
+    u64 new_mantissa = static_cast<u64>(entry.base + entry.dec * static_cast<s64>(key & 0x7ff));
+
+    return c64(new_exp | new_mantissa).f;
 }
 
 } // namespace EGG::Mathf
