@@ -9,8 +9,6 @@ namespace Field {
 /// This overload enables conversion from std::array into a span, which initializes the points.
 ObjectCollisionConvexHull::ObjectCollisionConvexHull(const std::span<const EGG::Vector3f> &points)
     : ObjectCollisionConvexHull(points.size()) {
-    m_worldRadius = 70.0f;
-
     for (size_t i = 0; i < points.size(); ++i) {
         m_points[i] = points[i];
     }
@@ -33,7 +31,7 @@ void ObjectCollisionConvexHull::transform(const EGG::Matrix34f &mat, const EGG::
         }
     } else {
         EGG::Matrix34f temp;
-        temp.makeS(scale);
+        temp.makeS(EGG::Vector3f(scale.x, scale.x, scale.x));
         temp = mat.multiplyTo(temp);
 
         for (size_t i = 0; i < m_points.size(); ++i) {
@@ -68,6 +66,8 @@ const EGG::Vector3f &ObjectCollisionConvexHull::getSupport(const EGG::Vector3f &
 /// This overload enables avoiding immediate point initialization, which is useful for inheritance.
 ObjectCollisionConvexHull::ObjectCollisionConvexHull(size_t count) {
     ASSERT(count < 0x100);
+
+    m_worldRadius = 70.0f;
 
     m_points = std::span<EGG::Vector3f>(new EGG::Vector3f[count], count);
     m_worldPoints = std::span<EGG::Vector3f>(new EGG::Vector3f[count], count);
