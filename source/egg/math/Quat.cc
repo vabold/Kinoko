@@ -135,6 +135,4 @@ void Quatf::read(Stream &stream) {
     w = stream.read_f32();
 }
 
-const Quatf Quatf::ident = Quatf(1.0f, Vector3f::zero);
-
 } // namespace EGG

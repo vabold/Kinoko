@@ -79,6 +79,10 @@ struct Vector2f {
     static const Vector2f ex, ey;
 };
 
+inline constexpr Vector2f Vector2f::zero = Vector2f(0.0f, 0.0f); ///< @addr{0x80386F78}
+inline constexpr Vector2f Vector2f::ex = Vector2f(1.0f, 0.0f);   ///< @addr{0x80386F80}
+inline constexpr Vector2f Vector2f::ey = Vector2f(0.0f, 1.0f);   ///< @addr{0x80386F88}
+
 /// @brief A 3D float vector.
 struct Vector3f {
 #ifdef BUILD_DEBUG
@@ -242,5 +246,14 @@ struct Vector3f {
     static const Vector3f ex, ey, ez;
     static const Vector3f inf;
 };
+
+inline constexpr Vector3f Vector3f::zero = Vector3f(0.0f, 0.0f, 0.0f); ///< @addr{0x80384BA0}
+inline constexpr Vector3f Vector3f::ex = Vector3f(1.0f, 0.0f, 0.0f);   ///< @addr{0x80384BB8}
+inline constexpr Vector3f Vector3f::ey = Vector3f(0.0f, 1.0f, 0.0f);   ///< @addr{0x80384BD0}
+inline constexpr Vector3f Vector3f::ez = Vector3f(0.0f, 0.0f, 1.0f);   ///< @addr{0x80384BE8}
+
+/// @addr{0x809C3C04}
+inline constexpr Vector3f Vector3f::inf = Vector3f(std::numeric_limits<f32>::infinity(),
+        std::numeric_limits<f32>::infinity(), std::numeric_limits<f32>::infinity());
 
 } // namespace EGG
