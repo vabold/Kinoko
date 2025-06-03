@@ -118,17 +118,4 @@ void Vector3f::read(Stream &stream) {
     z = stream.read_f32();
 }
 
-const Vector2f Vector2f::zero = Vector2f(0.0f, 0.0f); ///< @addr{0x80386F78}
-const Vector2f Vector2f::ex = Vector2f(1.0f, 0.0f);   ///< @addr{0x80386F80}
-const Vector2f Vector2f::ey = Vector2f(0.0f, 1.0f);   ///< @addr{0x80386F88}
-
-const Vector3f Vector3f::zero = Vector3f(0.0f, 0.0f, 0.0f); ///< @addr{0x80384BA0}
-const Vector3f Vector3f::ex = Vector3f(1.0f, 0.0f, 0.0f);   ///< @addr{0x80384BB8}
-const Vector3f Vector3f::ey = Vector3f(0.0f, 1.0f, 0.0f);   ///< @addr{0x80384BD0}
-const Vector3f Vector3f::ez = Vector3f(0.0f, 0.0f, 1.0f);   ///< @addr{0x80384BE8}
-
-/// @addr{0x809C3C04}
-const Vector3f Vector3f::inf = Vector3f(std::numeric_limits<f32>::infinity(),
-        std::numeric_limits<f32>::infinity(), std::numeric_limits<f32>::infinity());
-
 } // namespace EGG

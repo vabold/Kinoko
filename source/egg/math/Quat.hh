@@ -118,4 +118,6 @@ struct Quatf {
     static const Quatf ident;
 };
 
+inline constexpr Quatf Quatf::ident = Quatf(1.0f, Vector3f::zero);
+
 } // namespace EGG

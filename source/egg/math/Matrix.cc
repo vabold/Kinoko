@@ -6,30 +6,6 @@ namespace EGG {
 
 using namespace Mathf;
 
-#ifdef BUILD_DEBUG
-Matrix34f::Matrix34f() {
-    a.fill(std::numeric_limits<f32>::signaling_NaN());
-}
-#else
-Matrix34f::Matrix34f() = default;
-#endif
-
-Matrix34f::Matrix34f(f32 _e00, f32 _e01, f32 _e02, f32 _e03, f32 _e10, f32 _e11, f32 _e12, f32 _e13,
-        f32 _e20, f32 _e21, f32 _e22, f32 _e23) {
-    mtx[0][0] = _e00;
-    mtx[0][1] = _e01;
-    mtx[0][2] = _e02;
-    mtx[0][3] = _e03;
-    mtx[1][0] = _e10;
-    mtx[1][1] = _e11;
-    mtx[1][2] = _e12;
-    mtx[1][3] = _e13;
-    mtx[2][0] = _e20;
-    mtx[2][1] = _e21;
-    mtx[2][2] = _e22;
-    mtx[2][3] = _e23;
-}
-
 /// @addr{0x80230118}
 /// @brief Sets matrix from rotation and position.
 void Matrix34f::makeQT(const Quatf &q, const Vector3f &t) {
@@ -337,12 +313,5 @@ Matrix34f Matrix34f::transpose() const {
 
     return ret;
 }
-
-/// @addr{0x80384370}
-const Matrix34f Matrix34f::ident(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-        0.0f);
-
-const Matrix34f Matrix34f::zero(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-        0.0f);
 
 } // namespace EGG
