@@ -27,8 +27,9 @@ public:
 protected:
     ObjectCollisionConvexHull(size_t count);
 
-private:
     std::span<EGG::Vector3f> m_points;
+
+private:
     std::span<EGG::Vector3f> m_worldPoints;
     f32 m_worldRadius;
 };
