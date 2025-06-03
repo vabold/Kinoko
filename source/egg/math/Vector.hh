@@ -243,14 +243,16 @@ struct Vector3f {
     f32 z;
 
     static const Vector3f zero;
+    static const Vector3f unit;
     static const Vector3f ex, ey, ez;
     static const Vector3f inf;
 };
 
 inline constexpr Vector3f Vector3f::zero = Vector3f(0.0f, 0.0f, 0.0f); ///< @addr{0x80384BA0}
-inline constexpr Vector3f Vector3f::ex = Vector3f(1.0f, 0.0f, 0.0f);   ///< @addr{0x80384BB8}
-inline constexpr Vector3f Vector3f::ey = Vector3f(0.0f, 1.0f, 0.0f);   ///< @addr{0x80384BD0}
-inline constexpr Vector3f Vector3f::ez = Vector3f(0.0f, 0.0f, 1.0f);   ///< @addr{0x80384BE8}
+inline constexpr Vector3f Vector3f::unit = Vector3f(1.0f, 1.0f, 1.0f);
+inline constexpr Vector3f Vector3f::ex = Vector3f(1.0f, 0.0f, 0.0f); ///< @addr{0x80384BB8}
+inline constexpr Vector3f Vector3f::ey = Vector3f(0.0f, 1.0f, 0.0f); ///< @addr{0x80384BD0}
+inline constexpr Vector3f Vector3f::ez = Vector3f(0.0f, 0.0f, 1.0f); ///< @addr{0x80384BE8}
 
 /// @addr{0x809C3C04}
 inline constexpr Vector3f Vector3f::inf = Vector3f(std::numeric_limits<f32>::infinity(),
