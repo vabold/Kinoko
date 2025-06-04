@@ -814,6 +814,9 @@ void KartMove::clearDrift() {
     state()->setHop(false);
     state()->setSlipdriftCharge(false);
     state()->setDriftManual(false);
+    state()->setDriftAuto(false);
+    m_autoDriftAngle = 0.0f;
+    m_hopStickX = 0;
     m_autoDriftStartFrameCounter = 0;
 }
 
