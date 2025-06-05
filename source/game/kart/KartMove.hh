@@ -123,7 +123,7 @@ public:
     bool canStartDrift() const {
         constexpr f32 MINIMUM_DRIFT_THRESOLD = 0.55f;
 
-        return m_speed > MINIMUM_DRIFT_THRESOLD * m_baseSpeed;
+        return m_speed >= MINIMUM_DRIFT_THRESOLD * m_baseSpeed;
     }
 
     void tryStartBoostPanel();
