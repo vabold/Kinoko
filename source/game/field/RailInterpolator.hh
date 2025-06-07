@@ -30,6 +30,10 @@ public:
             EGG::Vector3f &curTangentDir) = 0;
     virtual void getPathLocation(f32 t, s16 &idx, f32 &len) = 0;
 
+    void setPerPointVelocities(bool isSet) {
+        m_usePerPointVelocities = isSet;
+    }
+
     /// @addr{0x806C63A8}
     void setT(f32 t) {
         m_segmentT = t;

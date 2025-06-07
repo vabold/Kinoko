@@ -176,6 +176,8 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
     switch (id) {
     case ObjectId::WLWallGC:
         return new ObjectWLWallGC(params);
+    case ObjectId::Boble:
+        return new ObjectBoble(params);
     case ObjectId::DokanSFC:
         return new ObjectDokan(params);
     case ObjectId::OilSFC:
