@@ -1,6 +1,7 @@
 #pragma once
 
 #include "game/system/KPadController.hh"
+#include "game/system/Random.hh"
 #include "game/system/map/MapdataCheckPoint.hh"
 #include "game/system/map/MapdataJugemPoint.hh"
 
@@ -138,6 +139,7 @@ private:
     RaceManager();
     ~RaceManager() override;
 
+    Random m_random;
     Player m_player;
     TimerManager m_timerManager;
     Stage m_stage;
@@ -145,6 +147,7 @@ private:
     u32 m_timer;
 
     static constexpr u16 STAGE_COUNTDOWN_DURATION = 240;
+    static constexpr u32 RNG_SEED = 0x74A1B095;
 
     static RaceManager *s_instance; ///< @addr{0x809BD730}
 };

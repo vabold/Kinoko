@@ -3,6 +3,7 @@
 #include "game/field/BoxColManager.hh"
 #include "game/field/CollisionDirector.hh"
 #include "game/field/ObjectDirector.hh"
+#include "game/field/RailManager.hh"
 #include "game/item/ItemDirector.hh"
 #include "game/kart/KartObjectManager.hh"
 #include "game/system/CourseMap.hh"
@@ -57,6 +58,7 @@ void RaceScene::createEngines() {
 
     {
         ScopeLock<GroupID> lock(GroupID::Object);
+        Field::RailManager::CreateInstance();
         Field::ObjectDirector::CreateInstance();
     }
 }
@@ -104,6 +106,7 @@ void RaceScene::destroyEngines() {
     System::KPadDirector::Instance()->endGhostProxies();
     Kart::KartObjectManager::DestroyInstance();
     Field::ObjectDirector::DestroyInstance();
+    Field::RailManager::DestroyInstance();
     Field::CollisionDirector::DestroyInstance();
     Item::ItemDirector::DestroyInstance();
     Field::BoxColManager::DestroyInstance();

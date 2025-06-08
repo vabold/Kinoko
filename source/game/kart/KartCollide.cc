@@ -62,7 +62,8 @@ void KartCollide::calcHitboxes() {
 /// @stage All
 /// @addr{0x80572C20}
 void KartCollide::findCollision() {
-    const EGG::Quatf &rot = state()->isEndHalfPipe() ? mainRot() : fullRot();
+    bool wasHalfPipe = state()->isEndHalfPipe() || state()->isActionMidZipper();
+    const EGG::Quatf &rot = wasHalfPipe ? mainRot() : fullRot();
     calcBodyCollision(move()->totalScale(), body()->sinkDepth(), rot, scale());
 
     auto &colData = collisionData();
@@ -150,7 +151,7 @@ void KartCollide::FUN_805B72B8(f32 param_1, f32 param_2, bool lockXZ, bool addEx
     EGG::Vector3f step1 = relPos.cross(collisionDir);
     EGG::Vector3f step2 = rotMat.multVector33(step1);
     EGG::Vector3f step3 = step2.cross(relPos);
-    f32 val = (-directionalVelocity * (param_2 + 1.0f)) / (1.0f + collisionDir.dot(step3));
+    f32 val = (-directionalVelocity * (1.0f + param_2)) / (1.0f + collisionDir.dot(step3));
     EGG::Vector3f step4 = collisionDir.cross(-colData.vel);
     EGG::Vector3f step5 = step4.cross(collisionDir);
     step5.normalise();
@@ -243,6 +244,12 @@ void KartCollide::calcBodyCollision(f32 totalScale, f32 sinkDepth, const EGG::Qu
 
             if (!FUN_805B6A9C(collisionData, hitbox, minMax, posRel, count, maskOut, colInfo)) {
                 bVar1 = true;
+
+                if (colInfo.movingFloorDist > -std::numeric_limits<f32>::min()) {
+                    collisionData.bHasRoadVel = true;
+                    collisionData.roadVelocity = colInfo.roadVelocity;
+                }
+
                 processBody(collisionData, hitbox, &colInfo, &maskOut);
             }
         }
@@ -443,6 +450,11 @@ void KartCollide::calcWheelCollision(u16 /*wheelIdx*/, CollisionGroup *hitboxGro
 
     collisionData.relPos = firstHitbox.worldPos() - pos();
     collisionData.vel = colVel;
+
+    if (colInfo.movingFloorDist > -std::numeric_limits<f32>::min()) {
+        collisionData.bHasRoadVel = true;
+        collisionData.roadVelocity = colInfo.roadVelocity;
+    }
 
     processWheel(collisionData, firstHitbox, &colInfo, &kclOut);
 
@@ -699,7 +711,8 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
 
     Field::KCLTypeMask jumpPadMask = KCL_TYPE_BIT(COL_TYPE_JUMP_PAD);
     if (*maskOut & jumpPadMask && colDirector->findClosestCollisionEntry(maskOut, jumpPadMask)) {
-        if (!state()->isTouchingGround() || !state()->isJumpPad()) {
+        if ((!state()->isTouchingGround() || !state()->isJumpPad()) &&
+                !state()->isJumpPadMushroomVelYInc()) {
             move()->padType().setBit(KartMove::ePadType::JumpPad);
             closestColEntry = colDirector->closestCollisionEntry();
             state()->setJumpPadVariant(KCL_VARIANT_TYPE(closestColEntry->attribute));

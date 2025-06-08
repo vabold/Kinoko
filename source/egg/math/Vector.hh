@@ -216,10 +216,17 @@ struct Vector3f {
         return diff.squaredLength();
     }
 
+    /// @addr{0x806A62A4}
+    /// @brief Multiplies a vector by the inverse of val.
+    [[nodiscard]] EGG::Vector3f multInv(f32 val) const {
+        return *this * (1.0f / val);
+    }
+
     [[nodiscard]] f32 ps_dot() const;
     [[nodiscard]] f32 ps_dot(const EGG::Vector3f &rhs) const;
     [[nodiscard]] f32 ps_squareMag() const;
     f32 normalise();
+    void normalise2();
     [[nodiscard]] Vector3f maximize(const Vector3f &rhs) const;
     [[nodiscard]] Vector3f minimize(const Vector3f &rhs) const;
     [[nodiscard]] f32 ps_sqDistance(const Vector3f &rhs) const;

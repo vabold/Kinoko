@@ -16,12 +16,7 @@ bool CollisionDirector::checkSphereFull(f32 radius, const EGG::Vector3f &v0,
         const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut,
         u32 timeOffset) {
     if (pInfo) {
-        pInfo->bbox.min = EGG::Vector3f::zero;
-        pInfo->bbox.max = EGG::Vector3f::zero;
-        pInfo->_50 = -std::numeric_limits<f32>::min();
-        pInfo->wallDist = -std::numeric_limits<f32>::min();
-        pInfo->floorDist = -std::numeric_limits<f32>::min();
-        pInfo->perpendicularity = 0.0f;
+        pInfo->reset();
     }
 
     if (pFlagsOut) {
@@ -61,11 +56,7 @@ bool CollisionDirector::checkSphereFullPush(f32 radius, const EGG::Vector3f &v0,
         const EGG::Vector3f &v1, KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut,
         u32 timeOffset) {
     if (pInfo) {
-        pInfo->bbox.setZero();
-        pInfo->_50 = -std::numeric_limits<f32>::min();
-        pInfo->wallDist = -std::numeric_limits<f32>::min();
-        pInfo->floorDist = -std::numeric_limits<f32>::min();
-        pInfo->perpendicularity = 0.0f;
+        pInfo->reset();
     }
 
     if (pFlagsOut) {
@@ -176,12 +167,7 @@ bool CollisionDirector::checkSphereCachedFullPush(f32 radius, const EGG::Vector3
         const EGG::Vector3f &prevPos, KCLTypeMask typeMask, CollisionInfo *colInfo,
         KCLTypeMask *typeMaskOut, u32 timeOffset) {
     if (colInfo) {
-        colInfo->bbox.min.setZero();
-        colInfo->bbox.max.setZero();
-        colInfo->_50 = -std::numeric_limits<f32>::min();
-        colInfo->wallDist = -std::numeric_limits<f32>::min();
-        colInfo->floorDist = -std::numeric_limits<f32>::min();
-        colInfo->perpendicularity = 0.0f;
+        colInfo->reset();
     }
 
     if (typeMaskOut) {

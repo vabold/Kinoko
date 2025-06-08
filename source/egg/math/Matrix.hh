@@ -46,11 +46,19 @@ public:
     [[nodiscard]] Vector3f multVector(const Vector3f &vec) const;
     [[nodiscard]] Vector3f ps_multVector(const Vector3f &vec) const;
     [[nodiscard]] Vector3f multVector33(const Vector3f &vec) const;
+    [[nodiscard]] Vector3f ps_multVector33(const Vector3f &vec) const;
     void inverseTo33(Matrix34f &out) const;
+    bool ps_inverse(Matrix34f &out) const;
     [[nodiscard]] Matrix34f transpose() const;
 
     [[nodiscard]] Vector3f translation() const {
         return Vector3f(mtx[0][3], mtx[1][3], mtx[2][3]);
+    }
+
+    /// @addr{0x80537B80}
+    /// @brief Get a particular column from a matrix.
+    [[nodiscard]] Vector3f base(size_t col) const {
+        return Vector3f(mtx[0][col], mtx[1][col], mtx[2][col]);
     }
 
     static const Matrix34f ident;

@@ -88,6 +88,12 @@ void SceneManager::destroyScene(Scene *scene) {
 
     Scene *parent = scene->parent();
     m_creator->destroy(scene->id());
+
+    // ADDED: The original library does not actually delete the scene, but we run into leaks
+    // So, we delete the scene that's provided to the function
+    auto *heap = scene->heap();
+    delete scene;
+
     m_currentScene = nullptr;
 
     if (parent) {
@@ -95,7 +101,7 @@ void SceneManager::destroyScene(Scene *scene) {
         m_currentScene = parent;
     }
 
-    scene->heap()->destroy();
+    heap->destroy();
     Heap *parentHeap = parent ? parent->heap() : s_rootHeap;
     parentHeap->becomeCurrentHeap();
 }

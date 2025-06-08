@@ -108,18 +108,14 @@ void KartDynamics::calc(f32 dt, f32 maxSpeed, bool air) {
     EGG::Vector3f playerBackHoriz = playerBack;
     playerBackHoriz.y = 0.0f;
 
-    if (std::numeric_limits<f32>::epsilon() < playerBackHoriz.squaredLength()) {
+    if (playerBackHoriz.squaredLength() > std::numeric_limits<f32>::epsilon()) {
         playerBackHoriz.normalise();
         const auto [proj, rej] = m_extVel.projAndRej(playerBackHoriz);
         const EGG::Vector3f &speedBack = proj;
         m_extVel = rej;
 
         f32 norm = speedBack.squaredLength();
-        if (std::numeric_limits<f32>::epsilon() < norm) {
-            norm = EGG::Mathf::sqrt(norm);
-        } else {
-            norm = 0.0f;
-        }
+        norm = norm > std::numeric_limits<f32>::epsilon() ? EGG::Mathf::sqrt(norm) : 0.0f;
 
         m_speedFix = norm * playerBack.dot(playerBackHoriz);
         if (speedBack.dot(playerBackHoriz) < 0.0f) {
@@ -149,13 +145,13 @@ void KartDynamics::calc(f32 dt, f32 maxSpeed, bool air) {
 
     EGG::Vector3f angVelSum = m_angVel2 + m_angVel1 + m_angVel0Factor * m_angVel0;
 
-    if (std::numeric_limits<f32>::epsilon() < angVelSum.squaredLength()) {
+    if (angVelSum.squaredLength() > std::numeric_limits<f32>::epsilon()) {
         m_mainRot += m_mainRot.multSwap(angVelSum) * (dt * 0.5f);
 
-        if (EGG::Mathf::abs(m_mainRot.norm()) < std::numeric_limits<f32>::epsilon()) {
-            m_mainRot = EGG::Quatf::ident;
-        } else {
+        if (EGG::Mathf::abs(m_mainRot.squaredNorm()) > std::numeric_limits<f32>::epsilon()) {
             m_mainRot.normalise();
+        } else {
+            m_mainRot = EGG::Quatf::ident;
         }
     }
 
@@ -163,10 +159,10 @@ void KartDynamics::calc(f32 dt, f32 maxSpeed, bool air) {
         stabilize();
     }
 
-    if (EGG::Mathf::abs(m_mainRot.norm()) < std::numeric_limits<f32>::epsilon()) {
-        m_mainRot = EGG::Quatf::ident;
-    } else {
+    if (EGG::Mathf::abs(m_mainRot.squaredNorm()) > std::numeric_limits<f32>::epsilon()) {
         m_mainRot.normalise();
+    } else {
+        m_mainRot = EGG::Quatf::ident;
     }
 
     m_fullRot = m_extraRot.multSwap(m_mainRot).multSwap(m_specialRot);

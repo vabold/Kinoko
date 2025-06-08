@@ -24,6 +24,7 @@ struct CollisionData {
     EGG::Vector3f vel;
     EGG::Vector3f relPos;
     EGG::Vector3f movement;
+    EGG::Vector3f roadVelocity;
     f32 speedFactor;
     f32 rotFactor;
     Field::KCLTypeMask closestFloorFlags; ///< The KCL flag's @ref KColType.
@@ -38,6 +39,7 @@ struct CollisionData {
     bool bInvisibleWallOnly;
     bool bSoftWall;
     bool bTrickable;
+    bool bHasRoadVel;
     bool bWallAtLeftCloser;
     bool bWallAtRightCloser;
 };

@@ -38,7 +38,8 @@ void KartHalfPipe::calc() {
 
     calcTrick();
 
-    if (collide()->surfaceFlags().offBit(KartCollide::eSurfaceFlags::StopHalfPipeState) &&
+    if (!state()->isInAction() &&
+            collide()->surfaceFlags().offBit(KartCollide::eSurfaceFlags::StopHalfPipeState) &&
             m_touchingZipper && state()->isAirStart()) {
         dynamics()->setExtVel(EGG::Vector3f::zero);
         state()->setOverZipper(true);

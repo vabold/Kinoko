@@ -279,10 +279,6 @@ const u16 *KColData::searchBlock(const EGG::Vector3f &point) {
     return reinterpret_cast<const u16 *>(curBlock + (offset & ~0x80000000));
 }
 
-u16 KColData::prismCache(u32 idx) const {
-    return m_prismCache[idx];
-}
-
 /// @brief Computes a prism vertex based off of the triangle's normal vectors
 /// @addr{0x807BDF54}
 /// @par Triangle Vertices Formula
@@ -699,6 +695,38 @@ void CollisionInfo::update(f32 now_dist, const EGG::Vector3f &offset, const EGG:
 
         updateWall(now_dist, fnrm);
     }
+}
+
+/// @addr{0x807C26AC}
+void CollisionInfo::transformInfo(CollisionInfo &rhs, const EGG::Matrix34f &mtx,
+        const EGG::Vector3f &v) {
+    rhs.bbox.min = mtx.ps_multVector33(rhs.bbox.min);
+    rhs.bbox.max = mtx.ps_multVector33(rhs.bbox.max);
+
+    EGG::Vector3f min = rhs.bbox.min;
+
+    rhs.bbox.min = min.minimize(rhs.bbox.max);
+    rhs.bbox.max = min.maximize(rhs.bbox.max);
+
+    bbox.min = bbox.min.minimize(rhs.bbox.min);
+    bbox.max = bbox.max.maximize(rhs.bbox.max);
+
+    if (floorDist < rhs.floorDist) {
+        floorDist = rhs.floorDist;
+        floorNrm = mtx.ps_multVector33(rhs.floorNrm);
+    }
+
+    if (wallDist < rhs.wallDist) {
+        wallDist = rhs.wallDist;
+        wallNrm = mtx.ps_multVector33(rhs.wallNrm);
+    }
+
+    if (movingFloorDist < rhs.floorDist) {
+        movingFloorDist = rhs.floorDist;
+        roadVelocity = v;
+    }
+
+    perpendicularity = std::max(perpendicularity, rhs.perpendicularity);
 }
 
 } // namespace Field

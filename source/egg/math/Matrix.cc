@@ -250,6 +250,18 @@ Vector3f Matrix34f::multVector33(const Vector3f &vec) const {
     return ret;
 }
 
+/// @addr{0x8019A970}
+/// @brief Paired-singles impl. of @ref multVector33.
+Vector3f Matrix34f::ps_multVector33(const Vector3f &vec) const {
+    Vector3f ret;
+
+    ret.x = fma(mtx[0][2], vec.z, fma(mtx[0][0], vec.x, mtx[0][1] * vec.y));
+    ret.y = fma(mtx[1][2], vec.z, fma(mtx[1][0], vec.x, mtx[1][1] * vec.y));
+    ret.z = fma(mtx[2][2], vec.z, fma(mtx[2][0], vec.x, mtx[2][1] * vec.y));
+
+    return ret;
+}
+
 /// @addr{0x8022F90C}
 /// @brief Inverts the 3x3 portion of the 3x4 matrix.
 /// @details Unlike a typical matrix inversion, if the determinant is 0, then this function returns
@@ -278,6 +290,38 @@ void Matrix34f::inverseTo33(Matrix34f &out) const {
     out[0, 1] = -(mtx[0][1] * mtx[2][2] - mtx[2][1] * mtx[0][2]) * invDet;
     out[1, 0] = -(mtx[1][0] * mtx[2][2] - mtx[2][0] * mtx[1][2]) * invDet;
     out[1, 1] = (mtx[0][0] * mtx[2][2] - mtx[2][0] * mtx[0][2]) * invDet;
+}
+
+/// @addr{0x80199FC8}
+/// @warn The out reference will not be initialized if the matrix is singular.
+/// @return Whether or not the matrix is invertible.
+bool Matrix34f::ps_inverse(Matrix34f &out) const {
+    f32 fVar14 = fms(mtx[0][1], mtx[1][2], mtx[1][1] * mtx[0][2]);
+    f32 fVar15 = fms(mtx[1][1], mtx[2][2], mtx[2][1] * mtx[1][2]);
+    f32 fVar13 = fms(mtx[2][1], mtx[0][2], mtx[0][1] * mtx[2][2]);
+    f32 determinant = fma(mtx[2][0], fVar14, fma(mtx[1][0], fVar13, mtx[0][0] * fVar15));
+
+    if (determinant == 0.0f) {
+        return false;
+    }
+
+    f32 invDet = 1.0f / determinant;
+    invDet = -fms(determinant, invDet * invDet, invDet + invDet);
+
+    out[0, 0] = fVar15 * invDet;
+    out[0, 1] = fVar13 * invDet;
+    out[1, 0] = fms(mtx[1][2], mtx[2][0], mtx[2][2] * mtx[1][0]) * invDet;
+    out[1, 1] = fms(mtx[2][2], mtx[0][0], mtx[0][2] * mtx[2][0]) * invDet;
+    out[2, 0] = fms(mtx[1][0], mtx[2][1], mtx[1][1] * mtx[2][0]) * invDet;
+    out[2, 1] = fms(mtx[0][1], mtx[2][0], mtx[0][0] * mtx[2][1]) * invDet;
+    out[2, 2] = fms(mtx[0][0], mtx[1][1], mtx[0][1] * mtx[1][0]) * invDet;
+    out[0, 2] = fVar14 * invDet;
+    out[0, 3] = -fma(out[0, 2], mtx[2][3], fma(out[0, 1], mtx[1][3], out[0, 0] * mtx[0][3]));
+    out[1, 2] = fms(mtx[0][2], mtx[1][0], mtx[1][2] * mtx[0][0]) * invDet;
+    out[1, 3] = -fma(out[1, 2], mtx[2][3], fma(out[1, 1], mtx[1][3], out[1, 0] * mtx[0][3]));
+    out[2, 3] = -fma(out[2, 2], mtx[2][3], fma(out[2, 1], mtx[1][3], out[2, 0] * mtx[0][3]));
+
+    return true;
 }
 
 /// @brief Transposes the 3x3 portion of the matrix.
