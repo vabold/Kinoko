@@ -5,7 +5,6 @@
 #include <egg/math/Matrix.hh>
 
 #include <list>
-#include <vector>
 
 namespace Field {
 
@@ -53,8 +52,8 @@ struct KartAccessor {
     Field::ObjectCollisionKart *objectCollisionKart;
     KartState *state;
 
-    std::vector<KartSuspension *> suspensions;
-    std::vector<KartTire *> tires;
+    fixed_vector<KartSuspension *> suspensions;
+    fixed_vector<KartTire *> tires;
 
     Field::BoxColUnit *boxColUnit;
 };
