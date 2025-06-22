@@ -9,7 +9,7 @@ ObjectKinoko::ObjectKinoko(const System::MapdataGeoObj &params)
 
     m_restFrame = 0;
     m_pulseFrame = 1; // (-1*-1) % PULSE_DURATION;
-    m_pulseFalloff = 0.1f;
+    m_pulseFalloff = 0;
 }
 
 /// @adrr{0x80807A54}

@@ -123,7 +123,7 @@ void BoxColManager::calc() {
 
     // Reorganize the high points
     for (size_t i = 1; i < static_cast<size_t>(m_unitCount); ++i) {
-        for (size_t j = i; m_highPoints[j - 1].z > m_highPoints[j].z && j >= 1; --j) {
+        for (size_t j = i; j >= 1 && m_highPoints[j - 1].z > m_highPoints[j].z; --j) {
             BoxColHighPoint &upper = m_highPoints[j];
             BoxColHighPoint &lower = m_highPoints[j - 1];
 

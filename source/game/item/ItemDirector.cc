@@ -33,6 +33,10 @@ void ItemDirector::DestroyInstance() {
     delete instance;
 }
 
+ItemInventory &ItemDirector::itemInventory(s16 idx) {
+    return m_karts[idx].inventory();
+}
+
 /// @addr{0x807992D8}
 ItemDirector::ItemDirector() {
     size_t playerCount = System::RaceConfig::Instance()->raceScenario().playerCount;

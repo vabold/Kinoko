@@ -20,7 +20,7 @@ public:
 
     static ItemDirector *CreateInstance();
     static void DestroyInstance();
-
+    [[nodiscard]] ItemInventory &itemInventory(s16 idx);
     [[nodiscard]] static ItemDirector *Instance() {
         return s_instance;
     }
