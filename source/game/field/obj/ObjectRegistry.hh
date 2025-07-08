@@ -9,6 +9,7 @@
 #include "game/field/obj/ObjectKinoko.hh"
 #include "game/field/obj/ObjectKuribo.hh"
 #include "game/field/obj/ObjectNoImpl.hh"
+#include "game/field/obj/ObjectObakeBlock.hh"
 #include "game/field/obj/ObjectOilSFC.hh"
 #include "game/field/obj/ObjectParasolR.hh"
 #include "game/field/obj/ObjectPuchiPakkun.hh"
