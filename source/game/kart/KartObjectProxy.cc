@@ -402,6 +402,16 @@ bool KartObjectProxy::isInRespawn() const {
     return move()->respawnTimer() > 0 || move()->respawnPostLandTimer() > 0;
 }
 
+/// @addr{0x805911A8}
+Field::KCLTypeMask KartObjectProxy::wallKclType() const {
+    return collisionData().closestWallFlags;
+}
+
+/// @addr{0x805911C0}
+u32 KartObjectProxy::wallKclVariant() const {
+    return collisionData().closestWallSettings;
+}
+
 /// @addr{0x805901D0}
 void KartObjectProxy::apply(size_t idx) {
     m_accessor = KartObjectManager::Instance()->object(idx)->accessor();

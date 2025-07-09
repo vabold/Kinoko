@@ -27,8 +27,10 @@ struct CollisionData {
     EGG::Vector3f roadVelocity;
     f32 speedFactor;
     f32 rotFactor;
-    Field::KCLTypeMask closestFloorFlags; ///< The KCL flag's @ref KColType.
-    u32 closestFloorSettings;             ///< The KCL flag's "variant"
+    Field::KCLTypeMask closestFloorFlags; ///< The colliding floor KCL flag's @ref KColType.
+    u32 closestFloorSettings;             ///< The colliding floor KCL flag's "variant"
+    Field::KCLTypeMask closestWallFlags;  ///< The colliding wall KCL flag's @ref KColType.
+    u32 closestWallSettings;              ///< The colliding wall KCL flag's "variant"
     s32 intensity;                        ///< The KCL flag's "wheel depth"
     f32 colPerpendicularity;
 
