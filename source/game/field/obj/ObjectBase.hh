@@ -51,6 +51,10 @@ public:
         return m_id;
     }
 
+    [[nodiscard]] const EGG::Vector3f &pos() const {
+        return m_pos;
+    }
+
     void setPos(const EGG::Vector3f &pos) {
         m_flags |= 0x1;
         m_pos = pos;

@@ -34,6 +34,11 @@ public:
             const EGG::Vector3f &Frot, bool ignoreX);
     void applyWrenchScaled(const EGG::Vector3f &p, const EGG::Vector3f &f, f32 scale);
 
+    /// @addr{0x805B6388}
+    void addForce(const EGG::Vector3f &pos) {
+        m_totalForce += pos;
+    }
+
     /// @beginSetters
     void setPos(const EGG::Vector3f &pos) {
         m_pos = pos;

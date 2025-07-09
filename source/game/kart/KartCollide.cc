@@ -619,6 +619,10 @@ bool KartCollide::processWall(CollisionData &collisionData, Field::KCLTypeMask *
             colDirector->findClosestCollisionEntry(maskOut,
                     KCL_TYPE_DRIVER_WALL_NO_INVISIBLE_WALL)) {
         auto *entry = colDirector->closestCollisionEntry();
+
+        collisionData.closestWallFlags = KCL_ATTRIBUTE_TYPE(entry->attribute);
+        collisionData.closestWallSettings = KCL_VARIANT_TYPE(entry->attribute);
+
         if (entry->attribute & KCL_TYPE_BIT(COL_TYPE_WALL_2)) {
             collisionData.bSoftWall = true;
         }
@@ -642,7 +646,7 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
         m_suspBottomHeightSoftWall += hitbox.worldPos().y - hitbox.radius();
     }
 
-    if (!(*maskOut & KCL_TYPE_VEHICLE_COLLIDEABLE)) {
+    if (!(*maskOut & KCL_TYPE_FLOOR)) {
         return;
     }
 
