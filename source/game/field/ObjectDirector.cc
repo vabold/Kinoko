@@ -7,6 +7,7 @@
 #include "game/kart/KartObject.hh"
 
 #include "game/system/CourseMap.hh"
+#include "game/system/RaceConfig.hh"
 
 namespace Field {
 
@@ -155,6 +156,10 @@ void ObjectDirector::createObjects() {
     m_calcObjects.reserve(maxCount);
     m_collisionObjects.reserve(maxCount);
 
+    auto *objDrivableDir = ObjectDrivableDirector::Instance();
+    const auto &raceScenario = System::RaceConfig::Instance()->raceScenario();
+    bool rGV2 = raceScenario.course == Course::SNES_Ghost_Valley_2;
+
     for (size_t i = 0; i < objectCount; ++i) {
         const auto *pObj = courseMap->getGeoObj(i);
         ASSERT(pObj);
@@ -167,6 +172,25 @@ void ObjectDirector::createObjects() {
         // Prevent construction of objects with disabled or no collision
         if (IsObjectBlacklisted(pObj->id())) {
             continue;
+        }
+
+        // rGV2's blocks are created outside of the factory function
+        if (rGV2) {
+            switch (static_cast<ObjectId>(pObj->id())) {
+            case ObjectId::ObakeBlockSFCc:
+            case ObjectId::ObakeBlock2SFCc:
+            case ObjectId::ObakeBlock3SFCc: {
+                // Create the manager if this is the first block.
+                auto *obakeManager = objDrivableDir->obakeManager();
+                if (!obakeManager) {
+                    objDrivableDir->createObakeManager(*pObj);
+                } else {
+                    obakeManager->addBlock(*pObj);
+                }
+            } break;
+            default:
+                break;
+            }
         }
 
         ObjectBase *object = createObject(*pObj);

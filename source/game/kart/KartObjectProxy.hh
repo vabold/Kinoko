@@ -1,5 +1,7 @@
 #pragma once
 
+#include "game/field/KCollisionTypes.hh"
+
 #include "game/system/KPadController.hh"
 
 #include <egg/math/Matrix.hh>
@@ -149,6 +151,8 @@ public:
     [[nodiscard]] f32 speedRatio() const;
     [[nodiscard]] f32 speedRatioCapped() const;
     [[nodiscard]] bool isInRespawn() const;
+    [[nodiscard]] Field::KCLTypeMask wallKclType() const;
+    [[nodiscard]] u32 wallKclVariant() const;
 
     [[nodiscard]] static std::list<KartObjectProxy *> &proxyList() {
         return s_proxyList;
