@@ -40,6 +40,7 @@ public:
     void makeRT(const Vector3f &r, const Vector3f &t);
     void makeR(const Vector3f &r);
     void makeS(const Vector3f &s);
+    void makeT(const Vector3f &t);
 
     /// @brief Zeroes every element of the matrix.
     void makeZero() {

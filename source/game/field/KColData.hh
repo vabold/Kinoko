@@ -13,6 +13,11 @@ namespace Field {
 struct CollisionInfoPartial {
     EGG::BoundBox3f bbox;
     EGG::Vector3f tangentOff;
+
+    void update(const EGG::Vector3f &offset) {
+        bbox.min = bbox.min.minimize(offset);
+        bbox.max = bbox.max.maximize(offset);
+    }
 };
 
 struct CollisionInfo {

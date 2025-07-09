@@ -32,8 +32,8 @@ Test Case                                                 | Frames      |     | 
 [`rpb-rta-0-59-978`](https://youtu.be/Z-lVl-7B-So)        | 1078 / 4007 | ❌ | Moving water
 [`rpb-ng-rta-1-12-656`](https://youtu.be/LujU0kJx-hU)     | 2491 / 4767 | ❌ | Moving water
 [`ryf-rta-0-58-648`](https://youtu.be/3IKzbmawUbk)        | 583 / 3927  | ❌ | Water
-[`rgv2-rta-0-49-992`](https://youtu.be/T7OVqaNUbzI)       | 663 / 3408  | ❌ | KMP
-[`rgv2-ng-rta-0-52-746`](https://youtu.be/jWRsMWo-55g)    | 3399 / 3573 | ❌ | KMP
+[`rgv2-rta-0-49-992`](https://youtu.be/T7OVqaNUbzI)       | 3408 / 3408 | ✔️ |
+[`rgv2-ng-rta-0-52-746`](https://youtu.be/jWRsMWo-55g)    | 3573 / 3573 | ✔️ |
 [`rmr-rta-1-41-193`](https://youtu.be/y7t4_xXuD2A)        | 6477 / 6477 | ✔️ |
 [`rsl-rta-1-12-225`](https://youtu.be/3p8yV_jjQ4o)        | 4741 / 4741 | ✔️ |
 [`rsl-ng-rta-2-03-750`](https://youtu.be/ahNGAaUzm6s)     | 7829 / 7829 | ✔️ |

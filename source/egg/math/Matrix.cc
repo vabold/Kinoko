@@ -128,6 +128,22 @@ void Matrix34f::makeS(const Vector3f &s) {
     mtx[2][2] = s.z;
 }
 
+/// @addr{0x802302C4}
+void Matrix34f::makeT(const Vector3f &t) {
+    mtx[0][0] = 1.0f;
+    mtx[0][1] = 0.0f;
+    mtx[0][2] = 0.0f;
+    mtx[1][0] = 0.0f;
+    mtx[1][1] = 1.0f;
+    mtx[1][2] = 0.0f;
+    mtx[2][0] = 0.0f;
+    mtx[2][1] = 0.0f;
+    mtx[2][2] = 1.0f;
+    mtx[0][3] = t.x;
+    mtx[1][3] = t.y;
+    mtx[2][3] = t.z;
+}
+
 /// @addr{0x805AE7B4}
 /// @brief Sets a 3x3 orthonormal basis for a local coordinate system.
 /// @details In a vector's orthogonal space, there are infinitely many vector pairs orthogonal to
