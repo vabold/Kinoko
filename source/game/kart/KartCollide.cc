@@ -995,6 +995,12 @@ Action KartCollide::handleReactLongCrushLoseItem(size_t /*idx*/) {
     return Action::UNK_12;
 }
 
+/// @addr{0x805737B8}
+Action KartCollide::handleReactSmallBump(size_t idx) {
+    move()->applyBumpForce(30.0f, objectCollisionKart()->GetHitDirection(idx), false);
+    return Action::None;
+}
+
 /// @addr{0x805733E4}
 Action KartCollide::handleReactHighLaunchLoseItem(size_t /*idx*/) {
     return Action::UNK_8;
@@ -1003,6 +1009,13 @@ Action KartCollide::handleReactHighLaunchLoseItem(size_t /*idx*/) {
 /// @addr{0x80573754}
 Action KartCollide::handleReactWeakWall(size_t /*idx*/) {
     move()->setSpeed(move()->speed() * 0.82f);
+    return Action::None;
+}
+
+/// @addr{0x80573790}
+Action KartCollide::handleReactOffroad(size_t /*idx*/) {
+    state()->setCollidingOffroad(true);
+    m_surfaceFlags.setBit(eSurfaceFlags::Offroad);
     return Action::None;
 }
 
@@ -1062,13 +1075,13 @@ std::array<KartCollide::ObjectCollisionHandler, 33> KartCollide::s_objectCollisi
         &KartCollide::handleReactLaunchSpinLoseItem,
         &KartCollide::handleReactKnockbackBumpLoseItem,
         &KartCollide::handleReactLongCrushLoseItem,
-        &KartCollide::handleReactNone,
+        &KartCollide::handleReactSmallBump,
         &KartCollide::handleReactNone,
         &KartCollide::handleReactNone,
         &KartCollide::handleReactHighLaunchLoseItem,
         &KartCollide::handleReactNone,
         &KartCollide::handleReactWeakWall,
-        &KartCollide::handleReactNone,
+        &KartCollide::handleReactOffroad,
         &KartCollide::handleReactLaunchSpin,
         &KartCollide::handleReactWallSpark,
         &KartCollide::handleReactNone,

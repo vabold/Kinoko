@@ -264,6 +264,16 @@ void KartAction::startAction1() {
     startRotation(2);
 }
 
+/// @addr{0x8056865C}
+void KartAction::startAction2() {
+    constexpr f32 EXT_VEL_SCALAR = 0.0f;
+    constexpr f32 EXT_VEL_KART = 30.0f;
+    constexpr f32 EXT_VEL_BIKE = 30.0f;
+    constexpr f32 NUM_ROTATIONS = 1.0f;
+
+    startLaunch(EXT_VEL_SCALAR, EXT_VEL_KART, EXT_VEL_BIKE, NUM_ROTATIONS, 0);
+}
+
 /// @addr{0x80568718}
 void KartAction::startAction3() {
     constexpr f32 EXT_VEL_SCALAR = 25.0f;
@@ -371,7 +381,7 @@ void KartAction::endAction1(bool arg) {
     }
 }
 
-/// @addr{0x80568C7C}
+/// @addr{0x80568C7C} @addr{0x805686DC}
 void KartAction::endLaunchAction(bool arg) {
     if (arg) {
         physics()->composeDecayingExtraRot(m_rotation);
@@ -414,7 +424,7 @@ const std::array<KartAction::RotationParams, 5> KartAction::s_rotationParams = {
 const std::array<KartAction::StartActionFunc, KartAction::MAX_ACTION> KartAction::s_onStart = {{
         &KartAction::startStub,
         &KartAction::startAction1,
-        &KartAction::startStub,
+        &KartAction::startAction2,
         &KartAction::startAction3,
         &KartAction::startStub,
         &KartAction::startAction5,
@@ -435,7 +445,7 @@ const std::array<KartAction::StartActionFunc, KartAction::MAX_ACTION> KartAction
 const std::array<KartAction::CalcActionFunc, KartAction::MAX_ACTION> KartAction::s_onCalc = {{
         &KartAction::calcStub,
         &KartAction::calcAction1,
-        &KartAction::calcStub,
+        &KartAction::calcLaunchAction,
         &KartAction::calcLaunchAction,
         &KartAction::calcStub,
         &KartAction::calcLaunchAction,
@@ -456,7 +466,7 @@ const std::array<KartAction::CalcActionFunc, KartAction::MAX_ACTION> KartAction:
 const std::array<KartAction::EndActionFunc, KartAction::MAX_ACTION> KartAction::s_onEnd = {{
         &KartAction::endStub,
         &KartAction::endAction1,
-        &KartAction::endStub,
+        &KartAction::endLaunchAction,
         &KartAction::endLaunchAction,
         &KartAction::endStub,
         &KartAction::endLaunchAction,

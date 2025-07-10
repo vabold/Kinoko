@@ -25,7 +25,7 @@ enum class Action {
 class KartAction : KartObjectProxy {
 public:
     enum class eFlags {
-        Landing = 1,
+        Landing = 0,
         Rotating = 3,
     };
     typedef EGG::TBitFlag<u32, eFlags> Flags;
@@ -96,6 +96,7 @@ private:
 
     void startStub();
     void startAction1();
+    void startAction2();
     void startAction3();
     void startAction5();
     void startAction9();

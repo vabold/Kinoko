@@ -83,10 +83,10 @@ ObjectCarTGE::ObjectCarTGE(const System::MapdataGeoObj &params)
 
     switch (m_carType) {
     case CarType::Normal:
-        m_dummyId = ObjectDirector::Instance()->flowTable().getIdfFromName("car_body_dummy");
+        m_dummyId = ObjectDirector::Instance()->flowTable().getIdFromName("car_body_dummy");
         break;
     case CarType::Truck:
-        m_dummyId = ObjectDirector::Instance()->flowTable().getIdfFromName("kart_truck_dummy");
+        m_dummyId = ObjectDirector::Instance()->flowTable().getIdFromName("kart_truck_dummy");
         break;
     default:
         PANIC("Bomb cars are not implemented!");

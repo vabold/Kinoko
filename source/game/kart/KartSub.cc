@@ -313,6 +313,12 @@ void KartSub::calcPass1() {
         move()->calcHopPhysics();
     }
 
+    if (state()->isCollidingOffroad()) {
+        const auto &stats = param()->stats();
+        speedFactor = stats.kclSpeed[3];
+        handlingFactor = stats.kclRot[3];
+    }
+
     move()->setKCLWheelSpeedFactor(speedFactor);
     move()->setKCLWheelRotFactor(handlingFactor);
 
