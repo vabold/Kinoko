@@ -144,6 +144,7 @@ public:
     void activateCrush(u16 timer);
     void calcCrushed();
     void calcScale();
+    void applyBumpForce(f32 speed, const EGG::Vector3f &hitDir, bool resetSpeed);
 
     void enterCannon();
     void calcCannon();
@@ -421,6 +422,7 @@ protected:
     s16 m_respawnPreLandTimer;  ///< Counts down from 4 when pressing A before landing from respawn.
     s16 m_respawnPostLandTimer; ///< Counts up to 4 if not accelerating after respawn landing.
     s16 m_respawnTimer;
+    s16 m_bumpTimer;
     DrivingDirection m_drivingDirection; ///< Current state of driver's direction.
     s16 m_backwardsAllowCounter;         ///< Tracks the 15f delay before reversing.
     PadType m_padType;

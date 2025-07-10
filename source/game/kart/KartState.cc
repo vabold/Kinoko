@@ -138,6 +138,7 @@ void KartState::resetFlags() {
 
     m_bZipperInvisibleWall = false;
 
+    m_bCollidingOffroad = false;
     m_bJumpPadDisableYsusForce = false;
 
     m_stickY = 0.0f;
@@ -487,6 +488,7 @@ void KartState::clearBitfield2() {
     m_bSkipWheelCalc = false;
     m_bJumpPadMushroomTrigger = false;
     m_bNoSparkInvisibleWall = false;
+    m_bCollidingOffroad = false;
     m_bInRespawn = false;
     m_bAfterRespawn = false;
     m_bCrushed = false;

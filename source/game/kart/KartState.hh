@@ -219,6 +219,10 @@ public:
         m_bNoSparkInvisibleWall = isSet;
     }
 
+    void setCollidingOffroad(bool isSet) {
+        m_bCollidingOffroad = isSet;
+    }
+
     void setInRespawn(bool isSet) {
         m_bInRespawn = isSet;
     }
@@ -533,6 +537,10 @@ public:
         return m_bNoSparkInvisibleWall;
     }
 
+    [[nodiscard]] bool isCollidingOffroad() const {
+        return m_bCollidingOffroad;
+    }
+
     [[nodiscard]] bool isInRespawn() const {
         return m_bInRespawn;
     }
@@ -685,6 +693,7 @@ private:
     bool m_bSkipWheelCalc;
     bool m_bJumpPadMushroomTrigger;
     bool m_bNoSparkInvisibleWall;
+    bool m_bCollidingOffroad;
     bool m_bInRespawn;
     bool m_bAfterRespawn;
     bool m_bCrushed;

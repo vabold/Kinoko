@@ -30,6 +30,8 @@ public:
             EGG::Vector3f &curTangentDir) = 0;
     virtual void getPathLocation(f32 t, s16 &idx, f32 &len) = 0;
 
+    [[nodiscard]] virtual f32 getCurrSegmentLength() const = 0;
+
     void setPerPointVelocities(bool isSet) {
         m_usePerPointVelocities = isSet;
     }
@@ -62,6 +64,10 @@ public:
 
     [[nodiscard]] const EGG::Vector3f &curTangentDir() const {
         return m_curTangentDir;
+    }
+
+    [[nodiscard]] f32 currVel() const {
+        return m_currVel;
     }
 
     [[nodiscard]] f32 segmentT() const {
@@ -124,6 +130,12 @@ public:
             EGG::Vector3f &curTangentDir) override;
     void getPathLocation(f32 t, s16 &idx, f32 &len) override;
 
+    /// @addr{0x806F050C}
+    [[nodiscard]] f32 getCurrSegmentLength() const override {
+        s16 idx = m_movementDirectionForward ? m_currPointIdx : m_nextPointIdx;
+        return m_transitions[idx].m_length;
+    }
+
 private:
     void calcNextSegment();
     EGG::Vector3f lerp(f32 t, u32 currIdx, u32 nextIdx) const;
@@ -149,6 +161,12 @@ public:
     void evalCubicBezierOnPath(f32 t, EGG::Vector3f &currDir,
             EGG::Vector3f &curTangentDir) override;
     void getPathLocation(f32 t, s16 &idx, f32 &len) override;
+
+    /// @addr{0x806EF09C}
+    [[nodiscard]] f32 getCurrSegmentLength() const override {
+        s16 idx = m_movementDirectionForward ? m_currPointIdx : m_nextPointIdx;
+        return m_transitions[idx].m_length;
+    }
 
 private:
     void calcCubicBezier(f32 t, u32 currIdx, u32 nextIdx, EGG::Vector3f &pos,

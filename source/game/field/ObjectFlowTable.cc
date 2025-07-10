@@ -20,7 +20,7 @@ ObjectFlowTable::ObjectFlowTable(const char *filename) {
 ObjectFlowTable::~ObjectFlowTable() = default;
 
 /// @addr{0x8082C178}
-ObjectId ObjectFlowTable::getIdfFromName(const char *name) const {
+ObjectId ObjectFlowTable::getIdFromName(const char *name) const {
     for (s16 i = 0; i < m_count; ++i) {
         const auto *curSet = set(i);
         ASSERT(curSet);
