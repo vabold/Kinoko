@@ -13,6 +13,11 @@ namespace Field {
 ObjectCollidable::ObjectCollidable(const System::MapdataGeoObj &params)
     : ObjectBase(params), m_collision(nullptr) {}
 
+/// @addr{0x8081F064}
+ObjectCollidable::ObjectCollidable(const char *objName, const EGG::Vector3f &pos,
+        const EGG::Vector3f &rot, const EGG::Vector3f &scale)
+    : ObjectBase(objName, pos, rot, scale), m_collision(nullptr) {}
+
 /// @addr{0x8067E384}
 ObjectCollidable::~ObjectCollidable() {
     delete m_collision;
