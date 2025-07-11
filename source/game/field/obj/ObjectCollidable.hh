@@ -16,6 +16,8 @@ namespace Field {
 class ObjectCollidable : public ObjectBase {
 public:
     ObjectCollidable(const System::MapdataGeoObj &params);
+    ObjectCollidable(const char *name, const EGG::Vector3f &pos, const EGG::Vector3f &rot,
+            const EGG::Vector3f &scale);
     ~ObjectCollidable() override;
 
     void load() override;

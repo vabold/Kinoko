@@ -15,6 +15,8 @@ namespace Field {
 class ObjectBase {
 public:
     ObjectBase(const System::MapdataGeoObj &params);
+    ObjectBase(const char *name, const EGG::Vector3f &pos, const EGG::Vector3f &rot,
+            const EGG::Vector3f &scale);
     virtual ~ObjectBase();
 
     virtual void init() {}
@@ -27,6 +29,8 @@ public:
     virtual void createCollision() = 0;
     virtual void loadRail();
     virtual void calcCollisionTransform() = 0;
+
+    [[nodiscard]] virtual const char *getName() const;
 
     /// @addr{0x806BF434}
     [[nodiscard]] virtual u32 loadFlags() const {
