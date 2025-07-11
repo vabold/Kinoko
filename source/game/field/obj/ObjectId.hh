@@ -5,6 +5,7 @@
 namespace Field {
 
 enum class ObjectId {
+    None = 0x0,
     DummyPole = 0x066,
     WLWallGC = 0xcb,
     Boble = 0xdd,

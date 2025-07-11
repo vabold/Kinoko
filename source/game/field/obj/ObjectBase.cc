@@ -18,6 +18,14 @@ ObjectBase::ObjectBase(const System::MapdataGeoObj &params)
       m_flags(0x3), m_pos(params.pos()), m_rot(params.rot() * DEG2RAD), m_scale(params.scale()),
       m_transform(EGG::Matrix34f::ident), m_mapObj(&params) {}
 
+/// @addr{0x8081FB04}
+ObjectBase::ObjectBase(const char *name, const EGG::Vector3f &pos, const EGG::Vector3f &rot,
+        const EGG::Vector3f &scale)
+    : m_drawMdl(nullptr), m_resFile(nullptr), m_flags(11), m_pos(pos), m_rot(rot), m_scale(scale),
+      m_transform(EGG::Matrix34f::ident), m_mapObj(nullptr) {
+    m_id = ObjectDirector::Instance()->flowTable().getIdfFromName(name);
+}
+
 /// @addr{0x8067E3C4}
 ObjectBase::~ObjectBase() {
     delete m_resFile;
@@ -75,6 +83,12 @@ void ObjectBase::loadRail() {
     } else {
         m_railInterpolator = new RailSmoothInterpolator(speed, pathId);
     }
+}
+
+/// @addr{0x80680784}
+[[nodiscard]] const char *ObjectBase::getName() const {
+    const auto &flowTable = ObjectDirector::Instance()->flowTable();
+    return flowTable.set(flowTable.slot(id()))->name;
 }
 
 /// @addr{0x806806DC}
