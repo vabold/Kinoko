@@ -209,6 +209,7 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
     case ObjectId::DummyPole:
     case ObjectId::CastleTree1c:
     case ObjectId::PalmTree:
+    case ObjectId::GardenTreeDSc:
     case ObjectId::DKtreeA64c:
     case ObjectId::TownTreeDsc:
         return new ObjectCollidable(params);
