@@ -13,6 +13,7 @@ enum class ObjectId {
     ObakeBlockSFCc = 0x13c,
     WLDokanGC = 0x13f,
     PalmTree = 0x145,
+    GardenTreeDSc = 0x151,
     DKtreeA64c = 0x158,
     TownTreeDsc = 0x15b,
     OilSFC = 0x15d,
@@ -32,6 +33,7 @@ enum class ObjectId {
 
 enum class BlacklistedObjectId {
     Itembox = 0x65,
+    GardenTreeDS = 0x150,
     Hanabi = 0x16a,
 };
 
@@ -43,6 +45,7 @@ static constexpr bool IsObjectBlacklisted(u16 id) {
         return true;
 
     // No collision
+    case BlacklistedObjectId::GardenTreeDS:
     case BlacklistedObjectId::Hanabi:
         return true;
 
