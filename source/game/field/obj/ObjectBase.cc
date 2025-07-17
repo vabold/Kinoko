@@ -150,4 +150,27 @@ void ObjectBase::SetRotTangentHorizontal(EGG::Matrix34f &mat, const EGG::Vector3
     mat.setBase(2, vec);
 }
 
+/// @addr{0x806B3CA4}
+EGG::Matrix34f ObjectBase::OrthonormalBasis(const EGG::Vector3f &v) {
+    EGG::Vector3f z = v;
+
+    if (EGG::Mathf::abs(z.y) < 0.001f) {
+        z.y = 0.001f;
+    }
+
+    EGG::Vector3f h = EGG::Vector3f(v.x, 0.0f, v.z);
+    h.normalise2();
+
+    EGG::Vector3f x = (z.y > 0.0f) ? -h.cross(z) : h.cross(z);
+    x.normalise2();
+
+    EGG::Matrix34f mat;
+    mat.setBase(3, EGG::Vector3f::zero);
+    mat.setBase(0, x);
+    mat.setBase(1, z.cross(x));
+    mat.setBase(2, z);
+
+    return mat;
+}
+
 } // namespace Field

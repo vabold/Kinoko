@@ -10,7 +10,12 @@ namespace Field {
 class RailManager {
 public:
     /// @beginGetters
-    const Rail *rail(size_t idx) const {
+    [[nodiscard]] Rail *rail(size_t idx) {
+        ASSERT(idx < m_rails.size());
+        return m_rails[idx];
+    }
+
+    [[nodiscard]] const Rail *rail(size_t idx) const {
         ASSERT(idx < m_rails.size());
         return m_rails[idx];
     }
@@ -19,7 +24,7 @@ public:
     static RailManager *CreateInstance();
     static void DestroyInstance();
 
-    static RailManager *Instance() {
+    [[nodiscard]] static RailManager *Instance() {
         return s_instance;
     }
 
