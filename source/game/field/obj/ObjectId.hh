@@ -8,6 +8,8 @@ enum class ObjectId {
     None = 0x0,
     DummyPole = 0x066,
     WLWallGC = 0xcb,
+    KartTruck = 0xd0,
+    CarBody = 0xd1,
     Boble = 0xdd,
     DokanSFC = 0x12e,
     CastleTree1c = 0x130,

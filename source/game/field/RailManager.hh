@@ -10,6 +10,11 @@ namespace Field {
 class RailManager {
 public:
     /// @beginGetters
+    Rail *rail(size_t idx) {
+        ASSERT(idx < m_rails.size());
+        return m_rails[idx];
+    }
+
     const Rail *rail(size_t idx) const {
         ASSERT(idx < m_rails.size());
         return m_rails[idx];

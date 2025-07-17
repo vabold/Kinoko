@@ -2,6 +2,7 @@
 
 #include "game/field/obj/ObjectAurora.hh"
 #include "game/field/obj/ObjectBoble.hh"
+#include "game/field/obj/ObjectCarTGE.hh"
 #include "game/field/obj/ObjectDokan.hh"
 #include "game/field/obj/ObjectFireRing.hh"
 #include "game/field/obj/ObjectFirebar.hh"
