@@ -53,6 +53,8 @@ public:
 protected:
     void createCollision() override;
 
+    void registerManagedObject();
+
     /// @addr{0x806816B8}
     virtual const EGG::Vector3f &collisionCenter() const {
         return EGG::Vector3f::zero;
