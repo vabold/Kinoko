@@ -58,6 +58,8 @@ protected:
         return EGG::Vector3f::zero;
     }
 
+    void registerManagedObject();
+
     ObjectCollisionBase *m_collision;
 };
 

@@ -16,6 +16,7 @@ public:
     void calc();
     void addObject(ObjectCollidable *obj);
     void addObjectNoImpl(ObjectNoImpl *obj);
+    void addManagedObject(ObjectCollidable *obj);
 
     size_t checkKartObjectCollision(Kart::KartObject *kartObj,
             ObjectCollisionConvexHull *convexHull);
@@ -67,6 +68,7 @@ private:
             m_collidingObjects; ///< Objects we are currently colliding with
     std::array<EGG::Vector3f, MAX_UNIT_COUNT> m_hitDepths;
     std::array<Kart::Reaction, MAX_UNIT_COUNT> m_reactions;
+    std::vector<ObjectCollidable *> m_managedObjects;
 
     static ObjectDirector *s_instance;
 };

@@ -69,10 +69,11 @@ protected:
     void linkAnims(const std::span<const char *> &names, const std::span<Render::AnmType> types);
     void setMatrixTangentTo(const EGG::Vector3f &up, const EGG::Vector3f &tangent);
 
-    static EGG::Vector3f RotateAxisAngle(f32 angle, const EGG::Vector3f &axis,
+    [[nodiscard]] static EGG::Vector3f RotateAxisAngle(f32 angle, const EGG::Vector3f &axis,
             const EGG::Vector3f &v1);
     static void SetRotTangentHorizontal(EGG::Matrix34f &mat, const EGG::Vector3f &up,
             const EGG::Vector3f &tangent);
+    [[nodiscard]] static EGG::Matrix34f OrthonormalBasis(const EGG::Vector3f &v);
 
     /// @addr{0x8086C098}
     [[nodiscard]] static EGG::Vector3f Interpolate(f32 t, const EGG::Vector3f &v0,
