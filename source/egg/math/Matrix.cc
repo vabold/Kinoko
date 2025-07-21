@@ -236,9 +236,9 @@ Vector3f Matrix34f::ps_multVector(const Vector3f &vec) const {
 Vector3f Matrix34f::multVector33(const Vector3f &vec) const {
     Vector3f ret;
 
-    ret.x = mtx[0][0] * vec.x + mtx[0][1] * vec.y + mtx[0][2] * vec.z;
-    ret.y = mtx[1][0] * vec.x + mtx[1][1] * vec.y + mtx[1][2] * vec.z;
-    ret.z = mtx[2][0] * vec.x + mtx[2][1] * vec.y + mtx[2][2] * vec.z;
+    ret.x = mtx[0][2] * vec.z + (mtx[0][0] * vec.x + mtx[0][1] * vec.y);
+    ret.y = mtx[1][2] * vec.z + (mtx[1][0] * vec.x + mtx[1][1] * vec.y);
+    ret.z = mtx[2][2] * vec.z + (mtx[2][0] * vec.x + mtx[2][1] * vec.y);
 
     return ret;
 }
