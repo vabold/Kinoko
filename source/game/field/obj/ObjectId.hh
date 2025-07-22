@@ -60,6 +60,7 @@ enum class ObjectId {
     BulldozerR = 0x1f9,
     KinokoNm = 0x1fa,
     Crane = 0x1fb,
+    VolcanoPiece = 0x1fc,
     TwistedWay = 0x1fe,
     TownBridge = 0x1ff,
     DKShip64 = 0x200,
