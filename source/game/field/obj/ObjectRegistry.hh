@@ -45,6 +45,7 @@
 #include "game/field/obj/ObjectTruckWagon.hh"
 #include "game/field/obj/ObjectTuribashi.hh"
 #include "game/field/obj/ObjectTwistedWay.hh"
+#include "game/field/obj/ObjectVolcanoPiece.hh"
 #include "game/field/obj/ObjectVolcanoRock.hh"
 #include "game/field/obj/ObjectWLWallGC.hh"
 #include "game/field/obj/ObjectWoodbox.hh"
