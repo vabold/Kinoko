@@ -6,6 +6,7 @@
 
 namespace Field {
 
+/// @brief The oscillating platforms before and after the indoor section on Grumble Volcano.
 class ObjectVolcanoRock final : public ObjectKCL {
 public:
     ObjectVolcanoRock(const System::MapdataGeoObj &params);
