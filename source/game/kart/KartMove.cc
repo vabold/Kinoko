@@ -5,6 +5,7 @@
 #include "game/kart/KartJump.hh"
 #include "game/kart/KartParam.hh"
 #include "game/kart/KartPhysics.hh"
+#include "game/kart/KartScale.hh"
 #include "game/kart/KartSub.hh"
 #include "game/kart/KartSuspension.hh"
 
@@ -50,12 +51,14 @@ KartMove::KartMove() : m_smoothedUp(EGG::Vector3f::ey), m_scale(1.0f, 1.0f, 1.0f
 KartMove::~KartMove() {
     delete m_jump;
     delete m_halfPipe;
+    delete m_kartScale;
 }
 
 /// @addr{0x8057821C}
 void KartMove::createSubsystems() {
     m_jump = new KartJump(this);
     m_halfPipe = new KartHalfPipe();
+    m_kartScale = new KartScale();
 }
 
 /// @stage All
@@ -121,6 +124,7 @@ void KartMove::setTurnParams() {
     m_landingDir = m_dir;
     m_outsideDriftLastDir = m_dir;
     m_driftingParams = &DRIFTING_PARAMS_ARRAY[static_cast<u32>(param()->stats().driftType)];
+    m_kartScale->reset();
 }
 
 /// @addr{0x805784D4}
@@ -299,6 +303,7 @@ void KartMove::calc() {
     calcBoost();
     calcMushroomBoost();
     calcZipperBoost();
+    calcScale();
 
     if (state()->isInCannon()) {
         calcCannon();
@@ -2079,6 +2084,12 @@ void KartMove::landTrick() {
     activateBoost(KartBoost::Type::TrickAndZipper, duration);
 }
 
+/// @addr{0x8058160C}
+void KartMove::calcScale() {
+    m_kartScale->calc();
+    setScale(m_kartScale->currScale());
+}
+
 /// @addr{0x8058498C}
 void KartMove::enterCannon() {
     init(true, true);
@@ -2244,6 +2255,7 @@ void KartMoveBike::cancelWheelie() {
 void KartMoveBike::createSubsystems() {
     m_jump = new KartJumpBike(this);
     m_halfPipe = new KartHalfPipe();
+    m_kartScale = new KartScale();
 }
 
 /// @stage All
