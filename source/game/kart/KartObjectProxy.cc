@@ -100,6 +100,14 @@ const KartHalfPipe *KartObjectProxy::halfPipe() const {
     return m_accessor->move->halfPipe();
 }
 
+KartScale *KartObjectProxy::kartScale() {
+    return m_accessor->move->kartScale();
+}
+
+const KartScale *KartObjectProxy::kartScale() const {
+    return m_accessor->move->kartScale();
+}
+
 /// @addr{0x80591914}
 KartJump *KartObjectProxy::jump() {
     return m_accessor->move->jump();

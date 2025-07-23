@@ -4,6 +4,8 @@
 #include "game/kart/KartParamFileManager.hh"
 #include "game/system/RaceConfig.hh"
 
+#include <abstract/g3d/ResFile.hh>
+
 namespace Kart {
 
 /// @addr{0x8058FEE0}
@@ -50,6 +52,9 @@ KartObjectManager::KartObjectManager() {
     m_count = raceScenario.playerCount;
     m_objects = new KartObject *[m_count];
     KartParamFileManager::CreateInstance();
+
+    loadScaleAnimations();
+
     for (size_t i = 0; i < m_count; ++i) {
         const auto &player = raceScenario.players[i];
         KartObject *object = KartObject::Create(player.character, player.vehicle, i);
@@ -73,11 +78,26 @@ KartObjectManager::~KartObjectManager() {
 
     delete[] m_objects;
 
+    delete s_pressScaleUpAnmChr;
+
     // If the proxy list is not cleared when we're done with the KartObjectManager, the list's
     // destructor calls delete on all of the links remaining in the list. Since the heaps are
     // gone by that point, this results in a segmentation fault. So, we clear the links here.
     KartObjectProxy::proxyList().clear();
 }
+
+/// @addr{0x8056AB6C}
+void KartObjectManager::loadScaleAnimations() {
+    auto *resMgr = System::ResourceManager::Instance();
+    const void *file = resMgr->getFile("driver.brres", nullptr, System::ArchiveId::Core);
+    ASSERT(file);
+
+    // Copy construct onto the heap
+    auto resAnmChr = Abstract::g3d::ResFile(file).resAnmChr("press_scale_up");
+    s_pressScaleUpAnmChr = new Abstract::g3d::ResAnmChr(resAnmChr);
+}
+
+Abstract::g3d::ResAnmChr *KartObjectManager::s_pressScaleUpAnmChr = nullptr; ///< @addr{0x809C18B0}
 
 KartObjectManager *KartObjectManager::s_instance = nullptr; ///< @addr{0x809C18F8}
 

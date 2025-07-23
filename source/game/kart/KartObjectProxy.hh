@@ -36,6 +36,7 @@ class KartMove;
 class KartParam;
 struct BSP;
 class KartPhysics;
+class KartScale;
 class KartState;
 class KartSub;
 class KartSuspension;
@@ -89,6 +90,8 @@ public:
     [[nodiscard]] const KartMove *move() const;
     [[nodiscard]] KartHalfPipe *halfPipe();
     [[nodiscard]] const KartHalfPipe *halfPipe() const;
+    [[nodiscard]] KartScale *kartScale();
+    [[nodiscard]] const KartScale *kartScale() const;
     [[nodiscard]] KartJump *jump();
     [[nodiscard]] const KartJump *jump() const;
     [[nodiscard]] KartParam *param();
