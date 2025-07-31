@@ -101,7 +101,29 @@ struct TBitFlag {
     template <typename... Es>
         requires(std::is_same_v<Es, E> && ...)
     [[nodiscard]] constexpr bool onBit(Es... es) const {
+        return (onAnyBit(es...));
+    }
+
+    /// @brief Checks if any of the corresponding bits for the provided enum values are on.
+    /// @details Matches the expression `(bits & mask) != 0`.
+    /// @tparam ...Es Variadic template for packing.
+    /// @param ...es Enum values representing the bits to check.
+    /// @return True if one of the specified bits are on, otherwise false.
+    template <typename... Es>
+        requires(std::is_same_v<Es, E> && ...)
+    [[nodiscard]] constexpr bool onAnyBit(Es... es) const {
         return (onBit_(es) || ...);
+    }
+
+    /// @brief Checks if all of the corresponding bits for the provided enum values are on.
+    /// @details Matches the expression `(bits & mask) == mask`.
+    /// @tparam ...Es Variadic template for packing.
+    /// @param ...es Enum values representing the bits to check.
+    /// @return True if all of the specified bits are on, otherwise false.
+    template <typename... Es>
+        requires(std::is_same_v<Es, E> && ...)
+    [[nodiscard]] constexpr bool onAllBit(Es... es) const {
+        return (onBit_(es) && ...);
     }
 
     /// @brief Checks if all of the corresponding bits for the provided enum values are off.
@@ -112,7 +134,29 @@ struct TBitFlag {
     template <typename... Es>
         requires(std::is_same_v<Es, E> && ...)
     [[nodiscard]] constexpr bool offBit(Es... es) const {
+        return offAllBit(es...);
+    }
+
+    /// @brief Checks if all of the corresponding bits for the provided enum values are off.
+    /// @details Matches the expression `(bits & mask) == 0`.
+    /// @tparam ...Es Variadic template for packing.
+    /// @param ...es Enum values representing the bits to check.
+    /// @return True if all of the specified bits are off, otherwise false.
+    template <typename... Es>
+        requires(std::is_same_v<Es, E> && ...)
+    [[nodiscard]] constexpr bool offAllBit(Es... es) const {
         return (offBit_(es) && ...);
+    }
+
+    /// @brief Checks if any of the corresponding bits for the provided enum values are off.
+    /// @details Matches the expression `(bits & mask) != mask`.
+    /// @tparam ...Es Variadic template for packing.
+    /// @param ...es Enum values representing the bits to check.
+    /// @return True if any of the specified bits are off, otherwise false.
+    template <typename... Es>
+        requires(std::is_same_v<Es, E> && ...)
+    [[nodiscard]] constexpr bool offAnyBit(Es... es) const {
+        return (offBit_(es) || ...);
     }
 
     /// @brief Creates an applied mask of the corresponding bits for the provided enum values.
