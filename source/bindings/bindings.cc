@@ -164,9 +164,9 @@ NB_MODULE(bindings, m) {
         .def(nb::init<>())
         .def("init", &KBindSystem::init)
         .def("step", &KBindSystem::step)
-        .def("set_course", &KBindSystem::set_course, "course"_a)
-        .def("set_player", &KBindSystem::set_player, "player_idx"_a, "character"_a, "vehicle"_a, "drift_is_auto"_a)
-        .def("get_host_controller", &KBindSystem::get_host_controller, nb::rv_policy::reference)
+        .def("set_course", &KBindSystem::SetCourse, "course"_a)
+        .def("set_player", &KBindSystem::SetPlayer, "slot"_a, "character"_a, "vehicle"_a, "drift_is_auto"_a)
+        .def_static("get_host_controller", &KBindSystem::GetHostController, nb::rv_policy::reference)
         .def_static("create_instance", &KBindSystem::CreateInstance, nb::rv_policy::reference)
         .def_static("destroy_instance", &KBindSystem::DestroyInstance)
         .def_static("instance", &KBindSystem::Instance, nb::rv_policy::reference);

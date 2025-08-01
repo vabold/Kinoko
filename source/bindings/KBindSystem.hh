@@ -1,7 +1,5 @@
 #pragma once
 
-#include <vector>
-
 #include "Common.hh"
 #include "egg/core/Disposer.hh"
 #include "egg/core/SceneManager.hh"
@@ -23,7 +21,7 @@ public:
     void step();
 
     /// @brief Sets the course for the race. Must be called before init()
-    void set_course(Course course);
+    void SetCourse(Course course);
 
     /// @brief Configures a racer. Must be called before init()
     void SetPlayer(int slot, Character character, Vehicle vehicle, bool driftIsAuto);
@@ -46,18 +44,7 @@ private:
     KBindSystem(const KBindSystem &) = delete;
     KBindSystem(KBindSystem &&) = delete;
 
-    // Scenario Settings
-    // We need to store a copy of them locally to prevent a crash, trying
-    // to do it via System::RaceConfig::raceScenario() causes a second
-    // RaceConfig instance when RootScene is created, causing it to segfault.
-    Course m_course = Course::Luigi_Circuit;
-    struct PlayerConfig {
-        Character character;
-        Vehicle vehicle;
-        bool driftIsAuto;
-    };
-    std::vector<PlayerConfig> m_players;
-
-    static KBindSystem *s_instance;
+    System::RaceConfig::Scenario m_scenario;
     EGG::SceneManager *m_sceneMgr;
+    static KBindSystem *s_instance;
 };
