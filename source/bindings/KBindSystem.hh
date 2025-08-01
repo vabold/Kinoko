@@ -35,7 +35,7 @@ public:
 
     static void DestroyInstance();
 
-    static KBindSystem *Instance() {
+    [[nodiscard]] static KBindSystem *Instance() {
         return s_instance;
     }
 
