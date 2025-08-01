@@ -15,7 +15,7 @@ public:
 
 private:
     EGG::Vector3f m_dimensions;
-    EGG::Vector3f m_center;
+    [[maybe_unused]] EGG::Vector3f m_center;
     EGG::Vector3f m_scale;
 };
 

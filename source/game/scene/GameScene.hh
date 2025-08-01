@@ -57,7 +57,7 @@ private:
     std::list<Resource *> m_resources; ///< List of all active resources in the scene.
     int m_nextSceneId;
 
-    size_t m_totalMemoryUsed;
+    [[maybe_unused]] size_t m_totalMemoryUsed;
 };
 
 } // namespace Scene

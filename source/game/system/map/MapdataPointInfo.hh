@@ -42,7 +42,7 @@ public:
     }
 
 private:
-    const SData *m_rawData;
+    [[maybe_unused]] const SData *m_rawData;
     std::array<u8, 2> m_settings;
     std::span<Point> m_points;
 };

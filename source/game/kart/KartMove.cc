@@ -605,7 +605,7 @@ void KartMove::calcStickyRoad() {
 
     EGG::Vector3f pos = dynamics()->pos();
     EGG::Vector3f vel = m_speed * m_vel1Dir;
-    EGG::Vector3f down = -STICKY_RADIUS * componentYAxis();
+    [[maybe_unused]] EGG::Vector3f down = -STICKY_RADIUS * componentYAxis();
     Field::CollisionInfo colInfo;
     colInfo.bbox.setZero();
     Field::KCLTypeMask kcl_flags = KCL_NONE;
@@ -2249,6 +2249,22 @@ void KartMove::exitCannon() {
 void KartMove::triggerRespawn() {
     m_timeInRespawn = 0;
     state()->setTriggerRespawn(true);
+}
+
+KartMove::DriftState KartMove::driftState() const {
+    return m_driftState;
+}
+
+u16 KartMove::mtCharge() const {
+    return m_mtCharge;
+}
+
+f32 KartMove::kclSpeedFactor() const {
+    return m_kclSpeedFactor;
+}
+
+f32 KartMove::kclRotFactor() const {
+    return m_kclRotFactor;
 }
 
 /// @addr{0x80587B30}
