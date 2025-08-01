@@ -1,11 +1,14 @@
+#include "Common.hh"
+
+#include "bindings/KBindSystem.hh"
+
+#include <egg/core/ExpHeap.hh>
+#include <egg/core/SceneManager.hh>
+
+#include <game/system/KPadController.hh>
+
 #include <nanobind/nanobind.h>
 #include <nanobind/stl/string.h>
-
-#include "Common.hh"
-#include "bindings/KBindSystem.hh"
-#include "egg/core/ExpHeap.hh"
-#include "egg/core/SceneManager.hh"
-#include "game/system/KPadController.hh"
 
 namespace nb = nanobind;
 using namespace nb::literals;
