@@ -55,7 +55,7 @@ void ObjectObakeBlock::calc() {
     m_rot = m_fallAngVel * static_cast<f32>(m_framesFallen);
     m_pos.y = m_initialPos.y -
             (0.5f * static_cast<f32>(m_framesFallen)) * (0.5f * static_cast<f32>(m_framesFallen));
-    m_flags |= 3;
+    m_flags.setBit(eFlags::Position, eFlags::Rotation);
 
     if (++m_framesFallen > FALL_DURATION) {
         m_fallState = FallState::FinishedFalling;

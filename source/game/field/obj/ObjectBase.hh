@@ -8,12 +8,21 @@
 
 #include "game/system/map/MapdataGeoObj.hh"
 
+#include <egg/core/BitFlag.hh>
 #include <egg/math/Matrix.hh>
 
 namespace Field {
 
 class ObjectBase {
 public:
+    enum class eFlags {
+        Position = 0,
+        Rotation = 1,
+        Matrix = 2,
+        Scale = 3,
+    };
+    typedef EGG::TBitFlag<u16, eFlags> Flags;
+
     ObjectBase(const System::MapdataGeoObj &params);
     ObjectBase(const char *name, const EGG::Vector3f &pos, const EGG::Vector3f &rot,
             const EGG::Vector3f &scale);
@@ -60,7 +69,7 @@ public:
     }
 
     void setPos(const EGG::Vector3f &pos) {
-        m_flags |= 0x1;
+        m_flags.setBit(eFlags::Position);
         m_pos = pos;
     }
 
@@ -86,7 +95,7 @@ protected:
     ObjectId m_id;
     RailInterpolator *m_railInterpolator;
     BoxColUnit *m_boxColUnit;
-    u16 m_flags;
+    Flags m_flags;
     EGG::Vector3f m_pos;
     EGG::Vector3f m_rot;
     EGG::Vector3f m_scale;

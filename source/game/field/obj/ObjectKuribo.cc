@@ -109,7 +109,7 @@ void ObjectKuribo::calcAnim() {
     }
 
     m_railInterpolator->setCurrVel(m_currSpeed);
-    m_flags |= 1;
+    m_flags.setBit(eFlags::Position);
     const auto &curPos = m_railInterpolator->curPos();
     m_pos.x = curPos.x;
     m_pos.z = curPos.z;
@@ -141,7 +141,7 @@ void ObjectKuribo::checkSphereFull() {
 
     // Apply gravity if we're not changing direction
     if (m_currentStateId != 0) {
-        m_flags |= 1;
+        m_flags.setBit(eFlags::Position);
         m_pos.y -= 2.0f;
     }
 
@@ -154,7 +154,7 @@ void ObjectKuribo::checkSphereFull() {
 
     if (hasCol) {
         m_pos += colInfo.tangentOff;
-        m_flags |= 1;
+        m_flags.setBit(eFlags::Position);
 
         if (colInfo.floorDist > -std::numeric_limits<f32>::min()) {
             m_floorNrm = colInfo.floorNrm;

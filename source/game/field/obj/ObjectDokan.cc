@@ -27,7 +27,7 @@ void ObjectDokan::calc() {
 
     m_velocity.y -= ACCEL;
     m_pos += m_velocity;
-    m_flags |= 1;
+    m_flags.setBit(eFlags::Position);
 
     calcFloor();
 }
@@ -78,10 +78,10 @@ void ObjectDokan::calcFloor() {
 
     if (typeMask & KCL_TYPE_FLOOR) {
         m_pos.y += colInfo.tangentOff.y;
-        m_flags |= 1;
+        m_flags.setBit(eFlags::Position);
     } else {
         m_velocity.y *= -ACCELERATION;
-        m_flags |= 1;
+        m_flags.setBit(eFlags::Position);
         m_pos.y += colInfo.tangentOff.y;
 
         if (m_velocity.length() < ACCELERATION * PIPE_SQRT_RADIUS) {
