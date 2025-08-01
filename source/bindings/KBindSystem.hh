@@ -31,7 +31,7 @@ public:
     /// @brief Gets the host controller for changing controller state
     /// At the moment Kinoko only supports one racer, so this returns the controller for player 0
     /// @return A pointer to the KPadHostController for the local player
-    System::KPadHostController *get_host_controller();
+    [[nodiscard]] static System::KPadHostController *GetHostController();
 
     static KBindSystem *CreateInstance();
 
