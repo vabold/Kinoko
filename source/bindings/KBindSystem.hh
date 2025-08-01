@@ -26,25 +26,25 @@ public:
     void set_course(Course course);
 
     /// @brief Configures a racer. Must be called before init()
-    void set_player(int playerIdx, Character character, Vehicle vehicle, bool driftIsAuto);
+    void set_player(int slot, Character character, Vehicle vehicle, bool driftIsAuto);
 
     /// @brief Gets the host controller for changing controller state
     /// At the moment Kinoko only supports one racer, so this returns the controller for player 0
     /// @return A pointer to the KPadHostController for the local player
-    System::KPadHostController* get_host_controller();
+    System::KPadHostController *get_host_controller();
 
-    static KBindSystem* CreateInstance();
+    static KBindSystem *CreateInstance();
 
     static void DestroyInstance();
 
-    static KBindSystem* Instance() {
+    static KBindSystem *Instance() {
         return s_instance;
     }
 
 private:
     ~KBindSystem() override;
-    KBindSystem(const KBindSystem&) = delete;
-    KBindSystem(KBindSystem&&) = delete;
+    KBindSystem(const KBindSystem &) = delete;
+    KBindSystem(KBindSystem &&) = delete;
 
     // Scenario Settings
     // We need to store a copy of them locally to prevent a crash, trying
@@ -58,6 +58,6 @@ private:
     };
     std::vector<PlayerConfig> m_players;
 
-    static KBindSystem* s_instance;
-    EGG::SceneManager* m_sceneMgr;
+    static KBindSystem *s_instance;
+    EGG::SceneManager *m_sceneMgr;
 };
