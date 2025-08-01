@@ -20,6 +20,7 @@ struct KinokoInitializer {
 };
 static KinokoInitializer s_KinokoInitializer_instance;
 
+// clang-format off
 NB_MODULE(bindings, m) {
     m.doc() = "Python bindings for Kinoko";
 
@@ -174,6 +175,7 @@ NB_MODULE(bindings, m) {
         .def("set_inputs_raw_stick_zero_center", &System::KPadHostController::setInputsRawStickZeroCenter,
              "buttons"_a, "stick_x_raw"_a, "stick_y_raw"_a, "trick"_a);
 }
+// clang-format on
 
 #if defined(__arm64__) || defined(__aarch64__)
 static void FlushDenormalsToZero() {

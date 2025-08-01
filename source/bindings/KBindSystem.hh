@@ -1,13 +1,15 @@
 #pragma once
 
+#include <vector>
+
+#include "Common.hh"
 #include "egg/core/Disposer.hh"
 #include "egg/core/SceneManager.hh"
 #include "game/system/KPadController.hh"
 #include "game/system/RaceConfig.hh"
-#include "Common.hh"
 
 namespace EGG {
-    class SceneManager;
+class SceneManager;
 }
 
 class KBindSystem final : public EGG::Disposer {
@@ -41,8 +43,8 @@ public:
 
 private:
     ~KBindSystem() override;
-    KBindSystem(const KBindSystem &) = delete;
-    KBindSystem(KBindSystem &&) = delete;
+    KBindSystem(const KBindSystem&) = delete;
+    KBindSystem(KBindSystem&&) = delete;
 
     // Scenario Settings
     // We need to store a copy of them locally to prevent a crash, trying
@@ -54,8 +56,8 @@ private:
         Vehicle vehicle;
         bool driftIsAuto;
     };
-    std::array<PlayerConfig, 12> m_players;
+    std::vector<PlayerConfig> m_players;
 
-    static KBindSystem *s_instance;
-    EGG::SceneManager *m_sceneMgr;
+    static KBindSystem* s_instance;
+    EGG::SceneManager* m_sceneMgr;
 };
