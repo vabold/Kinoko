@@ -24,6 +24,7 @@ KBindSystem *KBindSystem::CreateInstance() {
 }
 
 void KBindSystem::DestroyInstance() {
+    ASSERT(s_instance);
     delete s_instance;
     s_instance = nullptr;
 }
