@@ -18,6 +18,7 @@ KBindSystem::~KBindSystem() {
 }
 
 KBindSystem *KBindSystem::CreateInstance() {
+    ASSERT(!s_instance);
     s_instance = new KBindSystem;
     return s_instance;
 }
