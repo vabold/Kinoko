@@ -26,7 +26,7 @@ public:
     void set_course(Course course);
 
     /// @brief Configures a racer. Must be called before init()
-    void set_player(int slot, Character character, Vehicle vehicle, bool driftIsAuto);
+    void SetPlayer(int slot, Character character, Vehicle vehicle, bool driftIsAuto);
 
     /// @brief Gets the host controller for changing controller state
     /// At the moment Kinoko only supports one racer, so this returns the controller for player 0
