@@ -1,10 +1,13 @@
-#include "bindings/KBindSystem.hh"
-#include "egg/core/ExpHeap.hh"
-#include "egg/core/SceneManager.hh"
-#include "game/system/KPadController.hh"
-#include "game/system/KPadDirector.hh"
-#include "game/system/RaceConfig.hh"
+#include "KBindSystem.hh"
+
 #include "host/SceneCreatorDynamic.hh"
+
+#include <game/system/KPadController.hh>
+#include <game/system/KPadDirector.hh>
+#include <game/system/RaceConfig.hh>
+
+#include <egg/core/ExpHeap.hh>
+#include <egg/core/SceneManager.hh>
 
 KBindSystem *KBindSystem::s_instance = nullptr;
 
