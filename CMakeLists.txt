@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.22)
 project(Kinoko CXX)
 
 # Compiler and flags
@@ -8,11 +8,23 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Common flags
 set(COMMON_CXX_FLAGS
+    -fPIC
     -DREVOLUTION
     -fno-asynchronous-unwind-tables
     -fno-exceptions
-    -fno-rtti
     -fshort-wchar
+    -fstack-protector-strong
+    -Wall
+    -Werror
+    -Wextra
+    -Wno-delete-non-virtual-dtor
+    -Wno-packed-bitfield-compat
+    -Wsuggest-override
+)
+
+# Bindings flags
+set(BINDINGS_CXX_FLAGS
+    -DREVOLUTION
     -fstack-protector-strong
     -Wall
     -Werror
@@ -27,9 +39,15 @@ set(RK_INCLUDE_DIRS
     source
 )
 
+
+# +-------------------------------------------+
+# -                 LIBKINOKO                 -
+# +-------------------------------------------+
+
 # Source files
 file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/**/*.cc)
 list(FILTER SOURCE_FILES EXCLUDE REGEX ".*/host/main\\.cc$")
+list(FILTER SOURCE_FILES EXCLUDE REGEX ".*/bindings/.*\\.cc$")
 
 add_library(libkinoko ${SOURCE_FILES})
 target_include_directories(libkinoko SYSTEM
@@ -42,6 +60,28 @@ target_compile_features(libkinoko PUBLIC cxx_std_23)
 add_executable(kinoko source/host/main.cc)
 target_link_libraries(kinoko libkinoko)
 target_compile_options(kinoko PRIVATE ${COMMON_CXX_FLAGS})
+
+# +-------------------------------------------+
+# -                  BINDINGS                 -
+# +-------------------------------------------+
+
+# Add dependencies
+find_package(Python REQUIRED COMPONENTS Development)
+add_subdirectory(extern/nanobind)
+
+# Add a target
+nanobind_add_module(bindings
+    source/bindings/KBindSystem.cc
+    source/bindings/bindings.cc
+)
+
+# Link libraries
+target_link_libraries(bindings PRIVATE libkinoko Python::Python)
+target_compile_options(bindings PRIVATE ${BINDINGS_CXX_FLAGS})
+
+# +-------------------------------------------+
+# -                 TEST CASES                -
+# +-------------------------------------------+
 
 # Add a custom target to generate testCases.json
 set(TEST_JSON ${CMAKE_CURRENT_SOURCE_DIR}/testCases.json)
