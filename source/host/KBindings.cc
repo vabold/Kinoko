@@ -1,6 +1,6 @@
 #include "Common.hh"
 
-#include "bindings/KBindSystem.hh"
+#include "host/KBindSystem.hh"
 
 #include <egg/core/ExpHeap.hh>
 #include <egg/core/SceneManager.hh>

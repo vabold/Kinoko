@@ -47,7 +47,7 @@ set(RK_INCLUDE_DIRS
 # Source files
 file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/**/*.cc)
 list(FILTER SOURCE_FILES EXCLUDE REGEX ".*/host/main\\.cc$")
-list(FILTER SOURCE_FILES EXCLUDE REGEX ".*/bindings/.*\\.cc$")
+list(FILTER SOURCE_FILES EXCLUDE REGEX ".*/host/KBind.*\\.cc$")
 
 add_library(libkinoko ${SOURCE_FILES})
 target_include_directories(libkinoko SYSTEM
@@ -78,8 +78,8 @@ FetchContent_MakeAvailable(nanobind)
 
 # Add a target
 nanobind_add_module(bindings
-    source/bindings/KBindSystem.cc
-    source/bindings/bindings.cc
+    source/host/KBindSystem.cc
+    source/host/KBindings.cc
 )
 
 # Link libraries

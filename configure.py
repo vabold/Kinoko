@@ -23,8 +23,10 @@ n.variable("ninja_required_version", "1.3")
 n.variable("builddir", build_dir)
 n.variable("outdir", "out")
 n.variable("compiler", "g++")
+n.variable("ar", "ar")
 n.newline()
 n.rule("cc", command="$compiler -MD -MT $out -MF $out.d $ccflags -c $in -o $out", depfile="$out.d", deps="gcc", description="CC $out")
+n.rule("ar", command="$ar rcs $out $in", description="AR $out")
 n.newline()
 n.rule("ld", command="$compiler $ldflags $in -o $out", description="LD $out")
 n.newline()
@@ -52,13 +54,26 @@ robin_include_path = os.path.join(robin_path, "include")
 common_ccflags = [
     "-DREVOLUTION",
     "-fno-asynchronous-unwind-tables",
+    "-fno-exceptions",
     "-fshort-wchar",
     "-fstack-protector-strong",
-    "-isystem", ".",
     "-isystem", "include",
     "-isystem", "source",
-    "-isystem", "vendor",
-    "-isystem", "build",
+    "-Wall",
+    "-Werror",
+    "-Wextra",
+    "-Wno-delete-non-virtual-dtor",
+    "-Wno-packed-bitfield-compat",
+    "-Wsuggest-override",
+    "-std=c++23",
+    "-fPIC",
+]
+
+bindings_ccflags = [
+    "-DREVOLUTION",
+    "-fstack-protector-strong",
+    "-isystem", "include",
+    "-isystem", "source",
     "-isystem", python_include_path,
     "-isystem", nanobind_include_path,
     "-isystem", robin_include_path,
@@ -93,13 +108,13 @@ builds = [
 def GetFiles():
     sep = re.escape(os.path.sep)
     main_regex = re.compile(rf".*{sep}host{sep}main\.cc$")
-    bindings_regex = re.compile(rf".*{sep}bindings{sep}.*\.cc$")
+    bindings_regex = re.compile(rf".*{sep}host{sep}KBind.*\.cc$")
 
     main_files = []
     bindings_files = []
     common_files = []
 
-    for file in glob.glob(os.path.join(".", "**", "*.cc"), recursive=True):
+    for file in glob.glob(os.path.join("source", "**", "*.cc"), recursive=True):
         if main_regex.search(file):
             main_files.append(file)
             continue
@@ -114,18 +129,18 @@ def GetFiles():
 
     return common_files, main_files, bindings_files
 
-def Compile(files, builds, obj_key):
+def Compile(files, builds, obj_key, flags):
     for in_file in files:
         base_name, _ = os.path.splitext(in_file)
         for build in builds:
             out_file = os.path.join("$builddir", f"{base_name}{build.suffix}.o")
             build.obj_files[obj_key].append(out_file)
-            n.build(out_file, "cc", in_file, variables={"ccflags": " ".join([*common_ccflags, *build.flags])})
+            n.build(out_file, "cc", in_file, variables={"ccflags": " ".join([*flags, *build.flags])})
 
 common_files, main_files, bindings_files = GetFiles()
-Compile(common_files, builds, "common")
-Compile(main_files, builds, "main")
-Compile(bindings_files, builds, "bindings")
+Compile(common_files, builds, "common", common_ccflags)
+Compile(main_files, builds, "main", common_ccflags)
+Compile(bindings_files, builds, "bindings", bindings_ccflags)
 n.newline()
 
 # Link files
@@ -134,15 +149,22 @@ lib_extension = ".pyd" if sys.platform.startswith("win32") else ".so"
 
 for build in builds:
     # libkinoko
+    libkinoko_name = f"libkinoko{build.suffix}.a"
+    libkinoko_path = os.path.join("$builddir", libkinoko_name)
+    libkinoko_objs = build.obj_files["common"]
+    n.build(libkinoko_path, "ar", libkinoko_objs)
+    n.newline()
+
+    # kinoko
     exe_name = f"kinoko{build.suffix}{binary_extension}"
     exe_path = os.path.join("$outdir", exe_name)
-    exe_objs = build.obj_files["common"] + build.obj_files["main"]
-    n.build(exe_path, "ld", exe_objs)
-    
+    exe_obj = build.obj_files["main"] + [libkinoko_path]
+    n.build(exe_path, "ld", exe_obj)
+
     # bindings
     lib_name = f"bindings{build.suffix}{lib_extension}"
     lib_path = os.path.join("$outdir", lib_name)
-    lib_objs = build.obj_files["common"] + build.obj_files["bindings"]
+    lib_objs = build.obj_files["bindings"] + [libkinoko_path]
     n.build(lib_path, "ld_shared", lib_objs)
     n.newline()
 
