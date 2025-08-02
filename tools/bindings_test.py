@@ -9,6 +9,6 @@ controller = k.get_host_controller()
 
 for _ in range(1000):
     controller.set_inputs(buttons=1, stick_x=0.0, stick_y=1.0, trick=kinoko.Trick.Neutral)
-    k.step()
+    k.calc()
 
 k.destroy_instance()
