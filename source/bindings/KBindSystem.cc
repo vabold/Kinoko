@@ -42,7 +42,7 @@ void KBindSystem::init() {
     m_sceneMgr->changeScene(static_cast<int>(Host::SceneId::Root));
 }
 
-void KBindSystem::step() {
+void KBindSystem::calc() {
     if (m_sceneMgr) {
         m_sceneMgr->calc();
     }

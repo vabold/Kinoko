@@ -1,20 +1,20 @@
 #pragma once
 
 #include "Common.hh"
-#include "egg/core/Disposer.hh"
+#include "host/KSystem.hh"
 #include "egg/core/SceneManager.hh"
 #include "game/system/KPadController.hh"
 #include "game/system/RaceConfig.hh"
 
-class KBindSystem final : public EGG::Disposer {
+class KBindSystem final : public KSystem {
 public:
     KBindSystem();
+    ~KBindSystem() override;
 
-    /// @brief Initializes the scene manager and starts the root scene
-    void init();
-
-    /// @brief Steps the simulation by a frame
-    void step();
+    void init() override;
+    void calc() override;
+    bool run() override { return true; }
+    void parseOptions(int /*argc*/, char ** /*argv*/) override {}
 
     /// @brief Sets the course for the race. Must be called before init()
     void SetCourse(Course course);
@@ -36,7 +36,6 @@ public:
     }
 
 private:
-    ~KBindSystem() override;
     KBindSystem(const KBindSystem &) = delete;
     KBindSystem(KBindSystem &&) = delete;
 

@@ -163,7 +163,7 @@ NB_MODULE(bindings, m) {
     nb::class_<KBindSystem>(m, "KBindSystem")
         .def(nb::init<>())
         .def("init", &KBindSystem::init)
-        .def("step", &KBindSystem::step)
+        .def("calc", &KBindSystem::calc)
         .def("set_course", &KBindSystem::SetCourse, "course"_a)
         .def("set_player", &KBindSystem::SetPlayer, "slot"_a, "character"_a, "vehicle"_a, "drift_is_auto"_a)
         .def_static("get_host_controller", &KBindSystem::GetHostController, nb::rv_policy::reference)
