@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Common.hh"
-#include "host/KSystem.hh"
 #include "egg/core/SceneManager.hh"
 #include "game/system/KPadController.hh"
 #include "game/system/RaceConfig.hh"
+#include "host/KSystem.hh"
 
 class KBindSystem final : public KSystem {
 public:
@@ -13,7 +13,9 @@ public:
 
     void init() override;
     void calc() override;
-    bool run() override { return true; }
+    bool run() override {
+        return true;
+    }
     void parseOptions(int /*argc*/, char ** /*argv*/) override {}
 
     /// @brief Sets the course for the race. Must be called before init()
