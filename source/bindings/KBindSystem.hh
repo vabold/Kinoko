@@ -6,10 +6,6 @@
 #include "game/system/KPadController.hh"
 #include "game/system/RaceConfig.hh"
 
-namespace EGG {
-class SceneManager;
-}
-
 class KBindSystem final : public EGG::Disposer {
 public:
     KBindSystem();
