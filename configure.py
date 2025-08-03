@@ -37,9 +37,10 @@ n.newline()
 
 # Download dependancies
 deps_path = os.path.join(build_dir, "_deps")
-os.makedirs(deps_path, exist_ok=True)
 nanobind_path = os.path.join(deps_path, "nanobind")
 robin_path = os.path.join(deps_path, "robin-map")
+
+os.makedirs(deps_path, exist_ok=True)
 
 if not os.path.isdir(nanobind_path):
     subprocess.run(["git", "clone", "https://github.com/wjakob/nanobind", nanobind_path], check=True)
@@ -48,10 +49,10 @@ if not os.path.isdir(robin_path):
     subprocess.run(["git", "clone", "https://github.com/Tessil/robin-map.git", robin_path], check=True)
 
 python_include_path = sysconfig.get_paths()["include"]
-nanobind_src_path = os.path.join(nanobind_path, "src")
-nanobind_include_path = os.path.join(nanobind_path, "include")
-robin_include_path = os.path.join(robin_path, "include")
 python_lib_path = os.path.join(sysconfig.get_paths()["data"], "libs", f"libpython{sys.version_info.major}.{sys.version_info.minor}.a")
+nanobind_include_path = os.path.join(nanobind_path, "include")
+nanobind_src_path = os.path.join(nanobind_path, "src")
+robin_include_path = os.path.join(robin_path, "include")
 
 # Flags
 common_ccflags = [
