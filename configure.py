@@ -84,6 +84,7 @@ bindings_ccflags = [
     "-Wall",
     "-Werror",
     "-Wextra",
+    "-Wno-format",
     "-Wno-delete-non-virtual-dtor",
     "-Wno-packed-bitfield-compat",
     "-Wsuggest-override",
