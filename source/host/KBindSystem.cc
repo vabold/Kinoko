@@ -52,7 +52,7 @@ System::KPadHostController *KBindSystem::GetHostController() {
     return System::KPadDirector::Instance()->hostController();
 }
 
-Kart::KartObjectProxy *KBindSystem::get_kart(int slot) {
+Kart::KartObjectProxy *KBindSystem::GetKart(int slot) {
     return Kart::KartObjectManager::Instance()->object(slot);
 }
 

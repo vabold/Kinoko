@@ -194,7 +194,7 @@ NB_MODULE(bindings, m) {
         .def("calc", &KBindSystem::calc)
         .def("set_course", &KBindSystem::SetCourse, "course"_a)
         .def("set_player", &KBindSystem::SetPlayer, "slot"_a, "character"_a, "vehicle"_a, "drift_is_auto"_a)
-        .def("get_kart", &KBindSystem::get_kart, nb::rv_policy::reference)
+        .def("get_kart", &KBindSystem::GetKart, nb::rv_policy::reference)
         .def_static("get_host_controller", &KBindSystem::GetHostController, nb::rv_policy::reference)
         .def_static("create_instance", &KBindSystem::CreateInstance, nb::rv_policy::reference)
         .def_static("destroy_instance", &KBindSystem::DestroyInstance)

@@ -36,7 +36,7 @@ public:
 
     /// @brief Gets the KartObjectProxy instance for a specific slot
     /// @return A pointer to the KartObjectInstance for the specified slot
-    [[nodiscard]] Kart::KartObjectProxy *get_kart(int slot);
+    [[nodiscard]] Kart::KartObjectProxy *GetKart(int slot);
 
     static KBindSystem *CreateInstance();
 
