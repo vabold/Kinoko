@@ -1,11 +1,15 @@
 #include "Common.hh"
 
-#include "host/KBindSystem.hh"
+#include "game/system/KPadController.hh"
+
+#include "game/kart/KartObjectProxy.hh"
+
+#include <host/KBindSystem.hh>
 
 #include <egg/core/ExpHeap.hh>
 #include <egg/core/SceneManager.hh>
-
-#include <game/system/KPadController.hh>
+#include <egg/math/Quat.hh>
+#include <egg/math/Vector.hh>
 
 #include <nanobind/nanobind.h>
 #include <nanobind/stl/string.h>
@@ -152,6 +156,30 @@ NB_MODULE(bindings, m) {
         .value("N64_Bowsers_Castle", Course::N64_Bowsers_Castle)
         .export_values();
 
+    nb::class_<EGG::Vector3f>(m, "Vector3f")
+        .def(nb::init<f32, f32, f32>())
+        .def_rw("x", &EGG::Vector3f::x)
+        .def_rw("y", &EGG::Vector3f::y)
+        .def_rw("z", &EGG::Vector3f::z);
+
+    nb::class_<EGG::Quatf>(m, "Quatf")
+        .def(nb::init<f32, f32, f32, f32>(), "w"_a, "x"_a, "y"_a, "z"_a)
+        .def_rw("v", &EGG::Quatf::v)
+        .def_rw("w", &EGG::Quatf::w);
+
+    nb::class_<Kart::KartObjectProxy>(m, "KartObjectProxy")
+        .def("speed", &Kart::KartObjectProxy::speed)
+        .def("acceleration", &Kart::KartObjectProxy::acceleration)
+        .def("speedRatio", &Kart::KartObjectProxy::speedRatio)
+        .def("speedRatioCapped", &Kart::KartObjectProxy::speedRatioCapped)
+        .def("softSpeedLimit", &Kart::KartObjectProxy::softSpeedLimit)
+        .def("pos", &Kart::KartObjectProxy::pos, nb::rv_policy::reference_internal)
+        .def("extVel", &Kart::KartObjectProxy::extVel, nb::rv_policy::reference_internal)
+        .def("intVel", &Kart::KartObjectProxy::intVel, nb::rv_policy::reference_internal)
+        .def("velocity", &Kart::KartObjectProxy::velocity, nb::rv_policy::reference_internal)
+        .def("mainRot", &Kart::KartObjectProxy::mainRot, nb::rv_policy::reference_internal)
+        .def("fullRot", &Kart::KartObjectProxy::fullRot, nb::rv_policy::reference_internal);
+
     nb::enum_<System::Trick>(m, "Trick")
         .value("Neutral", System::Trick::None) // None is reserved
         .value("Up", System::Trick::Up)
@@ -166,6 +194,7 @@ NB_MODULE(bindings, m) {
         .def("calc", &KBindSystem::calc)
         .def("set_course", &KBindSystem::SetCourse, "course"_a)
         .def("set_player", &KBindSystem::SetPlayer, "slot"_a, "character"_a, "vehicle"_a, "drift_is_auto"_a)
+        .def("get_kart", &KBindSystem::get_kart, nb::rv_policy::reference)
         .def_static("get_host_controller", &KBindSystem::GetHostController, nb::rv_policy::reference)
         .def_static("create_instance", &KBindSystem::CreateInstance, nb::rv_policy::reference)
         .def_static("destroy_instance", &KBindSystem::DestroyInstance)

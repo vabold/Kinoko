@@ -1,10 +1,15 @@
 #pragma once
 
 #include "Common.hh"
-#include "egg/core/SceneManager.hh"
+
+#include "game/kart/KartObjectManager.hh"
+
 #include "game/system/KPadController.hh"
 #include "game/system/RaceConfig.hh"
-#include "host/KSystem.hh"
+
+#include <egg/core/SceneManager.hh>
+
+#include <host/KSystem.hh>
 
 class KBindSystem final : public KSystem {
 public:
@@ -28,6 +33,10 @@ public:
     /// At the moment Kinoko only supports one racer, so this returns the controller for player 0
     /// @return A pointer to the KPadHostController for the local player
     [[nodiscard]] static System::KPadHostController *GetHostController();
+
+    /// @brief Gets the KartObjectProxy instance for a specific slot
+    /// @return A pointer to the KartObjectInstance for the specified slot
+    [[nodiscard]] Kart::KartObjectProxy *get_kart(int slot);
 
     static KBindSystem *CreateInstance();
 
