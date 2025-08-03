@@ -56,41 +56,41 @@ robin_include_path = os.path.join(robin_path, "include")
 
 # Flags
 common_ccflags = [
-    "-DREVOLUTION",
-    "-fno-asynchronous-unwind-tables",
-    "-fno-exceptions",
-    "-fshort-wchar",
-    "-fstack-protector-strong",
-    "-isystem", "include",
-    "-isystem", "source",
-    "-Wall",
-    "-Werror",
-    "-Wextra",
-    "-Wno-delete-non-virtual-dtor",
-    "-Wno-packed-bitfield-compat",
-    "-Wsuggest-override",
-    "-std=c++23",
-    "-fPIC",
-    "-fno-exceptions",
+    '-DREVOLUTION',
+    '-fno-asynchronous-unwind-tables',
+    '-fno-exceptions',
+    '-fshort-wchar',
+    '-fstack-protector-strong',
+    '-isystem', 'include',
+    '-isystem', 'source',
+    '-Wall',
+    '-Werror',
+    '-Wextra',
+    '-Wno-delete-non-virtual-dtor',
+    '-Wno-packed-bitfield-compat',
+    '-Wsuggest-override',
+    '-std=c++23',
+    '-fPIC',
+    '-fno-exceptions',
 ]
 
 bindings_ccflags = [
-    "-DREVOLUTION",
-    "-fstack-protector-strong",
-    "-isystem", "include",
-    "-isystem", "source",
-    "-isystem", python_include_path,
-    "-isystem", nanobind_include_path,
-    "-isystem", robin_include_path,
-    "-Wall",
-    "-Werror",
-    "-Wextra",
-    "-Wno-format",
-    "-Wno-delete-non-virtual-dtor",
-    "-Wno-packed-bitfield-compat",
-    "-Wsuggest-override",
-    "-std=c++23",
-    "-fPIC",
+    '-DREVOLUTION',
+    '-fstack-protector-strong',
+    '-isystem', 'include',
+    '-isystem', 'source',
+    '-isystem', python_include_path,
+    '-isystem', nanobind_include_path,
+    '-isystem', robin_include_path,
+    '-Wall',
+    '-Werror',
+    '-Wextra',
+    '-Wno-format',
+    '-Wno-delete-non-virtual-dtor',
+    '-Wno-packed-bitfield-compat',
+    '-Wsuggest-override',
+    '-std=c++23',
+    '-fPIC',
 ]
 
 # Define build types
@@ -111,7 +111,7 @@ builds = [
 ]
 
 # Compile files
-def GetFiles():
+def get_files():
     sep = re.escape(os.path.sep)
     main_regex = re.compile(rf".*{sep}host{sep}main\.cc$")
     bindings_regex = re.compile(rf".*{sep}host{sep}KBind.*\.cc$")
@@ -135,7 +135,7 @@ def GetFiles():
 
     return common_files, main_files, bindings_files
 
-def Compile(files, builds, obj_key, flags):
+def compile(files, builds, obj_key, flags):
     for in_file in files:
         base_name, _ = os.path.splitext(in_file)
         for build in builds:
@@ -143,10 +143,10 @@ def Compile(files, builds, obj_key, flags):
             build.obj_files[obj_key].append(out_file)
             n.build(out_file, "cc", in_file, variables={"ccflags": " ".join([*flags, *build.flags])})
 
-common_files, main_files, bindings_files = GetFiles()
-Compile(common_files, builds, "common", common_ccflags)
-Compile(main_files, builds, "main", common_ccflags)
-Compile(bindings_files, builds, "bindings", bindings_ccflags)
+common_files, main_files, bindings_files = get_files()
+compile(common_files, builds, "common", common_ccflags)
+compile(main_files, builds, "main", common_ccflags)
+compile(bindings_files, builds, "bindings", bindings_ccflags)
 n.newline()
 
 # Link files
