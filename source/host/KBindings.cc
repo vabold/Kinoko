@@ -2,9 +2,9 @@
 
 #include "game/system/KPadController.hh"
 
-#include "game/kart/KartObjectProxy.hh"
+#include "host/KBindSystem.hh"
 
-#include <host/KBindSystem.hh>
+#include <game/kart/KartObjectProxy.hh>
 
 #include <egg/core/ExpHeap.hh>
 #include <egg/core/SceneManager.hh>
