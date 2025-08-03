@@ -24,7 +24,9 @@ public:
     void parseOptions(int /*argc*/, char ** /*argv*/) override {}
 
     /// @brief Sets the course for the race. Must be called before init()
-    void SetCourse(Course course);
+    void SetCourse(Course course) {
+        m_scenario.course = course;
+    }
 
     /// @brief Configures a racer. Must be called before init()
     void SetPlayer(int slot, Character character, Vehicle vehicle, bool driftIsAuto);

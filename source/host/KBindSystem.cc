@@ -56,10 +56,6 @@ Kart::KartObjectProxy *KBindSystem::GetKart(int slot) {
     return Kart::KartObjectManager::Instance()->object(slot);
 }
 
-void KBindSystem::SetCourse(Course course) {
-    m_scenario.course = course;
-}
-
 void KBindSystem::SetPlayer(int slot, Character character, Vehicle vehicle, bool driftIsAuto) {
     if (slot < 0 || slot > 12) {
         return;
