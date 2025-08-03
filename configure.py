@@ -28,9 +28,9 @@ n.newline()
 n.rule("cc", command="$compiler -MD -MT $out -MF $out.d $ccflags -c $in -o $out", depfile="$out.d", deps="gcc", description="CC $out")
 n.rule("ar", command="$ar rcs $out $in", description="AR $out")
 n.newline()
-n.rule("ld", command="$compiler $ldflags $in -o $out", description="LD $out")
+n.rule("ld", command="$compiler $in $ldflags -o $out", description="LD $out")
 n.newline()
-n.rule("ld_shared", command="$compiler -shared $ldflags $in -o $out", description="LD_SHARED $out")
+n.rule("ld_shared", command="$compiler -shared $in $ldflags -o $out", description="LD_SHARED $out")
 n.newline()
 
 # Download dependancies
@@ -49,6 +49,7 @@ python_include_path = sysconfig.get_paths()["include"]
 nanobind_src_path = os.path.join(nanobind_path, "src")
 nanobind_include_path = os.path.join(nanobind_path, "include")
 robin_include_path = os.path.join(robin_path, "include")
+python_lib_path = os.path.join(sysconfig.get_paths()["data"], "libs", f"libpython{sys.version_info.major}.{sys.version_info.minor}.a")
 
 # Flags
 common_ccflags = [
@@ -67,6 +68,7 @@ common_ccflags = [
     "-Wsuggest-override",
     "-std=c++23",
     "-fPIC",
+    "-fno-exceptions",
 ]
 
 bindings_ccflags = [
@@ -165,7 +167,9 @@ for build in builds:
     lib_name = f"bindings{build.suffix}{lib_extension}"
     lib_path = os.path.join("$outdir", lib_name)
     lib_objs = build.obj_files["bindings"] + [libkinoko_path]
-    n.build(lib_path, "ld_shared", lib_objs)
+    
+    # Python library
+    n.build(lib_path, "ld_shared", lib_objs, variables={"ldflags": f"{sysconfig.get_config_var('LDFLAGS')} -L{os.path.dirname(python_lib_path)} -lpython{sys.version_info.major}.{sys.version_info.minor}"})
     n.newline()
 
 n.rule("configure", command=f"{sys.executable} configure.py", generator=True)
