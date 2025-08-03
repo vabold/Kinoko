@@ -13,6 +13,8 @@ from tools.generate_tests import generate_tests
 
 generate_tests()
 
+ON_WINDOWS = True if sys.platform.startswith("win32") else False
+
 # Ninja variables and rules
 out_buf = io.StringIO()
 n = Writer(out_buf)
@@ -146,8 +148,8 @@ Compile(bindings_files, builds, "bindings", bindings_ccflags)
 n.newline()
 
 # Link files
-binary_extension = ".exe" if sys.platform.startswith("win32") else ""
-lib_extension = ".pyd" if sys.platform.startswith("win32") else ".so"
+binary_extension = ".exe" if ON_WINDOWS else ""
+lib_extension = ".pyd" if ON_WINDOWS else ".so"
 
 for build in builds:
     # libkinoko
@@ -169,7 +171,10 @@ for build in builds:
     lib_objs = build.obj_files["bindings"] + [libkinoko_path]
     
     # Python library
-    n.build(lib_path, "ld_shared", lib_objs, variables={"ldflags": f"{sysconfig.get_config_var('LDFLAGS')} -L{os.path.dirname(python_lib_path)} -lpython{sys.version_info.major}.{sys.version_info.minor}"})
+    if ON_WINDOWS:
+        n.build(lib_path, "ld_shared", lib_objs, variables={"ldflags": f"{sysconfig.get_config_var('LDFLAGS')} -L{os.path.dirname(python_lib_path)} -lpython{sys.version_info.major}.{sys.version_info.minor}"})
+    else:
+        n.build(lib_path, "ld_shared", lib_objs, variables={"ldflags": f"{sysconfig.get_config_var('LDFLAGS')} -L{os.path.dirname(python_lib_path)}"})
     n.newline()
 
 n.rule("configure", command=f"{sys.executable} configure.py", generator=True)
