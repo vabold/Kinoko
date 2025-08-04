@@ -85,7 +85,7 @@ void RaceScene::initEngines() {
         Field::ObjectDirector::Instance()->init();
     }
 
-    m_heap->disableAllocation();
+    // m_heap->disableAllocation();
 }
 
 /// @addr{0x80554E6C}
