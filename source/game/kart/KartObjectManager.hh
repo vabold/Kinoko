@@ -4,12 +4,20 @@
 
 #include <abstract/g3d/ResAnmChr.hh>
 
+namespace Host {
+
+class Context;
+
+} // namespace Host
+
 namespace Kart {
 
 /// @brief Responsible for the lifecycle and calculation of KartObjects.
 /// @addr{0x809C18F8}
 /// @nosubgrouping
 class KartObjectManager : EGG::Disposer {
+    friend class Host::Context;
+
 public:
     void init();
     void calc();

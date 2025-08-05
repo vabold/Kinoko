@@ -6,11 +6,19 @@
 
 #include <array>
 
+namespace Host {
+
+class Context;
+
+} // namespace Host
+
 namespace Abstract::Memory {
 
 /// @brief A low-level representation of a memory heap for managing dynamic memory allocation.
 /// Interface for allocating and freeing memory blocks.
 class MEMiHeapHead {
+    friend class Host::Context;
+
 public:
     enum class FillType {
         NoUse = 0,

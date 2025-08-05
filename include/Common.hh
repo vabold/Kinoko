@@ -429,3 +429,14 @@ static inline constexpr T parse(T val, std::endian endian = std::endian::big) {
 static inline constexpr u32 f2u(f32 val) {
     return std::bit_cast<u32>(val);
 }
+
+// The size of memory blocks that are allocated for game heap space.
+static constexpr size_t MEMORY_SPACE_SIZE = 0x1000000;
+
+#ifdef BUILD_DEBUG
+static constexpr auto DEFAULT_OPT = Abstract::Memory::MEMiHeapHead::OptFlag().setBit(
+        Abstract::Memory::MEMiHeapHead::eOptFlag::DebugFillAlloc);
+#else
+static constexpr auto DEFAULT_OPT = Abstract::Memory::MEMiHeapHead::OptFlag().setBit(
+        Abstract::Memory::MEMiHeapHead::eOptFlag::ZeroFillAlloc);
+#endif

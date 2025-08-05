@@ -7,6 +7,12 @@
 #include <list>
 #include <new>
 
+namespace Host {
+
+class Context;
+
+} // namespace Host
+
 namespace EGG {
 
 class ExpHeap;
@@ -14,6 +20,8 @@ class ExpHeap;
 /// @brief A high-level representation of a memory heap for managing dynamic memory allocation.
 /// Interface for allocating and freeing memory blocks.
 class Heap : Disposer {
+    friend class Host::Context;
+
 public:
     enum class Kind {
         None,

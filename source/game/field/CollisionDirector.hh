@@ -6,6 +6,12 @@
 
 #define COLLISION_ARR_LENGTH 0x40
 
+namespace Host {
+
+class Context;
+
+} // namespace Host
+
 /// @brief Pertains to collision.
 namespace Field {
 
@@ -13,6 +19,8 @@ namespace Field {
 /// @addr{0x809C2F44}
 /// @nosubgrouping
 class CollisionDirector : EGG::Disposer {
+    friend class Host::Context;
+
 public:
     struct CollisionEntry {
         KCLTypeMask typeMask;

@@ -8,9 +8,17 @@
 
 #include <vector>
 
+namespace Host {
+
+class Context;
+
+} // namespace Host
+
 namespace Field {
 
 class ObjectDirector : EGG::Disposer {
+    friend class Host::Context;
+
 public:
     void init();
     void calc();
