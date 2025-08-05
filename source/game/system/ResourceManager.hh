@@ -2,6 +2,8 @@
 
 #include "game/system/MultiDvdArchive.hh"
 
+class SavestateManager;
+
 namespace System {
 
 enum class ArchiveId {
@@ -14,6 +16,8 @@ enum class ArchiveId {
 /// @details ResourceManager is responsible for loading and unloading archives. For example, it is
 /// used by Field::CourseColMgr to load the KCL collision file from a particular course archive.
 class ResourceManager : EGG::Disposer {
+    friend class ::SavestateManager;
+
 public:
     void *getFile(const char *filename, size_t *size, ArchiveId id);
     void *getBsp(Vehicle vehicle, size_t *size);

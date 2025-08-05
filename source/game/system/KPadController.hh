@@ -13,6 +13,13 @@ namespace System {
     return (static_cast<f32>(rawStick) - 7.0f) / 7.0f;
 }
 
+/// @brief Converts a raw stick input into an input usable by the state.
+/// @param rawStick The converted input we want to make raw.
+/// @return The raw stick input.
+[[nodiscard]] static constexpr u8 StateToRawStick(f32 state) {
+    return static_cast<u8>(state * 7.0f + 7.0f);
+}
+
 enum class ControlSource {
     Unknown = -1,
     Core = 0,      // WiiMote
@@ -278,6 +285,8 @@ public:
     /// @return Input state validity.
     bool setInputs(u16 buttons, f32 stickX, f32 stickY, Trick trick) {
         m_raceInputState.buttons = buttons;
+        m_raceInputState.stickXRaw = StateToRawStick(stickX);
+        m_raceInputState.stickYRaw = StateToRawStick(stickY);
         m_raceInputState.stick.x = stickX;
         m_raceInputState.stick.y = stickY;
         m_raceInputState.trick = trick;

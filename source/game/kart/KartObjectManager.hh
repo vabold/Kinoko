@@ -4,12 +4,16 @@
 
 #include <abstract/g3d/ResAnmChr.hh>
 
+class SavestateManager;
+
 namespace Kart {
 
 /// @brief Responsible for the lifecycle and calculation of KartObjects.
 /// @addr{0x809C18F8}
 /// @nosubgrouping
 class KartObjectManager : EGG::Disposer {
+    friend class ::SavestateManager;
+
 public:
     void init();
     void calc();

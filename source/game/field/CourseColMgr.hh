@@ -7,6 +7,8 @@
 
 // Credit: em-eight/mkw
 
+class SavestateManager;
+
 namespace Field {
 
 typedef bool (
@@ -16,6 +18,8 @@ typedef bool (
 /// @addr{0x809C3C10}
 /// @nosubgrouping
 class CourseColMgr : EGG::Disposer {
+    friend class ::SavestateManager;
+
 public:
     struct NoBounceWallColInfo {
         EGG::BoundBox3f bbox;

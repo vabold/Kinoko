@@ -4,10 +4,14 @@
 
 #include <vector>
 
+class SavestateManager;
+
 namespace Field {
 
 // TODO: Inherit EGG::Disposer
 class RailManager {
+    friend class ::SavestateManager;
+
 public:
     /// @beginGetters
     [[nodiscard]] Rail *rail(size_t idx) {

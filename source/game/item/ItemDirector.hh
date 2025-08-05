@@ -4,11 +4,15 @@
 
 #include <span>
 
+class SavestateManager;
+
 /// @brief Pertains to item handling.
 namespace Item {
 
 /// @addr{0x809C3618}
 class ItemDirector : EGG::Disposer {
+    friend class ::SavestateManager;
+
 public:
     void init();
     void calc();

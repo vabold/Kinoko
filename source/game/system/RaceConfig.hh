@@ -4,6 +4,8 @@
 
 #include <functional>
 
+class SavestateManager;
+
 namespace System {
 
 /// @addr{0x809BD728}
@@ -13,6 +15,8 @@ namespace System {
 /// starting a race. In Kinoko, we don't have these menus, so we initialize the race directly
 /// through this class.
 class RaceConfig : EGG::Disposer {
+    friend class ::SavestateManager;
+
 public:
     struct Player {
     public:

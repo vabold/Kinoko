@@ -13,6 +13,8 @@
 
 #include <egg/math/Vector.hh>
 
+class SavestateManager;
+
 /// @brief High-level handling for generic system operations, such as input reading, race
 /// configuration, and resource management.
 namespace System {
@@ -24,6 +26,8 @@ concept MapdataDerived = is_derived_from_template_v<MapdataAccessorBase, T>;
 /// @addr{0x809BD6E8}
 /// @nosubgrouping
 class CourseMap : EGG::Disposer {
+    friend class ::SavestateManager;
+
 public:
     void init();
 

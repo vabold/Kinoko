@@ -7,6 +7,8 @@
 
 #include <egg/math/Vector.hh>
 
+class SavestateManager;
+
 namespace System {
 
 /// @addr{0x809BD730}
@@ -17,6 +19,8 @@ namespace System {
 /// player start position from CourseMap and communicates it to the physics engine.
 /// @nosubgrouping
 class RaceManager : EGG::Disposer {
+    friend class ::SavestateManager;
+
 public:
     class Player {
     public:

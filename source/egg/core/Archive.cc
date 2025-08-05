@@ -9,10 +9,7 @@ namespace EGG {
 /// @addr{0x8020f6ec}
 /// @details Called when the archive's reference count becomes 0.
 Archive::~Archive() {
-    auto iter = std::find(s_archiveList.begin(), s_archiveList.end(), this);
-    if (iter != s_archiveList.end()) {
-        s_archiveList.erase(iter);
-    }
+    s_archiveList.remove(this);
 }
 
 /// @addr{0x8020fa38}
@@ -40,13 +37,13 @@ void *Archive::getFileFast(s32 entryId, Abstract::ArchiveHandle::FileInfo &info)
 Archive *Archive::FindArchive(void *archiveStart) {
     ASSERT(archiveStart);
 
-    for (auto iter = s_archiveList.begin(); iter != s_archiveList.end(); ++iter) {
-        if ((*iter)->m_handle.startAddress() == archiveStart) {
-            return *iter;
-        }
+    auto *iter = reinterpret_cast<Archive *>(s_archiveList.getFirst());
+
+    while (iter && iter->m_handle.startAddress() != archiveStart) {
+        iter = reinterpret_cast<Archive *>(s_archiveList.getNext(iter));
     }
 
-    return nullptr;
+    return iter;
 }
 
 /// @brief Creates a new Archive object or increments the ref count for an already existing Archive.
@@ -59,7 +56,7 @@ Archive *Archive::Mount(void *archiveStart) {
     if (!archive) {
         // Create a new archive and add it to the list
         archive = new Archive(archiveStart);
-        s_archiveList.push_back(archive);
+        s_archiveList.append(archive);
     } else {
         // It already exists, increase the reference count
         archive->m_refCount++;
@@ -71,6 +68,7 @@ Archive *Archive::Mount(void *archiveStart) {
 /// @addr{Inlined in 0x8020F768}
 Archive::Archive(void *archiveStart) : m_handle(archiveStart) {}
 
-std::list<Archive *> Archive::s_archiveList;
+Abstract::Memory::MEMList Archive::s_archiveList =
+        Abstract::Memory::MEMList(Archive::GetLinkOffset());
 
 } // namespace EGG

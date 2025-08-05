@@ -2,11 +2,15 @@
 
 #include "game/system/KPadController.hh"
 
+class SavestateManager;
+
 namespace System {
 
 /// @brief The highest level abstraction for controller processing.
 /// @addr{0x809BD70C}
 class KPadDirector : EGG::Disposer {
+    friend class ::SavestateManager;
+
 public:
     void calc();
     void calcPads();

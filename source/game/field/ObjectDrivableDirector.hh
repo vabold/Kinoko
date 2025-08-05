@@ -6,9 +6,13 @@
 
 #include <vector>
 
+class SavestateManager;
+
 namespace Field {
 
 class ObjectDrivableDirector : EGG::Disposer {
+    friend class ::SavestateManager;
+
 public:
     void init();
     void calc();

@@ -7,6 +7,8 @@
 #include <list>
 #include <new>
 
+class SavestateManager;
+
 namespace EGG {
 
 class ExpHeap;
@@ -14,6 +16,8 @@ class ExpHeap;
 /// @brief A high-level representation of a memory heap for managing dynamic memory allocation.
 /// Interface for allocating and freeing memory blocks.
 class Heap : Disposer {
+    friend class ::SavestateManager;
+
 public:
     enum class Kind {
         None,
