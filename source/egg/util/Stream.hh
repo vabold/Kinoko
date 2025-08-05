@@ -94,6 +94,10 @@ public:
         return m_buffer + m_index;
     }
 
+    [[nodiscard]] const u8 *dataAtIndex() const {
+        return m_buffer + m_index;
+    }
+
 private:
     u8 *m_buffer;
     u32 m_size;
