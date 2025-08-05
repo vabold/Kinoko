@@ -2,6 +2,8 @@
 
 namespace Abstract::Memory {
 
+MEMList::MEMList() : MEMList(0) {}
+
 /// @addr{0x80199BF0}
 MEMList::MEMList(u16 offset) {
     m_headObject = nullptr;

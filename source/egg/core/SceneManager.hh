@@ -3,10 +3,18 @@
 #include "egg/core/Scene.hh"
 #include "egg/core/SceneCreator.hh"
 
+namespace Host {
+
+class Context;
+
+} // namespace Host
+
 namespace EGG {
 
 /// @brief Manages the scene stack and transitions between scenes.
 class SceneManager {
+    friend class Host::Context;
+
 public:
     /*------------*
         Lifecycle

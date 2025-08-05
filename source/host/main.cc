@@ -22,16 +22,8 @@ static void *s_memorySpace = nullptr;
 static EGG::Heap *s_rootHeap = nullptr;
 
 static void InitMemory() {
-    constexpr size_t MEMORY_SPACE_SIZE = 0x1000000;
-    Abstract::Memory::MEMiHeapHead::OptFlag opt;
-    opt.setBit(Abstract::Memory::MEMiHeapHead::eOptFlag::ZeroFillAlloc);
-
-#ifdef BUILD_DEBUG
-    opt.setBit(Abstract::Memory::MEMiHeapHead::eOptFlag::DebugFillAlloc);
-#endif
-
     s_memorySpace = malloc(MEMORY_SPACE_SIZE);
-    s_rootHeap = EGG::ExpHeap::create(s_memorySpace, MEMORY_SPACE_SIZE, opt);
+    s_rootHeap = EGG::ExpHeap::create(s_memorySpace, MEMORY_SPACE_SIZE, DEFAULT_OPT);
     s_rootHeap->setName("EGGRoot");
     s_rootHeap->becomeCurrentHeap();
 

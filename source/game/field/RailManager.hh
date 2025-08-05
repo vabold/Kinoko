@@ -4,10 +4,18 @@
 
 #include <vector>
 
+namespace Host {
+
+class Context;
+
+} // namespace Host
+
 namespace Field {
 
 // TODO: Inherit EGG::Disposer
 class RailManager {
+    friend class Host::Context;
+
 public:
     /// @beginGetters
     [[nodiscard]] Rail *rail(size_t idx) {
