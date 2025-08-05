@@ -84,7 +84,8 @@ void KReplaySystem::parseOptions(int argc, char **argv) {
 
 KReplaySystem *KReplaySystem::CreateInstance() {
     ASSERT(!s_instance);
-    s_instance = new KReplaySystem;
+    s_instance = static_cast<KReplaySystem *>(malloc(sizeof(KReplaySystem)));
+    new (s_instance) KReplaySystem;
     return static_cast<KReplaySystem *>(s_instance);
 }
 
@@ -92,7 +93,7 @@ void KReplaySystem::DestroyInstance() {
     ASSERT(s_instance);
     auto *instance = s_instance;
     s_instance = nullptr;
-    delete instance;
+    free(instance);
 }
 
 KReplaySystem::KReplaySystem()

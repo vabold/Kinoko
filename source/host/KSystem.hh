@@ -2,8 +2,12 @@
 
 #include <Common.hh>
 
+class SavestateManager;
+
 /// @brief Base interface for a Kinoko system.
 class KSystem : EGG::Disposer {
+    friend class SavestateManager;
+
 public:
     virtual ~KSystem() {}
 

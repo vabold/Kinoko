@@ -6,11 +6,15 @@
 
 #include <array>
 
+class SavestateManager;
+
 namespace Abstract::Memory {
 
 /// @brief A low-level representation of a memory heap for managing dynamic memory allocation.
 /// Interface for allocating and freeing memory blocks.
 class MEMiHeapHead {
+    friend class ::SavestateManager;
+
 public:
     enum class FillType {
         NoUse = 0,

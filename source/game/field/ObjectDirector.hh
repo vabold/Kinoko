@@ -8,9 +8,13 @@
 
 #include <vector>
 
+class SavestateManager;
+
 namespace Field {
 
 class ObjectDirector : EGG::Disposer {
+    friend class ::SavestateManager;
+
 public:
     void init();
     void calc();

@@ -3,10 +3,14 @@
 #include "egg/core/Scene.hh"
 #include "egg/core/SceneCreator.hh"
 
+class SavestateManager;
+
 namespace EGG {
 
 /// @brief Manages the scene stack and transitions between scenes.
 class SceneManager {
+    friend class ::SavestateManager;
+
 public:
     /*------------*
         Lifecycle

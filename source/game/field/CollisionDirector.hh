@@ -6,6 +6,8 @@
 
 #define COLLISION_ARR_LENGTH 0x40
 
+class SavestateManager;
+
 /// @brief Pertains to collision.
 namespace Field {
 
@@ -13,6 +15,8 @@ namespace Field {
 /// @addr{0x809C2F44}
 /// @nosubgrouping
 class CollisionDirector : EGG::Disposer {
+    friend class ::SavestateManager;
+
 public:
     struct CollisionEntry {
         KCLTypeMask typeMask;

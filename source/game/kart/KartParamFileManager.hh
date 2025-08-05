@@ -4,12 +4,16 @@
 
 #include "game/system/ResourceManager.hh"
 
+class SavestateManager;
+
 namespace Kart {
 
 /// @brief Abstraction for the process of retrieving kart parameters from files.
 /// @details This has been modified from the base game in order to perform validation and make the
 /// class accessible as a singleton.
 class KartParamFileManager : EGG::Disposer {
+    friend class ::SavestateManager;
+
 public:
     void clear();
     void init();

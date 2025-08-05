@@ -164,7 +164,8 @@ void KTestSystem::parseOptions(int argc, char **argv) {
 
 KTestSystem *KTestSystem::CreateInstance() {
     ASSERT(!s_instance);
-    s_instance = new KTestSystem;
+    s_instance = static_cast<KTestSystem *>(malloc(sizeof(KTestSystem)));
+    new (s_instance) KTestSystem;
     return static_cast<KTestSystem *>(s_instance);
 }
 
@@ -172,7 +173,7 @@ void KTestSystem::DestroyInstance() {
     ASSERT(s_instance);
     auto *instance = s_instance;
     s_instance = nullptr;
-    delete instance;
+    free(instance);
 }
 
 KTestSystem::KTestSystem() = default;
