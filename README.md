@@ -55,11 +55,32 @@ cd out
 ./kinoko -m test -s testCases.bin
 ```
 
-## Creating New Test Cases
+## Running Kinoko
 
-Currently, Kinoko runs by iterating over a set of test cases defined in `testCases.json`.
+Kinoko currently has two different "modes" it can operate under:
+- Replay Mode
+- Testcase Mode
 
-### Create KRKG
+---
+
+### Replay Mode
+`./kinoko -m replay (-g | -G | -ghost) relativePathToGhost.rkg`
+
+This mode simply takes in a time trial ghost file and attempts to play it back. The return code will indicate whether the playback succeeded or not. The following scenarios and their respective return codes are possible:
+- The ghost finished the race and the timer matches the RKG: `0` (success)
+- The ghost finished the race but the timer did not match the RKG: `1` (failure)
+- The ghost playback exceeded 10 minutes: `1` (failure)*
+
+\* If a desync occurs, it is most likely to result in the timer exceeding 10 minutes.
+
+---
+
+### Testcase Mode
+`./kinoko -m test (-s | -S | -suite) testCases.bin`
+
+This mode iterates over a set of test cases defined in `testCases.json`. Test cases are created by following the steps below.
+
+#### Create KRKG
 
 Test cases use a custom `.krkg` file format, which stores relevant in-game memory values to validate accuracy on every frame of a race. This file is generated using a custom version of MKW-SP.
 
@@ -71,7 +92,7 @@ Test cases use a custom `.krkg` file format, which stores relevant in-game memor
 6. You should see some debug information printed on-screen and Mario Kart Wii should boot soon after.
 7. Watch a ghost replay of your choosing. After the ghost finishes and the screen fades to black, navigate to `[DolphinDir]\User\Wii\title\00010004\524d4345\data`. You should see a new file called `test.krkg`.
 
-### Add Test Case Params
+#### Add Test Case Params
 
 Test cases are defined in `testCases.json` in the following format:
 
