@@ -11,6 +11,7 @@ enum class EOption {
     Mode,
     Suite,
     Ghost,
+    KRKG,
 };
 
 namespace Option {
