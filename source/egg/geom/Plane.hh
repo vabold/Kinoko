@@ -9,24 +9,24 @@ namespace EGG {
 /// published by Morgan Kaufmann Publishers, Copyright 2005 Elsevier Inc.
 struct Plane3f {
     /// @addr{0x805AF020}
-    Plane3f() = default;
+    constexpr Plane3f() = default;
 
     /// @addr{0x805AEF6C}
-    Plane3f(const Vector3f &point, const Vector3f &normal) {
+    constexpr Plane3f(const Vector3f &point, const Vector3f &normal) {
         set(point, normal);
     }
 
     /// @addr{0x805AF330}
-    ~Plane3f() = default;
+    constexpr ~Plane3f() = default;
 
     /// @addr{0x805AF048}
-    void set(const Vector3f &point, const Vector3f &normal) {
+    constexpr void set(const Vector3f &point, const Vector3f &normal) {
         n = normal;
         d = -(normal.dot(point));
     }
 
     /// @addr{0x805AF0F0}
-    [[nodiscard]] bool testPoint(const Vector3f &point) const {
+    [[nodiscard]] constexpr bool testPoint(const Vector3f &point) const {
         return d + n.dot(point) <= 0.0f;
     }
 

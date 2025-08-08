@@ -328,7 +328,7 @@ KTestSystem::TestData KTestSystem::findCurrentFrameEntry() {
     f32 speed = 0.0f;
     f32 acceleration = 0.0f;
     f32 softSpeedLimit = 0.0f;
-    EGG::Quatf mainRot;
+    EGG::Quatf mainRot = EGG::Quatf::ident; // Initialize to avoid maybe-uninitialized warning
     EGG::Vector3f angVel2;
     f32 raceCompletion = 0.0f;
     u16 checkpointId = 0;
