@@ -1,6 +1,7 @@
 #pragma once
 
 #include "host/KSystem.hh"
+#include "host/Option.hh"
 
 #include <egg/core/SceneManager.hh>
 #include <egg/math/Quat.hh>
@@ -122,6 +123,8 @@ private:
         m_sync = false;
     }
 
+    void initSuite();
+
     void startNextTestCase();
     bool popTestCase();
 
@@ -139,6 +142,7 @@ private:
     EGG::SceneManager *m_sceneMgr;
     EGG::RamStream m_stream;
     std::queue<TestCase> m_testCases;
+    Host::EOption m_testMode; ///< Differentiates between test suite and ghost+krkg
 
     u16 m_versionMajor;
     u16 m_versionMinor;
