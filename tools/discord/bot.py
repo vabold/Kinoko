@@ -144,7 +144,7 @@ async def replay_set_ghost(ghost: bytes):
 
 
 async def replay_run() -> int:
-    args = ["-m", "replay", "-g", "ghost.rkg"]
+    args = ["replay", "-g", "ghost.rkg"]
     proc = await asyncio.create_subprocess_exec(
         os.path.join(KINOKO_PATH, KINOKO_EXEC), *args, cwd=KINOKO_PATH
     )

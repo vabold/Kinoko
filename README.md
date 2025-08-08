@@ -52,7 +52,7 @@ Run Kinoko:
 
 ```bash
 cd out
-./kinoko -m test -s testCases.bin
+./kinoko test -s testCases.bin
 ```
 
 ## Creating New Test Cases
