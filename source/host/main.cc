@@ -42,25 +42,15 @@ int main(int argc, char **argv) {
             {"replay", []() -> KSystem * { return KReplaySystem::CreateInstance(); }},
     };
 
-    if (argc < 3) {
+    if (argc < 2) {
         PANIC("Too few arguments!");
     }
 
-    // The first argument is the executable, so we ignore it
-    // The second argument is the mode flag
-    // The third argument is the mode arg
-    // TODO: Iterate until we find the index of the mode flag
-    std::optional<Host::EOption> flag = Host::Option::CheckFlag(argv[1]);
-    if (!flag) {
-        PANIC("Not a flag!");
-    }
-
-    if (*flag != Host::EOption::Mode) {
-        PANIC("First flag expected to be mode!");
-    }
-
     KSystem *sys = nullptr;
-    const std::string mode = argv[2];
+
+    // The first argument is the executable, so we ignore it
+    // The second argument is the mode
+    const std::string mode = argv[1];
 
     auto it = modeMap.find(mode);
     if (it != modeMap.end()) {
@@ -69,7 +59,7 @@ int main(int argc, char **argv) {
         PANIC("Invalid mode!");
     }
 
-    sys->parseOptions(argc - 3, argv + 3);
+    sys->parseOptions(argc - 2, argv + 2);
     sys->init();
     return sys->run() ? 0 : 1;
 }
