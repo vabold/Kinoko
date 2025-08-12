@@ -40,6 +40,17 @@ public:
     [[nodiscard]] f32 read_f32();
     [[nodiscard]] f64 read_f64();
 
+    void write_u8(u8 val);
+    void write_u16(u16 val);
+    void write_u32(u32 val);
+    void write_u64(u64 val);
+    void write_s8(s8 val);
+    void write_s16(s16 val);
+    void write_s32(s32 val);
+    void write_s64(s64 val);
+    void write_f32(f32 val);
+    void write_f64(f64 val);
+
 protected:
     std::endian m_endian;
     u32 m_index;
@@ -53,6 +64,14 @@ private:
         m_index += sizeof(val);
 
         return parse<T>(val, m_endian);
+    }
+
+    template <ParseableType T>
+    void write(T val) {
+        ASSERT(safe(sizeof(T)));
+        T parsedVal = parse<T>(val, m_endian);
+        write(&parsedVal, sizeof(parsedVal));
+        m_index += sizeof(parsedVal);
     }
 };
 
