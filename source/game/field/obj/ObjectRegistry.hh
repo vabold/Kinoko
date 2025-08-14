@@ -24,3 +24,4 @@
 #include "game/field/obj/ObjectTownBridge.hh"
 #include "game/field/obj/ObjectTuribashi.hh"
 #include "game/field/obj/ObjectWLWallGC.hh"
+#include "game/field/obj/ObjectWoodbox.hh"

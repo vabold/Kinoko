@@ -7,6 +7,7 @@ namespace Field {
 enum class ObjectId {
     None = 0x0,
     DummyPole = 0x066,
+    Woodbox = 0x70,
     WLWallGC = 0xcb,
     KartTruck = 0xd0,
     CarBody = 0xd1,
