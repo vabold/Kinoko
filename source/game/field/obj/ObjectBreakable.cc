@@ -35,7 +35,7 @@ void ObjectBreakable::calc() {
 }
 
 // @addr{0x8076ED70}
-void respawn() {
+void enableCollision() {
     m_breakableState = BreakableState::ACTIVE;
     m_collisionEnabled = true;
 }
