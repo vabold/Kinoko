@@ -6,6 +6,13 @@ namespace Field {
 
 class ObjectBreakable : public ObjectCollidable {
 public:
+    enum BreakableState : u32 {
+        UNINITIALIZED = 0,
+        ACTIVE = 1,
+        BROKEN = 2,
+        HIT = 3,
+    };
+
     /// @addr{0x8076EBE0}
     ObjectBreakable(const System::MapdataGeoObj &params);
 
@@ -23,10 +30,15 @@ public:
         return 1;
     }
 
+    // @addr{0x8076ED70}
+    void enableCollision();
+
     Kart::Reaction onCollision(Kart::KartObject *kartObj, Kart::Reaction reactionOnKart,
             Kart::Reaction reactionOnObj, EGG::Vector3f &hitDepth) override;
 
 private:
+    BreakableState m_breakableState;
+    u32 m_respawnTimer;
     bool m_collisionEnabled;
 };
 
