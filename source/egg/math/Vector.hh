@@ -138,7 +138,7 @@ struct Vector3f {
         return Vector3f(x * rhs.x, y * rhs.y, z * rhs.z);
     }
 
-    [[nodiscard]] Vector3f operator*(f32 scalar) const {
+    [[nodiscard]] constexpr Vector3f operator*(f32 scalar) const {
         return Vector3f(x * scalar, y * scalar, z * scalar);
     }
 
