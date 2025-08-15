@@ -32,7 +32,7 @@ void ObjectWoodbox::calcCollisionTransform() {
 void ObjectWoodbox::enableCollision() override {
     ObjectBreakable::enableCollision();
     m_railInterpolator->init(0.0f, 0);
-    m_railInterpolator->setUsePerPointVelocities(true);
+    m_railInterpolator->setPerPointVelocities(true);
 }
 
 /// @addr{0x8077E7B0}
