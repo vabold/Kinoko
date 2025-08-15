@@ -1,5 +1,7 @@
 #include "ObjectBreakable.hh"
 
+namespace Field {
+
 /// @addr{0x8076EBE0}
 ObjectBreakable::ObjectBreakable(const System::MapdataGeoObj &params)
     : ObjectCollidable(params), m_state(UNINITIALIZED) {}
