@@ -2,7 +2,7 @@
 
 /// @addr{0x8076EBE0}
 ObjectBreakable::ObjectBreakable(const System::MapdataGeoObj &params)
-    : ObjectCollidable(params), m_breakableState(UNINITIALIZED) {}
+    : ObjectCollidable(params), m_state(UNINITIALIZED) {}
 
 /// @addr{0x8076EC28}
 ObjectBreakable::~ObjectBreakable() = default;
@@ -14,7 +14,7 @@ void ObjectBreakable::init() {
 
 /// @addr{0x8076ED1C}
 void ObjectBreakable::calc() {
-    switch (m_breakableState) {
+    switch (m_state) {
     case State::BROKEN:
         if (m_respawnTimer > 0) {
             m_respawnTimer--;
@@ -26,9 +26,9 @@ void ObjectBreakable::calc() {
         break;
 
     case State::RESPAWNING:
-        respawn();
+        respawnCallback();
         break;
-        
+
     case State::UNINITIALIZED:
     case State::ACTIVE:
     default:
@@ -36,10 +36,9 @@ void ObjectBreakable::calc() {
     }
 }
 
-// @addr{0x8076ED70}
-void ObjectBreakable::enableCollision() {
-    m_breakableState = State::ACTIVE;
-    m_collisionEnabled = true;
+/// @addr{0x807677E4}
+[[nodiscard]] u32 ObjectBreakable::loadFlags() const override {
+    return 1;
 }
 
 /// @addr{0x8076f0ac}
@@ -50,6 +49,17 @@ Kart::Reaction ObjectBreakable::onCollision(Kart::KartObject * /*kartObj*/, Kart
     }
 
     return reactionOnKart;
+}
+
+// @addr{0x8076ED70}
+void ObjectBreakable::enableCollision() {
+    m_state = State::ACTIVE;
+    m_collisionEnabled = true;
+}
+
+/// @addr{0x807677E0}
+void respawnCallback() {
+    return;
 }
 
 } // namespace Field

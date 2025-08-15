@@ -16,24 +16,17 @@ public:
     ObjectBreakable(const System::MapdataGeoObj &params);
     virtual ~ObjectBreakable();
 
-    void init();
-
+    void init() override;
     void calc() override;
-
-    void enableCollision();
-
-    virtual void respawn() = 0;
-
+    [[nodiscard]] u32 loadFlags() const override;
     Kart::Reaction onCollision(Kart::KartObject *kartObj, Kart::Reaction reactionOnKart,
             Kart::Reaction reactionOnObj, EGG::Vector3f &hitDepth) override;
 
-    /// @addr{0x807677E4}
-    [[nodiscard]] u32 loadFlags() const override {
-        return 1;
-    }
+    void enableCollision();
+    virtual void respawnCallback();
 
 private:
-    State m_breakableState;
+    State m_state;
     u32 m_respawnTimer;
     bool m_collisionEnabled;
 };
