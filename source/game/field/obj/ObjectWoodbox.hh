@@ -6,38 +6,25 @@ namespace Field {
 
 class ObjectWoodbox : public ObjectBreakable {
 public:
-    /// @addr{0x8077E5E4}
-    ObjectWoodbox(const System::MapdataGeoObj &params): ObjectBreakable(params) {}
+    ObjectWoodbox(const System::MapdataGeoObj &params);
+    ~ObjectWoodbox() override;
 
-    /// @addr{0x8077E620}
-    ~ObjectWoodbox() = default;
+    void init() override;
+    void enableCollision() override;
+    void onRespawn() override;
 
-    void init();
-
-    void calcCollisionTransform() override;
-
-    void registerCollisionEntityFromParams();
-
-    /// @addr{0x8077EDAC}
-    [[nodiscard]] u32 loadFlags() const override {
-        return 1;
+    /// @addr{0x8077ED7C}
+    char *ObjectWoodbox::getKclName() {
+        return "ironbox"; // woodbox when not in TTs
     }
 
-    // @addr{0x8077ed7c}
-    [[nodiscard]] char *getKclName() const override {
-        return "ironbox"; // woodbox in GPs
-    }
-
-    /// @addr{0x8077ED70}
-    [[nodiscard]] char *getResourcesNames() const override {
-        return "woodbox";
-    }
-
-    void respawn();
+    void calcCollisionTransform();
 
 private:
-    float m_initialHeight;
-    u32 m_c0;
+    void calcFloor();
+
+    f32 m_initialHeight;
+    f32 m_downwardsVelocity;
 };
 
 } // namespace Field
