@@ -15,7 +15,7 @@ void ObjectBreakable::calc() {
     case State::Broken:
         if (m_respawnTimer > 0) {
             if (--m_respawnTimer == 0) {
-                enableCollision();
+                onTimerFinish();
             }
         }
         break;
@@ -36,11 +36,11 @@ Kart::Reaction ObjectBreakable::onCollision(Kart::KartObject * /*kartObj*/,
         Kart::Reaction reactionOnKart, Kart::Reaction /*reactionOnObj*/,
         EGG::Vector3f & /*hitDepth*/) {
     if (reactionOnObj == UNK_3) {
-        onBreakTT(kartObj);
+        onBreak(kartObj);
     }
 
     if (reactionOnObj == UNK_5) {
-        // onBreakGP(kartObj);
+        // GP implementation? @addr{0x8076F1D4}
     }
 
     if ((reactionOnKart == Kart::Reaction::None || reactionOnKart == Kart::Reaction::UNK_7) &&
@@ -49,11 +49,6 @@ Kart::Reaction ObjectBreakable::onCollision(Kart::KartObject * /*kartObj*/,
     }
 
     return reactionOnKart;
-}
-
-/// @addr{0x807677E0}
-void respawnCallback() {
-    return;
 }
 
 } // namespace Field

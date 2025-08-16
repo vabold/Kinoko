@@ -37,6 +37,23 @@ void ObjectWoodbox::enableCollision() override {
     m_railInterpolator->setPerPointVelocities(true);
 }
 
+/// @addr{0x8077E750}
+void ObjectWoodbox::onTimerFinish() {
+    ObjectBreakable::enableCollision();
+    m_state = State::Respawning;
+    m_pos.y = m_initialHeight + RESPAWN_HEIGHT;
+    m_flags.setBit(eFlags::Position);
+    m_downwardsVelocity = 0.0f;
+}
+
+/// @addr{0x8077E704}
+void ObjectWoodbox::onBreak() {
+    ObjectBreakable::onBreak();
+    if (m_mapObj->setting(3) == 0) {
+        m_respawnTimer = 300;
+    }
+}
+
 /// @addr{0x8077E7B0}
 void ObjectWoodbox::onRespawn() {
     m_downwardsVelocity -= GRAVITY;

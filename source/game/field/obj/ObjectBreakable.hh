@@ -37,11 +37,16 @@ public:
         m_collisionEnabled = true;
     }
 
-    /// @addr{0x8076F1D4}
-    // virtual void onBreakGP(Kart::KartObject *kartObj) {}
+    /// @addr{0x8076EDD4}
+    virtual void onTimerFinish() {
+        enableCollision();
+    }
 
-    /// @addr{0x8076f1d8}
-    virtual void onBreakTT(Kart::KartObject *kartObj) {}
+    /// @addr{0x8076EDE4}
+    virtual void onBreak(Kart::KartObject *kartObj) {
+        m_state = State::Broken;
+        m_collisionEnabled = false;
+    }
 
     /// @addr{0x807677E0}
     virtual void onRespawn() {}
