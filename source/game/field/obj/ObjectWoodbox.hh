@@ -10,18 +10,21 @@ public:
     ~ObjectWoodbox() override;
 
     void init() override;
-    void enableCollision() override;
-    void onRespawn() override;
 
     /// @addr{0x8077ED7C}
-    char *ObjectWoodbox::getKclName() {
+    [[nodiscard]] const char *getKclName() override {
         return "ironbox"; // woodbox when not in TTs
     }
 
-    void calcCollisionTransform();
+    void calcCollisionTransform() override;
+    void enableCollision() override;
+    void onRespawn() override;
 
 private:
     void calcFloor();
+
+    static constexpr f32 HALF_SIZE = 100.0f;
+    static constexpr f32 GRAVITY = 2.0f;
 
     f32 m_initialHeight;
     f32 m_downwardsVelocity;

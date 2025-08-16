@@ -7,24 +7,24 @@ namespace Field {
 class ObjectBreakable : public ObjectCollidable {
 public:
     enum class State {
-        UNINITIALIZED,
-        ACTIVE,
-        BROKEN,
-        RESPAWNING,
+        Uninitialized,
+        Active,
+        Broken,
+        Respawning,
     };
 
     ObjectBreakable(const System::MapdataGeoObj &params);
     ~ObjectBreakable() override;
 
     /// @addr{0x8076EC68}
-    void init() {
+    void init() override {
         enableCollision();
     }
 
     void calc() override;
     
     /// @addr{0x807677E4}
-    [[nodiscard]] u32 ObjectBreakable::loadFlags() const override {
+    [[nodiscard]] u32 loadFlags() const override {
         return 1;
     }
 
@@ -37,10 +37,14 @@ public:
         m_collisionEnabled = true;
     }
 
+    /// @addr{0x8076F1D4}
+    // virtual void onBreakGP(Kart::KartObject *kartObj) {}
+
+    /// @addr{0x8076f1d8}
+    virtual void onBreakTT(Kart::KartObject *kartObj) {}
+
     /// @addr{0x807677E0}
-    virtual void onRespawn() {
-        return;
-    }
+    virtual void onRespawn() {}
 
 private:
     State m_state;

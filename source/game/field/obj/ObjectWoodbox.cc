@@ -5,8 +5,7 @@
 namespace Field {
 
 /// @addr{0x8077E5E4}
-ObjectWoodbox::ObjectWoodbox(const System::MapdataGeoObj &params)
-    : ObjectBreakable(params) {}
+ObjectWoodbox::ObjectWoodbox(const System::MapdataGeoObj &params): ObjectBreakable(params) {}
 
 /// @addr{0x8077E620}
 ObjectWoodbox::ObjectWoodbox() = default;
@@ -20,12 +19,15 @@ void ObjectWoodbox::init() {
 
 /// @addr{0x8077EBB8}
 void ObjectWoodbox::calcCollisionTransform() {
-    if (!m_collision) {
-        calcTransform();
-        EGG::Vector3f nextPos = m_pos + EGG::Vector3f(0.0f, 100.0f, 0.0f);
-        m_transform.setBase(3, nextPos);
-        m_collision->transform(m_transform, m_scale, getCollisionTranslation());
+    auto *col = collision();
+    if (!col) {
+        return;
     }
+
+    calcTransform();
+    EGG::Vector3f nextPos = m_pos + EGG::Vector3f(0.0f, HALF_SIZE, 0.0f);;
+    m_transform.setBase(3, nextPos);
+    m_collision->transform(m_transform, m_scale, getCollisionTranslation());
 }
 
 /// @addr{0x8077E444}
@@ -37,7 +39,7 @@ void ObjectWoodbox::enableCollision() override {
 
 /// @addr{0x8077E7B0}
 void ObjectWoodbox::onRespawn() {
-    m_downwardsVelocity -= 2.0f;
+    m_downwardsVelocity -= GRAVITY;
     m_pos.y += m_downwardsVelocity;
     m_flags.setBit(eFlags::Position);
     calcFloor();
@@ -47,9 +49,10 @@ void ObjectWoodbox::onRespawn() {
 void ObjectWoodbox::calcFloor() {
     CollisionInfo colInfo;
     EGG::Vector3f pos = m_pos;
-    pos.y += 100.0f;
+    pos.y += HALF_SIZE;
 
-    if (Field::CollisionDirector::Instance()->checkSphereFull(100.0f, pos, EGG::Vector3f::inf, KCL_TYPE_FLOOR, &colInfo, nullptr, 0)) {
+    if (Field::CollisionDirector::Instance()->checkSphereFull(HALF_SIZE, pos, EGG::Vector3f::inf,
+                KCL_TYPE_FLOOR, &colInfo, nullptr, 0)) {
         m_downwardsVelocity *= -0.1f;
         m_pos += colInfo.tangentOff;
         m_flags.setBit(eFlags::Position);
