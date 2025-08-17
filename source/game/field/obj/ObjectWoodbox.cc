@@ -18,8 +18,7 @@ void ObjectWoodbox::init() {
 
 /// @addr{0x8077EBB8}
 void ObjectWoodbox::calcCollisionTransform() {
-    auto *col = collision();
-    if (!col) {
+    if (!m_collision) {
         return;
     }
 
