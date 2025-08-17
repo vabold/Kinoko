@@ -5,15 +5,14 @@
 namespace Field {
 
 /// @addr{0x8077E5E4}
-ObjectWoodbox::ObjectWoodbox(const System::MapdataGeoObj &params): ObjectBreakable(params) {}
+ObjectWoodbox::ObjectWoodbox(const System::MapdataGeoObj &params) : ObjectBreakable(params) {}
 
 /// @addr{0x8077E620}
-ObjectWoodbox::ObjectWoodbox() = default;
+ObjectWoodbox::~ObjectWoodbox() = default;
 
 /// @addr{0x8077E678}
 void ObjectWoodbox::init() {
     ObjectBreakable::init();
-    m_initialHeight = m_pos.y;
     m_downwardsVelocity = 0.0f;
 }
 
@@ -25,41 +24,14 @@ void ObjectWoodbox::calcCollisionTransform() {
     }
 
     calcTransform();
-    EGG::Vector3f nextPos = m_pos + EGG::Vector3f(0.0f, HALF_SIZE, 0.0f);;
+    EGG::Vector3f nextPos = m_pos + EGG::Vector3f(0.0f, HALF_SIZE, 0.0f);
     m_transform.setBase(3, nextPos);
     m_collision->transform(m_transform, m_scale, getCollisionTranslation());
 }
 
 /// @addr{0x8077E444}
-void ObjectWoodbox::enableCollision() override {
+void ObjectWoodbox::enableCollision() {
     ObjectBreakable::enableCollision();
-    m_railInterpolator->init(0.0f, 0);
-    m_railInterpolator->setPerPointVelocities(true);
-}
-
-/// @addr{0x8077E750}
-void ObjectWoodbox::onTimerFinish() {
-    ObjectBreakable::enableCollision();
-    m_state = State::Respawning;
-    m_pos.y = m_initialHeight + RESPAWN_HEIGHT;
-    m_flags.setBit(eFlags::Position);
-    m_downwardsVelocity = 0.0f;
-}
-
-/// @addr{0x8077E704}
-void ObjectWoodbox::onBreak() {
-    ObjectBreakable::onBreak();
-    if (m_mapObj->setting(3) == 0) {
-        m_respawnTimer = 300;
-    }
-}
-
-/// @addr{0x8077E7B0}
-void ObjectWoodbox::onRespawn() {
-    m_downwardsVelocity -= GRAVITY;
-    m_pos.y += m_downwardsVelocity;
-    m_flags.setBit(eFlags::Position);
-    calcFloor();
 }
 
 /// @addr{0x8077E7E0}
@@ -75,7 +47,7 @@ void ObjectWoodbox::calcFloor() {
         m_flags.setBit(eFlags::Position);
 
         if (EGG::Mathf::abs(m_downwardsVelocity) < 1.0f) {
-            m_state = State::ACTIVE;
+            m_state = State::Active;
         }
     }
 }

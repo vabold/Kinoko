@@ -212,6 +212,8 @@ void ObjectDirector::createObjects() {
 ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
     ObjectId id = static_cast<ObjectId>(params.id());
     switch (id) {
+    case ObjectId::Woodbox:
+        return new ObjectWoodbox(params);
     case ObjectId::WLWallGC:
         return new ObjectWLWallGC(params);
     case ObjectId::KartTruck:
