@@ -22,7 +22,7 @@ ObjectTownBridge::~ObjectTownBridge() {
     // Whichever ObjColMgr is active will be destroyed naturally as part of ObjectKCL's destructor.
     // We need to destroy the other ones to avoid leaking. The base game does not bother doing this.
     if (m_flatColMgr != m_objColMgr) {
-        delete m_midColMgr;
+        delete m_flatColMgr;
     }
 
     if (m_midColMgr != m_objColMgr) {
