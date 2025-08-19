@@ -60,7 +60,7 @@ public:
     }
 
     /// @addr{0x80572574}
-    [[nodiscard]] ObjectId id() const {
+    [[nodiscard]] virtual ObjectId id() const {
         return m_id;
     }
 
