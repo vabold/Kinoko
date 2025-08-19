@@ -219,6 +219,8 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
     case ObjectId::KartTruck:
     case ObjectId::CarBody:
         return new ObjectCarTGE(params);
+    case ObjectId::ItemboxLine:
+        return new ObjectItemboxLine(params);
     case ObjectId::Boble:
         return new ObjectBoble(params);
     case ObjectId::DokanSFC:

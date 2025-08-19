@@ -221,4 +221,27 @@ void ObjectPress::checkCollisionLowering() {
     m_startedLowered = true;
 }
 
+/// @addr{0x8076E7AC}
+ObjectPressSenko::ObjectPressSenko(const System::MapdataGeoObj &params)
+    : ObjectPress(params), m_startingWindup(false) {}
+
+/// @addr{0x8076E818}
+ObjectPressSenko::~ObjectPressSenko() = default;
+
+/// @addr{0x8076E870}
+void ObjectPressSenko::calcRaised() {
+    if (m_startingWindup) {
+        startWindup();
+        m_startingWindup = false;
+    }
+}
+
+/// @addr{0x8077808C}
+void ObjectPressSenko::startWindup() {
+    constexpr u32 WINDUP_DURATION = 10;
+
+    m_state = State::WindUp;
+    m_windUpTimer = WINDUP_DURATION;
+}
+
 } // namespace Field
