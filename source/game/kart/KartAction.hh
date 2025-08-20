@@ -98,7 +98,8 @@ private:
     void startAction1();
     void startAction5();
     void startAction9();
-    void startAction14();
+    void startLongPressAction();
+    void startShortPressAction();
 
     /* ================================ *
      *     CALC FUNCTIONS
@@ -107,7 +108,7 @@ private:
     bool calcStub();
     bool calcAction1();
     bool calcAction5();
-    bool calcAction14();
+    bool calcPressAction();
 
     /* ================================ *
      *     END FUNCTIONS

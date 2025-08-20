@@ -279,8 +279,17 @@ void KartAction::startAction9() {
     startRotation(2);
 }
 
+/// @addr{0x80569774}
+void KartAction::startLongPressAction() {
+    constexpr u32 ACTION_DURATION = 90;
+    constexpr u16 CRUSH_DURATION = 480;
+
+    m_crushTimer = ACTION_DURATION;
+    activateCrush(CRUSH_DURATION);
+}
+
 /// @addr{0x80569978}
-void KartAction::startAction14() {
+void KartAction::startShortPressAction() {
     constexpr u32 ACTION_DURATION = 30;
     constexpr u16 CRUSH_DURATION = 240;
 
@@ -330,7 +339,7 @@ bool KartAction::calcAction5() {
 }
 
 /// @addr{0x80569A1C}
-bool KartAction::calcAction14() {
+bool KartAction::calcPressAction() {
     EGG::Vector3f extVel = KartObjectProxy::extVel();
     extVel.y = std::min(0.0f, extVel.y);
     dynamics()->setExtVel(extVel);
@@ -404,9 +413,9 @@ const std::array<KartAction::StartActionFunc, KartAction::MAX_ACTION> KartAction
         &KartAction::startAction9,
         &KartAction::startStub,
         &KartAction::startStub,
+        &KartAction::startLongPressAction,
         &KartAction::startStub,
-        &KartAction::startStub,
-        &KartAction::startAction14,
+        &KartAction::startShortPressAction,
         &KartAction::startStub,
         &KartAction::startStub,
         &KartAction::startStub,
@@ -425,9 +434,9 @@ const std::array<KartAction::CalcActionFunc, KartAction::MAX_ACTION> KartAction:
         &KartAction::calcAction1,
         &KartAction::calcStub,
         &KartAction::calcStub,
+        &KartAction::calcPressAction,
         &KartAction::calcStub,
-        &KartAction::calcStub,
-        &KartAction::calcAction14,
+        &KartAction::calcPressAction,
         &KartAction::calcStub,
         &KartAction::calcStub,
         &KartAction::calcStub,

@@ -34,6 +34,8 @@ enum class ObjectId {
     Kuribo = 0x191,
     WLFirebarGC = 0x195,
     Sanbo = 0x199,
+    Press = 0x19d,
+    PressSoko = 0x19e,
     WLFireRingGC = 0x1a1,
     PakkunDokan = 0x1a2,
     PuchiPakkun = 0x1aa,
