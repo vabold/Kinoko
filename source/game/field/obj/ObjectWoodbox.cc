@@ -10,14 +10,10 @@ ObjectWoodbox::ObjectWoodbox(const System::MapdataGeoObj &params) : ObjectBreaka
 /// @addr{0x8077E620}
 ObjectWoodbox::~ObjectWoodbox() = default;
 
-/// @addr{0x8077E678}
-void ObjectWoodbox::init() {
-    ObjectBreakable::init();
-    m_downwardsVelocity = 0.0f;
-}
-
 /// @addr{0x8077EBB8}
 void ObjectWoodbox::calcCollisionTransform() {
+    constexpr f32 HALF_SIZE = 100.0f;
+
     if (!m_collision) {
         return;
     }

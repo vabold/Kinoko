@@ -41,16 +41,6 @@ public:
 
     [[nodiscard]] virtual const char *getName() const;
 
-    /// @addr{0x80821DEC}
-    virtual void disableCollision() {
-        m_boxColUnit->m_flag.setBit(Field::eBoxColFlag::Intangible);
-    }
-
-    // @addr{0x808D6F60}
-    virtual void enableCollision() {
-        m_boxColUnit->m_flag.resetBit(Field::eBoxColFlag::Intangible);
-    }
-
     /// @addr{0x806BF434}
     [[nodiscard]] virtual u32 loadFlags() const {
         // TODO: This references LOD to determine load flags

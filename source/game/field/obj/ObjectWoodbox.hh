@@ -4,12 +4,10 @@
 
 namespace Field {
 
-class ObjectWoodbox : public ObjectBreakable {
+class ObjectWoodbox final : public ObjectBreakable {
 public:
     ObjectWoodbox(const System::MapdataGeoObj &params);
     ~ObjectWoodbox() override;
-
-    void init() override;
 
     /// @addr{0x8077ED7C}
     [[nodiscard]] const char *getKclName() const override {
@@ -17,10 +15,6 @@ public:
     }
 
     void calcCollisionTransform() override;
-
-private:
-    static constexpr f32 HALF_SIZE = 100.0f;
-    f32 m_downwardsVelocity;
 };
 
 } // namespace Field
