@@ -32,7 +32,8 @@ public:
     }
 
     // @addr{0x8076ED70}
-    virtual void enableCollision() {
+    virtual void enableCollision() override {
+        ObjectCollidable::enableCollision();
         m_state = State::Active;
         m_collisionEnabled = true;
     }
