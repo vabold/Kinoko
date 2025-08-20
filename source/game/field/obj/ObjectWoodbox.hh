@@ -17,13 +17,9 @@ public:
     }
 
     void calcCollisionTransform() override;
-    void enableCollision() override;
 
 private:
-    void calcFloor();
-
     static constexpr f32 HALF_SIZE = 100.0f;
-
     f32 m_downwardsVelocity;
 };
 

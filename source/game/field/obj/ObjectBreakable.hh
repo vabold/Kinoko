@@ -6,15 +6,8 @@ namespace Field {
 
 class ObjectBreakable : public ObjectCollidable {
 public:
-    enum class State {
-        Uninitialized,
-        Active,
-        Broken,
-        Respawning,
-    };
-
-    ObjectBreakable(const System::MapdataGeoObj &params);
-    ~ObjectBreakable() override;
+    ObjectBreakable(const System::MapdataGeoObj &params) : ObjectCollidable(params) {}
+    ~ObjectBreakable() = default;
 
     /// @addr{0x8076EC68}
     void init() override {
@@ -30,17 +23,6 @@ public:
             Kart::Reaction /*reactionOnObj*/, EGG::Vector3f & /*hitDepth*/) override {
         return reactionOnKart;
     }
-
-    // @addr{0x8076ED70}
-    virtual void enableCollision() override {
-        ObjectCollidable::enableCollision();
-        m_state = State::Active;
-        m_collisionEnabled = true;
-    }
-
-protected:
-    State m_state;
-    bool m_collisionEnabled;
 };
 
 } // namespace Field

@@ -28,27 +28,4 @@ void ObjectWoodbox::calcCollisionTransform() {
     m_collision->transform(m_transform, m_scale, getCollisionTranslation());
 }
 
-/// @addr{0x8077E444}
-void ObjectWoodbox::enableCollision() {
-    ObjectBreakable::enableCollision();
-}
-
-/// @addr{0x8077E7E0}
-void ObjectWoodbox::calcFloor() {
-    CollisionInfo colInfo;
-    EGG::Vector3f pos = m_pos;
-    pos.y += HALF_SIZE;
-
-    if (Field::CollisionDirector::Instance()->checkSphereFull(HALF_SIZE, pos, EGG::Vector3f::inf,
-                KCL_TYPE_FLOOR, &colInfo, nullptr, 0)) {
-        m_downwardsVelocity *= -0.1f;
-        m_pos += colInfo.tangentOff;
-        m_flags.setBit(eFlags::Position);
-
-        if (EGG::Mathf::abs(m_downwardsVelocity) < 1.0f) {
-            m_state = State::Active;
-        }
-    }
-}
-
 } // namespace Field
