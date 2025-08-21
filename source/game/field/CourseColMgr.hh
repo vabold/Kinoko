@@ -15,8 +15,8 @@ class Context;
 
 namespace Field {
 
-typedef bool (
-        KColData::*CollisionCheckFunc)(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut);
+typedef bool (KColData::*CollisionCheckFunc)(f32 *distOut, EGG::Vector3f *fnrmOut,
+        KCLAttribute *attributeOut);
 
 /// @brief Manager for course KCL interactions.
 /// @addr{0x809C3C10}
