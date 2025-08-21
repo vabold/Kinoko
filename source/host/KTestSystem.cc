@@ -1,6 +1,5 @@
 #include "KTestSystem.hh"
 
-#include "host/Option.hh"
 #include "host/SceneCreatorDynamic.hh"
 
 #include <game/kart/KartObjectManager.hh>
@@ -28,20 +27,29 @@ struct TestHeader {
     u32 dataOffset;
 };
 
-/// @brief Initializes the system.
-/// @details This reads over the KRKG and generates the list of test cases,
-/// before starting the first test case and initializing the race scene.
+/// @brief Initializes the system (if necessary).
 void KTestSystem::init() {
-    constexpr u32 TEST_HEADER_SIGNATURE = 0x54535448; // TSTH
-    constexpr u32 TEST_FOOTER_SIGNATURE = 0x54535446; // TSTF
-    constexpr u16 SUITE_MAJOR_VER = 1;
-    constexpr u16 SUITE_MAX_MINOR_VER = 0;
-
     auto *sceneCreator = new Host::SceneCreatorDynamic;
     m_sceneMgr = new EGG::SceneManager(sceneCreator);
 
     System::RaceConfig::RegisterInitCallback(OnInit, nullptr);
     Abstract::File::Remove("results.txt");
+
+    if (m_testMode == Host::EOption::Suite) {
+        initSuite();
+    }
+
+    startNextTestCase();
+    m_sceneMgr->changeScene(0);
+}
+
+/// @details This reads over the KRKG and generates the list of test cases,
+/// before starting the first test case and initializing the race scene.
+void KTestSystem::initSuite() {
+    constexpr u32 TEST_HEADER_SIGNATURE = 0x54535448; // TSTH
+    constexpr u32 TEST_FOOTER_SIGNATURE = 0x54535446; // TSTF
+    constexpr u16 SUITE_MAJOR_VER = 1;
+    constexpr u16 SUITE_MAX_MINOR_VER = 0;
 
     u16 numTestCases = m_stream.read_u16();
     u16 testMajorVer = m_stream.read_u16();
@@ -92,9 +100,6 @@ void KTestSystem::init() {
 
         m_testCases.push(testCase);
     }
-
-    startNextTestCase();
-    m_sceneMgr->changeScene(0);
 }
 
 /// @brief Executes a frame.
@@ -142,6 +147,8 @@ void KTestSystem::parseOptions(int argc, char **argv) {
 
         switch (*flag) {
         case Host::EOption::Suite: {
+            m_testMode = Host::EOption::Suite;
+
             ASSERT(i + 1 < argc);
 
             size_t size;
@@ -153,6 +160,18 @@ void KTestSystem::parseOptions(int argc, char **argv) {
 
             m_stream = EGG::RamStream(data, size);
             m_stream.setEndian(std::endian::big);
+
+        } break;
+        case Host::EOption::Ghost: {
+            m_testMode = Host::EOption::Ghost;
+
+            // Expect ghost, -k, and krkg file arguments
+            ASSERT(i + 3 < argc);
+            char *rkgPath = argv[++i];
+            ASSERT(Host::Option::CheckFlag(argv[++i]) == Host::EOption::KRKG);
+            char *krkgPath = argv[++i];
+
+            m_testCases.emplace(rkgPath, rkgPath, krkgPath, 0);
         } break;
         case Host::EOption::Invalid:
         default:
@@ -221,13 +240,17 @@ bool KTestSystem::popTestCase() {
 /// @brief Checks one frame in the test.
 /// @return Whether the test can continue.
 bool KTestSystem::calcTest() {
-    // Check if we're out of frames
-    u16 targetFrame = getCurrentTestCase().targetFrame;
-    ASSERT(targetFrame <= m_frameCount);
-    if (++m_currentFrame > targetFrame) {
-        REPORT("Test Case Passed: %s [%d / %d]", getCurrentTestCase().name.c_str(), targetFrame,
-                m_frameCount);
-        return false;
+    ++m_currentFrame;
+
+    // Check if we're out of frames (only applicable for test suite)
+    if (m_testMode == Host::EOption::Suite) {
+        u16 targetFrame = getCurrentTestCase().targetFrame;
+        ASSERT(targetFrame <= m_frameCount);
+        if (m_currentFrame > targetFrame) {
+            REPORT("Test Case Passed: %s [%d / %d]", getCurrentTestCase().name.c_str(), targetFrame,
+                    m_frameCount);
+            return false;
+        }
     }
 
     // Test the current frame
