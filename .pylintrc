@@ -1,0 +1,14 @@
+[MAIN]
+output-format=colorized
+init-hook='import sys; sys.path.append("tools")'
+
+[MESSAGES CONTROL]
+disable=missing-module-docstring,
+        missing-class-docstring,
+        missing-function-docstring,
+        too-few-public-methods,
+        too-many-locals,
+        invalid-name
+
+[FORMAT]
+max-line-length=100

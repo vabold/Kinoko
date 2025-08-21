@@ -66,6 +66,20 @@ jobs:
           dirs="include source"
           find $dirs -regex '.*\.\(c\|h\|cc\|hh\)' | xargs clang-format-16 --dry-run -Werror
 
+  lint:
+    name: Lint Python scripts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Pylint
+        run: pip install pylint discord dotenv
+      - name: Lint
+        run: |
+          dirs="./configure.py tools"
+          find $dirs -regex '.*\.py' | xargs python -m pylint -E
+          find $dirs -regex '.*\.py' | xargs python -m pylint --exit-zero
+    
   verify:
     name: Verify
     runs-on: ubuntu-latest
