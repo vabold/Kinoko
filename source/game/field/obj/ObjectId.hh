@@ -55,6 +55,7 @@ enum class ObjectId {
     Mdush = 0x217,
     BeltEasy = 0x25a,
     BeltCrossing = 0x25b,
+    BeltCurveA = 0x25c,
 };
 
 enum class BlacklistedObjectId {
