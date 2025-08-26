@@ -53,6 +53,7 @@ enum class ObjectId {
     Sandcone = 0x209,
     Ami = 0x20e,
     Mdush = 0x217,
+    BeltEasy = 0x25a,
     BeltCrossing = 0x25b,
 };
 

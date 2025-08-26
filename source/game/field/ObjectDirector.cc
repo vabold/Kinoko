@@ -262,6 +262,8 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
         return new ObjectSandcone(params);
     case ObjectId::Ami:
         return new ObjectAmi(params);
+    case ObjectId::BeltEasy:
+        return new ObjectBeltEasy(params);
     case ObjectId::BeltCrossing:
         return new ObjectBeltCrossing(params);
 

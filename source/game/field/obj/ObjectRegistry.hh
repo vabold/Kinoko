@@ -3,6 +3,7 @@
 #include "game/field/obj/ObjectAmi.hh"
 #include "game/field/obj/ObjectAurora.hh"
 #include "game/field/obj/ObjectBeltCrossing.hh"
+#include "game/field/obj/ObjectBeltEasy.hh"
 #include "game/field/obj/ObjectBoble.hh"
 #include "game/field/obj/ObjectBulldozer.hh"
 #include "game/field/obj/ObjectCarTGE.hh"
