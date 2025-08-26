@@ -219,7 +219,7 @@ Vector3f Matrix34f::multVector(const Vector3f &vec) const {
     return ret;
 }
 
-/// @addr{0x802303F8}
+/// @addr{0x802303F8} @addr{0x8019A91C}
 /// @brief Paired-singles impl. of @ref multVector.
 Vector3f Matrix34f::ps_multVector(const Vector3f &vec) const {
     Vector3f ret;

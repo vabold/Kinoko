@@ -7,7 +7,7 @@ Test Case                                                 | Frames      |     | 
 [`mg-rta-0-19-758`](https://youtu.be/ui01yrKCwa0)         | 1596 / 1596 | ✔️ |
 [`mg-ng-rta-1-40-273`](https://youtu.be/8-0Xetey5xY)      | 6422 / 6422 | ✔️ |
 [`tf-rta-1-44-178`](https://youtu.be/2XWFuncJAGk)         | 1328 / 6656 | ❌ | Woodbox
-[`tf-ng-rta-1-49-039`](https://youtu.be/mqQa_1Cq1bw)      | 1617 / 6947 | ❌ | ObjectBeltCurveA
+[`tf-ng-rta-1-49-039`](https://youtu.be/mqQa_1Cq1bw)      | 6947 / 6947 | ✔️ |
 [`mc-rta-0-46-553`](https://youtu.be/1F2xfHYrkXM)         | 3202 / 3202 | ✔️ |
 [`mc-ng-rta-1-20-357`](https://youtu.be/kG8PvG8K1ZA)      | 4228 / 4228 | ✔️ |
 [`cm-rta-0-25-145`](https://youtu.be/F_RUQVghmuA)         | 1919 / 1919 | ✔️ |
