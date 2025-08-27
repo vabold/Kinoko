@@ -12,6 +12,7 @@ enum class ObjectId {
     WLWallGC = 0xcb,
     KartTruck = 0xd0,
     CarBody = 0xd1,
+    W_Woodbox = 0xd3,
     ItemboxLine = 0xd5,
     Boble = 0xdd,
     DokanSFC = 0x12e,

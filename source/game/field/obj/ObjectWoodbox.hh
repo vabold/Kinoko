@@ -4,7 +4,7 @@
 
 namespace Field {
 
-class ObjectWoodbox final : public ObjectBreakable {
+class ObjectWoodbox : public ObjectBreakable {
 public:
     ObjectWoodbox(const System::MapdataGeoObj &params);
     ~ObjectWoodbox() override;

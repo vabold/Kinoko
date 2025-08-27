@@ -7,7 +7,7 @@ namespace Field {
 class ObjectBreakable : public ObjectCollidable {
 public:
     /// @addr{0x8076EBE0}
-    ObjectBreakable(const System::MapdataGeoObj &params) : ObjectCollidable(params) {}
+    ObjectBreakable(const System::MapdataGeoObj &params) : ObjectCollidable(params), m_state(0) {}
 
     /// @addr{0x8076EC28}
     ~ObjectBreakable() = default;
@@ -22,6 +22,14 @@ public:
             Kart::Reaction /*reactionOnObj*/, EGG::Vector3f & /*hitDepth*/) override {
         return reactionOnKart;
     }
+
+    /// @addr{0x8076ED70}
+    virtual void enableCollision() {
+        m_state = 1;
+    }
+
+protected:
+    u32 m_state;
 };
 
 } // namespace Field
