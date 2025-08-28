@@ -15,6 +15,7 @@ enum class ObjectId {
     W_Woodbox = 0xd3,
     ItemboxLine = 0xd5,
     Boble = 0xdd,
+    Seagull = 0xe3,
     DokanSFC = 0x12e,
     CastleTree1c = 0x130,
     MarioTreeGCc = 0x134,

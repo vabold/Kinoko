@@ -225,6 +225,8 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
         return new ObjectItemboxLine(params);
     case ObjectId::Boble:
         return new ObjectBoble(params);
+    case ObjectId::Seagull:
+        return new ObjectBird(params);
     case ObjectId::DokanSFC:
         return new ObjectDokan(params);
     case ObjectId::OilSFC:
