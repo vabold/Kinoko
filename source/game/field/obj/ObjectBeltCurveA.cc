@@ -45,9 +45,11 @@ EGG::Vector3f ObjectBeltCurveA::calcRoadVelocity(u32 variant, const EGG::Vector3
 
 /// @addr{0x807FD5A0}
 f32 ObjectBeltCurveA::calcDirSwitchVelocity(u32 t) const {
-    u32 change1Delta = EGG::Mathf::abs(static_cast<f32>(t - m_dirChange1Frame));
-    u32 change2Delta = EGG::Mathf::abs(static_cast<f32>(t - m_dirChange2Frame));
-    u32 delta = std::min(change1Delta, change2Delta);
+    s32 change1Delta = static_cast<s32>(t) - static_cast<s32>(m_dirChange1Frame);
+    s32 change2Delta = static_cast<s32>(t) - static_cast<s32>(m_dirChange2Frame);
+    u32 change1DeltaAbs = static_cast<u32>(EGG::Mathf::abs(static_cast<f32>(change1Delta)));
+    u32 change2DeltaAbs = static_cast<u32>(EGG::Mathf::abs(static_cast<f32>(change2Delta)));
+    u32 delta = std::min(change1DeltaAbs, change2DeltaAbs);
 
     if (static_cast<f32>(delta) > 60.0f) {
         return 0.006f;

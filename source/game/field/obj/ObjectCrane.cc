@@ -12,8 +12,8 @@ ObjectCrane::ObjectCrane(const System::MapdataGeoObj &params)
     m_xAmplitude = params.setting(2);
     m_yAmplitude = params.setting(5);
 
-    m_xFreq = 2 * F_PI / static_cast<f32>(m_xPeriod);
-    m_yFreq = 2 * F_PI / static_cast<f32>(m_yPeriod);
+    m_xFreq = 2.0f * F_PI / static_cast<f32>(m_xPeriod);
+    m_yFreq = 2.0f * F_PI / static_cast<f32>(m_yPeriod);
 }
 
 /// @addr{0x807FEB28}
