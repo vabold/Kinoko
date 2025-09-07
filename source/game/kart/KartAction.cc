@@ -264,6 +264,17 @@ void KartAction::startAction1() {
     startRotation(2);
 }
 
+/// @addr{0x80568718}
+void KartAction::startAction3() {
+    constexpr f32 EXT_VEL_SCALAR = 25.0f;
+    constexpr f32 EXT_VEL_KART = 30.0f;
+    constexpr f32 EXT_VEL_BIKE = 30.0f;
+    constexpr f32 NUM_ROTATIONS = 1.0f;
+
+    startLaunch(EXT_VEL_SCALAR, EXT_VEL_KART, EXT_VEL_BIKE, NUM_ROTATIONS, 1);
+    Item::ItemDirector::Instance()->kartItem(0).clear();
+}
+
 /// @addr{0x80568FA4}
 void KartAction::startAction5() {
     constexpr f32 EXT_VEL_SCALAR = 13.0f;
@@ -316,7 +327,7 @@ bool KartAction::calcAction1() {
 }
 
 /// @addr{0x80568AA8}
-bool KartAction::calcAction5() {
+bool KartAction::calcLaunchAction() {
     constexpr u32 ACTION_DURATION = 100;
 
     if (m_flags.offBit(eFlags::Landing)) {
@@ -361,7 +372,7 @@ void KartAction::endAction1(bool arg) {
 }
 
 /// @addr{0x80568C7C}
-void KartAction::endAction5(bool arg) {
+void KartAction::endLaunchAction(bool arg) {
     if (arg) {
         physics()->composeDecayingExtraRot(m_rotation);
     }
@@ -404,7 +415,7 @@ const std::array<KartAction::StartActionFunc, KartAction::MAX_ACTION> KartAction
         &KartAction::startStub,
         &KartAction::startAction1,
         &KartAction::startStub,
-        &KartAction::startStub,
+        &KartAction::startAction3,
         &KartAction::startStub,
         &KartAction::startAction5,
         &KartAction::startStub,
@@ -425,9 +436,9 @@ const std::array<KartAction::CalcActionFunc, KartAction::MAX_ACTION> KartAction:
         &KartAction::calcStub,
         &KartAction::calcAction1,
         &KartAction::calcStub,
+        &KartAction::calcLaunchAction,
         &KartAction::calcStub,
-        &KartAction::calcStub,
-        &KartAction::calcAction5,
+        &KartAction::calcLaunchAction,
         &KartAction::calcStub,
         &KartAction::calcStub,
         &KartAction::calcStub,
@@ -446,9 +457,9 @@ const std::array<KartAction::EndActionFunc, KartAction::MAX_ACTION> KartAction::
         &KartAction::endStub,
         &KartAction::endAction1,
         &KartAction::endStub,
+        &KartAction::endLaunchAction,
         &KartAction::endStub,
-        &KartAction::endStub,
-        &KartAction::endAction5,
+        &KartAction::endLaunchAction,
         &KartAction::endStub,
         &KartAction::endStub,
         &KartAction::endStub,

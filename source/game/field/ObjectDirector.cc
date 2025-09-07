@@ -235,6 +235,8 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
         return new ObjectParasolR(params);
     case ObjectId::Kuribo:
         return new ObjectKuribo(params);
+    case ObjectId::Cow:
+        return new ObjectCowHerd(params);
     case ObjectId::WLFirebarGC:
         return new ObjectFirebar(params);
     case ObjectId::Sanbo:

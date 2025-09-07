@@ -96,6 +96,7 @@ private:
 
     void startStub();
     void startAction1();
+    void startAction3();
     void startAction5();
     void startAction9();
     void startLongPressAction();
@@ -107,7 +108,7 @@ private:
 
     bool calcStub();
     bool calcAction1();
-    bool calcAction5();
+    bool calcLaunchAction();
     bool calcPressAction();
 
     /* ================================ *
@@ -116,7 +117,7 @@ private:
 
     void endStub(bool arg);
     void endAction1(bool arg);
-    void endAction5(bool arg);
+    void endLaunchAction(bool arg);
 
     EGG::Vector3f m_side;
     Action m_currentAction;

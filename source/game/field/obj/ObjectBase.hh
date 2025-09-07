@@ -78,6 +78,9 @@ protected:
     void linkAnims(const std::span<const char *> &names, const std::span<Render::AnmType> types);
     void setMatrixTangentTo(const EGG::Vector3f &up, const EGG::Vector3f &tangent);
 
+    [[nodiscard]] static f32 CheckPointAgainstLineSegment(const EGG::Vector3f &point,
+            const EGG::Vector3f &a, const EGG::Vector3f &b);
+    [[nodiscard]] static EGG::Vector3f RotateXZByYaw(f32 angle, const EGG::Vector3f &v);
     [[nodiscard]] static EGG::Vector3f RotateAxisAngle(f32 angle, const EGG::Vector3f &axis,
             const EGG::Vector3f &v1);
     static void SetRotTangentHorizontal(EGG::Matrix34f &mat, const EGG::Vector3f &up,
