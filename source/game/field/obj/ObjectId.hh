@@ -36,6 +36,7 @@ enum class ObjectId {
     ObakeBlock2SFCc = 0x16f,
     ObakeBlock3SFCc = 0x170,
     Kuribo = 0x191,
+    Cow = 0x193,
     WLFirebarGC = 0x195,
     Sanbo = 0x199,
     Press = 0x19d,

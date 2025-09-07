@@ -136,6 +136,22 @@ void ObjectBase::setMatrixTangentTo(const EGG::Vector3f &up, const EGG::Vector3f
     m_transform.setBase(3, m_pos);
 }
 
+/// @addr{0x806B38A8}
+/// @brief Calculates on what side of line segment ab point lies.
+f32 ObjectBase::CheckPointAgainstLineSegment(const EGG::Vector3f &point, const EGG::Vector3f &a,
+        const EGG::Vector3f &b) {
+    return (b.x - a.x) * (point.z - a.z) - (point.x - a.x) * (b.z - a.z);
+}
+
+/// @addr{0x806B3900}
+/// @brief Rotates a vector around the Y-axis and returns the XZ-plane portion of the vector.
+EGG::Vector3f ObjectBase::RotateXZByYaw(f32 angle, const EGG::Vector3f &v) {
+    f32 y = EGG::Mathf::SinFIdx(RAD2FIDX * (0.5f * angle));
+    f32 w = EGG::Mathf::CosFIdx(RAD2FIDX * (0.5f * angle));
+    EGG::Quatf quat = EGG::Quatf(w, 0.0f, y, 0.0f);
+    return quat.rotateVector(EGG::Vector3f(v.x, 0.0f, v.z));
+}
+
 /// @addr{0x806B3AC4}
 EGG::Vector3f ObjectBase::RotateAxisAngle(f32 angle, const EGG::Vector3f &axis,
         const EGG::Vector3f &v1) {

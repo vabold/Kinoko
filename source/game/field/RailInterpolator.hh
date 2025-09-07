@@ -64,6 +64,10 @@ public:
         return m_curTangentDir;
     }
 
+    [[nodiscard]] f32 segmentT() const {
+        return m_segmentT;
+    }
+
     [[nodiscard]] bool isMovementDirectionForward() const {
         return m_movementDirectionForward;
     }
