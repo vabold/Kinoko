@@ -279,6 +279,10 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
         return new ObjectBeltCrossing(params);
     case ObjectId::BeltCurveA:
         return new ObjectBeltCurveA(params);
+    case ObjectId::Escalator:
+        return new ObjectEscalator(params);
+    case ObjectId::EscalatorGroup:
+        return new ObjectEscalatorGroup(params);
 
     // Non-specified objects are stock collidable objects by default
     // However, we need to specify an impl, so we don't use default

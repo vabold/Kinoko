@@ -11,7 +11,7 @@ Test Case                                                 | Frames      |     | 
 [`mc-rta-0-46-553`](https://youtu.be/1F2xfHYrkXM)         | 3202 / 3202 | ✔️ |
 [`mc-ng-rta-1-20-357`](https://youtu.be/kG8PvG8K1ZA)      | 4228 / 4228 | ✔️ |
 [`cm-rta-0-25-145`](https://youtu.be/F_RUQVghmuA)         | 1919 / 1919 | ✔️ |
-[`cm-ng-rta-1-55-264`](https://youtu.be/XxKG3IYWduE)      | 651 / 7320  | ❌ | KMP
+[`cm-ng-rta-1-55-264`](https://youtu.be/XxKG3IYWduE)      | 7320 / 7320 | ✔️ |
 [`dks-rta-1-44-568`](https://youtu.be/b9hacHlifcw)        | 6679 / 6679 | ✔️ |
 [`wgm-rta-0-31-678`](https://youtu.be/VVFXP639DRY)        | 2310 / 2310 | ✔️ |
 [`wgm-ng-rta-1-49-934`](https://youtu.be/NbhzA2rtZ2A)     | 7001 / 7001 | ✔️ |

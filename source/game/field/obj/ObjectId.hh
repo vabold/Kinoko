@@ -62,6 +62,8 @@ enum class ObjectId {
     BeltEasy = 0x25a,
     BeltCrossing = 0x25b,
     BeltCurveA = 0x25c,
+    Escalator = 0x25e,
+    EscalatorGroup = 0x260,
 };
 
 enum class BlacklistedObjectId {
