@@ -47,16 +47,6 @@ protected:
 
 class ObjectCowLeader;
 
-template <>
-class StateManager<ObjectCowLeader> : public StateManagerBase<ObjectCowLeader> {
-public:
-    StateManager(ObjectCowLeader *obj);
-    ~StateManager() override;
-
-private:
-    static const std::array<StateManagerEntry<ObjectCowLeader>, 3> STATE_ENTRIES;
-};
-
 /// @brief A cow who its own rail and whose position is not influenced by the path of the others.
 class ObjectCowLeader final : public ObjectCow, public StateManager<ObjectCowLeader> {
     friend class ObjectCowHerd;
@@ -95,19 +85,15 @@ private:
     bool m_endedRailSegment;
     AnmType m_state1AnmType;
     u16 m_eatFrames; ///< Length of the state 1 eat animation
+
+    static constexpr std::array<StateManagerEntry<ObjectCowLeader>, 3> STATE_ENTRIES = {{
+            {0, &ObjectCowLeader::enterWait, &ObjectCowLeader::calcWait},
+            {1, &ObjectCowLeader::enterEat, &ObjectCowLeader::calcEat},
+            {2, &ObjectCowLeader::enterRoam, &ObjectCowLeader::calcRoam},
+    }};
 };
 
 class ObjectCowFollower;
-
-template <>
-class StateManager<ObjectCowFollower> : public StateManagerBase<ObjectCowFollower> {
-public:
-    StateManager(ObjectCowFollower *obj);
-    ~StateManager() override;
-
-private:
-    static const std::array<StateManagerEntry<ObjectCowFollower>, 3> STATE_ENTRIES;
-};
 
 /// @brief A cow that follows a leader by sharing the same rail.
 class ObjectCowFollower final : public ObjectCow, public StateManager<ObjectCowFollower> {
@@ -150,6 +136,12 @@ private:
 
     /// @brief Distance at which a cow is considered close enough to the rail to stop moving.
     static constexpr f32 DIST_THRESHOLD = 200.0f;
+
+    static constexpr std::array<StateManagerEntry<ObjectCowFollower>, 3> STATE_ENTRIES = {{
+            {0, &ObjectCowFollower::enterWait, &ObjectCowFollower::calcWait},
+            {1, &ObjectCowFollower::enterFreeRoam, &ObjectCowFollower::calcFreeRoam},
+            {2, &ObjectCowFollower::enterFollowLeader, &ObjectCowFollower::calcFollowLeader},
+    }};
 };
 
 /// @brief The manager class that controls a group of cows.

@@ -38,19 +38,7 @@ void ObjectKuribo::init() {
 void ObjectKuribo::calc() {
     m_animTimer = ::fmodf(static_cast<f32>(m_frameCount) * m_animStep, m_maxAnimTimer);
 
-    if (m_nextStateId >= 0) {
-        m_currentStateId = m_nextStateId;
-        m_nextStateId = -1;
-        m_currentFrame = 0;
-
-        auto enterFunc = m_entries[m_entryIds[m_currentStateId]].onEnter;
-        (this->*enterFunc)();
-    } else {
-        ++m_currentFrame;
-    }
-
-    auto calcFunc = m_entries[m_entryIds[m_currentStateId]].onCalc;
-    (this->*calcFunc)();
+    StateManager::calc();
 
     ++m_frameCount;
 }
@@ -166,34 +154,6 @@ void ObjectKuribo::checkSphereFull() {
 EGG::Vector3f ObjectKuribo::interpolate(f32 scale, const EGG::Vector3f &v0,
         const EGG::Vector3f &v1) const {
     return v0 + (v1 - v0) * scale;
-}
-
-const std::array<StateManagerEntry<ObjectKuribo>, 4> StateManager<ObjectKuribo>::STATE_ENTRIES = {{
-        {0, &ObjectKuribo::enterStateStub, &ObjectKuribo::calcStateReroute},
-        {1, &ObjectKuribo::enterStateStub, &ObjectKuribo::calcStateWalk},
-        {2, &ObjectKuribo::enterStateStub, &ObjectKuribo::calcStateStub},
-        {3, &ObjectKuribo::enterStateStub, &ObjectKuribo::calcStateStub},
-}};
-
-StateManager<ObjectKuribo>::StateManager(ObjectKuribo *obj) {
-    constexpr size_t ENTRY_COUNT = 4;
-
-    m_obj = obj;
-    m_entries = std::span{STATE_ENTRIES};
-    m_entryIds = std::span(new u16[ENTRY_COUNT], ENTRY_COUNT);
-
-    // The base game initializes all entries to 0xffff, possibly to avoid an uninitialized value
-    for (auto &id : m_entryIds) {
-        id = 0xffff;
-    }
-
-    for (size_t i = 0; i < m_entryIds.size(); ++i) {
-        m_entryIds[STATE_ENTRIES[i].id] = i;
-    }
-}
-
-StateManager<ObjectKuribo>::~StateManager() {
-    delete[] m_entryIds.data();
 }
 
 } // namespace Field

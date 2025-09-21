@@ -7,16 +7,6 @@ namespace Field {
 
 class ObjectKuribo;
 
-template <>
-class StateManager<ObjectKuribo> : public StateManagerBase<ObjectKuribo> {
-public:
-    StateManager(ObjectKuribo *obj);
-    ~StateManager() override;
-
-private:
-    static const std::array<StateManagerEntry<ObjectKuribo>, 4> STATE_ENTRIES;
-};
-
 class ObjectKuribo : public ObjectCollidable, public StateManager<ObjectKuribo> {
     friend StateManager<ObjectKuribo>;
 
@@ -54,6 +44,13 @@ private:
     EGG::Vector3f m_rot;
     EGG::Vector3f m_floorNrm;
     f32 m_animTimer;
+
+    static constexpr std::array<StateManagerEntry<ObjectKuribo>, 4> STATE_ENTRIES = {{
+            {0, &ObjectKuribo::enterStateStub, &ObjectKuribo::calcStateReroute},
+            {1, &ObjectKuribo::enterStateStub, &ObjectKuribo::calcStateWalk},
+            {2, &ObjectKuribo::enterStateStub, &ObjectKuribo::calcStateStub},
+            {3, &ObjectKuribo::enterStateStub, &ObjectKuribo::calcStateStub},
+    }};
 };
 
 } // namespace Field

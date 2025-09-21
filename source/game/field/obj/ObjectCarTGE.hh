@@ -10,16 +10,6 @@ namespace Field {
 class ObjectCarTGE;
 class ObjectHighwayManager;
 
-template <>
-class StateManager<ObjectCarTGE> : public StateManagerBase<ObjectCarTGE> {
-public:
-    StateManager(ObjectCarTGE *obj);
-    ~StateManager() override;
-
-private:
-    static const std::array<StateManagerEntry<ObjectCarTGE>, 3> STATE_ENTRIES;
-};
-
 class ObjectCarTGE : public ObjectCollidable, public StateManager<ObjectCarTGE> {
     friend StateManager<ObjectCarTGE>;
 
@@ -97,6 +87,12 @@ private:
     bool m_squashed;
     bool m_hasAuxCollision;
     f32 m_hitAngle;
+
+    static constexpr std::array<StateManagerEntry<ObjectCarTGE>, 3> STATE_ENTRIES = {{
+            {0, &ObjectCarTGE::enterStateStub, &ObjectCarTGE::calcStateStub},
+            {1, &ObjectCarTGE::enterStateStub, &ObjectCarTGE::calcState1},
+            {2, &ObjectCarTGE::enterStateStub, &ObjectCarTGE::calcState2},
+    }};
 };
 
 } // namespace Field

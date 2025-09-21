@@ -101,19 +101,7 @@ void ObjectChoropu::calc() {
         m_railMat = RailOrthonormalBasis(*m_railInterpolator);
     }
 
-    if (m_nextStateId >= 0) {
-        m_currentStateId = m_nextStateId;
-        m_nextStateId = -1;
-        m_currentFrame = 0;
-
-        auto enterFunc = m_entries[m_entryIds[m_currentStateId]].onEnter;
-        (this->*enterFunc)();
-    } else {
-        ++m_currentFrame;
-    }
-
-    auto calcFunc = m_entries[m_entryIds[m_currentStateId]].onCalc;
-    (this->*calcFunc)();
+    StateManager::calc();
 
     m_objHoll->setScale(EGG::Vector3f(1.0f, m_objHoll->scale().y, 1.0f));
 }
@@ -306,36 +294,6 @@ EGG::Matrix34f ObjectChoropu::calcInterpolatedPose(f32 t) const {
     EGG::Matrix34f mat = OrthonormalBasis(curTanDir);
     mat.setBase(3, curDir);
     return mat;
-}
-
-const std::array<StateManagerEntry<ObjectChoropu>, 5> StateManager<ObjectChoropu>::STATE_ENTRIES = {
-        {
-                {0, &ObjectChoropu::enterDigging, &ObjectChoropu::calcDigging},
-                {1, &ObjectChoropu::enterPeeking, &ObjectChoropu::calcPeeking},
-                {2, &ObjectChoropu::enterStateStub, &ObjectChoropu::calcStateStub},
-                {3, &ObjectChoropu::enterJumping, &ObjectChoropu::calcJumping},
-                {4, &ObjectChoropu::enterStateStub, &ObjectChoropu::calcStateStub},
-        }};
-
-StateManager<ObjectChoropu>::StateManager(ObjectChoropu *obj) {
-    constexpr size_t ENTRY_COUNT = 5;
-
-    m_obj = obj;
-    m_entries = std::span{STATE_ENTRIES};
-    m_entryIds = std::span(new u16[ENTRY_COUNT], ENTRY_COUNT);
-
-    // The base game initializes all entries to 0xffff, possibly to avoid an uninitialized value
-    for (auto &id : m_entryIds) {
-        id = 0xffff;
-    }
-
-    for (size_t i = 0; i < m_entryIds.size(); ++i) {
-        m_entryIds[STATE_ENTRIES[i].id] = i;
-    }
-}
-
-StateManager<ObjectChoropu>::~StateManager() {
-    delete[] m_entryIds.data();
 }
 
 /// @addr{0x806B8F94}
