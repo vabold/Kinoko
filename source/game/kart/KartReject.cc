@@ -136,7 +136,9 @@ bool KartReject::calcRejection() {
             }
 
             closestColEntry = colDir->closestCollisionEntry();
-            if (hasFloorCollision && closestColEntry->attribute.onBit(Field::CollisionDirector::eCollisionAttribute::Offroad)) {
+            if (hasFloorCollision &&
+                    closestColEntry->attribute.onBit(
+                            Field::CollisionDirector::eCollisionAttribute::Offroad)) {
                 hasRejectCollision = true;
                 tangentOff = colInfo.floorNrm;
             }

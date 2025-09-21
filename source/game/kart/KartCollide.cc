@@ -658,7 +658,8 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
 
     const auto *closestColEntry = colDirector->closestCollisionEntry();
 
-    if (closestColEntry->attribute.offBit(Field::CollisionDirector::eCollisionAttribute::Trickable)) {
+    if (closestColEntry->attribute.offBit(
+                Field::CollisionDirector::eCollisionAttribute::Trickable)) {
         m_surfaceFlags.setBit(eSurfaceFlags::NotTrickable);
     } else {
         collisionData.bTrickable = true;
@@ -729,8 +730,7 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
 void KartCollide::processCannon(Field::KCLTypeMask *maskOut) {
     auto *colDirector = Field::CollisionDirector::Instance();
     if (colDirector->findClosestCollisionEntry(maskOut, KCL_TYPE_BIT(COL_TYPE_CANNON_TRIGGER))) {
-        state()->setCannonPointId(
-                colDirector->closestCollisionEntry()->attributeVariant());
+        state()->setCannonPointId(colDirector->closestCollisionEntry()->attributeVariant());
         state()->setCannonStart(true);
     }
 }

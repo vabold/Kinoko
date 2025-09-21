@@ -37,7 +37,7 @@ public:
         KCLTypeMask typeMask;
         CollisionAttribute attribute;
         f32 dist;
-        
+
         // Credit: em-eight/mkw
         /// Computes the "Base Type" portion of the KCL flags. It's the lower 5 bits of the flag.
         u16 attributeBaseType() const {
@@ -45,7 +45,7 @@ public:
         }
 
         /// Extracts the "Variant" portion of the KCL flag. It's the 3 bits before the "Bast Type".
-        u16 attributeVariant() const { 
+        u16 attributeVariant() const {
             return (attribute >> 5) & 7;
         }
 
@@ -55,9 +55,7 @@ public:
 
         void setVariant(u16 variant) {
             u16 current = static_cast<u16>(attribute);
-            attribute = static_cast<CollisionAttribute>(
-                (current & ~0xE0) | ((variant & 7) << 5)
-            );
+            attribute = static_cast<CollisionAttribute>((current & ~0xE0) | ((variant & 7) << 5));
         }
     };
 
@@ -81,7 +79,8 @@ public:
             KCLTypeMask *typeMaskOut, u32 timeOffset);
 
     void resetCollisionEntries(KCLTypeMask *ptr);
-    void pushCollisionEntry(f32 dist, KCLTypeMask *typeMask, KCLTypeMask kclTypeBit, CollisionAttribute attribute);
+    void pushCollisionEntry(f32 dist, KCLTypeMask *typeMask, KCLTypeMask kclTypeBit,
+            CollisionAttribute attribute);
 
     /// @addr{0x807BDB5C}
     void setCurrentCollisionVariant(u16 attribute) {
@@ -93,8 +92,8 @@ public:
     void setCurrentCollisionTrickable(bool trickable) {
         ASSERT(m_collisionEntryCount > 0);
         CollisionEntry &entry = m_entries[m_collisionEntryCount - 1];
-        trickable ? entry.attribute.setBit(eCollisionAttribute::Trickable)
-                  : entry.attribute.resetBit(eCollisionAttribute::Trickable);
+        trickable ? entry.attribute.setBit(eCollisionAttribute::Trickable) :
+                    entry.attribute.resetBit(eCollisionAttribute::Trickable);
     }
 
     bool findClosestCollisionEntry(KCLTypeMask *typeMask, KCLTypeMask type);
