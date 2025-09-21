@@ -142,19 +142,7 @@ void ObjectCarTGE::init() {
 
 /// @addr{0x806D6ECC}
 void ObjectCarTGE::calc() {
-    if (m_nextStateId >= 0) {
-        m_currentStateId = m_nextStateId;
-        m_nextStateId = -1;
-        m_currentFrame = 0;
-
-        auto enterFunc = m_entries[m_entryIds[m_currentStateId]].onEnter;
-        (this->*enterFunc)();
-    } else {
-        ++m_currentFrame;
-    }
-
-    auto calcFunc = m_entries[m_entryIds[m_currentStateId]].onCalc;
-    (this->*calcFunc)();
+    StateManager::calc();
 
     if (m_railInterpolator->calc() == RailInterpolator::Status::SegmentEnd) {
         u16 curPointSpeedSetting = m_railInterpolator->curPoint().setting[1];
@@ -351,33 +339,6 @@ void ObjectCarTGE::calcPos() {
     m_flags.setBit(eFlags::Position);
     m_up = OrthonormalBasis(m_tangent).base(1);
     setMatrixTangentTo(m_up, m_tangent);
-}
-
-const std::array<StateManagerEntry<ObjectCarTGE>, 3> StateManager<ObjectCarTGE>::STATE_ENTRIES = {{
-        {0, &ObjectCarTGE::enterStateStub, &ObjectCarTGE::calcStateStub},
-        {1, &ObjectCarTGE::enterStateStub, &ObjectCarTGE::calcState1},
-        {2, &ObjectCarTGE::enterStateStub, &ObjectCarTGE::calcState2},
-}};
-
-StateManager<ObjectCarTGE>::StateManager(ObjectCarTGE *obj) {
-    constexpr size_t ENTRY_COUNT = 3;
-
-    m_obj = obj;
-    m_entries = std::span{STATE_ENTRIES};
-    m_entryIds = std::span(new u16[ENTRY_COUNT], ENTRY_COUNT);
-
-    // The base game initializes all entries to 0xffff, possibly to avoid an uninitialized value
-    for (auto &id : m_entryIds) {
-        id = 0xffff;
-    }
-
-    for (size_t i = 0; i < m_entryIds.size(); ++i) {
-        m_entryIds[STATE_ENTRIES[i].id] = i;
-    }
-}
-
-StateManager<ObjectCarTGE>::~StateManager() {
-    delete[] m_entryIds.data();
 }
 
 } // namespace Field

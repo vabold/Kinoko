@@ -129,19 +129,7 @@ void ObjectCowLeader::calc() {
     u32 t = System::RaceManager::Instance()->timer();
 
     if (t >= m_startFrame) {
-        if (m_nextStateId >= 0) {
-            m_currentStateId = m_nextStateId;
-            m_nextStateId = -1;
-            m_currentFrame = 0;
-
-            auto enterFunc = m_entries[m_entryIds[m_currentStateId]].onEnter;
-            (this->*enterFunc)();
-        } else {
-            ++m_currentFrame;
-        }
-
-        auto calcFunc = m_entries[m_entryIds[m_currentStateId]].onCalc;
-        (this->*calcFunc)();
+        StateManager::calc();
     }
 
     calcPos();
@@ -262,34 +250,6 @@ void ObjectCowLeader::calcRoam() {
     setTarget(m_railInterpolator->curPos() + m_railInterpolator->curTangentDir() * 10.0f);
 }
 
-const std::array<StateManagerEntry<ObjectCowLeader>, 3>
-        StateManager<ObjectCowLeader>::STATE_ENTRIES = {{
-                {0, &ObjectCowLeader::enterWait, &ObjectCowLeader::calcWait},
-                {1, &ObjectCowLeader::enterEat, &ObjectCowLeader::calcEat},
-                {2, &ObjectCowLeader::enterRoam, &ObjectCowLeader::calcRoam},
-        }};
-
-StateManager<ObjectCowLeader>::StateManager(ObjectCowLeader *obj) {
-    constexpr size_t ENTRY_COUNT = 3;
-
-    m_obj = obj;
-    m_entries = std::span{STATE_ENTRIES};
-    m_entryIds = std::span(new u16[ENTRY_COUNT], ENTRY_COUNT);
-
-    // The base game initializes all entries to 0xffff, possibly to avoid an uninitialized value
-    for (auto &id : m_entryIds) {
-        id = 0xffff;
-    }
-
-    for (size_t i = 0; i < m_entryIds.size(); ++i) {
-        m_entryIds[STATE_ENTRIES[i].id] = i;
-    }
-}
-
-StateManager<ObjectCowLeader>::~StateManager() {
-    delete[] m_entryIds.data();
-}
-
 /// @addr{0x806BDD48}
 ObjectCowFollower::ObjectCowFollower(const System::MapdataGeoObj &params, const EGG::Vector3f &pos,
         f32 rot)
@@ -334,19 +294,7 @@ void ObjectCowFollower::calc() {
 
         setTarget(m_pos + m_posOffset * 2.0f);
     } else {
-        if (m_nextStateId >= 0) {
-            m_currentStateId = m_nextStateId;
-            m_nextStateId = -1;
-            m_currentFrame = 0;
-
-            auto enterFunc = m_entries[m_entryIds[m_currentStateId]].onEnter;
-            (this->*enterFunc)();
-        } else {
-            ++m_currentFrame;
-        }
-
-        auto calcFunc = m_entries[m_entryIds[m_currentStateId]].onCalc;
-        (this->*calcFunc)();
+        StateManager::calc();
     }
 
     calcPos();
@@ -478,34 +426,6 @@ void ObjectCowFollower::calcFollowLeader() {
     if (dist < DIST_THRESHOLD) {
         m_bStopping = true;
     }
-}
-
-const std::array<StateManagerEntry<ObjectCowFollower>, 3>
-        StateManager<ObjectCowFollower>::STATE_ENTRIES = {{
-                {0, &ObjectCowFollower::enterWait, &ObjectCowFollower::calcWait},
-                {1, &ObjectCowFollower::enterFreeRoam, &ObjectCowFollower::calcFreeRoam},
-                {2, &ObjectCowFollower::enterFollowLeader, &ObjectCowFollower::calcFollowLeader},
-        }};
-
-StateManager<ObjectCowFollower>::StateManager(ObjectCowFollower *obj) {
-    constexpr size_t ENTRY_COUNT = 3;
-
-    m_obj = obj;
-    m_entries = std::span{STATE_ENTRIES};
-    m_entryIds = std::span(new u16[ENTRY_COUNT], ENTRY_COUNT);
-
-    // The base game initializes all entries to 0xffff, possibly to avoid an uninitialized value
-    for (auto &id : m_entryIds) {
-        id = 0xffff;
-    }
-
-    for (size_t i = 0; i < m_entryIds.size(); ++i) {
-        m_entryIds[STATE_ENTRIES[i].id] = i;
-    }
-}
-
-StateManager<ObjectCowFollower>::~StateManager() {
-    delete[] m_entryIds.data();
 }
 
 /// @addr{0x806BEB54}

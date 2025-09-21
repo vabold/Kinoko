@@ -14,16 +14,6 @@ class ObjectChoropu;
 class ObjectChoropuGround;
 class ObjectChoropuHoll;
 
-template <>
-class StateManager<ObjectChoropu> : public StateManagerBase<ObjectChoropu> {
-public:
-    StateManager(ObjectChoropu *obj);
-    ~StateManager() override;
-
-private:
-    static const std::array<StateManagerEntry<ObjectChoropu>, 5> STATE_ENTRIES;
-};
-
 /// @brief Represents the MMM and rPG monty moles.
 /// @details Each mole has an associated "holl" [sic]. Moles which move around (MMM) also have an
 /// associated "ground" (the dirt trail).
@@ -71,6 +61,14 @@ private:
 
     static constexpr f32 RADIUS = 300.0f;
     static constexpr f32 MAX_GROUND_LEN = 3000.0f; ///< Max length of the dirt trail
+
+    static constexpr std::array<StateManagerEntry<ObjectChoropu>, 5> STATE_ENTRIES = {{
+            {0, &ObjectChoropu::enterDigging, &ObjectChoropu::calcDigging},
+            {1, &ObjectChoropu::enterPeeking, &ObjectChoropu::calcPeeking},
+            {2, &ObjectChoropu::enterStateStub, &ObjectChoropu::calcStateStub},
+            {3, &ObjectChoropu::enterJumping, &ObjectChoropu::calcJumping},
+            {4, &ObjectChoropu::enterStateStub, &ObjectChoropu::calcStateStub},
+    }};
 };
 
 class ObjectChoropuGround : public ObjectCollidable {
