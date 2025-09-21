@@ -22,10 +22,28 @@ class CollisionDirector : EGG::Disposer {
     friend class Host::Context;
 
 public:
+    enum class eCollisionAttribute {
+        Trickable = 13
+    };
+    typedef EGG::TBitFlag<u16, eCollisionAttribute> CollisionAttribute;
+
     struct CollisionEntry {
         KCLTypeMask typeMask;
-        u16 attribute;
+        CollisionAttribute attribute;
         f32 dist;
+        
+        // Credit: em-eight/mkw
+        /// Extracts the "Variant" portion of the KCL flag. It's the 3 bits before the "Bast Type".
+        u16 variant() const { 
+            return (attribute >> 5) & 7;
+        }
+
+        void setVariant(u16 variant) {
+            u16 current = static_cast<u16>(attribute);
+            attribute = static_cast<CollisionAttribute>(
+                (current & ~0xE0) | ((variant & 7) << 5)
+            );
+        }
     };
 
     void checkCourseColNarrScLocal(f32 radius, const EGG::Vector3f &pos, KCLTypeMask mask,
@@ -51,25 +69,17 @@ public:
     void pushCollisionEntry(f32 dist, KCLTypeMask *typeMask, KCLTypeMask kclTypeBit, u16 attribute);
 
     /// @addr{0x807BDB5C}
-    /// @todo Attributes should be represented as a bitfield. We can use a union. We will accomplish
-    /// this in a future PR.
     void setCurrentCollisionVariant(u16 attribute) {
         ASSERT(m_collisionEntryCount > 0);
-        u16 &entryAttr = m_entries[m_collisionEntryCount - 1].attribute;
-        entryAttr = (entryAttr & 0xff1f) | (attribute << 5);
+        m_entries[m_collisionEntryCount - 1].setVariant(attribute);
     }
 
     /// @addr{0x807BDBC4}
-    /// @todo Attributes should be represented as a bitfield. We can use a union. We will accomplish
-    /// this in a future PR.
     void setCurrentCollisionTrickable(bool trickable) {
         ASSERT(m_collisionEntryCount > 0);
-        u16 &entryAttr = m_entries[m_collisionEntryCount - 1].attribute;
-        entryAttr &= 0xdfff;
-
-        if (trickable) {
-            entryAttr |= (1 << 0xd);
-        }
+        CollisionEntry &entry = m_entries[m_collisionEntryCount - 1];
+        trickable ? entry.attribute.setBit(eCollisionAttribute::Trickable)
+                  : entry.attribute.resetBit(eCollisionAttribute::Trickable);
     }
 
     bool findClosestCollisionEntry(KCLTypeMask *typeMask, KCLTypeMask type);
