@@ -623,7 +623,7 @@ bool KartCollide::processWall(CollisionData &collisionData, Field::KCLTypeMask *
         collisionData.closestWallFlags = entry->attributeBaseType();
         collisionData.closestWallSettings = entry->attributeVariant();
 
-        if (entry->attribute & KCL_TYPE_BIT(COL_TYPE_WALL_2)) {
+        if (entry->attribute.onBit(Field::CollisionDirector::eCollisionAttribute::Soft)) {
             collisionData.bSoftWall = true;
         }
     }
@@ -658,8 +658,7 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
 
     const auto *closestColEntry = colDirector->closestCollisionEntry();
 
-    u16 attribute = closestColEntry->attribute;
-    if (!(attribute & 0x2000)) {
+    if (closestColEntry->attribute.offBit(Field::CollisionDirector::eCollisionAttribute::Trickable)) {
         m_surfaceFlags.setBit(eSurfaceFlags::NotTrickable);
     } else {
         collisionData.bTrickable = true;
@@ -669,10 +668,10 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
     collisionData.speedFactor = std::min(collisionData.speedFactor,
             param()->stats().kclSpeed[closestColEntry->attributeBaseType()]);
 
-    collisionData.intensity = (attribute >> 0xb) & 3;
+    collisionData.intensity = closestColEntry->attributeIntensity();
     collisionData.rotFactor += param()->stats().kclRot[closestColEntry->attributeBaseType()];
 
-    if (attribute & 0x4000) {
+    if (closestColEntry->attribute.onBit(Field::CollisionDirector::eCollisionAttribute::Offroad)) {
         state()->setRejectRoad(true);
     }
 

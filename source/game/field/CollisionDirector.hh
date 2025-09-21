@@ -23,7 +23,13 @@ class CollisionDirector : EGG::Disposer {
 
 public:
     enum class eCollisionAttribute {
-        Trickable = 13
+        /*
+            |  0 - 4   |  5 - 7  | 8 | 9 | 10 |  11 - 12  |     13    |   14    |  15  |
+            | BaseType | Variant |   |   |    | Intensity | Trickable | Offroad | Soft |
+        */
+        Trickable = 13,
+        Offroad = 14,
+        Soft = 15
     };
     typedef EGG::TBitFlag<u16, eCollisionAttribute> CollisionAttribute;
 
@@ -33,13 +39,18 @@ public:
         f32 dist;
         
         // Credit: em-eight/mkw
+        /// Computes the "Base Type" portion of the KCL flags. It's the lower 5 bits of the flag.
+        u16 attributeBaseType() const {
+            return attribute & 0x1F;
+        }
+
         /// Extracts the "Variant" portion of the KCL flag. It's the 3 bits before the "Bast Type".
         u16 attributeVariant() const { 
             return (attribute >> 5) & 7;
         }
 
-        u16 attributeBaseType() const {
-            return attribute & 0x1F;
+        u16 attributeIntensity() const {
+            return (attribute >> 11) & 3;
         }
 
         void setVariant(u16 variant) {
@@ -70,7 +81,7 @@ public:
             KCLTypeMask *typeMaskOut, u32 timeOffset);
 
     void resetCollisionEntries(KCLTypeMask *ptr);
-    void pushCollisionEntry(f32 dist, KCLTypeMask *typeMask, KCLTypeMask kclTypeBit, u16 attribute);
+    void pushCollisionEntry(f32 dist, KCLTypeMask *typeMask, KCLTypeMask kclTypeBit, CollisionAttribute attribute);
 
     /// @addr{0x807BDB5C}
     void setCurrentCollisionVariant(u16 attribute) {
