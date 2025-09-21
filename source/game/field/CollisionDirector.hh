@@ -34,8 +34,12 @@ public:
         
         // Credit: em-eight/mkw
         /// Extracts the "Variant" portion of the KCL flag. It's the 3 bits before the "Bast Type".
-        u16 variant() const { 
+        u16 attributeVariant() const { 
             return (attribute >> 5) & 7;
+        }
+
+        u16 attributeBaseType() const {
+            return attribute & 0x1F;
         }
 
         void setVariant(u16 variant) {

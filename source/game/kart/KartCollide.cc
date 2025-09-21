@@ -344,7 +344,7 @@ void KartCollide::handleTriggers(Field::KCLTypeMask *mask) {
     if (*mask & KCL_TYPE_BIT(COL_TYPE_EFFECT_TRIGGER)) {
         auto *colDir = Field::CollisionDirector::Instance();
         if (colDir->findClosestCollisionEntry(mask, KCL_TYPE_BIT(COL_TYPE_EFFECT_TRIGGER))) {
-            if (colDir->closestCollisionEntry()->variant() == 4) {
+            if (colDir->closestCollisionEntry()->attributeVariant() == 4) {
                 halfPipe()->end(true);
                 state()->setEndHalfPipe(true);
                 m_surfaceFlags.setBit(eSurfaceFlags::StopHalfPipeState);
@@ -620,8 +620,8 @@ bool KartCollide::processWall(CollisionData &collisionData, Field::KCLTypeMask *
                     KCL_TYPE_DRIVER_WALL_NO_INVISIBLE_WALL)) {
         auto *entry = colDirector->closestCollisionEntry();
 
-        collisionData.closestWallFlags = KCL_ATTRIBUTE_TYPE(entry->attribute);
-        collisionData.closestWallSettings = entry->variant();
+        collisionData.closestWallFlags = entry->attributeBaseType();
+        collisionData.closestWallSettings = entry->attributeVariant();
 
         if (entry->attribute & KCL_TYPE_BIT(COL_TYPE_WALL_2)) {
             collisionData.bSoftWall = true;
@@ -667,17 +667,17 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
     }
 
     collisionData.speedFactor = std::min(collisionData.speedFactor,
-            param()->stats().kclSpeed[KCL_ATTRIBUTE_TYPE(attribute)]);
+            param()->stats().kclSpeed[closestColEntry->attributeBaseType()]);
 
     collisionData.intensity = (attribute >> 0xb) & 3;
-    collisionData.rotFactor += param()->stats().kclRot[KCL_ATTRIBUTE_TYPE(attribute)];
+    collisionData.rotFactor += param()->stats().kclRot[closestColEntry->attributeBaseType()];
 
     if (attribute & 0x4000) {
         state()->setRejectRoad(true);
     }
 
     collisionData.closestFloorFlags = closestColEntry->typeMask;
-    collisionData.closestFloorSettings = closestColEntry->variant();
+    collisionData.closestFloorSettings = closestColEntry->attributeVariant();
 
     if (wheel && !!(*maskOut & KCL_TYPE_BIT(COL_TYPE_BOOST_PAD))) {
         move()->padType().setBit(KartMove::ePadType::BoostPanel);
@@ -687,7 +687,7 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
             colDirector->findClosestCollisionEntry(maskOut, BOOST_RAMP_MASK)) {
         closestColEntry = colDirector->closestCollisionEntry();
         move()->padType().setBit(KartMove::ePadType::BoostRamp);
-        state()->setBoostRampType(closestColEntry->variant());
+        state()->setBoostRampType(closestColEntry->attributeVariant());
         m_surfaceFlags.setBit(eSurfaceFlags::BoostRamp, eSurfaceFlags::Trickable);
     } else {
         state()->setBoostRampType(-1);
@@ -708,7 +708,7 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
             colDirector->findClosestCollisionEntry(maskOut, halfPipeRampMask)) {
         state()->setHalfPipeRamp(true);
         state()->setHalfPipeInvisibilityTimer(2);
-        if (colDirector->closestCollisionEntry()->variant() == 1) {
+        if (colDirector->closestCollisionEntry()->attributeVariant() == 1) {
             move()->padType().setBit(KartMove::ePadType::BoostPanel);
         }
     }
@@ -719,7 +719,7 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
                 !state()->isJumpPadMushroomVelYInc()) {
             move()->padType().setBit(KartMove::ePadType::JumpPad);
             closestColEntry = colDirector->closestCollisionEntry();
-            state()->setJumpPadVariant(closestColEntry->variant());
+            state()->setJumpPadVariant(closestColEntry->attributeVariant());
         }
         collisionData.bTrickable = true;
     }
@@ -731,7 +731,7 @@ void KartCollide::processCannon(Field::KCLTypeMask *maskOut) {
     auto *colDirector = Field::CollisionDirector::Instance();
     if (colDirector->findClosestCollisionEntry(maskOut, KCL_TYPE_BIT(COL_TYPE_CANNON_TRIGGER))) {
         state()->setCannonPointId(
-                colDirector->closestCollisionEntry()->variant());
+                colDirector->closestCollisionEntry()->attributeVariant());
         state()->setCannonStart(true);
     }
 }

@@ -26,13 +26,13 @@ bool ObjectBelt::calcCollision(const EGG::Vector3f &v0, const EGG::Vector3f & /*
     }
 
     const auto *entry = colDir->closestCollisionEntry();
-    if (!isMoving(entry->variant(), v0)) {
+    if (!isMoving(entry->attributeVariant(), v0)) {
         return false;
     }
 
     if (entry->dist > info->movingFloorDist) {
         info->movingFloorDist = entry->dist;
-        info->roadVelocity = calcRoadVelocity(entry->variant(), v0,
+        info->roadVelocity = calcRoadVelocity(entry->attributeVariant(), v0,
                 System::RaceManager::Instance()->timer() - timeOffset);
     }
 
