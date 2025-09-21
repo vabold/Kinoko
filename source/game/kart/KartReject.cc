@@ -124,7 +124,7 @@ bool KartReject::calcRejection() {
         }
 
         const auto *closestColEntry = colDir->closestCollisionEntry();
-        if (hasInvisibleWallCollision && closestColEntry->attributeVariant() == 0) {
+        if (hasInvisibleWallCollision && closestColEntry->variant() == 0) {
             hasRejectCollision = true;
             tangentOff = colInfo.wallNrm;
             state()->setNoSparkInvisibleWall(true);
@@ -138,7 +138,7 @@ bool KartReject::calcRejection() {
             closestColEntry = colDir->closestCollisionEntry();
             if (hasFloorCollision &&
                     closestColEntry->attribute.onBit(
-                            Field::CollisionDirector::eCollisionAttribute::Offroad)) {
+                            Field::CollisionDirector::eCollisionAttribute::RejectRoad)) {
                 hasRejectCollision = true;
                 tangentOff = colInfo.floorNrm;
             }

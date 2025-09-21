@@ -22,14 +22,13 @@ class CollisionDirector : EGG::Disposer {
     friend class Host::Context;
 
 public:
+    /// @brief Collision Entry Attribute fields.
+    /// @details |  0 - 4   |  5 - 7  | 8 | 9 | 10 |  11 - 12  |     13    |   14    |  15  |
+    ///          | BaseType | Variant |   |   |    | Intensity | Trickable | Offroad | Soft |
     enum class eCollisionAttribute {
-        /*
-            |  0 - 4   |  5 - 7  | 8 | 9 | 10 |  11 - 12  |     13    |   14    |  15  |
-            | BaseType | Variant |   |   |    | Intensity | Trickable | Offroad | Soft |
-        */
         Trickable = 13,
-        Offroad = 14,
-        Soft = 15
+        RejectRoad = 14,
+        Soft = 15,
     };
     typedef EGG::TBitFlag<u16, eCollisionAttribute> CollisionAttribute;
 
@@ -38,18 +37,15 @@ public:
         CollisionAttribute attribute;
         f32 dist;
 
-        // Credit: em-eight/mkw
-        /// Computes the "Base Type" portion of the KCL flags. It's the lower 5 bits of the flag.
-        u16 attributeBaseType() const {
+        u16 baseType() const {
             return attribute & 0x1F;
         }
 
-        /// Extracts the "Variant" portion of the KCL flag. It's the 3 bits before the "Bast Type".
-        u16 attributeVariant() const {
+        u16 variant() const {
             return (attribute >> 5) & 7;
         }
 
-        u16 attributeIntensity() const {
+        u16 intensity() const {
             return (attribute >> 11) & 3;
         }
 
@@ -92,8 +88,7 @@ public:
     void setCurrentCollisionTrickable(bool trickable) {
         ASSERT(m_collisionEntryCount > 0);
         CollisionEntry &entry = m_entries[m_collisionEntryCount - 1];
-        trickable ? entry.attribute.setBit(eCollisionAttribute::Trickable) :
-                    entry.attribute.resetBit(eCollisionAttribute::Trickable);
+        entry.attribute.changeBit(trickable, eCollisionAttribute::Trickable);
     }
 
     bool findClosestCollisionEntry(KCLTypeMask *typeMask, KCLTypeMask type);
