@@ -28,8 +28,6 @@
 #define KCL_TYPE_BIT(x) (1 << (x))
 /// Given the full 2 byte KCL flag for a triangle, extracts the "Base Type" portion of the flag.
 #define KCL_ATTRIBUTE_TYPE_BIT(x) KCL_TYPE_BIT(KCL_ATTRIBUTE_TYPE(x))
-/// Extracts the "Variant" portion of the 2 byte KCL flag. It's the 3 bits before the "Bast Type".
-#define KCL_VARIANT_TYPE(x) ((x >> 5) & 7)
 
 // KCL attribute types
 typedef enum {

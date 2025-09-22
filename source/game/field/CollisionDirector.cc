@@ -216,7 +216,7 @@ void CollisionDirector::resetCollisionEntries(KCLTypeMask *ptr) {
 /// @param kclTypeBit The attribute and additional info about the tri we are colliding with
 /// @param attribute The base type of the tri we are colliding with
 void CollisionDirector::pushCollisionEntry(f32 dist, KCLTypeMask *typeMask, KCLTypeMask kclTypeBit,
-        u16 attribute) {
+        CollisionAttribute attribute) {
     *typeMask = *typeMask | kclTypeBit;
     if (m_collisionEntryCount >= m_entries.size()) {
         m_collisionEntryCount = m_entries.size() - 1;
