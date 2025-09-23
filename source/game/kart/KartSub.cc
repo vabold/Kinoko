@@ -369,7 +369,8 @@ void KartSub::tryEndHWG() {
     }
 
     if (state()->isHWG() && !state()->isSomethingWallCollision()) {
-        if (!state()->isWallCollision() || state()->isAllWheelsCollision()) {
+        if ((!state()->isWallCollision() && !state()->isWall3Collision()) ||
+                state()->isAllWheelsCollision()) {
             state()->setHWG(false);
         }
     }
