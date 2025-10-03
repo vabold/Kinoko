@@ -12,6 +12,14 @@ f32 Vector2f::normalise() {
     return len;
 }
 
+/// @addr{0x80243A78}
+void Vector2f::normalise2() {
+    f32 sqLen = dot();
+    if (sqLen > std::numeric_limits<f32>::epsilon()) {
+        *this *= EGG::Mathf::frsqrt(sqLen);
+    }
+}
+
 /// @brief Initializes a Vector2f by reading 8 bytes from the stream.
 void Vector2f::read(Stream &stream) {
     x = stream.read_f32();

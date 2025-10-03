@@ -69,6 +69,7 @@ struct Vector2f {
     }
 
     f32 normalise();
+    void normalise2();
 
     void read(Stream &stream);
 

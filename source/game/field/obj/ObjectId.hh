@@ -49,6 +49,7 @@ enum class ObjectId {
     PressSoko = 0x19e,
     WLFireRingGC = 0x1a1,
     PakkunDokan = 0x1a2,
+    FireSnake = 0x1a4,
     PuchiPakkun = 0x1aa,
     KinokoUd = 0x1f5,
     KinokoBend = 0x1f6,

@@ -54,6 +54,11 @@ public:
         m_boxColUnit->resize(radius, maxSpeed);
     }
 
+    /// @addr{0x80821DD8}
+    virtual void unregisterCollision() {
+        BoxColManager::Instance()->remove(m_boxColUnit);
+    }
+
     /// @addr{0x80821DEC}
     virtual void disableCollision() const {
         m_boxColUnit->m_flag.setBit(eBoxColFlag::Intangible);
@@ -62,6 +67,11 @@ public:
     /// @addr{0x80821E00}
     virtual void enableCollision() const {
         m_boxColUnit->m_flag.resetBit(eBoxColFlag::Intangible);
+    }
+
+    /// @addr{0x80680618}
+    virtual const BoxColUnit *getUnit() const {
+        return m_boxColUnit;
     }
 
     [[nodiscard]] const RailInterpolator *railInterpolator() const {
