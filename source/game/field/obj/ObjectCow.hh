@@ -45,12 +45,9 @@ protected:
     static constexpr EGG::Vector3f GRAVITY_FORCE = EGG::Vector3f(0.0f, 2.0f, 0.0f);
 };
 
-class ObjectCowLeader;
-
 /// @brief A cow who its own rail and whose position is not influenced by the path of the others.
-class ObjectCowLeader final : public ObjectCow, public StateManager<ObjectCowLeader> {
+class ObjectCowLeader final : public ObjectCow, public StateManager {
     friend class ObjectCowHerd;
-    friend class StateManager<ObjectCowLeader>;
 
 public:
     ObjectCowLeader(const System::MapdataGeoObj &params);
@@ -86,19 +83,18 @@ private:
     AnmType m_state1AnmType;
     u16 m_eatFrames; ///< Length of the state 1 eat animation
 
-    static constexpr std::array<StateManagerEntry<ObjectCowLeader>, 3> STATE_ENTRIES = {{
-            {0, &ObjectCowLeader::enterWait, &ObjectCowLeader::calcWait},
-            {1, &ObjectCowLeader::enterEat, &ObjectCowLeader::calcEat},
-            {2, &ObjectCowLeader::enterRoam, &ObjectCowLeader::calcRoam},
+    static constexpr std::array<StateManagerEntry, 3> STATE_ENTRIES = {{
+            {StateEntry<ObjectCowLeader, &ObjectCowLeader::enterWait, &ObjectCowLeader::calcWait>(
+                    0)},
+            {StateEntry<ObjectCowLeader, &ObjectCowLeader::enterEat, &ObjectCowLeader::calcEat>(1)},
+            {StateEntry<ObjectCowLeader, &ObjectCowLeader::enterRoam, &ObjectCowLeader::calcRoam>(
+                    2)},
     }};
 };
 
-class ObjectCowFollower;
-
 /// @brief A cow that follows a leader by sharing the same rail.
-class ObjectCowFollower final : public ObjectCow, public StateManager<ObjectCowFollower> {
+class ObjectCowFollower final : public ObjectCow, public StateManager {
     friend class ObjectCowHerd;
-    friend class StateManager<ObjectCowFollower>;
 
 public:
     ObjectCowFollower(const System::MapdataGeoObj &params, const EGG::Vector3f &pos, f32 rot);
@@ -137,10 +133,13 @@ private:
     /// @brief Distance at which a cow is considered close enough to the rail to stop moving.
     static constexpr f32 DIST_THRESHOLD = 200.0f;
 
-    static constexpr std::array<StateManagerEntry<ObjectCowFollower>, 3> STATE_ENTRIES = {{
-            {0, &ObjectCowFollower::enterWait, &ObjectCowFollower::calcWait},
-            {1, &ObjectCowFollower::enterFreeRoam, &ObjectCowFollower::calcFreeRoam},
-            {2, &ObjectCowFollower::enterFollowLeader, &ObjectCowFollower::calcFollowLeader},
+    static constexpr std::array<StateManagerEntry, 3> STATE_ENTRIES = {{
+            {StateEntry<ObjectCowFollower, &ObjectCowFollower::enterWait,
+                    &ObjectCowFollower::calcWait>(0)},
+            {StateEntry<ObjectCowFollower, &ObjectCowFollower::enterFreeRoam,
+                    &ObjectCowFollower::calcFreeRoam>(1)},
+            {StateEntry<ObjectCowFollower, &ObjectCowFollower::enterFollowLeader,
+                    &ObjectCowFollower::calcFollowLeader>(2)},
     }};
 };
 

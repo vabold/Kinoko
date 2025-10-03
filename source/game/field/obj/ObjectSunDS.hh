@@ -5,11 +5,7 @@
 
 namespace Field {
 
-class ObjectSunDS;
-
-class ObjectSunDS : public ObjectProjectileLauncher, StateManager<ObjectSunDS> {
-    friend StateManager<ObjectSunDS>;
-
+class ObjectSunDS : public ObjectProjectileLauncher, public StateManager {
 public:
     ObjectSunDS(const System::MapdataGeoObj &params);
     ~ObjectSunDS() override;
@@ -56,9 +52,9 @@ private:
     const s32 m_startFrame;      ///< The sun is inactive until this frame
     u32 m_stillDuration;         ///< How long the sun remains stationary for before moving again
 
-    static constexpr std::array<StateManagerEntry<ObjectSunDS>, 2> STATE_ENTRIES = {{
-            {0, &ObjectSunDS::enterStill, &ObjectSunDS::calcStill},
-            {1, &ObjectSunDS::enterRevolving, &ObjectSunDS::calcRevolving},
+    static constexpr std::array<StateManagerEntry, 2> STATE_ENTRIES = {{
+            {StateEntry<ObjectSunDS, &ObjectSunDS::enterStill, &ObjectSunDS::calcStill>(0)},
+            {StateEntry<ObjectSunDS, &ObjectSunDS::enterRevolving, &ObjectSunDS::calcRevolving>(1)},
     }};
 };
 

@@ -5,11 +5,7 @@
 
 namespace Field {
 
-class ObjectCarA;
-
-class ObjectCarA : public ObjectCollidable, public StateManager<ObjectCarA> {
-    friend StateManager<ObjectCarA>;
-
+class ObjectCarA : public ObjectCollidable, public StateManager {
 public:
     ObjectCarA(const System::MapdataGeoObj &params);
     ~ObjectCarA() override;
@@ -56,10 +52,10 @@ private:
     MotionState m_motionState;
     bool m_changingDir;
 
-    static constexpr std::array<StateManagerEntry<ObjectCarA>, 3> STATE_ENTRIES = {{
-            {0, &ObjectCarA::enterStop, &ObjectCarA::calcStop},
-            {1, &ObjectCarA::enterAccel, &ObjectCarA::calcAccel},
-            {2, &ObjectCarA::enterCruising, &ObjectCarA::calcCruising},
+    static constexpr std::array<StateManagerEntry, 3> STATE_ENTRIES = {{
+            {StateEntry<ObjectCarA, &ObjectCarA::enterStop, &ObjectCarA::calcStop>(0)},
+            {StateEntry<ObjectCarA, &ObjectCarA::enterAccel, &ObjectCarA::calcAccel>(1)},
+            {StateEntry<ObjectCarA, &ObjectCarA::enterCruising, &ObjectCarA::calcCruising>(2)},
     }};
 };
 

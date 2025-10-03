@@ -5,12 +5,8 @@
 
 namespace Field {
 
-class ObjectHeyho;
-
 /// @brief Shy guys on DK Summit.
-class ObjectHeyho : public ObjectCollidable, public StateManager<ObjectHeyho> {
-    friend StateManager<ObjectHeyho>;
-
+class ObjectHeyho : public ObjectCollidable, public StateManager {
 public:
     ObjectHeyho(const System::MapdataGeoObj &params);
     ~ObjectHeyho() override;
@@ -70,9 +66,9 @@ private:
     f32 m_launchVel;
     s16 m_spinFrame;
 
-    static constexpr std::array<StateManagerEntry<ObjectHeyho>, 2> STATE_ENTRIES = {{
-            {0, &ObjectHeyho::enterMove, &ObjectHeyho::calcMove},
-            {1, &ObjectHeyho::enterJump, &ObjectHeyho::calcJump},
+    static constexpr std::array<StateManagerEntry, 2> STATE_ENTRIES = {{
+            {StateEntry<ObjectHeyho, &ObjectHeyho::enterMove, &ObjectHeyho::calcMove>(0)},
+            {StateEntry<ObjectHeyho, &ObjectHeyho::enterJump, &ObjectHeyho::calcJump>(1)},
     }};
 
     static constexpr EGG::Vector3f COLLISION_OFFSET = EGG::Vector3f(0.0f, 10.0f, 0.0f);

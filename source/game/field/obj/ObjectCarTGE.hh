@@ -7,12 +7,9 @@
 
 namespace Field {
 
-class ObjectCarTGE;
 class ObjectHighwayManager;
 
-class ObjectCarTGE : public ObjectCollidable, public StateManager<ObjectCarTGE> {
-    friend StateManager<ObjectCarTGE>;
-
+class ObjectCarTGE : public ObjectCollidable, public StateManager {
 public:
     enum class CarType {
         Normal = 0,
@@ -88,10 +85,11 @@ private:
     bool m_hasAuxCollision;
     f32 m_hitAngle;
 
-    static constexpr std::array<StateManagerEntry<ObjectCarTGE>, 3> STATE_ENTRIES = {{
-            {0, &ObjectCarTGE::enterStateStub, &ObjectCarTGE::calcStateStub},
-            {1, &ObjectCarTGE::enterStateStub, &ObjectCarTGE::calcState1},
-            {2, &ObjectCarTGE::enterStateStub, &ObjectCarTGE::calcState2},
+    static constexpr std::array<StateManagerEntry, 3> STATE_ENTRIES = {{
+            {StateEntry<ObjectCarTGE, &ObjectCarTGE::enterStateStub, &ObjectCarTGE::calcStateStub>(
+                    0)},
+            {StateEntry<ObjectCarTGE, &ObjectCarTGE::enterStateStub, &ObjectCarTGE::calcState1>(1)},
+            {StateEntry<ObjectCarTGE, &ObjectCarTGE::enterStateStub, &ObjectCarTGE::calcState2>(2)},
     }};
 };
 

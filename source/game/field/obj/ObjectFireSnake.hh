@@ -23,11 +23,7 @@ public:
     }
 };
 
-class ObjectFireSnake;
-
-class ObjectFireSnake : public ObjectProjectile, public StateManager<ObjectFireSnake> {
-    friend StateManager<ObjectFireSnake>;
-
+class ObjectFireSnake : public ObjectProjectile, public StateManager {
 public:
     ObjectFireSnake(const System::MapdataGeoObj &params);
     ~ObjectFireSnake() override;
@@ -79,13 +75,19 @@ private:
     EGG::Vector3f m_bounceDir;
     u16 m_age; ///< How long the firesnake has been spawned
 
-    static constexpr std::array<StateManagerEntry<ObjectFireSnake>, 6> STATE_ENTRIES = {{
-            {0, &ObjectFireSnake::enterDespawned, &ObjectFireSnake::calcDespawned},
-            {1, &ObjectFireSnake::enterFalling, &ObjectFireSnake::calcFalling},
-            {2, &ObjectFireSnake::enterHighBounce, &ObjectFireSnake::calcHighBounce},
-            {3, &ObjectFireSnake::enterRest, &ObjectFireSnake::calcRest},
-            {4, &ObjectFireSnake::enterBounce, &ObjectFireSnake::calcBounce},
-            {5, &ObjectFireSnake::enterDespawning, &ObjectFireSnake::calcDespawning},
+    static constexpr std::array<StateManagerEntry, 6> STATE_ENTRIES = {{
+            {StateEntry<ObjectFireSnake, &ObjectFireSnake::enterDespawned,
+                    &ObjectFireSnake::calcDespawned>(0)},
+            {StateEntry<ObjectFireSnake, &ObjectFireSnake::enterFalling,
+                    &ObjectFireSnake::calcFalling>(1)},
+            {StateEntry<ObjectFireSnake, &ObjectFireSnake::enterHighBounce,
+                    &ObjectFireSnake::calcHighBounce>(2)},
+            {StateEntry<ObjectFireSnake, &ObjectFireSnake::enterRest, &ObjectFireSnake::calcRest>(
+                    3)},
+            {StateEntry<ObjectFireSnake, &ObjectFireSnake::enterBounce,
+                    &ObjectFireSnake::calcBounce>(4)},
+            {StateEntry<ObjectFireSnake, &ObjectFireSnake::enterDespawning,
+                    &ObjectFireSnake::calcDespawning>(5)},
     }};
 
     static constexpr f32 GRAVITY = 3.0f;
