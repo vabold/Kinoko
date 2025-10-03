@@ -7,7 +7,7 @@ namespace Field {
 
 /// @addr{0x806CE828}
 ObjectHeyho::ObjectHeyho(const System::MapdataGeoObj &params)
-    : ObjectCollidable(params), StateManager(this), m_color(params.setting(1)) {
+    : ObjectCollidable(params), StateManager(this, STATE_ENTRIES), m_color(params.setting(1)) {
     const auto *rail = RailManager::Instance()->rail(params.pathId());
     ASSERT(rail);
     const auto &railPts = rail->points();

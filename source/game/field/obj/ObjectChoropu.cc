@@ -9,7 +9,7 @@ namespace Field {
 
 /// @addr{0x806B96A0}
 ObjectChoropu::ObjectChoropu(const System::MapdataGeoObj &params)
-    : ObjectCollidable(params), StateManager(this) {
+    : ObjectCollidable(params), StateManager(this, STATE_ENTRIES) {
     constexpr f32 MAX_SPEED = 20.0f;
 
     m_startFrameOffset = static_cast<s16>(params.setting(1));

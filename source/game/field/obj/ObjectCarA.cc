@@ -9,7 +9,8 @@ namespace Field {
 
 /// @addr{0x806B7710}
 ObjectCarA::ObjectCarA(const System::MapdataGeoObj &params)
-    : ObjectCollidable(params), StateManager(this), m_finalVel(static_cast<f32>(params.setting(0))),
+    : ObjectCollidable(params), StateManager(this, STATE_ENTRIES),
+      m_finalVel(static_cast<f32>(params.setting(0))),
       m_accel(static_cast<f32>(params.setting(1)) / 10.0f),
       m_stopTime(static_cast<u32>(params.setting(2))) {}
 

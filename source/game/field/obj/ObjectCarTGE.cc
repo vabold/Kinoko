@@ -13,8 +13,8 @@ namespace Field {
 
 /// @addr{0x806D5EE4}
 ObjectCarTGE::ObjectCarTGE(const System::MapdataGeoObj &params)
-    : ObjectCollidable(params), StateManager(this), m_auxCollision(nullptr), m_carName{},
-      m_mdlName{}, m_carType(CarType::Normal), m_dummyId(ObjectId::None),
+    : ObjectCollidable(params), StateManager(this, STATE_ENTRIES), m_auxCollision(nullptr),
+      m_carName{}, m_mdlName{}, m_carType(CarType::Normal), m_dummyId(ObjectId::None),
       m_scaledTangentDir(EGG::Vector3f::zero), m_currSpeed(0.0f), m_up(EGG::Vector3f::zero),
       m_tangent(EGG::Vector3f::zero) {
     u32 carVariant = static_cast<u32>(params.setting(3));
@@ -30,8 +30,6 @@ ObjectCarTGE::ObjectCarTGE(const System::MapdataGeoObj &params)
         m_nextStateId = -1;
         m_currentStateId = 0;
         m_currentFrame = 0;
-        m_entries = {};
-        m_obj = nullptr;
 
         return;
     }

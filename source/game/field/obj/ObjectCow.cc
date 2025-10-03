@@ -100,7 +100,7 @@ f32 ObjectCow::setTarget(const EGG::Vector3f &v) {
 
 /// @addr{0x806BD080}
 ObjectCowLeader::ObjectCowLeader(const System::MapdataGeoObj &params)
-    : ObjectCow(params), StateManager(this) {}
+    : ObjectCow(params), StateManager(this, STATE_ENTRIES) {}
 
 /// @addr{0x806BD1F8}
 ObjectCowLeader::~ObjectCowLeader() = default;
@@ -253,7 +253,7 @@ void ObjectCowLeader::calcRoam() {
 /// @addr{0x806BDD48}
 ObjectCowFollower::ObjectCowFollower(const System::MapdataGeoObj &params, const EGG::Vector3f &pos,
         f32 rot)
-    : ObjectCow(params), StateManager(this), m_posOffset(pos), m_rail(nullptr) {
+    : ObjectCow(params), StateManager(this, STATE_ENTRIES), m_posOffset(pos), m_rail(nullptr) {
     m_pos += m_posOffset;
     m_flags.setBit(eFlags::Position, eFlags::Rotation);
     m_rot.y = rot;

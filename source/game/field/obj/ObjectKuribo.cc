@@ -8,7 +8,7 @@ namespace Field {
 
 /// @addr{0x806DB184}
 ObjectKuribo::ObjectKuribo(const System::MapdataGeoObj &params)
-    : ObjectCollidable(params), StateManager(this) {
+    : ObjectCollidable(params), StateManager(this, STATE_ENTRIES) {
     m_animStep = static_cast<f32>(m_mapObj->setting(2)) / 100.0f;
     m_speedStep = static_cast<f32>(m_mapObj->setting(1)) / 100.0f;
 }

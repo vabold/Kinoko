@@ -5,11 +5,7 @@
 
 namespace Field {
 
-class ObjectKuribo;
-
-class ObjectKuribo : public ObjectCollidable, public StateManager<ObjectKuribo> {
-    friend StateManager<ObjectKuribo>;
-
+class ObjectKuribo : public ObjectCollidable, public StateManager {
 public:
     ObjectKuribo(const System::MapdataGeoObj &params);
     ~ObjectKuribo() override;
@@ -45,11 +41,15 @@ private:
     EGG::Vector3f m_floorNrm;
     f32 m_animTimer;
 
-    static constexpr std::array<StateManagerEntry<ObjectKuribo>, 4> STATE_ENTRIES = {{
-            {0, &ObjectKuribo::enterStateStub, &ObjectKuribo::calcStateReroute},
-            {1, &ObjectKuribo::enterStateStub, &ObjectKuribo::calcStateWalk},
-            {2, &ObjectKuribo::enterStateStub, &ObjectKuribo::calcStateStub},
-            {3, &ObjectKuribo::enterStateStub, &ObjectKuribo::calcStateStub},
+    static constexpr std::array<StateManagerEntry, 4> STATE_ENTRIES = {{
+            {StateEntry<ObjectKuribo, &ObjectKuribo::enterStateStub,
+                    &ObjectKuribo::calcStateReroute>(0)},
+            {StateEntry<ObjectKuribo, &ObjectKuribo::enterStateStub, &ObjectKuribo::calcStateWalk>(
+                    1)},
+            {StateEntry<ObjectKuribo, &ObjectKuribo::enterStateStub, &ObjectKuribo::calcStateStub>(
+                    2)},
+            {StateEntry<ObjectKuribo, &ObjectKuribo::enterStateStub, &ObjectKuribo::calcStateStub>(
+                    3)},
     }};
 };
 
