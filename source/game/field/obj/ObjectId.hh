@@ -9,6 +9,7 @@ enum class ObjectId {
     Itembox = 0x65,
     DummyPole = 0x066,
     Woodbox = 0x70,
+    SunDS = 0x72,
     WLWallGC = 0xcb,
     CarA1 = 0xcc,
     KartTruck = 0xd0,
