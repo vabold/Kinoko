@@ -246,6 +246,62 @@ void BoxColManager::reinsertUnit(BoxColUnit *unit) {
     insert(radius, maxSpeed, pos, BoxColFlag(), userData)->m_flag = flag;
 }
 
+/// @addr{0x80786578}
+void BoxColManager::remove(BoxColUnit *&unit) {
+    if (!unit || unit->m_flag.offBit(eBoxColFlag::Active)) {
+        return;
+    }
+
+    int highPointIdx = unit->m_highPointIdx;
+    int lowPointIdx = unit->m_lowPointIdx;
+
+    // Update high points
+    for (int i = highPointIdx; i < m_unitCount - 1; ++i) {
+        BoxColHighPoint &high = m_highPoints[i];
+        m_highPoints[i] = m_highPoints[i + 1];
+        BoxColLowPoint &low = m_lowPoints[high.lowPoint];
+        --low.highPoint;
+        --m_unitPool[low.unitID].m_highPointIdx;
+
+        if (high.minLowPoint > lowPointIdx) {
+            --high.minLowPoint;
+        }
+    }
+
+    // Update low points
+    for (int i = lowPointIdx; i < m_unitCount - 1; ++i) {
+        BoxColLowPoint &low = m_lowPoints[i];
+        m_lowPoints[i] = m_lowPoints[i + 1];
+        BoxColHighPoint &high = m_highPoints[low.highPoint];
+        --high.lowPoint;
+        --m_unitPool[low.unitID].m_lowPointIdx;
+
+        if (low.highPoint >= highPointIdx) {
+            continue;
+        }
+
+        int minLowPoint = m_highPoints[low.highPoint].minLowPoint;
+
+        if (minLowPoint != lowPointIdx) {
+            continue;
+        }
+
+        for (BoxColLowPoint *pLowPoint = &m_lowPoints[minLowPoint];
+                pLowPoint->highPoint < low.highPoint; ++minLowPoint) {
+            ++pLowPoint;
+        }
+
+        m_highPoints[low.highPoint].minLowPoint = minLowPoint;
+    }
+
+    unit->makeInactive();
+    int nextID = unit - m_unitPool.data();
+    m_unitIDs[nextID] = m_nextUnitID;
+    m_nextUnitID = nextID;
+    --m_unitCount;
+    unit = nullptr;
+}
+
 /// @addr{0x80786774}
 void BoxColManager::search(BoxColUnit *unit, const BoxColFlag &flag) {
     searchImpl(unit, flag);
@@ -417,61 +473,6 @@ BoxColUnit *BoxColManager::insert(f32 radius, f32 maxSpeed, const EGG::Vector3f 
     ++m_unitCount;
 
     return &unit;
-}
-
-/// @addr{0x80786578}
-void BoxColManager::remove(BoxColUnit *&pUnit) {
-    if (!pUnit || pUnit->m_flag.offBit(eBoxColFlag::Active)) {
-        return;
-    }
-
-    int highPointIdx = pUnit->m_highPointIdx;
-    int lowPointIdx = pUnit->m_lowPointIdx;
-
-    // Update high points
-    for (int i = highPointIdx; i < m_unitCount - 1; ++i) {
-        BoxColHighPoint &high = m_highPoints[i];
-        m_highPoints[i] = m_highPoints[i + 1];
-        BoxColLowPoint &low = m_lowPoints[high.lowPoint];
-        --low.highPoint;
-        --m_unitPool[low.unitID].m_highPointIdx;
-        if (high.minLowPoint > lowPointIdx) {
-            --high.minLowPoint;
-        }
-    }
-
-    // Update low points
-    for (int i = lowPointIdx; i < m_unitCount - 1; ++i) {
-        BoxColLowPoint &low = m_lowPoints[i];
-        m_lowPoints[i] = m_lowPoints[i + 1];
-        BoxColHighPoint &high = m_highPoints[low.highPoint];
-        --high.lowPoint;
-        --m_unitPool[low.unitID].m_lowPointIdx;
-
-        if (low.highPoint >= highPointIdx) {
-            continue;
-        }
-
-        int minLowPoint = m_highPoints[low.highPoint].minLowPoint;
-
-        if (minLowPoint != lowPointIdx) {
-            continue;
-        }
-
-        for (BoxColLowPoint *pLowPoint = &m_lowPoints[minLowPoint];
-                pLowPoint->highPoint < low.highPoint; ++minLowPoint) {
-            ++pLowPoint;
-        }
-
-        m_highPoints[low.highPoint].minLowPoint = minLowPoint;
-    }
-
-    pUnit->makeInactive();
-    int nextID = pUnit - m_unitPool.data();
-    m_unitIDs[nextID] = m_nextUnitID;
-    m_nextUnitID = nextID;
-    --m_unitCount;
-    pUnit = nullptr;
 }
 
 /// @addr{0x807868C0}
