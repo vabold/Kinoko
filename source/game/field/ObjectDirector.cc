@@ -164,6 +164,7 @@ void ObjectDirector::createObjects() {
     auto *objDrivableDir = ObjectDrivableDirector::Instance();
     const auto &raceScenario = System::RaceConfig::Instance()->raceScenario();
     bool rGV2 = raceScenario.course == Course::SNES_Ghost_Valley_2;
+    bool sun = false;
 
     for (size_t i = 0; i < objectCount; ++i) {
         const auto *pObj = courseMap->getGeoObj(i);
@@ -200,11 +201,20 @@ void ObjectDirector::createObjects() {
 
         ObjectBase *object = createObject(*pObj);
         object->load();
+
+        if (object->id() == ObjectId::SunDS) {
+            sun = true;
+        }
     }
 
     if (raceScenario.course == Course::Moonview_Highway) {
         auto *highwayMgr = new ObjectHighwayManager;
         highwayMgr->load();
+    }
+
+    if (sun) {
+        auto *sunMgr = new ObjectSunManager;
+        sunMgr->load();
     }
 }
 

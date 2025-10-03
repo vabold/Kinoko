@@ -52,7 +52,7 @@ public:
         return m_hitDepths[idx];
     }
 
-    [[nodiscard]] std::vector<ObjectCollidable *> managedObjects() {
+    [[nodiscard]] std::vector<ObjectCollidable *> &managedObjects() {
         return m_managedObjects;
     }
 
