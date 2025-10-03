@@ -10,6 +10,8 @@ class Random {
 public:
     Random(u32 seed) : m_x(seed), m_seed(seed) {}
 
+    explicit Random(const Random &rhs) = default;
+
     ~Random() = default;
 
     void next() {
