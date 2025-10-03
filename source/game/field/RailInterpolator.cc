@@ -5,7 +5,7 @@
 namespace Field {
 
 /// @addr{0x806ED160}
-RailInterpolator::RailInterpolator(f32 speed, u32 idx) {
+RailInterpolator::RailInterpolator(f32 speed, u32 idx) : m_currVel(0.0f) {
     m_railIdx = idx;
     auto *rail = RailManager::Instance()->rail(idx);
     m_pointCount = rail->pointCount();
