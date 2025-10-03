@@ -54,6 +54,14 @@ public:
         return m_points[m_nextPointIdx];
     }
 
+    [[nodiscard]] s16 railIdx() const {
+        return m_railIdx;
+    }
+
+    [[nodiscard]] u16 pointCount() const {
+        return m_pointCount;
+    }
+
     [[nodiscard]] f32 speed() const {
         return m_speed;
     }

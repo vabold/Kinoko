@@ -64,6 +64,10 @@ public:
         m_boxColUnit->m_flag.resetBit(eBoxColFlag::Intangible);
     }
 
+    [[nodiscard]] const RailInterpolator *railInterpolator() const {
+        return m_railInterpolator;
+    }
+
     /// @addr{0x80681598}
     [[nodiscard]] virtual const EGG::Vector3f &getPosition() const {
         return m_pos;
