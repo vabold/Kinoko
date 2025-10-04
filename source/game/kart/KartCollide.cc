@@ -281,11 +281,12 @@ void KartCollide::calcFloorEffect() {
     Field::KCLTypeMask mask = KCL_NONE;
     calcTriggers(&mask, pos(), false);
 
+    auto *colDir = Field::CollisionDirector::Instance();
+
     if (m_solidOobTimer >= 3 && m_surfaceFlags.onBit(eSurfaceFlags::SolidOOB) &&
             m_surfaceFlags.offBit(eSurfaceFlags::Wall)) {
         if (mask & KCL_TYPE_BIT(COL_TYPE_SOLID_OOB)) {
-            Field::CollisionDirector::Instance()->findClosestCollisionEntry(&mask,
-                    KCL_TYPE_BIT(COL_TYPE_SOLID_OOB));
+            colDir->findClosestCollisionEntry(&mask, KCL_TYPE_BIT(COL_TYPE_SOLID_OOB));
         }
 
         activateOob(true, &mask, false, false);
@@ -296,6 +297,15 @@ void KartCollide::calcFloorEffect() {
 
     m_solidOobTimer =
             m_surfaceFlags.onBit(eSurfaceFlags::SolidOOB) ? std::min(3, m_solidOobTimer + 1) : 0;
+
+    if (state()->isWall3Collision() || state()->isWallCollision()) {
+        Field::KCLTypeMask maskOut = KCL_NONE;
+
+        if (colDir->checkSphereCachedPartialPush(m_boundingRadius, pos(), EGG::Vector3f::inf,
+                    KCL_TYPE_BIT(COL_TYPE_FALL_BOUNDARY), nullptr, &maskOut, 0)) {
+            calcFallBoundary(&maskOut, true);
+        }
+    }
 }
 
 /// @addr{0x805718D4}
@@ -354,7 +364,7 @@ void KartCollide::handleTriggers(Field::KCLTypeMask *mask) {
 }
 
 /// @addr{0x80571D98}
-void KartCollide::calcFallBoundary(Field::KCLTypeMask *mask, bool /*shortBoundary*/) {
+void KartCollide::calcFallBoundary(Field::KCLTypeMask *mask, bool shortBoundary) {
     if (!(*mask & KCL_TYPE_BIT(COL_TYPE_FALL_BOUNDARY))) {
         return;
     }
@@ -364,7 +374,18 @@ void KartCollide::calcFallBoundary(Field::KCLTypeMask *mask, bool /*shortBoundar
         return;
     }
 
-    activateOob(false, mask, false, false);
+    bool safe = false;
+    const auto *entry = colDir->closestCollisionEntry();
+
+    if (shortBoundary) {
+        if (entry->variant() != 7) {
+            safe = true;
+        }
+    }
+
+    if (!safe) {
+        activateOob(false, mask, false, false);
+    }
 }
 
 /// @addr{0x80573ED4}
