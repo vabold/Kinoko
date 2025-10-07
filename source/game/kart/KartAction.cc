@@ -423,7 +423,6 @@ bool KartAction::calcLargeFlipAction() {
             sin = EGG::Mathf::SinFIdx(DEG2FIDX * m_flipPhase);
         } else {
             sin = 0.0f;
-            m_flipPhase = 0.0f;
         }
 
         EGG::Matrix34f mat;
