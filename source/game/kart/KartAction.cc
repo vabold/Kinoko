@@ -127,6 +127,7 @@ void KartAction::calcSideFromHitDepthAndTranslation() {
 /// @addr{0x80567B98}
 void KartAction::end() {
     state()->setInAction(false);
+    state()->setLargeFlipHit(false);
     dynamics()->setForceUpright(true);
 
     m_currentAction = Action::None;
@@ -295,6 +296,29 @@ void KartAction::startAction5() {
     startLaunch(EXT_VEL_SCALAR, EXT_VEL_KART, EXT_VEL_BIKE, NUM_ROTATIONS, 2);
 }
 
+/// @addr{0x805690A0}
+void KartAction::startLargeFlipAction() {
+    dynamics()->setExtVel(EGG::Vector3f(0.0f, 60.0f, 0.0f));
+    dynamics()->setAngVel0(EGG::Vector3f::zero);
+
+    m_fc = pos().y;
+
+    Item::ItemDirector::Instance()->kartItem(0).clear();
+
+    m_5c = 0.0f;
+    m_58 = 0.0f;
+    m_54 = 22.0f;
+    m_7c = 0.0f;
+    m_80 = 0.0f;
+    m_84 = 0.0f;
+    m_88 = pos().y;
+    m_60 = EGG::Vector3f::ex;
+    m_6c = EGG::Vector3f::ez;
+    m_f4 = 0;
+
+    state()->setLargeFlipHit(true);
+}
+
 /// @addr{0x80568000}
 void KartAction::startAction9() {
     startRotation(2);
@@ -354,6 +378,84 @@ bool KartAction::calcLaunchAction() {
     } else if (m_flags.offBit(eFlags::Landing)) {
         m_rotation.setAxisRotation(DEG2RAD * m_currentAngle, m_rotAxis);
         physics()->composeExtraRot(m_rotation);
+    }
+
+    return actionEnded;
+}
+
+/// @addr{0x805692B4}
+bool KartAction::calcLargeFlipAction() { // frame 385, the return value is wrong
+    bool decayingRot = false;
+    bool stuntRot = false;
+
+    if (m_flags.onBit(eFlags::Rotating)) {
+        ++m_f4;
+    } else {
+        if (m_5c < 720.0f) {
+            m_5c += m_54;
+            m_58 -= m_54;
+            m_54 *= (m_54 > 1.0f) ? 0.971f : 1.0f;
+        } else {
+            m_58 = 0.0f;
+        }
+
+        if (EGG::Mathf::abs(m_84) < 360.0f) {
+            m_84 += 4.0f;
+            m_80 += 4.0f;
+            m_7c = EGG::Mathf::SinFIdx(DEG2FIDX * m_80);
+        } else {
+            m_7c = 0.0f;
+            m_80 = 0.0f;
+        }
+
+        EGG::Matrix34f mat;
+        mat.setAxisRotation(DEG2RAD * (18.1f * m_7c), m_6c);
+        m_rotation.setAxisRotation(DEG2RAD * m_58, mat.ps_multVector(m_60));
+
+        stuntRot = true;
+    }
+
+    bool actionEnded = false;
+
+    if (m_flags.offBit(eFlags::LandingFromFlip) && state()->isTouchingGround() &&
+            move()->up().y > 0.0f && m_frame > 50) {
+        m_flags.setBit(eFlags::LandingFromFlip);
+        dynamics()->setExtVel(move()->up().proj(EGG::Vector3f::ey) * 5.0f);
+    }
+
+    // TODO: There's an inline function here somewhere
+    if (m_frame >= 10 && !state()->isTouchingGround()) {
+        f32 extVelY = dynamics()->extVel().y;
+        dynamics()->setExtVel(EGG::Vector3f(0.0f, extVelY, 0.0f));
+    }
+
+    if ((state()->isTouchingGround() && move()->up().dot(EGG::Vector3f::ey) > 0.0f) ||
+            m_frame >= 300) {
+        if (m_frame >= 40) {
+            state()->setLargeFlipHit(false);
+        }
+
+        if (m_frame <= 120) {
+            if (m_flags.onBit(eFlags::Rotating)) {
+                if (m_f4 > 30) {
+                    actionEnded = true;
+                }
+            } else {
+                if (m_frame >= 40 && m_frame <= 80) {
+                    decayingRot = true;
+                    m_flags.setBit(eFlags::Rotating);
+                    state()->setLargeFlipHit(false);
+                }
+            }
+        } else {
+            actionEnded = true;
+        }
+    }
+
+    if (decayingRot) {
+        physics()->composeDecayingStuntRot(m_rotation);
+    } else if (stuntRot) {
+        physics()->composeStuntRot(m_rotation);
     }
 
     return actionEnded;
@@ -429,7 +531,7 @@ const std::array<KartAction::StartActionFunc, KartAction::MAX_ACTION> KartAction
         &KartAction::startStub,
         &KartAction::startAction5,
         &KartAction::startStub,
-        &KartAction::startStub,
+        &KartAction::startLargeFlipAction,
         &KartAction::startStub,
         &KartAction::startAction9,
         &KartAction::startStub,
@@ -450,7 +552,7 @@ const std::array<KartAction::CalcActionFunc, KartAction::MAX_ACTION> KartAction:
         &KartAction::calcStub,
         &KartAction::calcLaunchAction,
         &KartAction::calcStub,
-        &KartAction::calcStub,
+        &KartAction::calcLargeFlipAction,
         &KartAction::calcStub,
         &KartAction::calcAction1,
         &KartAction::calcStub,
