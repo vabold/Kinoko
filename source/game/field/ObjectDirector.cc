@@ -216,6 +216,11 @@ void ObjectDirector::createObjects() {
         auto *sunMgr = new ObjectSunManager;
         sunMgr->load();
     }
+
+    if (raceScenario.course == Course::GBA_Shy_Guy_Beach) {
+        auto *shipMgr = new ObjectHeyhoShipManager;
+        shipMgr->load();
+    }
 }
 
 /// @addr{0x80821E14}
@@ -232,6 +237,8 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
         return new ObjectCarA(params);
     case ObjectId::Basabasa:
         return new ObjectBasabasa(params);
+    case ObjectId::HeyhoShipGBA:
+        return new ObjectHeyhoShip(params);
     case ObjectId::KartTruck:
     case ObjectId::CarBody:
         return new ObjectCarTGE(params);
@@ -249,6 +256,8 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
         return new ObjectBoble(params);
     case ObjectId::Seagull:
         return new ObjectBird(params);
+    case ObjectId::HeyhoBallGBA:
+        return new ObjectHeyhoBall(params);
     case ObjectId::DokanSFC:
         return new ObjectDokan(params);
     case ObjectId::OilSFC:

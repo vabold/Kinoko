@@ -15,6 +15,9 @@ public:
     /// @addr{0x806D1998}
     ~ObjectProjectileLauncher() override = default;
 
+    // Not overridden in the base game, but has collision mode 0
+    void createCollision() override {}
+
     /// @brief Used by @ref ObjectSniper to check which object (if any) should be thrown
     virtual s16 launchPointIdx() = 0;
 };

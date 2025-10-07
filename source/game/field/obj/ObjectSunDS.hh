@@ -22,9 +22,6 @@ public:
         return 1;
     }
 
-    // Not overridden in the base game, but has collision mode 0
-    void createCollision() override {}
-
     [[nodiscard]] s16 launchPointIdx() override;
 
 private:
