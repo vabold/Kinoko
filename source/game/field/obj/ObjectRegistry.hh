@@ -19,6 +19,7 @@
 #include "game/field/obj/ObjectFireRing.hh"
 #include "game/field/obj/ObjectFireSnake.hh"
 #include "game/field/obj/ObjectFirebar.hh"
+#include "game/field/obj/ObjectHeyho.hh"
 #include "game/field/obj/ObjectHighwayManager.hh"
 #include "game/field/obj/ObjectItemboxLine.hh"
 #include "game/field/obj/ObjectKCL.hh"
