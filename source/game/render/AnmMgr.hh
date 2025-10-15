@@ -28,6 +28,11 @@ public:
         return static_cast<f32>(m_anmObjChrRes.frameCount());
     }
 
+    /// @addr{0x8055ADFC}
+    [[nodiscard]] f32 frame() const {
+        return m_anmObjChrRes.frame();
+    }
+
 private:
     Abstract::g3d::AnmObjChrRes m_anmObjChrRes;
     AnmType m_anmType;

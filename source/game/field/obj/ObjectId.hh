@@ -45,6 +45,7 @@ enum class ObjectId {
     WLFirebarGC = 0x195,
     Sanbo = 0x199,
     Choropu2 = 0x19a,
+    Heyho = 0x19c,
     Press = 0x19d,
     PressSoko = 0x19e,
     WLFireRingGC = 0x1a1,
