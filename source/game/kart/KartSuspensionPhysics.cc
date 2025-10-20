@@ -229,10 +229,12 @@ void KartSuspensionPhysics::calcSuspension(const EGG::Vector3f &forward,
 
     dynamics()->applySuspensionWrench(m_topmostPos, fLinear, fRot, state()->isWheelieRot());
 
+    // TODO: This is an inline function
     f32 rate = state()->isSomethingWallCollision() ? 0.01f : collide()->floorMomentRate();
 
     collide()->applySomeFloorMoment(0.1f, rate, hitboxGroup, forward, move()->dir(),
-            m_tirePhysics->speed(), true, true, !state()->isWheelieRot());
+            m_tirePhysics->speed(), true, true,
+            !state()->isLargeFlipHit() && !state()->isWheelieRot());
 }
 
 } // namespace Kart

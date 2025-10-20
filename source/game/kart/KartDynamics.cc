@@ -110,7 +110,7 @@ void KartDynamics::calc(f32 dt, f32 maxSpeed, bool air) {
 
     if (playerBackHoriz.squaredLength() > std::numeric_limits<f32>::epsilon()) {
         playerBackHoriz.normalise();
-        const auto [proj, rej] = m_extVel.projAndRej(playerBackHoriz);
+        const auto [proj, rej] = m_extVel.projAndRej(playerBackHoriz); // extVel wrong before this
         const EGG::Vector3f &speedBack = proj;
         m_extVel = rej;
 
