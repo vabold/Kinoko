@@ -5,8 +5,6 @@
 
 namespace Field {
 
-class ObjectHeyhoShip;
-
 /// @brief The ship on GBA Shy Guy Beach that shoots cannonballs.
 class ObjectHeyhoShip final : public ObjectProjectileLauncher {
 public:

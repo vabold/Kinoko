@@ -5,8 +5,6 @@
 
 namespace Field {
 
-class ObjectHeyhoBall;
-
 /// @brief The cannonball projectiles on GBA Shy Guy Beach.
 class ObjectHeyhoBall final : public ObjectProjectile, public StateManager {
 public:

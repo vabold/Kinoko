@@ -5,8 +5,6 @@
 
 namespace Field {
 
-class ObjectFlamePoleV;
-
 class ObjectFlamePoleV final : public ObjectCollidable, public StateManager {
 public:
     ObjectFlamePoleV(const System::MapdataGeoObj &params);
