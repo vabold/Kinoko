@@ -15,6 +15,7 @@
 #include "game/field/obj/ObjectCow.hh"
 #include "game/field/obj/ObjectCrane.hh"
 #include "game/field/obj/ObjectDokan.hh"
+#include "game/field/obj/ObjectDossunc.hh"
 #include "game/field/obj/ObjectEscalator.hh"
 #include "game/field/obj/ObjectEscalatorGroup.hh"
 #include "game/field/obj/ObjectFireRing.hh"

@@ -5,8 +5,6 @@
 
 namespace Field {
 
-class ObjectVolcanoBall;
-
 /// @brief Represents a fireball that is launched from the volcanoes on Grumble Volcano.
 class ObjectVolcanoBall final : public ObjectCollidable, public StateManager {
     friend class ObjectVolcanoBallLauncher;

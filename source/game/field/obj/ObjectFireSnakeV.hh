@@ -4,8 +4,6 @@
 
 namespace Field {
 
-class ObjectFireSnakeV;
-
 class ObjectFireSnakeV final : public ObjectFireSnake {
 public:
     ObjectFireSnakeV(const System::MapdataGeoObj &params);
