@@ -10,6 +10,7 @@ void CourseMap::init() {
     m_course =
             new MapdataFileAccessor(reinterpret_cast<const MapdataFileAccessor::SData *>(buffer));
 
+    constexpr u32 AREA_SIGNATURE = 0x41524541;
     constexpr u32 CANNON_POINT_SIGNATURE = 0x434e5054;
     constexpr u32 CHECK_PATH_SIGNATURE = 0x434b5048;
     constexpr u32 CHECK_POINT_SIGNATURE = 0x434b5054;
@@ -24,9 +25,13 @@ void CourseMap::init() {
     m_checkPoint = parseMapdata<MapdataCheckPointAccessor>(CHECK_POINT_SIGNATURE);
     m_geoObj = parseMapdata<MapdataGeoObjAccessor>(GEO_OBJ_SIGNATURE);
     m_pointInfo = parseMapdata<MapdataPointInfoAccessor>(POINT_INFO_SIGNATURE);
+    m_area = parseMapdata<MapdataAreaAccessor>(AREA_SIGNATURE);
     m_jugemPoint = parseMapdata<MapdataJugemPointAccessor>(JUGEM_POINT_SIGNATURE);
     m_cannonPoint = parseMapdata<MapdataCannonPointAccessor>(CANNON_POINT_SIGNATURE);
     m_stageInfo = parseMapdata<MapdataStageInfoAccessor>(STAGE_INFO_SIGNATURE);
+
+    ASSERT(m_area);
+    m_area->sort();
 
     MapdataStageInfo *stageInfo = getStageInfo();
     constexpr u8 TRANSLATION_MODE_NARROW = 1;
@@ -180,6 +185,27 @@ f32 CourseMap::getCheckPointEntryOffsetExact(u16 i, const EGG::Vector3f &pos,
     return checkPoint->getEntryOffsetExact(prevPos_, pos_);
 }
 
+/// @addr{0x80516808}
+s16 CourseMap::getCurrentAreaID(s16 i, const EGG::Vector3f &pos, MapdataAreaBase::Type type) const {
+    // Check if we're colliding with the provided area ID
+    if (i >= 0) {
+        const MapdataAreaBase *area = getArea(i);
+        if (area->type() == type && area->test(pos)) {
+            return i;
+        }
+    }
+
+    // Search all areas of the same type
+    for (i = 0; i < getAreaCount(); ++i) {
+        const MapdataAreaBase *area = getAreaSorted(i);
+        if (area->type() == type && area->test(pos)) {
+            return area->index();
+        }
+    }
+
+    return -1;
+}
+
 /// @addr{0x80512694}
 CourseMap *CourseMap::CreateInstance() {
     ASSERT(!s_instance);
@@ -213,6 +239,7 @@ CourseMap::~CourseMap() {
     delete m_checkPoint;
     delete m_pointInfo;
     delete m_geoObj;
+    delete m_area;
     delete m_jugemPoint;
     delete m_cannonPoint;
     delete m_stageInfo;
