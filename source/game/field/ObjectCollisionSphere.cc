@@ -10,17 +10,21 @@ ObjectCollisionSphere::ObjectCollisionSphere(f32 radius, const EGG::Vector3f &ce
 /// @addr{0x80836B5C}
 ObjectCollisionSphere::~ObjectCollisionSphere() = default;
 
-/// @addr{0x80836A50}
-void ObjectCollisionSphere::transform(const EGG::Matrix34f &mat, const EGG::Vector3f &scale,
-        const EGG::Vector3f &speed) {
-    m_translation = speed;
-
+/// @addr{0x80836998}
+void ObjectCollisionSphere::transform(const EGG::Matrix34f &mat, const EGG::Vector3f &scale) {
     if (scale.x != 1.0f) {
         m_scaledPos = m_pos * scale.x;
         m_scaledRadius = m_radius * scale.x;
     }
 
     m_worldPos = mat.multVector(m_scaledPos);
+}
+
+/// @addr{0x80836A50}
+void ObjectCollisionSphere::transform(const EGG::Matrix34f &mat, const EGG::Vector3f &scale,
+        const EGG::Vector3f &speed) {
+    m_translation = speed;
+    ObjectCollisionSphere::transform(mat, scale);
     m_center = m_worldPos - speed;
 }
 
