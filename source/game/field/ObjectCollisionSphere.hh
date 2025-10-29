@@ -9,6 +9,7 @@ public:
     ObjectCollisionSphere(f32 radius, const EGG::Vector3f &center);
     ~ObjectCollisionSphere() override;
 
+    void transform(const EGG::Matrix34f &mat, const EGG::Vector3f &scale) override;
     void transform(const EGG::Matrix34f &mat, const EGG::Vector3f &scale,
             const EGG::Vector3f &speed) override;
     const EGG::Vector3f &getSupport(const EGG::Vector3f &v) const override;

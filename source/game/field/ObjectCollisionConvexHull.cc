@@ -20,6 +20,23 @@ ObjectCollisionConvexHull::~ObjectCollisionConvexHull() {
     delete[] m_worldPoints.data();
 }
 
+/// @addr{0x808366D0}
+void ObjectCollisionConvexHull::transform(const EGG::Matrix34f &mat, const EGG::Vector3f &scale) {
+    if (scale.x != 1.0f) {
+        EGG::Matrix34f temp;
+        temp.makeS(EGG::Vector3f(scale.x, scale.x, scale.x));
+        temp = mat.multiplyTo(temp);
+
+        for (size_t i = 0; i < m_points.size(); ++i) {
+            m_worldPoints[i] = temp.ps_multVector(m_points[i]);
+        }
+    } else {
+        for (size_t i = 0; i < m_points.size(); ++i) {
+            m_worldPoints[i] = mat.ps_multVector(m_points[i]);
+        }
+    }
+}
+
 /// @addr{0x808367C4}
 void ObjectCollisionConvexHull::transform(const EGG::Matrix34f &mat, const EGG::Vector3f &scale,
         const EGG::Vector3f &speed) {

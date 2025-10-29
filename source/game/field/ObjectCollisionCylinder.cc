@@ -18,10 +18,8 @@ ObjectCollisionCylinder::ObjectCollisionCylinder(f32 radius, f32 height,
 /// @addr{0x808364A0}
 ObjectCollisionCylinder::~ObjectCollisionCylinder() = default;
 
-/// @addr{0x80836334}
-void ObjectCollisionCylinder::transform(const EGG::Matrix34f &mat, const EGG::Vector3f &scale,
-        const EGG::Vector3f &speed) {
-    m_translation = speed;
+/// @addr{0x808361F0}
+void ObjectCollisionCylinder::transform(const EGG::Matrix34f &mat, const EGG::Vector3f &scale) {
     m_worldPos = m_pos * scale.x;
     m_worldHeight = m_height * scale.y;
     m_worldRadius = m_radius * scale.x;
@@ -29,6 +27,13 @@ void ObjectCollisionCylinder::transform(const EGG::Matrix34f &mat, const EGG::Ve
     m_center = mat.ps_multVector(m_worldPos);
     m_top = mat.ps_multVector(m_worldPos + EGG::Vector3f::ey * m_worldHeight);
     m_bottom = mat.ps_multVector(m_worldPos - EGG::Vector3f::ey * m_worldHeight);
+}
+
+/// @addr{0x80836334}
+void ObjectCollisionCylinder::transform(const EGG::Matrix34f &mat, const EGG::Vector3f &scale,
+        const EGG::Vector3f &speed) {
+    m_translation = speed;
+    ObjectCollisionCylinder::transform(mat, scale);
 }
 
 } // namespace Field

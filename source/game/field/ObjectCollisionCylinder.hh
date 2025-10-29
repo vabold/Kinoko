@@ -9,6 +9,7 @@ public:
     ObjectCollisionCylinder(f32 radius, f32 height, const EGG::Vector3f &center);
     ~ObjectCollisionCylinder() override;
 
+    void transform(const EGG::Matrix34f &mat, const EGG::Vector3f &scale) override;
     void transform(const EGG::Matrix34f &mat, const EGG::Vector3f &scale,
             const EGG::Vector3f &speed) override;
 

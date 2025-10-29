@@ -10,6 +10,7 @@ public:
     ObjectCollisionConvexHull(const std::span<const EGG::Vector3f> &points);
     ~ObjectCollisionConvexHull() override;
 
+    void transform(const EGG::Matrix34f &mat, const EGG::Vector3f &scale) override;
     void transform(const EGG::Matrix34f &mat, const EGG::Vector3f &scale,
             const EGG::Vector3f &speed) override;
     const EGG::Vector3f &getSupport(const EGG::Vector3f &v) const override;

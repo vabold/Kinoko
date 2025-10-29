@@ -26,6 +26,7 @@ public:
     ObjectCollisionBase();
     virtual ~ObjectCollisionBase();
 
+    virtual void transform(const EGG::Matrix34f &mat, const EGG::Vector3f &scale) = 0;
     virtual void transform(const EGG::Matrix34f &mat, const EGG::Vector3f &scale,
             const EGG::Vector3f &speed) = 0;
     virtual const EGG::Vector3f &getSupport(const EGG::Vector3f &v) const = 0;
