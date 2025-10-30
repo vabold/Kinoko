@@ -12,7 +12,7 @@
 namespace Kart {
 
 /// @addr{0x80574114}
-KartHalfPipe::KartHalfPipe() = default;
+KartHalfPipe::KartHalfPipe() : m_prevPos(EGG::Vector3f::zero) {}
 
 /// @addr{0x80574170}
 KartHalfPipe::~KartHalfPipe() = default;
