@@ -51,6 +51,7 @@ enum class ObjectId {
     WLFireRingGC = 0x1a1,
     PakkunDokan = 0x1a2,
     FireSnake = 0x1a4,
+    KoopaFirebar = 0x1a5,
     PuchiPakkun = 0x1aa,
     KinokoUd = 0x1f5,
     KinokoBend = 0x1f6,
