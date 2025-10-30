@@ -29,6 +29,8 @@ namespace EGG::Mathf {
 [[nodiscard]] f32 AtanFIdx_(f32 fidx);
 [[nodiscard]] f32 Atan2FIdx(f32 x, f32 y);
 
+u32 FUN_800867C0(f32 a, f32 b, f32 c, f32 &root1, f32 &root2);
+
 /// Takes in radians
 /// @addr{0x8022F860}
 [[nodiscard]] static inline f32 sin(f32 x) {
