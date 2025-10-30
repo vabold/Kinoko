@@ -21,6 +21,7 @@
 #include "game/field/obj/ObjectFireSnake.hh"
 #include "game/field/obj/ObjectFireSnakeV.hh"
 #include "game/field/obj/ObjectFirebar.hh"
+#include "game/field/obj/ObjectFlamePoleFoot.hh"
 #include "game/field/obj/ObjectFlamePoleV.hh"
 #include "game/field/obj/ObjectHeyho.hh"
 #include "game/field/obj/ObjectHeyhoBall.hh"
