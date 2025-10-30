@@ -25,8 +25,8 @@ Test Case                                                 | Frames      |     | 
 [`gv-nosc-rta-1-50-927`](https://youtu.be/R7oK3U7iZrk)    | 7060 / 7060 | ✔️ |
 [`ddr-rta-1-46-400`](https://youtu.be/nVcVbd4n3yM)        | 6789 / 6789 | ✔️ |
 [`mh-rta-1-42-872`](https://youtu.be/CellUlOYgnc)         | 6578 / 6578 | ✔️ |
-[`bc-rta-2-08-697`](https://youtu.be/1DEReKemoeI)         | 2776 / 8126 | ❌ | Lava pillars
-[`bc-ng-rta-2-20-001`](https://youtu.be/028nClzy7B4)      | 2973 / 8803 | ❌ | Lava pillars
+[`bc-rta-2-08-697`](https://youtu.be/1DEReKemoeI)         | 8126 / 8126 | ✔️ |
+[`bc-ng-rta-2-20-001`](https://youtu.be/028nClzy7B4)      | 8803 / 8803 | ✔️ |
 [`rr-rta-1-24-751`](https://youtu.be/dgNMHyFda14)         | 5491 / 5491 | ✔️ |
 [`rr-ng-rta-2-24-281`](https://youtu.be/O-BtWWsq82o)      | 9060 / 9060 | ✔️ |
 [`rpb-rta-0-59-978`](https://youtu.be/Z-lVl-7B-So)        | 1078 / 4007 | ❌ | Moving water
