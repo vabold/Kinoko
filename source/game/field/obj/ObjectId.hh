@@ -16,6 +16,8 @@ enum class ObjectId {
     CarBody = 0xd1,
     W_Woodbox = 0xd3,
     ItemboxLine = 0xd5,
+    Dossunc = 0xdb,
+    DossuncSoko = 0xdc,
     Boble = 0xdd,
     Seagull = 0xe3,
     CarA2 = 0xe7,
