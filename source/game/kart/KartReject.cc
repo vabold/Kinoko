@@ -64,7 +64,7 @@ void KartReject::calcRejectRoad() {
         bool didReject = calcRejection();
 
         if (!state()->isNoSparkInvisibleWall() && !didReject) {
-            state()->setRejectRoadTrigger(false);
+            move()->clearRejectRoad();
         }
 
         return;
@@ -113,38 +113,9 @@ bool KartReject::calcRejection() {
             continue;
         }
 
-        bool hasFloorCollision = false;
-        bool hasRejectCollision = false;
-        bool hasInvisibleWallCollision = false;
         EGG::Vector3f tangentOff = EGG::Vector3f::zero;
 
-        if (mask & KCL_TYPE_INVISIBLE_WALL) {
-            hasInvisibleWallCollision =
-                    colDir->findClosestCollisionEntry(&mask, KCL_TYPE_INVISIBLE_WALL);
-        }
-
-        const auto *closestColEntry = colDir->closestCollisionEntry();
-        if (hasInvisibleWallCollision && closestColEntry->variant() == 0) {
-            hasRejectCollision = true;
-            tangentOff = colInfo.wallNrm;
-            state()->setNoSparkInvisibleWall(true);
-        } else {
-            if (!(mask & KCL_TYPE_DRIVER_FLOOR)) {
-                hasFloorCollision = false;
-            } else {
-                hasFloorCollision = colDir->findClosestCollisionEntry(&mask, KCL_TYPE_DRIVER_FLOOR);
-            }
-
-            closestColEntry = colDir->closestCollisionEntry();
-            if (hasFloorCollision &&
-                    closestColEntry->attribute.onBit(
-                            Field::CollisionDirector::eCollisionAttribute::RejectRoad)) {
-                hasRejectCollision = true;
-                tangentOff = colInfo.floorNrm;
-            }
-        }
-
-        if (!hasRejectCollision) {
+        if (!calcCollision(colInfo, mask, tangentOff)) {
             continue;
         }
 
@@ -175,6 +146,40 @@ bool KartReject::calcRejection() {
         move()->setVel1Dir(local_13c);
 
         return true;
+    }
+
+    return false;
+}
+
+bool KartReject::calcCollision(Field::CollisionInfo &colInfo, Field::KCLTypeMask mask,
+        EGG::Vector3f &tangentOff) {
+    auto *colDir = Field::CollisionDirector::Instance();
+
+    if (mask & KCL_TYPE_INVISIBLE_WALL) {
+        if (colDir->findClosestCollisionEntry(&mask, KCL_TYPE_INVISIBLE_WALL) &&
+                colDir->closestCollisionEntry()->variant() == 0) {
+            tangentOff = colInfo.wallNrm;
+            state()->setNoSparkInvisibleWall(true);
+            return true;
+        }
+    }
+
+    Field::KCLTypeMask halfPipeInvisMask = KCL_TYPE_BIT(COL_TYPE_HALFPIPE_INVISIBLE_WALL);
+    if (mask & halfPipeInvisMask) {
+        if (colDir->findClosestCollisionEntry(&mask, halfPipeInvisMask)) {
+            tangentOff = colInfo.wallNrm;
+            state()->setNoSparkInvisibleWall(true);
+            return true;
+        }
+    }
+
+    if (mask & KCL_TYPE_DRIVER_FLOOR) {
+        if (colDir->findClosestCollisionEntry(&mask, KCL_TYPE_DRIVER_FLOOR) &&
+                colDir->closestCollisionEntry()->attribute.onBit(
+                        Field::CollisionDirector::eCollisionAttribute::RejectRoad)) {
+            tangentOff = colInfo.floorNrm;
+            return true;
+        }
     }
 
     return false;
