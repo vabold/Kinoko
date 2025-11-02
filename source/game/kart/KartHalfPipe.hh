@@ -17,7 +17,7 @@ public:
     void calc();
     void calcTrick();
     void calcRot();
-    void calcLanding(bool);
+    void calcLanding(bool notAirborne);
     void activateTrick(s32 duration, System::Trick trick);
     void end(bool boost);
 

@@ -79,8 +79,8 @@ void WheelPhysics::updateCollision(const EGG::Vector3f &bottom, const EGG::Vecto
         scalar = 0.3f * (nextRadius * move()->leanRot()) * move()->totalScale();
         center += scalar * bodyForward();
 
-        if (state()->isInCannon()) {
-            collisionData().reset();
+        if (state()->isHalfpipeMidair() || state()->isInCannon()) {
+            m_hitboxGroup->collisionData().reset();
         } else {
             m_hitboxGroup->setHitboxScale(move()->totalScale());
             if (state()->isUNK2()) {

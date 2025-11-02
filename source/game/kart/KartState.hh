@@ -243,6 +243,10 @@ public:
         m_bJumpPadDisableYsusForce = isSet;
     }
 
+    void setHalfpipeMidair(bool isSet) {
+        m_bHalfpipeMidair = isSet;
+    }
+
     void setSomethingWallCollision(bool isSet) {
         m_bSomethingWallCollision = isSet;
     }
@@ -525,6 +529,10 @@ public:
         return m_bJumpPadDisableYsusForce;
     }
 
+    [[nodiscard]] bool isHalfpipeMidair() const {
+        return m_bHalfpipeMidair;
+    }
+
     [[nodiscard]] bool isSkipWheelCalc() const {
         return m_bSkipWheelCalc;
     }
@@ -699,6 +707,7 @@ private:
     bool m_bCrushed;
     bool m_bJumpPadFixedSpeed;
     bool m_bJumpPadDisableYsusForce;
+    bool m_bHalfpipeMidair;
     /// @}
 
     /// @name bitfield3
