@@ -133,6 +133,13 @@ protected:
     [[nodiscard]] static EGG::Matrix34f RailOrthonormalBasis(
             const RailInterpolator &railInterpolator);
 
+    /// @addr{0x806B59A8}
+    /// @brief Solves the standard kinematic equation \f$y(t) = v_0\, t - \frac{1}{2} a t^{2}\f$
+    [[nodiscard]] static f32 CalcParabolicDisplacement(f32 initVel, f32 accel, u32 frame) {
+        f32 t = static_cast<f32>(frame);
+        return initVel * t - t * (0.5f * accel * t);
+    }
+
     /// @addr{0x8086C098}
     [[nodiscard]] static EGG::Vector3f Interpolate(f32 t, const EGG::Vector3f &v0,
             const EGG::Vector3f &v1) {
