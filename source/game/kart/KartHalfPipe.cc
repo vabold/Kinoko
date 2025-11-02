@@ -83,6 +83,8 @@ void KartHalfPipe::calc() {
             calcLanding(false);
         } else if (state()->isHalfPipeRamp()) {
             calcLanding(true);
+        } else {
+            state()->setHalfpipeMidair(false);
         }
     }
 
@@ -152,7 +154,7 @@ void KartHalfPipe::calcRot() {
 }
 
 /// @addr{0x805752E8}
-void KartHalfPipe::calcLanding(bool) {
+void KartHalfPipe::calcLanding(bool notAirborne) {
     constexpr f32 LANDING_RADIUS = 150.0f;
     constexpr f32 PREVIOUS_RADIUS = 200.0f;
     constexpr f32 MIDAIR_RADIUS = 50.0f;
@@ -166,9 +168,17 @@ void KartHalfPipe::calcLanding(bool) {
     EGG::Vector3f pos;
     EGG::Vector3f upLocal;
 
-    Field::KCLTypeMask mask = state()->isOverZipper() ?
-            KCL_TYPE_ANY_INVISIBLE_WALL :
-            KCL_TYPE_BIT(COL_TYPE_HALFPIPE_INVISIBLE_WALL);
+    Field::KCLTypeMask mask = KCL_TYPE_ANY_INVISIBLE_WALL;
+    if (!state()->isOverZipper()) {
+        if (notAirborne && velocity().y < 0.0f) {
+            mask = KCL_NONE;
+        } else {
+            mask = KCL_TYPE_BIT(COL_TYPE_HALFPIPE_INVISIBLE_WALL);
+        }
+    }
+
+    state()->setHalfpipeMidair(false);
+
     EGG::Vector3f prevPos = m_prevPos + EGG::Vector3f::ey * PREVIOUS_RADIUS;
 
     bool hasDriverFloorCollision = move()->calcZipperCollision(LANDING_RADIUS, bsp().initialYPos,
@@ -185,6 +195,10 @@ void KartHalfPipe::calcLanding(bool) {
 
     if (move()->calcZipperCollision(WALL_RADIUS, bsp().initialYPos, pos, upLocal, prevPos,
                 &colInfo2, &maskOut, mask)) {
+        if ((maskOut & ~KCL_TYPE_BIT(COL_TYPE_HALFPIPE_INVISIBLE_WALL)) == 0) {
+            state()->setHalfpipeMidair(true);
+        }
+
         EGG::Vector3f up = move()->up();
         move()->setUp(up + (colInfo2.wallNrm - up) * 0.2f);
         move()->setSmoothedUp(move()->up());
@@ -209,7 +223,7 @@ void KartHalfPipe::calcLanding(bool) {
         }
     }
 
-    if (!hasDriverFloorCollision || state()->airtime() <= 5) {
+    if (!hasDriverFloorCollision || state()->isHalfpipeMidair() || state()->airtime() <= 5) {
         return;
     }
 
@@ -272,6 +286,7 @@ void KartHalfPipe::end(bool boost) {
     state()->setOverZipper(false);
     state()->setZipperTrick(false);
     state()->setZipperStick(false);
+    state()->setHalfpipeMidair(false);
 
     m_stunt = StuntType::None;
 }

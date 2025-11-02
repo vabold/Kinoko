@@ -222,7 +222,7 @@ void KartState::calcCollisions() {
         m_top += colData.floorNrm;
         trickable = trickable || colData.bTrickable;
 
-        if (m_bOverZipper) {
+        if (m_bOverZipper && !m_bHalfpipeMidair) {
             halfPipe()->end(true);
         }
     }
@@ -494,6 +494,7 @@ void KartState::clearBitfield2() {
     m_bCrushed = false;
     m_bJumpPadFixedSpeed = false;
     m_bJumpPadDisableYsusForce = false;
+    m_bHalfpipeMidair = false;
 }
 
 /// @brief Helper function to clear all bit flags at 0x10-0x13 in KartState.
