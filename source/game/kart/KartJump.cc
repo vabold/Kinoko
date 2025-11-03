@@ -76,6 +76,7 @@ void KartJump::setupProperties() {
     m_angleDeltaFactorDec = m_properties.angleDiffMulDec;
     m_angle = 0.0f;
     m_angleDeltaFactor = 1.0f;
+    m_rot = EGG::Quatf::ident;
 }
 
 /// @addr{0x80575AE8}
