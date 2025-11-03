@@ -1,6 +1,7 @@
 #include "ObjectDossunc.hh"
 
 #include "game/field/obj/ObjectDossunNormal.hh"
+#include "game/field/obj/ObjectDossunSyuukai.hh"
 
 namespace Field {
 
@@ -10,6 +11,10 @@ ObjectDossunc::ObjectDossunc(const System::MapdataGeoObj &params) : ObjectCollid
     case 0: {
         auto *dossunNormal = new ObjectDossunNormal(params);
         dossunNormal->load();
+    } break;
+    case 1: {
+        auto *dossunSyuukai = new ObjectDossunSyuukai(params);
+        dossunSyuukai->load();
     } break;
     default:
         break;
