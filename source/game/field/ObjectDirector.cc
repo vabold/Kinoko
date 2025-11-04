@@ -286,6 +286,8 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
         return new ObjectTwistedWay(params);
     case ObjectId::TownBridge:
         return new ObjectTownBridge(params);
+    case ObjectId::DKShip64:
+        return new ObjectShip64(params);
     case ObjectId::Turibashi:
         return new ObjectTuribashi(params);
     case ObjectId::Aurora:

@@ -61,6 +61,7 @@ enum class ObjectId {
     Crane = 0x1fb,
     TwistedWay = 0x1fe,
     TownBridge = 0x1ff,
+    DKShip64 = 0x200,
     Turibashi = 0x202,
     Aurora = 0x204,
     Sandcone = 0x209,
