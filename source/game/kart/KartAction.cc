@@ -54,7 +54,22 @@ bool KartAction::start(Action action) {
         return false;
     }
 
+    if (state()->isZipperStick()) {
+        switch (action) {
+        case Action::UNK_2:
+        case Action::UNK_3:
+        case Action::UNK_4:
+        case Action::UNK_5:
+        case Action::UNK_6:
+            action = Action::UNK_1;
+            break;
+        default:
+            break;
+        }
+    }
+
     size_t actionIdx = static_cast<size_t>(action);
+
     if (m_currentAction != Action::None && s_actionParams[actionIdx].priority <= m_priority) {
         return false;
     }
