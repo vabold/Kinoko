@@ -166,7 +166,7 @@ bool ObjectTuribashi::checkSphereImpl(f32 radius, const EGG::Vector3f &v0,
 
     EGG::Vector3f deltaPos = v0 - m_pos;
 
-    if (EGG::Mathf::abs(deltaPos.z) > RADIUS) {
+    if (EGG::Mathf::abs(deltaPos.z) > HALF_LENGTH || EGG::Mathf::abs(deltaPos.x) > HALF_WIDTH) {
         return false;
     }
 
@@ -174,18 +174,18 @@ bool ObjectTuribashi::checkSphereImpl(f32 radius, const EGG::Vector3f &v0,
     f32 angle = 0.0f;
 
     if (raceMgr->isStageReached(System::RaceManager::Stage::Race)) {
-        f32 phase = -deltaPos.z / RADIUS;
+        f32 phase = -deltaPos.z / HALF_LENGTH;
         f32 lower = phase - 1.0f;
-        f32 higher = phase + 1.0f;
+        f32 higher = 1.0f + phase;
         u32 t = (timeOffset + raceMgr->timer()) % PERIOD;
-        f32 sin = EGG::Mathf::SinFIdx(
-                (t * 2.0f * F_PI / static_cast<f32>(PERIOD) + 0.7f * phase) * RAD2FIDX);
+        f32 sin = EGG::Mathf::SinFIdx(RAD2FIDX *
+                (F_PI * static_cast<f32>(t * 2) / static_cast<f32>(PERIOD) + 0.7f * phase));
         angle = 0.12f * (higher * (higher * (lower * (lower * sin))));
     }
 
     auto [sinfidx, cosfidx] = EGG::Mathf::SinCosFIdx(RAD2FIDX * angle);
 
-    f32 phase = deltaPos.z / RADIUS;
+    f32 phase = deltaPos.z / HALF_LENGTH;
     f32 cos = EGG::Mathf::CosFIdx(RAD2FIDX * (0.5f * (F_PI * (37.0f * phase))));
     f32 base = HEIGHT * -0.5f;
     f32 dist = base +

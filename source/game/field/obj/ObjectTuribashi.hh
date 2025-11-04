@@ -28,7 +28,7 @@ public:
 
     /// @addr{0x808064E8}
     [[nodiscard]] f32 getCollisionRadius() const override {
-        return RADIUS + 100.0f;
+        return HALF_LENGTH + 100.0f;
     }
 
     [[nodiscard]] bool checkPointPartial(const EGG::Vector3f &v0, const EGG::Vector3f &v1,
@@ -91,7 +91,11 @@ private:
     [[nodiscard]] bool checkSphereImpl(f32 radius, const EGG::Vector3f &v0, const EGG::Vector3f &v1,
             KCLTypeMask flags, T *pInfo, KCLTypeMask *pFlagsOut, u32 timeOffset, bool push);
 
-    static constexpr f32 RADIUS = 7243.3198f; ///< Half of the bridge's length along the z-axis.
+    /// Half of the bridge's width along the x-axis.
+    static constexpr f32 HALF_WIDTH = 413.872f * 2.0f;
+
+    /// Half of the bridge's length along the z-axis.
+    static constexpr f32 HALF_LENGTH = 7243.3198f;
 };
 
 } // namespace Field
