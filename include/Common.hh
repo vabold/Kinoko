@@ -398,7 +398,7 @@ template <typename T>
 concept IntegralType = std::is_integral_v<T>;
 
 template <typename T>
-concept ParseableType = std::is_integral_v<T> ||
+concept ParseableType = std::is_integral_v<T> || std::is_enum_v<T> ||
         (std::is_floating_point_v<T> && (sizeof(T) == 4 || sizeof(T) == 8));
 
 // Form data into integral value
@@ -416,6 +416,11 @@ template <ParseableType T>
 static inline constexpr T parse(T val, std::endian endian = std::endian::big) {
     if constexpr (std::is_integral_v<T>) {
         return endian == std::endian::native ? val : std::byteswap(val);
+    } else if constexpr (std::is_enum_v<T>) {
+        return endian == std::endian::native ?
+                val :
+                static_cast<T>(std::byteswap(static_cast<std::underlying_type_t<T>>(val)));
+
     } else {
         if constexpr (sizeof(T) == 4) {
             return std::bit_cast<T>(parse<u32>(std::bit_cast<u32>(val), endian));
