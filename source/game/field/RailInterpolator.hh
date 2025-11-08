@@ -41,6 +41,13 @@ public:
         m_segmentT = t;
     }
 
+    /// @addr{0x806ED204}
+    void reverseDirection() {
+        m_movementDirectionForward = !m_movementDirectionForward;
+        std::swap(m_currPointIdx, m_nextPointIdx);
+        m_segmentT = 1.0f - m_segmentT;
+    }
+
     [[nodiscard]] const EGG::Vector3f &floorNrm(size_t idx) const;
     [[nodiscard]] f32 railLength() const;
 
