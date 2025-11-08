@@ -12,6 +12,7 @@ enum class EOption {
     Suite,
     Ghost,
     KRKG,
+    Framecount,
 };
 
 namespace Option {
