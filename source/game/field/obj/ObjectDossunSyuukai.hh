@@ -4,6 +4,7 @@
 
 namespace Field {
 
+/// @brief Thwomps that move along a rail and stomp.
 class ObjectDossunSyuukai final : public ObjectDossun {
 public:
     ObjectDossunSyuukai(const System::MapdataGeoObj &params);
