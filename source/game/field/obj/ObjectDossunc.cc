@@ -3,6 +3,7 @@
 #include "game/field/obj/ObjectDossunNormal.hh"
 #include "game/field/obj/ObjectDossunSyuukai.hh"
 #include "game/field/obj/ObjectDossunTsuibiHolder.hh"
+#include "game/field/obj/ObjectDossunYokoMove.hh"
 
 namespace Field {
 
@@ -20,6 +21,10 @@ ObjectDossunc::ObjectDossunc(const System::MapdataGeoObj &params) : ObjectCollid
     case 2: {
         auto *dossunTsuibi = new ObjectDossunTsuibiHolder(params);
         dossunTsuibi->load();
+    } break;
+    case 3: {
+        auto *dossunYokoMove = new ObjectDossunYokoMove(params);
+        dossunYokoMove->load();
     } break;
     default:
         break;
