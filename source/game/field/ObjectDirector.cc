@@ -315,6 +315,7 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
     case ObjectId::Sandcone:
         return new ObjectSandcone(params);
     case ObjectId::FlamePoleV:
+    case ObjectId::FlamePoleVBig:
         return new ObjectFlamePoleV(params);
     case ObjectId::Ami:
         return new ObjectAmi(params);
