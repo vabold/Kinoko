@@ -16,8 +16,8 @@ ObjectFireSnakeKid::~ObjectFireSnakeKid() = default;
 
 /// @addr{0x806C0F30}
 ObjectFireSnake::ObjectFireSnake(const System::MapdataGeoObj &params)
-    : ObjectProjectile(params), StateManager(this, STATE_ENTRIES),
-      m_maxAge(static_cast<s16>(params.setting(1))), m_initialPos(params.pos()) {
+    : StateManager(this, STATE_ENTRIES), ObjectProjectile(params), m_initialPos(params.pos()),
+      m_maxAge(static_cast<s16>(params.setting(1))) {
     if (ObjectDirector::Instance()->managedObjects().size() > 0) {
         registerManagedObject();
     }
