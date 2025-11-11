@@ -277,6 +277,8 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
         return new ObjectFireRing(params);
     case ObjectId::FireSnake:
         return new ObjectFireSnake(params);
+    case ObjectId::FireSnakeV:
+        return new ObjectFireSnakeV(params);
     case ObjectId::PuchiPakkun:
         return new ObjectPuchiPakkun(params);
     case ObjectId::KinokoUd:
