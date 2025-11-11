@@ -264,6 +264,8 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
         return new ObjectOilSFC(params);
     case ObjectId::ParasolR:
         return new ObjectParasolR(params);
+    case ObjectId::KoopaFigure64:
+        return new ObjectKoopaFigure64(params);
     case ObjectId::Kuribo:
         return new ObjectKuribo(params);
     case ObjectId::Choropu:
