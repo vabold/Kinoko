@@ -420,4 +420,45 @@ f32 Atan2FIdx(f32 y, f32 x) {
     }
 }
 
+/// @addr{0x800867C0}
+u32 FindRootsQuadratic(f32 a, f32 b, f32 c, f32 &root1, f32 &root2) {
+    constexpr f32 EPSILON = 0.0002f;
+
+    if (b == 0.0f) {
+        f32 x = -c / a;
+        if (x > EPSILON) {
+            root1 = x * frsqrt(x);
+            root2 = -root1;
+            return 2;
+        }
+
+        // Nintendo might've typo'd here?
+        if (x >= -EPSILON) {
+            root1 = 0.0f;
+            return 1;
+        }
+
+        return 0;
+    }
+
+    f32 halfBOverA = b / (2.0f * a);
+    f32 normalizedC = c / (halfBOverA * (a * halfBOverA));
+    f32 normalizedDiscriminant = 1.0f - normalizedC;
+
+    if (normalizedDiscriminant > EPSILON) {
+        f32 sqrtNormalizedDiscriminant = normalizedDiscriminant * frsqrt(normalizedDiscriminant);
+        root2 = (halfBOverA * normalizedC) / (-1.0f - sqrtNormalizedDiscriminant);
+        root1 = halfBOverA * (-1.0f - sqrtNormalizedDiscriminant);
+        return 2;
+    }
+
+    // Nintendo might've typo'd here?
+    if (normalizedDiscriminant >= -EPSILON) {
+        root1 = -halfBOverA;
+        return 1;
+    }
+
+    return 0;
+}
+
 } // namespace EGG::Mathf
