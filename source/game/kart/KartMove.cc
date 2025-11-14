@@ -986,11 +986,14 @@ void KartMove::calcManualDrift() {
             }
         }
     } else {
+        // This is a different comparison than @ref KartMove::canStartDrift().
+        bool canStartDrift = m_speed > MINIMUM_DRIFT_THRESOLD * m_baseSpeed;
+
         if (!state()->isOverZipper() &&
                 (!state()->isDriftInput() || !state()->isAccelerate() || state()->isInAction() ||
                         state()->isRejectRoadTrigger() || state()->isWall3Collision() ||
-                        state()->isWallCollision() || !canStartDrift())) {
-            if (canStartDrift()) {
+                        state()->isWallCollision() || !canStartDrift)) {
+            if (canStartDrift) {
                 releaseMt();
             }
 
