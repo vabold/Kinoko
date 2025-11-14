@@ -43,6 +43,7 @@ enum class ObjectId {
     Choropu = 0x192,
     Cow = 0x193,
     WLFirebarGC = 0x195,
+    DKRockGC = 0x198,
     Sanbo = 0x199,
     Choropu2 = 0x19a,
     Heyho = 0x19c,
