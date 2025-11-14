@@ -10,23 +10,23 @@ jobs:
     steps:
       - name: Checkout (Push)
         if: github.event_name == 'push'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Checkout (Pull Request)
         if: github.event_name == 'pull_request_target'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: "refs/pull/${{ github.event.number }}/merge"
       - name: Install packages
         run: |
           sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
           sudo apt-get update -y
-          sudo apt-get install -y ninja-build gcc-13 g++-13
-          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 10
-          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-13 10
-          sudo update-alternatives --set gcc "/usr/bin/gcc-13"
-          sudo update-alternatives --set g++ "/usr/bin/g++-13"
+          sudo apt-get install -y ninja-build gcc-14 g++-14
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 10
+          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 10
+          sudo update-alternatives --set gcc "/usr/bin/gcc-14"
+          sudo update-alternatives --set g++ "/usr/bin/g++-14"
       - name: Install Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.10"
       - name: Configure ninja
@@ -34,7 +34,7 @@ jobs:
       - name: Compile
         run: ninja
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: Kinoko
           path: |
@@ -48,10 +48,10 @@ jobs:
     steps:
       - name: Checkout (Push)
         if: github.event_name == 'push'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Checkout (Pull Request)
         if: github.event_name == 'pull_request_target'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: "refs/pull/${{ github.event.number }}/merge"
       - name: Download llvm
@@ -72,7 +72,7 @@ jobs:
     needs: build
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: Kinoko
       - name: Download dependencies
@@ -87,7 +87,7 @@ jobs:
       - name: Run Kinoko
         run: cd out && chmod u+x ./kinoko && ./kinoko test -s testCases.bin
       - name: Upload output
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: Kinoko output
           path: out/results.txt
@@ -103,13 +103,13 @@ jobs:
       pages: write
       id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Download artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: Kinoko
       - name: Download output binary
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: Kinoko output
       - name: Calculate progression
@@ -120,7 +120,7 @@ jobs:
         run: mkdir -p out/website/docs
       - uses: mattnotmitt/doxygen-action@v1
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: out/website/
       - name: Deploy to GitHub Pages
