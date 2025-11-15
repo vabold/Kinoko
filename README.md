@@ -113,6 +113,11 @@ If you just want to test a single ghost, you can run:
 
 In this scenario, Kinoko will validate the entire ghost, only passing the test if the entire ghost syncs.
 
+If you want to validate to a specific frame, you can add the flags:
+```
+-framecount, -f <target_framecount>
+```
+
 ## Interfacing
 
 While a GUI is not planned for the project at this time, contributors are welcome to add a graphics frontend under three conditions: the license must not change, it does not interfere with the CLI, and most importantly, it must **not** distribute any in-game assets.
