@@ -39,7 +39,7 @@ RailManager::~RailManager() {
         delete interpolator;
     }
 
-    delete m_interpolators.data();
+    delete[] m_interpolators.data();
 }
 
 /// @addr{0x806F0AD8}
