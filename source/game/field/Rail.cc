@@ -18,7 +18,7 @@ Rail::Rail(u16 idx, System::MapdataPointInfo *info) {
 /// @addr{0x806ECC40}
 /// TODO: If we make m_points allocate on the heap, then we need to free here
 Rail::~Rail() {
-    delete m_floorNrms.data();
+    delete[] m_floorNrms.data();
 }
 
 /// @addr{0x806ED110}
@@ -80,7 +80,7 @@ RailLine::RailLine(u16 idx, System::MapdataPointInfo *info) : Rail(idx, info) {
 
 /// @addr{0x806EFD6C}
 RailLine::~RailLine() {
-    delete m_transitions.data();
+    delete[] m_transitions.data();
 }
 
 /// @addr{0x806ED57C}
@@ -107,8 +107,8 @@ RailSpline::RailSpline(u16 idx, System::MapdataPointInfo *info) : Rail(idx, info
 
 /// @addr{0x806ED828}
 RailSpline::~RailSpline() {
-    delete m_transitions.data();
-    delete m_pathPercentages.data();
+    delete[] m_transitions.data();
+    delete[] m_pathPercentages.data();
 }
 
 /// @addr{0x806ED8BC}

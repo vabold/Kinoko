@@ -28,7 +28,7 @@ ObjectFireRing::ObjectFireRing(const System::MapdataGeoObj &params)
 
 /// @addr{0x8076892C}
 ObjectFireRing::~ObjectFireRing() {
-    delete m_fireballs.data();
+    delete[] m_fireballs.data();
 }
 
 /// @addr{0x807683F0}
