@@ -11,7 +11,7 @@ MapdataPointInfo::MapdataPointInfo(const SData *data) : m_rawData(data) {
 }
 
 MapdataPointInfo::~MapdataPointInfo() {
-    delete m_points.data();
+    delete[] m_points.data();
 }
 
 void MapdataPointInfo::read(EGG::RamStream &stream) {
