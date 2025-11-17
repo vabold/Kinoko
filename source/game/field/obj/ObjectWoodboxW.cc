@@ -26,7 +26,7 @@ ObjectWoodboxW::ObjectWoodboxW(const System::MapdataGeoObj &params) : ObjectColl
 
 /// @addr{0x8077E120}
 ObjectWoodboxW::~ObjectWoodboxW() {
-    delete m_boxes.data();
+    delete[] m_boxes.data();
 }
 
 /// @addr{0x8077E1A0}
