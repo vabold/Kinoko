@@ -18,6 +18,7 @@
 #include "game/field/obj/ObjectEscalatorGroup.hh"
 #include "game/field/obj/ObjectFireRing.hh"
 #include "game/field/obj/ObjectFireSnake.hh"
+#include "game/field/obj/ObjectFireSnakeV.hh"
 #include "game/field/obj/ObjectFirebar.hh"
 #include "game/field/obj/ObjectHeyho.hh"
 #include "game/field/obj/ObjectHighwayManager.hh"
