@@ -2,6 +2,7 @@
 
 #include "game/system/CourseMap.hh"
 #include "game/system/KPadDirector.hh"
+#include "game/system/RaceConfig.hh"
 #include "game/system/map/MapdataCheckPath.hh"
 #include "game/system/map/MapdataStartPoint.hh"
 
