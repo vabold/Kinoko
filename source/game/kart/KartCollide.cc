@@ -570,7 +570,7 @@ void KartCollide::calcObjectCollision() {
 
             if (reaction != Reaction::SmallBump && reaction != Reaction::BigBump) {
                 const EGG::Vector3f &hitDepth = objectDirector->hitDepth(i);
-                m_tangentOff += hitDepth;
+                m_tangentOff += hitDepth; // hitDepth wrong 2615
                 m_movement += hitDepth;
             }
         }

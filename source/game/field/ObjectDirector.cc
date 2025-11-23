@@ -263,6 +263,8 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
         return new ObjectRock(params);
     case ObjectId::Sanbo:
         return new ObjectSanbo(params);
+    case ObjectId::TruckWagon:
+        return new ObjectTruckWagon(params);
     case ObjectId::Heyho:
         return new ObjectHeyho(params);
     case ObjectId::Press:
