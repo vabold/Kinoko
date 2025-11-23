@@ -39,6 +39,7 @@
 #include "game/field/obj/ObjectSunDS.hh"
 #include "game/field/obj/ObjectSunManager.hh"
 #include "game/field/obj/ObjectTownBridge.hh"
+#include "game/field/obj/ObjectTruckWagon.hh"
 #include "game/field/obj/ObjectTuribashi.hh"
 #include "game/field/obj/ObjectTwistedWay.hh"
 #include "game/field/obj/ObjectWLWallGC.hh"

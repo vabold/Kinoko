@@ -184,7 +184,7 @@ void Matrix34f::setBase(size_t col, const Vector3f &base) {
     mtx[2][col] = base.z;
 }
 
-/// @addr{0x80230410}
+/// @addr{0x80230410} @addr{0x80199D64}
 /// @brief Multiplies two matrices.
 Matrix34f Matrix34f::multiplyTo(const Matrix34f &rhs) const {
     Matrix34f mat;
