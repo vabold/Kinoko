@@ -248,9 +248,9 @@ Vector3f Matrix34f::multVector33(const Vector3f &vec) const {
 Vector3f Matrix34f::ps_multVector33(const Vector3f &vec) const {
     Vector3f ret;
 
-    ret.x = fma(mtx[0][2], vec.z, fma(mtx[0][0], vec.x, mtx[0][1] * vec.y));
-    ret.y = fma(mtx[1][2], vec.z, fma(mtx[1][0], vec.x, mtx[1][1] * vec.y));
-    ret.z = fma(mtx[2][2], vec.z, fma(mtx[2][0], vec.x, mtx[2][1] * vec.y));
+    ret.x = fma(mtx[0][2], vec.z, mtx[0][0] * vec.x + mtx[0][1] * vec.y);
+    ret.y = fma(mtx[1][2], vec.z, mtx[1][0] * vec.x + mtx[1][1] * vec.y);
+    ret.z = fma(mtx[2][2], vec.z, mtx[2][0] * vec.x + mtx[2][1] * vec.y);
 
     return ret;
 }
