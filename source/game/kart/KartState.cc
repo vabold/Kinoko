@@ -252,6 +252,15 @@ void KartState::calcCollisions() {
 
         if (!wasWallCollision) {
             m_bWallCollisionStart = true;
+
+            if (wallKclType() == COL_TYPE_SPECIAL_WALL && wallKclVariant() == 0) {
+                if (!state()->isTriggerRespawn() && !state()->isInRespawn() &&
+                        !state()->isAfterRespawn() && !state()->isBeforeRespawn() &&
+                        !state()->isInAction() && !state()->isCannonStart() &&
+                        !state()->isInCannon()) {
+                    action()->start(Kart::Action::UNK_1);
+                }
+            }
         }
 
         m_wallBonkTimer = 2;

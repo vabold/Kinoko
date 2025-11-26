@@ -1558,6 +1558,11 @@ void KartMove::calcWallCollisionStart(f32 param_2) {
             dynamics()->addForce(colData.wallNrm * 15.0f);
             collide()->startFloorMomentRate();
         }
+
+        if (wallKclType() == COL_TYPE_SPECIAL_WALL && wallKclVariant() == 0) {
+            dynamics()->addForce(colData.wallNrm * 15.0f);
+            collide()->startFloorMomentRate();
+        }
     }
 }
 
