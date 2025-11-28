@@ -298,8 +298,7 @@ bool Matrix34f::ps_inverse(Matrix34f &out) const {
         return false;
     }
 
-    f32 invDet = 1.0f / determinant;
-    invDet = -fms(determinant, invDet * invDet, invDet + invDet);
+    f32 invDet = EGG::Mathf::finv(determinant);
 
     out[0, 0] = fVar15 * invDet;
     out[0, 1] = fVar13 * invDet;
