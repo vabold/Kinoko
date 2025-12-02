@@ -40,7 +40,7 @@ void ObjectTruckWagonCart::calc() {
         break;
     }
 
-    m_vel.x = m_railInterpolator->currVel() * m_railInterpolator->curTangentDir().z;
+    m_vel.x = m_railInterpolator->currVel() * m_railInterpolator->curTangentDir().x;
     m_vel.z = m_railInterpolator->currVel() * m_railInterpolator->curTangentDir().z;
 
     StateManager::calc();
