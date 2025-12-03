@@ -165,10 +165,11 @@ void ObjectTruckWagonCart::calcState1() {
     mat.setBase(0, cross);
     mat.setBase(1, m_up);
     mat.setBase(2, m_tangent);
-    mat.setBase(3, m_pos);
+    mat.setBase(3, EGG::Vector3f::zero);
 
     m_flags.setBit(eFlags::Matrix);
     m_transform = mat;
+    m_transform.setBase(3, m_pos);
 
     m_flags.setBit(eFlags::Position);
     m_pos = m_railInterpolator->curPos() + INITIAL_OFFSET - mat.ps_multVector(INITIAL_OFFSET);
