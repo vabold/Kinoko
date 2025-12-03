@@ -486,7 +486,17 @@ private:
     /// @details Matches the expression `(1 << e)`. Validates that `e` is in the range of N.
     /// @param e Enum value representing the bit to make.
     /// @return The index and mask for the specified bit.
-    [[nodiscard]] constexpr std::pair<T &, T> makeMask_(E e) const {
+    [[nodiscard]] constexpr std::pair<T, T> makeMask_(E e) const {
+        EI ei = static_cast<EI>(e);
+        ASSERT(ei < N);
+        return std::pair(bits[ei / C], static_cast<T>(1) << (ei % C));
+    }
+
+    /// @brief Gets bit index and mask for a specific bit.
+    /// @details Matches the expression `(1 << e)`. Validates that `e` is in the range of N.
+    /// @param e Enum value representing the bit to make.
+    /// @return The index and mask for the specified bit.
+    [[nodiscard]] constexpr std::pair<T &, T> makeMask_(E e) {
         EI ei = static_cast<EI>(e);
         ASSERT(ei < N);
         return std::pair(bits[ei / C], static_cast<T>(1) << (ei % C));
