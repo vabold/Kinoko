@@ -144,7 +144,7 @@ bool KColData::checkSphere(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsOut) 
     // Check collision for all triangles, and continuously call the function until we're out
     while (*++m_prismIter != 0) {
         const KCollisionPrism &prism = m_prisms[parse<u16>(*m_prismIter)];
-        if (checkCollision(prism, distOut, fnrmOut, flagsOut, CollisionCheckType::Plane)) {
+        if (checkCollision<CollisionCheckType::Plane>(prism, distOut, fnrmOut, flagsOut)) {
             return true;
         }
     }
@@ -175,7 +175,7 @@ bool KColData::checkSphereSingle(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flag
         }
 
         const KCollisionPrism &prism = m_prisms[parse<u16>(*m_prismIter)];
-        if (checkCollision(prism, distOut, fnrmOut, flagsOut, CollisionCheckType::Edge)) {
+        if (checkCollision<CollisionCheckType::Edge>(prism, distOut, fnrmOut, flagsOut)) {
             return true;
         }
     }
@@ -362,8 +362,9 @@ void KColData::preloadVertices() {
 /// 1. A collision with at least the triangle edge (0x807C0F00)
 /// 2. A collision with the triangle plane (0x807C1514)
 /// 3. A collision such that we are inside the triangle (0x807C0884)
+template <KColData::CollisionCheckType Type>
 bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::Vector3f *fnrmOut,
-        u16 *flagsOut, CollisionCheckType type) {
+        u16 *flagsOut) {
     // Responsible for updating the output params
     auto out = [&](f32 dist) {
         if (distOut) {
@@ -414,7 +415,7 @@ bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::V
     }
 
     f32 typeDistance = m_prismThickness;
-    if (type == CollisionCheckType::Edge) {
+    if constexpr (Type == CollisionCheckType::Edge) {
         typeDistance += m_radius;
     }
 
@@ -422,7 +423,7 @@ bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::V
         return false;
     }
 
-    if (type == CollisionCheckType::Movement) {
+    if constexpr (Type == CollisionCheckType::Movement) {
         if (attributeMask & KCL_TYPE_DIRECTIONAL && m_movement.dot(fnrm) > 0.0f) {
             return false;
         }
@@ -431,7 +432,7 @@ bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::V
     // Originally part of the edge searching, but moved out for simplicity
     // If these are all zero, then we're inside the triangle
     if (dist_ab <= 0.0f && dist_bc <= 0.0f && dist_ca <= 0.0f) {
-        if (type == CollisionCheckType::Movement) {
+        if constexpr (Type == CollisionCheckType::Movement) {
             EGG::Vector3f lastPos = relativePos - m_movement;
             // We're only colliding if we are moving towards the face
             if (plane_dist < 0.0f && lastPos.ps_dot(fnrm) < 0.0f) {
@@ -496,7 +497,7 @@ bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::V
     f32 cos = edge_nor.ps_dot(other_edge_nor);
     f32 sq_dist;
     if (cos * edge_dist > other_edge_dist) {
-        if (type == CollisionCheckType::Plane) {
+        if constexpr (Type == CollisionCheckType::Plane) {
             if (edge_dist > plane_dist) {
                 return false;
             }
@@ -518,7 +519,7 @@ bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::V
         const EGG::Vector3f corner_pos = edge_nor * t + other_edge_nor * s;
 
         f32 cornerDot = corner_pos.ps_squareMag();
-        if (type == CollisionCheckType::Plane) {
+        if constexpr (Type == CollisionCheckType::Plane) {
             if (cornerDot > plane_dist * plane_dist) {
                 return false;
             }
@@ -536,7 +537,7 @@ bool KColData::checkCollision(const KCollisionPrism &prism, f32 *distOut, EGG::V
         return false;
     }
 
-    if (type == CollisionCheckType::Movement) {
+    if constexpr (Type == CollisionCheckType::Movement) {
         EGG::Vector3f lastPos = relativePos - m_movement;
         // We're only colliding if we are moving towards the face
         if (lastPos.ps_dot(fnrm) < 0.0f) {
@@ -621,7 +622,7 @@ bool KColData::checkSphereMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *at
     // Check collision for all triangles, and continuously call the function until we're out
     while (*++m_prismIter != 0) {
         const KCollisionPrism &prism = m_prisms[parse<u16>(*m_prismIter)];
-        if (checkCollision(prism, distOut, fnrmOut, attributeOut, CollisionCheckType::Movement)) {
+        if (checkCollision<CollisionCheckType::Movement>(prism, distOut, fnrmOut, attributeOut)) {
             return true;
         }
     }
