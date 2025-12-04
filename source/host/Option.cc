@@ -26,6 +26,10 @@ std::optional<EOption> CheckFlag(const char *arg) {
             return EOption::KRKG;
         }
 
+        if (strcmp(verbose_arg, "framecount") == 0) {
+            return EOption::TargetFrame;
+        }
+
         return EOption::Invalid;
     } else {
         switch (arg[1]) {
@@ -38,6 +42,9 @@ std::optional<EOption> CheckFlag(const char *arg) {
         case 'K':
         case 'k':
             return EOption::KRKG;
+        case 'F':
+        case 'f':
+            return EOption::TargetFrame;
         default:
             return EOption::Invalid;
         }
