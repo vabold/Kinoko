@@ -420,4 +420,45 @@ f32 Atan2FIdx(f32 y, f32 x) {
     }
 }
 
+/// @addr{0x800867C0}
+u32 FUN_800867C0(f32 a, f32 b, f32 c, f32 &root1, f32 &root2) {
+    constexpr f32 EPSILON = 0.0002f;
+
+    if (b == 0.0f) {
+        f32 x = -c / a;
+        if (x > EPSILON) {
+            root1 = x * frsqrt(x);
+            root2 = -root1;
+            return 2;
+        }
+
+        // Nintendo might've typo'd here?
+        if (x >= -EPSILON) {
+            root1 = 0.0f;
+            return 1;
+        }
+
+        return 0;
+    }
+
+    f32 dVar4 = b / (2.0f * a);
+    f32 dVar3 = c / (dVar4 * (a * dVar4));
+    f32 dVar2 = 1.0f - dVar3;
+
+    if (dVar2 > EPSILON) {
+        f32 fVar5 = dVar2 * frsqrt(dVar2);
+        root2 = (dVar4 * dVar3) / (-1.0f - fVar5);
+        root1 = dVar4 * (-1.0f - fVar5);
+        return 2;
+    }
+
+    // Nintendo might've typo'd here?
+    if (dVar2 >= -EPSILON) {
+        root1 = -dVar4;
+        return 1;
+    }
+
+    return 0;
+}
+
 } // namespace EGG::Mathf
