@@ -108,10 +108,12 @@ To update the test binary after making changes to `testCases.json`, be sure to r
 If you just want to test a single ghost, you can run:
 
 ```
-./kinoko test -g pathTo.rkg -k pathTo.krkg
+./kinoko test -g pathTo.rkg -k pathTo.krkg [-f <target>]
 ```
 
-In this scenario, Kinoko will validate the entire ghost, only passing the test if the entire ghost syncs.
+In this scenario, Kinoko will validate the ghost to the specified *target* framecount. If no *target* is specified, the entire ghost will be validated.
+
+**NOTE:** If the *target* is 0 or larger than the total number of frames in the run then the entire ghost will be validated.
 
 ## Interfacing
 

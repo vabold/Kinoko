@@ -140,6 +140,7 @@ void KTestSystem::parseOptions(int argc, char **argv) {
 
     std::optional<char *> rkgPath;
     std::optional<char *> krkgPath;
+    std::optional<u16> target;
 
     for (int i = 0; i < argc; ++i) {
         std::optional<Host::EOption> flag = Host::Option::CheckFlag(argv[i]);
@@ -189,11 +190,28 @@ void KTestSystem::parseOptions(int argc, char **argv) {
             krkgPath = argv[++i];
 
             break;
+        case Host::EOption::TargetFrame:
+            ASSERT(i + 1 < argc);
+            {
+                if (strlen(argv[++i]) > 5) {
+                    PANIC("Target has too many digits");
+                }
+                target = atoi(argv[i]);
+                if (target < 0 || target > std::numeric_limits<u16>::max()) {
+                    PANIC("Target is out of bounds (expected 0-65535), got %d\n", target);
+                }
+            }
+
+            break;
         case Host::EOption::Invalid:
         default:
             PANIC("Invalid flag!");
             break;
         }
+    }
+
+    if (target && m_testMode != Host::EOption::Ghost) {
+        PANIC("'--framecount' is only supported in a single ghost test");
     }
 
     if (m_testMode == Host::EOption::Ghost) {
@@ -205,7 +223,11 @@ void KTestSystem::parseOptions(int argc, char **argv) {
             PANIC("Missing KRKG argument!");
         }
 
-        m_testCases.emplace(*rkgPath, *rkgPath, *krkgPath, 0);
+        if (!target) {
+            target = 0;
+        }
+
+        m_testCases.emplace(*rkgPath, *rkgPath, *krkgPath, *target);
     }
 }
 
@@ -254,10 +276,16 @@ void KTestSystem::startNextTestCase() {
 
     ASSERT(m_stream.read_u32() == m_stream.index());
 
-    // If we're in Ghost mode instead of Suite mode, then target the total framecount of the KRKG.
+    // If we're in Ghost mode instead of Suite mode and framecount not specified, then target the
+    // total framecount of the KRKG.
     if (m_testMode == Host::EOption::Ghost) {
         ASSERT(m_testCases.size() == 1);
-        m_testCases.front().targetFrame = m_frameCount;
+        auto &front = m_testCases.front();
+        if (front.targetFrame == 0) {
+            front.targetFrame = m_frameCount;
+        }
+
+        front.targetFrame = std::min(front.targetFrame, m_frameCount);
     }
 }
 
