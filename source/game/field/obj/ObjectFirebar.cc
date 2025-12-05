@@ -30,7 +30,7 @@ ObjectFirebar::ObjectFirebar(const System::MapdataGeoObj &params) : ObjectCollid
 
 /// @addr{0x807688AC}
 ObjectFirebar::~ObjectFirebar() {
-    delete m_fireballs.data();
+    delete[] m_fireballs.data();
 }
 
 /// @addr{0x80767DEC}
