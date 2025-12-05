@@ -31,21 +31,24 @@ void KartItem::calc() {
         m_flags.setBit(eFlags::ItemButtonHold).changeBit(!prevButton, eFlags::ItemButtonActivation);
     }
 
+    auto &status = KartObjectProxy::status();
+
     if (m_flags.onBit(eFlags::Lockout)) {
-        if (!state()->isBeforeRespawn() && !state()->isInAction() && !state()->isTriggerRespawn() &&
-                !state()->isCannonStart() && !state()->isInCannon() && !state()->isAfterCannon()) {
+        if (status.offBit(Kart::eStatus::BeforeRespawn, Kart::eStatus::InAction,
+                    Kart::eStatus::TriggerRespawn, Kart::eStatus::CannonStart,
+                    Kart::eStatus::InCannon, Kart::eStatus::AfterCannon)) {
             m_flags.resetBit(eFlags::Lockout);
         }
     } else {
-        if (state()->isInRespawn() || state()->isInAction() || state()->isTriggerRespawn() ||
-                state()->isCannonStart() || state()->isInCannon()) {
+        if (status.onBit(Kart::eStatus::InRespawn, Kart::eStatus::InAction,
+                    Kart::eStatus::TriggerRespawn, Kart::eStatus::CannonStart,
+                    Kart::eStatus::InCannon)) {
             m_flags.setBit(eFlags::Lockout);
         } else {
             const auto *raceMgr = System::RaceManager::Instance();
             bool canUse = m_flags.onBit(eFlags::ItemButtonActivation);
             canUse = canUse && raceMgr->isStageReached(System::RaceManager::Stage::Race);
-            canUse = canUse && !state()->isInAction();
-            canUse = canUse && !state()->isBurnout();
+            canUse = canUse && status.offBit(Kart::eStatus::InAction, Kart::eStatus::Burnout);
             canUse = canUse && (m_inventory.id() != ItemId::NONE);
 
             if (canUse) {

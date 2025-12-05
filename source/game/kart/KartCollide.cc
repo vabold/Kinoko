@@ -62,7 +62,7 @@ void KartCollide::calcHitboxes() {
 /// @stage All
 /// @addr{0x80572C20}
 void KartCollide::findCollision() {
-    bool wasHalfPipe = state()->isEndHalfPipe() || state()->isActionMidZipper();
+    bool wasHalfPipe = status().onBit(eStatus::EndHalfPipe, eStatus::ActionMidZipper);
     const EGG::Quatf &rot = wasHalfPipe ? mainRot() : fullRot();
     calcBodyCollision(move()->totalScale(), body()->sinkDepth(), rot, scale());
 
@@ -99,18 +99,21 @@ void KartCollide::findCollision() {
 void KartCollide::FUN_80572F4C() {
     f32 fVar1;
 
-    if (isInRespawn() || state()->isBoost() || state()->isOverZipper() ||
-            state()->isZipperInvisibleWall() || state()->isNoSparkInvisibleWall() ||
-            state()->isHalfPipeRamp()) {
+    auto &status = KartObjectProxy::status();
+
+    if (isInRespawn() ||
+            status.onBit(eStatus::Boost, eStatus::OverZipper, eStatus::ZipperInvisibleWall,
+                    eStatus::NoSparkInvisibleWall, eStatus::HalfPipeRamp)) {
         fVar1 = 0.0f;
     } else {
         fVar1 = 0.05f;
     }
 
-    bool resetXZ = fVar1 > 0.0f && state()->isAirtimeOver20() && dynamics()->velocity().y < -50.0f;
+    bool resetXZ = fVar1 > 0.0f && status.onBit(eStatus::AirtimeOver20) &&
+            dynamics()->velocity().y < -50.0f;
 
-    FUN_805B72B8(state()->isInAction() ? 0.3f : 0.01f, fVar1, resetXZ,
-            !state()->isJumpPadDisableYsusForce());
+    FUN_805B72B8(status.onBit(eStatus::InAction) ? 0.3f : 0.01f, fVar1, resetXZ,
+            status.offBit(eStatus::JumpPadDisableYsusForce));
 }
 
 /// @stage All
@@ -266,7 +269,7 @@ void KartCollide::calcBodyCollision(f32 totalScale, f32 sinkDepth, const EGG::Qu
 
 /// @addr{0x80571634}
 void KartCollide::calcFloorEffect() {
-    if (state()->isTouchingGround()) {
+    if (status().onBit(eStatus::TouchingGround)) {
         m_surfaceFlags.setBit(eSurfaceFlags::Offroad, eSurfaceFlags::GroundBoostPanelOrRamp);
     }
 
@@ -298,7 +301,7 @@ void KartCollide::calcFloorEffect() {
     m_solidOobTimer =
             m_surfaceFlags.onBit(eSurfaceFlags::SolidOOB) ? std::min(3, m_solidOobTimer + 1) : 0;
 
-    if (state()->isWall3Collision() || state()->isWallCollision()) {
+    if (status().onBit(eStatus::Wall3Collision, eStatus::WallCollision)) {
         Field::KCLTypeMask maskOut = KCL_NONE;
 
         if (colDir->checkSphereCachedPartialPush(m_boundingRadius, pos(), EGG::Vector3f::inf,
@@ -356,7 +359,7 @@ void KartCollide::handleTriggers(Field::KCLTypeMask *mask) {
         if (colDir->findClosestCollisionEntry(mask, KCL_TYPE_BIT(COL_TYPE_EFFECT_TRIGGER))) {
             if (colDir->closestCollisionEntry()->variant() == 4) {
                 halfPipe()->end(true);
-                state()->setEndHalfPipe(true);
+                status().setBit(eStatus::EndHalfPipe);
                 m_surfaceFlags.setBit(eSurfaceFlags::StopHalfPipeState);
             }
         }
@@ -394,7 +397,9 @@ void KartCollide::calcBeforeRespawn() {
         activateOob(true, nullptr, false, false);
     }
 
-    if (!state()->isBeforeRespawn()) {
+    auto &status = KartObjectProxy::status();
+
+    if (status.offBit(eStatus::BeforeRespawn)) {
         return;
     }
 
@@ -402,7 +407,7 @@ void KartCollide::calcBeforeRespawn() {
         return;
     }
 
-    state()->setBeforeRespawn(false);
+    status.resetBit(eStatus::BeforeRespawn);
     m_respawnTimer = 0;
     move()->triggerRespawn();
 }
@@ -412,14 +417,16 @@ void KartCollide::activateOob(bool /*detachCamera*/, Field::KCLTypeMask * /*mask
         bool /*somethingCPU*/, bool /*somethingBullet*/) {
     constexpr s16 RESPAWN_TIME = 130;
 
-    if (state()->isBeforeRespawn()) {
+    auto &status = KartObjectProxy::status();
+
+    if (status.onBit(eStatus::BeforeRespawn)) {
         return;
     }
 
     move()->initOob();
 
     m_respawnTimer = RESPAWN_TIME;
-    state()->setBeforeRespawn(true);
+    status.setBit(eStatus::BeforeRespawn);
 }
 
 /// @stage All
@@ -594,7 +601,7 @@ void KartCollide::calcObjectCollision() {
 
 /// @addr{Inlined in 0x80571F10}
 void KartCollide::calcPoleTimer() {
-    if (m_poleAngVelTimer > 0 && (state()->isAccelerate() || state()->isBrake())) {
+    if (m_poleAngVelTimer > 0 && status().onBit(eStatus::Accelerate, eStatus::Brake)) {
         EGG::Vector3f angVel2 = dynamics()->angVel2();
         angVel2.y += m_poleYaw;
         dynamics()->setAngVel2(angVel2);
@@ -693,9 +700,11 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
     collisionData.intensity = closestColEntry->intensity();
     collisionData.rotFactor += param()->stats().kclRot[closestColEntry->baseType()];
 
+    auto &status = KartObjectProxy::status();
+
     if (closestColEntry->attribute.onBit(
                 Field::CollisionDirector::eCollisionAttribute::RejectRoad)) {
-        state()->setRejectRoad(true);
+        status.setBit(eStatus::RejectRoad);
     }
 
     collisionData.closestFloorFlags = closestColEntry->typeMask;
@@ -722,13 +731,13 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
     }
 
     if (*maskOut & KCL_TYPE_BIT(COL_TYPE_STICKY_ROAD)) {
-        state()->setStickyRoad(true);
+        status.setBit(eStatus::StickyRoad);
     }
 
     Field::KCLTypeMask halfPipeRampMask = KCL_TYPE_BIT(COL_TYPE_HALFPIPE_RAMP);
     if ((*maskOut & halfPipeRampMask) &&
             colDirector->findClosestCollisionEntry(maskOut, halfPipeRampMask)) {
-        state()->setHalfPipeRamp(true);
+        status.setBit(eStatus::HalfPipeRamp);
         state()->setHalfPipeInvisibilityTimer(2);
         if (colDirector->closestCollisionEntry()->variant() == 1) {
             move()->padType().setBit(KartMove::ePadType::BoostPanel);
@@ -737,8 +746,8 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
 
     Field::KCLTypeMask jumpPadMask = KCL_TYPE_BIT(COL_TYPE_JUMP_PAD);
     if (*maskOut & jumpPadMask && colDirector->findClosestCollisionEntry(maskOut, jumpPadMask)) {
-        if ((!state()->isTouchingGround() || !state()->isJumpPad()) &&
-                !state()->isJumpPadMushroomVelYInc()) {
+        if (status.offAnyBit(eStatus::TouchingGround, eStatus::JumpPad) &&
+                status.offBit(eStatus::JumpPadMushroomVelYInc)) {
             move()->padType().setBit(KartMove::ePadType::JumpPad);
             closestColEntry = colDirector->closestCollisionEntry();
             state()->setJumpPadVariant(closestColEntry->variant());
@@ -753,7 +762,7 @@ void KartCollide::processCannon(Field::KCLTypeMask *maskOut) {
     auto *colDirector = Field::CollisionDirector::Instance();
     if (colDirector->findClosestCollisionEntry(maskOut, KCL_TYPE_BIT(COL_TYPE_CANNON_TRIGGER))) {
         state()->setCannonPointId(colDirector->closestCollisionEntry()->variant());
-        state()->setCannonStart(true);
+        status().setBit(eStatus::CannonStart);
     }
 }
 
@@ -868,7 +877,7 @@ bool KartCollide::FUN_805B6A9C(CollisionData &collisionData, const Hitbox &hitbo
         EGG::BoundBox3f &minMax, EGG::Vector3f &relPos, s32 &count,
         const Field::KCLTypeMask &maskOut, const Field::CollisionInfo &colInfo) {
     if (maskOut & KCL_TYPE_WALL) {
-        if (!(maskOut & KCL_TYPE_FLOOR) && state()->isHWG() &&
+        if (!(maskOut & KCL_TYPE_FLOOR) && status().onBit(eStatus::HWG) &&
                 state()->softWallSpeed().dot(colInfo.wallNrm) < 0.3f) {
             return true;
         }
@@ -956,11 +965,10 @@ void KartCollide::startFloorMomentRate() {
 
 /// @addr{0x805713FC}
 void KartCollide::calcFloorMomentRate() {
-    if (state()->isInAction() && action()->flags().onBit(KartAction::eFlags::Rotating)) {
-        m_floorMomentRate = 0.01f;
-    } else {
-        m_floorMomentRate = std::min(m_floorMomentRate + 0.01f, 0.8f);
-    }
+    m_floorMomentRate = status().onBit(eStatus::InAction) &&
+                    action()->flags().onBit(KartAction::eFlags::Rotating) ?
+            0.01f :
+            std::min(m_floorMomentRate + 0.01f, 0.8f);
 }
 
 /// @addr{0x8056E564}
@@ -1035,7 +1043,7 @@ Action KartCollide::handleReactWeakWall(size_t /*idx*/) {
 
 /// @addr{0x80573790}
 Action KartCollide::handleReactOffroad(size_t /*idx*/) {
-    state()->setCollidingOffroad(true);
+    status().setBit(eStatus::CollidingOffroad);
     m_surfaceFlags.setBit(eSurfaceFlags::Offroad);
     return Action::None;
 }
