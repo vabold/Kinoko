@@ -31,6 +31,7 @@ ObjectWoodboxW::~ObjectWoodboxW() {
 
 /// @addr{0x8077E1A0}
 void ObjectWoodboxW::init() {
+    ASSERT(m_mapObj);
     u32 frames = m_mapObj->setting(4);
     if (frames == 0) {
         frames = m_mapObj->setting(5);
@@ -46,6 +47,7 @@ void ObjectWoodboxW::calc() {
         return;
     }
 
+    ASSERT(m_mapObj);
     m_framesUntilSpawn = m_mapObj->setting(5);
     m_boxes[m_nextBoxIdx]->enableCollision();
     m_nextBoxIdx = (m_nextBoxIdx + 1) % m_boxes.size();

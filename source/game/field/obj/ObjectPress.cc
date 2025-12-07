@@ -23,6 +23,7 @@ void ObjectPress::init() {
     m_state = State::Raised;
     m_startingRise = false;
     m_anmDuration = 0;
+    ASSERT(m_mapObj);
     m_raisedTimer = static_cast<u32>(m_mapObj->setting(1));
     m_windUpTimer = 0;
     m_raisedHeight = m_pos.y;
@@ -190,6 +191,7 @@ void ObjectPress::calcRaising() {
     } else {
         m_pos.y = m_raisedHeight;
         m_state = State::Raised;
+        ASSERT(m_mapObj);
         m_raisedTimer = static_cast<u32>(m_mapObj->setting(2));
     }
 

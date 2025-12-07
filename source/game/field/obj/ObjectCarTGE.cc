@@ -106,6 +106,7 @@ void ObjectCarTGE::init() {
     constexpr f32 HIT_ANGLE_TRUCK = 20.0f;
     constexpr f32 HIT_ANGLE_NORMAL = 40.0f;
 
+    ASSERT(m_mapObj);
     if (m_mapObj->pathId() == -1) {
         return;
     }
