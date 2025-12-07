@@ -35,6 +35,7 @@ ObjectItemboxLine::~ObjectItemboxLine() {
 
 /// @addr{0x8076D604}
 void ObjectItemboxLine::init() {
+    ASSERT(m_mapObj);
     u32 timer = static_cast<u32>(m_mapObj->setting(4));
 
     if (timer == 0) {

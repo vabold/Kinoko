@@ -20,6 +20,7 @@ public:
     }
 
 private:
+    bool m_hasTranslation;
     f32 m_radius;
     EGG::Vector3f m_pos;
     f32 m_scaledRadius;

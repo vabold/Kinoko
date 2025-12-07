@@ -262,6 +262,8 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
         return new ObjectChoropu(params);
     case ObjectId::Cow:
         return new ObjectCowHerd(params);
+    case ObjectId::PakkunF:
+        return new ObjectPakkunF(params);
     case ObjectId::WLFirebarGC:
     case ObjectId::KoopaFirebar:
         return new ObjectFirebar(params);
