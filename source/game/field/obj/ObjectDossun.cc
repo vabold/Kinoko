@@ -8,7 +8,8 @@
 namespace Field {
 
 /// @addr{0x80764510}
-ObjectDossun::ObjectDossun(const System::MapdataGeoObj &params) : ObjectCollidable(params) {}
+ObjectDossun::ObjectDossun(const System::MapdataGeoObj &params)
+    : ObjectCollidable(params), m_touchingGround(false) {}
 
 /// @addr{0x8075EE68}
 ObjectDossun::~ObjectDossun() = default;
