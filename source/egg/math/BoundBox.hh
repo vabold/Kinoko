@@ -7,18 +7,25 @@ namespace EGG {
 /// @brief A representation of a bounding rectangle.
 struct BoundBox2f {
     /// @addr{0x802145C0}
-    BoundBox2f() = default;
-    ~BoundBox2f() = default;
+    constexpr BoundBox2f() = default;
+    constexpr ~BoundBox2f() = default;
 
-    void resetBound();
+    /// @addr{0x802145F0}
+    constexpr void resetBound() {
+        min.set(std::numeric_limits<f32>::max());
+        max.set(-std::numeric_limits<f32>::max());
+    }
 
-    void setDirect(const Vector2f &vMax, const Vector2f &vMin);
+    constexpr void setDirect(const Vector2f &vMin, const Vector2f &vMax) {
+        max = vMax;
+        min = vMin;
+    }
 
-    void setMin(const Vector2f &v) {
+    constexpr void setMin(const Vector2f &v) {
         min = v;
     }
 
-    void setMax(const Vector2f &v) {
+    constexpr void setMax(const Vector2f &v) {
         max = v;
     }
 
@@ -28,23 +35,29 @@ struct BoundBox2f {
 
 /// @brief A representation of a bounding cuboid.
 struct BoundBox3f {
-    BoundBox3f() = default;
-    ~BoundBox3f() = default;
+    constexpr BoundBox3f() = default;
+    constexpr ~BoundBox3f() = default;
 
-    void resetBound();
+    constexpr void resetBound() {
+        min.set(std::numeric_limits<f32>::max());
+        max.set(-std::numeric_limits<f32>::max());
+    }
 
-    void setZero() {
+    constexpr void setZero() {
         min.setZero();
         max.setZero();
     }
 
-    void setDirect(const Vector3f &vMin, const Vector3f &vMax);
+    constexpr void setDirect(const Vector3f &vMin, const Vector3f &vMax) {
+        max = vMax;
+        min = vMin;
+    }
 
-    void setMin(const Vector3f &v) {
+    constexpr void setMin(const Vector3f &v) {
         min = v;
     }
 
-    void setMax(const Vector3f &v) {
+    constexpr void setMax(const Vector3f &v) {
         max = v;
     }
 
