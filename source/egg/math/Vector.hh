@@ -193,6 +193,12 @@ struct Vector3f {
         return Mathf::sqrt(squaredLength());
     }
 
+    /// @addr{0x8019AC68}
+    [[nodiscard]] f32 ps_length() const {
+        f32 dot = Mathf::fma(z, z, x * x + y * y);
+        return dot == 0.0f ? 0.0f : Mathf::sqrt(dot);
+    }
+
     /// @addr{0x805AEB88}
     /// @brief The projection of this vector onto rhs.
     [[nodiscard]] Vector3f proj(const Vector3f &rhs) const {
@@ -231,6 +237,7 @@ struct Vector3f {
     [[nodiscard]] f32 ps_dot(const EGG::Vector3f &rhs) const;
     [[nodiscard]] f32 ps_squareMag() const;
     f32 normalise();
+    [[nodiscard]] std::pair<f32, EGG::Vector3f> ps_normalized();
     void normalise2();
     [[nodiscard]] Vector3f maximize(const Vector3f &rhs) const;
     [[nodiscard]] Vector3f minimize(const Vector3f &rhs) const;

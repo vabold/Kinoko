@@ -118,6 +118,7 @@ public:
 
 protected:
     void calcTransform();
+    void calcRotLock();
     void linkAnims(const std::span<const char *> &names, const std::span<Render::AnmType> types);
     void setMatrixTangentTo(const EGG::Vector3f &up, const EGG::Vector3f &tangent);
     void setMatrixFromOrthonormalBasisAndPos(const EGG::Vector3f &v);
@@ -132,6 +133,8 @@ protected:
     [[nodiscard]] static EGG::Matrix34f OrthonormalBasis(const EGG::Vector3f &v);
     [[nodiscard]] static EGG::Matrix34f RailOrthonormalBasis(
             const RailInterpolator &railInterpolator);
+    [[nodiscard]] static EGG::Vector3f AdjustVecForward(f32 sidewaysScalar, f32 forwardScalar,
+            f32 minSpeed, const EGG::Vector3f &src, EGG::Vector3f forward);
 
     /// @addr{0x806B59A8}
     /// @brief Solves the standard kinematic equation \f$y(t) = v_0\, t - \frac{1}{2} a t^{2}\f$
@@ -153,8 +156,9 @@ protected:
     BoxColUnit *m_boxColUnit;
     Flags m_flags;
     EGG::Vector3f m_pos;
-    EGG::Vector3f m_rot;
     EGG::Vector3f m_scale;
+    EGG::Vector3f m_rot;
+    bool m_rotLock;
     EGG::Matrix34f m_transform;
     const System::MapdataGeoObj *m_mapObj;
 };

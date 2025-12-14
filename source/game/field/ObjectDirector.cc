@@ -266,6 +266,8 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
         return new ObjectHeyhoBall(params);
     case ObjectId::DokanSFC:
         return new ObjectDokan(params);
+    case ObjectId::Pylon:
+        return new ObjectPylon(params);
     case ObjectId::OilSFC:
         return new ObjectOilSFC(params);
     case ObjectId::ParasolR:

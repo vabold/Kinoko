@@ -15,16 +15,18 @@ namespace Field {
 /// @addr{0x8081F828}
 ObjectBase::ObjectBase(const System::MapdataGeoObj &params)
     : m_drawMdl(nullptr), m_resFile(nullptr), m_id(static_cast<ObjectId>(params.id())),
-      m_railInterpolator(nullptr), m_pos(params.pos()), m_rot(params.rot() * DEG2RAD),
-      m_scale(params.scale()), m_transform(EGG::Matrix34f::ident), m_mapObj(&params) {
+      m_railInterpolator(nullptr), m_pos(params.pos()), m_scale(params.scale()),
+      m_rot(params.rot() * DEG2RAD), m_rotLock(true), m_transform(EGG::Matrix34f::ident),
+      m_mapObj(&params) {
     m_flags.setBit(eFlags::Position, eFlags::Rotation, eFlags::Scale);
 }
 
 /// @addr{0x8081FB04}
 ObjectBase::ObjectBase(const char *name, const EGG::Vector3f &pos, const EGG::Vector3f &rot,
         const EGG::Vector3f &scale)
-    : m_drawMdl(nullptr), m_resFile(nullptr), m_railInterpolator(nullptr), m_pos(pos), m_rot(rot),
-      m_scale(scale), m_transform(EGG::Matrix34f::ident), m_mapObj(nullptr) {
+    : m_drawMdl(nullptr), m_resFile(nullptr), m_railInterpolator(nullptr), m_pos(pos),
+      m_scale(scale), m_rot(rot), m_rotLock(true), m_transform(EGG::Matrix34f::ident),
+      m_mapObj(nullptr) {
     m_flags.setBit(eFlags::Position, eFlags::Rotation, eFlags::Scale);
     m_id = ObjectDirector::Instance()->flowTable().getIdFromName(name);
 }
@@ -115,6 +117,13 @@ void ObjectBase::calcTransform() {
     }
 }
 
+void ObjectBase::calcRotLock() {
+    if (!m_rotLock) {
+        m_rotLock = true;
+        m_rot = m_transform.calcRPY();
+    }
+}
+
 /// @addr{0x80820EB8}
 void ObjectBase::linkAnims(const std::span<const char *> &names,
         const std::span<Render::AnmType> types) {
@@ -131,6 +140,7 @@ void ObjectBase::linkAnims(const std::span<const char *> &names,
 
 /// @addr{0x80821910}
 void ObjectBase::setMatrixTangentTo(const EGG::Vector3f &up, const EGG::Vector3f &tangent) {
+    m_rotLock = false;
     m_flags.setBit(eFlags::Matrix);
     SetRotTangentHorizontal(m_transform, up, tangent);
     m_transform.setBase(3, m_pos);
@@ -207,6 +217,31 @@ EGG::Matrix34f ObjectBase::RailOrthonormalBasis(const RailInterpolator &railInte
     EGG::Matrix34f mat = OrthonormalBasis(railInterpolator.curTangentDir());
     mat.setBase(3, railInterpolator.curPos());
     return mat;
+}
+
+/// @addr{0x807DE934}
+EGG::Vector3f ObjectBase::AdjustVecForward(f32 sidewaysScalar, f32 forwardScalar, f32 minSpeed,
+        const EGG::Vector3f &src, EGG::Vector3f forward) {
+    if (forward.y > 0.0f) {
+        forward.y = 0.0f;
+        auto [mag, tmp] = forward.ps_normalized();
+
+        if (mag <= 0.0f) {
+            return src;
+        }
+
+        forward = tmp;
+    }
+
+    EGG::Vector3f proj = forward * src.ps_dot(forward);
+    EGG::Vector3f sideways = (src - proj) * sidewaysScalar;
+
+    EGG::Vector3f newForward = proj * -forwardScalar;
+    if (newForward.squaredLength() < minSpeed * minSpeed) {
+        newForward = forward * minSpeed;
+    }
+
+    return sideways + newForward;
 }
 
 } // namespace Field

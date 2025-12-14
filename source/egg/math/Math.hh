@@ -12,6 +12,7 @@ static constexpr f32 RAD2DEG = 57.2957795f; ///< 180.0f / F_PI. Double precision
 static constexpr f32 DEG2FIDX = 256.0f / 360.0f; ///< Degrees to fixed index
 static constexpr f32 RAD2FIDX = 128.0f / F_PI;   ///< Radians to fixed index
 static constexpr f32 FIDX2RAD = F_PI / 128.0f;   ///< Fixed index to radians
+static constexpr f32 HALF_PI = F_PI / 2.0f;
 
 /// @brief Math functions and constants used in the base game.
 namespace EGG::Mathf {
@@ -20,7 +21,7 @@ namespace EGG::Mathf {
 
 /// @addr{0x8022F80C}
 [[nodiscard]] static inline f32 sqrt(f32 x) {
-    return x > 0.0f ? frsqrt(x) * x : 0.0f;
+    return x > 0.0f ? x * frsqrt(x) : 0.0f;
 }
 
 [[nodiscard]] f32 SinFIdx(f32 fidx);
@@ -41,6 +42,11 @@ u32 FindRootsQuadratic(f32 a, f32 b, f32 c, f32 &root1, f32 &root2);
 /// @addr{0x8022F86C}
 [[nodiscard]] static inline f32 cos(f32 x) {
     return CosFIdx(x * RAD2FIDX);
+}
+
+/// @addr{0x8022F89C}
+[[nodiscard]] static inline f32 asin(f32 x) {
+    return ::asinl(x);
 }
 
 /// @addr{0x8022F8C0}
