@@ -255,6 +255,26 @@ Vector3f Matrix34f::ps_multVector33(const Vector3f &vec) const {
     return ret;
 }
 
+/// @addr{0x8067EAEC} @addr{0x8022FB04}
+[[nodiscard]] Vector3f Matrix34f::calcRPY() const {
+    constexpr f32 GIMBAL_LOCK_THRESHOLD = 0.999999f;
+
+    EGG::Vector3f xAxisBasis = base(0);
+    f32 absZ = EGG::Mathf::abs(xAxisBasis.z);
+
+    if (absZ > GIMBAL_LOCK_THRESHOLD) {
+        f32 y = xAxisBasis.z / absZ * -HALF_PI;
+        f32 z = EGG::Mathf::atan2(-mtx[0][1], -xAxisBasis.z * mtx[0][2]);
+        return EGG::Vector3f(0.0f, y, z);
+    }
+
+    f32 x = EGG::Mathf::atan2(mtx[2][1], mtx[2][2]);
+    f32 y = EGG::Mathf::asin(-xAxisBasis.z);
+    f32 z = EGG::Mathf::atan2(xAxisBasis.y, xAxisBasis.x);
+
+    return EGG::Vector3f(x, y, z);
+}
+
 /// @addr{0x8022F90C}
 /// @brief Inverts the 3x3 portion of the 3x4 matrix.
 /// @details Unlike a typical matrix inversion, if the determinant is 0, then this function returns

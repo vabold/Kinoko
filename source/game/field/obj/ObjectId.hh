@@ -38,6 +38,7 @@ enum class ObjectId {
     WLDokanGC = 0x13f,
     MarioGo64c = 0x140,
     KinokoT1 = 0x142,
+    Pylon = 0x144,
     PalmTree = 0x145,
     Parasol = 0x146,
     HeyhoTreeGBAc = 0x14a,

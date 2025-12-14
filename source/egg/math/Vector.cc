@@ -60,6 +60,16 @@ f32 Vector3f::normalise() {
     return len;
 }
 
+/// @addr{0x80793F04}
+std::pair<f32, EGG::Vector3f> Vector3f::ps_normalized() {
+    f32 mag = ps_length();
+    if (mag <= 0.0f) {
+        return std::make_pair(mag, EGG::Vector3f::zero);
+    }
+
+    return std::make_pair(mag, *this * (1.0f / mag));
+}
+
 /// @addr{0x80243B6C}
 void Vector3f::normalise2() {
     f32 sqLen = squaredLength();
