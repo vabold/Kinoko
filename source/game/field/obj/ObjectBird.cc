@@ -11,7 +11,7 @@ ObjectBird::ObjectBird(const System::MapdataGeoObj &params) : ObjectCollidable(p
     m_leader = new ObjectBirdLeader(params, this);
     m_leader->load();
 
-    u32 count = params.setting(1);
+    u32 count = static_cast<u32>(params.setting(1));
     if (count == 0) {
         count = 5;
     }
@@ -73,6 +73,7 @@ void ObjectBirdLeader::init() {
     m_railInterpolator->calc();
     m_pos = m_railInterpolator->curPos();
     m_flags.setBit(eFlags::Position);
+    ASSERT(m_mapObj);
     m_railInterpolator->setCurrVel(static_cast<f32>(m_mapObj->setting(0)));
 }
 
@@ -117,6 +118,7 @@ void ObjectBirdFollower::init() {
     f32 rate = rand.getF32(static_cast<f32>(frameCount));
     anmMgr->playAnim(rate, 1.0f, 0);
 
+    ASSERT(m_mapObj);
     m_baseSpeed = static_cast<f32>(m_mapObj->setting(0));
     m_velocity = EGG::Vector3f::ez * m_baseSpeed;
 

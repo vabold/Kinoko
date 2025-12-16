@@ -49,7 +49,7 @@ ObjectKinokoUd::ObjectKinokoUd(const System::MapdataGeoObj &params) : ObjectKino
     m_oscFrame = params.setting(3);
     m_waitDuration = params.setting(4);
     m_amplitude = params.setting(1);
-    m_period = std::max<u16>(params.setting(2), 2);
+    m_period = std::max<s16>(params.setting(2), 2);
     m_angFreq = F_TAU / static_cast<f32>(m_period);
 }
 
@@ -81,7 +81,7 @@ void ObjectKinokoUd::calcOscillation() {
 ObjectKinokoBend::ObjectKinokoBend(const System::MapdataGeoObj &params) : ObjectKinoko(params) {
     m_currentFrame = params.setting(3);
     m_amplitude = static_cast<f32>(params.setting(1)) * DEG2RAD;
-    m_period = std::max<u16>(params.setting(2), 2);
+    m_period = std::max<s16>(params.setting(2), 2);
     m_angFreq = F_TAU / static_cast<f32>(m_period);
 }
 

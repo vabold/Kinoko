@@ -26,9 +26,9 @@ public:
             KCLTypeMask *maskOut, u32 timeOffset) override;
 
 private:
-    f32 m_flowRate;
-    f32 m_finalHeightDelta;
-    u16 m_startFrame;
+    const f32 m_flowRate;
+    const f32 m_finalHeightDelta;
+    const s16 m_startFrame;
     u16 m_duration;
     EGG::Matrix34f m_baseMtx;
     EGG::Matrix34f m_currentMtx;

@@ -202,8 +202,8 @@ void ObjectTruckWagonCart::reset(u32 idx) {
 
 /// @addr{0x806E206C}
 ObjectTruckWagon::ObjectTruckWagon(const System::MapdataGeoObj &params)
-    : ObjectCollidable(params), m_spawn2Frame(static_cast<s32>(params.setting(1))),
-      m_cycleDuration(static_cast<s32>(params.setting(2))) {
+    : ObjectCollidable(params), m_spawn2Frame(params.setting(1)),
+      m_cycleDuration(params.setting(2)) {
     constexpr u32 CART_COUNT = 12;
 
     // For now, we don't care about low LOD minecarts since they don't have collision.

@@ -26,6 +26,8 @@ private:
     std::span<ObjectWoodboxWSub *> m_boxes;
     s32 m_framesUntilSpawn;
     u32 m_nextBoxIdx;
+
+    const s32 m_cooldownDuration;
 };
 
 } // namespace Field

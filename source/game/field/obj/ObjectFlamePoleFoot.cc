@@ -10,13 +10,11 @@ namespace Field {
 
 /// @addr{0x8067E6F4}
 ObjectFlamePoleFoot::ObjectFlamePoleFoot(const System::MapdataGeoObj &params)
-    : ObjectKCL(params), StateManager(this, STATE_ENTRIES) {
-    m_extraCycleFrames = params.setting(0);
-    m_initDelay = params.setting(1);
-    m_poleScale = static_cast<f32>(params.setting(2));
-
+    : ObjectKCL(params), StateManager(this, STATE_ENTRIES), m_extraCycleFrames(params.setting(0)),
+      m_initDelay(params.setting(1)) {
     ++FLAMEPOLE_COUNT;
 
+    m_poleScale = static_cast<f32>(params.setting(2));
     if (m_poleScale == 0.0f) {
         m_poleScale = 3.0f + static_cast<f32>(FLAMEPOLE_COUNT % 3);
     }
@@ -59,7 +57,7 @@ void ObjectFlamePoleFoot::init() {
 
 /// @addr{0x8067EF70}
 void ObjectFlamePoleFoot::calc() {
-    if (System::RaceManager::Instance()->timer() < m_initDelay) {
+    if (System::RaceManager::Instance()->timer() < static_cast<u32>(m_initDelay)) {
         return;
     }
 
@@ -79,7 +77,8 @@ void ObjectFlamePoleFoot::calc() {
 
 /// @addr{0x8067F6B8}
 void ObjectFlamePoleFoot::calcStates() {
-    u32 frame = static_cast<s32>(System::RaceManager::Instance()->timer() - m_initDelay);
+    u32 frame = static_cast<s32>(
+            System::RaceManager::Instance()->timer() - static_cast<u32>(m_initDelay));
     m_cycleFrame = frame % (m_extraCycleFrames + CYCLE_FRAMES);
 
     // Access the array of state timers to see which state corresponds with the current frame.
@@ -98,7 +97,7 @@ void ObjectFlamePoleFoot::calcStates() {
 }
 
 f32 ObjectFlamePoleFoot::getScaleY(u32 timeOffset) const {
-    u32 frame = System::RaceManager::Instance()->timer() - timeOffset;
+    s32 frame = System::RaceManager::Instance()->timer() - timeOffset;
     if (frame < m_initDelay) {
         return 1.0f;
     }

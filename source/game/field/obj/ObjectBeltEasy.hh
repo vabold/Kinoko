@@ -12,7 +12,7 @@ public:
 
 private:
     [[nodiscard]] EGG::Vector3f calcRoadVelocity(u32 variant, const EGG::Vector3f &pos,
-            u32 timeOffset) const override;
+            s32 timeOffset) const override;
 
     /// @addr{0x807FC6C8}
     [[nodiscard]] bool isMoving(u32 variant, const EGG::Vector3f & /*pos*/) const override {

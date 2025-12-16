@@ -115,9 +115,10 @@ Kart::Reaction ObjectDossun::onCollision(Kart::KartObject *kartObj, Kart::Reacti
 
 /// @addr{0x8075F21C}
 void ObjectDossun::initState() {
-    m_stillTimer = static_cast<u32>(m_mapObj->setting(2));
+    ASSERT(m_mapObj);
+    m_stillTimer = static_cast<s32>(m_mapObj->setting(2));
     if (m_stillTimer == 0) {
-        m_stillTimer = static_cast<u32>(m_mapObj->setting(3));
+        m_stillTimer = static_cast<s32>(m_mapObj->setting(3));
     }
 
     m_groundedTimer = 0;

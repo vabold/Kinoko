@@ -34,7 +34,7 @@ void ObjectFireSnakeV::init() {
 
 /// @addr{0x806C2D54}
 void ObjectFireSnakeV::calc() {
-    if (System::RaceManager::Instance()->timer() >= m_delayFrame) {
+    if (System::RaceManager::Instance()->timer() >= static_cast<u32>(m_delayFrame)) {
         calcSub();
     }
 }
@@ -43,8 +43,8 @@ void ObjectFireSnakeV::calc() {
 void ObjectFireSnakeV::calcSub() {
     StateManager::calc();
 
-    u32 frame = System::RaceManager::Instance()->timer() - m_delayFrame;
-    if (frame % m_cycleDuration == 0) {
+    u32 frame = System::RaceManager::Instance()->timer() - static_cast<u32>(m_delayFrame);
+    if (frame % static_cast<u32>(m_cycleDuration) == 0) {
         m_nextStateId = 1;
     }
 

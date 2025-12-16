@@ -9,7 +9,7 @@ namespace Field {
 
 /// @addr{0x8088344C}
 ObjectCrab::ObjectCrab(const System::MapdataGeoObj &params)
-    : ObjectCollidable(params), m_vel(static_cast<f32>(static_cast<s16>(params.setting(0)))),
+    : ObjectCollidable(params), m_vel(static_cast<f32>(params.setting(0))),
       m_backwards(!!params.setting(1)), m_introCalc(false) {}
 
 /// @addr{0x808837B8}

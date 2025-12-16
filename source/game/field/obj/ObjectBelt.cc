@@ -33,7 +33,7 @@ bool ObjectBelt::calcCollision(const EGG::Vector3f &v0, const EGG::Vector3f & /*
     if (entry->dist > info->movingFloorDist) {
         info->movingFloorDist = entry->dist;
         info->roadVelocity = calcRoadVelocity(entry->variant(), v0,
-                System::RaceManager::Instance()->timer() - timeOffset);
+                static_cast<s32>(System::RaceManager::Instance()->timer() - timeOffset));
     }
 
     return true;

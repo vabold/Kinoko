@@ -16,8 +16,8 @@ ObjectWanwan::ObjectWanwan(const System::MapdataGeoObj &params)
     : ObjectCollidable(params), StateManager(this, STATE_ENTRIES), m_pitch(0.0f),
       m_chainLength(static_cast<f32>(params.setting(0))),
       m_attackDistance(4800.0f + static_cast<f32>(params.setting(2))),
-      m_attackArcTargetX(10.0f * static_cast<f32>(static_cast<s16>(params.setting(3)))),
-      m_attackArcTargetZ(10.0f * static_cast<f32>(static_cast<s16>(params.setting(4)))),
+      m_attackArcTargetX(10.0f * static_cast<f32>(params.setting(3))),
+      m_attackArcTargetZ(10.0f * static_cast<f32>(params.setting(4))),
       m_chainAttachMat(EGG::Matrix34f::ident) {
     constexpr EGG::Vector3f ANCHOR_OFFSET = EGG::Vector3f(0.0f, 20.0f, 0.0f);
     constexpr EGG::Vector3f POS_OFFSET_MCWII = EGG::Vector3f(14500.0f, 1300.0f, 44850.0f);

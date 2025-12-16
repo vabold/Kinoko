@@ -16,7 +16,7 @@ void MapdataGeoObj::read(EGG::Stream &stream) {
     m_pathId = stream.read_s16();
 
     for (auto &setting : m_settings) {
-        setting = stream.read_u16();
+        setting = stream.read_s16();
     }
 
     m_presenceFlag = stream.read_u16();
