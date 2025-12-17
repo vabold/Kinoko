@@ -252,6 +252,10 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
         return new ObjectItemboxLine(params);
     case ObjectId::VolcanoBall:
         return new ObjectVolcanoBallLauncher(params);
+    case ObjectId::PenguinS:
+        return new ObjectPenguinS(params);
+    case ObjectId::PenguinM:
+        return new ObjectPenguin(params);
     case ObjectId::Dossunc:
         return new ObjectDossunc(params);
     case ObjectId::Boble:

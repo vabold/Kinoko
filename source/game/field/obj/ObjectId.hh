@@ -20,6 +20,8 @@ enum class ObjectId {
     W_Woodbox = 0xd3,
     ItemboxLine = 0xd5,
     VolcanoBall = 0xd6,
+    PenguinS = 0xd7,
+    PenguinM = 0xd8,
     Dossunc = 0xdb,
     DossuncSoko = 0xdc,
     Boble = 0xdd,
