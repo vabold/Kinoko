@@ -5,6 +5,8 @@
 #include "game/kart/KartParam.hh"
 #include "game/kart/KartState.hh"
 
+#include "game/system/RaceConfig.hh"
+
 #include <egg/math/Math.hh>
 
 namespace Render {
@@ -40,7 +42,10 @@ void KartModel::vf_1c() {
         _58 *= 0.9f;
     }
 
-    f32 xStick = inputs()->currentState().stick.x;
+    bool frozenInIce =
+            System::RaceConfig::Instance()->raceScenario().course == Course::N64_Sherbet_Land &&
+            status.onBit(Kart::eStatus::InRespawn, Kart::eStatus::AfterRespawn);
+    f32 xStick = frozenInIce ? 0.0f : inputs()->currentState().stick.x;
     bool isInCannon = status.onBit(Kart::eStatus::InCannon);
     f32 fVar2 = isInCannon ? 0.02f : 0.1f;
 
