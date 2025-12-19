@@ -79,6 +79,10 @@ public:
         return m_speed;
     }
 
+    [[nodiscard]] const EGG::Vector3f &wheelEdgePos() const {
+        return m_wheelEdgePos;
+    }
+
     [[nodiscard]] f32 effectiveRadius() const {
         return m_effectiveRadius;
     }

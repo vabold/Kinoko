@@ -160,6 +160,8 @@ public:
     [[nodiscard]] u32 wallKclVariant() const;
     [[nodiscard]] Status &status();
     [[nodiscard]] const Status &status() const;
+    [[nodiscard]] const EGG::Vector3f &wheelPos(u16 idx) const;
+    [[nodiscard]] const EGG::Vector3f &wheelEdgePos(u16 idx) const;
 
     [[nodiscard]] static std::list<KartObjectProxy *> &proxyList() {
         return s_proxyList;

@@ -53,6 +53,7 @@ public:
     void calcDirs();
     void calcStickyRoad();
     void calcOffroad();
+    void calcRisingWater();
     void calcBoost();
     void calcRampBoost();
     void calcDisableBackwardsAccel();

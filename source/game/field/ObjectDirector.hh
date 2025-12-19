@@ -16,6 +16,8 @@ class Context;
 
 namespace Field {
 
+class ObjectPsea;
+
 class ObjectDirector : EGG::Disposer {
     friend class Host::Context;
 
@@ -60,6 +62,17 @@ public:
         return m_managedObjects;
     }
 
+    void setPsea(ObjectPsea *psea) {
+        m_psea = psea;
+    }
+
+    [[nodiscard]] ObjectPsea *psea() const {
+        return m_psea;
+    }
+
+    [[nodiscard]] f32 distAboveRisingWater(f32 offset) const;
+    [[nodiscard]] f32 risingWaterKillPlaneHeight() const;
+
     static ObjectDirector *CreateInstance();
     static void DestroyInstance();
 
@@ -88,6 +101,7 @@ private:
             m_collidingObjects; ///< Objects we are currently colliding with
     std::array<EGG::Vector3f, MAX_UNIT_COUNT> m_hitDepths;
     std::array<Kart::Reaction, MAX_UNIT_COUNT> m_reactions;
+    ObjectPsea *m_psea;
     std::vector<ObjectCollidable *> m_managedObjects;
 
     static ObjectDirector *s_instance;

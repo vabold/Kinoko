@@ -110,6 +110,18 @@ size_t ObjectDirector::checkKartObjectCollision(Kart::KartObject *kartObj,
     return count;
 }
 
+/// @addr{0x8082B3EC}
+f32 ObjectDirector::distAboveRisingWater(f32 offset) const {
+    ASSERT(m_psea);
+    return offset - m_psea->pos().y;
+}
+
+/// @addr{0x8082B400}
+f32 ObjectDirector::risingWaterKillPlaneHeight() const {
+    ASSERT(m_psea);
+    return m_psea->pos().y - 260.0f;
+}
+
 /// @addr{0x8082A784}
 ObjectDirector *ObjectDirector::CreateInstance() {
     ASSERT(!s_instance);
@@ -135,7 +147,7 @@ void ObjectDirector::DestroyInstance() {
 /// @addr{0x8082A38C}
 ObjectDirector::ObjectDirector()
     : m_flowTable("ObjFlow.bin"), m_hitTableKart("GeoHitTableKart.bin"),
-      m_hitTableKartObject("GeoHitTableKartObj.bin") {}
+      m_hitTableKartObject("GeoHitTableKartObj.bin"), m_psea(nullptr) {}
 
 /// @addr{0x8082A694}
 ObjectDirector::~ObjectDirector() {
@@ -227,6 +239,8 @@ void ObjectDirector::createObjects() {
 ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
     ObjectId id = static_cast<ObjectId>(params.id());
     switch (id) {
+    case ObjectId::Psea:
+        return new ObjectPsea(params);
     case ObjectId::Woodbox:
         return new ObjectWoodbox(params);
     case ObjectId::WLWallGC:
