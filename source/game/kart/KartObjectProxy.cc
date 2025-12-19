@@ -428,6 +428,16 @@ const Status &KartObjectProxy::status() const {
     return state()->status();
 }
 
+/// @addr{0x8059031C}
+const EGG::Vector3f &KartObjectProxy::wheelPos(u16 idx) const {
+    return tirePhysics(idx)->pos();
+}
+
+/// @addr{0x80590390}
+const EGG::Vector3f &KartObjectProxy::wheelEdgePos(u16 idx) const {
+    return tirePhysics(idx)->wheelEdgePos();
+}
+
 /// @addr{0x805901D0}
 void KartObjectProxy::apply(size_t idx) {
     m_accessor = KartObjectManager::Instance()->object(idx)->accessor();

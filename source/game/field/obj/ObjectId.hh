@@ -6,6 +6,7 @@ namespace Field {
 
 enum class ObjectId {
     None = 0x0,
+    Psea = 0x2,
     Itembox = 0x65,
     DummyPole = 0x066,
     Woodbox = 0x70,

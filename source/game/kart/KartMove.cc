@@ -11,6 +11,7 @@
 
 #include "game/field/CollisionDirector.hh"
 #include "game/field/KCollisionTypes.hh"
+#include "game/field/ObjectDirector.hh"
 
 #include "game/item/ItemDirector.hh"
 #include "game/item/KartItem.hh"
@@ -677,6 +678,36 @@ void KartMove::calcOffroad() {
                 m_kclRotFactor = colData.rotFactor;
             }
         }
+    }
+
+    calcRisingWater();
+}
+
+/// @addr{0x8058677C}
+void KartMove::calcRisingWater() {
+    auto *objDir = Field::ObjectDirector::Instance();
+    auto *psea = objDir->psea();
+    if (!psea) {
+        return;
+    }
+
+    f32 pos = wheelPos(0).y;
+    u16 count = tireCount();
+    for (u16 wheelIdx = 0; wheelIdx < count; ++wheelIdx) {
+        f32 tmp = wheelEdgePos(wheelIdx).y;
+        if (wheelIdx == 0 || tmp < pos) {
+            pos = tmp;
+        }
+    }
+
+    if (objDir->risingWaterKillPlaneHeight() > pos) {
+        collide()->activateOob(true, nullptr, false, false);
+    }
+
+    f32 dist = -objDir->distAboveRisingWater(pos);
+    if (dist > 0.0f && status().offBit(Kart::eStatus::BoostOffroadInvincibility)) {
+        f32 speedScale = std::min(1.0f, dist / 100.0f);
+        m_kclSpeedFactor = 1.0f - (1.0f - param()->stats().kclSpeed[3]) * speedScale;
     }
 }
 
