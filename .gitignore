@@ -1,9 +1,12 @@
 build
 build.ninja
+compile_commands.json
+.cache/**
 __pycache__
 out
 .vs
 .vscode
+.zed
 *.szs
 statusTestCases.json
 .env
