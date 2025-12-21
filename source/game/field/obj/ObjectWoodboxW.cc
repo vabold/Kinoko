@@ -5,17 +5,13 @@
 namespace Field {
 
 /// @addr{0x8077DF24}
-ObjectWoodboxW::ObjectWoodboxW(const System::MapdataGeoObj &params) : ObjectCollidable(params) {
+ObjectWoodboxW::ObjectWoodboxW(const System::MapdataGeoObj &params)
+    : ObjectCollidable(params), m_cooldownDuration(static_cast<s32>(params.setting(5))) {
     constexpr u16 DEFAULT_BOX_COUNT = 5;
 
     ObjectCollidable::init();
 
-    u16 boxCount = params.setting(6);
-
-    if (boxCount == 0) {
-        boxCount = DEFAULT_BOX_COUNT;
-    }
-
+    s16 boxCount = (params.setting(6) == 0) ? DEFAULT_BOX_COUNT : params.setting(6);
     m_boxes = std::span<ObjectWoodboxWSub *>(new ObjectWoodboxWSub *[boxCount], boxCount);
 
     for (auto *&box : m_boxes) {
@@ -32,9 +28,9 @@ ObjectWoodboxW::~ObjectWoodboxW() {
 /// @addr{0x8077E1A0}
 void ObjectWoodboxW::init() {
     ASSERT(m_mapObj);
-    u32 frames = m_mapObj->setting(4);
+    s32 frames = static_cast<s32>(m_mapObj->setting(4));
     if (frames == 0) {
-        frames = m_mapObj->setting(5);
+        frames = m_cooldownDuration;
     }
 
     m_framesUntilSpawn = frames;
@@ -47,8 +43,7 @@ void ObjectWoodboxW::calc() {
         return;
     }
 
-    ASSERT(m_mapObj);
-    m_framesUntilSpawn = m_mapObj->setting(5);
+    m_framesUntilSpawn = m_cooldownDuration;
     m_boxes[m_nextBoxIdx]->enableCollision();
     m_nextBoxIdx = (m_nextBoxIdx + 1) % m_boxes.size();
 }

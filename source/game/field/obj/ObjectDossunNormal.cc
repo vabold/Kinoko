@@ -45,6 +45,7 @@ void ObjectDossunNormal::startStill() {
     m_flags.setBit(eFlags::Rotation);
     m_rot.y = m_currRot;
     m_stompState = StompState::Inactive;
+    ASSERT(m_mapObj);
     m_stillTimer = static_cast<s32>(m_mapObj->setting(3));
 }
 

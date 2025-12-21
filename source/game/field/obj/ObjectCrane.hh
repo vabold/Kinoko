@@ -26,14 +26,14 @@ public:
 
 private:
     const EGG::Vector3f m_startPos; ///< Initial starting position
-    u16 m_xt;                       ///< Current time along the x-axis period
-    u16 m_yt;                       ///< Current time along the y-axis period
-    u16 m_xPeriod;                  ///< Framecount of a full oscillation on x-axis
-    u16 m_yPeriod;                  ///< Framecount of a full oscillation on y-axis
-    u16 m_xAmplitude;               ///< Max x-position delta from starting position
-    u16 m_yAmplitude;               ///< Max y-position delta from starting position
-    f32 m_xFreq;                    ///< 2pi / m_xPeriod
-    f32 m_yFreq;                    ///< 2pi / m_yPeriod
+    s16 m_xt;                       ///< Current time along the x-axis period
+    s16 m_yt;                       ///< Current time along the y-axis period
+    const s16 m_xPeriod;            ///< Framecount of a full oscillation on x-axis
+    const s16 m_yPeriod;            ///< Framecount of a full oscillation on y-axis
+    const s16 m_xAmplitude;         ///< Max x-position delta from starting position
+    const s16 m_yAmplitude;         ///< Max y-position delta from starting position
+    const f32 m_xFreq;              ///< 2pi / m_xPeriod
+    const f32 m_yFreq;              ///< 2pi / m_yPeriod
 };
 
 } // namespace Field

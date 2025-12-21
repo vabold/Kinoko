@@ -70,7 +70,7 @@ private:
                     &ObjectFireSnakeV::calcDespawning>(5)},
     }};
 
-    const u16 m_cycleDuration;
+    const s16 m_cycleDuration;
     const f32 m_distFromPipe;
     f32 m_fallSpeed;
 

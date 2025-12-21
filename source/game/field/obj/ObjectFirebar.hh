@@ -25,8 +25,7 @@ public:
 
 private:
     std::span<ObjectFireball *> m_fireballs;
-    u32 m_spokes; // The number of fireball "segments"
-    f32 m_angSpeed;
+    const f32 m_angSpeed;
     f32 m_degAngle;
     EGG::Vector3f m_axis;
     EGG::Vector3f m_initDir;

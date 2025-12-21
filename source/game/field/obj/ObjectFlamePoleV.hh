@@ -89,7 +89,7 @@ private:
         accel = initVel * initVel / doublePeak;
     }
 
-    const u32 m_initDelay;
+    const s32 m_initDelay;
     const s32 m_cycleDuration;
     const s32 m_dormantFrames;
     const f32 m_scaleFactor;

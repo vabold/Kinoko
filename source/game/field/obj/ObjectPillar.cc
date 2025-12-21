@@ -13,7 +13,7 @@ ObjectPillarBase::~ObjectPillarBase() = default;
 
 /// @addr{0x807FEB68}
 ObjectPillarC::ObjectPillarC(const System::MapdataGeoObj &params)
-    : ObjectCollidable(params), m_fallStart(static_cast<u32>(params.setting(0))) {}
+    : ObjectCollidable(params), m_fallStart(static_cast<s32>(params.setting(0))) {}
 
 /// @addr{0x807FFAE0}
 ObjectPillarC::~ObjectPillarC() = default;
@@ -37,7 +37,7 @@ void ObjectPillarC::calcCollisionTransform() {
 
 /// @addr{0x807FED80}
 ObjectPillar::ObjectPillar(const System::MapdataGeoObj &params)
-    : ObjectKCL(params), m_state(State::Upright), m_fallStart(static_cast<u32>(params.setting(0))),
+    : ObjectKCL(params), m_state(State::Upright), m_fallStart(static_cast<s32>(params.setting(0))),
       m_targetRotation(F_PI * static_cast<f32>(params.setting(1)) / 180.0f), m_initRot(m_rot.x),
       m_setupRot(EGG::Vector3f::zero) {
     m_base = new ObjectPillarBase(params);
@@ -63,7 +63,7 @@ void ObjectPillar::init() {
 
 /// @addr{0x807FF17C}
 void ObjectPillar::calc() {
-    u32 time = System::RaceManager::Instance()->timer();
+    s32 time = System::RaceManager::Instance()->timer();
 
     if (m_state == State::Upright && time < m_fallStart) {
         m_collidable->enableCollision();
@@ -71,7 +71,7 @@ void ObjectPillar::calc() {
         // The pillar has now started to fall.
         m_state = State::Break;
     } else if (m_state == State::Break) {
-        f32 rot = calcRot(static_cast<s32>(time));
+        f32 rot = calcRot(time);
         if (rot < m_targetRotation) {
             m_transform = getUpdatedMatrix(0);
             m_pos = m_transform.base(3);

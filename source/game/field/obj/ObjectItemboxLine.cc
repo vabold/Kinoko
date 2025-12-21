@@ -7,17 +7,13 @@ namespace Field {
 
 /// @addr{0x8076D044}
 ObjectItemboxLine::ObjectItemboxLine(const System::MapdataGeoObj &params)
-    : ObjectCollidable(params) {
+    : ObjectCollidable(params), m_cooldownDuration(static_cast<s32>(params.setting(5))) {
     constexpr u32 DEFAULT_PRESS_COUNT = 5;
 
     auto *senko = new ObjectPressSenko(params);
     senko->load();
 
-    u32 pressCount = params.setting(6);
-    if (pressCount == 0) {
-        pressCount = DEFAULT_PRESS_COUNT;
-    }
-
+    s32 pressCount = (params.setting(6) == 0) ? DEFAULT_PRESS_COUNT : params.setting(6);
     m_press = std::span<ObjectItemboxPress *>(new ObjectItemboxPress *[pressCount], pressCount);
 
     for (auto *&press : m_press) {
@@ -36,10 +32,9 @@ ObjectItemboxLine::~ObjectItemboxLine() {
 /// @addr{0x8076D604}
 void ObjectItemboxLine::init() {
     ASSERT(m_mapObj);
-    u32 timer = static_cast<u32>(m_mapObj->setting(4));
-
+    s32 timer = static_cast<s32>(m_mapObj->setting(4));
     if (timer == 0) {
-        timer = static_cast<u32>(m_mapObj->setting(5));
+        timer = m_cooldownDuration;
     }
 
     m_stompCooldown = timer;
@@ -52,8 +47,7 @@ void ObjectItemboxLine::calc() {
         return;
     }
 
-    m_stompCooldown = static_cast<u32>(m_mapObj->setting(5));
-
+    m_stompCooldown = m_cooldownDuration;
     m_press[m_curPressIdx]->startPress();
     m_curPressIdx = (m_curPressIdx + 1) % m_press.size();
 }

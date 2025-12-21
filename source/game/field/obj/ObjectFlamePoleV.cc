@@ -7,7 +7,7 @@ namespace Field {
 /// @addr{0x806C3AA4}
 ObjectFlamePoleV::ObjectFlamePoleV(const System::MapdataGeoObj &params)
     : ObjectCollidable(params), StateManager(this, STATE_ENTRIES),
-      m_initDelay(static_cast<u32>(params.setting(1))),
+      m_initDelay(static_cast<s32>(params.setting(1))),
       m_cycleDuration(static_cast<s32>(params.setting(0))),
       m_dormantFrames(static_cast<s32>(params.setting(3)) + 200),
       m_scaleFactor(params.setting(2) == 0 ? 5.0f : static_cast<f32>(params.setting(2))),
@@ -50,7 +50,7 @@ void ObjectFlamePoleV::init() {
 
 /// @addr{0x806C3FCC}
 void ObjectFlamePoleV::calc() {
-    if (System::RaceManager::Instance()->timer() <= m_initDelay) {
+    if (System::RaceManager::Instance()->timer() <= static_cast<u32>(m_initDelay)) {
         return;
     }
 
