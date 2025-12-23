@@ -319,6 +319,11 @@ void KartAction::startLargeFlipAction() {
     dynamics()->setExtVel(INIT_VEL);
     dynamics()->setAngVel0(EGG::Vector3f::zero);
 
+    if (m_currentAction == Action::UNK_8) {
+        calcSideFromHitDepth();
+        dynamics()->setExtVel(dynamics()->extVel() + m_side * -20.0f);
+    }
+
     Item::ItemDirector::Instance()->kartItem(0).clear();
 
     m_deltaPitch = 0.0f;
@@ -442,7 +447,7 @@ bool KartAction::calcLargeFlipAction() {
         dynamics()->setExtVel(move()->up().proj(EGG::Vector3f::ey) * BOUNCE_FACTOR);
     }
 
-    if (m_frame < 10 || !touchingGround) {
+    if ((m_currentAction != Action::UNK_8 && m_frame < 10) || !touchingGround) {
         dynamics()->setExtVel(EGG::Vector3f(0.0f, dynamics()->extVel().y, 0.0f));
     }
 
@@ -548,7 +553,7 @@ const std::array<KartAction::StartActionFunc, KartAction::MAX_ACTION> KartAction
         &KartAction::startAction5,
         &KartAction::startStub,
         &KartAction::startLargeFlipAction,
-        &KartAction::startStub,
+        &KartAction::startLargeFlipAction,
         &KartAction::startAction9,
         &KartAction::startStub,
         &KartAction::startStub,
@@ -569,7 +574,7 @@ const std::array<KartAction::CalcActionFunc, KartAction::MAX_ACTION> KartAction:
         &KartAction::calcLaunchAction,
         &KartAction::calcStub,
         &KartAction::calcLargeFlipAction,
-        &KartAction::calcStub,
+        &KartAction::calcLargeFlipAction,
         &KartAction::calcAction1,
         &KartAction::calcStub,
         &KartAction::calcStub,
