@@ -13,6 +13,7 @@
 #include "game/field/obj/ObjectCarTGE.hh"
 #include "game/field/obj/ObjectChoropu.hh"
 #include "game/field/obj/ObjectCow.hh"
+#include "game/field/obj/ObjectCrab.hh"
 #include "game/field/obj/ObjectCrane.hh"
 #include "game/field/obj/ObjectDokan.hh"
 #include "game/field/obj/ObjectDossunTsuibiHolder.hh"

@@ -233,6 +233,11 @@ struct Vector3f {
         return *this * (1.0f / val);
     }
 
+    /// @addr{0x805381A4}
+    Vector3f FUN_805381A4(const EGG::Vector3f &v0) const {
+        return *this - v0 * v0.dot(*this);
+    }
+
     [[nodiscard]] f32 ps_dot() const;
     [[nodiscard]] f32 ps_dot(const EGG::Vector3f &rhs) const;
     [[nodiscard]] f32 ps_squareMag() const;
