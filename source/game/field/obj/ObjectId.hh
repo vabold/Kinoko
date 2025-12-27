@@ -27,6 +27,7 @@ enum class ObjectId {
     DossuncSoko = 0xdc,
     Boble = 0xdd,
     Seagull = 0xe3,
+    Crab = 0xe5,
     BasabasaDummy = 0xe6,
     CarA2 = 0xe7,
     CarA3 = 0xe8,
