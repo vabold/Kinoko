@@ -48,6 +48,7 @@ public:
     }
 
     void makeOrthonormalBasis(const Vector3f &v0, const Vector3f &v1);
+    void makeOrthonormalBasisLocal(Vector3f forward, Vector3f up);
     void setAxisRotation(f32 angle, const Vector3f &axis);
     void mulRow33(size_t rowIdx, const Vector3f &row);
     void setBase(size_t col, const Vector3f &base);

@@ -162,6 +162,19 @@ void Matrix34f::makeOrthonormalBasis(const Vector3f &forward, const Vector3f &up
     setBase(2, forward);
 }
 
+/// @addr{0x80537740}
+void Matrix34f::makeOrthonormalBasisLocal(Vector3f forward, Vector3f up) {
+    forward.normalise2();
+    EGG::Vector3f right = up.cross(forward);
+    right.normalise2();
+    up = forward.cross(right);
+
+    setBase(3, EGG::Vector3f::zero);
+    setBase(0, right);
+    setBase(1, up);
+    setBase(2, forward);
+}
+
 /// @addr{0x802303BC}
 /// @brief Rotates the matrix about an axis.
 void Matrix34f::setAxisRotation(f32 angle, const EGG::Vector3f &axis) {
