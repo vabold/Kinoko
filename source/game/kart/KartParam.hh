@@ -117,7 +117,7 @@ public:
         f32 itemUnk17c;               ///< @unused
         f32 maxNormalAcceleration;
         f32 megaScale;
-        f32 wheelDistance;
+        f32 shrinkScale;
     };
     STATIC_ASSERT(sizeof(Stats) == 0x18c);
 

@@ -104,6 +104,10 @@ public:
         m_angVel0YFactor = val;
     }
 
+    void setScale(const EGG::Vector3f &v) {
+        m_scale = v;
+    }
+
     void setTop_(const EGG::Vector3f &v) {
         m_top_ = v;
     }
@@ -211,9 +215,10 @@ protected:
     EGG::Vector3f m_top_;              ///< Basically @ref m_top biased towards absolute up. @rename
 
     f32 m_angVel0YFactor; ///< Scalar for damping angular velocity.
-    bool m_forceUpright;  ///< Specifies if we should return the vehicle to upwards orientation.
-    bool m_noGravity;     ///< Disables gravity. Relevant when respawning.
-    bool m_killExtVelY;   ///< Caps external velocity at 0.
+    EGG::Vector3f m_scale;
+    bool m_forceUpright; ///< Specifies if we should return the vehicle to upwards orientation.
+    bool m_noGravity;    ///< Disables gravity. Relevant when respawning.
+    bool m_killExtVelY;  ///< Caps external velocity at 0.
 };
 
 /// @brief State management for most components of a bike's physics

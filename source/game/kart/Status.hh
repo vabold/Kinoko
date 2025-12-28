@@ -68,6 +68,7 @@ enum class eStatus {
     WheelieRot = 68,
     SkipWheelCalc = 69,
     JumpPadMushroomTrigger = 70,
+    Shocked = 71,
     MovingWaterStickyRoad = 73,
     NoSparkInvisibleWall = 75,
     CollidingOffroad = 76,

@@ -31,6 +31,7 @@ void KartCollide::init() {
     m_surfaceFlags.makeAllZero();
     m_respawnTimer = 0;
     m_solidOobTimer = 0;
+    m_shrinkTimer = 0;
     m_smoothedBack = 0.0f;
     m_suspBottomHeightNonSoftWall = 0.0f;
     m_suspBottomHeightSoftWall = 0.0f;
@@ -400,17 +401,17 @@ void KartCollide::calcBeforeRespawn() {
 
     auto &status = KartObjectProxy::status();
 
-    if (status.offBit(eStatus::BeforeRespawn)) {
-        return;
+    if (status.onBit(eStatus::BeforeRespawn)) {
+        if (--m_respawnTimer > 0) {
+            return;
+        }
+
+        status.resetBit(eStatus::BeforeRespawn);
+        m_respawnTimer = 0;
+        move()->triggerRespawn();
     }
 
-    if (--m_respawnTimer > 0) {
-        return;
-    }
-
-    status.resetBit(eStatus::BeforeRespawn);
-    m_respawnTimer = 0;
-    move()->triggerRespawn();
+    m_shrinkTimer = std::max(0, m_shrinkTimer - 1);
 }
 
 /// @addr{0x80573B00}
@@ -558,11 +559,13 @@ void KartCollide::calcObjectCollision() {
     constexpr f32 COS_PI_OVER_4 = 0.707f;
     constexpr s32 DUMMY_POLE_ANG_VEL_TIME = 3;
     constexpr f32 DUMMY_POLE_ANG_VEL = 0.005f;
+    constexpr s32 SHRINK_TIME = 60;
 
     m_totalReactionWallNrm = EGG::Vector3f::zero;
     m_surfaceFlags.resetBit(eSurfaceFlags::ObjectWall, eSurfaceFlags::ObjectWall3);
 
-    size_t collisionCount = objectCollisionKart()->checkCollision(pose(), velocity());
+    auto *objColKart = objectCollisionKart();
+    size_t collisionCount = objColKart->checkCollision(pose(), velocity());
 
     const auto *objectDirector = Field::ObjectDirector::Instance();
 
@@ -572,7 +575,11 @@ void KartCollide::calcObjectCollision() {
             size_t handlerIdx = static_cast<std::underlying_type_t<Reaction>>(reaction);
             Action newAction = (this->*s_objectCollisionHandlers[handlerIdx])(i);
 
-            if (reaction != Reaction::SmallBump && reaction != Reaction::BigBump) {
+            if (reaction == Reaction::SpinShrink && (m_shrinkTimer == 0)) {
+                m_shrinkTimer = SHRINK_TIME;
+                move()->activateShrink();
+                move()->applyForce(30.0f, objColKart->GetHitDirection(i), false);
+            } else if (reaction != Reaction::SmallBump && reaction != Reaction::BigBump) {
                 const EGG::Vector3f &hitDepth = objectDirector->hitDepth(i);
                 m_tangentOff += hitDepth;
                 m_movement += hitDepth;
@@ -1069,6 +1076,11 @@ Action KartCollide::handleReactSmallBump(size_t idx) {
     return Action::None;
 }
 
+/// @addr{0x805735BC}
+Action KartCollide::handleReactSpinShrink(size_t /*idx*/) {
+    return m_shrinkTimer <= 0 ? Action::UNK_15 : Action::None;
+}
+
 /// @addr{0x805733E4}
 Action KartCollide::handleReactHighLaunchLoseItem(size_t /*idx*/) {
     return Action::UNK_8;
@@ -1145,7 +1157,7 @@ std::array<KartCollide::ObjectCollisionHandler, 33> KartCollide::s_objectCollisi
         &KartCollide::handleReactLongCrushLoseItem,
         &KartCollide::handleReactSmallBump,
         &KartCollide::handleReactNone,
-        &KartCollide::handleReactNone,
+        &KartCollide::handleReactSpinShrink,
         &KartCollide::handleReactHighLaunchLoseItem,
         &KartCollide::handleReactNone,
         &KartCollide::handleReactWeakWall,
