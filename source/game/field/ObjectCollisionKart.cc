@@ -37,7 +37,7 @@ size_t ObjectCollisionKart::checkCollision(const EGG::Matrix34f &mat, const EGG:
 
     const EGG::Vector3f &scale = m_kartObject->scale();
     m_hull->transform(mat, scale, v);
-    m_hull->setBoundingRadius(scale.x * m_hull->getBoundingRadius());
+    m_hull->setBoundingRadius(scale.x * m_hull->initRadius());
 
     return ObjectDirector::Instance()->checkKartObjectCollision(m_kartObject, m_hull);
 }

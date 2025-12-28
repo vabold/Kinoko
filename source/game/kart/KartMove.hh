@@ -4,6 +4,7 @@
 #include "game/kart/KartBurnout.hh"
 #include "game/kart/KartHalfPipe.hh"
 #include "game/kart/KartObjectProxy.hh"
+#include "game/kart/KartParam.hh"
 #include "game/kart/KartReject.hh"
 #include "game/kart/KartState.hh"
 
@@ -28,7 +29,7 @@ public:
     KartMove();
     virtual ~KartMove();
 
-    virtual void createSubsystems();
+    virtual void createSubsystems(const KartParam::Stats &stats);
     virtual void calcTurn();
     virtual void calcWheelie() {}
     virtual void setTurnParams();
@@ -149,6 +150,15 @@ public:
     void activateCrush(u16 timer);
     void calcCrushed();
     void calcScale();
+
+    /// @addr{0x80580768}
+    void activateShrink() {
+        applyShrink(300);
+    }
+
+    void applyShrink(u16 timer);
+    void calcShock();
+    void deactivateShock(bool resetSpeed);
 
     void enterCannon();
     void calcCannon();
@@ -403,8 +413,11 @@ protected:
     EGG::Vector3f m_scale; ///< Normally the unit vector, but may vary due to crush animations.
     f32 m_totalScale;      ///< @unused Always 1.0f
     f32 m_hitboxScale;
+    f32 m_shockSpeedMultiplier;
     u16 m_mushroomBoostTimer; ///< Number of frames until the mushroom boost runs out.
-    u16 m_crushTimer;         ///< Number of frames until player will be uncrushed.
+    f32 m_invScale;
+    u16 m_shockTimer;
+    u16 m_crushTimer; ///< Number of frames until player will be uncrushed.
     u32 m_nonZipperAirtime;
     f32 m_jumpPadMinSpeed; ///< Snaps the player to a minimum speed when first touching a jump pad.
     f32 m_jumpPadMaxSpeed;
@@ -469,7 +482,7 @@ public:
     virtual void startWheelie();
     virtual void cancelWheelie();
 
-    void createSubsystems() override;
+    void createSubsystems(const KartParam::Stats &stats) override;
     void calcVehicleRotation(f32 /*turn*/) override;
     void calcWheelie() override;
     void onHop() override;

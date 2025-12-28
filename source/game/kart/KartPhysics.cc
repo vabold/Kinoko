@@ -52,12 +52,13 @@ void KartPhysics::updatePose() {
 /// @param dt delta time. It's always 1.0f.
 /// @param maxSpeed 120.0f, unless we're in a bullet (145.0f)
 /// @param air Whether we're touching ground. Currently unused.
-void KartPhysics::calc(f32 dt, f32 maxSpeed, const EGG::Vector3f & /*scale*/, bool air) {
+void KartPhysics::calc(f32 dt, f32 maxSpeed, const EGG::Vector3f &scale, bool air) {
     m_specialRot = m_instantaneousStuntRot * m_decayingStuntRot;
     m_extraRot = m_instantaneousExtraRot * m_decayingExtraRot;
 
     m_dynamics->setSpecialRot(m_specialRot);
     m_dynamics->setExtraRot(m_extraRot);
+    m_dynamics->setScale(scale);
 
     m_dynamics->calc(dt, maxSpeed, air);
 

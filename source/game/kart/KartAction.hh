@@ -18,6 +18,7 @@ enum class Action {
     UNK_9 = 9,
     UNK_12 = 12,
     UNK_14 = 14,
+    UNK_15 = 15,
     UNK_16 = 16,
     Max = 18,
 };
@@ -104,6 +105,7 @@ private:
     void startAction9();
     void startLongPressAction();
     void startShortPressAction();
+    void startSpinShrinkAction();
 
     /* ================================ *
      *     CALC FUNCTIONS

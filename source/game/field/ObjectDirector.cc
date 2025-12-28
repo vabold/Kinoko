@@ -304,6 +304,8 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
         return new ObjectFirebar(params);
     case ObjectId::Poihana:
         return new ObjectPoihana(params);
+    case ObjectId::Propeller:
+        return new ObjectPropeller(params);
     case ObjectId::DKRockGC:
         return new ObjectRock(params);
     case ObjectId::Sanbo:

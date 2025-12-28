@@ -56,6 +56,7 @@ void KartDynamics::init() {
     m_top_ = EGG::Vector3f::ey;
     m_speedFix = 0.0f;
     m_angVel0YFactor = 0.0f;
+    m_scale = EGG::Vector3f::unit;
 }
 
 /// @addr{0x805B4E84}
@@ -128,6 +129,11 @@ void KartDynamics::calc(f32 dt, f32 maxSpeed, bool air) {
     }
 
     m_velocity = m_extVel * dt + m_intVel + m_movingObjVel + m_movingRoadVel;
+
+    if (m_scale.z > 1.0f) {
+        maxSpeed *= m_scale.z;
+    }
+
     m_speedNorm = std::min(m_velocity.normalise(), maxSpeed);
     m_velocity *= m_speedNorm;
     m_pos += m_velocity;

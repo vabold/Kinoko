@@ -34,6 +34,7 @@ void CollisionData::reset() {
     bHasRoadVel = false;
     bWallAtLeftCloser = false;
     bWallAtRightCloser = false;
+    bMovingWaterVertical = false;
 }
 
 /// @addr{0x805B7F48}

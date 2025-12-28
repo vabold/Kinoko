@@ -70,6 +70,7 @@ enum class ObjectId {
     PakkunDokan = 0x1a2,
     FireSnake = 0x1a4,
     KoopaFirebar = 0x1a5,
+    Propeller = 0x1a6,
     DCPillarC = 0x1a7,
     FireSnakeV = 0x1a8,
     PuchiPakkun = 0x1aa,
