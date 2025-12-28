@@ -81,7 +81,7 @@ const EGG::Vector3f &ObjectCollisionConvexHull::getSupport(const EGG::Vector3f &
 /// @details The base game has the possibility to only provide a count to allocate space.
 /// To account for this, we split the base game's constructor into two overloads.
 /// This overload enables avoiding immediate point initialization, which is useful for inheritance.
-ObjectCollisionConvexHull::ObjectCollisionConvexHull(size_t count) {
+ObjectCollisionConvexHull::ObjectCollisionConvexHull(size_t count) : m_initRadius(70.0f) {
     ASSERT(count < 0x100);
 
     m_worldRadius = 70.0f;

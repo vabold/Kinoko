@@ -47,6 +47,7 @@
 #include "game/field/obj/ObjectPillar.hh"
 #include "game/field/obj/ObjectPoihana.hh"
 #include "game/field/obj/ObjectPress.hh"
+#include "game/field/obj/ObjectPropeller.hh"
 #include "game/field/obj/ObjectPsea.hh"
 #include "game/field/obj/ObjectPuchiPakkun.hh"
 #include "game/field/obj/ObjectPylon.hh"

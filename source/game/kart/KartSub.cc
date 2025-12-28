@@ -5,6 +5,7 @@
 #include "game/kart/KartCollide.hh"
 #include "game/kart/KartMove.hh"
 #include "game/kart/KartObject.hh"
+#include "game/kart/KartPullPath.hh"
 #include "game/kart/KartState.hh"
 #include "game/kart/KartSuspensionPhysics.hh"
 
@@ -29,10 +30,10 @@ KartSub::~KartSub() {
 }
 
 /// @addr{0x80595D48}
-void KartSub::createSubsystems(bool isBike) {
+void KartSub::createSubsystems(bool isBike, const KartParam::Stats &stats) {
     m_move = isBike ? new KartMoveBike : new KartMove;
     m_action = new KartAction;
-    m_move->createSubsystems();
+    m_move->createSubsystems(stats);
     m_state = new KartState;
     m_collide = new KartCollide;
 }
@@ -260,7 +261,7 @@ void KartSub::calcPass1() {
     }
 
     EGG::Vector3f forward = fullRot().rotateVector(EGG::Vector3f::ez);
-    m_someScale = std::max(scale().y, param()->stats().wheelDistance);
+    m_someScale = std::max(scale().y, param()->stats().shrinkScale);
 
     const EGG::Vector3f gravity(0.0f, -1.3f, 0.0f);
     f32 speedFactor = 1.0f;
