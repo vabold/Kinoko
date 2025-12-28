@@ -12,9 +12,8 @@
 namespace Field {
 
 /// @addr{0x806BBEC0}
-ObjectCow::ObjectCow(const System::MapdataGeoObj &params) : ObjectCollidable(params) {
-    m_startFrame = params.setting(2);
-}
+ObjectCow::ObjectCow(const System::MapdataGeoObj &params)
+    : ObjectCollidable(params), m_startFrame(static_cast<s32>(params.setting(2))) {}
 
 /// @addr{0x806BBF24}
 ObjectCow::~ObjectCow() = default;
@@ -114,6 +113,7 @@ void ObjectCowLeader::init() {
 
     setTarget(m_pos + m_railInterpolator->curTangentDir() * 10.0f);
 
+    ASSERT(m_mapObj);
     m_railInterpolator->setCurrVel(static_cast<f32>(m_mapObj->setting(1)));
 
     m_railSpeed = 0.0f;
@@ -128,7 +128,7 @@ void ObjectCowLeader::init() {
 void ObjectCowLeader::calc() {
     u32 t = System::RaceManager::Instance()->timer();
 
-    if (t >= m_startFrame) {
+    if (t >= static_cast<u32>(m_startFrame)) {
         StateManager::calc();
     }
 
@@ -283,7 +283,7 @@ void ObjectCowFollower::init() {
 void ObjectCowFollower::calc() {
     u32 t = System::RaceManager::Instance()->timer();
 
-    if (t < m_startFrame) {
+    if (t < static_cast<u32>(m_startFrame)) {
         if (m_currentFrame > m_waitFrames) {
             m_nextStateId = 1;
         }
@@ -432,11 +432,10 @@ void ObjectCowFollower::calcFollowLeader() {
 ObjectCowHerd::ObjectCowHerd(const System::MapdataGeoObj &params) : ObjectCollidable(params) {
     constexpr f32 FOLLOWER_SPACING = 600.0f;
 
-    u8 followerCount = params.setting(0);
-
     m_leader = new ObjectCowLeader(params);
     m_leader->load();
 
+    u8 followerCount = static_cast<u8>(params.setting(0));
     m_followers =
             std::span<ObjectCowFollower *>(new ObjectCowFollower *[followerCount], followerCount);
 

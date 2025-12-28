@@ -4,16 +4,12 @@ namespace Field {
 
 /// @addr{0x807FE658}
 ObjectCrane::ObjectCrane(const System::MapdataGeoObj &params)
-    : ObjectKCL(params), m_startPos(m_pos) {
+    : ObjectKCL(params), m_startPos(m_pos), m_xPeriod(std::max<s16>(2, params.setting(1))),
+      m_yPeriod(std::max<s16>(2, params.setting(4))), m_xAmplitude(params.setting(2)),
+      m_yAmplitude(params.setting(5)), m_xFreq(2.0f * F_PI / static_cast<f32>(m_xPeriod)),
+      m_yFreq(2.0f * F_PI / static_cast<f32>(m_yPeriod)) {
     m_xt = params.setting(3);
     m_yt = 0;
-    m_xPeriod = std::max(static_cast<u16>(2), params.setting(1));
-    m_yPeriod = std::max(static_cast<u16>(2), params.setting(4));
-    m_xAmplitude = params.setting(2);
-    m_yAmplitude = params.setting(5);
-
-    m_xFreq = 2.0f * F_PI / static_cast<f32>(m_xPeriod);
-    m_yFreq = 2.0f * F_PI / static_cast<f32>(m_yPeriod);
 }
 
 /// @addr{0x807FEB28}

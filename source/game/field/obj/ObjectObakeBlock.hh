@@ -51,7 +51,7 @@ private:
     EGG::Vector3f m_fallVel;
     EGG::Vector3f m_fallAngVel;
     EGG::BoundBox3f m_bbox;
-    s32 m_fallFrame; ///< Frame the block starts falling, or 0 if it never falls.
+    const s32 m_fallFrame; ///< Frame the block starts falling, or 0 if it never falls.
 };
 
 } // namespace Field

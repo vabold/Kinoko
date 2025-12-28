@@ -47,6 +47,10 @@ private:
     int m_cooldownTimer;
     f32 m_angRad;
 
+    const s32 m_cooldownDuration;
+    const f32 m_vel;
+    const f32 m_intangibleHeight;
+
     static constexpr f32 INITIAL_ANGULAR_SPEED = 3.0f;
 };
 

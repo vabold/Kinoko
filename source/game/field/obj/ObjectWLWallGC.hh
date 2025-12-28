@@ -38,9 +38,8 @@ private:
         return time % m_cycleDuration;
     }
 
-    s32 m_extendedDuration;
     u32 m_moveDuration;
-    s32 m_startFrame;
+    const s32 m_startFrame;
     s32 m_hiddenDuration;
     s32 m_extendedFrame;
     s32 m_retractingFrame;

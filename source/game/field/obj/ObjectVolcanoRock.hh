@@ -37,7 +37,7 @@ public:
     }
 
 private:
-    EGG::Vector3f calcPos(u32 frame);
+    EGG::Vector3f calcPos(s32 frame);
 
     const EGG::Vector3f m_initialPos;
     const EGG::Vector3f m_initialRot;

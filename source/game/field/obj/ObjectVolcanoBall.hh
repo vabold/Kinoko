@@ -53,12 +53,12 @@ private:
 
     /// @addr{0x806E3324}
     void calcBurning() {
-        if (m_currentFrame >= m_burnDuration) {
+        if (m_currentFrame >= static_cast<u32>(m_burnDuration)) {
             m_nextStateId = 0;
         }
     }
 
-    const u16 m_burnDuration; ///< How long the ball burns for before disappearing
+    const s16 m_burnDuration; ///< How long the ball burns for before disappearing
     const f32 m_accel;
     const f32 m_finalVel; ///< Velocity of the ball at the moment of impact
     const f32 m_endPosY;  ///< Height of the ball at the end of its rail

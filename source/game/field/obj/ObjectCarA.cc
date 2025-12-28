@@ -12,7 +12,7 @@ ObjectCarA::ObjectCarA(const System::MapdataGeoObj &params)
     : ObjectCollidable(params), StateManager(this, STATE_ENTRIES),
       m_finalVel(static_cast<f32>(params.setting(0))),
       m_accel(static_cast<f32>(params.setting(1)) / 10.0f),
-      m_stopTime(static_cast<u32>(params.setting(2))) {}
+      m_stopTime(static_cast<s32>(params.setting(2))) {}
 
 /// @addr{0x806B78CC}
 ObjectCarA::~ObjectCarA() = default;
@@ -96,7 +96,7 @@ void ObjectCarA::enterCruising() {
 
 /// @addr{0x806B8588}
 void ObjectCarA::calcStop() {
-    if (m_currentFrame > m_stopTime) {
+    if (m_currentFrame > static_cast<u32>(m_stopTime)) {
         m_motionState = MotionState::Accelerating;
         m_currentStateId = 1;
     }

@@ -44,7 +44,7 @@ private:
 
     /// Total time the piranha will be idle for. Not in the base game, but this prevents
     /// having to dereference m_mapObj multiple times.
-    const u32 m_waitDuration;
+    const s32 m_waitDuration;
 };
 
 } // namespace Field

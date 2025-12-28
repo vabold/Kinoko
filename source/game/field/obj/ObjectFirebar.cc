@@ -3,21 +3,22 @@
 namespace Field {
 
 /// @addr{0x807678F4}
-ObjectFirebar::ObjectFirebar(const System::MapdataGeoObj &params) : ObjectCollidable(params) {
-    m_spokes = std::max<u32>(1, params.setting(3));
-    size_t fireballCount = std::max<u32>(1, params.setting(0) * m_spokes);
-    m_angSpeed = static_cast<f32>(static_cast<s16>(params.setting(1)));
-
+ObjectFirebar::ObjectFirebar(const System::MapdataGeoObj &params)
+    : ObjectCollidable(params), m_angSpeed(static_cast<f32>(params.setting(1))) {
+    s32 spokes = std::max<s32>(1, static_cast<s32>(params.setting(3)));
+    s32 fireballCount = std::max<s32>(1, static_cast<s32>(params.setting(0)) * spokes);
     m_fireballs = std::span<ObjectFireball *>(new ObjectFireball *[fireballCount], fireballCount);
 
-    for (size_t i = 0; i < fireballCount; ++i) {
+    f32 distScalar = 100.0f * static_cast<f32>(params.setting(2));
+    f32 phase = 360.0f / spokes;
+
+    for (s32 i = 0; i < fireballCount; ++i) {
         m_fireballs[i] = new ObjectFireball(params);
         m_fireballs[i]->load();
 
-        f32 ring = 1.0f + static_cast<f32>(i / m_spokes);
-        m_fireballs[i]->setDistance(
-                ring * (100.0f * static_cast<f32>(static_cast<s16>(params.setting(2)))));
-        m_fireballs[i]->setAngle((360.0f / m_spokes) * (i % m_spokes));
+        f32 ring = 1.0f + static_cast<f32>(i / spokes);
+        m_fireballs[i]->setDistance(ring * distScalar);
+        m_fireballs[i]->setAngle(phase * (i % spokes));
     }
 
     EGG::Matrix34f mat;

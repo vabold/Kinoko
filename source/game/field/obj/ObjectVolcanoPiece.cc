@@ -7,12 +7,11 @@ namespace Field {
 /// @addr{0x80817DE8}
 ObjectVolcanoPiece::ObjectVolcanoPiece(const System::MapdataGeoObj &params)
     : ObjectKCL(params), m_initialPos(m_pos), m_initialRot(m_rot),
-      m_restDuration(params.setting(1) * 60),
-      m_shakeDuration(m_restDuration + params.setting(2) * 60),
-      m_quakeDuration(m_shakeDuration + params.setting(7) + 1), m_colMgrB(nullptr),
-      m_colMgrC(nullptr) {
-    snprintf(m_modelName, sizeof(m_modelName), "VolcanoPiece%hd",
-            static_cast<s16>(params.setting(0)));
+      m_restDuration(static_cast<s32>(params.setting(1)) * 60),
+      m_shakeDuration(m_restDuration + static_cast<s32>(params.setting(2)) * 60),
+      m_quakeDuration(m_shakeDuration + static_cast<s32>(params.setting(7)) + 1),
+      m_colMgrB(nullptr), m_colMgrC(nullptr) {
+    snprintf(m_modelName, sizeof(m_modelName), "VolcanoPiece%hd", params.setting(0));
 }
 
 /// @addr{0x80803DA8}
@@ -23,7 +22,7 @@ ObjectVolcanoPiece::~ObjectVolcanoPiece() {
 
 /// @addr{0x80819400}
 void ObjectVolcanoPiece::calc() {
-    u32 timer = System::RaceManager::Instance()->timer();
+    s32 timer = static_cast<s32>(static_cast<f32>(System::RaceManager::Instance()->timer()));
     if (calcState(timer) == State::Fall && FALL_DURATION - 1 == calcT(timer)) {
         update(0);
     }
@@ -187,7 +186,8 @@ void ObjectVolcanoPiece::update(u32 timeOffset) {
 
 /// @addr{0x80818674}
 void ObjectVolcanoPiece::calcScale(u32 timeOffset) {
-    State state = calcState(System::RaceManager::Instance()->timer() - timeOffset);
+    State state = calcState(static_cast<s32>(
+            static_cast<f32>(System::RaceManager::Instance()->timer() - timeOffset)));
 
     if (state == State::Rest || state == State::Gone) {
         return;
@@ -272,7 +272,7 @@ const EGG::Matrix34f &ObjectVolcanoPiece::calcShakeAndFall(EGG::Vector3f *vel, u
 }
 
 /// @addr{0x80818FCC}
-ObjectVolcanoPiece::State ObjectVolcanoPiece::calcState(u32 frame) const {
+ObjectVolcanoPiece::State ObjectVolcanoPiece::calcState(s32 frame) const {
     if (frame < m_restDuration) {
         return State::Rest;
     }
@@ -293,7 +293,7 @@ ObjectVolcanoPiece::State ObjectVolcanoPiece::calcState(u32 frame) const {
 }
 
 /// @addr{0x80819028}
-f32 ObjectVolcanoPiece::calcT(u32 frame) const {
+f32 ObjectVolcanoPiece::calcT(s32 frame) const {
     if (frame < m_restDuration) {
         return static_cast<f32>(frame);
     }

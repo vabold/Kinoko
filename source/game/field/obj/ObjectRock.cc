@@ -7,7 +7,10 @@
 namespace Field {
 
 /// @addr {0x8076F2E0}
-ObjectRock::ObjectRock(const System::MapdataGeoObj &params) : ObjectCollidable(params) {}
+ObjectRock::ObjectRock(const System::MapdataGeoObj &params)
+    : ObjectCollidable(params), m_cooldownDuration(params.setting(1)),
+      m_vel(static_cast<f32>(params.setting(2))),
+      m_intangibleHeight(static_cast<f32>(params.setting(3))) {}
 
 /// @addr{0x8076F344}
 ObjectRock::~ObjectRock() = default;
@@ -15,7 +18,7 @@ ObjectRock::~ObjectRock() = default;
 /// @addr{0x8076F384}
 void ObjectRock::init() {
     m_railInterpolator->init(0.0f, 0);
-    m_railInterpolator->setCurrVel(static_cast<f32>(m_mapObj->setting(2)));
+    m_railInterpolator->setCurrVel(m_vel);
     m_railInterpolator->calc();
 
     m_state = State::Tangible;
@@ -30,7 +33,7 @@ void ObjectRock::init() {
     m_angSpd = INITIAL_ANGULAR_SPEED;
     m_cooldownTimer = m_mapObj->setting(0);
     m_colTranslate.x = 0.0f;
-    m_colTranslate.y = static_cast<f32>(m_mapObj->setting(3));
+    m_colTranslate.y = m_intangibleHeight;
     m_colTranslate.z = 0.0f;
     calcTransform();
 }
@@ -78,8 +81,8 @@ void ObjectRock::calcIntangible() {
     if (m_cooldownTimer < 0) {
         m_state = State::Tangible;
         m_angSpd = INITIAL_ANGULAR_SPEED;
-        m_colTranslate.y = static_cast<f32>(m_mapObj->setting(3));
-        m_cooldownTimer = m_mapObj->setting(1);
+        m_colTranslate.y = m_intangibleHeight;
+        m_cooldownTimer = m_cooldownDuration;
         enableCollision();
     }
 }
@@ -110,9 +113,7 @@ void ObjectRock::checkSphereFull() {
     if (CollisionDirector::Instance()->checkSphereFull(50.0f, pos, EGG::Vector3f::inf,
                 KCL_TYPE_FLOOR, &info, nullptr, 0)) {
         m_colTranslate.y *= -0.3f;
-        m_angSpd = std::max(360.0f * static_cast<f32>(m_mapObj->setting(2)) /
-                        (480.0f * m_scale.x * F_PI),
-                m_angSpd + 1.0f);
+        m_angSpd = std::max(360.0f * m_vel / (480.0f * m_scale.x * F_PI), m_angSpd + 1.0f);
         m_flags.setBit(eFlags::Position);
         m_pos += info.tangentOff;
     }
@@ -122,7 +123,7 @@ void ObjectRock::checkSphereFull() {
 void ObjectRock::breakRock() {
     m_state = State::Intangible;
     m_railInterpolator->init(0.0f, 0);
-    m_railInterpolator->setCurrVel(static_cast<f32>(m_mapObj->setting(2)));
+    m_railInterpolator->setCurrVel(m_vel);
 
     m_flags.setBit(eFlags::Position);
     m_pos.y = m_startYPos;

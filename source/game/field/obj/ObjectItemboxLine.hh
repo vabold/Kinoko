@@ -23,8 +23,9 @@ public:
 
 private:
     std::span<ObjectItemboxPress *> m_press;
-    u32 m_stompCooldown; ///< Number of frames in between stomps
+    s32 m_stompCooldown; ///< Number of frames in between stomps
     u32 m_curPressIdx;
+    const s32 m_cooldownDuration;
 };
 
 } // namespace Field

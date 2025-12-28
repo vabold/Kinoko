@@ -48,10 +48,10 @@ private:
 
     std::span<ObjectChoropuGround *> m_groundObjs;
     ObjectChoropuHoll *m_objHoll;
-    s16 m_startFrameOffset;
-    u16 m_idleDuration;
+    const s16 m_startFrameOffset;
+    const s16 m_idleDuration;
     f32 m_groundHeight;
-    bool m_isStationary; ///< rPG moles don't move while MMM moles do
+    const bool m_isStationary; ///< rPG moles don't move while MMM moles do
     EGG::Matrix34f m_transMat;
     EGG::Matrix34f m_railMat;
     f32 m_groundLength;

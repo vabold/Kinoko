@@ -8,16 +8,11 @@ namespace Field {
 
 /// @addr{0x807FD938}
 ObjectBulldozer::ObjectBulldozer(const System::MapdataGeoObj &params)
-    : ObjectKCL(params), m_initialPos(m_pos), m_initialRot(m_rot) {
-    m_timeOffset = params.setting(3) * 2;
-    m_periodDenom = std::max<u16>(2, params.setting(2));
-    m_restFrames = params.setting(4);
-    m_amplitude = params.setting(1);
-    m_left = (strcmp(getName(), "bulldozer_left") == 0);
-    m_fullPeriod = m_periodDenom + m_restFrames * 2;
-    m_halfPeriod = m_fullPeriod / 2;
-    m_period = F_TAU / static_cast<f32>(m_periodDenom);
-}
+    : ObjectKCL(params), m_initialPos(m_pos), m_initialRot(m_rot),
+      m_timeOffset(params.setting(3) * 2), m_periodDenom(std::max<s16>(2, params.setting(2))),
+      m_restFrames(params.setting(4)), m_fullPeriod(m_periodDenom + m_restFrames * 2),
+      m_amplitude(params.setting(1)), m_left(strcmp(getName(), "bulldozer_left") == 0),
+      m_period(F_TAU / static_cast<f32>(m_periodDenom)), m_halfPeriod(m_fullPeriod / 2) {}
 
 /// @addr{0x807FE5F0}
 ObjectBulldozer::~ObjectBulldozer() = default;
