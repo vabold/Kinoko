@@ -72,6 +72,22 @@ public:
         return m_incomingIdx;
     }
 
+    [[nodiscard]] const EGG::Vector3f &pullDirection() const {
+        return m_pullDirection;
+    }
+
+    [[nodiscard]] f32 pullSpeed() const {
+        return m_pullSpeed;
+    }
+
+    [[nodiscard]] f32 maxPullSpeed() const {
+        return m_maxPullSpeed;
+    }
+
+    [[nodiscard]] f32 roadSpeedDecay() const {
+        return m_roadSpeedDecay;
+    }
+
 private:
     bool calcArea();
     void calcPointChange();

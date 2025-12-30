@@ -25,6 +25,7 @@ KartCollide::~KartCollide() = default;
 
 /// @addr{0x8056E624}
 void KartCollide::init() {
+    m_pullPath.init();
     calcBoundingRadius();
     m_floorMomentRate = 0.8f;
     m_surfaceFlags.makeAllZero();
@@ -615,12 +616,15 @@ void KartCollide::calcPoleTimer() {
 /// @addr{0x8056E8D4}
 void KartCollide::processWheel(CollisionData &collisionData, Hitbox &hitbox,
         Field::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut) {
+    processMovingWater(collisionData, maskOut);
     processFloor(collisionData, hitbox, colInfo, maskOut, true);
 }
 
 /// @addr{0x8056E764}
 void KartCollide::processBody(CollisionData &collisionData, Hitbox &hitbox,
         Field::CollisionInfo *colInfo, Field::KCLTypeMask *maskOut) {
+    processMovingWater(collisionData, maskOut);
+
     bool hasWallCollision = processWall(collisionData, maskOut);
 
     processFloor(collisionData, hitbox, colInfo, maskOut, false);
@@ -630,6 +634,40 @@ void KartCollide::processBody(CollisionData &collisionData, Hitbox &hitbox,
     }
 
     processCannon(maskOut);
+}
+
+/// @addr{0x8056E930}
+void KartCollide::processMovingWater(CollisionData &collisionData, Field::KCLTypeMask *maskOut) {
+    if (!(*maskOut & KCL_TYPE_BIT(COL_TYPE_MOVING_WATER))) {
+        return;
+    }
+
+    auto *colDir = Field::CollisionDirector::Instance();
+    if (!colDir->findClosestCollisionEntry(maskOut, KCL_TYPE_BIT(COL_TYPE_MOVING_WATER))) {
+        return;
+    }
+
+    state()->status().setBit(eStatus::StickyRoad);
+
+    auto *entry = colDir->closestCollisionEntry();
+    switch (entry->variant()) {
+    case 1:
+        collisionData.bMovingWaterMomentum = true;
+        collisionData.bMovingWaterStickyRoad = true;
+        collisionData.bMovingWaterDisableAccel = true;
+        break;
+    case 2:
+        collisionData.bMovingWaterDecaySpeed = true;
+        break;
+    case 3:
+        collisionData.bMovingWaterDecaySpeed = true;
+        collisionData.bMovingWaterDisableAccel = true;
+        collisionData.bMovingWaterVertical = true;
+        break;
+    default:
+        collisionData.bMovingWaterMomentum = true;
+        break;
+    }
 }
 
 /// @addr{0x8056F184}

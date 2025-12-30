@@ -11,6 +11,7 @@
 #include "game/field/BoxColManager.hh"
 #include "game/field/CollisionDirector.hh"
 
+#include "game/system/RaceConfig.hh"
 #include "game/system/RaceManager.hh"
 
 #include <egg/math/Math.hh>
@@ -126,6 +127,7 @@ void KartSub::calcPass0() {
     state()->calcInput();
     move()->calc();
     action()->calc();
+    collide()->pullPath().calc();
 
     if (status.onBit(eStatus::SkipWheelCalc)) {
         for (size_t tireIdx = 0; tireIdx < tireCount(); ++tireIdx) {
@@ -175,6 +177,7 @@ void KartSub::calcPass1() {
 
     state()->resetEjection();
 
+    m_movingWaterCollisionCount = 0;
     m_movingObjCollisionCount = 0;
     m_floorCollisionCount = 0;
     m_objVel.setZero();
@@ -329,6 +332,7 @@ void KartSub::calcPass1() {
     move()->setFloorCollisionCount(m_floorCollisionCount);
 
     calcMovingObj();
+    calcMovingWater();
 
     physics()->updatePose();
 
@@ -351,6 +355,20 @@ void KartSub::addFloor(const CollisionData &colData, bool) {
         ++m_movingObjCollisionCount;
         m_objVel += colData.roadVelocity;
     }
+
+    auto &status = KartObjectProxy::status();
+    if (colData.bMovingWaterMomentum || colData.bMovingWaterDecaySpeed) {
+        ++m_movingWaterCollisionCount;
+
+        status.changeBit(colData.bMovingWaterDecaySpeed, eStatus::MovingWaterDecaySpeed);
+        status.changeBit(colData.bMovingWaterDisableAccel, eStatus::DisableAcceleration);
+        status.changeBit(colData.bMovingWaterVertical, eStatus::MovingWaterVertical);
+    } else {
+        status.resetBit(eStatus::MovingWaterDecaySpeed, eStatus::DisableAcceleration,
+                eStatus::MovingWaterVertical);
+    }
+
+    status.changeBit(colData.bMovingWaterStickyRoad, eStatus::MovingWaterStickyRoad);
 }
 
 /// @addr{0x805979EC}
@@ -394,6 +412,45 @@ void KartSub::calcMovingObj() {
     } else {
         m_objVel *= 1.0f / static_cast<f32>(m_floorCollisionCount);
         physics()->composeMovingObjVel(m_objVel, 0.2f);
+    }
+}
+
+/// @addr{0x80597D4C}
+void KartSub::calcMovingWater() {
+    constexpr f32 DECAY_FLOOR_SCALAR = 0.7f;
+    constexpr f32 DECAY_AIR_SCALAR = 0.5f;
+    constexpr f32 DECAY_KC_AIR_SCALAR = 0.3f;
+
+    auto &status = KartObjectProxy::status();
+    const auto &pullPath = collide()->pullPath();
+
+    if (m_movingWaterCollisionCount > 0) {
+        f32 ratio = static_cast<f32>(m_movingWaterCollisionCount) /
+                static_cast<f32>(m_floorCollisionCount);
+        EGG::Vector3f dir = pullPath.pullDirection().perpInPlane(move()->smoothedUp(), true);
+
+        if (status.offBit(eStatus::MovingWaterDecaySpeed)) {
+            EGG::Vector3f vel = pullPath.pullSpeed() * dir * ratio;
+            physics()->composeMovingRoadVel(vel, 0.2f);
+        } else {
+            EGG::Vector3f vel = pullPath.pullSpeed() * dir;
+            physics()->shiftDecayMovingRoadVel(vel, pullPath.maxPullSpeed());
+        }
+    } else {
+        f32 airScalar = status.onBit(eStatus::MovingWaterStickyRoad) ? DECAY_AIR_SCALAR : 1.0f;
+        if (System::RaceConfig::Instance()->raceScenario().course == Course::Koopa_Cape &&
+                status.onBit(eStatus::MovingWaterDecaySpeed)) {
+            airScalar = DECAY_KC_AIR_SCALAR;
+        }
+
+        physics()->decayMovingRoadVel(DECAY_FLOOR_SCALAR, airScalar, m_floorCollisionCount > 0);
+    }
+
+    if (status.onBit(eStatus::MovingWaterStickyRoad)) {
+        EGG::Vector3f dir = pullPath.pullDirection().perpInPlane(move()->smoothedUp(), true);
+        dir.y *= 50.0f;
+        const EGG::Vector3f &vel = dynamics()->movingRoadVel();
+        dynamics()->setMovingRoadVel(EGG::Vector3f(vel.x, dir.y, vel.z));
     }
 }
 
