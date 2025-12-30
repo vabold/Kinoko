@@ -149,7 +149,6 @@ public:
     void activateCrush(u16 timer);
     void calcCrushed();
     void calcScale();
-    void applyBumpForce(f32 speed, const EGG::Vector3f &hitDir, bool resetSpeed);
 
     void enterCannon();
     void calcCannon();

@@ -1026,7 +1026,7 @@ Action KartCollide::handleReactLongCrushLoseItem(size_t /*idx*/) {
 
 /// @addr{0x805737B8}
 Action KartCollide::handleReactSmallBump(size_t idx) {
-    move()->applyBumpForce(30.0f, objectCollisionKart()->GetHitDirection(idx), false);
+    move()->applyForce(30.0f, objectCollisionKart()->GetHitDirection(idx), false);
     return Action::None;
 }
 
