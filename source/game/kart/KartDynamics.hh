@@ -92,6 +92,10 @@ public:
         m_movingObjVel = v;
     }
 
+    void setMovingRoadVel(const EGG::Vector3f &v) {
+        m_movingRoadVel = v;
+    }
+
     void setAngVel2(const EGG::Vector3f &v) {
         m_angVel2 = v;
     }
@@ -166,6 +170,10 @@ public:
         return m_movingObjVel;
     }
 
+    [[nodiscard]] const EGG::Vector3f &movingRoadVel() const {
+        return m_movingRoadVel;
+    }
+
     [[nodiscard]] const EGG::Vector3f &angVel2() const {
         return m_angVel2;
     }
@@ -185,7 +193,7 @@ protected:
     EGG::Vector3f m_angVel0;           ///< Angular velocity from @ref m_totalTorque.
     EGG::Vector3f m_movingObjVel;      ///< Velocity from things like TF conveyers.
     EGG::Vector3f m_angVel1;           ///< @unused
-    EGG::Vector3f m_movingRoadVel;     ///< Velocity from Koopa Cape water.
+    EGG::Vector3f m_movingRoadVel;    ///< Velocity from Koopa Cape water.
     EGG::Vector3f m_velocity;          ///< Sum of the linear velocities.
     f32 m_speedNorm;                   ///< Min of the max speed and @ref m_velocity magnitude.
     EGG::Vector3f m_angVel2;           ///< The main component of angular velocity.

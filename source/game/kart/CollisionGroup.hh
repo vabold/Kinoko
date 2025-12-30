@@ -37,13 +37,18 @@ struct CollisionData {
     bool bFloor; ///< Set if colliding with KCL which satisfies #KCL_TYPE_FLOOR
     bool bWall;  ///< Set if colliding with KCL which satisfies #KCL_TYPE_WALL
     bool bInvisibleWall;
+    bool bTrickable;
+    bool bMovingWaterV0;
     bool bWall3; ///< Set if colliding with #COL_TYPE_WALL_2
     bool bInvisibleWallOnly;
+    bool bMovingWaterV2;
     bool bSoftWall;
-    bool bTrickable;
+    bool bMovingWaterStickyRoad;
+    bool bMovingWaterDisableAccel;
     bool bHasRoadVel;
     bool bWallAtLeftCloser;
     bool bWallAtRightCloser;
+    bool bMovingWaterVertical;
 };
 
 /// @brief Represents a hitbox for the kart body or a wheel.
