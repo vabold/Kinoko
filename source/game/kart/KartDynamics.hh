@@ -92,6 +92,10 @@ public:
         m_movingObjVel = v;
     }
 
+    void setMovingRoadVel(const EGG::Vector3f &v) {
+        m_movingRoadVel = v;
+    }
+
     void setAngVel2(const EGG::Vector3f &v) {
         m_angVel2 = v;
     }
@@ -164,6 +168,10 @@ public:
 
     [[nodiscard]] const EGG::Vector3f &movingObjVel() const {
         return m_movingObjVel;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &movingRoadVel() const {
+        return m_movingRoadVel;
     }
 
     [[nodiscard]] const EGG::Vector3f &angVel2() const {

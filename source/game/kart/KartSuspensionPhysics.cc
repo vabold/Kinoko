@@ -61,6 +61,7 @@ void WheelPhysics::realign(const EGG::Vector3f &bottom, const EGG::Vector3f &veh
     m_speed = m_pos - m_lastPos;
     m_speed -= dynamics()->intVel();
     m_speed -= dynamics()->movingObjVel();
+    m_speed -= dynamics()->movingRoadVel();
     m_speed -= collisionData().movement;
     m_speed -= collide()->movement();
     m_hitboxGroup->collisionData().vel += m_speed;
@@ -123,7 +124,7 @@ void WheelPhysics::calcSuspension(const EGG::Vector3f &forward) {
     f32 rate =
             status().onBit(eStatus::SomethingWallCollision) ? 0.01f : collide()->floorMomentRate();
 
-    collide()->applySomeFloorMoment(0.1f, rate, m_hitboxGroup, forward, move()->dir(), speed(),
+    collide()->applySomeFloorMoment(0.1f, rate, m_hitboxGroup, forward, move()->dir(), m_speed,
             true, true, status().offBit(eStatus::LargeFlipHit, eStatus::WheelieRot));
 }
 

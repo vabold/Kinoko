@@ -23,10 +23,14 @@ void CollisionData::reset() {
     bFloor = false;
     bWall = false;
     bInvisibleWall = false;
+    bTrickable = false;
+    bMovingWaterMomentum = false;
     bWall3 = false;
     bInvisibleWallOnly = false;
+    bMovingWaterDecaySpeed = false;
     bSoftWall = false;
-    bTrickable = false;
+    bMovingWaterStickyRoad = false;
+    bMovingWaterDisableAccel = false;
     bHasRoadVel = false;
     bWallAtLeftCloser = false;
     bWallAtRightCloser = false;

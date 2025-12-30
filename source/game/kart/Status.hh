@@ -30,6 +30,7 @@ enum class eStatus {
     TouchingGround = 18,     ///< Set when any part of the vehicle is colliding with floor KCL.
     Hop = 19,                ///< Set while we are in a drift hop. Clears when we land.
     Boost = 20,              ///< Set while in a boost.
+    DisableAcceleration = 22,
     AirStart = 23,
     StickRight = 24,      ///< Set on right stick input. Mutually exclusive to @ref m_bStickLeft.
     LargeFlipHit = 25,    ///< Set when hitting an exploding object.
@@ -67,12 +68,14 @@ enum class eStatus {
     WheelieRot = 68,
     SkipWheelCalc = 69,
     JumpPadMushroomTrigger = 70,
+    MovingWaterStickyRoad = 73,
     NoSparkInvisibleWall = 75,
     CollidingOffroad = 76,
     InRespawn = 77,
     AfterRespawn = 78,
     Crushed = 80,
     JumpPadFixedSpeed = 84,
+    MovingWaterDecaySpeed = 85,
     JumpPadDisableYsusForce = 86,
     HalfpipeMidair = 87,
 
@@ -83,6 +86,7 @@ enum class eStatus {
     AfterCannon = 102,
     ActionMidZipper = 103,  ///< Set when we enter an action while mid-air from a zipper.
     ChargeStartBoost = 104, ///< Like @ref m_bAccelerate but during countdown.
+    MovingWaterVertical = 105,
     EndHalfPipe = 107,
 
     AutoDrift = 133, ///< True if auto transmission, false if manual.

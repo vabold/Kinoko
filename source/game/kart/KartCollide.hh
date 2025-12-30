@@ -3,6 +3,7 @@
 #include "game/kart/CollisionGroup.hh"
 #include "game/kart/KartAction.hh"
 #include "game/kart/KartObjectProxy.hh"
+#include "game/kart/KartPullPath.hh"
 
 #include "game/field/CourseColMgr.hh"
 
@@ -93,6 +94,7 @@ public:
             Field::KCLTypeMask *maskOut);
     void processBody(CollisionData &collisionData, Hitbox &hitbox, Field::CollisionInfo *colInfo,
             Field::KCLTypeMask *maskOut);
+    void processMovingWater(CollisionData &collisionData, Field::KCLTypeMask *maskOut);
     [[nodiscard]] bool processWall(CollisionData &collisionData, Field::KCLTypeMask *maskOut);
     void processFloor(CollisionData &collisionData, Hitbox &hitbox, Field::CollisionInfo *colInfo,
             Field::KCLTypeMask *maskOut, bool wheel);
@@ -152,6 +154,14 @@ public:
     /// @endSetters
 
     /// @beginGetters
+    [[nodiscard]] KartPullPath &pullPath() {
+        return m_pullPath;
+    }
+
+    [[nodiscard]] const KartPullPath &pullPath() const {
+        return m_pullPath;
+    }
+
     [[nodiscard]] f32 boundingRadius() const {
         return m_boundingRadius;
     }
@@ -196,6 +206,7 @@ public:
 private:
     typedef Action (KartCollide::*ObjectCollisionHandler)(size_t idx);
 
+    KartPullPath m_pullPath;
     f32 m_boundingRadius;
     f32 m_floorMomentRate;
     EGG::Vector3f m_totalReactionWallNrm;

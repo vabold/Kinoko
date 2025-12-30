@@ -29,6 +29,7 @@ void KartPhysics::reset() {
     m_instantaneousExtraRot = EGG::Quatf::ident;
     m_extraRot = EGG::Quatf::ident;
     m_movingObjVel.setZero();
+    m_movingRoadVel.setZero();
     m_pose = EGG::Matrix34f::ident;
     m_xAxis = EGG::Vector3f(m_pose[0, 0], m_pose[1, 0], m_pose[2, 0]);
     m_yAxis = EGG::Vector3f(m_pose[0, 1], m_pose[1, 1], m_pose[2, 1]);
@@ -65,6 +66,17 @@ void KartPhysics::calc(f32 dt, f32 maxSpeed, const EGG::Vector3f & /*scale*/, bo
 
     m_instantaneousStuntRot = EGG::Quatf::ident;
     m_instantaneousExtraRot = EGG::Quatf::ident;
+}
+
+/// @addr{0x805A01CC}
+void KartPhysics::shiftDecayMovingRoadVel(const EGG::Vector3f &v, f32 maxPullSpeed) {
+    m_movingRoadVel += v;
+
+    if (m_movingRoadVel.squaredLength() > std::numeric_limits<f32>::epsilon()) {
+        f32 speed = std::min(maxPullSpeed, m_movingRoadVel.normalise());
+        m_movingRoadVel *= speed;
+        m_dynamics->setMovingRoadVel(m_movingRoadVel);
+    }
 }
 
 /// @addr{0x805A04A0}

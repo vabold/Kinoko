@@ -635,6 +635,13 @@ void KartMove::calcStickyRoad() {
                     EGG::Vector3f::inf, STICKY_MASK, &colInfo, &kcl_flags, 0)) {
             m_vel1Dir = m_vel1Dir.perpInPlane(colInfo.floorNrm, true);
             dynamics()->setMovingObjVel(dynamics()->movingObjVel().rej(colInfo.floorNrm));
+            dynamics()->setMovingRoadVel(dynamics()->movingRoadVel().rej(colInfo.floorNrm));
+
+            if (status.onBit(eStatus::MovingWaterStickyRoad)) {
+                m_up = colInfo.floorNrm;
+                m_smoothedUp = colInfo.floorNrm;
+            }
+
             stickyRoad = true;
 
             break;
@@ -1283,6 +1290,15 @@ void KartMove::calcVehicleSpeed() {
         m_speed += 0.5f;
     }
 
+    bool water = false;
+
+    if (status.onBit(eStatus::MovingWaterVertical) ||
+            (status.onBit(eStatus::MovingWaterDecaySpeed) &&
+                    status.offBit(eStatus::MushroomBoost) && EGG::Mathf::abs(m_speed) > 5.0f)) {
+        water = true;
+        m_speed *= collide()->pullPath().roadSpeedDecay();
+    }
+
     m_acceleration = 0.0f;
     m_speedDragMultiplier = 1.0f;
 
@@ -1293,7 +1309,8 @@ void KartMove::calcVehicleSpeed() {
 
     if ((status.onAllBit(eStatus::SomethingWallCollision, eStatus::TouchingGround) &&
                 status.offBit(eStatus::AnyWheelCollision)) ||
-            status.offBit(eStatus::TouchingGround) || status.onBit(eStatus::ChargingSSMT)) {
+            status.offBit(eStatus::TouchingGround) ||
+            status.onBit(eStatus::DisableAcceleration, eStatus::ChargingSSMT)) {
         if (status.onBit(eStatus::RampBoost) && state()->airtime() < 4) {
             m_acceleration = 7.0f;
         } else {
@@ -1311,9 +1328,7 @@ void KartMove::calcVehicleSpeed() {
             m_speed *= m_speedDragMultiplier;
         }
 
-    } else if (status.onBit(eStatus::Boost)) {
-        m_acceleration = m_boost.acceleration();
-    } else {
+    } else if (status.offBit(eStatus::Boost)) {
         if (status.offBit(eStatus::JumpPad, eStatus::RampBoost)) {
             if (status.onBit(eStatus::Accelerate)) {
                 m_acceleration =
@@ -1341,8 +1356,10 @@ void KartMove::calcVehicleSpeed() {
                 m_speed *= stats.turningSpeed + (1.0f - stats.turningSpeed) * x;
             }
         } else {
-            m_acceleration = 7.0f;
+            m_acceleration = water ? calcVehicleAcceleration() : 7.0f;
         }
+    } else {
+        m_acceleration = water ? calcVehicleAcceleration() : m_boost.acceleration();
     }
 }
 
