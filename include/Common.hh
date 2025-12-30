@@ -376,7 +376,7 @@ STATIC_ASSERT(std::numeric_limits<f32>::epsilon() == 1.0f / 8388608.0f);
 STATIC_ASSERT(
         std::endian::native == std::endian::big || std::endian::native == std::endian::little);
 
-/// @brief Helper template which uses function overloading and implict up-casting to determine
+/// @brief Helper template which uses function overloading and implicit up-casting to determine
 /// whether or not a class is derived from a templated base class (i.e. MapdataPointInfoAccessor
 /// derives from MapdataAccessorBase). See: https://en.cppreference.com/w/cpp/language/sfinae
 template <template <typename...> class Base, typename Derived>

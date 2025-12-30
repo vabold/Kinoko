@@ -1957,7 +1957,7 @@ void KartMove::tryStartBoostPanel() {
 }
 
 /// @stage 2
-/// @brief Sets offroad invincibility and and enables the ramp boost bitfield flag.
+/// @brief Sets offroad invincibility and enables the ramp boost bitfield flag.
 /// @addr{Inlined at 0x80587590}
 void KartMove::tryStartBoostRamp() {
     constexpr s16 BOOST_RAMP_DURATION = 60;

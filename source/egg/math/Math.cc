@@ -432,7 +432,7 @@ u32 FindRootsQuadratic(f32 a, f32 b, f32 c, f32 &root1, f32 &root2) {
             return 2;
         }
 
-        // Nintendo might've typo'd here?
+        // Nintendo might've made a typo here?
         if (x >= -EPSILON) {
             root1 = 0.0f;
             return 1;

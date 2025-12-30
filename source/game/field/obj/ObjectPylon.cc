@@ -100,7 +100,7 @@ void ObjectPylon::calc() {
 }
 
 /// @addr{0x8082DBEC}
-/// @details If the player's speed ratio is above 70%, then the pylone nters the "Hit" state where
+/// @details If the player's speed ratio is above 70%, then the pylon enters the "Hit" state where
 /// it bounces away. Else, it checks to see the angle of impact between the player and the pylon. If
 /// the player's angle falls between 30 and 150 degrees, then the cone will reduce the player's
 /// speed down to 82%.

@@ -12,7 +12,7 @@ ObjectKinoko::ObjectKinoko(const System::MapdataGeoObj &params)
     m_pulseFalloff = 0.1f;
 }
 
-/// @adrr{0x80807A54}
+/// @addr{0x80807A54}
 ObjectKinoko::~ObjectKinoko() = default;
 
 /// @addr{0x8080782C}

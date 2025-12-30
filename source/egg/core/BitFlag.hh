@@ -270,7 +270,7 @@ private:
     /// @brief Internal. Changes a specific bit.
     /// @details Validates that `e` is in the range of `T`.
     /// @param on Determines whether to set or reset the bit.
-    /// @param e Enum value respresenting the bit to change.
+    /// @param e Enum value representing the bit to change.
     constexpr void changeBit_(bool on, E e) {
         ASSERT(static_cast<EI>(e) < MAX_CAPACITY);
         change(on, makeMask_(e));
@@ -457,7 +457,7 @@ private:
     /// @brief Internal. Changes a specific bit.
     /// @details Validates that `e` is in the range of `N`.
     /// @param on Determines whether to set or reset the bit.
-    /// @param e Enum value respresenting the bit to change.
+    /// @param e Enum value representing the bit to change.
     [[nodiscard]] constexpr void changeBit_(bool on, E e) {
         on ? setBit_(e) : resetBit_(e);
     }
