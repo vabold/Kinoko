@@ -59,11 +59,24 @@ public:
         Frm48Data frameValues[1]; // at 0x8
     };
 
+    struct Frm96Data {
+        f32 frame; // at 0x0
+        f32 value; // at 0x4
+        f32 slope; // at 0x8
+    };
+    struct FVS96Data {
+        Frm96Data frameValues[1]; // at 0x0
+    };
+
     struct FVSData {
         u16 numFrameValues;        // at 0x0
         u8 PADDING_0x2[0x4 - 0x2]; // at 0x2
         f32 invKeyFrameRange;      // at 0x4
-        FVS48Data fvs48;           // at 0x8
+
+        union {
+            FVS48Data fvs48; // at 0x8
+            FVS96Data fvs96; // at 0x8
+        };
     };
 
     /// @brief Const value (CV) animation data
