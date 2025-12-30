@@ -192,7 +192,7 @@ static constexpr std::array<BaseAndDec64, 32> RSQRTE_TABLE = {{
 
     if (exponent == 0) {
         // Shift so one bit goes to where the exponent would be,
-        // then clear that bit to mimick a not-subnormal number!
+        // then clear that bit to mimic a not-subnormal number!
         // Aka, if there are 12 leading zeroes, shift left once
         u32 shift = std::countl_zero(mantissa) - static_cast<u32>(63 - EXPONENT_SHIFT_F64);
 

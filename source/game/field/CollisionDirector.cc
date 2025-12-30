@@ -211,7 +211,7 @@ void CollisionDirector::resetCollisionEntries(KCLTypeMask *ptr) {
 
 /// @brief Called when we find a piece of collision we are touching and want to save it temporarily.
 /// @addr{0x807BDA9C}
-/// @param dist Distance from player to the KCL traingle center
+/// @param dist Distance from player to the KCL triangle center
 /// @param typeMask Updated to include kclTypeBit
 /// @param kclTypeBit The attribute and additional info about the tri we are colliding with
 /// @param attribute The base type of the tri we are colliding with

@@ -4,8 +4,8 @@
 
 namespace Field {
 
-/// @brief The curved conveyer belt at the end of the factory on Toad's Factory.
-/// @details This conveyer switches direction twice.
+/// @brief The curved conveyor belt at the end of the factory on Toad's Factory.
+/// @details This conveyor switches direction twice.
 class ObjectBeltCurveA final : public ObjectBelt {
 public:
     ObjectBeltCurveA(const System::MapdataGeoObj &params);

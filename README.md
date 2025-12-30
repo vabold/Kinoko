@@ -95,7 +95,7 @@ Kinoko will iterate the array of test cases defined in `testCases.json`, each wi
 
 `krkgPath` points to the krkg file generated in the previous section for this time trial ghost. 
 
-`targetFrame` is the number of frames to attempt sync for this ghost. Kinoko will throw an error if it is larger than the framecount stored in the krkg. If Kinoko reaches `targetFrame` while maintaing sync, then the test case will pass.
+`targetFrame` is the number of frames to attempt sync for this ghost. Kinoko will throw an error if it is larger than the framecount stored in the krkg. If Kinoko reaches `targetFrame` while maintaining sync, then the test case will pass.
 
 To update the test binary after making changes to `testCases.json`, be sure to re-run:
 

@@ -4,7 +4,7 @@
 
 namespace Field {
 
-/// @brief The base class for a conveyer belt which induces road velocity.
+/// @brief The base class for a conveyor belt which induces road velocity.
 class ObjectBelt : public ObjectDrivable {
 public:
     ObjectBelt(const System::MapdataGeoObj &params);
