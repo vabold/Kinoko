@@ -63,9 +63,9 @@ void KartDynamics::setInertia(const EGG::Vector3f &m, const EGG::Vector3f &n) {
     constexpr f32 TWELFTH = 1.0f / 12.0f;
 
     m_inertiaTensor = EGG::Matrix34f::zero;
-    m_inertiaTensor[0, 0] = (m.y * m.y + m.z * m.z) * TWELFTH + n.y * n.y + n.z * n.z;
-    m_inertiaTensor[1, 1] = (m.z * m.z + m.x * m.x) * TWELFTH + n.z * n.z + n.x * n.x;
-    m_inertiaTensor[2, 2] = (m.x * m.x + m.y * m.y) * TWELFTH + n.x * n.x + n.y * n.y;
+    m_inertiaTensor[0, 0] = TWELFTH * (m.y * m.y + m.z * m.z) + (n.y * n.y + n.z * n.z);
+    m_inertiaTensor[1, 1] = TWELFTH * (m.z * m.z + m.x * m.x) + (n.z * n.z + n.x * n.x);
+    m_inertiaTensor[2, 2] = TWELFTH * (m.x * m.x + m.y * m.y) + (n.x * n.x + n.y * n.y);
     m_inertiaTensor.inverseTo33(m_invInertiaTensor);
 }
 

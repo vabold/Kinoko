@@ -1503,7 +1503,7 @@ void KartMove::calcAcceleration() {
     }
 
     EGG::Matrix34f local_90;
-    local_90.setAxisRotation(rotationScalar * DEG2RAD, crossVec);
+    local_90.setAxisRotation(DEG2RAD * rotationScalar, crossVec);
     m_vel1Dir = local_90.multVector33(m_vel1Dir);
 
     const auto *raceMgr = System::RaceManager::Instance();
@@ -1790,6 +1790,8 @@ f32 KartMove::calcSlerpRate(f32 scale, const EGG::Quatf &from, const EGG::Quatf 
 
 /// @addr{0x80586DB4}
 void KartMove::applyForce(f32 force, const EGG::Vector3f &hitDir, bool stop) {
+    constexpr s16 BUMP_COOLDOWN = 5;
+
     if (m_bumpTimer >= 1) {
         return;
     }
@@ -1797,7 +1799,7 @@ void KartMove::applyForce(f32 force, const EGG::Vector3f &hitDir, bool stop) {
     dynamics()->addForce(force * hitDir.perpInPlane(m_up, true));
     collide()->startFloorMomentRate();
 
-    m_bumpTimer = 5;
+    m_bumpTimer = BUMP_COOLDOWN;
 
     if (stop) {
         m_speed = 0.0f;
@@ -2238,24 +2240,6 @@ void KartMove::calcCrushed() {
 void KartMove::calcScale() {
     m_kartScale->calc();
     setScale(m_kartScale->currScale());
-}
-
-/// @addr{0x80586DB4}
-void KartMove::applyBumpForce(f32 speed, const EGG::Vector3f &hitDir, bool resetSpeed) {
-    constexpr s16 BUMP_COOLDOWN = 5;
-
-    if (m_bumpTimer >= 1) {
-        return;
-    }
-
-    dynamics()->addForce(speed * hitDir.perpInPlane(move()->up(), true));
-    collide()->startFloorMomentRate();
-
-    m_bumpTimer = BUMP_COOLDOWN;
-
-    if (resetSpeed) {
-        m_speed = 0.0f;
-    }
 }
 
 /// @addr{0x8058498C}
