@@ -83,6 +83,29 @@ public:
     }
 };
 
+template <>
+class CResAnmChrFrm<ResAnmChr::Frm96Data>
+    : public CResAnmChrFrmBase<ResAnmChr::Frm96Data, CResAnmChrFrm<ResAnmChr::Frm96Data>> {
+public:
+    CResAnmChrFrm(const ResAnmChr::Frm96Data *pPtr) : CResAnmChrFrmBase(pPtr) {}
+
+    [[nodiscard]] f32 GetFrame() const {
+        return parse<f32>(mPtr->frame);
+    }
+
+    [[nodiscard]] f32 GetFrameF32() const {
+        return parse<f32>(mPtr->frame);
+    }
+
+    [[nodiscard]] f32 GetValue(const ResAnmChr::FVSData * /*pFVSData*/) const {
+        return parse<f32>(mPtr->value);
+    }
+
+    [[nodiscard]] f32 GetSlope() const {
+        return parse<f32>(mPtr->slope);
+    }
+};
+
 /// @brief Animation traits
 template <typename T>
 class CAnmFmtTraits {};
@@ -103,6 +126,22 @@ public:
     }
 };
 
+template <>
+class CAnmFmtTraits<ResAnmChr::FVS96Data> {
+public:
+    typedef ResAnmChr::Frm96Data TFrmData;
+    typedef f32 TFrame;
+
+    [[nodiscard]] static CResAnmChrFrm<TFrmData> GetKeyFrame(const ResAnmChr::FVSData *pFVSData,
+            int index) {
+        return CResAnmChrFrm<TFrmData>(&pFVSData->fvs96.frameValues[index]);
+    }
+
+    [[nodiscard]] static TFrame QuantizeFrame(f32 frame) {
+        return frame;
+    }
+};
+
 /// @brief Calculate frame values (FVS) result
 template <typename T>
 [[nodiscard]] f32 CalcResultFVS(f32 frame, const ResAnmChr::NodeData *nodeData,
@@ -120,6 +159,11 @@ template <typename T>
 [[nodiscard]] inline f32 CalcResult48(f32 frame, const ResAnmChr::NodeData *nodeData,
         const ResAnmChr::NodeData::AnmData *anmData, bool constant) {
     return CalcResultFVS<ResAnmChr::FVS48Data>(frame, nodeData, anmData, constant);
+}
+
+[[nodiscard]] inline f32 CalcResult96(f32 frame, const ResAnmChr::NodeData *nodeData,
+        const ResAnmChr::NodeData::AnmData *anmData, bool constant) {
+    return CalcResultFVS<ResAnmChr::FVS96Data>(frame, nodeData, anmData, constant);
 }
 
 /// @brief Frame values (FVS) implementation
@@ -189,9 +233,6 @@ const ResAnmChr::NodeData::AnmData *GetAnmScale(f32 frame, EGG::Vector3f &result
     switch (flags & ResAnmChr::NodeData::Flag::FLAG_SCALE_FMT_MASK) {
     case 0:
     case ResAnmChr::NodeData::Flag::FLAG_SCALE_FVS32_FMT:
-    case ResAnmChr::NodeData::Flag::FLAG_SCALE_FVS96_FMT:
-        PANIC("GetAnmScale flags not handled!");
-        break;
     case ResAnmChr::NodeData::Flag::FLAG_SCALE_FVS48_FMT: {
         result.x = CalcResult48(frame, nodeData, anmData++,
                 flags & ResAnmChr::NodeData::FLAG_SCALE_X_CONST);
@@ -204,6 +245,20 @@ const ResAnmChr::NodeData::AnmData *GetAnmScale(f32 frame, EGG::Vector3f &result
                     flags & ResAnmChr::NodeData::Flag::FLAG_SCALE_Y_CONST);
             result.z = CalcResult48(frame, nodeData, anmData++,
                     flags & ResAnmChr::NodeData::Flag::FLAG_SCALE_Z_CONST);
+        }
+    } break;
+    case ResAnmChr::NodeData::Flag::FLAG_SCALE_FVS96_FMT: {
+        result.x = CalcResult96(frame, nodeData, anmData++,
+                flags & ResAnmChr::NodeData::FLAG_SCALE_X_CONST);
+
+        if (flags & ResAnmChr::NodeData::FLAG_SCALE_UNIFORM) {
+            result.y = result.x;
+            result.z = result.x;
+        } else {
+            result.y = CalcResult96(frame, nodeData, anmData++,
+                    flags & ResAnmChr::NodeData::FLAG_SCALE_Y_CONST);
+            result.z = CalcResult96(frame, nodeData, anmData++,
+                    flags & ResAnmChr::NodeData::FLAG_SCALE_Z_CONST);
         }
     } break;
     default: {

@@ -93,12 +93,17 @@ void KartObjectManager::loadScaleAnimations() {
     ASSERT(file);
 
     // Copy construct onto the heap
-    auto resAnmChr = Abstract::g3d::ResFile(file).resAnmChr("press_scale_up");
+    auto resAnmChr = Abstract::g3d::ResFile(file).resAnmChr("thunder_scale_up");
+    s_thunderScaleUpAnmChr = new Abstract::g3d::ResAnmChr(resAnmChr);
+    resAnmChr = Abstract::g3d::ResFile(file).resAnmChr("thunder_scale_down");
+    s_thunderScaleDownAnmChr = new Abstract::g3d::ResAnmChr(resAnmChr);
+    resAnmChr = Abstract::g3d::ResFile(file).resAnmChr("press_scale_up");
     s_pressScaleUpAnmChr = new Abstract::g3d::ResAnmChr(resAnmChr);
 }
 
-Abstract::g3d::ResAnmChr *KartObjectManager::s_pressScaleUpAnmChr = nullptr; ///< @addr{0x809C18B0}
-
-KartObjectManager *KartObjectManager::s_instance = nullptr; ///< @addr{0x809C18F8}
+Abstract::g3d::ResAnmChr *KartObjectManager::s_thunderScaleUpAnmChr = nullptr;
+Abstract::g3d::ResAnmChr *KartObjectManager::s_thunderScaleDownAnmChr = nullptr;
+Abstract::g3d::ResAnmChr *KartObjectManager::s_pressScaleUpAnmChr = nullptr;
+KartObjectManager *KartObjectManager::s_instance = nullptr;
 
 } // namespace Kart
