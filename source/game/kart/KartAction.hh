@@ -101,6 +101,7 @@ private:
     void startAction1();
     void startAction2();
     void startAction3();
+    void startAction4();
     void startAction5();
     void startLargeFlipAction();
     void startAction9();
@@ -115,6 +116,7 @@ private:
     bool calcStub();
     bool calcAction1();
     bool calcLaunchAction();
+    bool calcAction4();
     bool calcLargeFlipAction();
     bool calcPressAction();
 
@@ -138,6 +140,7 @@ private:
     f32 m_pitch;
     f32 m_deltaPitch;
     f32 m_flipPhase;
+    s32 m_groundStartLaunchTimer;
 
     StartActionFunc m_onStart;
     CalcActionFunc m_onCalc;
