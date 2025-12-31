@@ -32,6 +32,7 @@ enum class ObjectId {
     BasabasaDummy = 0xe6,
     CarA2 = 0xe7,
     CarA3 = 0xe8,
+    Hwanwan = 0xe9,
     HeyhoBallGBA = 0xea,
     DokanSFC = 0x12e,
     CastleTree1c = 0x130,
