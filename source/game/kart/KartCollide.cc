@@ -571,15 +571,16 @@ void KartCollide::calcObjectCollision() {
         if (reaction != Reaction::None && reaction != Reaction::UNK_7) {
             size_t handlerIdx = static_cast<std::underlying_type_t<Reaction>>(reaction);
             Action newAction = (this->*s_objectCollisionHandlers[handlerIdx])(i);
-            if (newAction != Action::None) {
-                action()->setHitDepth(objectDirector->hitDepth(i));
-                action()->start(newAction);
-            }
 
             if (reaction != Reaction::SmallBump && reaction != Reaction::BigBump) {
                 const EGG::Vector3f &hitDepth = objectDirector->hitDepth(i);
                 m_tangentOff += hitDepth;
                 m_movement += hitDepth;
+
+                if (newAction != Action::None) {
+                    action()->setHitDepth(objectDirector->hitDepth(i));
+                    action()->start(newAction);
+                }
             }
         }
 
