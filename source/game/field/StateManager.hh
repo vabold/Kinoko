@@ -2,8 +2,6 @@
 
 #include "game/field/obj/ObjectBase.hh"
 
-#include <type_traits>
-
 namespace Field {
 
 struct StateManagerEntry {

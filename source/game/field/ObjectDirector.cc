@@ -300,6 +300,8 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
     case ObjectId::WLFirebarGC:
     case ObjectId::KoopaFirebar:
         return new ObjectFirebar(params);
+    case ObjectId::Poihana:
+        return new ObjectPoihana(params);
     case ObjectId::DKRockGC:
         return new ObjectRock(params);
     case ObjectId::Sanbo:
