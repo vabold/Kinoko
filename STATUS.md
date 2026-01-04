@@ -16,8 +16,8 @@ Test Case                                                 | Frames      |     | 
 [`wgm-rta-0-31-678`](https://youtu.be/VVFXP639DRY)        | 2310 / 2310 | ✔️ |
 [`wgm-ng-rta-1-49-934`](https://youtu.be/NbhzA2rtZ2A)     | 7001 / 7001 | ✔️ |
 [`dc-rta-1-28-321`](https://youtu.be/Rs5AK3iHVno)         | 5705 / 5705 | ✔️ |
-[`kc-rta-1-55-250`](https://youtu.be/Elb5K7woV20)         | 1520 / 7320 | ❌ | Moving water
-[`kc-ng-rta-2-17-176`](https://youtu.be/UgSQj6RpDYM)      | 1424 / 8634 | ❌ | Moving water
+[`kc-rta-1-55-250`](https://youtu.be/Elb5K7woV20)         | 7320 / 7320 | ✔️ |
+[`kc-ng-rta-2-17-176`](https://youtu.be/UgSQj6RpDYM)      | 8634 / 8634 | ✔️ |
 [`mt-rta-1-33-239`](https://youtu.be/FX89203m2iE)         | 6000 / 6000 | ✔️ |
 [`mt-ng-rta-2-13-126`](https://youtu.be/igcHE0-OV0g)      | 8391 / 8391 | ✔️ |
 [`gv-rta-0-15-425`](https://youtu.be/bB0oUzdCHTA)         | 1336 / 1336 | ✔️ |
@@ -31,7 +31,7 @@ Test Case                                                 | Frames      |     | 
 [`rr-ng-rta-2-24-281`](https://youtu.be/O-BtWWsq82o)      | 9060 / 9060 | ✔️ |
 [`rpb-rta-0-59-978`](https://youtu.be/Z-lVl-7B-So)        | 4007 / 4007 | ✔️ |
 [`rpb-ng-rta-1-12-656`](https://youtu.be/LujU0kJx-hU)     | 4767 / 4767 | ✔️ |
-[`ryf-rta-0-58-648`](https://youtu.be/3IKzbmawUbk)        | 583 / 3927  | ❌ | Water
+[`ryf-rta-0-58-648`](https://youtu.be/3IKzbmawUbk)        | 3927 / 3927 | ✔️ |
 [`rgv2-rta-0-49-992`](https://youtu.be/T7OVqaNUbzI)       | 3408 / 3408 | ✔️ |
 [`rgv2-ng-rta-0-52-746`](https://youtu.be/jWRsMWo-55g)    | 3573 / 3573 | ✔️ |
 [`rmr-rta-1-41-193`](https://youtu.be/y7t4_xXuD2A)        | 6477 / 6477 | ✔️ |
