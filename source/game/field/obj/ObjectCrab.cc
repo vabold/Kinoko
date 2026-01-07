@@ -42,32 +42,48 @@ void ObjectCrab::calc() {
 
     m_introCalc = true;
 
-    calcRail();
-    calcState();
+    if (!calcRail()) {
+        return;
+    }
 
-    if (m_statePhase == StatePhase::End) {
+    StateResult res = calcState();
+
+    if (res == StateResult::Middle) {
+        return;
+    }
+
+    if (res == StateResult::Walking) {
+        if (m_statePhase == StatePhase::Start) {
+            m_statePhase = StatePhase::Middle;
+        }
+    }
+
+    if (m_statePhase == StatePhase::Middle) {
+        m_pos = m_railInterpolator->curPos();
+        m_flags.setBit(eFlags::Position);
+
+        if (m_still) {
+            m_statePhase = StatePhase::End;
+        }
+
+        return;
+    } else {
         m_state = State::Still;
         m_statePhase = StatePhase::Start;
 
         calcState();
     }
-
-    m_pos = m_railInterpolator->curPos();
-    m_flags.setBit(eFlags::Position);
-
-    if (m_still) {
-        m_statePhase = StatePhase::End;
-    }
 }
 
-void ObjectCrab::calcRail() {
+bool ObjectCrab::calcRail() {
     if (m_still) {
         if (m_stillDuration <= ++m_stillFrame) {
             m_railInterpolator->setCurrVel(m_vel);
             m_still = false;
+            return false;
         }
 
-        return;
+        return true;
     }
 
     auto status = m_railInterpolator->calc();
@@ -81,11 +97,13 @@ void ObjectCrab::calcRail() {
             m_still = true;
         }
     }
+
+    return true;
 }
 
-void ObjectCrab::calcState() {
+ObjectCrab::StateResult ObjectCrab::calcState() {
     if (m_state != State::Still) {
-        return;
+        return StateResult::Walking;
     }
 
     if (m_statePhase == StatePhase::Start) {
@@ -101,10 +119,14 @@ void ObjectCrab::calcState() {
         if (!m_still) {
             m_statePhase = StatePhase::End;
         }
+
+        return StateResult::Middle;
     } else {
         m_state = State::Walking;
         m_statePhase = StatePhase::Start;
     }
+
+    return StateResult::BeginWalking;
 }
 
 void ObjectCrab::calcCurRot(const EGG::Vector3f &rot) {

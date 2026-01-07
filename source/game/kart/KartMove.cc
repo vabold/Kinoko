@@ -1423,7 +1423,9 @@ void KartMove::calcAcceleration() {
     m_lastSpeed = m_speed;
     auto &status = KartObjectProxy::status();
 
-    dynamics()->setKillExtVelY(status.onBit(eStatus::RespawnKillY));
+    if (status.offBit(eStatus::InAction)) {
+        dynamics()->setKillExtVelY(status.onBit(eStatus::RespawnKillY));
+    }
 
     if (status.onBit(eStatus::Burnout)) {
         m_speed = 0.0f;

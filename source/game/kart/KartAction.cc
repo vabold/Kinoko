@@ -410,7 +410,7 @@ bool KartAction::calcLargeFlipAction() {
     bool decayingRot = false;
     bool stuntRot = false;
 
-    if (m_flags.onBit(eFlags::Rotating)) {
+    if (m_flags.onBit(eFlags::LargeFlip)) {
         ++m_framesFlipping;
     } else {
         if (m_deltaPitch < TOTAL_DELTA_PITCH) {
@@ -457,14 +457,14 @@ bool KartAction::calcLargeFlipAction() {
         }
 
         if (m_frame <= 120) {
-            if (m_flags.onBit(eFlags::Rotating)) {
+            if (m_flags.onBit(eFlags::LargeFlip)) {
                 if (m_framesFlipping > 30) {
                     actionEnded = true;
                 }
             } else {
                 if (m_frame >= 40 && m_frame <= 80) {
                     decayingRot = true;
-                    m_flags.setBit(eFlags::Rotating);
+                    m_flags.setBit(eFlags::LargeFlip);
                     status.resetBit(eStatus::LargeFlipHit);
                 }
             }

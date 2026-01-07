@@ -26,6 +26,7 @@ class KartAction : KartObjectProxy {
 public:
     enum class eFlags {
         Landing = 0,
+        LargeFlip = 2,
         Rotating = 3,
         LandingFromFlip = 5,
     };
