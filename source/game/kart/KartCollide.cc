@@ -867,7 +867,7 @@ void KartCollide::applySomeFloorMoment(f32 down, f32 rate, CollisionGroup *hitbo
     }
 
     f32 dVar5 = rate * EGG::Mathf::abs(scalar);
-    if (dVar5 < EGG::Mathf::abs(rejNorm)) {
+    if (EGG::Mathf::abs(rejNorm) > dVar5) {
         rejNorm_ = dVar5;
         if (rejNorm < 0.0f) {
             rejNorm_ = -rate * EGG::Mathf::abs(scalar);

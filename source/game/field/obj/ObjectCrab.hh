@@ -31,8 +31,14 @@ private:
         End = 2,
     };
 
-    void calcRail();
-    void calcState();
+    enum class StateResult {
+        Walking = 0,
+        Middle = 1,
+        BeginWalking = 2,
+    };
+
+    bool calcRail();
+    StateResult calcState();
 
     void calcCurRot(const EGG::Vector3f &rot);
     void calcTransMat(const EGG::Vector3f &rot);
