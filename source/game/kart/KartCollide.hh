@@ -125,6 +125,7 @@ public:
     Action handleReactKnockbackBumpLoseItem(size_t idx);
     Action handleReactLongCrushLoseItem(size_t idx);
     Action handleReactSmallBump(size_t idx);
+    Action handleReactSpinShrink(size_t idx);
     Action handleReactHighLaunchLoseItem(size_t idx);
     Action handleReactWeakWall(size_t idx);
     Action handleReactOffroad(size_t idx);
@@ -215,6 +216,7 @@ private:
     EGG::Vector3f m_movement;
     s16 m_respawnTimer;
     s16 m_solidOobTimer;
+    s16 m_shrinkTimer;
     f32 m_smoothedBack; // 0x50
     f32 m_suspBottomHeightSoftWall;
     u16 m_someSoftWallTimer;

@@ -13,7 +13,7 @@ public:
     KartSub();
     ~KartSub();
 
-    void createSubsystems(bool isBike);
+    void createSubsystems(bool isBike, const KartParam::Stats &stats);
     void copyPointers(KartAccessor &pointers);
 
     void init();

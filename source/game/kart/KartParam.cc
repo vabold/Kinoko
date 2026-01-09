@@ -104,7 +104,7 @@ void KartParam::Stats::read(EGG::RamStream &stream) {
     itemUnk17c = stream.read_f32();
     maxNormalAcceleration = stream.read_f32();
     megaScale = stream.read_f32();
-    wheelDistance = stream.read_f32();
+    shrinkScale = stream.read_f32();
 }
 
 /// @brief Applies character stats on top of the kart stats

@@ -140,7 +140,7 @@ void KartObject::prepareTiresAndSuspensions() {
 /// @addr{0x8058E724}
 void KartObject::createSub() {
     m_pointers.sub = new KartSub;
-    m_pointers.sub->createSubsystems(m_pointers.param->isBike());
+    m_pointers.sub->createSubsystems(m_pointers.param->isBike(), m_pointers.param->stats());
 }
 
 /// @addr{0x8058F820}

@@ -358,6 +358,11 @@ void KartAction::startShortPressAction() {
     activateCrush(CRUSH_DURATION);
 }
 
+/// @addr{0x80568058}
+void KartAction::startSpinShrinkAction() {
+    startRotation(1);
+}
+
 /* ================================ *
  *     CALC FUNCTIONS
  * ================================ */
@@ -560,7 +565,7 @@ const std::array<KartAction::StartActionFunc, KartAction::MAX_ACTION> KartAction
         &KartAction::startLongPressAction,
         &KartAction::startStub,
         &KartAction::startShortPressAction,
-        &KartAction::startStub,
+        &KartAction::startSpinShrinkAction,
         &KartAction::startStub,
         &KartAction::startStub,
 }};
@@ -581,7 +586,7 @@ const std::array<KartAction::CalcActionFunc, KartAction::MAX_ACTION> KartAction:
         &KartAction::calcPressAction,
         &KartAction::calcStub,
         &KartAction::calcPressAction,
-        &KartAction::calcStub,
+        &KartAction::calcAction1,
         &KartAction::calcStub,
         &KartAction::calcStub,
 }};
@@ -602,7 +607,7 @@ const std::array<KartAction::EndActionFunc, KartAction::MAX_ACTION> KartAction::
         &KartAction::endStub,
         &KartAction::endStub,
         &KartAction::endStub,
-        &KartAction::endStub,
+        &KartAction::endAction1,
         &KartAction::endStub,
         &KartAction::endStub,
 }};
