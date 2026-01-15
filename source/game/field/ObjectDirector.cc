@@ -274,6 +274,8 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
         return new ObjectDossunc(params);
     case ObjectId::Boble:
         return new ObjectBoble(params);
+    case ObjectId::Hanachan:
+        return new ObjectHanachan(params);
     case ObjectId::Seagull:
         return new ObjectBird(params);
     case ObjectId::Crab:
