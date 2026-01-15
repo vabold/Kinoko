@@ -26,6 +26,7 @@
 #include "game/field/obj/ObjectFirebar.hh"
 #include "game/field/obj/ObjectFlamePoleFoot.hh"
 #include "game/field/obj/ObjectFlamePoleV.hh"
+#include "game/field/obj/ObjectHanachan.hh"
 #include "game/field/obj/ObjectHeyho.hh"
 #include "game/field/obj/ObjectHeyhoBall.hh"
 #include "game/field/obj/ObjectHeyhoShip.hh"
