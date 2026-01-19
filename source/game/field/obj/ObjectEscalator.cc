@@ -14,12 +14,9 @@ ObjectEscalator::ObjectEscalator(const System::MapdataGeoObj &params, bool rever
     : ObjectKCL(params), m_initialPos(m_pos), m_initialRot(m_rot),
       m_stillFrames(
               {static_cast<s32>(params.setting(2)) * 60, static_cast<s32>(params.setting(4)) * 60}),
-      m_speed({(reverse ? -1.0f : 1.0f) *
-                      (0.15f * static_cast<f32>(static_cast<s16>(params.setting(1))) / 100.0f),
-              (reverse ? -1.0f : 1.0f) *
-                      (0.15f * static_cast<f32>(static_cast<s16>(params.setting(3))) / 100.0f),
-              (reverse ? -1.0f : 1.0f) *
-                      (0.15f * static_cast<f32>(static_cast<s16>(params.setting(5))) / 100.0f)}),
+      m_speed({(reverse ? -1.0f : 1.0f) * (0.15f * static_cast<f32>(params.setting(1)) / 100.0f),
+              (reverse ? -1.0f : 1.0f) * (0.15f * static_cast<f32>(params.setting(3)) / 100.0f),
+              (reverse ? -1.0f : 1.0f) * (0.15f * static_cast<f32>(params.setting(5)) / 100.0f)}),
       m_checkColYPosMax(m_initialPos.y + MAX_HEIGHT_OFFSET),
       m_checkColYPosMin(m_initialPos.y + MIN_HEIGHT_OFFSET),
       m_stopFrames({static_cast<f32>(m_stillFrames[0]) - REVERSE_FRAMES_F32,

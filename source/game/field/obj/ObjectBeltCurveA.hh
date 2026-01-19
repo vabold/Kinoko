@@ -12,7 +12,7 @@ public:
     ~ObjectBeltCurveA() override;
 
     [[nodiscard]] EGG::Vector3f calcRoadVelocity(u32 variant, const EGG::Vector3f &pos,
-            u32 timeOffset) const override;
+            s32 timeOffset) const override;
 
     /// @addr{0x807FCCA4}
     [[nodiscard]] bool isMoving(u32 variant, const EGG::Vector3f & /*pos*/) const override {
@@ -23,8 +23,8 @@ private:
     [[nodiscard]] f32 calcDirSwitchVelocity(u32 t) const;
 
     bool m_startForward;
-    u16 m_dirChange1Frame;
-    u16 m_dirChange2Frame;
+    s32 m_dirChange1Frame;
+    s32 m_dirChange2Frame;
     EGG::Matrix34f m_initMat;
 };
 

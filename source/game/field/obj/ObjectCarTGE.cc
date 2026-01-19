@@ -14,18 +14,15 @@ namespace Field {
 /// @addr{0x806D5EE4}
 ObjectCarTGE::ObjectCarTGE(const System::MapdataGeoObj &params)
     : ObjectCollidable(params), StateManager(this, STATE_ENTRIES), m_auxCollision(nullptr),
-      m_carName{}, m_mdlName{}, m_carType(CarType::Normal), m_dummyId(ObjectId::None),
+      m_highwayVel(static_cast<f32>(params.setting(2))),
+      m_localVel(static_cast<f32>(params.setting(1))), m_carName{}, m_mdlName{},
+      m_carType(CarType::Normal), m_dummyId(ObjectId::None),
       m_scaledTangentDir(EGG::Vector3f::zero), m_currSpeed(0.0f), m_up(EGG::Vector3f::zero),
       m_tangent(EGG::Vector3f::zero) {
-    u32 carVariant = static_cast<u32>(params.setting(3));
-    m_highwayVel = static_cast<f32>(params.setting(2));
-    m_localVel = static_cast<f32>(params.setting(1));
-
-    s16 pathId = params.pathId();
-
     // The base game returns before the StateManager sets its state entries.
     // Since we handle this in the template specialization's constructor in Kinoko,
     // we need to reset the StateManager parameters back to their default values before returning.
+    s16 pathId = params.pathId();
     if (pathId == -1) {
         m_nextStateId = -1;
         m_currentStateId = 0;
@@ -50,6 +47,7 @@ ObjectCarTGE::ObjectCarTGE(const System::MapdataGeoObj &params)
     }
 
     const auto *resourceName = getResources();
+    s32 carVariant = static_cast<s32>(params.setting(3));
 
     switch (carVariant) {
     case 0: {
@@ -111,7 +109,7 @@ void ObjectCarTGE::init() {
         return;
     }
 
-    u16 idx = m_mapObj->setting(0);
+    u16 idx = static_cast<u16>(m_mapObj->setting(0));
     m_railInterpolator->init(0.0f, idx);
 
     auto *rail = RailManager::Instance()->rail(m_mapObj->pathId());

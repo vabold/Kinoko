@@ -4,7 +4,8 @@ namespace Field {
 
 /// @addr{0x8080AD20}
 ObjectObakeBlock::ObjectObakeBlock(const System::MapdataGeoObj &params)
-    : ObjectBase(params), m_initialPos(params.pos()), m_fallState(FallState::Rest) {
+    : ObjectBase(params), m_initialPos(params.pos()), m_fallState(FallState::Rest),
+      m_fallFrame(static_cast<s32>(params.setting(2)) + static_cast<s32>(params.setting(1)) * 60) {
     constexpr f32 SI_WIDTH = 162.5f; // Half-width of block in the spatial index
     constexpr f32 FALL_LINEAR_SPEED = 1.0f;
     constexpr f32 FALL_ANGULAR_SPEED = 0.02f;
@@ -12,8 +13,6 @@ ObjectObakeBlock::ObjectObakeBlock(const System::MapdataGeoObj &params)
     m_framesFallen = 0;
     m_fallVel.setZero();
     m_fallAngVel.setZero();
-    m_fallFrame = static_cast<s32>(
-            static_cast<s16>(params.setting(2)) + static_cast<s16>(params.setting(1)) * 60);
 
     f32 yRot = params.rot().y;
 

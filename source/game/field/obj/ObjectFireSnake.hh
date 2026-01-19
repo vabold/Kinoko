@@ -62,7 +62,7 @@ protected:
     EGG::Vector3f m_visualPos;
     EGG::Vector3f m_bounceDir;
     u16 m_age; ///< How long the firesnake has been spawned
-    u16 m_delayFrame;
+    s16 m_delayFrame;
 
 private:
     void calcBounce(f32 initialVel);

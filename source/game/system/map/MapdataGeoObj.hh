@@ -42,7 +42,7 @@ public:
         return m_pathId;
     }
 
-    [[nodiscard]] u16 setting(size_t idx) const {
+    [[nodiscard]] s16 setting(size_t idx) const {
         ASSERT(idx < m_settings.size());
         return m_settings[idx];
     }
@@ -59,7 +59,7 @@ private:
     EGG::Vector3f m_rot;
     EGG::Vector3f m_scale;
     s16 m_pathId;
-    std::array<u16, 8> m_settings;
+    std::array<s16, 8> m_settings;
     u16 m_presenceFlag;
 };
 

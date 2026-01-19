@@ -7,13 +7,13 @@
 namespace Field {
 
 /// @addr{0x80809448}
-ObjectTownBridge::ObjectTownBridge(const System::MapdataGeoObj &params) : ObjectKCL(params) {
-    m_rotateUpwards = m_rot.y < 0.0f;
-    m_angVel = static_cast<float>(params.setting(0));
-    m_pivotFrames = static_cast<u32>(params.setting(1));
-    m_raisedFrames = static_cast<u32>(params.setting(2));
-    m_loweredFrames = static_cast<u32>(params.setting(3));
-    m_fullAnimFrames = m_pivotFrames * 2 + (m_loweredFrames + m_raisedFrames);
+ObjectTownBridge::ObjectTownBridge(const System::MapdataGeoObj &params)
+    : ObjectKCL(params), m_rotateUpwards(m_rot.y < 0.0f),
+      m_angVel(static_cast<f32>(params.setting(0))),
+      m_pivotFrames(static_cast<s32>(params.setting(1))),
+      m_raisedFrames(static_cast<s32>(params.setting(2))),
+      m_loweredFrames(static_cast<s32>(params.setting(3))),
+      m_fullAnimFrames(m_pivotFrames * 2 + (m_loweredFrames + m_raisedFrames)) {
     m_state = State::Raising;
 }
 
@@ -36,7 +36,7 @@ ObjectTownBridge::~ObjectTownBridge() {
 
 /// @addr{0x80809774}
 void ObjectTownBridge::calc() {
-    u32 t = System::RaceManager::Instance()->timer();
+    s32 t = System::RaceManager::Instance()->timer();
     f32 angle = calcBridgeAngle(t);
 
     // Set the object collision based off the angle of the bridge.
@@ -75,7 +75,7 @@ void ObjectTownBridge::createCollision() {
 }
 
 /// @addr{0x80809CDC}
-f32 ObjectTownBridge::calcBridgeAngle(u32 t) const {
+f32 ObjectTownBridge::calcBridgeAngle(s32 t) const {
     u32 animFrame = t % m_fullAnimFrames;
     State state = calcState(animFrame);
 
@@ -104,7 +104,7 @@ f32 ObjectTownBridge::calcBridgeAngle(u32 t) const {
 }
 
 /// @brief Helper function which determines the current state of the bridge based on t.
-ObjectTownBridge::State ObjectTownBridge::calcState(u32 t) const {
+ObjectTownBridge::State ObjectTownBridge::calcState(s32 t) const {
     if (t < m_pivotFrames) {
         return State::Raising;
     }

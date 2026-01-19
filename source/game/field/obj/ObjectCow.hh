@@ -29,7 +29,7 @@ protected:
         return v0 + (v1 - v0) * t;
     }
 
-    u32 m_startFrame; ///< The frame the cow will start moving
+    const s32 m_startFrame; ///< The frame the cow will start moving
     EGG::Vector3f m_tangent;
     EGG::Vector3f m_prevTangent;
     EGG::Vector3f m_up;

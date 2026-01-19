@@ -74,7 +74,7 @@ private:
     std::array<ObjectDossunTsuibi *, 2> m_dossuns;
     State m_state;
     EGG::Vector3f m_initPos;
-    u32 m_stillTimer;
+    s32 m_stillTimer;
     bool m_movingForward;
     u32 m_forwardTimer;
     bool m_movingSideways; ///< Whether the Thwomps should move along the z-axis
@@ -91,7 +91,7 @@ private:
 
     // These members are not in the base game but we add them to prevent dereferencing m_mapObj.
     const f32 m_forwardVel;    ///< Rail velocity
-    const u32 m_stillDuration; ///< How long Thwomps remain at their home for
+    const s32 m_stillDuration; ///< How long Thwomps remain at their home for
 
     /// How long Thwomps take to reset after returning to home
     static constexpr u32 HOME_RESET_FRAMES = 36;

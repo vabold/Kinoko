@@ -9,7 +9,8 @@ namespace Field {
 
 /// @addr{0x80777564}
 ObjectPress::ObjectPress(const System::MapdataGeoObj &params)
-    : ObjectCollidable(params), m_loweringVelocity(0.0f) {}
+    : ObjectCollidable(params), m_loweringVelocity(0.0f),
+      m_raisedDuration(static_cast<s32>(params.setting(2))) {}
 
 /// @addr{0x807775FC}
 ObjectPress::~ObjectPress() = default;
@@ -24,7 +25,7 @@ void ObjectPress::init() {
     m_startingRise = false;
     m_anmDuration = 0;
     ASSERT(m_mapObj);
-    m_raisedTimer = static_cast<u32>(m_mapObj->setting(1));
+    m_raisedTimer = static_cast<s32>(m_mapObj->setting(1));
     m_windUpTimer = 0;
     m_raisedHeight = m_pos.y;
 
@@ -191,8 +192,7 @@ void ObjectPress::calcRaising() {
     } else {
         m_pos.y = m_raisedHeight;
         m_state = State::Raised;
-        ASSERT(m_mapObj);
-        m_raisedTimer = static_cast<u32>(m_mapObj->setting(2));
+        m_raisedTimer = m_raisedDuration;
     }
 
     m_flags.setBit(eFlags::Position);

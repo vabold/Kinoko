@@ -9,12 +9,10 @@ namespace Field {
 
 /// @addr{0x806B96A0}
 ObjectChoropu::ObjectChoropu(const System::MapdataGeoObj &params)
-    : ObjectCollidable(params), StateManager(this, STATE_ENTRIES) {
+    : ObjectCollidable(params), StateManager(this, STATE_ENTRIES),
+      m_startFrameOffset(params.setting(1)), m_idleDuration(params.setting(0)),
+      m_isStationary(strcmp(getName(), "choropu") != 0) {
     constexpr f32 MAX_SPEED = 20.0f;
-
-    m_startFrameOffset = static_cast<s16>(params.setting(1));
-    m_idleDuration = params.setting(0);
-    m_isStationary = strcmp(getName(), "choropu") != 0;
 
     s16 railIdx = params.pathId();
     if (railIdx != -1) {
@@ -172,7 +170,7 @@ void ObjectChoropu::calcStateStub() {}
 /// @addr{0x806BA7FC}
 void ObjectChoropu::calcDigging() {
     if (m_isStationary) {
-        if (m_currentFrame > m_idleDuration) {
+        if (m_currentFrame > static_cast<u32>(m_idleDuration)) {
             m_nextStateId = 1;
         }
 

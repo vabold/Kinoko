@@ -9,8 +9,8 @@ namespace Field {
 
 /// @addr{0x806E3458}
 ObjectVolcanoBallLauncher::ObjectVolcanoBallLauncher(const System::MapdataGeoObj &params)
-    : ObjectCollidable(params), m_initDelay(static_cast<f32>(static_cast<s16>(params.setting(1)))),
-      m_cycleDuration(static_cast<f32>(static_cast<s16>(params.setting(2)))) {
+    : ObjectCollidable(params), m_initDelay(static_cast<f32>(params.setting(1))),
+      m_cycleDuration(static_cast<f32>(params.setting(2))) {
     const auto *rail = RailManager::Instance()->rail(params.pathId());
     ASSERT(rail);
     const auto &points = rail->points();
@@ -26,7 +26,7 @@ ObjectVolcanoBallLauncher::ObjectVolcanoBallLauncher(const System::MapdataGeoObj
 
     EGG::Vector3f dir = points[1].pos - points[0].pos;
     dir.normalise2();
-    EGG::Vector3f vel = dir * static_cast<f32>(static_cast<s16>(params.setting(0)));
+    EGG::Vector3f vel = dir * static_cast<f32>(params.setting(0));
     f32 accel = vel.y * vel.y / (2.0f * (pos - points[0].pos.y));
 
     f32 endPosY = points.back().pos.y;
@@ -38,8 +38,8 @@ ObjectVolcanoBallLauncher::ObjectVolcanoBallLauncher(const System::MapdataGeoObj
     f32 fallTime = (t2 > 0.0f) ? t2 : (t1 > 0.0f) ? t1 : -1.0f;
 
     f32 finalVel = 2.0f * accel * (pos - endPosY);
-    f32 burnDuration = static_cast<f32>(static_cast<s16>(params.setting(3)));
-    u32 ballCount = static_cast<u32>((fallTime + burnDuration) / m_cycleDuration) + 2;
+    f32 burnDuration = static_cast<f32>(params.setting(3));
+    s32 ballCount = static_cast<s32>((fallTime + burnDuration) / m_cycleDuration) + 2;
 
     m_balls = std::span<ObjectVolcanoBall *>(new ObjectVolcanoBall *[ballCount], ballCount);
 

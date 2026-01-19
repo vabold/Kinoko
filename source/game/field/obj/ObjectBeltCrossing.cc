@@ -12,7 +12,7 @@ ObjectBeltCrossing::~ObjectBeltCrossing() = default;
 
 /// @addr{0x807FC7D8}
 EGG::Vector3f ObjectBeltCrossing::calcRoadVelocity(u32 variant, const EGG::Vector3f & /*pos*/,
-        u32 /*timeOffset*/) const {
+        s32 /*timeOffset*/) const {
     switch (variant) {
     case 0:
         return -EGG::Vector3f::ex * m_roadVel;

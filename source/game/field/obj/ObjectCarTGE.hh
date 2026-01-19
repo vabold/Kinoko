@@ -71,8 +71,8 @@ private:
 
     const ObjectHighwayManager *m_highwayMgr;
     ObjectCollisionBase *m_auxCollision;
-    f32 m_highwayVel; ///< Speed while on the highway
-    f32 m_localVel;   ///< Speed while off the highway
+    const f32 m_highwayVel; ///< Speed while on the highway
+    const f32 m_localVel;   ///< Speed while off the highway
     char m_carName[32];
     char m_mdlName[32];
     CarType m_carType; ///< Car, truck, or bomb car

@@ -4,7 +4,7 @@
 
 namespace Field {
 
-enum class KinokoType : u16 {
+enum class KinokoType : s16 {
     Light = 0,
     Dark = 1,
 };
@@ -35,7 +35,7 @@ protected:
     s16 m_pulseFrame;
     s16 m_restFrame;
     s16 m_pulseFalloff;
-    u16 m_oscFrame;
+    s16 m_oscFrame;
 };
 
 /// @brief Mushrooms which oscillate up and down. The stem does not move.

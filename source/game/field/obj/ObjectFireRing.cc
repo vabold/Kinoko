@@ -4,17 +4,18 @@ namespace Field {
 
 /// @addr{0x80767FF4}
 ObjectFireRing::ObjectFireRing(const System::MapdataGeoObj &params)
-    : ObjectCollidable(params), m_phase(0.0f) {
-    size_t fireballCount = std::max<u32>(1, params.setting(0));
-    m_angSpeed = static_cast<f32>(static_cast<s16>(params.setting(1)));
+    : ObjectCollidable(params), m_angSpeed(static_cast<f32>(params.setting(1))), m_phase(0.0f) {
+    s32 fireballCount = std::max<s32>(1, static_cast<s32>(params.setting(0)));
     m_fireballs = std::span<ObjectFireball *>(new ObjectFireball *[fireballCount], fireballCount);
-    f32 distance = 100.0f * static_cast<f32>(params.setting(3));
 
-    for (size_t i = 0; i < fireballCount; ++i) {
+    f32 distance = 100.0f * static_cast<f32>(params.setting(3));
+    f32 phase = 360.0f / static_cast<f32>(fireballCount);
+
+    for (s32 i = 0; i < fireballCount; ++i) {
         m_fireballs[i] = new ObjectFireball(params);
         m_fireballs[i]->load();
         m_fireballs[i]->setDistance(distance);
-        m_fireballs[i]->setAngle(static_cast<f32>(i) * (360.0f / fireballCount));
+        m_fireballs[i]->setAngle(static_cast<f32>(i) * phase);
     }
 
     EGG::Matrix34f mat;

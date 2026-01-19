@@ -73,15 +73,16 @@ void ObjectBasabasaDummy::calcState0() {
 
 /// @addr{0x806B70D0}
 ObjectBasabasa::ObjectBasabasa(const System::MapdataGeoObj &params)
-    : ObjectCollidable(params), m_initialTimer(params.setting(1)),
-      m_batsPerGroup(params.setting(2)), m_startFrame(params.setting(6)),
-      m_batSpacing(static_cast<u32>(static_cast<f32>(params.setting(5)) /
+    : ObjectCollidable(params), m_initialTimer(static_cast<s32>(params.setting(1))),
+      m_batsPerGroup(static_cast<s32>(params.setting(2))),
+      m_startFrame(static_cast<s32>(params.setting(6))),
+      m_batSpacing(static_cast<s32>(static_cast<f32>(params.setting(5)) /
               static_cast<f32>(params.setting(0)) / static_cast<f32>(m_batsPerGroup))) {
     f32 railLen = RailManager::Instance()->rail(params.pathId())->getPathLength();
     u32 groupCount = static_cast<u32>(railLen / static_cast<f32>(params.setting(0)) /
                              static_cast<f32>(m_initialTimer)) +
             1;
-    u32 batCount = groupCount * m_batsPerGroup;
+    u32 batCount = groupCount * static_cast<u32>(m_batsPerGroup);
 
     m_bats = std::span<ObjectBasabasaDummy *>(new ObjectBasabasaDummy *[batCount], batCount);
 
@@ -90,8 +91,8 @@ ObjectBasabasa::ObjectBasabasa(const System::MapdataGeoObj &params)
         bat->load();
     }
 
-    s_initialX = params.setting(3);
-    s_initialY = params.setting(4);
+    s_initialX = static_cast<f32>(params.setting(3));
+    s_initialY = static_cast<f32>(params.setting(4));
 }
 
 /// @addr{0x806B72F4}
@@ -114,7 +115,7 @@ void ObjectBasabasa::init() {
 
 /// @addr{0x806B74C4}
 void ObjectBasabasa::calc() {
-    if (System::RaceManager::Instance()->timer() <= m_startFrame) {
+    if (System::RaceManager::Instance()->timer() <= static_cast<u32>(m_startFrame)) {
         return;
     }
 

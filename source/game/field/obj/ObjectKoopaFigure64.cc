@@ -9,7 +9,7 @@ namespace Field {
 /// @addr{0x806DA914}
 ObjectKoopaFigure64::ObjectKoopaFigure64(const System::MapdataGeoObj &params)
     : ObjectCollidable(params), m_isBigStatue(params.setting(1) == 1),
-      m_startDelay(static_cast<u32>(params.setting(2))) {}
+      m_startDelay(static_cast<s32>(params.setting(2))) {}
 
 /// @addr{0x806DB114}
 ObjectKoopaFigure64::~ObjectKoopaFigure64() = default;
@@ -36,7 +36,7 @@ void ObjectKoopaFigure64::init() {
 /// @addr{0x806DAB5C}
 void ObjectKoopaFigure64::calc() {
     u32 timer = System::RaceManager::Instance()->timer();
-    if (timer < m_startDelay) {
+    if (timer < static_cast<u32>(m_startDelay)) {
         return;
     }
 

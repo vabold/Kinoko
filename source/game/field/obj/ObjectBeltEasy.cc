@@ -12,7 +12,7 @@ ObjectBeltEasy::~ObjectBeltEasy() = default;
 
 /// @addr{0x807FC62C}
 EGG::Vector3f ObjectBeltEasy::calcRoadVelocity(u32 variant, const EGG::Vector3f & /*pos*/,
-        u32 /*timeOffset*/) const {
+        s32 /*timeOffset*/) const {
     switch (variant) {
     case 2:
         return EGG::Vector3f::ex * m_roadVel;

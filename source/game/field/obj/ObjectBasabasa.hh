@@ -89,12 +89,12 @@ public:
 
 private:
     std::span<ObjectBasabasaDummy *> m_bats; ///< The array of individual bats
-    const u32 m_initialTimer;                ///< The m_cycleTimer starts and resets to this value
-    const u32 m_batsPerGroup; ///< Number of bats that will spawn before resetting the m_cycleTimer
-    const u32 m_startFrame;   ///< Initial delay before the spawner will start calculating
-    const u32 m_batSpacing;   ///< How many frames in between bat spawns
-    u32 m_cycleTimer;         ///< Used to determine when to spawn next bat
-    u32 m_batsActive;         ///< The number of bats currently spawned
+    const s32 m_initialTimer;                ///< The m_cycleTimer starts and resets to this value
+    const s32 m_batsPerGroup; ///< Number of bats that will spawn before resetting the m_cycleTimer
+    const s32 m_startFrame;   ///< Initial delay before the spawner will start calculating
+    const s32 m_batSpacing;   ///< How many frames in between bat spawns
+    s32 m_cycleTimer;         ///< Used to determine when to spawn next bat
+    s32 m_batsActive;         ///< The number of bats currently spawned
 };
 
 } // namespace Field

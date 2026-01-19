@@ -5,7 +5,7 @@ namespace Field {
 /// @addr{0x807743A4}
 ObjectPakkunF::ObjectPakkunF(const System::MapdataGeoObj &params)
     : ObjectCollidable(params), m_attackFrames(0), m_currAttackFrame(0),
-      m_waitDuration(static_cast<s32>(m_mapObj->setting(0))) {}
+      m_waitDuration(static_cast<s32>(params.setting(0))) {}
 
 /// @addr{0x807754FC}
 ObjectPakkunF::~ObjectPakkunF() = default;

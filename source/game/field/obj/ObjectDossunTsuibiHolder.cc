@@ -6,9 +6,9 @@ namespace Field {
 
 /// @addr{0x807614D0}
 ObjectDossunTsuibiHolder::ObjectDossunTsuibiHolder(const System::MapdataGeoObj &params)
-    : ObjectCollidable(params), m_stillTimer(static_cast<u32>(params.setting(2))),
-      m_facingBackwards(false), m_forwardVel(static_cast<f32>(m_mapObj->setting(0))),
-      m_stillDuration(static_cast<u32>(m_mapObj->setting(3))) {
+    : ObjectCollidable(params), m_stillTimer(static_cast<s32>(params.setting(2))),
+      m_facingBackwards(false), m_forwardVel(static_cast<f32>(params.setting(0))),
+      m_stillDuration(static_cast<s32>(params.setting(3))) {
     for (auto *&dossun : m_dossuns) {
         dossun = new ObjectDossunTsuibi(params, this);
         dossun->load();

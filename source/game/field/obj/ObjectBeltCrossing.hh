@@ -11,7 +11,7 @@ public:
     ~ObjectBeltCrossing() override;
 
     [[nodiscard]] EGG::Vector3f calcRoadVelocity(u32 variant, const EGG::Vector3f &pos,
-            u32 timeOffset) const override;
+            s32 timeOffset) const override;
 
     [[nodiscard]] bool isMoving(u32 variant, const EGG::Vector3f &pos) const override;
 };
