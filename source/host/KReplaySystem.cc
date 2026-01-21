@@ -11,17 +11,11 @@
 
 /// @brief Initializes the system.
 void KReplaySystem::init() {
-    ASSERT(m_currentGhostFileName);
-    ASSERT(m_currentRawGhost);
-    ASSERT(m_currentGhost);
-
     auto *sceneCreator = new Host::SceneCreatorDynamic;
     m_sceneMgr = new EGG::SceneManager(sceneCreator);
 
     System::RaceConfig::RegisterInitCallback(OnInit, nullptr);
     Abstract::File::Remove("results.txt");
-
-    m_sceneMgr->changeScene(0);
 }
 
 /// @brief Executes a frame.
@@ -33,11 +27,27 @@ void KReplaySystem::calc() {
 /// @details A run consists of replaying a ghost.
 /// @return Whether the run was successful or not.
 bool KReplaySystem::run() {
-    while (!calcEnd()) {
-        calc();
+    bool success = true;
+
+    while (true) {
+        if (m_ghostArgs.size() == 0) {
+            break;
+        }
+
+        std::filesystem::path nextPath = m_ghostArgs.front();
+        m_ghostArgs.pop();
+
+        if (std::filesystem::is_directory(nextPath)) {
+            success &= runDirectory(nextPath);
+        } else if (std::filesystem::is_regular_file(nextPath)) {
+            success &= runGhost(nextPath);
+        } else {
+            WARN("Not a valid path: %s", nextPath.string().c_str());
+            continue;
+        }
     }
 
-    return success();
+    return success;
 }
 
 /// @brief Parses non-generic command line options.
@@ -60,19 +70,30 @@ void KReplaySystem::parseOptions(int argc, char **argv) {
         case Host::EOption::Ghost: {
             ASSERT(i + 1 < argc);
 
-            m_currentGhostFileName = argv[++i];
-            m_currentRawGhost = Abstract::File::Load(m_currentGhostFileName, m_currentRawGhostSize);
+            // Every argument (until we see another flag) should be a ghost filename or directory
+            while (++i < argc) {
+                // Decrement i if it represents some other flag
+                if (Host::Option::CheckFlag(argv[i])) {
+                    --i;
+                    break;
+                }
 
-            if (m_currentRawGhostSize < System::RKG_HEADER_SIZE ||
-                    m_currentRawGhostSize > sizeof(System::RawGhostFile)) {
-                PANIC("File cannot be a ghost! Check the file size.");
+                std::filesystem::path filepath = Abstract::File::Path(argv[i]);
+
+                if (std::filesystem::is_directory(filepath) ||
+                        std::filesystem::is_regular_file(filepath)) {
+                    m_ghostArgs.push(filepath);
+                } else {
+                    WARN("Unable to find %s. Skipping...", filepath.c_str());
+                }
+            }
+        } break;
+        case Host::EOption::Progress: {
+            if (i + 1 >= argc) {
+                PANIC("Expected progress interval argument!");
             }
 
-            // Creating the raw ghost file validates it
-            System::RawGhostFile file = System::RawGhostFile(m_currentRawGhost);
-
-            m_currentGhost = new System::GhostFile(file);
-            ASSERT(m_currentGhost);
+            m_progressInterval = strtoul(argv[++i], nullptr, 0);
         } break;
         case Host::EOption::Invalid:
         default:
@@ -96,8 +117,8 @@ void KReplaySystem::DestroyInstance() {
 }
 
 KReplaySystem::KReplaySystem()
-    : m_currentGhostFileName(nullptr), m_currentGhost(nullptr), m_currentRawGhost(nullptr),
-      m_currentRawGhostSize(0) {}
+    : m_progressInterval(0), m_replaysPlayed(0), m_replaysSynced(0), m_currentGhost(nullptr),
+      m_currentRawGhost(nullptr), m_currentRawGhostSize(0) {}
 
 KReplaySystem::~KReplaySystem() {
     if (s_instance) {
@@ -130,9 +151,95 @@ bool KReplaySystem::calcEnd() const {
 /// @brief Reports failure to file.
 /// @param msg The message to report.
 void KReplaySystem::reportFail(const std::string &msg) const {
-    std::string report(m_currentGhostFileName);
+    std::string report(m_currentGhostPath.string());
     report += "\n" + std::string(msg);
     Abstract::File::Append("results.txt", report.c_str(), report.size());
+}
+
+bool KReplaySystem::runDirectory(const std::filesystem::path &dirPath) {
+    bool success = true;
+
+    for (const auto &dir_entry : std::filesystem::recursive_directory_iterator(dirPath)) {
+        const auto &entry_path = dir_entry.path();
+
+        // Skip directories
+        if (std::filesystem::is_regular_file(entry_path)) {
+            success &= runGhost(entry_path);
+        }
+    }
+
+    REPORT("Progress: %llu/%llu replays synced (Error rate: %.2f%)", m_replaysSynced,
+            m_replaysPlayed,
+            static_cast<f64>(m_replaysPlayed - m_replaysSynced) / m_replaysPlayed * 100);
+
+    return success;
+}
+
+bool KReplaySystem::runGhost(const std::filesystem::path &ghostPath) {
+    if (!ghostPath.has_extension()) {
+        return true;
+    }
+
+    if (ghostPath.extension() != ".rkg") {
+        WARN("Skipping %s", ghostPath.string().c_str());
+        return true;
+    }
+
+    loadGhost(ghostPath);
+
+    // Has the root scene been created?
+    if (!m_sceneMgr->currentScene()) {
+        m_sceneMgr->changeScene(0);
+    } else {
+        m_sceneMgr->createScene(2, m_sceneMgr->currentScene());
+    }
+
+    while (!calcEnd()) {
+        calc();
+    }
+
+    bool isSuccess = success();
+
+    if (!isSuccess) {
+        WARN("DESYNC! Ghost path: %s", ghostPath.string().c_str());
+    }
+
+    m_sceneMgr->currentScene()->heap()->enableAllocation();
+    m_sceneMgr->destroyScene(m_sceneMgr->currentScene());
+
+    delete m_currentRawGhost;
+    m_currentRawGhost = nullptr;
+    m_currentRawGhostSize = 0;
+
+    delete m_currentGhost;
+    m_currentGhost = nullptr;
+
+    ++m_replaysPlayed;
+
+    if (isSuccess) {
+        ++m_replaysSynced;
+    }
+
+    if (m_progressInterval > 0 && m_replaysPlayed % m_progressInterval == 0) {
+        REPORT("Progress: %llu/%llu replays synced (Error rate: %.2f%)", m_replaysSynced,
+                m_replaysPlayed,
+                static_cast<f64>(m_replaysPlayed - m_replaysSynced) / m_replaysPlayed * 100);
+    }
+
+    return isSuccess;
+}
+
+void KReplaySystem::loadGhost(const std::filesystem::path &ghostPath) {
+    m_currentGhostPath = ghostPath;
+    m_currentRawGhost = Abstract::File::Load(m_currentGhostPath, m_currentRawGhostSize);
+    if (m_currentRawGhostSize < System::RKG_HEADER_SIZE ||
+            m_currentRawGhostSize > System::RKG_UNCOMPRESSED_INPUT_DATA_SECTION_SIZE) {
+        PANIC("File cannot be a ghost! Check the file size. %llu", m_currentRawGhostSize);
+    }
+
+    // Creating the raw ghost file validates it
+    System::RawGhostFile file = System::RawGhostFile(m_currentRawGhost);
+    m_currentGhost = new System::GhostFile(file);
 }
 
 /// @brief Determines whether the simulation was a success or not.
