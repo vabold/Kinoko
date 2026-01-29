@@ -461,4 +461,30 @@ u32 FindRootsQuadratic(f32 a, f32 b, f32 c, f32 &root1, f32 &root2) {
     return 0;
 }
 
+/// @addr{0x80085070}
+/// @brief Evaluates a cubic Hermite curve at a given parameter @p t.
+/// @details Computes \f[H(t) = h_0(t)\,p_0 + h_1(t)\,p_1 + h_2(t)\,m_0 + h_3(t)\,m_1\f] where the
+/// cubic Hermite basis functions are:
+/// \f[h_0(\theta) = 2\theta^3 - 3\theta^2 + 1\f]
+/// \f[h_1(\theta) = -2\theta^3 + 3\theta^2\f]
+/// \f[h_2(\theta) = \theta^3 - 2\theta^2 + \theta\f]
+/// \f[h_3(\theta) = \theta^3 - \theta^2\f]
+///
+/// @param p0 Start value.
+/// @param m0 Start tangent.
+/// @param p1 End value.
+/// @param m1 End tangent.
+/// @param t Interpolation parameter in the domain [0, 1]
+/// @return Interpolated value at @p t.
+f32 Hermite(f32 p0, f32 m0, f32 p1, f32 m1, f32 t) {
+    f32 t2 = t * t;
+    f32 t2_less_t = t2 - t;
+    f32 h3 = t2_less_t * t;
+    f32 f0 = 2.0f * h3;
+    f32 h2 = h3 - t2_less_t;
+    f32 h1 = t2 - f0;
+
+    return h3 * m1 + (h2 * m0 + (p0 - h1 * p0 + h1 * p1));
+}
+
 } // namespace EGG::Mathf

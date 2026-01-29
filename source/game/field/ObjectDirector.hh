@@ -73,6 +73,11 @@ public:
     [[nodiscard]] f32 distAboveRisingWater(f32 offset) const;
     [[nodiscard]] f32 risingWaterKillPlaneHeight() const;
 
+    ///< @addr{0x808C70E8}
+    [[nodiscard]] static f32 WanwanMaxPitch() {
+        return s_wanwanMaxPitch;
+    }
+
     static ObjectDirector *CreateInstance();
     static void DestroyInstance();
 
@@ -103,6 +108,8 @@ private:
     std::array<Kart::Reaction, MAX_UNIT_COUNT> m_reactions;
     ObjectPsea *m_psea;
     std::vector<ObjectCollidable *> m_managedObjects;
+
+    static f32 s_wanwanMaxPitch; ///< @addr{0x808C70E8}
 
     static ObjectDirector *s_instance;
 };
