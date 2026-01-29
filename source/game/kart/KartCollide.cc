@@ -1113,6 +1113,21 @@ Action KartCollide::handleReactWallSpark(size_t idx) {
     return Action::None;
 }
 
+/// @addr{0x80573A2C}
+Action KartCollide::handleReactRubberWall(size_t idx) {
+    constexpr f32 BASE_DIR_FORCE_SCALAR = 0.95f;
+    constexpr f32 DIR_FORCE_SCALAR = 0.050000012f;
+    constexpr f32 MAX_FORCE = 70.0f;
+
+    const EGG::Vector3f &hitDir = Field::ObjectCollisionKart::GetHitDirection(idx);
+    const EGG::Vector3f &zAxis = componentZAxis();
+
+    f32 force = BASE_DIR_FORCE_SCALAR + DIR_FORCE_SCALAR * EGG::Mathf::abs(hitDir.dot(zAxis));
+    move()->applyForce(MAX_FORCE * force, hitDir, true);
+
+    return Action::None;
+}
+
 /// @addr{0x805735EC}
 Action KartCollide::handleReactUntrickableJumpPad(size_t /*idx*/) {
     move()->setPadType(KartMove::PadType(KartMove::ePadType::JumpPad));
@@ -1164,7 +1179,7 @@ std::array<KartCollide::ObjectCollisionHandler, 33> KartCollide::s_objectCollisi
         &KartCollide::handleReactOffroad,
         &KartCollide::handleReactLaunchSpin,
         &KartCollide::handleReactWallSpark,
-        &KartCollide::handleReactNone,
+        &KartCollide::handleReactRubberWall,
         &KartCollide::handleReactNone,
         &KartCollide::handleReactUntrickableJumpPad,
         &KartCollide::handleReactShortCrushLoseItem,
