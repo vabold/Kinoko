@@ -174,9 +174,13 @@ void ObjectDirector::createObjects() {
     m_collisionObjects.reserve(maxCount);
 
     auto *objDrivableDir = ObjectDrivableDirector::Instance();
-    const auto &raceScenario = System::RaceConfig::Instance()->raceScenario();
-    bool rGV2 = raceScenario.course == Course::SNES_Ghost_Valley_2;
+    auto course = System::RaceConfig::Instance()->raceScenario().course;
+    bool rGV2 = course == Course::SNES_Ghost_Valley_2;
     bool sun = false;
+
+    // The max pitch of the Chain Chomp only needs to be set once,
+    // so we set it here instead of in the Chain Chomp constructor.
+    s_wanwanMaxPitch = course == Course::GCN_Mario_Circuit ? -20.0f : -30.0f;
 
     for (size_t i = 0; i < objectCount; ++i) {
         const auto *pObj = courseMap->getGeoObj(i);
@@ -219,7 +223,7 @@ void ObjectDirector::createObjects() {
         }
     }
 
-    if (raceScenario.course == Course::Moonview_Highway) {
+    if (course == Course::Moonview_Highway) {
         auto *highwayMgr = new ObjectHighwayManager;
         highwayMgr->load();
     }
@@ -229,7 +233,7 @@ void ObjectDirector::createObjects() {
         sunMgr->load();
     }
 
-    if (raceScenario.course == Course::GBA_Shy_Guy_Beach) {
+    if (course == Course::GBA_Shy_Guy_Beach) {
         auto *shipMgr = new ObjectHeyhoShipManager;
         shipMgr->load();
     }
@@ -306,6 +310,8 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
     case ObjectId::WLFirebarGC:
     case ObjectId::KoopaFirebar:
         return new ObjectFirebar(params);
+    case ObjectId::Wanwan:
+        return new ObjectWanwan(params);
     case ObjectId::Poihana:
         return new ObjectPoihana(params);
     case ObjectId::Propeller:
@@ -399,6 +405,8 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
         return new ObjectNoImpl(params);
     }
 }
+
+f32 ObjectDirector::s_wanwanMaxPitch; ///< @addr{0x808C70E8}
 
 ObjectDirector *ObjectDirector::s_instance = nullptr; ///< @addr{0x809C4330}
 

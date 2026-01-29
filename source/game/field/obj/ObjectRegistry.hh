@@ -67,5 +67,6 @@
 #include "game/field/obj/ObjectVolcanoPiece.hh"
 #include "game/field/obj/ObjectVolcanoRock.hh"
 #include "game/field/obj/ObjectWLWallGC.hh"
+#include "game/field/obj/ObjectWanwan.hh"
 #include "game/field/obj/ObjectWoodbox.hh"
 #include "game/field/obj/ObjectWoodboxW.hh"

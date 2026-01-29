@@ -328,4 +328,6 @@ static constexpr std::array<BaseAndDec32, 32> FRES_TABLE = {{
     return -fms(x, invSquare, invDouble);
 }
 
+[[nodiscard]] f32 Hermite(f32 p0, f32 m0, f32 p1, f32 m1, f32 t);
+
 } // namespace EGG::Mathf
