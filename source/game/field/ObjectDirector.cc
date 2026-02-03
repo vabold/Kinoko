@@ -379,6 +379,7 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
     // However, we need to specify an impl, so we don't use default
     case ObjectId::DummyPole:
     case ObjectId::CastleTree1c:
+    case ObjectId::MarioTreeGCc:
     case ObjectId::PeachTreeGCc:
     case ObjectId::MarioGo64c:
     case ObjectId::KinokoT1:
