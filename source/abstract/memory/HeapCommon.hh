@@ -58,7 +58,7 @@ private:
 
     u32 m_signature;
     OptFlag m_optFlag;
-    [[maybe_unused]] MEMLink m_link;
+    MEMLink m_link;
     MEMList m_childList;
     void *m_heapStart;
     void *m_heapEnd;

@@ -44,7 +44,7 @@ private:
 
     std::vector<Rail *> m_rails;
     std::span<RailInterpolator *> m_interpolators;
-    [[maybe_unused]] u16 m_totalRails;
+    u16 m_totalRails;
     u16 m_interpolatorTotal;
     u16 m_extraInterplatorCount;
     u16 m_pointCount;

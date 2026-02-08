@@ -111,6 +111,18 @@ public:
     [[nodiscard]] u16 prismCache(u32 idx) const {
         return m_prismCache[idx];
     }
+
+    [[nodiscard]] const std::span<KCollisionPrism>& prisms() const {
+        return m_prisms;
+    }
+
+    [[nodiscard]] const std::span<EGG::Vector3f>& nrms() const {
+        return m_nrms;
+    }
+
+    [[nodiscard]] const std::span<EGG::Vector3f>& vertices() const {
+        return m_vertices;
+    }
     /// @endGetters
 
     [[nodiscard]] static EGG::Vector3f GetVertex(f32 height, const EGG::Vector3f &vertex1,
@@ -157,7 +169,6 @@ private:
     EGG::Vector3f m_cachedPos;
     f32 m_cachedRadius;
 
-public:
     /// @brief Optimizes for time by avoiding unnecessary byteswapping.
     /// The Wii doesn't have this problem because big endian is always assumed.
     std::span<KCollisionPrism> m_prisms;
