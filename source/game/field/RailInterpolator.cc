@@ -218,16 +218,19 @@ void RailLinearInterpolator::getPathLocation(f32 t, s16 &idx, f32 &len) {
 void RailLinearInterpolator::calcNextSegment() {
     calcNextIndices();
 
-    f32 prevDirLength = m_currentDirection.length();
-    m_currentDirection = m_points[m_nextPointIdx].pos - m_points[m_currPointIdx].pos;
-    m_segmentT = ((m_segmentT - 1.0f) * prevDirLength) / m_currentDirection.length();
-
+    // @bug The game accesses POTI points out-of-bounds, but then course-corrects by
+    // setting m_segmentT to 0.0f once it detects an invalid nextPointIdx, but after
+    // it already read from undefined memory.
     if (shouldChangeDirection()) {
         m_segmentT = 0.0f;
-    }
+    } else {
+        f32 prevDirLength = m_currentDirection.length();
+        m_currentDirection = m_points[m_nextPointIdx].pos - m_points[m_currPointIdx].pos;
+        m_segmentT = ((m_segmentT - 1.0f) * prevDirLength) / m_currentDirection.length();
 
-    if (m_segmentT > 1.0f) {
-        m_segmentT = 0.99f;
+        if (m_segmentT > 1.0f) {
+            m_segmentT = 0.99f;
+        }
     }
 
     if (m_usePerPointVelocities) {
