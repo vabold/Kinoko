@@ -9,13 +9,13 @@ ArchiveHandle::ArchiveHandle(void *archiveStart) : m_startAddress(archiveStart) 
     RawArchive *rawArchive = reinterpret_cast<RawArchive *>(archiveStart);
     ASSERT(rawArchive->isValidSignature());
 
-    m_nodesAddress = static_cast<u8 *>(archiveStart) + parse<u32>(rawArchive->nodesOffset);
-    m_filesAddress = static_cast<u8 *>(archiveStart) + parse<u32>(rawArchive->filesOffset);
+    m_nodes = reinterpret_cast<Node *>(
+            static_cast<u8 *>(archiveStart) + parse<u32>(rawArchive->nodesOffset));
 
     // "The right bound of the root node is the number of nodes"
-    m_count = parse<u32>(node(0)->m_directory.next);
+    m_count = parse<u32>(node(0)->directory.next);
     // Strings exist directly after the last node
-    m_strings = reinterpret_cast<const char *>(reinterpret_cast<Node *>(m_nodesAddress) + m_count);
+    m_strings = reinterpret_cast<const char *>(&m_nodes[m_count]);
     m_currentNode = 0;
 }
 
@@ -40,11 +40,11 @@ s32 ArchiveHandle::convertPathToEntryId(const char *path) const {
         if (path[0] == '.') {
             if (path[1] == '.') {
                 if (path[2] == '/') {
-                    entryId = node(entryId)->m_directory.parent;
+                    entryId = node(entryId)->directory.parent;
                     path += 3;
                     continue;
                 } else if (path[2] == '\0') {
-                    return node(entryId)->m_directory.parent;
+                    return node(entryId)->directory.parent;
                 } else {
                     // Malformed "..*" case
                     return -1;
@@ -66,7 +66,7 @@ s32 ArchiveHandle::convertPathToEntryId(const char *path) const {
 
         bool found = false;
         const u32 anchor = entryId++;
-        while (entryId < parse<u32>(node(anchor)->m_directory.next)) {
+        while (entryId < parse<u32>(node(anchor)->directory.next)) {
             if (!node(anchor)->isDirectory() && endOfPath) {
                 entryId++;
                 continue;
