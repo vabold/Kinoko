@@ -36,7 +36,8 @@ void RailInterpolator::updateVel() {
 /// @addr{0x806ED34C}
 void RailInterpolator::calcVelocities() {
     m_prevPointVel = static_cast<f32>(m_points[m_currPointIdx].setting[0]);
-    m_nextPointVel = static_cast<f32>(m_points[m_nextPointIdx].setting[0]);
+    m_nextPointVel =
+            shouldChangeDirection() ? 0.0f : static_cast<f32>(m_points[m_nextPointIdx].setting[0]);
 
     if (m_prevPointVel == 0.0f) {
         m_prevPointVel = m_speed;
@@ -44,6 +45,13 @@ void RailInterpolator::calcVelocities() {
 
     if (m_nextPointVel == 0.0f) {
         m_nextPointVel = m_speed;
+    }
+
+    // @bug This is callable with an invalid m_nextPointIdx, so we need a safeguard
+    // This invalid state is resolved very shortly after, but the vel propagates to the next frame
+    // If t is ever not 0, this leads to undefined behavior, so we guard against it here
+    if (shouldChangeDirection()) {
+        ASSERT(m_segmentT == 0.0f);
     }
 }
 
