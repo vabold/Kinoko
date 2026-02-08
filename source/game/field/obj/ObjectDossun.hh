@@ -3,12 +3,15 @@
 #include "game/field/obj/ObjectCollidable.hh"
 
 namespace Field {
+class ObjectDossunTsuibiHolder;
 
 /// @brief Base class for the various different Thwomp types in the game.
 /// @details On initialization, the game pre-calculates how many frames it takes for the Thwomp
 /// to stomp down and hit the floor. If a Thwomp is positioned such that there is no floor beneath
 /// it, then the init function will be stuck in an infinite loop, causing the race to never start.
 class ObjectDossun : public ObjectCollidable {
+friend ObjectDossunTsuibiHolder;
+
 public:
     ObjectDossun(const System::MapdataGeoObj &params);
     ~ObjectDossun() override;

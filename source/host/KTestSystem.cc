@@ -198,7 +198,7 @@ void KTestSystem::parseOptions(int argc, char **argv) {
                 }
                 target = atoi(argv[i]);
                 if (target < 0 || target > std::numeric_limits<u16>::max()) {
-                    PANIC("Target is out of bounds (expected 0-65535), got %d\n", target);
+                    PANIC("Target is out of bounds (expected 0-65535), got %d\n", *target);
                 }
             }
 
