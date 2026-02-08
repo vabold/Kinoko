@@ -39,7 +39,7 @@ public:
             struct {
                 u32 parent;
                 u32 next;
-            } m_directory;
+            } directory;
             struct {
                 u32 startAddress;
                 u32 length;
@@ -63,8 +63,7 @@ public:
     }
 
     [[nodiscard]] Node *node(s32 entryId) const {
-        auto *nodeAddress = static_cast<u8 *>(m_nodesAddress) + sizeof(Node) * entryId;
-        return reinterpret_cast<Node *>(nodeAddress);
+        return &m_nodes[entryId];
     }
 
     [[nodiscard]] void *startAddress() const {
@@ -73,8 +72,7 @@ public:
 
 private:
     void *m_startAddress;
-    void *m_nodesAddress;
-    void *m_filesAddress;
+    Node *m_nodes;
     u32 m_count;
     u32 m_currentNode;
     const char *m_strings;

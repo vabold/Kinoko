@@ -207,7 +207,7 @@ protected:
     EGG::Vector3f m_totalTorque;       ///< Torque from linear motion and rotation.
     EGG::Quatf m_specialRot;           ///< Rotation from trick animations. Copied from KartPhysics.
     EGG::Quatf m_extraRot;             ///< @unused
-    f32 m_gravity;                     ///< Always -1.0f
+    f32 m_gravity;                     ///< Usually -1.3f, also affected by KartMove::calcDive.
     EGG::Vector3f m_intVel;            ///< What you typically consider to be the vehicle's speed.
     EGG::Vector3f m_top;               ///< The unit vector pointing up from the vehicle.
     f32 m_stabilizationFactor;         ///< Scalar for damping the main rotation.

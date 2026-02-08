@@ -264,7 +264,7 @@ void KTestSystem::startNextTestCase() {
     m_sync = true;
 
     // Initialize endianness for the RAM stream
-    u16 mark = *reinterpret_cast<u16 *>(krkg + offsetof(TestHeader, byteOrderMark));
+    u16 mark = reinterpret_cast<TestHeader *>(krkg)->byteOrderMark;
     std::endian endian = parse<u16>(mark) == 0xfeff ? std::endian::big : std::endian::little;
     m_stream.setEndian(endian);
 
