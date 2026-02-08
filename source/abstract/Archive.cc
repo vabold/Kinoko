@@ -9,7 +9,8 @@ ArchiveHandle::ArchiveHandle(void *archiveStart) : m_startAddress(archiveStart) 
     RawArchive *rawArchive = reinterpret_cast<RawArchive *>(archiveStart);
     ASSERT(rawArchive->isValidSignature());
 
-    m_nodes = reinterpret_cast<Node *>(static_cast<u8 *>(archiveStart) + parse<u32>(rawArchive->nodesOffset));
+    m_nodes = reinterpret_cast<Node *>(
+            static_cast<u8 *>(archiveStart) + parse<u32>(rawArchive->nodesOffset));
 
     // "The right bound of the root node is the number of nodes"
     m_count = parse<u32>(node(0)->directory.next);
