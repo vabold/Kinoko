@@ -1,5 +1,9 @@
 #pragma once
 
+#include "game/kart/Status.hh"
+
+#include "game/field/KCollisionTypes.hh"
+
 #include "game/system/KPadController.hh"
 
 #include <egg/math/Matrix.hh>
@@ -34,6 +38,7 @@ class KartMove;
 class KartParam;
 struct BSP;
 class KartPhysics;
+class KartScale;
 class KartState;
 class KartSub;
 class KartSuspension;
@@ -87,6 +92,8 @@ public:
     [[nodiscard]] const KartMove *move() const;
     [[nodiscard]] KartHalfPipe *halfPipe();
     [[nodiscard]] const KartHalfPipe *halfPipe() const;
+    [[nodiscard]] KartScale *kartScale();
+    [[nodiscard]] const KartScale *kartScale() const;
     [[nodiscard]] KartJump *jump();
     [[nodiscard]] const KartJump *jump() const;
     [[nodiscard]] KartParam *param();
@@ -149,6 +156,12 @@ public:
     [[nodiscard]] f32 speedRatio() const;
     [[nodiscard]] f32 speedRatioCapped() const;
     [[nodiscard]] bool isInRespawn() const;
+    [[nodiscard]] Field::KCLTypeMask wallKclType() const;
+    [[nodiscard]] u32 wallKclVariant() const;
+    [[nodiscard]] Status &status();
+    [[nodiscard]] const Status &status() const;
+    [[nodiscard]] const EGG::Vector3f &wheelPos(u16 idx) const;
+    [[nodiscard]] const EGG::Vector3f &wheelEdgePos(u16 idx) const;
 
     [[nodiscard]] static std::list<KartObjectProxy *> &proxyList() {
         return s_proxyList;

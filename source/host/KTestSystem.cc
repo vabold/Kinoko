@@ -1,6 +1,5 @@
 #include "KTestSystem.hh"
 
-#include "host/Option.hh"
 #include "host/SceneCreatorDynamic.hh"
 
 #include <game/kart/KartObjectManager.hh>
@@ -29,19 +28,28 @@ struct TestHeader {
 };
 
 /// @brief Initializes the system.
-/// @details This reads over the KRKG and generates the list of test cases,
-/// before starting the first test case and initializing the race scene.
 void KTestSystem::init() {
-    constexpr u32 TEST_HEADER_SIGNATURE = 0x54535448; // TSTH
-    constexpr u32 TEST_FOOTER_SIGNATURE = 0x54535446; // TSTF
-    constexpr u16 SUITE_MAJOR_VER = 1;
-    constexpr u16 SUITE_MAX_MINOR_VER = 0;
-
     auto *sceneCreator = new Host::SceneCreatorDynamic;
     m_sceneMgr = new EGG::SceneManager(sceneCreator);
 
     System::RaceConfig::RegisterInitCallback(OnInit, nullptr);
     Abstract::File::Remove("results.txt");
+
+    if (m_testMode == Host::EOption::Suite) {
+        initSuite();
+    }
+
+    startNextTestCase();
+    m_sceneMgr->changeScene(0);
+}
+
+/// @details This reads over the KRKG and generates the list of test cases,
+/// before starting the first test case and initializing the race scene.
+void KTestSystem::initSuite() {
+    constexpr u32 TEST_HEADER_SIGNATURE = 0x54535448; // TSTH
+    constexpr u32 TEST_FOOTER_SIGNATURE = 0x54535446; // TSTF
+    constexpr u16 SUITE_MAJOR_VER = 1;
+    constexpr u16 SUITE_MAX_MINOR_VER = 0;
 
     u16 numTestCases = m_stream.read_u16();
     u16 testMajorVer = m_stream.read_u16();
@@ -92,9 +100,6 @@ void KTestSystem::init() {
 
         m_testCases.push(testCase);
     }
-
-    startNextTestCase();
-    m_sceneMgr->changeScene(0);
 }
 
 /// @brief Executes a frame.
@@ -125,13 +130,17 @@ bool KTestSystem::run() {
 }
 
 /// @brief Parses non-generic command line options.
-/// @details The only currently accepted option is the suite flag.
+/// @details Test mode currently accepts either a suite of tests or a RKG + KRKG.
 /// @param argc The number of arguments.
 /// @param argv The arguments.
 void KTestSystem::parseOptions(int argc, char **argv) {
     if (argc < 2) {
-        PANIC("Expected suite argument!");
+        PANIC("Expected suite/ghost/krkg argument!");
     }
+
+    std::optional<char *> rkgPath;
+    std::optional<char *> krkgPath;
+    std::optional<u16> target;
 
     for (int i = 0; i < argc; ++i) {
         std::optional<Host::EOption> flag = Host::Option::CheckFlag(argv[i]);
@@ -142,6 +151,12 @@ void KTestSystem::parseOptions(int argc, char **argv) {
 
         switch (*flag) {
         case Host::EOption::Suite: {
+            if (m_testMode != Host::EOption::Invalid) {
+                PANIC("Mode was already set!");
+            }
+
+            m_testMode = Host::EOption::Suite;
+
             ASSERT(i + 1 < argc);
 
             size_t size;
@@ -153,12 +168,66 @@ void KTestSystem::parseOptions(int argc, char **argv) {
 
             m_stream = EGG::RamStream(data, size);
             m_stream.setEndian(std::endian::big);
+
         } break;
+        case Host::EOption::Ghost:
+            if (m_testMode != Host::EOption::Invalid && m_testMode != Host::EOption::Ghost) {
+                PANIC("Mode was already set!");
+            }
+
+            m_testMode = Host::EOption::Ghost;
+            ASSERT(i + 1 < argc);
+            rkgPath = argv[++i];
+
+            break;
+        case Host::EOption::KRKG:
+            if (m_testMode != Host::EOption::Invalid && m_testMode != Host::EOption::Ghost) {
+                PANIC("Mode was already set!");
+            }
+
+            m_testMode = Host::EOption::Ghost;
+            ASSERT(i + 1 < argc);
+            krkgPath = argv[++i];
+
+            break;
+        case Host::EOption::TargetFrame:
+            ASSERT(i + 1 < argc);
+            {
+                if (strlen(argv[++i]) > 5) {
+                    PANIC("Target has too many digits");
+                }
+                target = atoi(argv[i]);
+                if (target < 0 || target > std::numeric_limits<u16>::max()) {
+                    PANIC("Target is out of bounds (expected 0-65535), got %d\n", target);
+                }
+            }
+
+            break;
         case Host::EOption::Invalid:
         default:
             PANIC("Invalid flag!");
             break;
         }
+    }
+
+    if (target && m_testMode != Host::EOption::Ghost) {
+        PANIC("'--framecount' is only supported in a single ghost test");
+    }
+
+    if (m_testMode == Host::EOption::Ghost) {
+        if (!rkgPath) {
+            PANIC("Missing ghost argument!");
+        }
+
+        if (!krkgPath) {
+            PANIC("Missing KRKG argument!");
+        }
+
+        if (!target) {
+            target = 0;
+        }
+
+        m_testCases.emplace(*rkgPath, *rkgPath, *krkgPath, *target);
     }
 }
 
@@ -175,7 +244,7 @@ void KTestSystem::DestroyInstance() {
     delete instance;
 }
 
-KTestSystem::KTestSystem() = default;
+KTestSystem::KTestSystem() : m_testMode(Host::EOption::Invalid) {}
 
 KTestSystem::~KTestSystem() {
     if (s_instance) {
@@ -206,6 +275,18 @@ void KTestSystem::startNextTestCase() {
     m_versionMinor = m_stream.read_u16();
 
     ASSERT(m_stream.read_u32() == m_stream.index());
+
+    // If we're in Ghost mode instead of Suite mode and framecount not specified, then target the
+    // total framecount of the KRKG.
+    if (m_testMode == Host::EOption::Ghost) {
+        ASSERT(m_testCases.size() == 1);
+        auto &front = m_testCases.front();
+        if (front.targetFrame == 0) {
+            front.targetFrame = m_frameCount;
+        }
+
+        front.targetFrame = std::min(front.targetFrame, m_frameCount);
+    }
 }
 
 /// @brief Pops the current test case and frees the KRKG buffer.
@@ -221,10 +302,12 @@ bool KTestSystem::popTestCase() {
 /// @brief Checks one frame in the test.
 /// @return Whether the test can continue.
 bool KTestSystem::calcTest() {
+    ++m_currentFrame;
+
     // Check if we're out of frames
     u16 targetFrame = getCurrentTestCase().targetFrame;
     ASSERT(targetFrame <= m_frameCount);
-    if (++m_currentFrame > targetFrame) {
+    if (m_currentFrame > targetFrame) {
         REPORT("Test Case Passed: %s [%d / %d]", getCurrentTestCase().name.c_str(), targetFrame,
                 m_frameCount);
         return false;

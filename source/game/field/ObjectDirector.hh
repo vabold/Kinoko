@@ -8,14 +8,25 @@
 
 #include <vector>
 
+namespace Host {
+
+class Context;
+
+} // namespace Host
+
 namespace Field {
 
+class ObjectPsea;
+
 class ObjectDirector : EGG::Disposer {
+    friend class Host::Context;
+
 public:
     void init();
     void calc();
     void addObject(ObjectCollidable *obj);
     void addObjectNoImpl(ObjectNoImpl *obj);
+    void addManagedObject(ObjectCollidable *obj);
 
     size_t checkKartObjectCollision(Kart::KartObject *kartObj,
             ObjectCollisionConvexHull *convexHull);
@@ -24,7 +35,11 @@ public:
         return m_flowTable;
     }
 
-    [[nodiscard]] const ObjectBase *collidingObject(size_t idx) const {
+    [[nodiscard]] const ObjectHitTable &hitTableKart() const {
+        return m_hitTableKart;
+    }
+
+    [[nodiscard]] const ObjectCollidable *collidingObject(size_t idx) const {
         ASSERT(idx < m_collidingObjects.size());
         return m_collidingObjects[idx];
     }
@@ -37,6 +52,30 @@ public:
     [[nodiscard]] const EGG::Vector3f &hitDepth(size_t idx) const {
         ASSERT(idx < m_hitDepths.size());
         return m_hitDepths[idx];
+    }
+
+    [[nodiscard]] std::vector<ObjectCollidable *> &managedObjects() {
+        return m_managedObjects;
+    }
+
+    [[nodiscard]] const std::vector<ObjectCollidable *> &managedObjects() const {
+        return m_managedObjects;
+    }
+
+    void setPsea(ObjectPsea *psea) {
+        m_psea = psea;
+    }
+
+    [[nodiscard]] ObjectPsea *psea() const {
+        return m_psea;
+    }
+
+    [[nodiscard]] f32 distAboveRisingWater(f32 offset) const;
+    [[nodiscard]] f32 risingWaterKillPlaneHeight() const;
+
+    ///< @addr{0x808C70E8}
+    [[nodiscard]] static f32 WanwanMaxPitch() {
+        return s_wanwanMaxPitch;
     }
 
     static ObjectDirector *CreateInstance();
@@ -63,10 +102,14 @@ private:
 
     static constexpr size_t MAX_UNIT_COUNT = 0x100;
 
-    std::array<ObjectBase *, MAX_UNIT_COUNT>
+    std::array<ObjectCollidable *, MAX_UNIT_COUNT>
             m_collidingObjects; ///< Objects we are currently colliding with
     std::array<EGG::Vector3f, MAX_UNIT_COUNT> m_hitDepths;
     std::array<Kart::Reaction, MAX_UNIT_COUNT> m_reactions;
+    ObjectPsea *m_psea;
+    std::vector<ObjectCollidable *> m_managedObjects;
+
+    static f32 s_wanwanMaxPitch; ///< @addr{0x808C70E8}
 
     static ObjectDirector *s_instance;
 };

@@ -5,6 +5,8 @@
 #include "game/kart/KartParam.hh"
 #include "game/kart/KartState.hh"
 
+#include "game/system/RaceConfig.hh"
+
 #include <egg/math/Math.hh>
 
 namespace Render {
@@ -23,7 +25,9 @@ KartModel::~KartModel() = default;
 
 /// @addr{0x807CD32C}
 void KartModel::vf_1c() {
-    if (state()->isBurnout()) {
+    const auto &status = KartObjectProxy::status();
+
+    if (status.onBit(Kart::eStatus::Burnout)) {
         _54 = 1.0f;
 
         f32 pitch = move()->burnout().pitch();
@@ -38,8 +42,11 @@ void KartModel::vf_1c() {
         _58 *= 0.9f;
     }
 
-    f32 xStick = inputs()->currentState().stick.x;
-    bool isInCannon = state()->isInCannon();
+    bool frozenInIce =
+            System::RaceConfig::Instance()->raceScenario().course == Course::N64_Sherbet_Land &&
+            status.onBit(Kart::eStatus::InRespawn, Kart::eStatus::AfterRespawn);
+    f32 xStick = frozenInIce ? 0.0f : inputs()->currentState().stick.x;
+    bool isInCannon = status.onBit(Kart::eStatus::InCannon);
     f32 fVar2 = isInCannon ? 0.02f : 0.1f;
 
     f32 local_f31 = _58;
@@ -133,15 +140,16 @@ void KartModel::calc() {
 void KartModel::FUN_807CB198() {
     m_somethingRight = false;
     m_somethingLeft = false;
+    auto &status = KartObjectProxy::status();
 
-    bool turnInput = state()->isStickLeft() || state()->isStickRight();
-    if (state()->isDrifting() || (state()->isChargingSsmt() && turnInput)) {
+    bool turnInput = status.onBit(Kart::eStatus::StickLeft, Kart::eStatus::StickRight);
+    if (state()->isDrifting() || (status.onBit(Kart::eStatus::ChargingSSMT) && turnInput)) {
         if (move()->hopStickX() == 1) {
             m_somethingLeft = true;
         } else {
             if (move()->hopStickX() == -1) {
                 m_somethingRight = true;
-            } else if (!state()->isStickLeft()) {
+            } else if (status.offBit(Kart::eStatus::StickLeft)) {
                 m_somethingRight = true;
             } else {
                 m_somethingLeft = true;

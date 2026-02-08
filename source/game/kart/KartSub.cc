@@ -5,12 +5,14 @@
 #include "game/kart/KartCollide.hh"
 #include "game/kart/KartMove.hh"
 #include "game/kart/KartObject.hh"
+#include "game/kart/KartPullPath.hh"
 #include "game/kart/KartState.hh"
 #include "game/kart/KartSuspensionPhysics.hh"
 
 #include "game/field/BoxColManager.hh"
 #include "game/field/CollisionDirector.hh"
 
+#include "game/system/RaceConfig.hh"
 #include "game/system/RaceManager.hh"
 
 #include <egg/math/Math.hh>
@@ -28,10 +30,10 @@ KartSub::~KartSub() {
 }
 
 /// @addr{0x80595D48}
-void KartSub::createSubsystems(bool isBike) {
+void KartSub::createSubsystems(bool isBike, const KartParam::Stats &stats) {
     m_move = isBike ? new KartMoveBike : new KartMove;
     m_action = new KartAction;
-    m_move->createSubsystems();
+    m_move->createSubsystems(stats);
     m_state = new KartState;
     m_collide = new KartCollide;
 }
@@ -98,7 +100,9 @@ void KartSub::resetPhysics() {
 /// @details Handles the first-half of physics calculations. This includes input processing,
 /// subsequent position/speed updates, as well as responding to last frame's collisions.
 void KartSub::calcPass0() {
-    if (state()->isCannonStart()) {
+    auto &status = KartObjectProxy::status();
+
+    if (status.onBit(eStatus::CannonStart)) {
         physics()->hitboxGroup()->reset();
         for (size_t i = 0; i < tireCount(); ++i) {
             tirePhysics(i)->hitboxGroup()->reset();
@@ -108,7 +112,7 @@ void KartSub::calcPass0() {
 
     state()->calc();
 
-    if (state()->isTriggerRespawn()) {
+    if (status.onBit(eStatus::TriggerRespawn)) {
         setInertiaScale(EGG::Vector3f(1.0f, 1.0f, 1.0f));
         resetPhysics();
         state()->reset();
@@ -124,8 +128,9 @@ void KartSub::calcPass0() {
     state()->calcInput();
     move()->calc();
     action()->calc();
+    collide()->pullPath().calc();
 
-    if (state()->isSkipWheelCalc()) {
+    if (status.onBit(eStatus::SkipWheelCalc)) {
         for (size_t tireIdx = 0; tireIdx < tireCount(); ++tireIdx) {
             tirePhysics(tireIdx)->setLastPos(pos());
         }
@@ -153,11 +158,11 @@ void KartSub::calcPass0() {
     }
 
     f32 maxSpeed = move()->hardSpeedLimit();
-    physics()->calc(DT, maxSpeed, scale(), !state()->isTouchingGround());
+    physics()->calc(DT, maxSpeed, scale(), status.offBit(eStatus::TouchingGround));
 
     move()->calcRejectRoad();
 
-    if (!state()->isInCannon()) {
+    if (status.offBit(eStatus::InCannon)) {
         collide()->calcHitboxes();
         collisionGroup()->setHitboxScale(move()->totalScale());
     }
@@ -173,6 +178,7 @@ void KartSub::calcPass1() {
 
     state()->resetEjection();
 
+    m_movingWaterCollisionCount = 0;
     m_movingObjCollisionCount = 0;
     m_floorCollisionCount = 0;
     m_objVel.setZero();
@@ -187,12 +193,14 @@ void KartSub::calcPass1() {
     collide()->calcObjectCollision();
     dynamics()->setPos(pos() + collide()->tangentOff());
 
-    if (state()->isSomethingWallCollision()) {
+    auto &status = KartObjectProxy::status();
+
+    if (status.onBit(eStatus::SomethingWallCollision)) {
         const EGG::Vector3f &softWallSpeed = state()->softWallSpeed();
         f32 speedFactor = 5.0f;
         EGG::Vector3f effectiveSpeed;
 
-        if (state()->isHWG()) {
+        if (status.onBit(eStatus::HWG)) {
             speedFactor = 10.0f;
             effectiveSpeed = softWallSpeed;
         } else {
@@ -231,8 +239,8 @@ void KartSub::calcPass1() {
     Field::CollisionDirector::Instance()->checkCourseColNarrScLocal(250.0f, pos(),
             KCL_TYPE_VEHICLE_INTERACTABLE, 0);
 
-    if (!state()->isInCannon()) {
-        if (!state()->isZipperStick()) {
+    if (status.offBit(eStatus::InCannon)) {
+        if (status.offBit(eStatus::ZipperStick)) {
             collide()->findCollision();
             body()->calcTargetSinkDepth();
 
@@ -253,7 +261,7 @@ void KartSub::calcPass1() {
     }
 
     EGG::Vector3f forward = fullRot().rotateVector(EGG::Vector3f::ez);
-    m_someScale = scale().y;
+    m_someScale = std::max(scale().y, param()->stats().shrinkScale);
 
     const EGG::Vector3f gravity(0.0f, -1.3f, 0.0f);
     f32 speedFactor = 1.0f;
@@ -272,7 +280,7 @@ void KartSub::calcPass1() {
         }
     }
 
-    if (!state()->isSkipWheelCalc()) {
+    if (status.offBit(eStatus::SkipWheelCalc)) {
         EGG::Vector3f vehicleCompensation = m_maxSuspOvertravel + m_minSuspOvertravel;
         dynamics()->setPos(dynamics()->pos() + vehicleCompensation);
 
@@ -313,12 +321,19 @@ void KartSub::calcPass1() {
         move()->calcHopPhysics();
     }
 
+    if (status.onBit(eStatus::CollidingOffroad)) {
+        const auto &stats = param()->stats();
+        speedFactor = stats.kclSpeed[3];
+        handlingFactor = stats.kclRot[3];
+    }
+
     move()->setKCLWheelSpeedFactor(speedFactor);
     move()->setKCLWheelRotFactor(handlingFactor);
 
     move()->setFloorCollisionCount(m_floorCollisionCount);
 
     calcMovingObj();
+    calcMovingWater();
 
     physics()->updatePose();
 
@@ -341,6 +356,20 @@ void KartSub::addFloor(const CollisionData &colData, bool) {
         ++m_movingObjCollisionCount;
         m_objVel += colData.roadVelocity;
     }
+
+    auto &status = KartObjectProxy::status();
+    if (colData.bMovingWaterMomentum || colData.bMovingWaterDecaySpeed) {
+        ++m_movingWaterCollisionCount;
+
+        status.changeBit(colData.bMovingWaterDecaySpeed, eStatus::MovingWaterDecaySpeed);
+        status.changeBit(colData.bMovingWaterDisableAccel, eStatus::DisableAcceleration);
+        status.changeBit(colData.bMovingWaterVertical, eStatus::MovingWaterVertical);
+    } else {
+        status.resetBit(eStatus::MovingWaterDecaySpeed, eStatus::DisableAcceleration,
+                eStatus::MovingWaterVertical);
+    }
+
+    status.changeBit(colData.bMovingWaterStickyRoad, eStatus::MovingWaterStickyRoad);
 }
 
 /// @addr{0x805979EC}
@@ -351,25 +380,28 @@ void KartSub::updateSuspOvertravel(const EGG::Vector3f &suspOvertravel) {
 
 /// @addr{0x80598744}
 void KartSub::tryEndHWG() {
-    if (state()->isSoftWallDrift()) {
-        if (EGG::Mathf::abs(move()->speed()) > 15.0f || state()->isAirtimeOver20() ||
-                state()->isAllWheelsCollision()) {
-            state()->setSoftWallDrift(false);
-        } else if (state()->isTouchingGround()) {
+    auto &status = KartObjectProxy::status();
+
+    if (status.onBit(eStatus::SoftWallDrift)) {
+        if (EGG::Mathf::abs(move()->speed()) > 15.0f ||
+                status.onBit(eStatus::AirtimeOver20, eStatus::AllWheelsCollision)) {
+            status.resetBit(eStatus::SoftWallDrift);
+        } else if (status.onBit(eStatus::TouchingGround)) {
             if (EGG::Mathf::abs(componentXAxis().dot(EGG::Vector3f::ey)) > 0.8f) {
-                state()->setSoftWallDrift(false);
+                status.resetBit(eStatus::SoftWallDrift);
             }
         }
     }
 
-    if (state()->isHWG() && !state()->isSomethingWallCollision()) {
-        if (!state()->isWallCollision() || state()->isAllWheelsCollision()) {
-            state()->setHWG(false);
+    if (status.onBit(eStatus::HWG) && status.offBit(eStatus::SomethingWallCollision)) {
+        if (status.offBit(eStatus::WallCollision, eStatus::Wall3Collision) ||
+                status.onBit(eStatus::AllWheelsCollision)) {
+            status.resetBit(eStatus::HWG);
         }
     }
 
-    if (!state()->isInAction()) {
-        dynamics()->setForceUpright(!state()->isSoftWallDrift());
+    if (status.offBit(eStatus::InAction)) {
+        dynamics()->setForceUpright(status.offBit(eStatus::SoftWallDrift));
     }
 }
 
@@ -381,6 +413,45 @@ void KartSub::calcMovingObj() {
     } else {
         m_objVel *= 1.0f / static_cast<f32>(m_floorCollisionCount);
         physics()->composeMovingObjVel(m_objVel, 0.2f);
+    }
+}
+
+/// @addr{0x80597D4C}
+void KartSub::calcMovingWater() {
+    constexpr f32 DECAY_FLOOR_SCALAR = 0.7f;
+    constexpr f32 DECAY_AIR_SCALAR = 0.5f;
+    constexpr f32 DECAY_KC_AIR_SCALAR = 0.3f;
+
+    auto &status = KartObjectProxy::status();
+    const auto &pullPath = collide()->pullPath();
+
+    if (m_movingWaterCollisionCount > 0) {
+        f32 ratio = static_cast<f32>(m_movingWaterCollisionCount) /
+                static_cast<f32>(m_floorCollisionCount);
+        EGG::Vector3f dir = pullPath.pullDirection().perpInPlane(move()->smoothedUp(), true);
+
+        if (status.offBit(eStatus::MovingWaterDecaySpeed)) {
+            EGG::Vector3f vel = pullPath.pullSpeed() * dir * ratio;
+            physics()->composeMovingRoadVel(vel, 0.2f);
+        } else {
+            EGG::Vector3f vel = pullPath.pullSpeed() * dir;
+            physics()->shiftDecayMovingRoadVel(vel, pullPath.maxPullSpeed());
+        }
+    } else {
+        f32 airScalar = status.onBit(eStatus::MovingWaterStickyRoad) ? DECAY_AIR_SCALAR : 1.0f;
+        if (System::RaceConfig::Instance()->raceScenario().course == Course::Koopa_Cape &&
+                status.onBit(eStatus::MovingWaterDecaySpeed)) {
+            airScalar = DECAY_KC_AIR_SCALAR;
+        }
+
+        physics()->decayMovingRoadVel(DECAY_FLOOR_SCALAR, airScalar, m_floorCollisionCount > 0);
+    }
+
+    if (status.onBit(eStatus::MovingWaterStickyRoad)) {
+        EGG::Vector3f dir = pullPath.pullDirection().perpInPlane(move()->smoothedUp(), true);
+        dir.y *= 50.0f;
+        const EGG::Vector3f &vel = dynamics()->movingRoadVel();
+        dynamics()->setMovingRoadVel(EGG::Vector3f(vel.x, dir.y, vel.z));
     }
 }
 

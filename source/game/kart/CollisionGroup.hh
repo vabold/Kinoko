@@ -27,21 +27,28 @@ struct CollisionData {
     EGG::Vector3f roadVelocity;
     f32 speedFactor;
     f32 rotFactor;
-    Field::KCLTypeMask closestFloorFlags; ///< The KCL flag's @ref KColType.
-    u32 closestFloorSettings;             ///< The KCL flag's "variant"
+    Field::KCLTypeMask closestFloorFlags; ///< The colliding floor KCL flag's @ref KColType.
+    u32 closestFloorSettings;             ///< The colliding floor KCL flag's "variant"
+    Field::KCLTypeMask closestWallFlags;  ///< The colliding wall KCL flag's @ref KColType.
+    u32 closestWallSettings;              ///< The colliding wall KCL flag's "variant"
     s32 intensity;                        ///< The KCL flag's "wheel depth"
     f32 colPerpendicularity;
 
     bool bFloor; ///< Set if colliding with KCL which satisfies #KCL_TYPE_FLOOR
     bool bWall;  ///< Set if colliding with KCL which satisfies #KCL_TYPE_WALL
     bool bInvisibleWall;
-    bool bWall3; ///< Set if colliding with #COL_TYPE_WALL_2
-    bool bInvisibleWallOnly;
-    bool bSoftWall;
     bool bTrickable;
+    bool bMovingWaterMomentum; ///< Player will maintain speed for a bit after leaving KCL
+    bool bWall3;               ///< Set if colliding with #COL_TYPE_WALL_2
+    bool bInvisibleWallOnly;
+    bool bMovingWaterDecaySpeed; ///< Player speed will drop if not in mushroom
+    bool bSoftWall;
+    bool bMovingWaterStickyRoad;   ///< KC pipe vertical water section
+    bool bMovingWaterDisableAccel; ///< KC last turn prevents mini-turbo acceleration
     bool bHasRoadVel;
     bool bWallAtLeftCloser;
     bool bWallAtRightCloser;
+    bool bMovingWaterVertical; ///< KC last turn vertical water
 };
 
 /// @brief Represents a hitbox for the kart body or a wheel.

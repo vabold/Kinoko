@@ -121,7 +121,7 @@ private:
     s8 m_jugemIndex; ///< Index of respawn point associated with this checkpoint. Players who die
                      ///< here will be respawned at this point.
     /// Either:
-    /// - a @ref `NORMAL_CHECKPOINT` (-1) used to calulate respawns,
+    /// - a @ref `NORMAL_CHECKPOINT` (-1) used to calculate respawns,
     /// - a @ref `FINISH_LINE` (0) which updates the lap count when crossed, or
     /// - a "key checkpoint" (1-127) used to ensure racers travel around the entire
     /// course before proceeding to the next lap. the type value represents the index,

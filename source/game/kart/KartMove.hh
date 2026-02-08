@@ -4,6 +4,7 @@
 #include "game/kart/KartBurnout.hh"
 #include "game/kart/KartHalfPipe.hh"
 #include "game/kart/KartObjectProxy.hh"
+#include "game/kart/KartParam.hh"
 #include "game/kart/KartReject.hh"
 #include "game/kart/KartState.hh"
 
@@ -36,7 +37,7 @@ public:
     KartMove();
     virtual ~KartMove();
 
-    virtual void createSubsystems();
+    virtual void createSubsystems(const KartParam::Stats &stats);
     virtual void calcTurn();
     virtual void calcWheelie() {}
     virtual void setTurnParams();
@@ -61,6 +62,7 @@ public:
     void calcDirs();
     void calcStickyRoad();
     void calcOffroad();
+    void calcRisingWater();
     void calcBoost();
     void calcRampBoost();
     void calcDisableBackwardsAccel();
@@ -95,6 +97,7 @@ public:
             const EGG::Vector3f &prevPos, Field::CollisionInfo *colInfo,
             Field::KCLTypeMask *maskOut, Field::KCLTypeMask flags) const;
     f32 calcSlerpRate(f32 scale, const EGG::Quatf &from, const EGG::Quatf &to) const;
+    void applyForce(f32 force, const EGG::Vector3f &hitDir, bool stop);
     virtual void calcVehicleRotation(f32 turn);
     virtual void hop();
     virtual void onHop() {}
@@ -116,11 +119,13 @@ public:
 
     /// @addr{0x8057DA18}
     virtual bool canHop() const {
-        if (!state()->isHopStart() || !state()->isTouchingGround()) {
+        const auto &status = KartObjectProxy::status();
+
+        if (status.offAnyBit(eStatus::HopStart, eStatus::TouchingGround)) {
             return false;
         }
 
-        if (state()->isInAction()) {
+        if (status.onBit(eStatus::InAction)) {
             return false;
         }
 
@@ -128,10 +133,11 @@ public:
     }
 
     /// @addr{0x8057EA94}
+    /// @details This doesn't bytematch the base game. The base game's implementation uses the >
+    /// comparison. In practice, > is only ever used once, whereas >= is used in every other
+    /// scenario, so we simplify by writing this function for the more common scenario.
     bool canStartDrift() const {
-        constexpr f32 MINIMUM_DRIFT_THRESOLD = 0.55f;
-
-        return m_speed > MINIMUM_DRIFT_THRESOLD * m_baseSpeed;
+        return m_speed >= MINIMUM_DRIFT_THRESOLD * m_baseSpeed;
     }
 
     void tryStartBoostPanel();
@@ -149,6 +155,18 @@ public:
     void calcMushroomBoost();
     void calcZipperBoost();
     void landTrick();
+    void activateCrush(u16 timer);
+    void calcCrushed();
+    void calcScale();
+
+    /// @addr{0x80580768}
+    void activateShrink() {
+        applyShrink(300);
+    }
+
+    void applyShrink(u16 timer);
+    void calcShock();
+    void deactivateShock(bool resetSpeed);
 
     void enterCannon();
     void calcCannon();
@@ -194,6 +212,15 @@ public:
     void setKartSpeedLimit() {
         constexpr f32 LIMIT = 120.0f;
         m_hardSpeedLimit = LIMIT;
+    }
+
+    /// @addr{0x80581720}
+    void setScale(const EGG::Vector3f &v) {
+        m_scale = v;
+    }
+
+    void setPadType(PadType type) {
+        m_padType = type;
     }
     /// @endSetters
 
@@ -298,6 +325,10 @@ public:
         return m_halfPipe;
     }
 
+    [[nodiscard]] KartScale *kartScale() const {
+        return m_kartScale;
+    }
+
     [[nodiscard]] KartBurnout &burnout() {
         return m_burnout;
     }
@@ -383,10 +414,14 @@ protected:
     s16 m_ssmtDisableAccelTimer; ///< Counter that tracks delay before starting to reverse.
     f32 m_realTurn; ///< The "true" turn magnitude. Equal to @ref m_weightedTurn unless drifting.
     f32 m_weightedTurn;    ///< Magnitude+direction of stick input, factoring in the kart's stats.
-    EGG::Vector3f m_scale; ///< @unused Always 1.0f
+    EGG::Vector3f m_scale; ///< Normally the unit vector, but may vary due to crush animations.
     f32 m_totalScale;      ///< @unused Always 1.0f
     f32 m_hitboxScale;
+    f32 m_shockSpeedMultiplier;
     u16 m_mushroomBoostTimer; ///< Number of frames until the mushroom boost runs out.
+    f32 m_invScale;
+    u16 m_shockTimer;
+    u16 m_crushTimer; ///< Number of frames until player will be uncrushed.
     u32 m_nonZipperAirtime;
     f32 m_jumpPadMinSpeed; ///< Snaps the player to a minimum speed when first touching a jump pad.
     f32 m_jumpPadMaxSpeed;
@@ -408,15 +443,19 @@ protected:
     s16 m_respawnPreLandTimer;  ///< Counts down from 4 when pressing A before landing from respawn.
     s16 m_respawnPostLandTimer; ///< Counts up to 4 if not accelerating after respawn landing.
     s16 m_respawnTimer;
+    s16 m_bumpTimer;                     ///< Set when a @ref Reaction::SmallBump collision occurs.
     DrivingDirection m_drivingDirection; ///< Current state of driver's direction.
     s16 m_backwardsAllowCounter;         ///< Tracks the 15f delay before reversing.
     PadType m_padType;
     Flags m_flags;
     KartJump *m_jump;
     KartHalfPipe *m_halfPipe;                   ///< Pertains to zipper physics.
+    KartScale *m_kartScale;                     ///< Manages scaling due to TF stompers and MH cars.
     KartBurnout m_burnout;                      ///< Manages the state of start boost burnout.
     const DriftingParameters *m_driftingParams; ///< Drift-type-specific parameters.
     f32 m_rawTurn; ///< Float in range [-1, 1]. Represents stick magnitude + direction.
+
+    static constexpr f32 MINIMUM_DRIFT_THRESOLD = 0.55f;
 };
 
 /// @brief Responsible for reacting to player inputs and moving the bike.
@@ -447,7 +486,7 @@ public:
     virtual void startWheelie();
     virtual void cancelWheelie();
 
-    void createSubsystems() override;
+    void createSubsystems(const KartParam::Stats &stats) override;
     void calcVehicleRotation(f32 /*turn*/) override;
     void calcWheelie() override;
     void onHop() override;
@@ -463,14 +502,14 @@ public:
     /// @addr{0x80588324}
     [[nodiscard]] f32 getWheelieSoftSpeedLimitBonus() const override {
         constexpr f32 WHEELIE_SPEED_BONUS = 0.15f;
-        return state()->isWheelie() ? WHEELIE_SPEED_BONUS : 0.0f;
+        return status().onBit(eStatus::Wheelie) ? WHEELIE_SPEED_BONUS : 0.0f;
     }
 
     /// @addr{0x80588860}
     [[nodiscard]] f32 wheelieRotFactor() const {
         constexpr f32 WHEELIE_ROTATION_FACTOR = 0.2f;
 
-        return state()->isWheelie() ? WHEELIE_ROTATION_FACTOR : 1.0f;
+        return status().onBit(eStatus::Wheelie) ? WHEELIE_ROTATION_FACTOR : 1.0f;
     }
 
     void tryStartWheelie();

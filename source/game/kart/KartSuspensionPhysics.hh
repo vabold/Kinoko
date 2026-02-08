@@ -22,6 +22,7 @@ public:
     void realign(const EGG::Vector3f &bottom, const EGG::Vector3f &vehicleMovement);
 
     void updateCollision(const EGG::Vector3f &bottom, const EGG::Vector3f &topmostPos);
+    void calcSuspension(const EGG::Vector3f &forward);
 
     /// @beginSetters
     void setSuspTravel(f32 suspTravel) {
@@ -76,6 +77,10 @@ public:
 
     [[nodiscard]] const EGG::Vector3f &speed() const {
         return m_speed;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &wheelEdgePos() const {
+        return m_wheelEdgePos;
     }
 
     [[nodiscard]] f32 effectiveRadius() const {

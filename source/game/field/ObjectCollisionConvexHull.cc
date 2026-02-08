@@ -9,8 +9,6 @@ namespace Field {
 /// This overload enables conversion from std::array into a span, which initializes the points.
 ObjectCollisionConvexHull::ObjectCollisionConvexHull(const std::span<const EGG::Vector3f> &points)
     : ObjectCollisionConvexHull(points.size()) {
-    m_worldRadius = 70.0f;
-
     for (size_t i = 0; i < points.size(); ++i) {
         m_points[i] = points[i];
     }
@@ -20,6 +18,23 @@ ObjectCollisionConvexHull::ObjectCollisionConvexHull(const std::span<const EGG::
 ObjectCollisionConvexHull::~ObjectCollisionConvexHull() {
     delete[] m_points.data();
     delete[] m_worldPoints.data();
+}
+
+/// @addr{0x808366D0}
+void ObjectCollisionConvexHull::transform(const EGG::Matrix34f &mat, const EGG::Vector3f &scale) {
+    if (scale.x != 1.0f) {
+        EGG::Matrix34f temp;
+        temp.makeS(EGG::Vector3f(scale.x, scale.x, scale.x));
+        temp = mat.multiplyTo(temp);
+
+        for (size_t i = 0; i < m_points.size(); ++i) {
+            m_worldPoints[i] = temp.ps_multVector(m_points[i]);
+        }
+    } else {
+        for (size_t i = 0; i < m_points.size(); ++i) {
+            m_worldPoints[i] = mat.ps_multVector(m_points[i]);
+        }
+    }
 }
 
 /// @addr{0x808367C4}
@@ -33,7 +48,7 @@ void ObjectCollisionConvexHull::transform(const EGG::Matrix34f &mat, const EGG::
         }
     } else {
         EGG::Matrix34f temp;
-        temp.makeS(scale);
+        temp.makeS(EGG::Vector3f(scale.x, scale.x, scale.x));
         temp = mat.multiplyTo(temp);
 
         for (size_t i = 0; i < m_points.size(); ++i) {
@@ -66,8 +81,10 @@ const EGG::Vector3f &ObjectCollisionConvexHull::getSupport(const EGG::Vector3f &
 /// @details The base game has the possibility to only provide a count to allocate space.
 /// To account for this, we split the base game's constructor into two overloads.
 /// This overload enables avoiding immediate point initialization, which is useful for inheritance.
-ObjectCollisionConvexHull::ObjectCollisionConvexHull(size_t count) {
+ObjectCollisionConvexHull::ObjectCollisionConvexHull(size_t count) : m_initRadius(70.0f) {
     ASSERT(count < 0x100);
+
+    m_worldRadius = 70.0f;
 
     m_points = std::span<EGG::Vector3f>(new EGG::Vector3f[count], count);
     m_worldPoints = std::span<EGG::Vector3f>(new EGG::Vector3f[count], count);

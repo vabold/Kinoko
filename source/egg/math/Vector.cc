@@ -12,6 +12,14 @@ f32 Vector2f::normalise() {
     return len;
 }
 
+/// @addr{0x80243A78}
+void Vector2f::normalise2() {
+    f32 sqLen = dot();
+    if (sqLen > std::numeric_limits<f32>::epsilon()) {
+        *this *= EGG::Mathf::frsqrt(sqLen);
+    }
+}
+
 /// @brief Initializes a Vector2f by reading 8 bytes from the stream.
 void Vector2f::read(Stream &stream) {
     x = stream.read_f32();
@@ -50,6 +58,16 @@ f32 Vector3f::normalise() {
     }
 
     return len;
+}
+
+/// @addr{0x80793F04}
+std::pair<f32, EGG::Vector3f> Vector3f::ps_normalized() {
+    f32 mag = ps_length();
+    if (mag <= 0.0f) {
+        return std::make_pair(mag, EGG::Vector3f::zero);
+    }
+
+    return std::make_pair(mag, *this * (1.0f / mag));
 }
 
 /// @addr{0x80243B6C}
@@ -117,18 +135,5 @@ void Vector3f::read(Stream &stream) {
     y = stream.read_f32();
     z = stream.read_f32();
 }
-
-const Vector2f Vector2f::zero = Vector2f(0.0f, 0.0f); ///< @addr{0x80386F78}
-const Vector2f Vector2f::ex = Vector2f(1.0f, 0.0f);   ///< @addr{0x80386F80}
-const Vector2f Vector2f::ey = Vector2f(0.0f, 1.0f);   ///< @addr{0x80386F88}
-
-const Vector3f Vector3f::zero = Vector3f(0.0f, 0.0f, 0.0f); ///< @addr{0x80384BA0}
-const Vector3f Vector3f::ex = Vector3f(1.0f, 0.0f, 0.0f);   ///< @addr{0x80384BB8}
-const Vector3f Vector3f::ey = Vector3f(0.0f, 1.0f, 0.0f);   ///< @addr{0x80384BD0}
-const Vector3f Vector3f::ez = Vector3f(0.0f, 0.0f, 1.0f);   ///< @addr{0x80384BE8}
-
-/// @addr{0x809C3C04}
-const Vector3f Vector3f::inf = Vector3f(std::numeric_limits<f32>::infinity(),
-        std::numeric_limits<f32>::infinity(), std::numeric_limits<f32>::infinity());
 
 } // namespace EGG

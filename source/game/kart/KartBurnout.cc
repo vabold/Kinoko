@@ -59,10 +59,7 @@ void KartBurnout::calcRotation() {
 
     m_pitch = DEG2RAD * (AMPLITUDE_FACTOR * sin) * m_amplitude;
 
-    EGG::Quatf rpy;
-    rpy.setRPY(EGG::Vector3f(0.0f, m_pitch, 0.0f));
-
-    physics()->composeStuntRot(rpy);
+    physics()->composeStuntRot(EGG::Quatf::FromRPY(0.0f, m_pitch, 0.0f));
 }
 
 /// @addr{0x8058920C}
@@ -72,17 +69,17 @@ bool KartBurnout::calcEnd(u32 duration) {
 
 /// @addr{0x80589844}
 void KartBurnout::activate() {
-    state()->setBurnout(true);
+    status().setBit(eStatus::Burnout);
 }
 
 /// @addr{0x80589818}
 void KartBurnout::deactivate() {
-    state()->setBurnout(false);
+    status().resetBit(eStatus::Burnout);
 }
 
 /// @addr{0x80589830}
 bool KartBurnout::isActive() const {
-    return state()->isBurnout();
+    return status().onBit(eStatus::Burnout);
 }
 
 } // namespace Kart

@@ -26,11 +26,13 @@ void KartReject::reset() {
 
 /// @addr{0x80585AF8}
 void KartReject::calcRejectRoad() {
-    if (state()->isInAction()) {
+    auto &status = KartObjectProxy::status();
+
+    if (status.onBit(eStatus::InAction)) {
         return;
     }
 
-    if (state()->isRejectRoadTrigger()) {
+    if (status.onBit(eStatus::RejectRoadTrigger)) {
         EGG::Vector3f down = -EGG::Vector3f::ey;
         down = down.perpInPlane(move()->up(), true);
         f32 cos = down.dot(move()->lastDir());
@@ -49,10 +51,8 @@ void KartReject::calcRejectRoad() {
 
         if (angle > minAngle) {
             angle = 0.05f * (angle - 60.0f);
-            EGG::Quatf rot;
-            EGG::Vector3f vRot = EGG::Vector3f(0.0f,
+            EGG::Quatf rot = EGG::Quatf::FromRPY(0.0f,
                     (1.0f + angle * move()->speedRatio()) * dVar11 * DEG2RAD * m_rejectSign, 0.0f);
-            rot.setRPY(vRot);
             EGG::Quatf local_78 = mainRot().multSwap(rot);
             local_78.normalise();
 
@@ -61,19 +61,20 @@ void KartReject::calcRejectRoad() {
             dynamics()->setMainRot(local_78);
         }
 
-        state()->setHop(false);
+        status.resetBit(eStatus::Hop);
 
         bool didReject = calcRejection();
 
-        if (!state()->isNoSparkInvisibleWall() && !didReject) {
-            state()->setRejectRoadTrigger(false);
+        if (status.offBit(eStatus::NoSparkInvisibleWall) && !didReject) {
+            move()->clearRejectRoad();
         }
 
         return;
     }
 
-    if (state()->isRejectRoad() && !state()->isZipperInvisibleWall() && !state()->isOverZipper() &&
-            !state()->isHalfPipeRamp()) {
+    if (status.onBit(eStatus::RejectRoad) &&
+            status.offBit(eStatus::ZipperInvisibleWall, eStatus::OverZipper,
+                    eStatus::HalfPipeRamp)) {
         EGG::Vector3f upXZ = move()->up();
         upXZ.y = 0.0f;
 
@@ -85,8 +86,7 @@ void KartReject::calcRejectRoad() {
                 EGG::Vector3f upCross = EGG::Vector3f::ey.cross(local_88);
                 m_rejectSign = upCross.dot(move()->up()) > 0.0f ? 1.0f : -1.0f;
 
-                state()->setHop(false);
-                state()->setRejectRoadTrigger(true);
+                status.resetBit(eStatus::Hop).setBit(eStatus::RejectRoadTrigger);
             }
         }
     }
@@ -96,7 +96,8 @@ void KartReject::calcRejectRoad() {
 bool KartReject::calcRejection() {
     Field::CollisionInfo colInfo;
     Field::KCLTypeMask mask = KCL_NONE;
-    state()->setNoSparkInvisibleWall(false);
+    auto &status = KartObjectProxy::status();
+    status.resetBit(eStatus::NoSparkInvisibleWall);
     EGG::Vector3f worldUpPos = dynamics()->pos() + bodyUp() * 100.0f;
     f32 posScalar = 100.0f;
     f32 radius = posScalar;
@@ -115,36 +116,9 @@ bool KartReject::calcRejection() {
             continue;
         }
 
-        bool hasFloorCollision = false;
-        bool hasRejectCollision = false;
-        bool hasInvisibleWallCollision = false;
         EGG::Vector3f tangentOff = EGG::Vector3f::zero;
 
-        if (mask & KCL_TYPE_INVISIBLE_WALL) {
-            hasInvisibleWallCollision =
-                    colDir->findClosestCollisionEntry(&mask, KCL_TYPE_INVISIBLE_WALL);
-        }
-
-        const auto *closestColEntry = colDir->closestCollisionEntry();
-        if (hasInvisibleWallCollision && KCL_VARIANT_TYPE(closestColEntry->attribute) == 0) {
-            hasRejectCollision = true;
-            tangentOff = colInfo.wallNrm;
-            state()->setNoSparkInvisibleWall(true);
-        } else {
-            if (!(mask & KCL_TYPE_DRIVER_FLOOR)) {
-                hasFloorCollision = false;
-            } else {
-                hasFloorCollision = colDir->findClosestCollisionEntry(&mask, KCL_TYPE_DRIVER_FLOOR);
-            }
-
-            closestColEntry = colDir->closestCollisionEntry();
-            if (hasFloorCollision && closestColEntry->attribute & 0x4000) {
-                hasRejectCollision = true;
-                tangentOff = colInfo.floorNrm;
-            }
-        }
-
-        if (!hasRejectCollision) {
+        if (!calcCollision(colInfo, mask, tangentOff)) {
             continue;
         }
 
@@ -153,7 +127,7 @@ bool KartReject::calcRejection() {
         move()->setSmoothedUp(move()->up());
 
         bool bVar15 = tangentOff.dot(EGG::Vector3f::ey) < -0.17f;
-        if (bVar15 || extVel().y < 0.0f || state()->isNoSparkInvisibleWall()) {
+        if (bVar15 || extVel().y < 0.0f || status.onBit(eStatus::NoSparkInvisibleWall)) {
             radius = -radius;
             colInfo.tangentOff += worldPos;
 
@@ -175,6 +149,40 @@ bool KartReject::calcRejection() {
         move()->setVel1Dir(local_13c);
 
         return true;
+    }
+
+    return false;
+}
+
+bool KartReject::calcCollision(Field::CollisionInfo &colInfo, Field::KCLTypeMask mask,
+        EGG::Vector3f &tangentOff) {
+    auto *colDir = Field::CollisionDirector::Instance();
+
+    if (mask & KCL_TYPE_INVISIBLE_WALL) {
+        if (colDir->findClosestCollisionEntry(&mask, KCL_TYPE_INVISIBLE_WALL) &&
+                colDir->closestCollisionEntry()->variant() == 0) {
+            tangentOff = colInfo.wallNrm;
+            status().setBit(eStatus::NoSparkInvisibleWall);
+            return true;
+        }
+    }
+
+    Field::KCLTypeMask halfPipeInvisMask = KCL_TYPE_BIT(COL_TYPE_HALFPIPE_INVISIBLE_WALL);
+    if (mask & halfPipeInvisMask) {
+        if (colDir->findClosestCollisionEntry(&mask, halfPipeInvisMask)) {
+            tangentOff = colInfo.wallNrm;
+            status().setBit(eStatus::NoSparkInvisibleWall);
+            return true;
+        }
+    }
+
+    if (mask & KCL_TYPE_DRIVER_FLOOR) {
+        if (colDir->findClosestCollisionEntry(&mask, KCL_TYPE_DRIVER_FLOOR) &&
+                colDir->closestCollisionEntry()->attribute.onBit(
+                        Field::CollisionDirector::eCollisionAttribute::RejectRoad)) {
+            tangentOff = colInfo.floorNrm;
+            return true;
+        }
     }
 
     return false;

@@ -15,19 +15,26 @@ void CollisionData::reset() {
     rotFactor = 0.0f;
     closestFloorFlags = 0;
     closestFloorSettings = 0xffffffff;
+    closestWallFlags = 0;
+    closestFloorSettings = 0xffffffff;
     intensity = 0.0f;
     colPerpendicularity = 0.0f;
 
     bFloor = false;
     bWall = false;
     bInvisibleWall = false;
+    bTrickable = false;
+    bMovingWaterMomentum = false;
     bWall3 = false;
     bInvisibleWallOnly = false;
+    bMovingWaterDecaySpeed = false;
     bSoftWall = false;
-    bTrickable = false;
+    bMovingWaterStickyRoad = false;
+    bMovingWaterDisableAccel = false;
     bHasRoadVel = false;
     bWallAtLeftCloser = false;
     bWallAtRightCloser = false;
+    bMovingWaterVertical = false;
 }
 
 /// @addr{0x805B7F48}

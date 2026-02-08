@@ -13,6 +13,11 @@ namespace Field {
 struct CollisionInfoPartial {
     EGG::BoundBox3f bbox;
     EGG::Vector3f tangentOff;
+
+    void update(const EGG::Vector3f &offset) {
+        bbox.min = bbox.min.minimize(offset);
+        bbox.max = bbox.max.maximize(offset);
+    }
 };
 
 struct CollisionInfo {
@@ -116,8 +121,10 @@ private:
     void preloadNormals();
     void preloadVertices();
 
+    template <CollisionCheckType Type>
     [[nodiscard]] bool checkCollision(const KCollisionPrism &prism, f32 *distOut,
-            EGG::Vector3f *fnrmOut, u16 *flagsOut, CollisionCheckType type);
+            EGG::Vector3f *fnrmOut, u16 *flagsOut);
+
     [[nodiscard]] bool checkPointCollision(const KCollisionPrism &prism, f32 *distOut,
             EGG::Vector3f *fnrmOut, u16 *flagsOut, bool movement);
     [[nodiscard]] bool checkSphereMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut);

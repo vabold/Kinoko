@@ -58,9 +58,7 @@ void MapdataStartPoint::read(EGG::Stream &stream) {
 /// @note vabold: Chances are these variables are never getting good names. Good luck!
 void MapdataStartPoint::findKartStartPoint(EGG::Vector3f &pos, EGG::Vector3f &angles, u8 placement,
         u8 playerCount) {
-    EGG::Quatf rotation;
-    rotation.setRPY(m_rotation * DEG2RAD);
-
+    EGG::Quatf rotation = EGG::Quatf::FromRPY(m_rotation * DEG2RAD);
     EGG::Vector3f zAxis = rotation.rotateVector(-EGG::Vector3f::ez);
     EGG::Vector3f xAxis = rotation.rotateVector(-EGG::Vector3f::ex);
 

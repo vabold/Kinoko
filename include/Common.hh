@@ -376,7 +376,7 @@ STATIC_ASSERT(std::numeric_limits<f32>::epsilon() == 1.0f / 8388608.0f);
 STATIC_ASSERT(
         std::endian::native == std::endian::big || std::endian::native == std::endian::little);
 
-/// @brief Helper template which uses function overloading and implict up-casting to determine
+/// @brief Helper template which uses function overloading and implicit up-casting to determine
 /// whether or not a class is derived from a templated base class (i.e. MapdataPointInfoAccessor
 /// derives from MapdataAccessorBase). See: https://en.cppreference.com/w/cpp/language/sfinae
 template <template <typename...> class Base, typename Derived>
@@ -429,3 +429,14 @@ static inline constexpr T parse(T val, std::endian endian = std::endian::big) {
 static inline constexpr u32 f2u(f32 val) {
     return std::bit_cast<u32>(val);
 }
+
+// The size of memory blocks that are allocated for game heap space.
+static constexpr size_t MEMORY_SPACE_SIZE = 0x1000000;
+
+#ifdef BUILD_DEBUG
+static constexpr auto DEFAULT_OPT = Abstract::Memory::MEMiHeapHead::OptFlag().setBit(
+        Abstract::Memory::MEMiHeapHead::eOptFlag::DebugFillAlloc);
+#else
+static constexpr auto DEFAULT_OPT = Abstract::Memory::MEMiHeapHead::OptFlag().setBit(
+        Abstract::Memory::MEMiHeapHead::eOptFlag::ZeroFillAlloc);
+#endif

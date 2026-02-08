@@ -214,7 +214,7 @@ void SceneManager::setupNextSceneId() {
 }
 
 Heap *SceneManager::s_heapForCreateScene = nullptr;
-u16 SceneManager::s_heapOptionFlg = 2;
+u16 SceneManager::s_heapOptionFlg = DEFAULT_OPT;
 
 Heap *SceneManager::s_rootHeap = nullptr;
 

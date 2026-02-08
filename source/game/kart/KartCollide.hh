@@ -3,6 +3,7 @@
 #include "game/kart/CollisionGroup.hh"
 #include "game/kart/KartAction.hh"
 #include "game/kart/KartObjectProxy.hh"
+#include "game/kart/KartPullPath.hh"
 
 #include "game/field/CourseColMgr.hh"
 
@@ -93,6 +94,7 @@ public:
             Field::KCLTypeMask *maskOut);
     void processBody(CollisionData &collisionData, Hitbox &hitbox, Field::CollisionInfo *colInfo,
             Field::KCLTypeMask *maskOut);
+    void processMovingWater(CollisionData &collisionData, Field::KCLTypeMask *maskOut);
     [[nodiscard]] bool processWall(CollisionData &collisionData, Field::KCLTypeMask *maskOut);
     void processFloor(CollisionData &collisionData, Hitbox &hitbox, Field::CollisionInfo *colInfo,
             Field::KCLTypeMask *maskOut, bool wheel);
@@ -122,10 +124,15 @@ public:
     Action handleReactLaunchSpinLoseItem(size_t idx);
     Action handleReactKnockbackBumpLoseItem(size_t idx);
     Action handleReactLongCrushLoseItem(size_t idx);
+    Action handleReactSmallBump(size_t idx);
+    Action handleReactSpinShrink(size_t idx);
     Action handleReactHighLaunchLoseItem(size_t idx);
     Action handleReactWeakWall(size_t idx);
+    Action handleReactOffroad(size_t idx);
     Action handleReactLaunchSpin(size_t idx);
     Action handleReactWallSpark(size_t idx);
+    Action handleReactRubberWall(size_t idx);
+    Action handleReactUntrickableJumpPad(size_t idx);
     Action handleReactShortCrushLoseItem(size_t idx);
     Action handleReactCrushRespawn(size_t idx);
     Action handleReactExplosionLoseItem(size_t idx);
@@ -149,6 +156,14 @@ public:
     /// @endSetters
 
     /// @beginGetters
+    [[nodiscard]] KartPullPath &pullPath() {
+        return m_pullPath;
+    }
+
+    [[nodiscard]] const KartPullPath &pullPath() const {
+        return m_pullPath;
+    }
+
     [[nodiscard]] f32 boundingRadius() const {
         return m_boundingRadius;
     }
@@ -193,6 +208,7 @@ public:
 private:
     typedef Action (KartCollide::*ObjectCollisionHandler)(size_t idx);
 
+    KartPullPath m_pullPath;
     f32 m_boundingRadius;
     f32 m_floorMomentRate;
     EGG::Vector3f m_totalReactionWallNrm;
@@ -201,6 +217,7 @@ private:
     EGG::Vector3f m_movement;
     s16 m_respawnTimer;
     s16 m_solidOobTimer;
+    s16 m_shrinkTimer;
     f32 m_smoothedBack; // 0x50
     f32 m_suspBottomHeightSoftWall;
     u16 m_someSoftWallTimer;

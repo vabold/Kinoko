@@ -2,6 +2,10 @@
 
 #include "game/kart/KartObjectProxy.hh"
 
+namespace Field {
+struct CollisionInfo;
+}
+
 namespace Kart {
 
 /// @brief Pertains to handling reject road.
@@ -16,6 +20,9 @@ public:
     bool calcRejection();
 
 private:
+    bool calcCollision(Field::CollisionInfo &colInfo, Field::KCLTypeMask mask,
+            EGG::Vector3f &tangentOff);
+
     f32 m_rejectSign;
 };
 

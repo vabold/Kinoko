@@ -7,6 +7,12 @@
 
 // Credit: em-eight/mkw
 
+namespace Host {
+
+class Context;
+
+} // namespace Host
+
 namespace Field {
 
 typedef bool (
@@ -16,6 +22,8 @@ typedef bool (
 /// @addr{0x809C3C10}
 /// @nosubgrouping
 class CourseColMgr : EGG::Disposer {
+    friend class Host::Context;
+
 public:
     struct NoBounceWallColInfo {
         EGG::BoundBox3f bbox;

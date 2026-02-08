@@ -29,7 +29,7 @@ ObjectHitTable::ObjectHitTable(const char *filename) {
 
 /// @addr{0x807F9348}
 ObjectHitTable::~ObjectHitTable() {
-    delete m_reactions.data();
+    delete[] m_reactions.data();
 }
 
 Kart::Reaction ObjectHitTable::reaction(s16 i) const {

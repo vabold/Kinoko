@@ -34,6 +34,11 @@ public:
             const EGG::Vector3f &Frot, bool ignoreX);
     void applyWrenchScaled(const EGG::Vector3f &p, const EGG::Vector3f &f, f32 scale);
 
+    /// @addr{0x805B6388}
+    void addForce(const EGG::Vector3f &pos) {
+        m_totalForce += pos;
+    }
+
     /// @beginSetters
     void setPos(const EGG::Vector3f &pos) {
         m_pos = pos;
@@ -87,12 +92,20 @@ public:
         m_movingObjVel = v;
     }
 
+    void setMovingRoadVel(const EGG::Vector3f &v) {
+        m_movingRoadVel = v;
+    }
+
     void setAngVel2(const EGG::Vector3f &v) {
         m_angVel2 = v;
     }
 
     void setAngVel0YFactor(f32 val) {
         m_angVel0YFactor = val;
+    }
+
+    void setScale(const EGG::Vector3f &v) {
+        m_scale = v;
     }
 
     void setTop_(const EGG::Vector3f &v) {
@@ -161,6 +174,10 @@ public:
         return m_movingObjVel;
     }
 
+    [[nodiscard]] const EGG::Vector3f &movingRoadVel() const {
+        return m_movingRoadVel;
+    }
+
     [[nodiscard]] const EGG::Vector3f &angVel2() const {
         return m_angVel2;
     }
@@ -198,9 +215,10 @@ protected:
     EGG::Vector3f m_top_;              ///< Basically @ref m_top biased towards absolute up. @rename
 
     f32 m_angVel0YFactor; ///< Scalar for damping angular velocity.
-    bool m_forceUpright;  ///< Specifies if we should return the vehicle to upwards orientation.
-    bool m_noGravity;     ///< Disables gravity. Relevant when respawning.
-    bool m_killExtVelY;   ///< Caps external velocity at 0.
+    EGG::Vector3f m_scale;
+    bool m_forceUpright; ///< Specifies if we should return the vehicle to upwards orientation.
+    bool m_noGravity;    ///< Disables gravity. Relevant when respawning.
+    bool m_killExtVelY;  ///< Caps external velocity at 0.
 };
 
 /// @brief State management for most components of a bike's physics

@@ -98,7 +98,7 @@ void RaceScene::calcEngines() {
     Field::ObjectDirector::Instance()->calc();
     Kart::KartObjectManager::Instance()->calc();
     Item::ItemDirector::Instance()->calc();
-    // raceMgr->random1()->nextU32();
+    raceMgr->random().next();
 }
 
 /// @addr{0x805549B0}

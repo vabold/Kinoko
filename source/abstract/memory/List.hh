@@ -4,7 +4,7 @@
 
 namespace Abstract::Memory {
 
-/// @brief Link of an instrusive doubly-linked list.
+/// @brief Link of an intrusive doubly-linked list.
 struct MEMLink {
     void *m_prevObject;
     void *m_nextObject;
@@ -12,7 +12,10 @@ struct MEMLink {
 
 /// @brief Intrusive doubly-linked list. Links are placed within the corresponding object.
 struct MEMList {
+    MEMList();
     MEMList(u16 offset);
+
+    bool operator==(const MEMList &rhs) const = default;
 
     void append(void *object);
     void remove(void *object);

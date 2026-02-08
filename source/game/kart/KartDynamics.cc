@@ -56,6 +56,7 @@ void KartDynamics::init() {
     m_top_ = EGG::Vector3f::ey;
     m_speedFix = 0.0f;
     m_angVel0YFactor = 0.0f;
+    m_scale = EGG::Vector3f::unit;
 }
 
 /// @addr{0x805B4E84}
@@ -63,9 +64,9 @@ void KartDynamics::setInertia(const EGG::Vector3f &m, const EGG::Vector3f &n) {
     constexpr f32 TWELFTH = 1.0f / 12.0f;
 
     m_inertiaTensor = EGG::Matrix34f::zero;
-    m_inertiaTensor[0, 0] = (m.y * m.y + m.z * m.z) * TWELFTH + n.y * n.y + n.z * n.z;
-    m_inertiaTensor[1, 1] = (m.z * m.z + m.x * m.x) * TWELFTH + n.z * n.z + n.x * n.x;
-    m_inertiaTensor[2, 2] = (m.x * m.x + m.y * m.y) * TWELFTH + n.x * n.x + n.y * n.y;
+    m_inertiaTensor[0, 0] = TWELFTH * (m.y * m.y + m.z * m.z) + (n.y * n.y + n.z * n.z);
+    m_inertiaTensor[1, 1] = TWELFTH * (m.z * m.z + m.x * m.x) + (n.z * n.z + n.x * n.x);
+    m_inertiaTensor[2, 2] = TWELFTH * (m.x * m.x + m.y * m.y) + (n.x * n.x + n.y * n.y);
     m_inertiaTensor.inverseTo33(m_invInertiaTensor);
 }
 
@@ -128,6 +129,11 @@ void KartDynamics::calc(f32 dt, f32 maxSpeed, bool air) {
     }
 
     m_velocity = m_extVel * dt + m_intVel + m_movingObjVel + m_movingRoadVel;
+
+    if (m_scale.z > 1.0f) {
+        maxSpeed *= m_scale.z;
+    }
+
     m_speedNorm = std::min(m_velocity.normalise(), maxSpeed);
     m_velocity *= m_speedNorm;
     m_pos += m_velocity;

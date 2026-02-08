@@ -23,8 +23,14 @@ public:
     AnmNodeChr(Abstract::g3d::AnmObjChrRes anmObjChrRes, AnmType anmType, size_t idx)
         : m_anmObjChrRes(anmObjChrRes), m_anmType(anmType), m_idx(idx) {}
 
+    /// @addr{0x8055AE90}
     [[nodiscard]] f32 frameCount() const {
         return static_cast<f32>(m_anmObjChrRes.frameCount());
+    }
+
+    /// @addr{0x8055ADFC}
+    [[nodiscard]] f32 frame() const {
+        return m_anmObjChrRes.frame();
     }
 
 private:

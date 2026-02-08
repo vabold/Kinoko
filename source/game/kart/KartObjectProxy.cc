@@ -100,6 +100,14 @@ const KartHalfPipe *KartObjectProxy::halfPipe() const {
     return m_accessor->move->halfPipe();
 }
 
+KartScale *KartObjectProxy::kartScale() {
+    return m_accessor->move->kartScale();
+}
+
+const KartScale *KartObjectProxy::kartScale() const {
+    return m_accessor->move->kartScale();
+}
+
 /// @addr{0x80591914}
 KartJump *KartObjectProxy::jump() {
     return m_accessor->move->jump();
@@ -400,6 +408,34 @@ f32 KartObjectProxy::speedRatioCapped() const {
 /// @addr{0x805914F4}
 bool KartObjectProxy::isInRespawn() const {
     return move()->respawnTimer() > 0 || move()->respawnPostLandTimer() > 0;
+}
+
+/// @addr{0x805911A8}
+Field::KCLTypeMask KartObjectProxy::wallKclType() const {
+    return collisionData().closestWallFlags;
+}
+
+/// @addr{0x805911C0}
+u32 KartObjectProxy::wallKclVariant() const {
+    return collisionData().closestWallSettings;
+}
+
+Status &KartObjectProxy::status() {
+    return state()->status();
+}
+
+const Status &KartObjectProxy::status() const {
+    return state()->status();
+}
+
+/// @addr{0x8059031C}
+const EGG::Vector3f &KartObjectProxy::wheelPos(u16 idx) const {
+    return tirePhysics(idx)->pos();
+}
+
+/// @addr{0x80590390}
+const EGG::Vector3f &KartObjectProxy::wheelEdgePos(u16 idx) const {
+    return tirePhysics(idx)->wheelEdgePos();
 }
 
 /// @addr{0x805901D0}

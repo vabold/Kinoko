@@ -12,7 +12,7 @@ ObjectKinoko::ObjectKinoko(const System::MapdataGeoObj &params)
     m_pulseFalloff = 0;
 }
 
-/// @adrr{0x80807A54}
+/// @addr{0x80807A54}
 ObjectKinoko::~ObjectKinoko() = default;
 
 /// @addr{0x8080782C}
@@ -36,7 +36,7 @@ void ObjectKinoko::calc() {
     }
 
     m_pulseFalloff = PULSE_SCALE * static_cast<f32>(PULSE_DURATION - m_pulseFrame);
-    m_flags |= 8; // |= SCALE_DIRTY
+    m_flags.setBit(eFlags::Scale);
     m_scale.set(
             m_pulseFalloff * EGG::Mathf::sin(PULSE_FREQ * static_cast<f32>(m_pulseFrame)) + 1.0f);
 
@@ -58,7 +58,7 @@ ObjectKinokoUd::~ObjectKinokoUd() = default;
 
 /// @addr{0x80807A54}
 void ObjectKinokoUd::calcOscillation() {
-    m_flags |= 1; // |= POSITION_DIRTY;
+    m_flags.setBit(eFlags::Position);
     m_pos.y = m_objPos.y +
             static_cast<f32>(m_amplitude) *
                     (EGG::Mathf::cos(m_angFreq * static_cast<f32>(m_oscFrame)) + 1.0f) * 0.5f;
@@ -95,7 +95,7 @@ void ObjectKinokoBend::calcOscillation() {
 
     calcTransform();
 
-    m_flags |= 2; // |= ROTATION_DIRTY;
+    m_flags.setBit(eFlags::Rotation);
     m_rot = m_transform.multVector33(rot);
 
     if (++m_currentFrame >= m_period) {

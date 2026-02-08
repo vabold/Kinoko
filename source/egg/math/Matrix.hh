@@ -7,9 +7,18 @@ namespace EGG {
 /// @brief A 3 x 4 matrix.
 class Matrix34f {
 public:
-    Matrix34f();
-    Matrix34f(f32 _e00, f32 _e01, f32 _e02, f32 _e03, f32 _e10, f32 _e11, f32 _e12, f32 _e13,
-            f32 _e20, f32 _e21, f32 _e22, f32 _e23);
+#ifdef BUILD_DEBUG
+    constexpr Matrix34f() {
+        a.fill(std::numeric_limits<f32>::signaling_NaN());
+    }
+#else
+    constexpr Matrix34f() = default;
+#endif
+
+    constexpr Matrix34f(f32 _e00, f32 _e01, f32 _e02, f32 _e03, f32 _e10, f32 _e11, f32 _e12,
+            f32 _e13, f32 _e20, f32 _e21, f32 _e22, f32 _e23)
+        : mtx{{_e00, _e01, _e02, _e03, _e10, _e11, _e12, _e13, _e20, _e21, _e22, _e23}} {}
+
     ~Matrix34f() = default;
 
     bool operator==(const Matrix34f &rhs) const {
@@ -31,6 +40,7 @@ public:
     void makeRT(const Vector3f &r, const Vector3f &t);
     void makeR(const Vector3f &r);
     void makeS(const Vector3f &s);
+    void makeT(const Vector3f &t);
 
     /// @brief Zeroes every element of the matrix.
     void makeZero() {
@@ -38,6 +48,7 @@ public:
     }
 
     void makeOrthonormalBasis(const Vector3f &v0, const Vector3f &v1);
+    void makeOrthonormalBasisLocal(Vector3f forward, Vector3f up);
     void setAxisRotation(f32 angle, const Vector3f &axis);
     void mulRow33(size_t rowIdx, const Vector3f &row);
     void setBase(size_t col, const Vector3f &base);
@@ -47,6 +58,7 @@ public:
     [[nodiscard]] Vector3f ps_multVector(const Vector3f &vec) const;
     [[nodiscard]] Vector3f multVector33(const Vector3f &vec) const;
     [[nodiscard]] Vector3f ps_multVector33(const Vector3f &vec) const;
+    [[nodiscard]] Vector3f calcRPY() const;
     void inverseTo33(Matrix34f &out) const;
     bool ps_inverse(Matrix34f &out) const;
     [[nodiscard]] Matrix34f transpose() const;
@@ -70,5 +82,12 @@ private:
         std::array<f32, 12> a;
     };
 };
+
+/// @addr{0x80384370}
+inline constexpr Matrix34f Matrix34f::ident(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f);
+
+inline constexpr Matrix34f Matrix34f::zero(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.0f);
 
 } // namespace EGG

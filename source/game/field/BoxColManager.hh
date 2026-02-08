@@ -3,6 +3,12 @@
 #include <egg/core/BitFlag.hh>
 #include <egg/math/Vector.hh>
 
+namespace Host {
+
+class Context;
+
+} // namespace Host
+
 namespace Kart {
 
 class KartObject;
@@ -65,6 +71,8 @@ struct BoxColHighPoint {
 
 /// @brief Spatial indexing manager for entities with dynamic collision.
 class BoxColManager : EGG::Disposer {
+    friend class Host::Context;
+
 public:
     BoxColManager();
     ~BoxColManager() override;
@@ -85,6 +93,7 @@ public:
             bool alwaysRecalc, void *userData);
 
     void reinsertUnit(BoxColUnit *unit);
+    void remove(BoxColUnit *&unit);
     void search(BoxColUnit *unit, const BoxColFlag &flag);
     void search(f32 radius, const EGG::Vector3f &pos, const BoxColFlag &flag);
 
@@ -100,7 +109,6 @@ private:
     void iterate(s32 &iter, const BoxColFlag &flag);
     [[nodiscard]] BoxColUnit *insert(f32 radius, f32 maxSpeed, const EGG::Vector3f *pos,
             const BoxColFlag &flag, void *userData);
-    void remove(BoxColUnit *&pUnit);
     void searchImpl(BoxColUnit *unit, const BoxColFlag &flag);
     void searchImpl(f32 radius, const EGG::Vector3f &pos, const BoxColFlag &flag);
 

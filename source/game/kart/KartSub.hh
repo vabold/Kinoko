@@ -13,7 +13,7 @@ public:
     KartSub();
     ~KartSub();
 
-    void createSubsystems(bool isBike);
+    void createSubsystems(bool isBike, const KartParam::Stats &stats);
     void copyPointers(KartAccessor &pointers);
 
     void init();
@@ -28,6 +28,7 @@ public:
     void updateSuspOvertravel(const EGG::Vector3f &suspOvertravel);
     void tryEndHWG();
     void calcMovingObj();
+    void calcMovingWater();
 
     /// @beginGetters
     [[nodiscard]] f32 someScale() {
@@ -44,6 +45,7 @@ private:
     EGG::Vector3f m_minSuspOvertravel;
     u16 m_floorCollisionCount;
     u16 m_movingObjCollisionCount;
+    u16 m_movingWaterCollisionCount;
     EGG::Vector3f m_objVel;
     s16 m_sideCollisionTimer;  ///< Number of frames to apply movement from wall collision.
     f32 m_colPerpendicularity; ///< Dot product between floor and colliding wall normals.

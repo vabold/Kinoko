@@ -50,14 +50,22 @@ ninja
 
 Run Kinoko:
 
-```bash
+```
 cd out
-./kinoko -m test -s testCases.bin
+./kinoko test -s testCases.bin
+```
+
+## Replaying a Ghost
+
+The simplest use of Kinoko is to just determine whether or not a ghost finishes the race with the timer matching what is present in the ghost `.rkg` file header. To replay a ghost, you can run:
+
+```
+./kinoko replay -g pathTo.rkg
 ```
 
 ## Creating New Test Cases
 
-Currently, Kinoko runs by iterating over a set of test cases defined in `testCases.json`.
+When a ghost doesn't play back correctly, we want to be able to capture the exact frame that a desynchronization occurs, as well as gain insight as to what variables desynced. There are two ways to evaluate test cases in Kinoko. Both approaches require generating a `.krkg` file.
 
 ### Create KRKG
 
@@ -71,9 +79,9 @@ Test cases use a custom `.krkg` file format, which stores relevant in-game memor
 6. You should see some debug information printed on-screen and Mario Kart Wii should boot soon after.
 7. Watch a ghost replay of your choosing. After the ghost finishes and the screen fades to black, navigate to `[DolphinDir]\User\Wii\title\00010004\524d4345\data`. You should see a new file called `test.krkg`.
 
-### Add Test Case Params
+### Approach 1: Creating a Test Suite
 
-Test cases are defined in `testCases.json` in the following format:
+Kinoko will iterate the array of test cases defined in `testCases.json`, each with the following format:
 
 ```json
 "testCaseName": {
@@ -83,13 +91,29 @@ Test cases are defined in `testCases.json` in the following format:
 }
 ```
 
-`rkgPath` is the path to the game's native ghost file for the time trial you want to simulate. `krkgPath` points to the krkg file generated in the previous section for this time trial ghost. `targetFrame` is the number of frames to attempt sync for this ghost. Kinoko will throw an error if it is larger than the framecount stored in the krkg. If Kinoko reaches `targetFrame` while maintaing sync, then the test case will pass.
+`rkgPath` is the path to the game's native ghost file for the time trial you want to simulate. 
 
-To update the test binary, be sure to re-run:
+`krkgPath` points to the krkg file generated in the previous section for this time trial ghost. 
 
-```bash
+`targetFrame` is the number of frames to attempt sync for this ghost. Kinoko will throw an error if it is larger than the framecount stored in the krkg. If Kinoko reaches `targetFrame` while maintaining sync, then the test case will pass.
+
+To update the test binary after making changes to `testCases.json`, be sure to re-run:
+
+```
 ./configure.py
 ```
+
+### Approach 2: Testing a Single Ghost
+
+If you just want to test a single ghost, you can run:
+
+```
+./kinoko test -g pathTo.rkg -k pathTo.krkg [-f <target>]
+```
+
+In this scenario, Kinoko will validate the ghost to the specified *target* framecount. If no *target* is specified, the entire ghost will be validated.
+
+**NOTE:** If the *target* is 0 or larger than the total number of frames in the run then the entire ghost will be validated.
 
 ## Interfacing
 

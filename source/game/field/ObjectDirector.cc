@@ -7,6 +7,7 @@
 #include "game/kart/KartObject.hh"
 
 #include "game/system/CourseMap.hh"
+#include "game/system/RaceConfig.hh"
 
 namespace Field {
 
@@ -41,7 +42,11 @@ void ObjectDirector::addObject(ObjectCollidable *obj) {
         m_calcObjects.push_back(obj);
     }
 
-    if (m_flowTable.set(m_flowTable.slot(obj->id()))->mode != 0) {
+    const auto *set = m_flowTable.set(m_flowTable.slot(obj->id()));
+
+    // In the base game, it's possible an object here will access slot -1 (e.g. Moonview Highway
+    // cars). We add a nullptr check here to prevent this.
+    if (set && set->mode != 0) {
         if (obj->collision()) {
             m_collisionObjects.push_back(obj);
         }
@@ -52,6 +57,11 @@ void ObjectDirector::addObject(ObjectCollidable *obj) {
 
 void ObjectDirector::addObjectNoImpl(ObjectNoImpl *obj) {
     m_objects.push_back(obj);
+}
+
+/// @addr{0x806C4ED4}
+void ObjectDirector::addManagedObject(ObjectCollidable *obj) {
+    m_managedObjects.push_back(obj);
 }
 
 /// @addr{0x8082AB04}
@@ -100,6 +110,18 @@ size_t ObjectDirector::checkKartObjectCollision(Kart::KartObject *kartObj,
     return count;
 }
 
+/// @addr{0x8082B3EC}
+f32 ObjectDirector::distAboveRisingWater(f32 offset) const {
+    ASSERT(m_psea);
+    return offset - m_psea->pos().y;
+}
+
+/// @addr{0x8082B400}
+f32 ObjectDirector::risingWaterKillPlaneHeight() const {
+    ASSERT(m_psea);
+    return m_psea->pos().y - 260.0f;
+}
+
 /// @addr{0x8082A784}
 ObjectDirector *ObjectDirector::CreateInstance() {
     ASSERT(!s_instance);
@@ -125,7 +147,7 @@ void ObjectDirector::DestroyInstance() {
 /// @addr{0x8082A38C}
 ObjectDirector::ObjectDirector()
     : m_flowTable("ObjFlow.bin"), m_hitTableKart("GeoHitTableKart.bin"),
-      m_hitTableKartObject("GeoHitTableKartObj.bin") {}
+      m_hitTableKartObject("GeoHitTableKartObj.bin"), m_psea(nullptr) {}
 
 /// @addr{0x8082A694}
 ObjectDirector::~ObjectDirector() {
@@ -151,6 +173,15 @@ void ObjectDirector::createObjects() {
     m_calcObjects.reserve(maxCount);
     m_collisionObjects.reserve(maxCount);
 
+    auto *objDrivableDir = ObjectDrivableDirector::Instance();
+    auto course = System::RaceConfig::Instance()->raceScenario().course;
+    bool rGV2 = course == Course::SNES_Ghost_Valley_2;
+    bool sun = false;
+
+    // The max pitch of the Chain Chomp only needs to be set once,
+    // so we set it here instead of in the Chain Chomp constructor.
+    s_wanwanMaxPitch = course == Course::GCN_Mario_Circuit ? -20.0f : -30.0f;
+
     for (size_t i = 0; i < objectCount; ++i) {
         const auto *pObj = courseMap->getGeoObj(i);
         ASSERT(pObj);
@@ -165,8 +196,46 @@ void ObjectDirector::createObjects() {
             continue;
         }
 
+        // rGV2's blocks are created outside of the factory function
+        if (rGV2) {
+            switch (static_cast<ObjectId>(pObj->id())) {
+            case ObjectId::ObakeBlockSFCc:
+            case ObjectId::ObakeBlock2SFCc:
+            case ObjectId::ObakeBlock3SFCc: {
+                // Create the manager if this is the first block.
+                auto *obakeManager = objDrivableDir->obakeManager();
+                if (!obakeManager) {
+                    objDrivableDir->createObakeManager(*pObj);
+                } else {
+                    obakeManager->addBlock(*pObj);
+                }
+            } break;
+            default:
+                break;
+            }
+        }
+
         ObjectBase *object = createObject(*pObj);
         object->load();
+
+        if (object->id() == ObjectId::SunDS) {
+            sun = true;
+        }
+    }
+
+    if (course == Course::Moonview_Highway) {
+        auto *highwayMgr = new ObjectHighwayManager;
+        highwayMgr->load();
+    }
+
+    if (sun) {
+        auto *sunMgr = new ObjectSunManager;
+        sunMgr->load();
+    }
+
+    if (course == Course::GBA_Shy_Guy_Beach) {
+        auto *shipMgr = new ObjectHeyhoShipManager;
+        shipMgr->load();
     }
 }
 
@@ -174,37 +243,160 @@ void ObjectDirector::createObjects() {
 ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
     ObjectId id = static_cast<ObjectId>(params.id());
     switch (id) {
+    case ObjectId::Psea:
+        return new ObjectPsea(params);
+    case ObjectId::Woodbox:
+        return new ObjectWoodbox(params);
     case ObjectId::WLWallGC:
         return new ObjectWLWallGC(params);
+    case ObjectId::CarA1:
+    case ObjectId::CarA2:
+    case ObjectId::CarA3:
+        return new ObjectCarA(params);
+    case ObjectId::Basabasa:
+        return new ObjectBasabasa(params);
+    case ObjectId::HeyhoShipGBA:
+        return new ObjectHeyhoShip(params);
+    case ObjectId::KartTruck:
+    case ObjectId::CarBody:
+        return new ObjectCarTGE(params);
+    case ObjectId::KoopaBall:
+        return new ObjectKoopaBall(params);
+    case ObjectId::W_Woodbox:
+        return new ObjectWoodboxW(params);
+    case ObjectId::SunDS:
+        return new ObjectSunDS(params);
+    case ObjectId::ItemboxLine:
+        return new ObjectItemboxLine(params);
+    case ObjectId::VolcanoBall:
+        return new ObjectVolcanoBallLauncher(params);
+    case ObjectId::PenguinS:
+        return new ObjectPenguinS(params);
+    case ObjectId::PenguinM:
+        return new ObjectPenguin(params);
+    case ObjectId::Dossunc:
+        return new ObjectDossunc(params);
+    case ObjectId::Boble:
+        return new ObjectBoble(params);
+    case ObjectId::Hanachan:
+        return new ObjectHanachan(params);
+    case ObjectId::Seagull:
+        return new ObjectBird(params);
+    case ObjectId::Crab:
+        return new ObjectCrab(params);
+    case ObjectId::Hwanwan:
+        return new ObjectHwanwanManager(params);
+    case ObjectId::HeyhoBallGBA:
+        return new ObjectHeyhoBall(params);
     case ObjectId::DokanSFC:
         return new ObjectDokan(params);
+    case ObjectId::Pylon:
+        return new ObjectPylon(params);
     case ObjectId::OilSFC:
         return new ObjectOilSFC(params);
     case ObjectId::ParasolR:
         return new ObjectParasolR(params);
+    case ObjectId::KoopaFigure64:
+        return new ObjectKoopaFigure64(params);
     case ObjectId::Kuribo:
         return new ObjectKuribo(params);
+    case ObjectId::Choropu:
+    case ObjectId::Choropu2:
+        return new ObjectChoropu(params);
+    case ObjectId::Cow:
+        return new ObjectCowHerd(params);
+    case ObjectId::PakkunF:
+        return new ObjectPakkunF(params);
     case ObjectId::WLFirebarGC:
+    case ObjectId::KoopaFirebar:
         return new ObjectFirebar(params);
+    case ObjectId::Wanwan:
+        return new ObjectWanwan(params);
+    case ObjectId::Poihana:
+        return new ObjectPoihana(params);
+    case ObjectId::Propeller:
+        return new ObjectPropeller(params);
+    case ObjectId::DKRockGC:
+        return new ObjectRock(params);
+    case ObjectId::Sanbo:
+        return new ObjectSanbo(params);
+    case ObjectId::TruckWagon:
+        return new ObjectTruckWagon(params);
+    case ObjectId::Heyho:
+        return new ObjectHeyho(params);
+    case ObjectId::Press:
+        return new ObjectPress(params);
     case ObjectId::WLFireRingGC:
         return new ObjectFireRing(params);
+    case ObjectId::FireSnake:
+        return new ObjectFireSnake(params);
+    case ObjectId::FireSnakeV:
+        return new ObjectFireSnakeV(params);
     case ObjectId::PuchiPakkun:
         return new ObjectPuchiPakkun(params);
     case ObjectId::KinokoUd:
         return new ObjectKinokoUd(params);
     case ObjectId::KinokoBend:
         return new ObjectKinokoBend(params);
+    case ObjectId::VolcanoRock:
+        return new ObjectVolcanoRock(params);
+    case ObjectId::BulldozerL:
+    case ObjectId::BulldozerR:
+        return new ObjectBulldozer(params);
     case ObjectId::KinokoNm:
         return new ObjectKinokoNm(params);
+    case ObjectId::Crane:
+        return new ObjectCrane(params);
+    case ObjectId::VolcanoPiece:
+        return new ObjectVolcanoPiece(params);
+    case ObjectId::FlamePole:
+        return new ObjectFlamePoleFoot(params);
+    case ObjectId::TwistedWay:
+        return new ObjectTwistedWay(params);
+    case ObjectId::TownBridge:
+        return new ObjectTownBridge(params);
+    case ObjectId::DKShip64:
+        return new ObjectShip64(params);
+    case ObjectId::Turibashi:
+        return new ObjectTuribashi(params);
     case ObjectId::Aurora:
         return new ObjectAurora(params);
+    case ObjectId::DCPillar:
+        return new ObjectPillar(params);
+    case ObjectId::Sandcone:
+        return new ObjectSandcone(params);
+    case ObjectId::FlamePoleV:
+    case ObjectId::FlamePoleVBig:
+        return new ObjectFlamePoleV(params);
+    case ObjectId::Ami:
+        return new ObjectAmi(params);
+    case ObjectId::BeltEasy:
+        return new ObjectBeltEasy(params);
+    case ObjectId::BeltCrossing:
+        return new ObjectBeltCrossing(params);
+    case ObjectId::BeltCurveA:
+        return new ObjectBeltCurveA(params);
+    case ObjectId::Escalator:
+        return new ObjectEscalator(params);
+    case ObjectId::EscalatorGroup:
+        return new ObjectEscalatorGroup(params);
+
     // Non-specified objects are stock collidable objects by default
     // However, we need to specify an impl, so we don't use default
     case ObjectId::DummyPole:
     case ObjectId::CastleTree1c:
+    case ObjectId::MarioTreeGCc:
+    case ObjectId::PeachTreeGCc:
+    case ObjectId::MarioGo64c:
+    case ObjectId::KinokoT1:
     case ObjectId::PalmTree:
+    case ObjectId::Parasol:
+    case ObjectId::HeyhoTreeGBAc:
+    case ObjectId::GardenTreeDSc:
     case ObjectId::DKtreeA64c:
+    case ObjectId::DKTreeB64c:
     case ObjectId::TownTreeDsc:
+    case ObjectId::PakkunDokan:
         return new ObjectCollidable(params);
     case ObjectId::WLDokanGC:
     case ObjectId::Mdush:
@@ -213,6 +405,8 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
         return new ObjectNoImpl(params);
     }
 }
+
+f32 ObjectDirector::s_wanwanMaxPitch; ///< @addr{0x808C70E8}
 
 ObjectDirector *ObjectDirector::s_instance = nullptr; ///< @addr{0x809C4330}
 

@@ -42,7 +42,7 @@ struct RaceInputState {
     [[nodiscard]] bool isValid() const;
 
     /// @brief Checks if there are any invalid buttons.
-    /// @details Validatation with the previous input state doesn't happen because it doesn't exist.
+    /// @details Validation with the previous input state doesn't happen because it doesn't exist.
     /// Therefore, we cannot check here if e.g. the drift button is pressed when it shouldn't be.
     /// @return If no invalid buttons are present.
     [[nodiscard]] bool isButtonsValid() const {

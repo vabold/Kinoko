@@ -5,7 +5,7 @@
 namespace Field {
 
 /// @addr{0x806ED160}
-RailInterpolator::RailInterpolator(f32 speed, u32 idx) {
+RailInterpolator::RailInterpolator(f32 speed, u32 idx) : m_currVel(0.0f) {
     m_railIdx = idx;
     auto *rail = RailManager::Instance()->rail(idx);
     m_pointCount = rail->pointCount();
@@ -19,7 +19,7 @@ RailInterpolator::~RailInterpolator() = default;
 
 /// @addr{0806ED24C}
 const EGG::Vector3f &RailInterpolator::floorNrm(size_t idx) const {
-    return RailManager::Instance()->rail(idx)->floorNrm(idx);
+    return RailManager::Instance()->rail(m_railIdx)->floorNrm(idx);
 }
 
 /// @addr{0x806ED30C}

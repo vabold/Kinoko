@@ -2,11 +2,19 @@
 
 #include "game/system/KPadController.hh"
 
+namespace Host {
+
+class Context;
+
+} // namespace Host
+
 namespace System {
 
 /// @brief The highest level abstraction for controller processing.
 /// @addr{0x809BD70C}
 class KPadDirector : EGG::Disposer {
+    friend class Host::Context;
+
 public:
     void calc();
     void calcPads();

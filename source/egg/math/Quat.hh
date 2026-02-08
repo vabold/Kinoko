@@ -15,6 +15,7 @@ struct Quatf {
 #else
     constexpr Quatf() = default;
 #endif
+    constexpr Quatf(const Quatf &q) = default;
     constexpr Quatf(f32 w_, const Vector3f &v_) : v(v_), w(w_) {}
     constexpr Quatf(f32 w_, f32 x_, f32 y_, f32 z_) : v(x_, y_, z_), w(w_) {}
     ~Quatf() = default;
@@ -78,6 +79,7 @@ struct Quatf {
     }
 
     void setRPY(const Vector3f &rpy);
+    void setRPY(f32 r, f32 p, f32 y);
     void normalise();
     void makeVectorRotation(const Vector3f &from, const Vector3f &to);
 
@@ -112,10 +114,15 @@ struct Quatf {
 
     void read(Stream &stream);
 
+    static Quatf FromRPY(const EGG::Vector3f &rpy);
+    static Quatf FromRPY(f32 r, f32 p, f32 y);
+
     Vector3f v;
     f32 w;
 
     static const Quatf ident;
 };
+
+inline constexpr Quatf Quatf::ident = Quatf(1.0f, Vector3f::zero);
 
 } // namespace EGG

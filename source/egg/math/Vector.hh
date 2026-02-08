@@ -69,6 +69,7 @@ struct Vector2f {
     }
 
     f32 normalise();
+    void normalise2();
 
     void read(Stream &stream);
 
@@ -78,6 +79,10 @@ struct Vector2f {
     static const Vector2f zero;
     static const Vector2f ex, ey;
 };
+
+inline constexpr Vector2f Vector2f::zero = Vector2f(0.0f, 0.0f); ///< @addr{0x80386F78}
+inline constexpr Vector2f Vector2f::ex = Vector2f(1.0f, 0.0f);   ///< @addr{0x80386F80}
+inline constexpr Vector2f Vector2f::ey = Vector2f(0.0f, 1.0f);   ///< @addr{0x80386F88}
 
 /// @brief A 3D float vector.
 struct Vector3f {
@@ -134,7 +139,7 @@ struct Vector3f {
         return Vector3f(x * rhs.x, y * rhs.y, z * rhs.z);
     }
 
-    [[nodiscard]] Vector3f operator*(f32 scalar) const {
+    [[nodiscard]] constexpr Vector3f operator*(f32 scalar) const {
         return Vector3f(x * scalar, y * scalar, z * scalar);
     }
 
@@ -188,6 +193,12 @@ struct Vector3f {
         return Mathf::sqrt(squaredLength());
     }
 
+    /// @addr{0x8019AC68}
+    [[nodiscard]] f32 ps_length() const {
+        f32 dot = Mathf::fma(z, z, x * x + y * y);
+        return dot == 0.0f ? 0.0f : Mathf::sqrt(dot);
+    }
+
     /// @addr{0x805AEB88}
     /// @brief The projection of this vector onto rhs.
     [[nodiscard]] Vector3f proj(const Vector3f &rhs) const {
@@ -222,10 +233,16 @@ struct Vector3f {
         return *this * (1.0f / val);
     }
 
+    /// @addr{0x805381A4}
+    Vector3f FUN_805381A4(const EGG::Vector3f &v0) const {
+        return *this - v0 * v0.dot(*this);
+    }
+
     [[nodiscard]] f32 ps_dot() const;
     [[nodiscard]] f32 ps_dot(const EGG::Vector3f &rhs) const;
     [[nodiscard]] f32 ps_squareMag() const;
     f32 normalise();
+    [[nodiscard]] std::pair<f32, EGG::Vector3f> ps_normalized();
     void normalise2();
     [[nodiscard]] Vector3f maximize(const Vector3f &rhs) const;
     [[nodiscard]] Vector3f minimize(const Vector3f &rhs) const;
@@ -239,8 +256,19 @@ struct Vector3f {
     f32 z;
 
     static const Vector3f zero;
+    static const Vector3f unit;
     static const Vector3f ex, ey, ez;
     static const Vector3f inf;
 };
+
+inline constexpr Vector3f Vector3f::zero = Vector3f(0.0f, 0.0f, 0.0f); ///< @addr{0x80384BA0}
+inline constexpr Vector3f Vector3f::unit = Vector3f(1.0f, 1.0f, 1.0f);
+inline constexpr Vector3f Vector3f::ex = Vector3f(1.0f, 0.0f, 0.0f); ///< @addr{0x80384BB8}
+inline constexpr Vector3f Vector3f::ey = Vector3f(0.0f, 1.0f, 0.0f); ///< @addr{0x80384BD0}
+inline constexpr Vector3f Vector3f::ez = Vector3f(0.0f, 0.0f, 1.0f); ///< @addr{0x80384BE8}
+
+/// @addr{0x809C3C04}
+inline constexpr Vector3f Vector3f::inf = Vector3f(std::numeric_limits<f32>::infinity(),
+        std::numeric_limits<f32>::infinity(), std::numeric_limits<f32>::infinity());
 
 } // namespace EGG

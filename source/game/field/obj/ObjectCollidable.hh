@@ -16,6 +16,8 @@ namespace Field {
 class ObjectCollidable : public ObjectBase {
 public:
     ObjectCollidable(const System::MapdataGeoObj &params);
+    ObjectCollidable(const char *name, const EGG::Vector3f &pos, const EGG::Vector3f &rot,
+            const EGG::Vector3f &scale);
     ~ObjectCollidable() override;
 
     void load() override;
@@ -36,8 +38,6 @@ public:
 
     virtual void onWallCollision(Kart::KartObject *, const EGG::Vector3f &) {}
     virtual void onObjectCollision(Kart::KartObject *) {}
-
-    /// @addr{0x80681748}
     virtual bool checkCollision(ObjectCollisionBase *lhs, EGG::Vector3f &dist);
 
     /// @addr{0x8068173C}
@@ -54,9 +54,11 @@ protected:
     void createCollision() override;
 
     /// @addr{0x806816B8}
-    virtual const EGG::Vector3f &collisionCenter() const {
+    [[nodiscard]] virtual const EGG::Vector3f &collisionCenter() const {
         return EGG::Vector3f::zero;
     }
+
+    void registerManagedObject();
 
     ObjectCollisionBase *m_collision;
 };

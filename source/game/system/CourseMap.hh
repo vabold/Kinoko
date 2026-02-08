@@ -1,6 +1,7 @@
 #pragma once
 
 #include "game/system/map/MapdataAccessorBase.hh"
+#include "game/system/map/MapdataArea.hh"
 #include "game/system/map/MapdataCannonPoint.hh"
 #include "game/system/map/MapdataCheckPath.hh"
 #include "game/system/map/MapdataCheckPoint.hh"
@@ -13,6 +14,12 @@
 
 #include <egg/math/Vector.hh>
 
+namespace Host {
+
+class Context;
+
+} // namespace Host
+
 /// @brief High-level handling for generic system operations, such as input reading, race
 /// configuration, and resource management.
 namespace System {
@@ -24,6 +31,8 @@ concept MapdataDerived = is_derived_from_template_v<MapdataAccessorBase, T>;
 /// @addr{0x809BD6E8}
 /// @nosubgrouping
 class CourseMap : EGG::Disposer {
+    friend class Host::Context;
+
 public:
     void init();
 
@@ -43,6 +52,8 @@ public:
             const EGG::Vector3f &prevPos) const;
     [[nodiscard]] f32 getCheckPointEntryOffsetExact(u16 i, const EGG::Vector3f &pos,
             const EGG::Vector3f &prevPos) const;
+    [[nodiscard]] s16 getCurrentAreaID(s16 i, const EGG::Vector3f &pos,
+            MapdataAreaBase::Type type) const;
 
     /// @addr{0x80518AE0}
     [[nodiscard]] MapdataCannonPoint *getCannonPoint(u16 i) const {
@@ -62,6 +73,16 @@ public:
     /// @addr{0x80514148}
     [[nodiscard]] MapdataGeoObj *getGeoObj(u16 i) const {
         return i < getGeoObjCount() ? m_geoObj->get(i) : nullptr;
+    }
+
+    /// @addr{0x80516768}
+    [[nodiscard]] MapdataAreaBase *getArea(u16 i) const {
+        return i < getAreaCount() ? m_area->get(i) : nullptr;
+    }
+
+    /// @addr{0x805167B4}
+    [[nodiscard]] MapdataAreaBase *getAreaSorted(u16 i) const {
+        return i < getAreaCount() ? m_area->getSorted(i) : nullptr;
     }
 
     /// @addr{0x80515E04}
@@ -98,6 +119,11 @@ public:
 
     [[nodiscard]] u16 getGeoObjCount() const {
         return m_geoObj ? m_geoObj->size() : 0;
+    }
+
+    /// @addr{0x80512CB4}
+    [[nodiscard]] u16 getAreaCount() const {
+        return m_area ? m_area->size() : 0;
     }
 
     [[nodiscard]] u16 getPointInfoCount() const {
@@ -180,6 +206,7 @@ private:
     MapdataCheckPointAccessor *m_checkPoint;
     MapdataPointInfoAccessor *m_pointInfo;
     MapdataGeoObjAccessor *m_geoObj;
+    MapdataAreaAccessor *m_area;
     MapdataJugemPointAccessor *m_jugemPoint;
     MapdataCannonPointAccessor *m_cannonPoint;
     MapdataStageInfoAccessor *m_stageInfo;

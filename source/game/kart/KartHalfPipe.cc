@@ -7,14 +7,12 @@
 #include "game/kart/KartPhysics.hh"
 #include "game/kart/KartState.hh"
 
-#include "game/field/CourseColMgr.hh"
-
 #include <egg/math/Math.hh>
 
 namespace Kart {
 
 /// @addr{0x80574114}
-KartHalfPipe::KartHalfPipe() = default;
+KartHalfPipe::KartHalfPipe() : m_prevPos(EGG::Vector3f::zero) {}
 
 /// @addr{0x80574170}
 KartHalfPipe::~KartHalfPipe() = default;
@@ -30,41 +28,42 @@ void KartHalfPipe::reset() {
 void KartHalfPipe::calc() {
     constexpr s16 LANDING_BOOST_DELAY = 3;
 
-    if (state()->airtime() > 15 && state()->isOverZipper()) {
+    auto &status = KartObjectProxy::status();
+
+    if (state()->airtime() > 15 && status.onBit(eStatus::OverZipper)) {
         m_timer = LANDING_BOOST_DELAY;
     }
 
-    bool isLanding = state()->isHalfPipeRamp() && m_timer <= 0;
+    bool isLanding = status.onBit(eStatus::HalfPipeRamp) && m_timer <= 0;
 
     calcTrick();
 
-    if (!state()->isInAction() &&
-            collide()->surfaceFlags().offBit(KartCollide::eSurfaceFlags::StopHalfPipeState) &&
-            m_touchingZipper && state()->isAirStart()) {
-        dynamics()->setExtVel(EGG::Vector3f::zero);
-        state()->setOverZipper(true);
+    if (status.offBit(eStatus::InAction) &&
+            collide()->surfaceFlags().offBit(KartCollide::eSurfaceFlags::StopHalfPipeState)) {
+        if (m_touchingZipper && status.onBit(eStatus::AirStart)) {
+            dynamics()->setExtVel(EGG::Vector3f::zero);
+            status.setBit(eStatus::OverZipper);
 
-        EGG::Vector3f upXZ = move()->up();
-        upXZ.y = 0.0f;
-        upXZ.normalise();
-        EGG::Vector3f up = move()->dir().perpInPlane(upXZ, true);
+            EGG::Vector3f upXZ = move()->up();
+            upXZ.y = 0.0f;
+            upXZ.normalise();
+            EGG::Vector3f up = move()->dir().perpInPlane(upXZ, true);
 
-        EGG::Vector3f local_64 = up.cross(bodyUp().perpInPlane(up, true));
-        m_nextSign = local_64.dot(EGG::Vector3f::ey) > 0.0f ? 1.0f : -1.0f;
+            EGG::Vector3f local_64 = up.cross(bodyUp().perpInPlane(up, true));
+            m_nextSign = local_64.dot(EGG::Vector3f::ey) > 0.0f ? 1.0f : -1.0f;
 
-        EGG::Vector3f velNorm = velocity();
-        velNorm.normalise();
-        EGG::Vector3f rot = dynamics()->mainRot().rotateVectorInv(velNorm);
+            EGG::Vector3f velNorm = velocity();
+            velNorm.normalise();
+            EGG::Vector3f rot = dynamics()->mainRot().rotateVectorInv(velNorm);
 
-        m_rot.makeVectorRotation(rot, EGG::Vector3f::ez);
-        m_prevPos = prevPos();
+            m_rot.makeVectorRotation(rot, EGG::Vector3f::ez);
+            m_prevPos = prevPos();
 
-        calcLanding(false);
+            calcLanding(false);
 
-        f32 scaledDir = std::min(65.0f, move()->dir().y * move()->speed());
-        m_attemptedTrickTimer = std::max<s32>(0, scaledDir * 2.0f / 1.3f - 1.0f);
-    } else {
-        if (state()->isOverZipper()) {
+            f32 scaledDir = std::min(65.0f, move()->dir().y * move()->speed());
+            m_attemptedTrickTimer = std::max<s32>(0, scaledDir * 2.0f / 1.3f - 1.0f);
+        } else if (status.onBit(eStatus::OverZipper)) {
             dynamics()->setGravity(-1.3f);
 
             EGG::Vector3f side = mainRot().rotateVector(EGG::Vector3f::ez);
@@ -84,10 +83,10 @@ void KartHalfPipe::calc() {
 
             calcRot();
             calcLanding(false);
+        } else if (status.onBit(eStatus::HalfPipeRamp)) {
+            calcLanding(true);
         } else {
-            if (state()->isHalfPipeRamp()) {
-                calcLanding(true);
-            }
+            status.resetBit(eStatus::HalfpipeMidair);
         }
     }
 
@@ -106,8 +105,10 @@ void KartHalfPipe::calcTrick() {
         m_trick = trick;
     }
 
-    if (state()->isOverZipper()) {
-        if (!state()->isZipperTrick() && m_nextTimer > 0 && state()->airtime() > 3 &&
+    const auto &status = KartObjectProxy::status();
+
+    if (status.onBit(eStatus::OverZipper)) {
+        if (status.offBit(eStatus::ZipperTrick) && m_nextTimer > 0 && state()->airtime() > 3 &&
                 state()->airtime() < 10) {
             activateTrick(m_attemptedTrickTimer, m_trick);
         }
@@ -129,26 +130,25 @@ void KartHalfPipe::calcRot() {
     switch (m_stunt) {
     case StuntType::Side360:
     case StuntType::Side720:
-        m_stuntRot.setRPY(EGG::Vector3f(0.0f, angle, 0.0f));
+        m_stuntRot.setRPY(0.0f, angle, 0.0f);
         break;
     case StuntType::Backside: {
-        EGG::Quatf rpy;
-        rpy.setRPY(
-                EGG::Vector3f(0.0f, DEG2RAD * (0.25f * -m_rotSign * m_stuntManager.angle), 0.0f));
+        auto rpy = EGG::Quatf::FromRPY(0.0f, DEG2RAD * (0.25f * -m_rotSign * m_stuntManager.angle),
+                0.0f);
         EGG::Vector3f rot = rpy.rotateVector(EGG::Vector3f::ez);
         m_stuntRot.setAxisRotation(angle, rot);
     } break;
     case StuntType::Frontside: {
-        EGG::Quatf rpy;
-        rpy.setRPY(EGG::Vector3f(0.0f, 0.0f, DEG2RAD * (0.2f * -m_rotSign * m_stuntManager.angle)));
+        EGG::Quatf rpy = EGG::Quatf::FromRPY(0.0f, 0.0f,
+                DEG2RAD * (0.2f * -m_rotSign * m_stuntManager.angle));
         EGG::Vector3f rot = rpy.rotateVector(EGG::Vector3f::ey);
         m_stuntRot.setAxisRotation(angle, rot);
     } break;
     case StuntType::Frontflip:
-        m_stuntRot.setRPY(EGG::Vector3f(m_rotSign * angle, 0.0f, 0.0f));
+        m_stuntRot.setRPY(m_rotSign * angle, 0.0f, 0.0f);
         break;
     case StuntType::Backflip:
-        m_stuntRot.setRPY(EGG::Vector3f(-m_rotSign * angle, 0.0f, 0.0f));
+        m_stuntRot.setRPY(-m_rotSign * angle, 0.0f, 0.0f);
         break;
     default:
         break;
@@ -158,7 +158,7 @@ void KartHalfPipe::calcRot() {
 }
 
 /// @addr{0x805752E8}
-void KartHalfPipe::calcLanding(bool) {
+void KartHalfPipe::calcLanding(bool notAirborne) {
     constexpr f32 LANDING_RADIUS = 150.0f;
     constexpr f32 PREVIOUS_RADIUS = 200.0f;
     constexpr f32 MIDAIR_RADIUS = 50.0f;
@@ -172,9 +172,19 @@ void KartHalfPipe::calcLanding(bool) {
     EGG::Vector3f pos;
     EGG::Vector3f upLocal;
 
-    Field::KCLTypeMask mask = state()->isOverZipper() ?
-            KCL_TYPE_ANY_INVISIBLE_WALL :
-            KCL_TYPE_BIT(COL_TYPE_HALFPIPE_INVISIBLE_WALL);
+    auto &status = KartObjectProxy::status();
+    Field::KCLTypeMask mask = KCL_TYPE_ANY_INVISIBLE_WALL;
+    bool overZipper = status.onBit(eStatus::OverZipper);
+    if (!overZipper) {
+        if (notAirborne && velocity().y < 0.0f) {
+            mask = KCL_NONE;
+        } else {
+            mask = KCL_TYPE_BIT(COL_TYPE_HALFPIPE_INVISIBLE_WALL);
+        }
+    }
+
+    status.resetBit(eStatus::HalfpipeMidair);
+
     EGG::Vector3f prevPos = m_prevPos + EGG::Vector3f::ey * PREVIOUS_RADIUS;
 
     bool hasDriverFloorCollision = move()->calcZipperCollision(LANDING_RADIUS, bsp().initialYPos,
@@ -182,7 +192,7 @@ void KartHalfPipe::calcLanding(bool) {
 
     prevPos = hasDriverFloorCollision ? EGG::Vector3f::inf : prevPos;
 
-    if (state()->isOverZipper()) {
+    if (overZipper) {
         if (!move()->calcZipperCollision(MIDAIR_RADIUS, bsp().initialYPos, pos, upLocal, prevPos,
                     &colInfo2, &maskOut, mask)) {
             mask |= KCL_TYPE_DRIVER_WALL;
@@ -191,6 +201,10 @@ void KartHalfPipe::calcLanding(bool) {
 
     if (move()->calcZipperCollision(WALL_RADIUS, bsp().initialYPos, pos, upLocal, prevPos,
                 &colInfo2, &maskOut, mask)) {
+        if ((maskOut & ~KCL_TYPE_BIT(COL_TYPE_HALFPIPE_INVISIBLE_WALL)) == 0) {
+            status.setBit(eStatus::HalfpipeMidair);
+        }
+
         EGG::Vector3f up = move()->up();
         move()->setUp(up + (colInfo2.wallNrm - up) * 0.2f);
         move()->setSmoothedUp(move()->up());
@@ -204,18 +218,19 @@ void KartHalfPipe::calcLanding(bool) {
         move()->setDir(move()->dir().perpInPlane(move()->up(), true));
         move()->setVel1Dir(move()->dir());
 
-        if (state()->isOverZipper()) {
-            state()->setZipperStick(true);
+        if (overZipper) {
+            status.setBit(eStatus::ZipperStick);
         }
 
         m_prevPos = newPos;
     } else {
-        if (state()->isOverZipper()) {
-            state()->setZipperStick(false);
+        if (overZipper) {
+            status.resetBit(eStatus::ZipperStick);
         }
     }
 
-    if (!hasDriverFloorCollision || state()->airtime() <= 5) {
+    if (!hasDriverFloorCollision || status.onBit(eStatus::HalfpipeMidair) ||
+            state()->airtime() <= 5) {
         return;
     }
 
@@ -223,8 +238,8 @@ void KartHalfPipe::calcLanding(bool) {
         return;
     }
 
-    if (state()->isOverZipper()) {
-        state()->setZipperStick(false);
+    if (status.onBit(eStatus::OverZipper)) {
+        status.resetBit(eStatus::ZipperStick);
     }
 }
 
@@ -254,7 +269,7 @@ void KartHalfPipe::activateTrick(s32 duration, System::Trick trick) {
 
         m_stuntManager.setProperties(static_cast<size_t>(m_stunt));
 
-        state()->setZipperTrick(true);
+        status().setBit(eStatus::ZipperTrick);
     }
 
     m_stuntRot = EGG::Quatf::ident;
@@ -262,22 +277,24 @@ void KartHalfPipe::activateTrick(s32 duration, System::Trick trick) {
 
 /// @addr{0x805758E4}
 void KartHalfPipe::end(bool boost) {
-    if (state()->isOverZipper() && state()->airtime() > 5 && boost) {
+    auto &status = KartObjectProxy::status();
+    bool overZipper = status.onBit(eStatus::OverZipper);
+
+    if (overZipper && state()->airtime() > 5 && boost) {
         move()->activateZipperBoost();
     }
 
-    if (state()->isZipperTrick()) {
+    if (status.onBit(eStatus::ZipperTrick)) {
         physics()->composeDecayingStuntRot(m_stuntRot);
     }
 
-    if (state()->isOverZipper()) {
+    if (overZipper) {
         move()->setDir(mainRot().rotateVector(EGG::Vector3f::ez));
         move()->setVel1Dir(move()->dir());
     }
 
-    state()->setOverZipper(false);
-    state()->setZipperTrick(false);
-    state()->setZipperStick(false);
+    status.resetBit(eStatus::OverZipper, eStatus::ZipperTrick, eStatus::ZipperStick,
+            eStatus::HalfpipeMidair);
 
     m_stunt = StuntType::None;
 }

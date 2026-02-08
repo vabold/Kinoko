@@ -354,6 +354,28 @@ f32 CosFIdx(f32 fidx) {
     return sSinCosTbl[idx].cosVal + r * sSinCosTbl[idx].cosDt;
 }
 
+/// @addr{0x800851E0}
+std::pair<f32, f32> SinCosFIdx(f32 fidx) {
+    f32 abs_fidx = fabs(fidx);
+
+    while (abs_fidx >= 65536.0f) {
+        abs_fidx -= 65536.0f;
+    }
+
+    u16 idx = static_cast<u16>(abs_fidx);
+    f32 r = abs_fidx - static_cast<f32>(idx);
+    idx &= 0xFF;
+
+    f32 cos = fma(sSinCosTbl[idx].cosDt, r, sSinCosTbl[idx].cosVal);
+    f32 sin = fma(sSinCosTbl[idx].sinDt, r, sSinCosTbl[idx].sinVal);
+
+    if (fidx < 0.0f) {
+        sin = -sin;
+    }
+
+    return {sin, cos};
+}
+
 f32 AtanFIdx_(f32 x) {
     x *= 32.0f;
     u16 idx = static_cast<u16>(x);
@@ -396,6 +418,73 @@ f32 Atan2FIdx(f32 y, f32 x) {
             }
         }
     }
+}
+
+/// @addr{0x800867C0}
+u32 FindRootsQuadratic(f32 a, f32 b, f32 c, f32 &root1, f32 &root2) {
+    constexpr f32 EPSILON = 0.0002f;
+
+    if (b == 0.0f) {
+        f32 x = -c / a;
+        if (x > EPSILON) {
+            root1 = x * frsqrt(x);
+            root2 = -root1;
+            return 2;
+        }
+
+        // Nintendo might've made a typo here?
+        if (x >= -EPSILON) {
+            root1 = 0.0f;
+            return 1;
+        }
+
+        return 0;
+    }
+
+    f32 halfBOverA = b / (2.0f * a);
+    f32 normalizedC = c / (halfBOverA * (a * halfBOverA));
+    f32 normalizedDiscriminant = 1.0f - normalizedC;
+
+    if (normalizedDiscriminant > EPSILON) {
+        f32 sqrtNormalizedDiscriminant = normalizedDiscriminant * frsqrt(normalizedDiscriminant);
+        root2 = (halfBOverA * normalizedC) / (-1.0f - sqrtNormalizedDiscriminant);
+        root1 = halfBOverA * (-1.0f - sqrtNormalizedDiscriminant);
+        return 2;
+    }
+
+    // Nintendo might've typo'd here?
+    if (normalizedDiscriminant >= -EPSILON) {
+        root1 = -halfBOverA;
+        return 1;
+    }
+
+    return 0;
+}
+
+/// @addr{0x80085070}
+/// @brief Evaluates a cubic Hermite curve at a given parameter @p t.
+/// @details Computes \f[H(t) = h_0(t)\,p_0 + h_1(t)\,p_1 + h_2(t)\,m_0 + h_3(t)\,m_1\f] where the
+/// cubic Hermite basis functions are:
+/// \f[h_0(\theta) = 2\theta^3 - 3\theta^2 + 1\f]
+/// \f[h_1(\theta) = -2\theta^3 + 3\theta^2\f]
+/// \f[h_2(\theta) = \theta^3 - 2\theta^2 + \theta\f]
+/// \f[h_3(\theta) = \theta^3 - \theta^2\f]
+///
+/// @param p0 Start value.
+/// @param m0 Start tangent.
+/// @param p1 End value.
+/// @param m1 End tangent.
+/// @param t Interpolation parameter in the domain [0, 1]
+/// @return Interpolated value at @p t.
+f32 Hermite(f32 p0, f32 m0, f32 p1, f32 m1, f32 t) {
+    f32 t2 = t * t;
+    f32 t2_less_t = t2 - t;
+    f32 h3 = t2_less_t * t;
+    f32 f0 = 2.0f * h3;
+    f32 h2 = h3 - t2_less_t;
+    f32 h1 = t2 - f0;
+
+    return h3 * m1 + (h2 * m0 + (p0 - h1 * p0 + h1 * p1));
 }
 
 } // namespace EGG::Mathf

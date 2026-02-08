@@ -54,8 +54,8 @@ public:
     }
 
     /// @addr{0x805A0050}
-    void composeMovingObjVel(const EGG::Vector3f &v, f32 scalar) {
-        m_movingObjVel += (v - m_movingObjVel) * scalar;
+    void composeMovingObjVel(const EGG::Vector3f &vel, f32 t) {
+        m_movingObjVel += (vel - m_movingObjVel) * t;
         dynamics()->setMovingObjVel(m_movingObjVel);
     }
 
@@ -63,6 +63,21 @@ public:
     void composeDecayingMovingObjVel(f32 floorScalar, f32 airScalar, bool floor) {
         m_movingObjVel *= floor ? floorScalar : airScalar;
         dynamics()->setMovingObjVel(m_movingObjVel);
+    }
+
+    /// @addr{0x805A014C}
+    void composeMovingRoadVel(const EGG::Vector3f &vel, f32 t) {
+        m_movingRoadVel += (vel - m_movingRoadVel) * t;
+        dynamics()->setMovingRoadVel(m_movingRoadVel);
+    }
+
+    void shiftDecayMovingRoadVel(const EGG::Vector3f &v, f32 maxPullSpeed);
+
+    /// @addr{0x805A02B8}
+    void decayMovingRoadVel(f32 floorScalar, f32 airScalar, bool floor) {
+        m_movingRoadVel *= floor ? floorScalar : airScalar;
+        m_movingRoadVel.y = 0.0f;
+        dynamics()->setMovingRoadVel(m_movingRoadVel);
     }
 
     /// @addr{0x805A0410}
@@ -124,6 +139,7 @@ private:
     EGG::Quatf m_instantaneousExtraRot;
     EGG::Quatf m_extraRot;
     EGG::Vector3f m_movingObjVel;
+    EGG::Vector3f m_movingRoadVel;
     EGG::Matrix34f m_pose;    ///< The kart's current rotation and position.
     EGG::Vector3f m_xAxis;    ///< The first column of the pose.
     EGG::Vector3f m_yAxis;    ///< The second column of the pose.

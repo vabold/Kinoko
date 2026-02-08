@@ -29,6 +29,7 @@ void KartPhysics::reset() {
     m_instantaneousExtraRot = EGG::Quatf::ident;
     m_extraRot = EGG::Quatf::ident;
     m_movingObjVel.setZero();
+    m_movingRoadVel.setZero();
     m_pose = EGG::Matrix34f::ident;
     m_xAxis = EGG::Vector3f(m_pose[0, 0], m_pose[1, 0], m_pose[2, 0]);
     m_yAxis = EGG::Vector3f(m_pose[0, 1], m_pose[1, 1], m_pose[2, 1]);
@@ -51,12 +52,13 @@ void KartPhysics::updatePose() {
 /// @param dt delta time. It's always 1.0f.
 /// @param maxSpeed 120.0f, unless we're in a bullet (145.0f)
 /// @param air Whether we're touching ground. Currently unused.
-void KartPhysics::calc(f32 dt, f32 maxSpeed, const EGG::Vector3f & /*scale*/, bool air) {
+void KartPhysics::calc(f32 dt, f32 maxSpeed, const EGG::Vector3f &scale, bool air) {
     m_specialRot = m_instantaneousStuntRot * m_decayingStuntRot;
     m_extraRot = m_instantaneousExtraRot * m_decayingExtraRot;
 
     m_dynamics->setSpecialRot(m_specialRot);
     m_dynamics->setExtraRot(m_extraRot);
+    m_dynamics->setScale(scale);
 
     m_dynamics->calc(dt, maxSpeed, air);
 
@@ -65,6 +67,17 @@ void KartPhysics::calc(f32 dt, f32 maxSpeed, const EGG::Vector3f & /*scale*/, bo
 
     m_instantaneousStuntRot = EGG::Quatf::ident;
     m_instantaneousExtraRot = EGG::Quatf::ident;
+}
+
+/// @addr{0x805A01CC}
+void KartPhysics::shiftDecayMovingRoadVel(const EGG::Vector3f &v, f32 maxPullSpeed) {
+    m_movingRoadVel += v;
+
+    if (m_movingRoadVel.squaredLength() > std::numeric_limits<f32>::epsilon()) {
+        f32 speed = std::min(maxPullSpeed, m_movingRoadVel.normalise());
+        m_movingRoadVel *= speed;
+        m_dynamics->setMovingRoadVel(m_movingRoadVel);
+    }
 }
 
 /// @addr{0x805A04A0}

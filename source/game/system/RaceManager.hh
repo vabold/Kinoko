@@ -7,6 +7,12 @@
 
 #include <egg/math/Vector.hh>
 
+namespace Host {
+
+class Context;
+
+} // namespace Host
+
 namespace System {
 
 /// @addr{0x809BD730}
@@ -17,6 +23,8 @@ namespace System {
 /// player start position from CourseMap and communicates it to the physics engine.
 /// @nosubgrouping
 class RaceManager : EGG::Disposer {
+    friend class Host::Context;
+
 public:
     class Player {
     public:
@@ -109,6 +117,10 @@ public:
     /// @addr{0x80533090}
     [[nodiscard]] int getCountdownTimer() const {
         return STAGE_COUNTDOWN_DURATION - m_timer;
+    }
+
+    [[nodiscard]] Random &random() {
+        return m_random;
     }
 
     [[nodiscard]] const Player &player() const {

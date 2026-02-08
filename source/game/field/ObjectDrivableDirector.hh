@@ -2,16 +2,26 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 #include "game/field/obj/ObjectDrivable.hh"
+#include "game/field/obj/ObjectObakeManager.hh"
 
 #include <vector>
+
+namespace Host {
+
+class Context;
+
+} // namespace Host
 
 namespace Field {
 
 class ObjectDrivableDirector : EGG::Disposer {
+    friend class Host::Context;
+
 public:
     void init();
     void calc();
     void addObject(ObjectDrivable *obj);
+    void createObakeManager(const System::MapdataGeoObj &params);
 
     [[nodiscard]] bool checkSpherePartial(f32 radius, const EGG::Vector3f &pos,
             const EGG::Vector3f &prevPos, KCLTypeMask mask, CollisionInfoPartial *info,
@@ -36,6 +46,10 @@ public:
             KCLTypeMask *maskOut, u32 timeOffset);
     void colNarScLocal(f32 radius, const EGG::Vector3f &pos, KCLTypeMask mask, u32 timeOffset);
 
+    [[nodiscard]] ObjectObakeManager *obakeManager() const {
+        return m_obakeManager;
+    }
+
     static ObjectDrivableDirector *CreateInstance();
     static void DestroyInstance();
 
@@ -49,6 +63,7 @@ private:
 
     std::vector<ObjectDrivable *> m_objects;     ///< All objects live here
     std::vector<ObjectDrivable *> m_calcObjects; ///< Objects needing calc() live here too.
+    ObjectObakeManager *m_obakeManager;          ///< Manages rGV2 blocks and spatial indexing.
 
     static ObjectDrivableDirector *s_instance;
 };

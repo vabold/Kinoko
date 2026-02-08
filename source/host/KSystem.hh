@@ -2,8 +2,12 @@
 
 #include <Common.hh>
 
+#include "host/Context.hh"
+
 /// @brief Base interface for a Kinoko system.
 class KSystem : EGG::Disposer {
+    friend class Context;
+
 public:
     virtual ~KSystem() {}
 

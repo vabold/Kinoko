@@ -14,10 +14,6 @@ std::optional<EOption> CheckFlag(const char *arg) {
     if (arg[1] == '-') {
         const char *verbose_arg = &arg[2];
 
-        if (strcmp(verbose_arg, "mode") == 0) {
-            return EOption::Mode;
-        }
-
         if (strcmp(verbose_arg, "suite") == 0) {
             return EOption::Suite;
         }
@@ -26,18 +22,29 @@ std::optional<EOption> CheckFlag(const char *arg) {
             return EOption::Ghost;
         }
 
+        if (strcmp(verbose_arg, "krkg") == 0) {
+            return EOption::KRKG;
+        }
+
+        if (strcmp(verbose_arg, "framecount") == 0) {
+            return EOption::TargetFrame;
+        }
+
         return EOption::Invalid;
     } else {
         switch (arg[1]) {
-        case 'M':
-        case 'm':
-            return EOption::Mode;
         case 'S':
         case 's':
             return EOption::Suite;
         case 'G':
         case 'g':
             return EOption::Ghost;
+        case 'K':
+        case 'k':
+            return EOption::KRKG;
+        case 'F':
+        case 'f':
+            return EOption::TargetFrame;
         default:
             return EOption::Invalid;
         }

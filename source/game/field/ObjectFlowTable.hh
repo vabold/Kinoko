@@ -57,6 +57,8 @@ public:
         return i < SLOT_COUNT ? parse<s16>(m_slots[i]) : -1;
     }
 
+    [[nodiscard]] ObjectId getIdFromName(const char *name) const;
+
 private:
     struct SFile {
         s16 count;
