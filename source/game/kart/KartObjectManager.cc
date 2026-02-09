@@ -78,6 +78,8 @@ KartObjectManager::~KartObjectManager() {
 
     delete[] m_objects;
 
+    delete s_thunderScaleUpAnmChr;
+    delete s_thunderScaleDownAnmChr;
     delete s_pressScaleUpAnmChr;
 
     // If the proxy list is not cleared when we're done with the KartObjectManager, the list's

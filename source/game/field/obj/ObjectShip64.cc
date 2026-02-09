@@ -6,7 +6,9 @@ namespace Field {
 ObjectShip64::ObjectShip64(const System::MapdataGeoObj &params) : ObjectCollidable(params) {}
 
 /// @addr{0x80765DB0}
-ObjectShip64::~ObjectShip64() = default;
+ObjectShip64::~ObjectShip64() {
+    delete m_auxCollision;
+}
 
 /// @addr{0x80765E30}
 void ObjectShip64::init() {

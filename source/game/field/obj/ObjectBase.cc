@@ -35,6 +35,7 @@ ObjectBase::ObjectBase(const char *name, const EGG::Vector3f &pos, const EGG::Ve
 ObjectBase::~ObjectBase() {
     delete m_resFile;
     delete m_drawMdl;
+    delete m_railInterpolator;
 }
 
 /// @addr{0x808217B8}

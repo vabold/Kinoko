@@ -150,7 +150,7 @@ void BoxColManager::calc() {
 
     // Reorganize the low points
     for (size_t i = 1; i < static_cast<size_t>(m_unitCount); ++i) {
-        for (size_t j = i; m_lowPoints[j - 1].z > m_lowPoints[j].z && j >= 1; --j) {
+        for (size_t j = i; j >= 1 && m_lowPoints[j - 1].z > m_lowPoints[j].z; --j) {
             BoxColLowPoint &upper = m_lowPoints[j];
             BoxColLowPoint &lower = m_lowPoints[j - 1];
 

@@ -55,7 +55,7 @@ void ObjectDirector::addObject(ObjectCollidable *obj) {
     m_objects.push_back(obj);
 }
 
-void ObjectDirector::addObjectNoImpl(ObjectNoImpl *obj) {
+void ObjectDirector::addObjectNoImpl(ObjectBase *obj) {
     m_objects.push_back(obj);
 }
 
