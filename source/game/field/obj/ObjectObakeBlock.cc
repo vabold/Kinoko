@@ -20,23 +20,23 @@ ObjectObakeBlock::ObjectObakeBlock(const System::MapdataGeoObj &params)
     if (yRot == 0.0f) {
         m_fallVel.z = -FALL_LINEAR_SPEED;
         m_fallAngVel.x = -FALL_ANGULAR_SPEED;
-        m_bbox.min = m_pos + EGG::Vector3f(SI_WIDTH, SI_WIDTH, SI_WIDTH);
-        m_bbox.max = m_pos + EGG::Vector3f(-SI_WIDTH, SI_WIDTH, SI_WIDTH);
+        m_bbox.min = pos() + EGG::Vector3f(SI_WIDTH, SI_WIDTH, SI_WIDTH);
+        m_bbox.max = pos() + EGG::Vector3f(-SI_WIDTH, SI_WIDTH, SI_WIDTH);
     } else if (yRot == 90.0f) {
         m_fallVel.x = -FALL_LINEAR_SPEED;
         m_fallAngVel.z = FALL_ANGULAR_SPEED;
-        m_bbox.min = m_pos + EGG::Vector3f(SI_WIDTH, SI_WIDTH, SI_WIDTH);
-        m_bbox.max = m_pos + EGG::Vector3f(SI_WIDTH, SI_WIDTH, -SI_WIDTH);
+        m_bbox.min = pos() + EGG::Vector3f(SI_WIDTH, SI_WIDTH, SI_WIDTH);
+        m_bbox.max = pos() + EGG::Vector3f(SI_WIDTH, SI_WIDTH, -SI_WIDTH);
     } else if (yRot == 180.0f) {
         m_fallVel.z = FALL_LINEAR_SPEED;
         m_fallAngVel.x = FALL_ANGULAR_SPEED;
-        m_bbox.min = m_pos + EGG::Vector3f(SI_WIDTH, SI_WIDTH, -SI_WIDTH);
-        m_bbox.max = m_pos + EGG::Vector3f(-SI_WIDTH, SI_WIDTH, -SI_WIDTH);
+        m_bbox.min = pos() + EGG::Vector3f(SI_WIDTH, SI_WIDTH, -SI_WIDTH);
+        m_bbox.max = pos() + EGG::Vector3f(-SI_WIDTH, SI_WIDTH, -SI_WIDTH);
     } else if (yRot == -90.0f) {
         m_fallVel.x = FALL_LINEAR_SPEED;
         m_fallAngVel.z = -FALL_ANGULAR_SPEED;
-        m_bbox.min = m_pos + EGG::Vector3f(-SI_WIDTH, SI_WIDTH, SI_WIDTH);
-        m_bbox.max = m_pos + EGG::Vector3f(-SI_WIDTH, SI_WIDTH, -SI_WIDTH);
+        m_bbox.min = pos() + EGG::Vector3f(-SI_WIDTH, SI_WIDTH, SI_WIDTH);
+        m_bbox.max = pos() + EGG::Vector3f(-SI_WIDTH, SI_WIDTH, -SI_WIDTH);
     }
 }
 
@@ -51,11 +51,11 @@ void ObjectObakeBlock::calc() {
         return;
     }
 
-    m_pos = m_initialPos + m_fallVel * (static_cast<f32>(m_framesFallen) * 2.0f);
-    m_rot = m_fallAngVel * static_cast<f32>(m_framesFallen);
-    m_pos.y = m_initialPos.y -
+    setPos(m_initialPos + m_fallVel * (static_cast<f32>(m_framesFallen) * 2.0f));
+    setRot(m_fallAngVel * static_cast<f32>(m_framesFallen));
+    f32 posY = m_initialPos.y -
             (0.5f * static_cast<f32>(m_framesFallen)) * (0.5f * static_cast<f32>(m_framesFallen));
-    m_flags.setBit(eFlags::Position, eFlags::Rotation);
+    setPos(EGG::Vector3f(pos().x, posY, pos().z));
 
     if (++m_framesFallen > FALL_DURATION) {
         m_fallState = FallState::FinishedFalling;

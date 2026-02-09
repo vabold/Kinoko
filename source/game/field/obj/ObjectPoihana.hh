@@ -72,7 +72,7 @@ private:
         calcStep();
         calcPosAndCollision();
         calcOrthonormalBasis();
-        calcPosAndTransform();
+        setTransform(m_workMat);
     }
 
     /// @addr{0x80747308}
@@ -90,13 +90,6 @@ private:
     /// @addr{0x80747324}
     [[nodiscard]] EGG::Vector3f collisionPos() const {
         return curPos() + m_floorNrm * m_heightOffset;
-    }
-
-    /// @addr{0x80747404}
-    void calcPosAndTransform() {
-        m_flags.setBit(eFlags::Matrix);
-        m_transform = m_workMat;
-        m_pos = m_workMat.base(3);
     }
 
     /// @addr{0x807476D8}

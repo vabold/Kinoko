@@ -34,8 +34,7 @@ public:
         m_anmState = AnmState::Still;
         m_shakePhase = 0;
         m_vel = 0.0f;
-        m_flags.setBit(eFlags::Rotation);
-        m_rot.y = m_currRot;
+        setRot(EGG::Vector3f(rot().x, m_currRot, rot().z));
     }
 
     /// @addr{0x8075FE8C}
@@ -77,7 +76,13 @@ protected:
 
 private:
     void calcBeforeFall();
-    void calcFalling();
+
+    /// @addr{0x8075F430}
+    void calcFalling() {
+        m_vel -= STOMP_ACCEL;
+        setPos(EGG::Vector3f(pos().x, m_vel + pos().y, pos().z));
+        checkFloorCollision();
+    }
 
     /// @addr{0x8075F460}
     void calcGrounded() {
@@ -88,8 +93,8 @@ private:
 
     /// @addr{0x8075F4D8}
     void calcRising() {
-        m_pos.y = std::min(RISING_VEL + m_pos.y, m_initialPosY);
-        m_flags.setBit(eFlags::Position);
+        f32 posY = std::min(RISING_VEL + pos().y, m_initialPosY);
+        setPos(EGG::Vector3f(pos().x, posY, pos().z));
     }
 
     void checkFloorCollision();

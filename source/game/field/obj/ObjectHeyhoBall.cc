@@ -18,7 +18,7 @@ ObjectHeyhoBall::~ObjectHeyhoBall() = default;
 void ObjectHeyhoBall::init() {
     m_nextStateId = 0;
     m_shipPos.setZero();
-    m_workingPos = m_pos;
+    m_workingPos = pos();
     m_intensity = ExplosionIntensity::ExplosionLoseItem;
 
     resize(BLAST_RADIUS, 0.0f);
@@ -26,14 +26,6 @@ void ObjectHeyhoBall::init() {
     const auto &flowTable = ObjectDirector::Instance()->flowTable();
     m_blastRadiusRatio = BLAST_RADIUS /
             static_cast<f32>(parse<s16>(flowTable.set(flowTable.slot(id()))->params.sphere.radius));
-}
-
-/// @addr{0x806D0780}
-void ObjectHeyhoBall::calc() {
-    StateManager::calc();
-
-    m_flags.setBit(eFlags::Position);
-    m_pos = m_workingPos;
 }
 
 /// @addr{0x806D0880}
@@ -95,8 +87,7 @@ void ObjectHeyhoBall::calcExploding() {
     constexpr u32 SPIN_FRAME = 32;
 
     if (m_currentFrame >= EXPLODE_FRAMES) {
-        m_flags.setBit(eFlags::Scale);
-        m_scale = BALL_SCALE;
+        setScale(BALL_SCALE);
 
         if (getUnit()) {
             unregisterCollision();
@@ -109,8 +100,7 @@ void ObjectHeyhoBall::calcExploding() {
         f32 scale = 1.2f * m_blastRadiusRatio + -m_scaleChangeRate * shrinkFrames * shrinkFrames;
 
         scale = std::min(m_blastRadiusRatio, scale);
-        m_flags.setBit(eFlags::Scale);
-        m_scale = EGG::Vector3f(scale, scale, scale);
+        setScale(scale);
 
         m_intensity = m_currentFrame >= SPIN_FRAME ? ExplosionIntensity::SpinSomeSpeed :
                                                      ExplosionIntensity::ExplosionLoseItem;

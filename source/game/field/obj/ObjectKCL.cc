@@ -245,7 +245,7 @@ void ObjectKCL::update(u32 timeOffset) {
 
     if (timeOffset == 0) {
         calcTransform();
-        mat = m_transform;
+        mat = transform();
     } else {
         mat = getUpdatedMatrix(timeOffset);
     }
@@ -266,18 +266,12 @@ void ObjectKCL::calcScale(u32 timeOffset) {
     }
 
     if (time == 0) {
-        m_objColMgr->setScale(m_scale.y);
+        m_objColMgr->setScale(scale().y);
     } else {
         m_objColMgr->setScale(getScaleY(timeOffset));
     }
 
     m_lastScaleUpdateFrame = time;
-}
-
-/// @addr{0x807FEAC0}
-const EGG::Matrix34f &ObjectKCL::getUpdatedMatrix(u32 /*timeOffset*/) {
-    calcTransform();
-    return m_transform;
 }
 
 /// @addr{0x8081AFB4}

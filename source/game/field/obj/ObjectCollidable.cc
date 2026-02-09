@@ -41,7 +41,7 @@ void ObjectCollidable::load() {
 /// @addr{0x8081F7C8}
 void ObjectCollidable::calcCollisionTransform() {
     calcTransform();
-    m_collision->transform(m_transform, m_scale, getCollisionTranslation());
+    m_collision->transform(transform(), scale(), getCollisionTranslation());
 }
 
 /// @addr{0x806815A0}
@@ -52,8 +52,8 @@ f32 ObjectCollidable::getCollisionRadius() const {
     const auto &flowTable = ObjectDirector::Instance()->flowTable();
     const auto *collisionSet = flowTable.set(flowTable.slot(id()));
 
-    f32 zRadius = m_scale.z * static_cast<f32>(parse<s16>(collisionSet->params.box.z));
-    f32 xRadius = m_scale.x * static_cast<f32>(parse<s16>(collisionSet->params.box.x));
+    f32 zRadius = scale().z * static_cast<f32>(parse<s16>(collisionSet->params.box.z));
+    f32 xRadius = scale().x * static_cast<f32>(parse<s16>(collisionSet->params.box.x));
 
     return std::max(xRadius, zRadius);
 }

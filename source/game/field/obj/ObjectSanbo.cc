@@ -16,9 +16,9 @@ ObjectSanbo::~ObjectSanbo() = default;
 /// @addr{0x8077A1E8}
 void ObjectSanbo::init() {
     m_up = EGG::Vector3f::ey;
-    EGG::Matrix34f rot;
-    rot.makeR(m_rot);
-    m_tangent = rot.base(2);
+    EGG::Matrix34f rotMat;
+    rotMat.makeR(rot());
+    m_tangent = rotMat.base(2);
     m_tangent.normalise();
     m_standstill = false;
     m_railInterpolator->init(0.0f, 0);
@@ -48,11 +48,8 @@ void ObjectSanbo::calcMove() {
     }
 
     const EGG::Vector3f &railPos = m_railInterpolator->curPos();
-    m_pos.x = railPos.x;
-    m_pos.z = railPos.z;
     m_yVel -= GRAVITY;
-    m_flags.setBit(eFlags::Position);
-    m_pos.y = m_yVel + m_pos.y;
+    setPos(EGG::Vector3f(railPos.x, m_yVel + pos().y, railPos.z));
 
     checkSphere();
 }
@@ -68,11 +65,10 @@ void ObjectSanbo::checkSphere() {
 
     EGG::Vector3f norm = m_up;
 
-    if (CollisionDirector::Instance()->checkSphereFull(RADIUS, m_pos + POS_OFFSET,
+    if (CollisionDirector::Instance()->checkSphereFull(RADIUS, pos() + POS_OFFSET,
                 EGG::Vector3f::inf, KCL_TYPE_FLOOR, &colInfo, nullptr, 0)) {
         m_yVel = 0.0f;
-        m_flags.setBit(eFlags::Position);
-        m_pos += colInfo.tangentOff;
+        addPos(colInfo.tangentOff);
         norm = colInfo.floorNrm;
     }
 

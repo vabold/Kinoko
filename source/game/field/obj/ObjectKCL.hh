@@ -78,11 +78,15 @@ public:
         m_objColMgr->setMovingObjVel(v);
     }
 
-    [[nodiscard]] virtual const EGG::Matrix34f &getUpdatedMatrix(u32 timeOffset);
+    /// @addr{0x807FEAC0}
+    [[nodiscard]] virtual const EGG::Matrix34f &getUpdatedMatrix(u32 /*timeOffset*/) {
+        calcTransform();
+        return transform();
+    }
 
     /// @addr{0x80687DB0}
     [[nodiscard]] virtual f32 getScaleY(u32 /* timeOffset */) const {
-        return m_scale.y;
+        return scale().y;
     }
 
     /// @addr{0x8068143C}

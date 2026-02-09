@@ -34,7 +34,7 @@ ObjectChoropu::ObjectChoropu(const System::MapdataGeoObj &params)
         m_groundObjs = owning_span<ObjectChoropuGround *>(groundCount);
 
         for (auto *&obj : m_groundObjs) {
-            obj = new ObjectChoropuGround(m_pos, m_rot, m_scale);
+            obj = new ObjectChoropuGround(pos(), rot(), scale());
             obj->load();
             obj->resize(RADIUS, MAX_SPEED);
         }
@@ -54,13 +54,12 @@ void ObjectChoropu::init() {
     if (m_isStationary) {
         disableCollision();
 
-        m_scale.x = 1.0f;
         m_objHoll->setScale(EGG::Vector3f(1.0f, m_objHoll->scale().y, 1.0f));
         m_nextStateId = 0;
         m_groundLength = 0.0f;
 
         calcTransform();
-        m_transMat = m_transform;
+        m_transMat = transform();
     } else {
         if (m_mapObj->pathId() == -1) {
             return;
@@ -70,8 +69,7 @@ void ObjectChoropu::init() {
         m_railInterpolator->setPerPointVelocities(true);
 
         m_railMat = RailOrthonormalBasis(*m_railInterpolator);
-        m_pos = m_railMat.base(3);
-        m_flags.setBit(eFlags::Position);
+        setPos(m_railMat.base(3));
 
         disableCollision();
         m_objHoll->disableCollision();
@@ -130,17 +128,13 @@ void ObjectChoropu::enterDigging() {
 /// @addr{0x806BABEC}
 void ObjectChoropu::enterPeeking() {
     if (m_isStationary) {
-        m_pos = m_transMat.base(3);
-        m_flags.setBit(eFlags::Position, eFlags::Rotation);
-        m_rot.z = 0.0f;
+        setPos(m_transMat.base(3));
+        setRot(EGG::Vector3f(rot().x, rot().y, 0.0f));
 
         enableCollision();
     } else {
-        m_pos = m_railMat.base(3);
-        m_flags.setBit(eFlags::Position, eFlags::Rotation);
-        m_rot.z = 0.0f;
-        m_rot.y = 0.0f;
-
+        setPos(m_railMat.base(3));
+        setRot(EGG::Vector3f(rot().x, 0.0f, 0.0f));
         enableCollision();
 
         const auto &curTanDir = m_railInterpolator->curTangentDir();
@@ -150,7 +144,6 @@ void ObjectChoropu::enterPeeking() {
         mat.setBase(3, m_railInterpolator->curPos());
 
         m_objHoll->setTransform(mat);
-        m_objHoll->setPos(mat.base(3));
         m_objHoll->enableCollision();
     }
 }
@@ -159,9 +152,8 @@ void ObjectChoropu::enterPeeking() {
 void ObjectChoropu::enterJumping() {
     enableCollision();
 
-    m_pos = m_isStationary ? m_transMat.base(3) : m_railMat.base(3);
-    m_flags.setBit(eFlags::Position, eFlags::Rotation);
-    m_rot.z = 0.0f;
+    setPos(m_isStationary ? m_transMat.base(3) : m_railMat.base(3));
+    setRot(EGG::Vector3f(rot().x, rot().y, 0.0f));
 }
 
 void ObjectChoropu::calcStateStub() {}
@@ -176,8 +168,7 @@ void ObjectChoropu::calcDigging() {
         return;
     }
 
-    m_pos = m_railInterpolator->curPos();
-    m_flags.setBit(eFlags::Position);
+    setPos(m_railInterpolator->curPos());
 
     if (m_railInterpolator->calc() == RailInterpolator::Status::SegmentEnd) {
         if (m_railInterpolator->curPoint().setting[1] == 1) {
@@ -232,16 +223,16 @@ void ObjectChoropu::calcJumping() {
     }
 
     // y = -1.35t^2 + 65.0t
-    f32 pos = JUMP_LINEAR_COEFFICIENT * static_cast<f32>(m_currentFrame) -
+    f32 posY = JUMP_LINEAR_COEFFICIENT * static_cast<f32>(m_currentFrame) -
             static_cast<f32>(m_currentFrame) * 0.5f * JUMP_QUADRATIC_COEFFICIENT *
                     static_cast<f32>(m_currentFrame);
 
-    if (pos < 0.0f) {
+    if (posY < 0.0f) {
         m_nextStateId = 0;
     }
 
-    m_pos.y = pos + (m_isStationary ? m_transMat.base(3).y : m_railInterpolator->curPos().y);
-    m_flags.setBit(eFlags::Position);
+    posY += (m_isStationary ? m_transMat.base(3).y : m_railInterpolator->curPos().y);
+    setPos(EGG::Vector3f(pos().x, posY, pos().z));
 }
 
 /// @addr{0x806BBA7C}
@@ -315,9 +306,7 @@ void ObjectChoropuGround::calcPosAndMat(f32 height, const EGG::Matrix34f &mat) {
     SetRotTangentHorizontal(matTemp, mat.base(2), EGG::Vector3f::ey);
     matTemp.setBase(1, matTemp.base(1) * (height / m_height));
     matTemp.setBase(3, mat.base(3));
-    m_flags.setBit(eFlags::Matrix);
-    m_transform = matTemp;
-    m_pos = matTemp.base(3);
+    setTransform(matTemp);
 }
 
 /// @addr{0x806B93CC}

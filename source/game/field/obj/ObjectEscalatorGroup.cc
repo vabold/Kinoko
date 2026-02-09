@@ -15,16 +15,15 @@ ObjectEscalatorGroup::ObjectEscalatorGroup(const System::MapdataGeoObj &params)
     constexpr EGG::Vector3f LEFT_OFFSET = EGG::Vector3f(-X_OFFSET, -Y_OFFSET, -Z_OFFSET);
     constexpr EGG::Vector3f SCALE = EGG::Vector3f(1.75f, 1.75f, 1.75f);
 
-    m_pos += POS_OFFSET;
-    m_flags.setBit(eFlags::Position, eFlags::Scale);
-    m_scale = SCALE;
+    addPos(POS_OFFSET);
+    setScale(SCALE);
 
     m_rightEscalator = new ObjectEscalator(params, false);
     m_leftEscalator = new ObjectEscalator(params, true);
 
     calcTransform();
-    m_rightEscalator->m_initialPos = m_pos + m_transform.multVector33(RIGHT_OFFSET);
-    m_leftEscalator->m_initialPos = m_pos + m_transform.multVector33(LEFT_OFFSET);
+    m_rightEscalator->m_initialPos = pos() + transform().multVector33(RIGHT_OFFSET);
+    m_leftEscalator->m_initialPos = pos() + transform().multVector33(LEFT_OFFSET);
 
     m_rightEscalator->load();
     m_leftEscalator->load();
