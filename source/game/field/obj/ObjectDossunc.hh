@@ -11,7 +11,7 @@ public:
     ~ObjectDossunc() override;
 
     /// @addr{0x80764A38}
-    void load() override {}
+    void load() override;
 };
 
 } // namespace Field
