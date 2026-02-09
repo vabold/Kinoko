@@ -34,15 +34,15 @@ ObjectWanwan::ObjectWanwan(const System::MapdataGeoObj &params)
         m_attackArc = 30.0f;
     }
 
-    auto *pile = new ObjectWanwanPile(m_pos, m_rot, m_scale);
+    auto *pile = new ObjectWanwanPile(pos(), rot(), scale());
     pile->load();
 
-    m_anchor = m_pos + ANCHOR_OFFSET;
+    m_anchor = pos() + ANCHOR_OFFSET;
 
-    setScale(EGG::Vector3f(SCALE, SCALE, SCALE));
+    setScale(SCALE);
 
-    f32 sqLen = m_chainLength * m_chainLength + 300.0f * (300.0f * m_scale.y) * m_scale.y;
-    m_chainCount = static_cast<u32>(EGG::Mathf::sqrt(sqLen) / (CHAIN_LENGTH * m_scale.y));
+    f32 sqLen = m_chainLength * m_chainLength + 300.0f * (300.0f * scale().y) * scale().y;
+    m_chainCount = static_cast<u32>(EGG::Mathf::sqrt(sqLen) / (CHAIN_LENGTH * scale().y));
     if (m_chainCount > 0) {
         --m_chainCount;
     }
@@ -108,9 +108,8 @@ void ObjectWanwan::calc() {
 
     ++m_frame;
 
-    if (m_pos.y < m_anchor.y - 1000.0f) {
-        m_flags.setBit(eFlags::Position);
-        m_pos.y = m_anchor.y + 1000.0f;
+    if (pos().y < m_anchor.y - 1000.0f) {
+        setPos(EGG::Vector3f(pos().x, m_anchor.y + 1000.0f, pos().z));
         m_vel.y = 0.0f;
     }
 }
@@ -139,12 +138,12 @@ void ObjectWanwan::enterWait() {
     f32 randAngle =
             System::RaceManager::Instance()->random().getF32(ANGLE_RANGE) + ANGLE_NORMALIZATION;
 
-    EGG::Vector3f vStack_58 = m_pos + m_tangent;
-    if (CrossXZ(m_pos + m_tangent, m_pos, m_anchor) >= 0.0f) {
+    EGG::Vector3f vStack_58 = pos() + m_tangent;
+    if (CrossXZ(pos() + m_tangent, pos(), m_anchor) >= 0.0f) {
         randAngle *= -1.0f;
     }
 
-    EGG::Vector3f vStack_40 = m_anchor - EGG::Vector3f(m_pos.x, m_anchor.y, m_pos.z);
+    EGG::Vector3f vStack_40 = m_anchor - EGG::Vector3f(pos().x, m_anchor.y, pos().z);
     vStack_40.normalise2();
 
     EGG::Vector3f vStack_4c = RotateXZByYaw(DEG2RAD * randAngle, vStack_40);
@@ -176,7 +175,7 @@ void ObjectWanwan::enterBack() {
     m_accel.z = 0.0f;
     m_speed = 15.0f;
     m_pitch = -ObjectDirector::Instance()->WanwanMaxPitch();
-    m_backDir = m_anchor - m_pos;
+    m_backDir = m_anchor - pos();
     m_backDir.y = 0.0f;
     m_backDir.normalise2();
     m_attackStill = false;
@@ -189,7 +188,7 @@ void ObjectWanwan::calcWait() {
     constexpr f32 ANGLE_RANGE = 0.33f * 0.5f * 60.0f;
     constexpr f32 ANGLE_NORMALIZATION = 0.66f * 0.5f * 60.0f;
 
-    EGG::Vector3f targetDir = m_target - m_pos;
+    EGG::Vector3f targetDir = m_target - pos();
     targetDir.y = 0.0f;
 
     // In the base game, if the dot product is less than epsilon, then r31 contains F_PI
@@ -241,18 +240,17 @@ void ObjectWanwan::calcAttack() {
     if (m_chainTaut || m_attackStill) {
         if (!m_attackStill) {
             m_target = m_anchor + (m_chainAttachPos - m_anchor) * 2.0f;
-            m_targetDir = m_target - m_pos;
+            m_targetDir = m_target - pos();
             m_targetDir.y = 0.0f;
             m_targetDir.normalise2();
-            EGG::Vector3f posOffset = m_pos - m_chainAttachPos;
+            EGG::Vector3f posOffset = pos() - m_chainAttachPos;
             posOffset.y = 0.0f;
             f32 radius = posOffset.length();
             EGG::Vector3f chainDir = m_chainAttachPos - m_anchor;
             chainDir.y = 0.0f;
             chainDir.normalise2();
-            m_flags.setBit(eFlags::Position);
-            m_pos.x = m_chainAttachPos.x + chainDir.x * radius;
-            m_pos.z = m_chainAttachPos.z + chainDir.z * radius;
+            EGG::Vector3f nextPos = m_chainAttachPos + chainDir * radius;
+            setPos(EGG::Vector3f(nextPos.x, pos().y, nextPos.z));
             EGG::Vector3f tangent = m_tangent + chainDir;
             tangent.y = 0.0f;
             if (tangent.squaredLength() > std::numeric_limits<f32>::epsilon()) {
@@ -295,8 +293,7 @@ void ObjectWanwan::calcBack() {
 /// @addr{0x806E59BC}
 void ObjectWanwan::calcPos() {
     m_vel += m_accel - GRAVITY;
-    m_pos += m_vel;
-    m_flags.setBit(eFlags::Position);
+    addPos(m_vel);
     m_accel.setZero();
 }
 
@@ -307,11 +304,11 @@ void ObjectWanwan::calcCollision() {
     m_touchingFloor = false;
     CollisionInfo info;
     KCLTypeMask mask;
-    EGG::Vector3f pos = m_pos + POS_OFFSET;
+    EGG::Vector3f colPos = pos() + POS_OFFSET;
     auto *colDir = CollisionDirector::Instance();
 
-    bool hasCol = colDir->checkSphereFullPush(30.0f, pos, EGG::Vector3f::inf, KCL_TYPE_FLOOR, &info,
-            &mask, 0);
+    bool hasCol = colDir->checkSphereFullPush(30.0f, colPos, EGG::Vector3f::inf, KCL_TYPE_FLOOR,
+            &info, &mask, 0);
 
     if (!hasCol) {
         return;
@@ -320,8 +317,7 @@ void ObjectWanwan::calcCollision() {
     m_touchingFloor = true;
     EGG::Vector3f local_84 = info.tangentOff;
     f32 scale = local_84.normalise();
-    m_pos += EGG::Vector3f::ey * scale;
-    m_flags.setBit(eFlags::Position);
+    addPos(EGG::Vector3f::ey * scale);
 
     if (info.floorDist > -std::numeric_limits<f32>::min()) {
         m_targetUp = info.floorNrm;
@@ -344,7 +340,7 @@ void ObjectWanwan::calcMat() {
     EGG::Matrix34f rtMat;
     rtMat.makeRT(rot, EGG::Vector3f::zero);
     mat = mat.multiplyTo(rtMat);
-    mat.setBase(3, m_pos);
+    mat.setBase(3, pos());
     setTransform(mat);
 }
 
@@ -354,11 +350,11 @@ void ObjectWanwan::calcChainAttachMat() {
 
     calcTransform();
 
-    EGG::Matrix34f mat = m_transform;
+    EGG::Matrix34f mat = transform();
     mat.setBase(3, EGG::Vector3f::zero);
     EGG::Vector3f keyFramePos = m_transformKeyframes[idx].base(3);
     EGG::Vector3f posOffset = mat.ps_multVector(keyFramePos) * 2.0f;
-    mat.setBase(3, posOffset + m_pos);
+    mat.setBase(3, posOffset + pos());
 
     m_chainAttachMat = mat;
 }
@@ -417,7 +413,7 @@ void ObjectWanwan::calcRandomTarget() {
     attackArcDir.normalise2();
     EGG::Vector3f attackTargetDir = RotateXZByYaw((angle - m_attackArc) * DEG2RAD, attackArcDir);
     m_target = m_anchor + attackTargetDir * m_attackDistance;
-    m_targetDir = m_target - m_pos;
+    m_targetDir = m_target - pos();
     m_targetDir.y = 0.0f;
     m_targetDir.normalise2();
 }
@@ -459,7 +455,7 @@ void ObjectWanwan::calcAttackPos() {
 
     calcMat();
     calcTransform();
-    calcChainAttachPos(m_transform);
+    calcChainAttachPos(transform());
 
     EGG::Vector3f dir = m_chainAttachPos - m_anchor;
     f32 dist = dir.normalise();
@@ -467,19 +463,18 @@ void ObjectWanwan::calcAttackPos() {
 
     if (dist > 0.0f || m_attackStill) {
         m_chainTaut = true;
-        m_pos -= dir * dist;
-        m_pos += dir * 35.0f;
-        m_flags.setBit(eFlags::Position);
+        subPos(dir * dist);
+        addPos(dir * 35.0f);
     }
 }
 
 void ObjectWanwan::calcChainAttachPos(EGG::Matrix34f mat) {
     EGG::Vector3f pos = mat.base(3);
-    pos -= mat.base(2) * 250.0f * m_scale.x;
+    pos -= mat.base(2) * 250.0f * scale().x;
     mat.setBase(3, pos);
 
-    EGG::Vector3f backOffset = mat.base(2) * 140.0f * m_scale.x;
-    EGG::Vector3f verticalOffset = mat.base(1) * 20.0f * m_scale.x;
+    EGG::Vector3f backOffset = mat.base(2) * 140.0f * scale().x;
+    EGG::Vector3f verticalOffset = mat.base(1) * 20.0f * scale().x;
     m_chainAttachPos = pos - backOffset + verticalOffset;
 }
 

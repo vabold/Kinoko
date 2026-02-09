@@ -26,8 +26,8 @@ ObjectFireSnake::ObjectFireSnake(const System::MapdataGeoObj &params)
         auto *&kid = m_kids[i];
         kid = new ObjectFireSnakeKid(params);
         kid->load();
-        f32 scale = (0.75f - 0.25f * static_cast<f32>(i)) * m_scale.y;
-        kid->setScale(EGG::Vector3f(scale, scale, scale));
+        f32 kidScale = (0.75f - 0.25f * static_cast<f32>(i)) * scale().y;
+        kid->setScale(kidScale);
     }
 
     m_prevTransforms.fill(EGG::Matrix34f::ident);
@@ -44,8 +44,8 @@ void ObjectFireSnake::init() {
     m_sunPos.setZero();
 
     calcTransform();
-    m_initRot = m_transform.base(0);
-    m_bounceDir = m_transform.base(0);
+    m_initRot = transform().base(0);
+    m_bounceDir = transform().base(0);
 }
 
 /// @addr{0x806C14E4}
@@ -90,8 +90,7 @@ void ObjectFireSnake::enterDespawned() {
     }
 
     m_visualPos = m_sunPos;
-    m_pos = m_sunPos;
-    m_flags.setBit(eFlags::Position);
+    setPos(m_sunPos);
 }
 
 /// @addr{0x806C19E8}
@@ -104,8 +103,7 @@ void ObjectFireSnake::enterFalling() {
 /// @addr{0x806C1DCC}
 void ObjectFireSnake::enterHighBounce() {
     m_visualPos = m_initialPos;
-    m_pos = m_initialPos;
-    m_flags.setBit(eFlags::Position);
+    setPos(m_initialPos);
 
     f32 rand = System::RaceManager::Instance()->random().getF32();
     m_bounceDir = rand >= 0.5f ? m_initRot : -m_initRot;
@@ -143,8 +141,7 @@ void ObjectFireSnake::calcFalling() {
 
     if (posY <= m_initialPos.y) {
         m_nextStateId = 2;
-        m_pos = m_visualPos * 0.5f + m_initialPos * 0.5f;
-        m_flags.setBit(eFlags::Position);
+        setPos(m_visualPos * 0.5f + m_initialPos * 0.5f);
     } else {
         fallVel.x = m_xzSpeed;
         m_visualPos.y = posY;
@@ -162,8 +159,7 @@ void ObjectFireSnake::calcFalling() {
         f32 phase = m_currentFrame - static_cast<u16>(scaledDuration);
         f32 spiralRadius = phase < 0 ? 200.0f : 200.0f - (200.0f / scaledDuration) * phase;
 
-        m_pos = m_visualPos + spiral * spiralRadius;
-        m_flags.setBit(eFlags::Position);
+        setPos(m_visualPos + spiral * spiralRadius);
     }
 }
 
@@ -182,7 +178,7 @@ void ObjectFireSnake::calcRest() {
 
     calcTransform();
 
-    EGG::Vector3f tangent = Interpolate(0.3f, m_transform.base(2), m_bounceDir);
+    EGG::Vector3f tangent = Interpolate(0.3f, transform().base(2), m_bounceDir);
     tangent.normalise2();
 
     setMatrixTangentTo(EGG::Vector3f::ey, tangent);
@@ -203,8 +199,8 @@ void ObjectFireSnake::calcChildren() {
     }
 
     calcTransform();
-    m_prevTransforms[0] = m_transform;
-    m_prevTransforms[0].setBase(3, m_pos);
+    m_prevTransforms[0] = transform();
+    m_prevTransforms[0].setBase(3, pos());
 
     u32 idx = 10;
     for (auto *&kid : m_kids) {
@@ -220,7 +216,7 @@ void ObjectFireSnake::calcChildren() {
 
         if (m_currentStateId == 1 && m_currentFrame < idx) {
             calcTransform();
-            kid->setTransform(m_transform);
+            kid->setTransform(transform());
         } else {
             kid->setTransform(m_prevTransforms[idx]);
         }
@@ -252,8 +248,7 @@ void ObjectFireSnake::calcBounce(f32 initialVel) {
         }
     }
 
-    m_pos = m_visualPos;
-    m_flags.setBit(eFlags::Position);
+    setPos(m_visualPos);
 }
 
 } // namespace Field

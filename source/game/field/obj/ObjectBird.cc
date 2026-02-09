@@ -71,16 +71,14 @@ void ObjectBirdLeader::init() {
 
     m_railInterpolator->init(0.0f, 0);
     m_railInterpolator->calc();
-    m_pos = m_railInterpolator->curPos();
-    m_flags.setBit(eFlags::Position);
+    setPos(m_railInterpolator->curPos());
     m_railInterpolator->setCurrVel(static_cast<f32>(m_mapObj->setting(0)));
 }
 
 /// @addr{0x8077C504}
 void ObjectBirdLeader::calc() {
     m_railInterpolator->calc();
-    m_pos = m_railInterpolator->curPos();
-    m_flags.setBit(eFlags::Position);
+    setPos(m_railInterpolator->curPos());
 }
 
 /// @addr{0x8077CC78}
@@ -125,8 +123,7 @@ void ObjectBirdFollower::init() {
     f32 x = rand.getF32(POS_DELTA_RANGE) - POS_DELTA_CENTER;
     EGG::Vector3f delta = EGG::Vector3f(x, y, z);
 
-    m_pos = m_bird->leader()->pos() + delta;
-    m_flags.setBit(eFlags::Position);
+    setPos(m_bird->leader()->pos() + delta);
 }
 
 /// @addr{0x8077C7F0}
@@ -135,10 +132,9 @@ void ObjectBirdFollower::calc() {
 
     CollisionInfo info;
 
-    if (CollisionDirector::Instance()->checkSphereFull(100.0f, m_pos, EGG::Vector3f::inf,
+    if (CollisionDirector::Instance()->checkSphereFull(100.0f, pos(), EGG::Vector3f::inf,
                 KCL_TYPE_FLOOR, &info, nullptr, 0)) {
-        m_pos += info.tangentOff;
-        m_flags.setBit(eFlags::Position);
+        addPos(info.tangentOff);
     }
 }
 
@@ -146,16 +142,16 @@ void ObjectBirdFollower::calc() {
 void ObjectBirdFollower::calcPos() {
     constexpr f32 MAX_SPEED_FACTOR = 1.2f;
 
-    EGG::Vector3f pos = m_bird->leader()->pos();
+    EGG::Vector3f leaderPos = m_bird->leader()->pos();
     const auto &follower = m_bird->followers();
 
     for (u32 i = 0; i < follower.size(); ++i) {
         if (i != m_idx) {
-            pos += follower[i]->pos();
+            leaderPos += follower[i]->pos();
         }
     }
 
-    EGG::Vector3f posDelta = pos * (1.0f / static_cast<f32>(follower.size())) - m_pos;
+    EGG::Vector3f posDelta = leaderPos * (1.0f / static_cast<f32>(follower.size())) - pos();
     posDelta.normalise();
     posDelta *= 0.5f;
 
@@ -166,8 +162,7 @@ void ObjectBirdFollower::calcPos() {
         m_velocity *= m_baseSpeed * MAX_SPEED_FACTOR;
     }
 
-    m_pos += m_velocity;
-    m_flags.setBit(eFlags::Position);
+    addPos(m_velocity);
 }
 
 } // namespace Field

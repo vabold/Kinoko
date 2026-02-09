@@ -33,8 +33,7 @@ ObjectHeyho::~ObjectHeyho() = default;
 void ObjectHeyho::init() {
     ASSERT(m_railInterpolator);
     m_railInterpolator->init(0.0f, m_railInterpolator->pointCount() / 2);
-    m_pos = m_railInterpolator->curPos();
-    m_flags.setBit(eFlags::Position);
+    setPos(m_railInterpolator->curPos());
     m_currentVel = EGG::Mathf::sqrt(
             m_maxVelSq - m_accel * (m_railInterpolator->curPos().y - m_midpoint.y));
 
@@ -85,8 +84,8 @@ void ObjectHeyho::calcCollisionTransform() {
     EGG::Matrix34f tm;
     tm.makeT(EGG::Vector3f(0.0f, 100.0f, 0.0f));
     calcTransform();
-    EGG::Matrix34f m = m_transform.multiplyTo(tm);
-    objCol->transform(m, m_scale, m_transformOffset);
+    EGG::Matrix34f m = transform().multiplyTo(tm);
+    objCol->transform(m, scale(), m_transformOffset);
 }
 
 /// @addr{0x806CF4D0}
@@ -96,18 +95,14 @@ void ObjectHeyho::calcMove() {
 
     CollisionInfo info;
 
-    if (CollisionDirector::Instance()->checkSphereFull(COLLISION_RADIUS, m_pos + COLLISION_OFFSET,
+    if (CollisionDirector::Instance()->checkSphereFull(COLLISION_RADIUS, pos() + COLLISION_OFFSET,
                 EGG::Vector3f::inf, KCL_TYPE_FLOOR, &info, nullptr, 0)) {
         m_floorCollision = true;
         if (info.floorDist > -std::numeric_limits<f32>::min()) {
             m_floorNrm = info.floorNrm;
         }
 
-        // Not m_pos += info.tangentOff - m_floorNrm * 60.0f
-        // The former requires m_pos to be the last addition to occur
-        // TODO: 100.0f - 10.0f - 30.0f? Why is this the case?
-        m_pos = m_pos + info.tangentOff - m_floorNrm * 60.0f;
-        m_flags.setBit(eFlags::Position);
+        setPos(pos() + info.tangentOff - m_floorNrm * 60.0f);
 
         if (m_currentAnim == Animation::Jumped) {
             const auto *anim = m_drawMdl->anmMgr()->activeAnim(Render::AnmType::Chr);
@@ -129,7 +124,7 @@ void ObjectHeyho::calcJump() {
     CollisionInfo info;
     Field::KCLTypeMask flags = KCL_NONE;
 
-    if (CollisionDirector::Instance()->checkSphereFull(COLLISION_RADIUS, m_pos + COLLISION_OFFSET,
+    if (CollisionDirector::Instance()->checkSphereFull(COLLISION_RADIUS, pos() + COLLISION_OFFSET,
                 EGG::Vector3f::inf, KCL_TYPE_VEHICLE_COLLIDEABLE, &info, &flags, 0)) {
         m_floorCollision = true;
         if (info.floorDist > -std::numeric_limits<f32>::min()) {
@@ -139,9 +134,9 @@ void ObjectHeyho::calcJump() {
         // Not m_pos += info.tangentOff - m_floorNrm * 60.0f
         // The former requires m_pos to be the last addition to occur
         // TODO: 100.0f - 10.0f - 30.0f? Why is this the case?
-        m_pos.x = m_pos.x + info.tangentOff.x - m_floorNrm.x * 60.0f;
-        m_pos.z = m_pos.z + info.tangentOff.z - m_floorNrm.z * 60.0f;
-        m_flags.setBit(eFlags::Position);
+        f32 xPos = pos().x + info.tangentOff.x - m_floorNrm.x * 60.0f;
+        f32 zPos = pos().z + info.tangentOff.z - m_floorNrm.z * 60.0f;
+        setPos(EGG::Vector3f(xPos, pos().y, zPos));
 
         if (!(flags & KCL_TYPE_BIT(COL_TYPE_INVISIBLE_WALL)) && m_currentAnim != Animation::Move) {
             m_forward = m_railInterpolator->nextPoint().pos - m_railInterpolator->curPoint().pos;
@@ -195,7 +190,7 @@ void ObjectHeyho::calcStateTransition() {
 /// @addr{0x806CFDB0}
 void ObjectHeyho::calcMotion() {
     if (!m_freeFall) {
-        f32 sqVel = m_maxVelSq - m_accel * (m_pos.y - m_midpoint.y);
+        f32 sqVel = m_maxVelSq - m_accel * (pos().y - m_midpoint.y);
         if (sqVel <= 0.0f) {
             sqVel = 0.001f;
         }
@@ -214,23 +209,19 @@ void ObjectHeyho::calcMotion() {
 
         if (m_currentStateId == 0 && !m_floorCollision) {
             const auto &curPos = m_railInterpolator->curPos();
-            m_pos.x = curPos.x;
-            m_pos.z = curPos.z;
-            m_flags.setBit(eFlags::Position);
+            setPos(EGG::Vector3f(curPos.x, pos().y, curPos.z));
         } else {
-            m_pos = m_railInterpolator->curPos();
-            m_flags.setBit(eFlags::Position);
+            setPos(m_railInterpolator->curPos());
         }
     } else {
         m_currentVel -= 1.0f;
-        m_pos.y = m_currentVel + m_pos.y;
-        m_flags.setBit(eFlags::Position);
+        setPos(EGG::Vector3f(pos().x, m_currentVel + pos().y, pos().z));
     }
 
     // m_currentVel < 0.0f => either we're in free fall or we just snapped to the rail
     // If we would land back on the rail on the next frame, just let it snap to the rail instead
     if (m_currentVel < 0.0f &&
-            EGG::Mathf::abs(m_pos.y - m_railInterpolator->curPos().y) <= -m_currentVel) {
+            EGG::Mathf::abs(pos().y - m_railInterpolator->curPos().y) <= -m_currentVel) {
         m_currentVel = m_launchVel;
         m_freeFall = false;
     }

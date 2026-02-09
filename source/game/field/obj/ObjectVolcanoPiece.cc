@@ -6,7 +6,7 @@ namespace Field {
 
 /// @addr{0x80817DE8}
 ObjectVolcanoPiece::ObjectVolcanoPiece(const System::MapdataGeoObj &params)
-    : ObjectKCL(params), m_initialPos(m_pos), m_initialRot(m_rot),
+    : ObjectKCL(params), m_initialPos(pos()), m_initialRot(rot()),
       m_restDuration(params.setting(1) * 60),
       m_shakeDuration(m_restDuration + params.setting(2) * 60),
       m_quakeDuration(m_shakeDuration + params.setting(7) + 1), m_colMgrB(nullptr),
@@ -28,10 +28,8 @@ void ObjectVolcanoPiece::calc() {
         update(0);
     }
 
-    m_flags.setBit(eFlags::Matrix);
     EGG::Vector3f movingObjVel;
-    m_transform = calcShakeAndFall(&movingObjVel, 0);
-    m_pos = m_transform.base(3);
+    setTransform(calcShakeAndFall(&movingObjVel, 0));
     setMovingObjVel(movingObjVel);
 }
 
@@ -63,18 +61,18 @@ void ObjectVolcanoPiece::createCollision() {
 
     m_objColMgr->setMtx(rtMat);
     m_objColMgr->setInvMtx(invMat);
-    m_objColMgr->setScale(m_scale.y);
+    m_objColMgr->setScale(scale().y);
 
     if (m_colMgrB) {
         m_colMgrB->setMtx(rtMat);
         m_colMgrB->setInvMtx(invMat);
-        m_colMgrB->setScale(m_scale.y);
+        m_colMgrB->setScale(scale().y);
     }
 
     if (m_colMgrC) {
         m_colMgrC->setMtx(rtMat);
         m_colMgrC->setInvMtx(invMat);
-        m_colMgrC->setScale(m_scale.y);
+        m_colMgrC->setScale(scale().y);
     }
 }
 
@@ -267,7 +265,7 @@ const EGG::Matrix34f &ObjectVolcanoPiece::calcShakeAndFall(EGG::Vector3f *vel, u
         *vel = EGG::Vector3f(0.0f, pos.y - prevPos.y, 0.0f);
     }
 
-    m_rtMat.makeRT(m_rot, pos);
+    m_rtMat.makeRT(rot(), pos);
     return m_rtMat;
 }
 

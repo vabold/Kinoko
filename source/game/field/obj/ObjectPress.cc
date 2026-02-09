@@ -26,7 +26,7 @@ void ObjectPress::init() {
     ASSERT(m_mapObj);
     m_raisedTimer = static_cast<u32>(m_mapObj->setting(1));
     m_windUpTimer = 0;
-    m_raisedHeight = m_pos.y;
+    m_raisedHeight = pos().y;
 
     bool hasCol = false;
     CollisionInfo info;
@@ -36,19 +36,15 @@ void ObjectPress::init() {
     // above a sloped floor, it does not partially clip through the floor when it stomps down.
     // If there is no floor below the stomper, then we get stuck in an infinite loop here.
     while (!hasCol) {
-        m_flags.setBit(eFlags::Position);
-        m_pos.y -= FLOOR_CHECK_SPEED;
+        subPos(EGG::Vector3f(0.0f, FLOOR_CHECK_SPEED, 0.0f));
 
-        hasCol = colDir->checkSphereFull(HEIGHT, m_pos + HITBOX_OFFSET, EGG::Vector3f::inf,
+        hasCol = colDir->checkSphereFull(HEIGHT, pos() + HITBOX_OFFSET, EGG::Vector3f::inf,
                 KCL_TYPE_FLOOR, &info, nullptr, 0);
     }
 
-    EGG::Vector3f loweredPos = m_pos + info.tangentOff;
-    m_pos.x = loweredPos.x;
-    m_pos.z = loweredPos.z;
+    EGG::Vector3f loweredPos = pos() + info.tangentOff;
+    setPos(EGG::Vector3f(loweredPos.x, m_raisedHeight, loweredPos.z));
     m_loweredHeight = loweredPos.y;
-    m_flags.setBit(eFlags::Position);
-    m_pos.y = m_raisedHeight;
     m_startedLowered = false;
 }
 
@@ -118,7 +114,7 @@ Kart::Reaction ObjectPress::onCollision(Kart::KartObject *kartObj, Kart::Reactio
         Kart::Reaction /*reactionOnObj*/, EGG::Vector3f & /*hitDepth*/) {
     constexpr f32 CRUSH_THRESHOLD = 430.0f;
 
-    EGG::Vector3f diff = kartObj->pos() - m_pos;
+    EGG::Vector3f diff = kartObj->pos() - pos();
     bool close =
             EGG::Mathf::abs(diff.x) < CRUSH_THRESHOLD && EGG::Mathf::abs(diff.z) < CRUSH_THRESHOLD;
 
@@ -145,8 +141,7 @@ void ObjectPress::calcRaised() {
 void ObjectPress::calcWindUp() {
     constexpr f32 SPEED = 10.0f;
 
-    m_flags.setBit(eFlags::Position);
-    m_pos.y += SPEED;
+    addPos(EGG::Vector3f(0.0f, SPEED, 0.0f));
 
     if (--m_windUpTimer == 0) {
         m_state = State::Lowering;
@@ -158,9 +153,7 @@ void ObjectPress::calcLowering() {
     constexpr f32 ACCEL = 3.0f;
 
     m_loweringVelocity -= ACCEL;
-    m_flags.setBit(eFlags::Position);
-    m_pos.y += m_loweringVelocity;
-
+    addPos(EGG::Vector3f(0.0f, m_loweringVelocity, 0.0f));
     checkCollisionLowering();
 }
 
@@ -184,18 +177,16 @@ void ObjectPress::calcLowered() {
 void ObjectPress::calcRaising() {
     constexpr f32 SPEED = 10.0f;
 
-    f32 height = m_pos.y + SPEED;
+    f32 height = pos().y + SPEED;
 
     if (height < m_raisedHeight) {
-        m_pos.y = height;
+        setPos(EGG::Vector3f(pos().x, height, pos().z));
     } else {
-        m_pos.y = m_raisedHeight;
+        setPos(EGG::Vector3f(pos().x, m_raisedHeight, pos().z));
         m_state = State::Raised;
         ASSERT(m_mapObj);
         m_raisedTimer = static_cast<u32>(m_mapObj->setting(2));
     }
-
-    m_flags.setBit(eFlags::Position);
 }
 
 /// @addr{0x80777D10}
@@ -205,14 +196,13 @@ void ObjectPress::checkCollisionLowering() {
 
     CollisionInfo info;
 
-    if (!CollisionDirector::Instance()->checkSphereFull(RADIUS, m_pos + HITBOX_OFFSET,
+    if (!CollisionDirector::Instance()->checkSphereFull(RADIUS, pos() + HITBOX_OFFSET,
                 EGG::Vector3f::inf, KCL_TYPE_FLOOR, &info, nullptr, 0)) {
         return;
     }
 
     m_loweringVelocity = 0.0f;
-    m_pos = m_pos + info.tangentOff;
-    m_flags.setBit(eFlags::Position);
+    addPos(info.tangentOff);
 
     auto *anmMgr = m_drawMdl->anmMgr();
     anmMgr->playAnim(0.0f, ANM_RATE, 0);

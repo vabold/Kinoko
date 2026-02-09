@@ -22,7 +22,7 @@ void ObjectPoihanaBase::init() {
     m_up = EGG::Vector3f::ez;
     m_floorNrm = EGG::Vector3f::ey;
     m_walkState = WalkState::NeedTarget;
-    m_workMat.setBase(3, m_pos);
+    m_workMat.setBase(3, pos());
 }
 
 /// @addr{0x8074816C}

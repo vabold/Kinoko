@@ -4,7 +4,7 @@ namespace Field {
 
 /// @addr{0x8080761C}
 ObjectKinoko::ObjectKinoko(const System::MapdataGeoObj &params)
-    : ObjectKCL(params), m_objPos(m_pos), m_objRot(m_rot) {
+    : ObjectKCL(params), m_objPos(pos()), m_objRot(rot()) {
     m_type = static_cast<KinokoType>(params.setting(0));
 
     m_restFrame = 0;
@@ -36,10 +36,7 @@ void ObjectKinoko::calc() {
     }
 
     m_pulseFalloff = PULSE_SCALE * static_cast<f32>(PULSE_DURATION - m_pulseFrame);
-    m_flags.setBit(eFlags::Scale);
-    m_scale.set(
-            m_pulseFalloff * EGG::Mathf::sin(PULSE_FREQ * static_cast<f32>(m_pulseFrame)) + 1.0f);
-
+    setScale(m_pulseFalloff * EGG::Mathf::sin(PULSE_FREQ * static_cast<f32>(m_pulseFrame)) + 1.0f);
     calcOscillation();
 }
 
@@ -58,10 +55,10 @@ ObjectKinokoUd::~ObjectKinokoUd() = default;
 
 /// @addr{0x80807A54}
 void ObjectKinokoUd::calcOscillation() {
-    m_flags.setBit(eFlags::Position);
-    m_pos.y = m_objPos.y +
+    f32 posY = m_objPos.y +
             static_cast<f32>(m_amplitude) *
                     (EGG::Mathf::cos(m_angFreq * static_cast<f32>(m_oscFrame)) + 1.0f) * 0.5f;
+    setPos(EGG::Vector3f(pos().x, posY, pos().z));
 
     if (m_waitFrame == 0) {
         ++m_oscFrame;
@@ -94,9 +91,7 @@ void ObjectKinokoBend::calcOscillation() {
     EGG::Vector3f rot = m_objRot + (EGG::Vector3f::ez * s) * m_amplitude;
 
     calcTransform();
-
-    m_flags.setBit(eFlags::Rotation);
-    m_rot = m_transform.multVector33(rot);
+    setRot(transform().multVector33(rot));
 
     if (++m_currentFrame >= m_period) {
         m_currentFrame = 0;

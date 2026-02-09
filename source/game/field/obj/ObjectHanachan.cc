@@ -56,17 +56,6 @@ void HanachanChainManager::calc() {
     }
 }
 
-/// @addr{0x806CA5E4}
-void ObjectHanachanPart::calcTransformFromUpAndTangent(const EGG::Vector3f &pos,
-        const EGG::Vector3f &up, const EGG::Vector3f &tangent) {
-    EGG::Matrix34f mat;
-    SetRotTangentHorizontal(mat, up, tangent);
-    m_flags.setBit(eFlags::Matrix);
-    m_transform = mat;
-    m_transform.setBase(3, pos);
-    m_pos = pos;
-}
-
 /// @addr{0x806C7D74}
 ObjectHanachanHead::ObjectHanachanHead(const char *name, const EGG::Vector3f &pos,
         const EGG::Vector3f &rot, const EGG::Vector3f &scale)
@@ -79,14 +68,14 @@ ObjectHanachanHead::~ObjectHanachanHead() = default;
 void ObjectHanachanHead::calcCollisionTransform() {
     calcTransform();
 
-    EGG::Matrix34f trans = m_transform;
-    EGG::Vector3f scaledUp = trans.base(1) * 330.0f * m_scale.y;
-    EGG::Vector3f scaledForward = trans.base(2) * 100.0f * m_scale.y;
-    trans.setBase(3, m_pos + scaledUp + scaledForward);
-    EGG::Vector3f speed = m_pos - m_lastPos;
+    EGG::Matrix34f trans = transform();
+    EGG::Vector3f scaledUp = trans.base(1) * 330.0f * scale().y;
+    EGG::Vector3f scaledForward = trans.base(2) * 100.0f * scale().y;
+    trans.setBase(3, pos() + scaledUp + scaledForward);
+    EGG::Vector3f speed = pos() - m_lastPos;
 
-    m_collision->transform(trans, m_scale, speed);
-    m_lastPos = m_pos;
+    m_collision->transform(trans, scale(), speed);
+    m_lastPos = pos();
 }
 
 ObjectHanachanBody::ObjectHanachanBody(const System::MapdataGeoObj &params, const char *mdlName)
@@ -108,12 +97,12 @@ void ObjectHanachanBody::calcCollisionTransform() {
         return;
     }
 
-    EGG::Matrix34f trans = m_transform;
-    trans.setBase(3, m_pos + trans.base(2) * 80.0f * m_scale.y);
-    EGG::Vector3f posDelta = m_pos - m_lastPos;
+    EGG::Matrix34f trans = transform();
+    trans.setBase(3, pos() + trans.base(2) * 80.0f * scale().y);
+    EGG::Vector3f posDelta = pos() - m_lastPos;
 
-    m_collision->transform(trans, m_scale, posDelta);
-    m_lastPos = m_pos;
+    m_collision->transform(trans, scale(), posDelta);
+    m_lastPos = pos();
 }
 
 /// @addr{0x806C8A5C}
@@ -247,7 +236,7 @@ void ObjectHanachan::calcRail() {
 void ObjectHanachan::calcBody() {
     auto *&head = headPart();
     head->calcTransform();
-    EGG::Vector3f forward = head->m_transform.base(2);
+    EGG::Vector3f forward = head->transform().base(2);
     EGG::Vector3f dir = Interpolate(0.1f, forward, m_railInterpolator->curTangentDir());
     head->calcTransformFromUpAndTangent(m_chain.pos(0), m_chain.up(0), dir);
 
@@ -319,7 +308,7 @@ void ObjectHanachan::calcLateralMotion(f32 amplitude, f32 period, f32 wavelength
         f32 phase =
                 F_TAU * (static_cast<f32>(frame) / period - m_partDisplacement[i + 1] / wavelength);
         part->calcTransform();
-        EGG::Vector3f right = RotateXZByYaw(HALF_PI, part->m_transform.base(2));
+        EGG::Vector3f right = RotateXZByYaw(HALF_PI, part->transform().base(2));
         EGG::Vector3f posOffset = right * (amplitude * EGG::Mathf::SinFIdx(RAD2FIDX * phase));
         m_chain.setPos(i + 1, m_parts[i + 1]->pos() + posOffset);
         m_chain.setVel(i + 1, right * (velAmplitude * EGG::Mathf::CosFIdx(RAD2FIDX * phase)));

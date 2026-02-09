@@ -11,7 +11,7 @@ namespace Field {
 
 /// @addr{0x8082CAD8}
 ObjectPylon::ObjectPylon(const System::MapdataGeoObj &params)
-    : ObjectCollidable(params), m_initPos(m_pos), m_initScale(m_scale), m_initRot(m_rot) {}
+    : ObjectCollidable(params), m_initPos(pos()), m_initScale(scale()), m_initRot(rot()) {}
 
 /// @addr{0x8082E500}
 ObjectPylon::~ObjectPylon() = default;
@@ -25,20 +25,18 @@ void ObjectPylon::init() {
     m_vel.setZero();
     m_numBounces = 0;
     m_neighbors = {nullptr};
-    m_flags.setBit(eFlags::Position);
-    m_pos.y -= FALL_VEL;
+    subPos(EGG::Vector3f(0.0f, FALL_VEL, 0.0f));
 
     CollisionInfo info;
     KCLTypeMask mask;
-    EGG::Vector3f pos = m_pos + EGG::Vector3f::ey * RADIUS;
-    EGG::Vector3f prevPos = m_pos + EGG::Vector3f::ey * (RADIUS + FALL_VEL);
+    EGG::Vector3f colPos = pos() + EGG::Vector3f::ey * RADIUS;
+    EGG::Vector3f prevPos = pos() + EGG::Vector3f::ey * (RADIUS + FALL_VEL);
 
-    bool hasCol = CollisionDirector::Instance()->checkSphereFull(RADIUS, pos, prevPos,
+    bool hasCol = CollisionDirector::Instance()->checkSphereFull(RADIUS, colPos, prevPos,
             KCL_TYPE_6CEBDFFF, &info, &mask, 0);
 
     if (hasCol) {
-        m_pos += info.tangentOff;
-        m_flags.setBit(eFlags::Position);
+        addPos(info.tangentOff);
 
         if (mask & KCL_TYPE_FLOOR) {
             setMatrixTangentTo(info.floorNrm, EGG::Vector3f::ez);
@@ -49,7 +47,7 @@ void ObjectPylon::init() {
     auto &managedObjs = objDir->managedObjects();
 
     for (auto *&obj : managedObjs) {
-        if ((obj->pos() - m_pos).length() >= NEIGHBOR_SQUARE_RADIUS) {
+        if ((obj->pos() - pos()).length() >= NEIGHBOR_SQUARE_RADIUS) {
             continue;
         }
 
@@ -171,18 +169,16 @@ Kart::Reaction ObjectPylon::onCollision(Kart::KartObject *kartObj,
 void ObjectPylon::checkCollision(const EGG::Vector3f &hitDepth) {
     constexpr f32 TRAVEL_RADIUS = 1200.0f;
 
-    m_pos -= hitDepth;
-    m_flags.setBit(eFlags::Position);
+    subPos(hitDepth);
 
     EGG::Vector3f dist;
     for (auto *&neighbor : m_neighbors) {
         if (neighbor && collision()->check(*neighbor->collision(), dist)) {
-            m_pos += dist;
-            m_flags.setBit(eFlags::Position);
+            addPos(dist);
         }
     }
 
-    EGG::Vector3f delta = m_pos - m_initPos;
+    EGG::Vector3f delta = pos() - m_initPos;
 
     // Enforce that cones stay within a TRAVEL_RADIUS radius from their initial position
     if (delta.length() > TRAVEL_RADIUS) {
@@ -190,22 +186,19 @@ void ObjectPylon::checkCollision(const EGG::Vector3f &hitDepth) {
         delta.z -= hitDepth.x;
         delta.normalise2();
 
-        m_pos = m_initPos + delta * TRAVEL_RADIUS;
-        m_flags.setBit(eFlags::Position);
+        setPos(m_initPos + delta * TRAVEL_RADIUS);
     }
 
-    m_pos.y -= FALL_VEL;
-    m_flags.setBit(eFlags::Position);
+    subPos(EGG::Vector3f(0.0f, FALL_VEL, 0.0f));
 
     CollisionInfo info;
     KCLTypeMask mask;
-    EGG::Vector3f pos = m_pos + EGG::Vector3f::ey * RADIUS;
+    EGG::Vector3f colPos = pos() + EGG::Vector3f::ey * RADIUS;
 
-    bool hasCol = CollisionDirector::Instance()->checkSphereFullPush(RADIUS, pos, m_pos,
+    bool hasCol = CollisionDirector::Instance()->checkSphereFullPush(RADIUS, colPos, pos(),
             KCL_TYPE_60E8DFFF, &info, &mask, 0);
     if (hasCol) {
-        m_pos += info.tangentOff;
-        m_flags.setBit(eFlags::Position);
+        addPos(info.tangentOff);
 
         if (info.floorDist > -std::numeric_limits<f32>::min()) {
             setMatrixTangentTo(info.floorNrm, EGG::Vector3f::ez);
@@ -241,7 +234,7 @@ void ObjectPylon::calcHit() {
 
     u32 t = System::RaceManager::Instance()->timer();
     u32 stateFrames = t - m_stateStartFrame;
-    if (m_vel.squaredLength() < SQ_VEL_MIN || m_pos.y < 0.0f ||
+    if (m_vel.squaredLength() < SQ_VEL_MIN || pos().y < 0.0f ||
             static_cast<f32>(stateFrames) > HIT_DURATION) {
         m_stateStartFrame = t;
         m_state = State::Hiding;
@@ -250,7 +243,7 @@ void ObjectPylon::calcHit() {
 
     CollisionInfo info;
     KCLTypeMask maskOut;
-    EGG::Vector3f pos = m_pos + m_vel;
+    EGG::Vector3f colPos = pos() + m_vel;
 
     KCLTypeMask mask = KCL_TYPE_OBJECT_WALL;
     if (stateFrames >= STATE_COOLDOWN_FRAMES) {
@@ -258,7 +251,7 @@ void ObjectPylon::calcHit() {
     }
 
     bool hasCol = CollisionDirector::Instance()->checkSphereFullPush(
-            (RADIUS + FALL_VEL) * m_scale.x, pos, m_pos, mask, &info, &maskOut, 0);
+            (RADIUS + FALL_VEL) * scale().x, colPos, pos(), mask, &info, &maskOut, 0);
 
     if (hasCol) {
         if ((maskOut & KCL_TYPE_FLOOR) && stateFrames > STATE_COOLDOWN_FRAMES) {
@@ -272,11 +265,8 @@ void ObjectPylon::calcHit() {
 
         calcRotLock();
 
-        m_rot += m_angVel;
-        m_flags.setBit(eFlags::Rotation);
-
-        m_pos = m_pos + m_vel + info.tangentOff;
-        m_flags.setBit(eFlags::Position);
+        addRot(m_angVel);
+        setPos(pos() + m_vel + info.tangentOff);
 
         if (m_numBounces++ >= MAX_BOUNCES) {
             m_state = State::Hiding;
@@ -284,10 +274,8 @@ void ObjectPylon::calcHit() {
         }
     } else {
         calcRotLock();
-
-        m_rot += m_angVel;
-        m_pos += m_vel;
-        m_flags.setBit(eFlags::Rotation, eFlags::Position);
+        addRot(m_angVel);
+        addPos(m_vel);
     }
 }
 
@@ -299,15 +287,12 @@ void ObjectPylon::calcHiding() {
     if (stateFrames > HIDING_DURATION) {
         m_state = State::Hide;
         m_stateStartFrame = t;
-        m_rot = m_initRot;
-        m_rotLock = true;
-        m_flags.setBit(eFlags::Position);
+        setRot(m_initRot);
     } else {
         calcRotLock();
-
-        m_rot += m_angVel;
-        m_scale.set(1.0f / static_cast<f32>(stateFrames));
-        m_flags.setBit(eFlags::Rotation, eFlags::Scale);
+        addRot(m_angVel);
+        f32 scale = 1.0f / static_cast<f32>(stateFrames);
+        setScale(scale);
     }
 
     disableCollision();
@@ -320,9 +305,7 @@ void ObjectPylon::calcHide() {
     if (t - m_stateStartFrame > HIDE_DURATION) {
         m_state = State::ComeBack;
         m_stateStartFrame = t;
-        m_rot = m_initRot;
-        m_rotLock = true;
-        m_flags.setBit(eFlags::Rotation);
+        setRot(m_initRot);
     }
 }
 
@@ -343,24 +326,20 @@ void ObjectPylon::calcComeBack() {
         m_vel.setZero();
         m_angVel.setZero();
 
-        m_pos = m_initPos;
-        m_scale = m_initScale;
-        m_rot = m_initRot;
-        m_pos.y -= COME_BACK_VEL;
-        m_flags.setBit(eFlags::Position, eFlags::Rotation, eFlags::Scale);
-        m_rotLock = true;
+        setPos(EGG::Vector3f(m_initPos.x, m_initPos.y - COME_BACK_VEL, m_initPos.z));
+        setScale(m_initScale);
+        setRot(m_initRot);
 
         CollisionInfo info;
         KCLTypeMask mask;
-        EGG::Vector3f pos = m_pos + EGG::Vector3f::ey * RADIUS * m_scale.x;
-        EGG::Vector3f prevPos = m_pos + EGG::Vector3f::ey * (RADIUS + COME_BACK_VEL) * m_scale.x;
+        EGG::Vector3f colPos = pos() + EGG::Vector3f::ey * RADIUS * scale().x;
+        EGG::Vector3f prevPos = pos() + EGG::Vector3f::ey * (RADIUS + COME_BACK_VEL) * scale().x;
 
-        bool hasCol = CollisionDirector::Instance()->checkSphereFullPush(RADIUS * m_scale.x, pos,
+        bool hasCol = CollisionDirector::Instance()->checkSphereFullPush(RADIUS * scale().x, colPos,
                 prevPos, KCL_TYPE_60E8DFFF, &info, &mask, 0);
 
         if (hasCol) {
-            m_pos += info.tangentOff;
-            m_flags.setBit(eFlags::Position);
+            addPos(info.tangentOff);
 
             if (mask & KCL_TYPE_FLOOR) {
                 setMatrixTangentTo(info.floorNrm, EGG::Vector3f::ez);
@@ -371,24 +350,21 @@ void ObjectPylon::calcComeBack() {
         m_numBounces = 0;
         m_vel.setZero();
         m_angVel.setZero();
-        m_pos = m_initPos +
+        setPos(m_initPos +
                 EGG::Vector3f::ey * INIT_DISPLACEMENT *
-                        static_cast<f32>(COME_BACK_DURATION - stateFrames);
-        m_scale = m_initScale;
-        m_rot = m_initRot;
-        m_flags.setBit(eFlags::Position, eFlags::Scale, eFlags::Rotation);
-        m_rotLock = true;
+                        static_cast<f32>(COME_BACK_DURATION - stateFrames));
+        setScale(m_initScale);
+        setRot(m_initRot);
 
         CollisionInfo info;
-        EGG::Vector3f pos = m_pos + EGG::Vector3f::ey * RADIUS * m_scale.x;
-        EGG::Vector3f prevPos = m_pos + EGG::Vector3f::ey * (RADIUS + COME_BACK_VEL) * m_scale.x;
+        EGG::Vector3f colPos = pos() + EGG::Vector3f::ey * RADIUS * scale().x;
+        EGG::Vector3f prevPos = pos() + EGG::Vector3f::ey * (RADIUS + COME_BACK_VEL) * scale().x;
 
-        bool hasCol = CollisionDirector::Instance()->checkSphereFull(RADIUS * m_scale.x, pos,
+        bool hasCol = CollisionDirector::Instance()->checkSphereFull(RADIUS * scale().x, colPos,
                 prevPos, KCL_TYPE_60E8DFFF, &info, nullptr, 0);
 
         if (hasCol) {
-            m_pos += info.tangentOff;
-            m_flags.setBit(eFlags::Position);
+            addPos(info.tangentOff);
         }
     }
 }

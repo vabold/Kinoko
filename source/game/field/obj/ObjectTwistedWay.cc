@@ -160,7 +160,7 @@ template <typename T>
 bool ObjectTwistedWay::checkSphereImpl(f32 radius, const EGG::Vector3f &v0,
         const EGG::Vector3f & /*v1*/, KCLTypeMask flags, T *pInfo, KCLTypeMask *pFlagsOut,
         u32 timeOffset, bool push) {
-    EGG::Vector3f relPos = v0 - m_pos;
+    EGG::Vector3f relPos = v0 - pos();
 
     if (EGG::Mathf::abs(relPos.z) > HALF_DEPTH || EGG::Mathf::abs(relPos.x) > WIDTH * 2.0f) {
         return false;

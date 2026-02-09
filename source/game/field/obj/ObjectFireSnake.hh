@@ -14,13 +14,6 @@ public:
     [[nodiscard]] u32 loadFlags() const override {
         return 1;
     }
-
-    /// @addr{0x806C296C}
-    void setTransform(const EGG::Matrix34f &mat) {
-        m_flags.setBit(eFlags::Matrix);
-        m_transform = mat;
-        m_pos = mat.base(3);
-    }
 };
 
 class ObjectFireSnake : public ObjectProjectile, virtual public StateManager {

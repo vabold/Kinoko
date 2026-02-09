@@ -12,7 +12,12 @@ public:
     ~ObjectHeyhoBall() override;
 
     void init() override;
-    void calc() override;
+
+    /// @addr{0x806D0780}
+    void calc() override {
+        StateManager::calc();
+        setPos(m_workingPos);
+    }
 
     [[nodiscard]] Kart::Reaction onCollision(Kart::KartObject *kartObj,
             Kart::Reaction reactionOnKart, Kart::Reaction reactionOnObj,

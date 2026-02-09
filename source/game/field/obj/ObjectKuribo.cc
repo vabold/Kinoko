@@ -20,7 +20,7 @@ ObjectKuribo::~ObjectKuribo() = default;
 /// @addr{0x806DB40C}
 void ObjectKuribo::init() {
     calcTransform();
-    m_origin = m_transform.base(2);
+    m_origin = transform().base(2);
 
     m_railInterpolator->init(0.0f, 0);
     m_railInterpolator->setCurrVel(0.0f);
@@ -98,10 +98,8 @@ void ObjectKuribo::calcAnim() {
     }
 
     m_railInterpolator->setCurrVel(m_currSpeed);
-    m_flags.setBit(eFlags::Position);
     const auto &curPos = m_railInterpolator->curPos();
-    m_pos.x = curPos.x;
-    m_pos.z = curPos.z;
+    setPos(EGG::Vector3f(curPos.x, pos().y, curPos.z));
 
     if (m_railInterpolator->calc() == RailInterpolator::Status::ChangingDirection) {
         m_nextStateId = 0;
@@ -115,7 +113,7 @@ void ObjectKuribo::calcAnim() {
 
 /// @addr{0x806DCC9C}
 void ObjectKuribo::calcRot() {
-    m_rot = interpolate(0.1f, m_rot, m_floorNrm);
+    m_rot = Interpolate(0.1f, m_rot, m_floorNrm);
 
     if (m_rot.squaredLength() > std::numeric_limits<f32>::epsilon()) {
         m_rot.normalise2();
@@ -130,31 +128,23 @@ void ObjectKuribo::checkSphereFull() {
 
     // Apply gravity if we're not changing direction
     if (m_currentStateId != 0) {
-        m_flags.setBit(eFlags::Position);
-        m_pos.y -= 2.0f;
+        subPos(EGG::Vector3f(0.0f, 2.0f, 0.0f));
     }
 
     CollisionInfo colInfo;
-    EGG::Vector3f pos = m_pos;
-    pos.y += RADIUS;
+    EGG::Vector3f colPos = pos();
+    colPos.y += RADIUS;
 
-    bool hasCol = CollisionDirector::Instance()->checkSphereFull(RADIUS, pos, EGG::Vector3f::inf,
+    bool hasCol = CollisionDirector::Instance()->checkSphereFull(RADIUS, colPos, EGG::Vector3f::inf,
             KCL_TYPE_FLOOR, &colInfo, nullptr, 0);
 
     if (hasCol) {
-        m_pos += colInfo.tangentOff;
-        m_flags.setBit(eFlags::Position);
+        addPos(colInfo.tangentOff);
 
         if (colInfo.floorDist > -std::numeric_limits<f32>::min()) {
             m_floorNrm = colInfo.floorNrm;
         }
     }
-}
-
-/// @addr{0x806DCD48}
-EGG::Vector3f ObjectKuribo::interpolate(f32 scale, const EGG::Vector3f &v0,
-        const EGG::Vector3f &v1) const {
-    return v0 + (v1 - v0) * scale;
 }
 
 } // namespace Field

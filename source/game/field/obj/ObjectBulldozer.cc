@@ -8,7 +8,7 @@ namespace Field {
 
 /// @addr{0x807FD938}
 ObjectBulldozer::ObjectBulldozer(const System::MapdataGeoObj &params)
-    : ObjectKCL(params), m_initialPos(m_pos), m_initialRot(m_rot) {
+    : ObjectKCL(params), m_initialPos(pos()), m_initialRot(rot()) {
     m_timeOffset = params.setting(3) * 2;
     m_periodDenom = std::max<u16>(2, params.setting(2));
     m_restFrames = params.setting(4);
@@ -26,12 +26,10 @@ ObjectBulldozer::~ObjectBulldozer() = default;
 void ObjectBulldozer::calc() {
     u32 timer = System::RaceManager::Instance()->timer();
     f32 posOffset = calcStateAndPosition(m_timeOffset + timer);
-    EGG::Vector3f prevPos = m_pos;
-
-    m_flags.setBit(eFlags::Position);
-    m_pos.x = m_left ? m_initialPos.x + posOffset : m_initialPos.x - posOffset;
-
-    setMovingObjVel(m_pos - prevPos);
+    EGG::Vector3f prevPos = pos();
+    f32 xPos = m_left ? m_initialPos.x + posOffset : m_initialPos.x - posOffset;
+    setPos(EGG::Vector3f(xPos, prevPos.y, prevPos.z));
+    setMovingObjVel(pos() - prevPos);
 }
 
 /// @addr{0x807FE364}
@@ -39,11 +37,11 @@ void ObjectBulldozer::initCollision() {
     calcTransform();
 
     EGG::Matrix34f matInv;
-    m_transform.ps_inverse(matInv);
+    transform().ps_inverse(matInv);
 
     calcTransform();
 
-    m_objColMgr->setMtx(m_transform);
+    m_objColMgr->setMtx(transform());
     m_objColMgr->setInvMtx(matInv);
     m_objColMgr->setScale(getScaleY(0));
 

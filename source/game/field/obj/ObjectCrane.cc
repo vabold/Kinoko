@@ -4,7 +4,7 @@ namespace Field {
 
 /// @addr{0x807FE658}
 ObjectCrane::ObjectCrane(const System::MapdataGeoObj &params)
-    : ObjectKCL(params), m_startPos(m_pos) {
+    : ObjectKCL(params), m_startPos(pos()) {
     m_xt = params.setting(3);
     m_yt = 0;
     m_xPeriod = std::max(static_cast<u16>(2), params.setting(1));
@@ -21,7 +21,7 @@ ObjectCrane::~ObjectCrane() = default;
 
 /// @addr{0x807FE7EC}
 void ObjectCrane::calc() {
-    const EGG::Vector3f prevPos = m_pos;
+    const EGG::Vector3f prevPos = pos();
 
     f32 xDelta = EGG::Mathf::cos(m_xFreq * static_cast<f32>(m_xt));
     EGG::Vector3f scaledX = EGG::Vector3f::ex * xDelta * static_cast<f32>(m_xAmplitude);
@@ -30,9 +30,7 @@ void ObjectCrane::calc() {
     EGG::Vector3f scaledY = EGG::Vector3f::ey * yDelta * static_cast<f32>(m_yAmplitude);
 
     calcTransform();
-
-    m_pos = m_startPos + m_transform.multVector33(scaledX + scaledY);
-    m_flags.setBit(eFlags::Position);
+    setPos(m_startPos + transform().multVector33(scaledX + scaledY));
 
     if (m_yt++ > m_yPeriod) {
         m_yt = 0;
@@ -42,7 +40,7 @@ void ObjectCrane::calc() {
         m_xt = 0;
     }
 
-    setMovingObjVel(m_pos - prevPos);
+    setMovingObjVel(pos() - prevPos);
 }
 
 } // namespace Field

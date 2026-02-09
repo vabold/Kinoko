@@ -90,8 +90,14 @@ public:
     void loadRail() override {}
 
 private:
+    /// @addr{0x806CA5E4}
     void calcTransformFromUpAndTangent(const EGG::Vector3f &pos, const EGG::Vector3f &up,
-            const EGG::Vector3f &tangent);
+            const EGG::Vector3f &tangent) {
+        EGG::Matrix34f mat;
+        SetRotTangentHorizontal(mat, up, tangent);
+        mat.setBase(3, pos);
+        setTransform(mat);
+    }
 };
 
 class ObjectHanachanHead final : public ObjectHanachanPart {

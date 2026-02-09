@@ -13,11 +13,15 @@ ObjectItemboxPress::~ObjectItemboxPress() = default;
 
 /// @addr{0x8076DAF4}
 void ObjectItemboxPress::calc() {
+    constexpr f32 HEIGHT_OFFSET = 180.0f;
+
     switch (m_state) {
     case 1:
-    case 2:
-        calcPosition();
-        break;
+    case 2: {
+        calcRail();
+        const auto &railPos = m_railInterpolator->curPos();
+        setPos(EGG::Vector3f(railPos.x, railPos.y + HEIGHT_OFFSET, railPos.z));
+    } break;
     default:
         break;
     }
@@ -31,11 +35,8 @@ void ObjectItemboxPress::startPress() {
 }
 
 /// @addr{0x8076DF44}
-void ObjectItemboxPress::calcPosition() {
-    constexpr f32 HEIGHT_OFFSET = 180.0f;
-
+void ObjectItemboxPress::calcRail() {
     auto result = m_railInterpolator->calc();
-
     if (result == RailInterpolator::Status::SegmentEnd) {
         if (m_railInterpolator->curPoint().setting[1] == 1) {
             m_senko->setWindup(true);
@@ -43,10 +44,6 @@ void ObjectItemboxPress::calcPosition() {
     } else if (result == RailInterpolator::Status::ChangingDirection) {
         m_state = 0;
     }
-
-    m_pos = m_railInterpolator->curPos();
-    m_pos.y = HEIGHT_OFFSET + m_pos.y;
-    m_flags.setBit(eFlags::Position);
 }
 
 } // namespace Field

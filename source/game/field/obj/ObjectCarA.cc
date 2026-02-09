@@ -30,8 +30,7 @@ void ObjectCarA::init() {
 
     setMatrixFromOrthonormalBasisAndPos(m_railInterpolator->curTangentDir());
 
-    m_flags.setBit(eFlags::Position);
-    m_pos = m_railInterpolator->curPos();
+    setPos(m_railInterpolator->curPos());
     m_currVel = 0.0f;
     m_motionState = MotionState::Accelerating;
     m_changingDir = false;
@@ -71,10 +70,10 @@ void ObjectCarA::calcCollisionTransform() {
     calcTransform();
 
     EGG::Matrix34f mat;
-    SetRotTangentHorizontal(mat, m_transform.base(2), EGG::Vector3f::ey);
-    mat.setBase(3, m_transform.base(3) + 50.0f * m_transform.base(1));
+    SetRotTangentHorizontal(mat, transform().base(2), EGG::Vector3f::ey);
+    mat.setBase(3, transform().base(3) + 50.0f * transform().base(1));
 
-    objCol->transform(mat, m_scale,
+    objCol->transform(mat, scale(),
             -m_railInterpolator->curTangentDir() * m_railInterpolator->getCurrVel());
 }
 
@@ -145,9 +144,7 @@ void ObjectCarA::calcPos() {
     m_currUp.normalise2();
 
     setMatrixTangentTo(m_currUp, m_currTangent);
-
-    m_pos = m_railInterpolator->curPos();
-    m_flags.setBit(eFlags::Position);
+    setPos(m_railInterpolator->curPos());
 }
 
 } // namespace Field

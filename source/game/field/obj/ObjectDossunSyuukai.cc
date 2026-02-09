@@ -14,7 +14,7 @@ void ObjectDossunSyuukai::init() {
     ObjectDossun::init();
 
     m_state = State::Moving;
-    m_initRotY = m_rot.y;
+    m_initRotY = rot().y;
     m_rotating = true;
 }
 
@@ -44,8 +44,7 @@ void ObjectDossunSyuukai::calcMoving() {
         m_state = State::RotatingBeforeStomp;
     }
 
-    m_pos = m_railInterpolator->curPos();
-    m_flags.setBit(eFlags::Position);
+    setPos(m_railInterpolator->curPos());
 }
 
 /// @addr{0x80760D8C}
@@ -53,8 +52,7 @@ void ObjectDossunSyuukai::calcRotating() {
     constexpr f32 ANG_VEL = 0.08726646f; /// Approximately 5 degrees
     constexpr f32 BEFORE_FALL_FRAMES = 10;
 
-    m_flags.setBit(eFlags::Rotation);
-    m_rot.y += ANG_VEL;
+    addRot(EGG::Vector3f(0.0f, ANG_VEL, 0.0f));
 
     if (m_state == State::RotatingBeforeStomp) {
         f32 targetRot = m_initRotY;
@@ -64,17 +62,15 @@ void ObjectDossunSyuukai::calcRotating() {
             targetRot -= F_TAU;
         }
 
-        if (targetRot < m_rot.y) {
-            m_flags.setBit(eFlags::Rotation);
-
+        if (targetRot < rot().y) {
             if (m_rotating) {
-                m_rot.y -= F_TAU;
+                subRot(EGG::Vector3f(0.0f, F_TAU, 0.0f));
             } else {
-                m_rot.y = m_initRotY;
+                setRot(EGG::Vector3f(rot().x, m_initRotY, rot().z));
                 m_anmState = AnmState::BeforeFall;
                 m_beforeFallTimer = BEFORE_FALL_FRAMES;
 
-                m_currRot = m_rot.y;
+                m_currRot = rot().y;
                 if (m_currRot >= F_PI) {
                     m_currRot -= F_TAU;
                 }
@@ -95,9 +91,8 @@ void ObjectDossunSyuukai::calcRotating() {
             targetRot -= F_TAU;
         }
 
-        if (targetRot < m_rot.y) {
-            m_flags.setBit(eFlags::Rotation);
-            m_rot.y = targetRot;
+        if (targetRot < rot().y) {
+            setRot(EGG::Vector3f(rot().x, targetRot, rot().z));
             m_state = State::Moving;
             m_rotating = true;
         }

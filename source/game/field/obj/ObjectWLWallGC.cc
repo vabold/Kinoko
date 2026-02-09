@@ -25,14 +25,14 @@ ObjectWLWallGC::ObjectWLWallGC(const System::MapdataGeoObj &params) : ObjectKCL(
         m_cycleDuration = m_retractingFrame + m_moveDuration;
     }
 
-    m_initialPos = m_pos;
+    m_initialPos = pos();
 
     calcTransform();
 
-    m_targetPos = m_initialPos - m_transform.base(2) * static_cast<f32>(distance);
+    m_targetPos = m_initialPos - transform().base(2) * static_cast<f32>(distance);
 
     calcTransform();
-    m_currTransform = m_transform;
+    m_currTransform = transform();
 }
 
 /// @addr{0x8086BDE4}
@@ -40,22 +40,16 @@ ObjectWLWallGC::~ObjectWLWallGC() = default;
 
 /// @addr{0x8086BE34}
 void ObjectWLWallGC::init() {
-    m_flags.setBit(eFlags::Position);
-    m_pos = m_initialPos;
-
+    setPos(m_initialPos);
     calcTransform();
-    m_currTransform = m_transform;
+    m_currTransform = transform();
 }
 
 /// @addr{0x8086C108}
 void ObjectWLWallGC::calc() {
-    EGG::Vector3f prevPos = m_pos;
-
-    m_flags.setBit(eFlags::Matrix);
-    m_transform = getUpdatedMatrix(0);
-    m_pos = m_transform.base(3);
-
-    setMovingObjVel(m_pos - prevPos);
+    EGG::Vector3f prevPos = pos();
+    setTransform(getUpdatedMatrix(0));
+    setMovingObjVel(pos() - prevPos);
 }
 
 /// @addr{0x8086BF30}

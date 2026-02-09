@@ -18,9 +18,9 @@ void ObjectWoodbox::calcCollisionTransform() {
     }
 
     calcTransform();
-    EGG::Vector3f nextPos = m_pos + POS_OFFSET;
-    m_transform.setBase(3, nextPos);
-    m_collision->transform(m_transform, m_scale, getCollisionTranslation());
+    EGG::Matrix34f mat = transform();
+    mat.setBase(3, pos() + POS_OFFSET);
+    m_collision->transform(mat, scale(), getCollisionTranslation());
 }
 
 } // namespace Field

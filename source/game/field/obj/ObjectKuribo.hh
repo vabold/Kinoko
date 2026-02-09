@@ -29,7 +29,6 @@ private:
     void calcAnim();
     void calcRot();
     void checkSphereFull();
-    EGG::Vector3f interpolate(f32 scale, const EGG::Vector3f &v0, const EGG::Vector3f &v1) const;
 
     f32 m_speedStep;
     f32 m_animStep;

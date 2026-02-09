@@ -16,8 +16,7 @@ ObjectHeyhoShip::~ObjectHeyhoShip() = default;
 void ObjectHeyhoShip::init() {
     m_railInterpolator->init(0.0f, 0);
     m_railInterpolator->setPerPointVelocities(true);
-    m_pos = m_railInterpolator->curPos();
-    m_flags.setBit(eFlags::Position);
+    setPos(m_railInterpolator->curPos());
 
     const EGG::Vector3f &railTan = m_railInterpolator->curTangentDir();
     EGG::Vector3f tangent = EGG::Vector3f(railTan.x, 0.0f, railTan.z);
@@ -53,11 +52,11 @@ void ObjectHeyhoShip::calc() {
 void ObjectHeyhoShip::calcPos() {
     constexpr f32 PERIOD = 100.0f;
 
-    m_pos = m_railInterpolator->curPos();
-    m_flags.setBit(eFlags::Position);
+    setPos(m_railInterpolator->curPos());
 
     f32 fidx = DEG2FIDX * (360.0f * static_cast<f32>(++m_frame) / PERIOD);
-    m_pos.y = m_yAmplitude * EGG::Mathf::SinFIdx(fidx) + m_pos.y;
+    f32 posY = m_yAmplitude * EGG::Mathf::SinFIdx(fidx) + pos().y;
+    setPos(EGG::Vector3f(pos().x, posY, pos().z));
 }
 
 } // namespace Field

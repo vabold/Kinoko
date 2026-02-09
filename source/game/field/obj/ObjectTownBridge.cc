@@ -8,7 +8,7 @@ namespace Field {
 
 /// @addr{0x80809448}
 ObjectTownBridge::ObjectTownBridge(const System::MapdataGeoObj &params) : ObjectKCL(params) {
-    m_rotateUpwards = m_rot.y < 0.0f;
+    m_rotateUpwards = rot().y < 0.0f;
     m_angVel = static_cast<float>(params.setting(0));
     m_pivotFrames = static_cast<u32>(params.setting(1));
     m_raisedFrames = static_cast<u32>(params.setting(2));
@@ -52,8 +52,7 @@ void ObjectTownBridge::calc() {
         m_objColMgr = m_raisedColMgr;
     }
 
-    m_flags.setBit(eFlags::Rotation);
-    m_rot.z = F_PI * angle / 180.0f;
+    setRot(EGG::Vector3f(rot().x, rot().y, F_PI * angle / 180.0f));
     m_state = calcState(t);
 }
 

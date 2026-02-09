@@ -61,16 +61,16 @@ void ObjectKoopaFigure64::calcCollisionTransform() {
     constexpr EGG::Vector3f FIRE_POS_OFFSET = EGG::Vector3f(0.0f, -280.0f, 4000.0f);
 
     calcTransform();
-    EGG::Matrix34f rotMat = m_transform;
+    EGG::Matrix34f rotMat = transform();
     rotMat.setBase(3, EGG::Vector3f::zero);
 
     EGG::Matrix34f targetMat = EGG::Matrix34f::ident;
     targetMat.setBase(3, FIRE_POS_OFFSET);
 
     EGG::Matrix34f posMat = EGG::Matrix34f::ident;
-    posMat.setBase(3, m_pos);
+    posMat.setBase(3, pos());
 
-    m_collision->transform(posMat.multiplyTo(rotMat.multiplyTo(targetMat)), m_scale);
+    m_collision->transform(posMat.multiplyTo(rotMat.multiplyTo(targetMat)), scale());
 }
 
 } // namespace Field

@@ -153,7 +153,7 @@ bool ObjectAmi::checkSphereImpl(f32 radius, const EGG::Vector3f &v0, const EGG::
         return false;
     }
 
-    EGG::Vector3f posDelta = v0 - m_pos;
+    EGG::Vector3f posDelta = v0 - pos();
     posDelta.z *= -1.0f;
 
     if (posDelta.z < 0.0f || posDelta.z > DIMS.z || EGG::Mathf::abs(posDelta.x) > DIMS.x) {
