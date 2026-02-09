@@ -60,7 +60,7 @@ void ObjectTruckWagonCart::calcCollisionTransform() {
     mat.makeT(EGG::Vector3f(0.0f, yOffset, 0.0f));
 
     calcTransform();
-    col->transform(m_transform.multiplyTo(mat), m_scale, m_vel);
+    col->transform(transform().multiplyTo(mat), scale(), m_vel);
 }
 
 /// @addr{0x806E0650}
@@ -78,8 +78,7 @@ void ObjectTruckWagonCart::calcState0() {
 
     const EGG::Vector3f &railPos = m_railInterpolator->curPos();
     if (m_railInterpolator->curPointIdx() != 3) {
-        m_pos = railPos;
-        m_flags.setBit(eFlags::Position);
+        setPos(railPos);
 
         m_up = Interpolate(0.1f, m_up,
                 m_railInterpolator->floorNrm(m_railInterpolator->nextPointIdx()));
@@ -92,22 +91,20 @@ void ObjectTruckWagonCart::calcState0() {
         return;
     }
 
-    m_pos = EGG::Vector3f(railPos.x, m_pos.y - INITIAL_FALL_OFFSET, railPos.z);
-    m_flags.setBit(eFlags::Position);
+    setPos(EGG::Vector3f(railPos.x, pos().y - INITIAL_FALL_OFFSET, railPos.z));
 
     CollisionInfo info;
-    EGG::Vector3f pos = m_pos + EGG::Vector3f(0.0f, RADIUS, 0.0f);
+    EGG::Vector3f colPos = pos() + EGG::Vector3f(0.0f, RADIUS, 0.0f);
 
     EGG::Vector3f floorNrm = m_up;
     EGG::Vector3f tangent = m_tangent;
 
-    bool hasCol = CollisionDirector::Instance()->checkSphereFull(RADIUS, pos, EGG::Vector3f::inf,
+    bool hasCol = CollisionDirector::Instance()->checkSphereFull(RADIUS, colPos, EGG::Vector3f::inf,
             KCL_TYPE_FLOOR, &info, nullptr, 0);
 
     if (hasCol) {
         m_vel.y = 0.0f;
-        m_pos += info.tangentOff;
-        m_flags.setBit(eFlags::Position);
+        addPos(info.tangentOff);
 
         if (info.floorDist > -std::numeric_limits<f32>::min()) {
             floorNrm = info.floorNrm;
@@ -115,9 +112,8 @@ void ObjectTruckWagonCart::calcState0() {
 
         tangent = m_railInterpolator->curTangentDir();
     } else {
-        m_flags.setBit(eFlags::Position);
         m_vel.y -= GRAVITY;
-        m_pos.y = m_vel.y + m_pos.y;
+        setPos(EGG::Vector3f(pos().x, m_vel.y + pos().y, pos().z));
     }
 
     m_up = Interpolate(0.1f, m_up, floorNrm);
@@ -167,12 +163,11 @@ void ObjectTruckWagonCart::calcState1() {
     mat.setBase(2, m_tangent);
     mat.setBase(3, EGG::Vector3f::zero);
 
-    m_flags.setBit(eFlags::Matrix);
-    m_transform = mat;
-    m_transform.setBase(3, m_pos);
+    EGG::Matrix34f transMat = mat;
+    transMat.setBase(3, pos());
+    setTransform(transMat);
 
-    m_flags.setBit(eFlags::Position);
-    m_pos = m_railInterpolator->curPos() + INITIAL_OFFSET - mat.ps_multVector(INITIAL_OFFSET);
+    setPos(m_railInterpolator->curPos() + INITIAL_OFFSET - mat.ps_multVector(INITIAL_OFFSET));
     m_lastVel = m_vel;
 }
 
@@ -181,8 +176,7 @@ void ObjectTruckWagonCart::reset(u32 idx) {
     m_railInterpolator->init(0.0f, idx);
     m_railInterpolator->setPerPointVelocities(true);
 
-    m_pos = m_railInterpolator->curPos();
-    m_flags.setBit(eFlags::Position);
+    setPos(m_railInterpolator->curPos());
     m_speed = m_railInterpolator->speed();
     m_vel = m_railInterpolator->curTangentDir() * m_speed;
     m_lastVel.setZero();

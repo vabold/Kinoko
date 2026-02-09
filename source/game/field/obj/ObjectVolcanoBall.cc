@@ -15,13 +15,12 @@ ObjectVolcanoBall::~ObjectVolcanoBall() = default;
 /// @addr{0x806E2C4C}
 void ObjectVolcanoBall::init() {
     m_railInterpolator->init(0.0f, 0);
-    m_pos = m_railInterpolator->curPos();
-    m_flags.setBit(eFlags::Position);
+    setPos(m_railInterpolator->curPos());
 }
 
 /// @addr{0x806E3034}
 void ObjectVolcanoBall::calcFalling() {
-    f32 sqVel = std::max(0.01f, m_finalVel - 2.0f * m_accel * (m_pos.y - m_endPosY));
+    f32 sqVel = std::max(0.01f, m_finalVel - 2.0f * m_accel * (pos().y - m_endPosY));
     m_railInterpolator->setCurrVel(EGG::Mathf::sqrt(m_sqVelXZ + sqVel));
 
     if (m_railInterpolator->calc() == RailInterpolator::Status::ChangingDirection) {
@@ -35,8 +34,7 @@ void ObjectVolcanoBall::calcFalling() {
         tangent.normalise2();
         setMatrixFromOrthonormalBasisAndPos(tangent);
 
-        m_pos = m_railInterpolator->curPos();
-        m_flags.setBit(eFlags::Position);
+        setPos(m_railInterpolator->curPos());
     }
 }
 

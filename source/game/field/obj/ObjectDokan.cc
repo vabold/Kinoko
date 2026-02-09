@@ -26,8 +26,7 @@ void ObjectDokan::calc() {
     }
 
     m_velocity.y -= ACCEL;
-    m_pos += m_velocity;
-    m_flags.setBit(eFlags::Position);
+    addPos(m_velocity);
 
     calcFloor();
 }
@@ -39,9 +38,9 @@ void ObjectDokan::calcCollisionTransform() {
     } else {
         // rMR piranhas
         calcTransform();
-        EGG::Matrix34f mat = m_transform;
+        EGG::Matrix34f mat = transform();
         mat.setBase(3, mat.translation() + EGG::Vector3f::ey * 300.0f);
-        m_collision->transform(mat, m_scale, getCollisionTranslation());
+        m_collision->transform(mat, scale(), getCollisionTranslation());
     }
 }
 
@@ -67,23 +66,19 @@ void ObjectDokan::calcFloor() {
     constexpr f32 ACCELERATION = 0.2f;
 
     CollisionInfo colInfo;
-    EGG::Vector3f pos = m_pos;
-    pos.y += PIPE_RADIUS;
+    EGG::Vector3f colPos = pos();
+    colPos.y += PIPE_RADIUS;
     KCLTypeMask typeMask;
 
-    if (!CollisionDirector::Instance()->checkSphereFull(PIPE_RADIUS, pos, EGG::Vector3f::inf,
+    if (!CollisionDirector::Instance()->checkSphereFull(PIPE_RADIUS, colPos, EGG::Vector3f::inf,
                 KCL_TYPE_64EBDFFF, &colInfo, &typeMask, 0)) {
         return;
     }
 
-    if (typeMask & KCL_TYPE_FLOOR) {
-        m_pos.y += colInfo.tangentOff.y;
-        m_flags.setBit(eFlags::Position);
-    } else {
-        m_velocity.y *= -ACCELERATION;
-        m_flags.setBit(eFlags::Position);
-        m_pos.y += colInfo.tangentOff.y;
+    addPos(EGG::Vector3f(0.0f, colInfo.tangentOff.y, 0.0f));
 
+    if (typeMask & KCL_TYPE_FLOOR) {
+        m_velocity.y *= -ACCELERATION;
         if (m_velocity.length() < ACCELERATION * PIPE_SQRT_RADIUS) {
             m_b0 = false;
         }

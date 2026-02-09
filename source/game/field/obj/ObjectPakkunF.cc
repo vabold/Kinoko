@@ -64,31 +64,31 @@ void ObjectPakkunF::calcCollisionTransform() {
 
     if (m_state == State::Attack) {
         if (m_currAttackFrame <= 10) {
-            posOffset = INIT_POS * m_scale.x;
+            posOffset = INIT_POS * scale().x;
         } else if (m_currAttackFrame <= 20) {
             f32 fVar1 = 0.1f * static_cast<f32>(m_currAttackFrame - 10);
-            posOffset = FINAL_POS * m_scale.x * fVar1 + INIT_POS * m_scale.x * (1.0f - fVar1);
+            posOffset = FINAL_POS * scale().x * fVar1 + INIT_POS * scale().x * (1.0f - fVar1);
         } else if (m_currAttackFrame <= 30) {
             f32 fVar1 = 0.1f * static_cast<f32>(m_currAttackFrame - 20);
-            posOffset = INIT_POS * m_scale.x * fVar1 + FINAL_POS * m_scale.x * (1.0f - fVar1);
+            posOffset = INIT_POS * scale().x * fVar1 + FINAL_POS * scale().x * (1.0f - fVar1);
         } else {
-            posOffset = INIT_POS * m_scale.x;
+            posOffset = INIT_POS * scale().x;
         }
     } else {
-        posOffset = INIT_POS * m_scale.x;
+        posOffset = INIT_POS * scale().x;
     }
 
     EGG::Matrix34f rotMat;
-    rotMat.makeR(m_rot);
+    rotMat.makeR(rot());
 
     // Probably always evaluates to the identity matrix in time trials
     EGG::Matrix34f damageRotMat = EGG::Matrix34f::ident;
     damageRotMat.setAxisRotation(0.0f, EGG::Vector3f::ey);
 
     EGG::Matrix34f transformMat;
-    transformMat.makeT(m_pos + rotMat.multiplyTo(damageRotMat).ps_multVector(posOffset));
+    transformMat.makeT(pos() + rotMat.multiplyTo(damageRotMat).ps_multVector(posOffset));
 
-    m_collision->transform(transformMat, m_scale);
+    m_collision->transform(transformMat, scale());
 }
 
 /// @addr{0x80774A00}

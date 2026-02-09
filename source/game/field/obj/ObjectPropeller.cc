@@ -25,8 +25,8 @@ void ObjectPropeller::init() {
         m_angVel = -m_angVel;
     }
 
-    m_rotMat.makeR(m_rot);
-    m_rotMat.setBase(3, m_pos);
+    m_rotMat.makeR(rot());
+    m_rotMat.setBase(3, pos());
     m_axis = m_rotMat.base(2);
 }
 
@@ -35,9 +35,9 @@ void ObjectPropeller::calc() {
     m_angle += m_angVel * 0.5f;
     m_curRot = EGG::Matrix34f::ident;
     m_curRot.setAxisRotation(m_angle * DEG2RAD, m_axis);
-    m_transform = m_curRot.multiplyTo(m_rotMat);
-    m_flags.setBit(eFlags::Matrix);
-    m_transform.setBase(3, m_pos);
+    EGG::Matrix34f transform = m_curRot.multiplyTo(m_rotMat);
+    transform.setBase(3, pos());
+    setTransform(transform);
 }
 
 /// @addr{0x807655B4}
@@ -64,14 +64,14 @@ void ObjectPropeller::calcCollisionTransform() {
         mat.setBase(3, EGG::Vector3f::zero);
         mat.setAxisRotation(static_cast<f32>(i * 120) * DEG2RAD, m_axis);
         calcTransform();
-        mat = mat.multiplyTo(m_transform);
+        mat = mat.multiplyTo(transform());
         EGG::Vector3f dir = mat.base(1);
         dir.normalise();
         dir *= BLADE_LENGTH;
-        mat.setBase(3, m_pos + dir);
+        mat.setBase(3, pos() + dir);
 
         auto *&blade = m_blades[i];
-        blade->transform(mat, m_scale);
+        blade->transform(mat, scale());
     }
 }
 
@@ -79,8 +79,8 @@ void ObjectPropeller::calcCollisionTransform() {
 f32 ObjectPropeller::getCollisionRadius() const {
     const auto &flowTable = ObjectDirector::Instance()->flowTable();
     const auto &params = flowTable.set(flowTable.slot(id()))->params.box;
-    f32 z = m_scale.z * static_cast<f32>(parse<s16>(params.z));
-    f32 x = m_scale.x * static_cast<f32>(parse<s16>(params.x));
+    f32 z = scale().z * static_cast<f32>(parse<s16>(params.z));
+    f32 x = scale().x * static_cast<f32>(parse<s16>(params.x));
 
     return 5.0f * std::max(z, x);
 }

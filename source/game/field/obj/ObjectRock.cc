@@ -19,8 +19,8 @@ void ObjectRock::init() {
     m_railInterpolator->calc();
 
     m_state = State::Tangible;
-    m_flags.setBit(eFlags::Position);
-    m_pos.y = m_startYPos = m_railInterpolator->curPos().y;
+    f32 posY = m_startYPos = m_railInterpolator->curPos().y;
+    setPos(EGG::Vector3f(pos().x, posY, pos().z));
 
     EGG::Vector3f curTanDirNorm = m_railInterpolator->curTangentDir();
     curTanDirNorm.normalise();
@@ -60,14 +60,11 @@ void ObjectRock::calcTangible() {
         breakRock();
     }
 
-    m_flags.setBit(eFlags::Position);
-    m_pos.x = m_railInterpolator->curPos().x;
-    m_flags.setBit(eFlags::Position);
-    m_pos.z = m_railInterpolator->curPos().z;
+    const auto &railPos = m_railInterpolator->curPos();
+    setPos(EGG::Vector3f(railPos.x, pos().y, railPos.z));
     m_colTranslate.y -= 2.0f;
 
-    m_flags.setBit(eFlags::Position);
-    m_pos += m_colTranslate;
+    addPos(m_colTranslate);
 
     checkSphereFull();
     calcTangibleSub();
@@ -95,26 +92,25 @@ void ObjectRock::calcTangibleSub() {
     EGG::Matrix34f mat(EGG::Matrix34f::ident);
     EGG::Vector3f vRot(m_angRad, 0.0f, 0.0f);
     mat.makeR(vRot);
-    m_flags.setBit(eFlags::Matrix);
-    m_transform = m.multiplyTo(mat);
-    m_transform.setBase(3, m_pos);
+    mat = m.multiplyTo(mat);
+    mat.setBase(3, pos());
+    setTransform(mat);
 }
 
 // @addr {0x8076FA60}
 void ObjectRock::checkSphereFull() {
     CollisionInfo info;
 
-    EGG::Vector3f offset(0.0f, -(m_scale.x * 240.0f - 50.0f), 0.0f);
-    EGG::Vector3f pos = m_pos + offset;
+    EGG::Vector3f offset(0.0f, -(scale().x * 240.0f - 50.0f), 0.0f);
+    EGG::Vector3f colPos = pos() + offset;
 
-    if (CollisionDirector::Instance()->checkSphereFull(50.0f, pos, EGG::Vector3f::inf,
+    if (CollisionDirector::Instance()->checkSphereFull(50.0f, colPos, EGG::Vector3f::inf,
                 KCL_TYPE_FLOOR, &info, nullptr, 0)) {
         m_colTranslate.y *= -0.3f;
         m_angSpd = std::max(360.0f * static_cast<f32>(m_mapObj->setting(2)) /
-                        (480.0f * m_scale.x * F_PI),
+                        (480.0f * scale().x * F_PI),
                 m_angSpd + 1.0f);
-        m_flags.setBit(eFlags::Position);
-        m_pos += info.tangentOff;
+        addPos(info.tangentOff);
     }
 }
 
@@ -124,8 +120,7 @@ void ObjectRock::breakRock() {
     m_railInterpolator->init(0.0f, 0);
     m_railInterpolator->setCurrVel(static_cast<f32>(m_mapObj->setting(2)));
 
-    m_flags.setBit(eFlags::Position);
-    m_pos.y = m_startYPos;
+    setPos(EGG::Vector3f(pos().x, m_startYPos, pos().z));
     disableCollision();
 }
 
@@ -133,7 +128,7 @@ void ObjectRock::breakRock() {
 Kart::Reaction ObjectRock::onCollision(Kart::KartObject * /*kartObj*/,
         Kart::Reaction reactionOnKart, Kart::Reaction /*reactionOnObj*/,
         EGG::Vector3f & /*hitDepth*/) {
-    if (m_scale.x < 1.0f) {
+    if (scale().x < 1.0f) {
         breakRock();
         return Kart::Reaction::None;
     }

@@ -164,7 +164,7 @@ bool ObjectTuribashi::checkSphereImpl(f32 radius, const EGG::Vector3f &v0,
         return false;
     }
 
-    EGG::Vector3f deltaPos = v0 - m_pos;
+    EGG::Vector3f deltaPos = v0 - pos();
 
     if (EGG::Mathf::abs(deltaPos.z) > HALF_LENGTH || EGG::Mathf::abs(deltaPos.x) > HALF_WIDTH) {
         return false;
