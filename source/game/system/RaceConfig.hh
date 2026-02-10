@@ -25,7 +25,7 @@ public:
     struct Player {
     public:
         enum class Type {
-            Local = 0, // Inputs managed by ML algorithm
+            Local = 0, // Inputs managed externally
             Ghost = 3, // Inputs managed by ghost
             None = 5,
         };
