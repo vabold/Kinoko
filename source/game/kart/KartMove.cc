@@ -127,6 +127,7 @@ void KartMove::setTurnParams() {
     m_lastDir = m_dir;
     m_vel1Dir = m_dir;
     m_landingDir = m_dir;
+    m_smoothedForward = m_dir;
     m_outsideDriftLastDir = m_dir;
     m_driftingParams = &DRIFTING_PARAMS_ARRAY[static_cast<u32>(param()->stats().driftType)];
     m_kartScale->reset();
@@ -143,6 +144,7 @@ void KartMove::init(bool b1, bool b2) {
     m_speedDragMultiplier = 1.0f;
     m_up = EGG::Vector3f::ey;
     m_smoothedUp = EGG::Vector3f::ey;
+    m_smoothedForward = EGG::Vector3f::ez;
     m_vel1Dir = EGG::Vector3f::ez;
     m_lastDir = EGG::Vector3f::ez;
     m_dir = EGG::Vector3f::ez;
@@ -271,6 +273,7 @@ void KartMove::setInitialPhysicsValues(const EGG::Vector3f &position, const EGG:
 
     m_landingDir = bodyFront();
     m_dir = bodyFront();
+    m_smoothedForward = bodyFront();
     m_up = bodyUp();
     dynamics()->setTop(m_up);
 
@@ -545,14 +548,15 @@ void KartMove::calcDirs() {
                      status.offBit(eStatus::JumpPad) && state()->airtime() <= 5) ||
                     status.onBit(eStatus::JumpPadMushroomCollision,
                             eStatus::NoSparkInvisibleWall))) {
+        EGG::Vector3f local_94 = local_88;
         if (status.onBit(eStatus::Hop)) {
-            local_88 = m_hopDir;
+            local_94 = m_hopDir;
         }
 
         EGG::Matrix34f mat;
         mat.setAxisRotation(DEG2RAD * (m_autoDriftAngle + m_outsideDriftAngle + m_landingAngle),
                 m_smoothedUp);
-        EGG::Vector3f local_b8 = mat.multVector(local_88);
+        EGG::Vector3f local_b8 = mat.multVector(local_94);
         local_b8 = local_b8.perpInPlane(m_smoothedUp, true);
 
         EGG::Vector3f dirDiff = local_b8 - m_dir;
@@ -583,6 +587,10 @@ void KartMove::calcDirs() {
     if (status.offBit(eStatus::OverZipper)) {
         m_jump->tryStart(m_smoothedUp.cross(m_dir));
     }
+
+    EGG::Vector3f nextDir = m_up.cross(local_88);
+    m_smoothedForward = nextDir.cross(m_up);
+    m_smoothedForward.normalise();
 
     if (m_hasLandingDir) {
         f32 dot = m_dir.dot(m_landingDir);
@@ -1617,6 +1625,7 @@ void KartMove::calcWallCollisionStart(f32 param_2) {
         m_dir = bodyFront();
         m_vel1Dir = m_dir;
         m_landingDir = m_dir;
+        m_smoothedForward = m_dir;
     }
 
     if (status.offBit(eStatus::ZipperInvisibleWall, eStatus::OverZipper) && param_2 < 0.9f) {
@@ -2383,6 +2392,8 @@ void KartMove::calcCannon() {
         exitCannon();
         return;
     }
+
+    m_smoothedForward = cannonOrientation.multVector33(EGG::Vector3f::ez);
     m_speed = m_baseSpeed;
     const auto *cannonPoint =
             System::CourseMap::Instance()->getCannonPoint(state()->cannonPointId());

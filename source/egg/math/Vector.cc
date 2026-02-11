@@ -60,6 +60,12 @@ f32 Vector3f::normalise() {
     return len;
 }
 
+/// @addr{0x8019AC24}
+EGG::Vector3f Vector3f::ps_normalize() const {
+    f32 dot = Mathf::fma(z, z, x * x) + y * y; // off-by-one
+    return *this * EGG::Mathf::frsqrt(dot);
+}
+
 /// @addr{0x80793F04}
 std::pair<f32, EGG::Vector3f> Vector3f::ps_normalized() {
     f32 mag = ps_length();

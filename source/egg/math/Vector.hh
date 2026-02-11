@@ -242,6 +242,7 @@ struct Vector3f {
     [[nodiscard]] f32 ps_dot(const EGG::Vector3f &rhs) const;
     [[nodiscard]] f32 ps_squareMag() const;
     f32 normalise();
+    [[nodiscard]] EGG::Vector3f ps_normalize() const;
     [[nodiscard]] std::pair<f32, EGG::Vector3f> ps_normalized();
     void normalise2();
     [[nodiscard]] Vector3f maximize(const Vector3f &rhs) const;
