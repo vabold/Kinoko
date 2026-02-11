@@ -37,6 +37,10 @@ class KartObjectManager;
 class KartParamFileManager;
 } // namespace Kart
 
+namespace Render {
+class KartCamera;
+} // namespace Render
+
 namespace System {
 class CourseMap;
 class KPadDirector;
@@ -93,6 +97,7 @@ private:
         void *m_onInitCallbackArg;
         System::RaceManager *m_raceMgr;
         System::ResourceManager *m_resMgr;
+        Render::KartCamera *m_kartCamera;
     };
 
     void *m_contextMemory;

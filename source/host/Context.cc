@@ -12,6 +12,8 @@
 #include <game/kart/KartObjectManager.hh>
 #include <game/kart/KartParamFileManager.hh>
 
+#include <game/render/KartCamera.hh>
+
 #include <game/system/CourseMap.hh>
 #include <game/system/KPadDirector.hh>
 #include <game/system/RaceConfig.hh>
@@ -45,6 +47,7 @@ Context::Context() {
     m_ptrs.m_onInitCallbackArg = System::RaceConfig::s_onInitCallbackArg;
     m_ptrs.m_raceMgr = System::RaceManager::s_instance;
     m_ptrs.m_resMgr = System::ResourceManager::s_instance;
+    m_ptrs.m_kartCamera = Render::KartCamera::s_instance;
 }
 
 Context::Context(const Context &c) {
@@ -110,6 +113,7 @@ bool Context::operator==(const Context &rhs) const {
     ret = ret && m_ptrs.m_onInitCallbackArg == rhs.m_ptrs.m_onInitCallbackArg;
     ret = ret && m_ptrs.m_raceMgr == rhs.m_ptrs.m_raceMgr;
     ret = ret && m_ptrs.m_resMgr == rhs.m_ptrs.m_resMgr;
+    ret = ret && m_ptrs.m_kartCamera == rhs.m_ptrs.m_kartCamera;
 
     return ret;
 }
@@ -140,6 +144,7 @@ void Context::SetActiveContext(const Context &rhs) {
     System::RaceConfig::s_onInitCallbackArg = rhs.m_ptrs.m_onInitCallbackArg;
     System::RaceManager::s_instance = rhs.m_ptrs.m_raceMgr;
     System::ResourceManager::s_instance = rhs.m_ptrs.m_resMgr;
+    Render::KartCamera::s_instance = rhs.m_ptrs.m_kartCamera;
 }
 
 } // namespace Host
