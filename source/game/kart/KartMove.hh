@@ -273,6 +273,10 @@ public:
         return m_vel1Dir;
     }
 
+    [[nodiscard]] const EGG::Vector3f &smoothedForward() const {
+        return m_smoothedForward;
+    }
+
     [[nodiscard]] f32 speedRatioCapped() const {
         return m_speedRatioCapped;
     }
@@ -378,6 +382,7 @@ protected:
     EGG::Vector3f m_dir;
     EGG::Vector3f m_lastDir; ///< @ref m_speed from the previous frame but with signed magnitude.
     EGG::Vector3f m_vel1Dir;
+    EGG::Vector3f m_smoothedForward;
     EGG::Vector3f m_dirDiff;
     bool m_hasLandingDir;
     f32 m_outsideDriftAngle; ///< The facing angle of an outward-drifting vehicle.

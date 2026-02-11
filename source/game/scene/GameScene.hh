@@ -28,6 +28,9 @@ public:
     virtual void configure() = 0;
     virtual void onReinit() {}
 
+    static void initCamera();
+    static void calcCamera();
+
 protected:
     void appendResource(System::MultiDvdArchive *archive, s32 id);
 
