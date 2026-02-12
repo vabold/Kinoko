@@ -132,8 +132,7 @@ void ObjectCarTGE::init() {
     }
 
     m_squashed = false;
-    m_pos = m_railInterpolator->curPos();
-    m_flags.setBit(eFlags::Position);
+    setPos(m_railInterpolator->curPos());
     m_currSpeed = m_railInterpolator->speed();
     m_scaledTangentDir = m_railInterpolator->curTangentDir() * m_currSpeed;
     m_hitAngle = (m_carType == CarType::Truck) ? HIT_ANGLE_TRUCK : HIT_ANGLE_NORMAL;
@@ -187,13 +186,13 @@ void ObjectCarTGE::calcCollisionTransform() {
     }
 
     calcTransform();
-    col->transform(m_transform, m_scale, m_scaledTangentDir);
+    col->transform(transform(), scale(), m_scaledTangentDir);
     calcTransform();
     EGG::Matrix34f mat;
-    SetRotTangentHorizontal(mat, m_transform.base(2), EGG::Vector3f::ey);
+    SetRotTangentHorizontal(mat, transform().base(2), EGG::Vector3f::ey);
     calcTransform();
-    mat.setBase(3, m_transform.base(3));
-    m_auxCollision->transform(mat, m_scale, m_scaledTangentDir);
+    mat.setBase(3, transform().base(3));
+    m_auxCollision->transform(mat, scale(), m_scaledTangentDir);
 }
 
 /// @addr{0x806D69C0}
@@ -228,10 +227,10 @@ Kart::Reaction ObjectCarTGE::onCollision(Kart::KartObject *kartObj, Kart::Reacti
     if (reactionOnKart != Kart::Reaction::None && reactionOnKart != Kart::Reaction::WallAllSpeed) {
         m_squashed = true;
         calcTransform();
-        EGG::Vector3f v2 = m_transform.base(2);
+        EGG::Vector3f v2 = transform().base(2);
         v2.y = 0.0f;
         v2.normalise2();
-        EGG::Vector3f posDelta = kartObj->pos() - m_pos;
+        EGG::Vector3f posDelta = kartObj->pos() - pos();
         posDelta.y = 0.0f;
         posDelta.normalise2();
 
@@ -316,7 +315,7 @@ void ObjectCarTGE::calcPos() {
     constexpr f32 TRUCK_SPEED = 1600.0f;
 
     f32 speed = (m_carType == CarType::Truck) ? TRUCK_SPEED : NORMAL_SPEED;
-    f32 t = speed * m_scale.z * 0.5f;
+    f32 t = speed * scale().z * 0.5f;
 
     EGG::Vector3f curDir;
     EGG::Vector3f curTangentDir;
@@ -330,12 +329,11 @@ void ObjectCarTGE::calcPos() {
     m_tangent.normalise2();
 
     if (m_tangent.y > -0.05f) {
-        m_pos = curPos - m_tangent * t * 0.5f;
+        setPos(curPos - m_tangent * t * 0.5f);
     } else {
-        m_pos = (curPos - m_tangent * t * 0.5f) - EGG::Vector3f::ey * 5.0f;
+        setPos(curPos - m_tangent * t * 0.5f - EGG::Vector3f::ey * 5.0f);
     }
 
-    m_flags.setBit(eFlags::Position);
     m_up = OrthonormalBasis(m_tangent).base(1);
     setMatrixTangentTo(m_up, m_tangent);
 }

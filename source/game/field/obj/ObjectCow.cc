@@ -27,10 +27,10 @@ Kart::Reaction ObjectCow::onCollision(Kart::KartObject *kartObj, Kart::Reaction 
 
 /// @addr{0x806BBF64}
 void ObjectCow::setup() {
-    m_scale = m_mapObj->scale();
-    m_pos = m_mapObj->pos();
-    m_rot = m_mapObj->rot() * DEG2RAD;
-    m_flags.setBit(eFlags::Position, eFlags::Rotation, eFlags::Scale);
+    ASSERT(m_mapObj);
+    setScale(m_mapObj->scale());
+    setPos(m_mapObj->pos());
+    setRot(m_mapObj->rot() * DEG2RAD);
     m_tangent = EGG::Vector3f::ez;
     m_prevTangent = EGG::Vector3f::ez;
     m_up = EGG::Vector3f::ey;
@@ -38,7 +38,7 @@ void ObjectCow::setup() {
     m_xzSpeed = 0.0f;
     m_tangentFactor = 0.0f;
     m_floorNrm = EGG::Vector3f::ey;
-    m_state1TargetPos = m_pos;
+    m_state1TargetPos = pos();
     m_targetDir = EGG::Vector3f::ez;
     m_upForce = EGG::Vector3f::zero;
     m_interpRate = 0.05f;
@@ -51,12 +51,11 @@ void ObjectCow::calcFloor() {
 
     CollisionInfo info;
 
-    bool hasCol = CollisionDirector::Instance()->checkSphereFull(RADIUS, m_pos + POS_OFFSET,
+    bool hasCol = CollisionDirector::Instance()->checkSphereFull(RADIUS, pos() + POS_OFFSET,
             EGG::Vector3f::inf, KCL_TYPE_64EBDFFF, &info, nullptr, 0);
 
     if (hasCol) {
-        m_pos += info.tangentOff;
-        m_flags.setBit(eFlags::Position);
+        addPos(info.tangentOff);
 
         if (info.floorDist > -std::numeric_limits<f32>::min()) {
             m_floorNrm = info.floorNrm;
@@ -82,17 +81,16 @@ void ObjectCow::calcPos() {
         m_xzSpeed = 0.0f;
     }
 
-    m_pos += m_velocity;
-    m_flags.setBit(eFlags::Position);
+    addPos(m_velocity);
     m_tangentFactor = 0.0f;
 }
 
 /// @addr{0x806BCDC4}
 f32 ObjectCow::setTarget(const EGG::Vector3f &v) {
     m_state1TargetPos = v;
-    EGG::Vector3f posDiff = m_state1TargetPos - m_pos;
+    EGG::Vector3f posDiff = m_state1TargetPos - pos();
     f32 dist = posDiff.normalise();
-    m_targetDir = m_state1TargetPos + posDiff * 1000.0f - m_pos;
+    m_targetDir = m_state1TargetPos + posDiff * 1000.0f - pos();
     m_targetDir.normalise2();
 
     return dist;
@@ -109,10 +107,9 @@ ObjectCowLeader::~ObjectCowLeader() = default;
 void ObjectCowLeader::init() {
     setup();
     m_railInterpolator->init(0.0f, 0);
-    m_pos = m_railInterpolator->curPos();
-    m_flags.setBit(eFlags::Position);
+    setPos(m_railInterpolator->curPos());
 
-    setTarget(m_pos + m_railInterpolator->curTangentDir() * 10.0f);
+    setTarget(pos() + m_railInterpolator->curTangentDir() * 10.0f);
 
     m_railInterpolator->setCurrVel(static_cast<f32>(m_mapObj->setting(1)));
 
@@ -244,19 +241,16 @@ void ObjectCowLeader::calcRoam() {
         m_endedRailSegment = true;
     }
 
-    m_pos = m_railInterpolator->curPos() - EGG::Vector3f::ey * 10.0f;
-    m_flags.setBit(eFlags::Position);
-
+    setPos(m_railInterpolator->curPos() - EGG::Vector3f::ey * 10.0f);
     setTarget(m_railInterpolator->curPos() + m_railInterpolator->curTangentDir() * 10.0f);
 }
 
 /// @addr{0x806BDD48}
 ObjectCowFollower::ObjectCowFollower(const System::MapdataGeoObj &params, const EGG::Vector3f &pos,
-        f32 rot)
+        f32 initRot)
     : ObjectCow(params), StateManager(this, STATE_ENTRIES), m_posOffset(pos), m_rail(nullptr) {
-    m_pos += m_posOffset;
-    m_flags.setBit(eFlags::Position, eFlags::Rotation);
-    m_rot.y = rot;
+    addPos(m_posOffset);
+    setRot(EGG::Vector3f(rot().x, initRot, rot().z));
 }
 
 /// @addr{0x806BDFF4}
@@ -265,8 +259,7 @@ ObjectCowFollower::~ObjectCowFollower() = default;
 /// @addr{0x806BE060}
 void ObjectCowFollower::init() {
     setup();
-    m_pos += m_posOffset;
-    m_flags.setBit(eFlags::Position);
+    addPos(m_posOffset);
     EGG::Vector3f local_1c = m_posOffset;
     local_1c.normalise2();
     setMatrixTangentTo(EGG::Vector3f::ey, local_1c);
@@ -292,7 +285,7 @@ void ObjectCowFollower::calc() {
             m_nextStateId = 2;
         }
 
-        setTarget(m_pos + m_posOffset * 2.0f);
+        setTarget(pos() + m_posOffset * 2.0f);
     } else {
         StateManager::calc();
     }
@@ -348,7 +341,7 @@ void ObjectCowFollower::enterFreeRoam() {
 
     // Adjust the cow's yaw so that it is biased towards the rail's position.
     // This means the cow will always walk in a sort of zig-zag generally following the rail.
-    f32 fVar3 = CheckPointAgainstLineSegment(m_pos, m_rail->curPoint().pos, m_rail->curPos());
+    f32 fVar3 = CheckPointAgainstLineSegment(pos(), m_rail->curPoint().pos, m_rail->curPos());
     f32 angle = fVar3 > 0.0f ? -dVar2 : dVar2;
 
     EGG::Vector3f dir = RotateXZByYaw(angle, m_tangent);
@@ -356,7 +349,7 @@ void ObjectCowFollower::enterFreeRoam() {
     dir.normalise2();
 
     f32 distance = BASE_WALK_DISTANCE + rand.getF32(WALK_DISTANCE_VARIANCE);
-    setTarget(m_pos + dir * distance);
+    setTarget(pos() + dir * distance);
 }
 
 /// @addr{0x806BE930}
@@ -393,7 +386,7 @@ void ObjectCowFollower::calcFreeRoam() {
         }
     }
 
-    EGG::Vector3f local_28 = m_state1TargetPos - m_pos;
+    EGG::Vector3f local_28 = m_state1TargetPos - pos();
     if (local_28.x * local_28.x + local_28.z * local_28.z < DIST_THRESHOLD * DIST_THRESHOLD) {
         m_bStopping = true;
     }
@@ -499,12 +492,8 @@ void ObjectCowHerd::checkCollision() {
 
             if (length < WIDTH) {
                 EGG::Vector3f change = posDelta * (WIDTH - length) * 1.5f;
-
-                jFollower->m_pos += change;
-                jFollower->m_flags.setBit(eFlags::Position);
-
-                iFollower->m_pos -= change;
-                iFollower->m_flags.setBit(eFlags::Position);
+                jFollower->addPos(change);
+                iFollower->subPos(change);
             }
         }
     }
@@ -516,8 +505,7 @@ void ObjectCowHerd::checkCollision() {
         if (length < WIDTH) {
             EGG::Vector3f change = posDelta * (WIDTH - length) * 1.5f;
 
-            follower->m_pos -= change;
-            follower->m_flags.setBit(eFlags::Position);
+            follower->subPos(change);
         }
     }
 }

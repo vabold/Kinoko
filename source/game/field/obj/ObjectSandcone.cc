@@ -9,7 +9,7 @@ ObjectSandcone::ObjectSandcone(const System::MapdataGeoObj &params) : ObjectKCL(
     m_flowRate = static_cast<f32>(params.setting(0)) / 100.0f;
     m_finalHeightDelta = static_cast<f32>(params.setting(1));
     m_startFrame = params.setting(2);
-    m_baseMtx.makeRT(m_rot, m_pos);
+    m_baseMtx.makeRT(rot(), pos());
 }
 
 /// @addr{0x806871E0}
@@ -21,14 +21,7 @@ void ObjectSandcone::init() {
     m_currentMtx = m_baseMtx;
 
     // Moved from getUpdatedMatrix to init b/c this only needs to be computed once per object.
-    m_finalPos = m_pos + EGG::Vector3f::ey * (static_cast<f32>(m_duration) * m_flowRate);
-}
-
-/// @addr{0x806873Bc}
-void ObjectSandcone::calc() {
-    m_flags.setBit(eFlags::Matrix);
-    m_transform = getUpdatedMatrix(0);
-    m_pos = m_transform.base(3);
+    m_finalPos = pos() + EGG::Vector3f::ey * (static_cast<f32>(m_duration) * m_flowRate);
 }
 
 /// @addr{0x80687800}

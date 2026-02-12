@@ -25,8 +25,7 @@ ObjectBasabasaDummy::~ObjectBasabasaDummy() = default;
 /// @addr{0x806B5E80}
 void ObjectBasabasaDummy::init() {
     m_railInterpolator->init(0.0f, 0);
-    m_pos = m_railInterpolator->curPos();
-    m_flags.setBit(eFlags::Position);
+    setPos(m_railInterpolator->curPos());
 
     auto &rng = System::RaceManager::Instance()->random();
     rng.next();
@@ -64,10 +63,9 @@ void ObjectBasabasaDummy::calcState0() {
         setMatrixFromOrthonormalBasisAndPos(m_railInterpolator->curTangentDir());
         calcTransform();
 
-        EGG::Matrix34f mat = m_transform;
+        EGG::Matrix34f mat = transform();
         mat.setBase(3, EGG::Vector3f::zero);
-        m_pos = m_railInterpolator->curPos() + mat.ps_multVector(m_initialPos);
-        m_flags.setBit(eFlags::Position);
+        setPos(m_railInterpolator->curPos() + mat.ps_multVector(m_initialPos));
     }
 }
 

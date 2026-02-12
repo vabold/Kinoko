@@ -31,8 +31,7 @@ void ObjectSunDS::calc() {
 
     StateManager::calc();
 
-    m_pos = m_railInterpolator->curPos();
-    m_flags.setBit(eFlags::Position);
+    setPos(m_railInterpolator->curPos());
 }
 
 /// @addr{0x806DE598}

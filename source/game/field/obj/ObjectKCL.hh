@@ -82,7 +82,7 @@ public:
 
     /// @addr{0x80687DB0}
     [[nodiscard]] virtual f32 getScaleY(u32 /* timeOffset */) const {
-        return m_scale.y;
+        return scale().y;
     }
 
     /// @addr{0x8068143C}

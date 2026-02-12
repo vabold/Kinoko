@@ -11,7 +11,7 @@ ObjectPsea::ObjectPsea(const System::MapdataGeoObj &params)
     constexpr EGG::Vector3f EXTRA_OFFSET = EGG::Vector3f(0.0f, 1.0f, 0.0f);
 
     m_frame = 0;
-    m_initPosY = (m_pos + POS_OFFSET + EXTRA_OFFSET).y;
+    m_initPosY = (pos() + POS_OFFSET + EXTRA_OFFSET).y;
 
     auto *objDir = ObjectDirector::Instance();
     ASSERT(!objDir->psea());
@@ -32,8 +32,8 @@ void ObjectPsea::calc() {
         m_frame = 0;
     }
 
-    m_pos.y = m_initPosY + AMPLITUDE * sin + POS_OFFSET;
-    m_flags.setBit(eFlags::Position);
+    f32 posY = m_initPosY + AMPLITUDE * sin + POS_OFFSET;
+    setPos(EGG::Vector3f(pos().x, posY, pos().z));
 }
 
 } // namespace Field

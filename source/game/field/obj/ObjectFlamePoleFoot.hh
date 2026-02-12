@@ -30,8 +30,8 @@ public:
     /// @addr{0x8067FBB8}
     [[nodiscard]] const EGG::Matrix34f &getUpdatedMatrix(u32 /*timeOffset*/) override {
         calcTransform();
-        m_workMatrix = m_transform;
-        return m_transform;
+        m_workMatrix = transform();
+        return transform();
     }
 
     [[nodiscard]] f32 getScaleY(u32 timeOffset) const override;

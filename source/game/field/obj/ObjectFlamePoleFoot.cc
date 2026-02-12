@@ -21,7 +21,7 @@ ObjectFlamePoleFoot::ObjectFlamePoleFoot(const System::MapdataGeoObj &params)
         m_poleScale = 3.0f + static_cast<f32>(FLAMEPOLE_COUNT % 3);
     }
 
-    m_pole = new ObjectFlamePole(params, m_pos, m_rot, m_scale);
+    m_pole = new ObjectFlamePole(params, pos(), rot(), scale());
     m_pole->load();
 }
 
@@ -53,7 +53,7 @@ void ObjectFlamePoleFoot::init() {
     m_pole->disableCollision();
 
     EGG::Vector3f polePos = m_pole->pos();
-    polePos.y = m_pos.y - ObjectFlamePole::HEIGHT * m_poleScale;
+    polePos.y = pos().y - ObjectFlamePole::HEIGHT * m_poleScale;
     m_pole->setPos(polePos);
 }
 
@@ -68,13 +68,12 @@ void ObjectFlamePoleFoot::calc() {
     StateManager::calc();
 
     f32 scale = getScaleY(0);
-    m_flags.setBit(eFlags::Scale);
-    m_scale = EGG::Vector3f(scale, scale, scale);
+    setScale(scale);
 
     EGG::Vector3f polePos = m_pole->pos();
     m_pole->setPos(
-            EGG::Vector3f(polePos.x, m_heightOffset + (m_pos.y - m_initScaledHeight), polePos.z));
-    m_pole->setScale(EGG::Vector3f(m_poleScale, m_poleScale, m_poleScale));
+            EGG::Vector3f(polePos.x, m_heightOffset + (pos().y - m_initScaledHeight), polePos.z));
+    m_pole->setScale(m_poleScale);
 }
 
 /// @addr{0x8067F6B8}

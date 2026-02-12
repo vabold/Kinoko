@@ -27,8 +27,7 @@ void ObjectKoopaBall::init() {
     m_railInterpolator->calc();
 
     m_initPosY = m_railInterpolator->curPos().y;
-    m_flags.setBit(eFlags::Position);
-    m_pos.y = m_initPosY;
+    setPos(EGG::Vector3f(pos().x, m_initPosY, pos().z));
 
     EGG::Vector3f curTanDirNorm = m_railInterpolator->curTangentDir();
     curTanDirNorm.normalise();
@@ -53,7 +52,7 @@ void ObjectKoopaBall::init() {
     m_explodeTimer = -1;
 
     EGG::Matrix34f mat;
-    mat.makeR(m_rot);
+    mat.makeR(rot());
 
     resize(RADIUS_AABB, 0.0f);
 }
@@ -102,21 +101,17 @@ void ObjectKoopaBall::calcTangible() {
         break;
     case RailInterpolator::Status::ChangingDirection: {
         m_state = State::Exploding;
-        m_flags.setBit(eFlags::Scale);
         m_curScale = SCALE_INITIAL;
-        m_scale = EGG::Vector3f(SCALE_INITIAL, SCALE_INITIAL, SCALE_INITIAL);
+        setScale(SCALE_INITIAL);
         m_explodeTimer = m_animFramecount;
     } break;
     default:
         break;
     }
 
-    m_flags.setBit(eFlags::Position);
-    m_pos.x = m_railInterpolator->curPos().x;
-    m_pos.z = m_railInterpolator->curPos().z;
-
     m_vel.y = m_vel.y - GRAVITY;
-    m_pos.y = m_vel.y + m_pos.y;
+    const auto &railPos = m_railInterpolator->curPos();
+    setPos(EGG::Vector3f(railPos.x, m_vel.y + pos().y, railPos.z));
 
     checkSphereFull();
 
@@ -124,9 +119,9 @@ void ObjectKoopaBall::calcTangible() {
 
     EGG::Matrix34f mat = EGG::Matrix34f::ident;
     mat.makeR(EGG::Vector3f(m_angleRad, 0.0f, 0.0f));
-    m_flags.setBit(eFlags::Matrix);
-    m_transform = m_transform.multiplyTo(mat);
-    m_transform.setBase(3, m_pos);
+    mat = transform().multiplyTo(mat);
+    mat.setBase(3, pos());
+    setTransform(mat);
 }
 
 /// @addr{0x80771324}
@@ -137,9 +132,8 @@ void ObjectKoopaBall::calcExploding() {
     constexpr EGG::Vector3f INIT_SCALE = EGG::Vector3f(INIT_FACTOR, INIT_FACTOR, INIT_FACTOR);
 
     if (m_explodeTimer > EXPLOSION_EXPAND_FRAME) {
-        m_flags.setBit(eFlags::Scale);
         m_curScale += SCALE_DELTA;
-        m_scale = EGG::Vector3f(m_curScale, m_curScale, m_curScale);
+        setScale(m_curScale);
     }
 
     if (m_explodeTimer == EXPLODE_COLLISION_DURATION) {
@@ -148,12 +142,10 @@ void ObjectKoopaBall::calcExploding() {
 
     if (--m_explodeTimer == 0) {
         m_curScale = INIT_FACTOR;
-        m_flags.setBit(eFlags::Scale);
-        m_scale = INIT_SCALE;
+        setScale(INIT_SCALE);
         m_railInterpolator->init(0.0f, 0);
-        m_pos = m_railInterpolator->curPos();
-        m_pos.y = m_initPosY;
-        m_flags.setBit(eFlags::Position);
+        const auto &railPos = m_railInterpolator->curPos();
+        setPos(EGG::Vector3f(railPos.x, m_initPosY, railPos.z));
         enableCollision();
         m_state = State::Intangible;
     }
@@ -182,14 +174,13 @@ void ObjectKoopaBall::checkSphereFull() {
     constexpr f32 MIN_ANG_SPEED = 10.0f;
 
     CollisionInfo info;
-    EGG::Vector3f pos = m_pos + POS_OFFSET;
+    EGG::Vector3f colPos = pos() + POS_OFFSET;
 
-    if (CollisionDirector::Instance()->checkSphereFull(RADIUS, pos, EGG::Vector3f::inf,
+    if (CollisionDirector::Instance()->checkSphereFull(RADIUS, colPos, EGG::Vector3f::inf,
                 KCL_TYPE_FLOOR, &info, nullptr, 0)) {
         m_vel.y *= BOUNCE_FACTOR;
         m_angSpeed = std::max(MIN_ANG_SPEED, m_angSpeed);
-        m_pos += info.tangentOff;
-        m_flags.setBit(eFlags::Position);
+        addPos(info.tangentOff);
     }
 }
 

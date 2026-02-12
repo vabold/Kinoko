@@ -6,7 +6,7 @@ namespace Field {
 
 /// @addr{0x806E95B0}
 ObjectHwanwan::ObjectHwanwan(const System::MapdataGeoObj &params)
-    : ObjectCollidable(params), StateManager(this, STATE_ENTRIES), m_initPos(m_pos) {}
+    : ObjectCollidable(params), StateManager(this, STATE_ENTRIES), m_initPos(pos()) {}
 
 /// @addr{0x806EC6E0}
 ObjectHwanwan::~ObjectHwanwan() = default;
@@ -38,9 +38,10 @@ void ObjectHwanwan::calc() {
 
     checkFloorCollision();
 
-    SetRotTangentHorizontal(m_transform, m_up, m_tangent);
-    m_transform.setBase(3, m_workPos);
-    m_pos = m_workPos;
+    EGG::Matrix34f mat;
+    SetRotTangentHorizontal(mat, m_up, m_tangent);
+    mat.setBase(3, m_workPos);
+    setTransform(mat);
 }
 
 /// @addr{0x806EA784}
@@ -85,7 +86,7 @@ void ObjectHwanwan::calcUp() {
 ObjectHwanwanManager::ObjectHwanwanManager(const System::MapdataGeoObj &params)
     : ObjectCollidable(params) {
     m_hwanwan = new ObjectHwanwan(params);
-    m_hwanwan->setScale(EGG::Vector3f(2.0f, 2.0f, 2.0f));
+    m_hwanwan->setScale(2.0f);
     m_hwanwan->load();
 }
 

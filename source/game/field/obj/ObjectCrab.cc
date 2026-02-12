@@ -22,9 +22,7 @@ void ObjectCrab::init() {
     calcCurRot(INIT_ROT);
 
     m_railInterpolator->setCurrVel(m_vel);
-    m_pos = m_railInterpolator->curPos();
-    m_flags.setBit(eFlags::Position);
-
+    setPos(m_railInterpolator->curPos());
     calcTransMat(m_curRot);
 
     m_stillDuration = 0;
@@ -59,8 +57,7 @@ void ObjectCrab::calc() {
     }
 
     if (m_statePhase == StatePhase::Middle) {
-        m_pos = m_railInterpolator->curPos();
-        m_flags.setBit(eFlags::Position);
+        setPos(m_railInterpolator->curPos());
 
         if (m_still) {
             m_statePhase = StatePhase::End;
@@ -107,9 +104,7 @@ ObjectCrab::StateResult ObjectCrab::calcState() {
     }
 
     if (m_statePhase == StatePhase::Start) {
-        m_pos = m_railInterpolator->curPos();
-        m_flags.setBit(eFlags::Position);
-
+        setPos(m_railInterpolator->curPos());
         calcCurRot(INIT_ROT);
         calcTransMat(m_curRot);
         m_statePhase = StatePhase::Middle;
@@ -140,12 +135,11 @@ void ObjectCrab::calcTransMat(const EGG::Vector3f &rot) {
     rotMat.makeR(rot);
     rotMat = rotMat.multiplyTo(EGG::Matrix34f::ident);
 
-    EGG::Matrix34f basis;
-    basis.makeOrthonormalBasisLocal(m_railInterpolator->curTangentDir(), EGG::Vector3f::ey);
-
-    m_transform = basis.multiplyTo(rotMat);
-    m_transform.setBase(3, m_pos);
-    m_flags.setBit(eFlags::Matrix);
+    EGG::Matrix34f mat;
+    mat.makeOrthonormalBasisLocal(m_railInterpolator->curTangentDir(), EGG::Vector3f::ey);
+    mat = mat.multiplyTo(rotMat);
+    mat.setBase(3, pos());
+    setTransform(mat);
 }
 
 } // namespace Field

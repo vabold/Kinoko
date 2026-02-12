@@ -11,7 +11,7 @@ namespace Field {
 
 /// @addr{0x807FFB20}
 ObjectEscalator::ObjectEscalator(const System::MapdataGeoObj &params, bool reverse /* = false */)
-    : ObjectKCL(params), m_initialPos(m_pos), m_initialRot(m_rot),
+    : ObjectKCL(params), m_initialPos(pos()), m_initialRot(rot()),
       m_stillFrames(
               {static_cast<s32>(params.setting(2)) * 60, static_cast<s32>(params.setting(4)) * 60}),
       m_speed({(reverse ? -1.0f : 1.0f) *
@@ -47,8 +47,7 @@ void ObjectEscalator::calc() {
     setMovingObjVel(m_stepDims * calcSpeed(t));
 
     m_stepFactor = calcStepFactor(t);
-    m_pos = m_initialPos + m_stepDims * m_stepFactor;
-    m_flags.setBit(eFlags::Position);
+    setPos(m_initialPos + m_stepDims * m_stepFactor);
 }
 
 /// @addr{0x80803910}
@@ -183,7 +182,7 @@ bool ObjectEscalator::checkSphereCachedFullPush(f32 radius, const EGG::Vector3f 
 /// @addr{0x80800A10}
 const EGG::Matrix34f &ObjectEscalator::getUpdatedMatrix(u32 timeOffset) {
     u32 t = System::RaceManager::Instance()->timer() - timeOffset;
-    m_workMatrix.makeRT(m_rot, m_initialPos + m_stepDims * calcStepFactor(t));
+    m_workMatrix.makeRT(rot(), m_initialPos + m_stepDims * calcStepFactor(t));
     return m_workMatrix;
 }
 

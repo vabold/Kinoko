@@ -46,16 +46,15 @@ void ObjectShip64::createCollision() {
 void ObjectShip64::calcCollisionTransform() {
     ObjectCollidable::calcCollisionTransform();
     calcTransform();
+    EGG::Matrix34f mat = transform();
 
     EGG::Vector3f v;
-    v = m_transform.base(0);
+    v = mat.base(0);
     v.normalise();
 
-    m_transform.setAxisRotation(F_PI / 2.0f, v);
-
-    m_transform.setBase(3, v);
-
-    m_auxCollision->transform(m_transform, m_scale);
+    mat.setAxisRotation(F_PI / 2.0f, v);
+    mat.setBase(3, v);
+    m_auxCollision->transform(mat, scale());
 }
 
 /// @addr{0x80766BCC}

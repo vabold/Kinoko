@@ -51,7 +51,7 @@ public:
     }
 
 private:
-    void calcPosition();
+    void calcRail();
 
     u32 m_state;
     ObjectPressSenko *m_senko;

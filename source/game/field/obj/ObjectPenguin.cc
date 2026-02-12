@@ -28,7 +28,7 @@ void ObjectPenguin::calcRot() {
 void ObjectPenguin::enterWalk() {
     m_state = State::Walk;
     calcTransform();
-    m_rot = m_transform.base(2);
+    setRotNoFlag(transform().base(2));
 }
 
 /// @addr{0x80775E60}

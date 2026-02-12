@@ -97,7 +97,7 @@ class ObjectCowFollower final : public ObjectCow, public StateManager {
     friend class ObjectCowHerd;
 
 public:
-    ObjectCowFollower(const System::MapdataGeoObj &params, const EGG::Vector3f &pos, f32 rot);
+    ObjectCowFollower(const System::MapdataGeoObj &params, const EGG::Vector3f &pos, f32 initRot);
     ~ObjectCowFollower() override;
 
     void init() override;

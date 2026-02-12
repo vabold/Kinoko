@@ -12,11 +12,11 @@ ObjectFireSnakeV::ObjectFireSnakeV(const System::MapdataGeoObj &params)
       m_cycleDuration(params.setting(1)), m_distFromPipe(static_cast<f32>(params.setting(2))),
       m_fallSpeed(0.0f) {
     m_delayFrame = params.setting(0);
-    m_sunPos = m_pos;
+    m_sunPos = pos();
 
     calcTransform();
 
-    m_initRot = m_transform.base(0);
+    m_initRot = transform().base(0);
     m_initialPos = m_sunPos + m_initRot * m_distFromPipe;
 }
 
@@ -101,8 +101,7 @@ void ObjectFireSnakeV::calcFalling() {
     }
 
     setMatrixTangentTo(EGG::Vector3f::ey, m_bounceDir);
-    m_flags.setBit(eFlags::Position);
-    m_pos = m_visualPos;
+    setPos(m_visualPos);
 }
 
 /// @addr{0x806C33C4}
@@ -126,8 +125,7 @@ void ObjectFireSnakeV::calcHighBounce() {
     }
 
     setMatrixTangentTo(EGG::Vector3f::ey, m_bounceDir);
-    m_flags.setBit(eFlags::Position);
-    m_pos = m_visualPos;
+    setPos(m_visualPos);
 }
 
 } // namespace Field

@@ -18,7 +18,7 @@ public:
     /// @addr{0x8067E410}
     void calc() override {
         if (m_isActive) {
-            resize(RADIUS * m_scale.y, 0.0f);
+            resize(RADIUS * scale().y, 0.0f);
         }
     }
 

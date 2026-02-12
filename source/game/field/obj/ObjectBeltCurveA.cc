@@ -18,7 +18,7 @@ ObjectBeltCurveA::~ObjectBeltCurveA() = default;
 /// @addr{0x807FC9D4}
 EGG::Vector3f ObjectBeltCurveA::calcRoadVelocity(u32 variant, const EGG::Vector3f &pos,
         u32 timeOffset) const {
-    EGG::Vector3f posDelta = pos - m_pos;
+    EGG::Vector3f posDelta = pos - this->pos();
     posDelta.y = 0.0f;
 
     EGG::Vector3f dir = m_initMat.ps_multVector(posDelta);

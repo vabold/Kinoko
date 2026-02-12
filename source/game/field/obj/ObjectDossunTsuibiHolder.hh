@@ -52,7 +52,7 @@ private:
 
     /// @addr{0x807630D0}
     void calcStillRotating() {
-        updatePos(EGG::Vector3f(m_pos.x, m_pos.y, m_pos.z - m_resetZVel));
+        updatePos(EGG::Vector3f(pos().x, pos().y, pos().z - m_resetZVel));
     }
 
     void calcRot();
@@ -60,7 +60,7 @@ private:
     void calcForwardOscillation();
 
     void updatePos(const EGG::Vector3f &pos);
-    void updateRot(f32 rot);
+    void updateRot(f32 yaw);
 
     enum class State {
         Still = 0,

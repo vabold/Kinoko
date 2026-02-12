@@ -21,8 +21,7 @@ public:
     /// @addr{0x80763E0C}
     void calc() override {
         m_railInterpolator->calc();
-        m_flags.setBit(eFlags::Position);
-        m_pos = m_railInterpolator->curPos();
+        setPos(m_railInterpolator->curPos());
     }
 };
 

@@ -10,7 +10,11 @@ public:
     ~ObjectSandcone() override;
 
     void init() override;
-    void calc() override;
+
+    /// @addr{0x806873Bc}
+    void calc() override {
+        setTransform(getUpdatedMatrix(0));
+    }
 
     /// @addr{0x80687E14}
     [[nodiscard]] u32 loadFlags() const override {

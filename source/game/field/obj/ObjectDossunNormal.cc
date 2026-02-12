@@ -14,7 +14,7 @@ void ObjectDossunNormal::init() {
     ObjectDossun::init();
 
     m_stompState = StompState::Inactive;
-    m_currRot = m_rot.y;
+    m_currRot = rot().y;
 
     if (m_currRot <= F_PI) {
         m_currRot -= F_TAU;
@@ -42,8 +42,7 @@ void ObjectDossunNormal::startStill() {
     m_anmState = AnmState::Still;
     m_shakePhase = 0;
     m_vel = 0.0f;
-    m_flags.setBit(eFlags::Rotation);
-    m_rot.y = m_currRot;
+    setRot(EGG::Vector3f(rot().x, m_currRot, rot().z));
     m_stompState = StompState::Inactive;
     m_stillTimer = static_cast<s32>(m_mapObj->setting(3));
 }
@@ -68,9 +67,9 @@ void ObjectDossunNormal::calcInactive() {
 
     if (m_stillTimer <= SHAKE_DURATION) {
         m_shakePhase += SHAKE_PHASE_CHANGE;
-        m_flags.setBit(eFlags::Position);
-        m_pos.y = m_initialPosY +
+        f32 posY = m_initialPosY +
                 SHAKE_AMPLITUDE * EGG::Mathf::sin(static_cast<f32>(m_shakePhase) * DEG2RAD);
+        setPos(EGG::Vector3f(pos().x, posY, pos().z));
     }
 }
 

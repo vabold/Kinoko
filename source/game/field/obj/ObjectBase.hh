@@ -93,13 +93,19 @@ public:
         return m_id;
     }
 
-    [[nodiscard]] const EGG::Vector3f &pos() const {
-        return m_pos;
-    }
-
     void setPos(const EGG::Vector3f &pos) {
         m_flags.setBit(eFlags::Position);
         m_pos = pos;
+    }
+
+    void addPos(const EGG::Vector3f &v) {
+        m_flags.setBit(eFlags::Position);
+        m_pos += v;
+    }
+
+    void subPos(const EGG::Vector3f &v) {
+        m_flags.setBit(eFlags::Position);
+        m_pos -= v;
     }
 
     void setScale(const EGG::Vector3f &scale) {
@@ -107,13 +113,54 @@ public:
         m_scale = scale;
     }
 
+    void setScale(f32 scale) {
+        m_flags.setBit(eFlags::Scale);
+        m_scale.set(scale);
+    }
+
+    void setRot(const EGG::Vector3f &rot) {
+        m_flags.setBit(eFlags::Rotation);
+        m_rot = rot;
+    }
+
+    void setRotNoFlag(const EGG::Vector3f &rot) {
+        m_rot = rot;
+    }
+
+    void addRot(const EGG::Vector3f &v) {
+        m_rotLock = true;
+        m_flags.setBit(eFlags::Rotation);
+        m_rot += v;
+    }
+
+    void subRot(const EGG::Vector3f &v) {
+        m_rotLock = true;
+        m_flags.setBit(eFlags::Rotation);
+        m_rot -= v;
+    }
+
+    /// @addr{0x806C296C}
     void setTransform(const EGG::Matrix34f &mat) {
+        m_rotLock = false;
         m_flags.setBit(eFlags::Matrix);
         m_transform = mat;
+        m_pos = mat.base(3);
+    }
+
+    [[nodiscard]] const EGG::Vector3f &pos() const {
+        return m_pos;
     }
 
     [[nodiscard]] const EGG::Vector3f &scale() const {
         return m_scale;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &rot() const {
+        return m_rot;
+    }
+
+    [[nodiscard]] const EGG::Matrix34f &transform() const {
+        return m_transform;
     }
 
 protected:
@@ -154,13 +201,15 @@ protected:
     ObjectId m_id;
     RailInterpolator *m_railInterpolator;
     BoxColUnit *m_boxColUnit;
+    const System::MapdataGeoObj *m_mapObj;
+
+private:
     Flags m_flags;
     EGG::Vector3f m_pos;
     EGG::Vector3f m_scale;
     EGG::Vector3f m_rot;
     bool m_rotLock;
     EGG::Matrix34f m_transform;
-    const System::MapdataGeoObj *m_mapObj;
 };
 
 } // namespace Field

@@ -11,7 +11,7 @@ ObjectFlamePoleV::ObjectFlamePoleV(const System::MapdataGeoObj &params)
       m_cycleDuration(static_cast<s32>(params.setting(0))),
       m_dormantFrames(static_cast<s32>(params.setting(3)) + 200),
       m_scaleFactor(params.setting(2) == 0 ? 5.0f : static_cast<f32>(params.setting(2))),
-      m_initPosY(m_pos.y), m_isBig(strcmp(getName(), "FlamePole_v_big") == 0) {
+      m_initPosY(pos().y), m_isBig(strcmp(getName(), "FlamePole_v_big") == 0) {
     constexpr f32 M_D8 = 384.0f;
     constexpr f32 BIG_MULTIPLIER = 14.0f;
 
@@ -35,14 +35,12 @@ void ObjectFlamePoleV::init() {
     disableCollision();
 
     if (m_isBig) {
-        m_scale = BIG_SCALE;
-        m_flags.setBit(eFlags::Scale);
+        setScale(BIG_SCALE);
     } else if (0.0f != m_scaleFactor) {
-        m_scale = EGG::Vector3f(m_scaleFactor, m_scaleFactor, m_scaleFactor);
-        m_flags.setBit(eFlags::Scale);
+        setScale(m_scaleFactor);
     }
 
-    resize(RADIUS * m_scale.y, 0.0f);
+    resize(RADIUS * scale().y, 0.0f);
 
     m_currOffsetY = 0.0f;
     m_fallSpeed = m_maxOffsetY / FALL_FRAMES;
@@ -56,8 +54,8 @@ void ObjectFlamePoleV::calc() {
 
     StateManager::calc();
 
-    m_flags.setBit(eFlags::Position);
-    m_pos.y = m_currOffsetY + (m_initPosY - m_maxOffsetY);
+    f32 posY = m_currOffsetY + (m_initPosY - m_maxOffsetY);
+    setPos(EGG::Vector3f(pos().x, posY, pos().z));
 }
 
 /// @addr{0x806C42A0}

@@ -21,7 +21,7 @@ ObjectFirebar::ObjectFirebar(const System::MapdataGeoObj &params) : ObjectCollid
     }
 
     EGG::Matrix34f mat;
-    mat.makeR(m_rot);
+    mat.makeR(rot());
     m_axis = mat.base(2);
     m_axis.normalise();
     m_initDir = m_axis.cross(RotateAxisAngle(F_PI / 2.0f, EGG::Vector3f::ex, m_axis));
@@ -51,7 +51,7 @@ void ObjectFirebar::calc() {
     for (auto *&fireball : m_fireballs) {
         EGG::Vector3f dir = m_initDir * fireball->distance();
         fireball->setPos(
-                m_pos + RotateAxisAngle((m_degAngle + fireball->angle()) * DEG2RAD, m_axis, dir));
+                pos() + RotateAxisAngle((m_degAngle + fireball->angle()) * DEG2RAD, m_axis, dir));
     }
 }
 

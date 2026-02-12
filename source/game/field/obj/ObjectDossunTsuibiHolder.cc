@@ -24,8 +24,8 @@ void ObjectDossunTsuibiHolder::init() {
         dossun->init();
     }
 
-    m_initPos = m_pos;
-    m_initRotY = m_rot.y;
+    m_initPos = pos();
+    m_initRotY = rot().y;
     m_state = State::Still;
     m_railInterpolator->init(0.0f, 0);
     m_vel = m_railInterpolator->currVel();
@@ -33,9 +33,9 @@ void ObjectDossunTsuibiHolder::init() {
     m_movingForward = false;
     m_movingSideways = false;
 
-    updatePos(m_pos);
+    updatePos(pos());
 
-    m_lastStompZ = m_pos.z;
+    m_lastStompZ = pos().z;
     m_flipSideways = 1;
 }
 
@@ -98,7 +98,7 @@ void ObjectDossunTsuibiHolder::calcStartStomp() {
     for (auto *&dossun : m_dossuns) {
         dossun->m_anmState = ObjectDossun::AnmState::BeforeFall;
         dossun->m_beforeFallTimer = 10;
-        f32 rot = dossun->m_rot.y;
+        f32 rot = dossun->rot().y;
         dossun->m_currRot = rot;
 
         if (rot >= F_PI) {
@@ -130,7 +130,7 @@ void ObjectDossunTsuibiHolder::calcBackwards() {
         m_railInterpolator->init(0.0f, 0);
     }
 
-    updatePos(EGG::Vector3f(m_pos.x, m_pos.y, m_lastStompZ));
+    updatePos(EGG::Vector3f(pos().x, pos().y, m_lastStompZ));
 }
 
 /// @addr{0x807625F0}
@@ -140,7 +140,7 @@ void ObjectDossunTsuibiHolder::calcRot() {
 
     if (m_facingBackwards) {
         if (++m_backwardsCounter == HOME_RESET_FRAMES) {
-            updateRot(m_rot.y + F_PI);
+            updateRot(rot().y + F_PI);
 
             m_movingSideways = true;
             m_sidewaysPhase = 0;
@@ -151,10 +151,10 @@ void ObjectDossunTsuibiHolder::calcRot() {
                 m_flipSideways = 0;
             }
         } else if (m_backwardsCounter < HOME_RESET_FRAMES) {
-            updateRot(m_rot.y + DEGREES_5_RAD);
+            updateRot(rot().y + DEGREES_5_RAD);
         }
     } else if (m_state == State::SillRotating) {
-        updateRot(m_rot.y + m_resetAngVel * DEG2RAD);
+        updateRot(rot().y + m_resetAngVel * DEG2RAD);
 
         if (++m_backwardsCounter == HOME_RESET_FRAMES) {
             updateRot(m_initRotY);
@@ -173,7 +173,7 @@ void ObjectDossunTsuibiHolder::calcForwardRail() {
         m_state = State::StartStomp;
         m_forwardTimer = 0;
         m_movingForward = false;
-        m_lastStompZ = m_pos.z;
+        m_lastStompZ = pos().z;
     }
 
     updatePos(m_railInterpolator->curPos());
@@ -188,7 +188,7 @@ void ObjectDossunTsuibiHolder::calcForwardOscillation() {
 
     u32 phase = m_flipSideways ? m_sidewaysPhase + 180 : m_sidewaysPhase;
     f32 posOffsetZ = AMPLITUDE * EGG::Mathf::sin(static_cast<f32>(phase) * DEG2RAD);
-    updatePos(EGG::Vector3f(m_pos.x, m_pos.y, m_pos.z + posOffsetZ));
+    updatePos(EGG::Vector3f(pos().x, pos().y, pos().z + posOffsetZ));
 
     if (m_sidewaysPhase == STOMP_PHASE) {
         if (m_state != State::StartStomp) {
@@ -198,28 +198,25 @@ void ObjectDossunTsuibiHolder::calcForwardOscillation() {
         m_state = State::StartStomp;
         m_forwardTimer = 0;
         m_movingForward = false;
-        m_lastStompZ = m_pos.z;
+        m_lastStompZ = pos().z;
     }
 }
 
 /// @addr{0x80762054}
 void ObjectDossunTsuibiHolder::updatePos(const EGG::Vector3f &pos) {
-    m_flags.setBit(eFlags::Position);
-    m_pos = pos;
-
+    setPos(pos);
     m_dossuns[0]->setPos(EGG::Vector3f(pos.x, pos.y, pos.z + DOSSUN_POS_OFFSET));
     m_dossuns[1]->setPos(EGG::Vector3f(pos.x, pos.y, pos.z - DOSSUN_POS_OFFSET));
 }
 
 /// @addr{0x80762190}
-void ObjectDossunTsuibiHolder::updateRot(f32 rot) {
-    m_flags.setBit(eFlags::Rotation);
-    m_rot.y = rot;
+void ObjectDossunTsuibiHolder::updateRot(f32 yaw) {
+    setRot(EGG::Vector3f(rot().x, yaw, rot().z));
 
-    m_dossuns[0]->m_flags.setBit(eFlags::Rotation);
-    m_dossuns[0]->m_rot.y = m_rot.y;
-    m_dossuns[1]->m_flags.setBit(eFlags::Rotation);
-    m_dossuns[1]->m_rot.y = m_rot.y;
+    const auto &firstRot = m_dossuns[0]->rot();
+    const auto &secondRot = m_dossuns[1]->rot();
+    m_dossuns[0]->setRot(EGG::Vector3f(firstRot.x, rot().y, firstRot.z));
+    m_dossuns[1]->setRot(EGG::Vector3f(secondRot.x, rot().y, secondRot.z));
 }
 
 } // namespace Field

@@ -165,7 +165,7 @@ bool ObjectAurora::checkSphereFullPushImpl(f32 radius, const EGG::Vector3f &v0,
 bool ObjectAurora::checkSpherePartialImpl(f32 radius, const EGG::Vector3f &v0,
         const EGG::Vector3f & /*v1*/, KCLTypeMask flags, CollisionInfoPartial *pInfo,
         KCLTypeMask *pFlagsOut, u32 timeOffset, bool push) {
-    EGG::Vector3f vel = v0 - m_pos;
+    EGG::Vector3f vel = v0 - pos();
 
     if (vel.z < 0.0f || vel.z > COLLISION_SIZE.z || EGG::Mathf::abs(vel.x) > COLLISION_SIZE.x) {
         return false;
@@ -220,7 +220,7 @@ bool ObjectAurora::checkSpherePartialImpl(f32 radius, const EGG::Vector3f &v0,
 bool ObjectAurora::checkSphereFullImpl(f32 radius, const EGG::Vector3f &v0,
         const EGG::Vector3f & /*v1*/, KCLTypeMask flags, CollisionInfo *pInfo,
         KCLTypeMask *pFlagsOut, u32 timeOffset, bool push) {
-    EGG::Vector3f vel = v0 - m_pos;
+    EGG::Vector3f vel = v0 - pos();
 
     if (vel.z < 0.0f || vel.z > COLLISION_SIZE.z || EGG::Mathf::abs(vel.x) > COLLISION_SIZE.x) {
         return false;
