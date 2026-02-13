@@ -56,12 +56,24 @@ public:
 
         void read(EGG::RamStream &stream);
 
-        u8 _00[0x0c - 0x00];
+        f32 m_cameraDistY;
+        u8 _04[0x0c - 0x04];
         EGG::Vector3f m_handlePos;
         EGG::Vector3f m_handleRot;
         u8 _24[0xb0 - 0x24];
     };
     STATIC_ASSERT(sizeof(BikeDisp) == 0xB0);
+
+    struct KartDisp {
+        KartDisp();
+        KartDisp(EGG::RamStream &stream);
+
+        void read(EGG::RamStream &stream);
+
+        f32 m_cameraDistY;
+        u8 _004[0x150 - 0x004];
+    };
+    STATIC_ASSERT(sizeof(KartDisp) == 0x150);
 
     /// @brief Various character/vehicle-related handling and speed stats.
     struct Stats {
@@ -121,6 +133,23 @@ public:
     };
     STATIC_ASSERT(sizeof(Stats) == 0x18c);
 
+    struct KartCameraParam {
+        struct KartCameraData {
+            f32 fov;
+            f32 dist;
+            f32 posY;
+            f32 targetPosY;
+        };
+        STATIC_ASSERT(sizeof(KartCameraData) == 0x10);
+
+        KartCameraParam();
+        KartCameraParam(EGG::RamStream &stream);
+
+        void read(EGG::RamStream &stream);
+
+        KartCameraData m_cameraEntries[4];
+    };
+
     KartParam(Character character, Vehicle vehicle, u8 playerIdx);
     ~KartParam();
 
@@ -147,6 +176,15 @@ public:
         return m_bikeDisp;
     }
 
+    [[nodiscard]] const KartDisp &kartDisp() const {
+        return m_kartDisp;
+    }
+
+    /// @addr{0x805927D4}
+    [[nodiscard]] const KartCameraParam &camera() {
+        return m_camera;
+    }
+
     [[nodiscard]] u8 playerIdx() const {
         return m_playerIdx;
     }
@@ -171,11 +209,15 @@ public:
 private:
     void initStats(Character character, Vehicle vehicle);
     void initBikeDispParams(Vehicle vehicle);
+    void initKartDispParams(Vehicle vehicle);
     void initHitboxes(Vehicle vehicle);
+    void initCameraParams(Character character);
 
     Stats m_stats;
     BikeDisp m_bikeDisp;
+    KartDisp m_kartDisp;
     BSP m_bsp;
+    KartCameraParam m_camera;
     u8 m_playerIdx;
     bool m_isBike;
     u16 m_suspCount;

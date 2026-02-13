@@ -1,5 +1,7 @@
 #include "GameScene.hh"
 
+#include "game/render/KartCamera.hh"
+
 #include "game/system/KPadDirector.hh"
 #include "game/system/ResourceManager.hh"
 
@@ -49,6 +51,7 @@ GameScene::~GameScene() {
 void GameScene::calc() {
     System::KPadDirector::Instance()->calc();
     calcEngines();
+    calcCamera();
 }
 
 /// @addr{0x8051AB58}
@@ -72,6 +75,16 @@ void GameScene::reinit() {
     } else {
         m_sceneMgr->changeSiblingScene(m_nextSceneId);
     }
+}
+
+/// @addr{0x805A1A8C}
+void GameScene::initCamera() {
+    Render::KartCamera::Instance()->init();
+}
+
+/// @addr{0x805A1AF0}
+void GameScene::calcCamera() {
+    Render::KartCamera::Instance()->calc();
 }
 
 /// @addr{0x8051AA58}
