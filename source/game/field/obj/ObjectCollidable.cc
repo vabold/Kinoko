@@ -104,7 +104,7 @@ void ObjectCollidable::createCollision() {
     const auto *collisionSet = flowTable.set(flowTable.slot(id()));
 
     if (!collisionSet) {
-        PANIC("Invalid object ID when creating primitive collision! ID: %d",
+        PANIC("Invalid object ID when creating primitive collision! ID: %zu",
                 static_cast<size_t>(id()));
     }
 
@@ -123,7 +123,7 @@ void ObjectCollidable::createCollision() {
                 collisionCenter());
         break;
     default:
-        PANIC("Invalid collision mode when creating primitive collision! ID: %d; Mode: %d",
+        PANIC("Invalid collision mode when creating primitive collision! ID: %zu; Mode: %d",
                 static_cast<size_t>(id()), parse<s16>(collisionSet->mode));
         break;
     }

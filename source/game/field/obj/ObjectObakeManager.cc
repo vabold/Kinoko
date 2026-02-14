@@ -8,7 +8,7 @@ namespace Field {
 
 /// @addr{0x8080B0D8}
 ObjectObakeManager::ObjectObakeManager(const System::MapdataGeoObj &params)
-    : ObjectDrivable(params), m_blockCache({nullptr}) {
+    : ObjectDrivable(params), m_blockCache({}) {
     static constexpr f32 BLOCK_WIDTH = 195.00002f;
     static constexpr f32 BLOCK_HEIGHT = 130.0f;
     static constexpr size_t MAX_FALLING_BLOCKS = 256;

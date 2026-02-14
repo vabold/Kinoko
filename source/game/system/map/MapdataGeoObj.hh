@@ -53,7 +53,7 @@ public:
     /// @endGetters
 
 private:
-    const SData *m_rawData;
+    [[maybe_unused]] const SData *m_rawData;
     u16 m_id;
     EGG::Vector3f m_pos;
     EGG::Vector3f m_rot;

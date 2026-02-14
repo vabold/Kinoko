@@ -139,7 +139,6 @@ void ObjectWanwan::enterWait() {
     f32 randAngle =
             System::RaceManager::Instance()->random().getF32(ANGLE_RANGE) + ANGLE_NORMALIZATION;
 
-    EGG::Vector3f vStack_58 = m_pos + m_tangent;
     if (CrossXZ(m_pos + m_tangent, m_pos, m_anchor) >= 0.0f) {
         randAngle *= -1.0f;
     }

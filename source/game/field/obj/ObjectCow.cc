@@ -472,7 +472,7 @@ void ObjectCowHerd::init() {
 void ObjectCowHerd::calc() {
     constexpr f32 MAX_DIST = 4000.0f; ///< Distance at which a Cow will return to its leader
 
-    checkCollision();
+    checkIntraCollision();
 
     for (auto *&follower : m_followers) {
         EGG::Vector3f posDelta = follower->pos() - m_leader->pos();
@@ -485,7 +485,7 @@ void ObjectCowHerd::calc() {
 
 /// @addr{0x806BF114}
 /// @brief Prevents cows from walking into each other.
-void ObjectCowHerd::checkCollision() {
+void ObjectCowHerd::checkIntraCollision() {
     constexpr f32 WIDTH = 400.0f;
 
     for (u32 i = 0; i < m_followers.size() - 1; ++i) {

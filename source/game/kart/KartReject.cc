@@ -134,7 +134,7 @@ bool KartReject::calcRejection() {
             f32 yOffset = bsp().initialYPos * scale().y;
             f32 speedScalar = bVar15 ?
                     1.0f :
-                    static_cast<f32>(static_cast<f64>(EGG::Mathf::abs(speed()) * 0.01f) - 0.3d);
+                    static_cast<f32>(static_cast<f64>(EGG::Mathf::abs(speed()) * 0.01f) - 0.3);
             speedScalar = std::min(1.0f, std::max(0.0f, speedScalar));
 
             EGG::Vector3f posOffset =
