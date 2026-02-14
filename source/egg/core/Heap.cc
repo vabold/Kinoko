@@ -133,32 +133,32 @@ Heap *Heap::findContainHeap(const void *block) {
 } // namespace EGG
 
 /// @addr{0x80229DCC}
-void *operator new(size_t size) KINOKO_NEW_NOEXCEPT {
+void *operator new(size_t size) {
     return EGG::Heap::alloc(size, 4, nullptr);
 }
 
 /// @addr{0x80229DD8}
-void *operator new(size_t size, int align) noexcept {
+void *operator new(size_t size, int align) {
     return EGG::Heap::alloc(size, align, nullptr);
 }
 
 /// @addr{0x80229DE0}
-void *operator new(size_t size, EGG::Heap *heap, int align) noexcept {
+void *operator new(size_t size, EGG::Heap *heap, int align) {
     return EGG::Heap::alloc(size, align, heap);
 }
 
 /// @addr{0x80229DF0}
-void *operator new[](size_t size) KINOKO_NEW_NOEXCEPT {
+void *operator new[](size_t size) {
     return EGG::Heap::alloc(size, 4, nullptr);
 }
 
 /// @addr{0x80229DFC}
-void *operator new[](size_t size, int align) noexcept {
+void *operator new[](size_t size, int align) {
     return EGG::Heap::alloc(size, align, nullptr);
 }
 
 /// @addr{0x80229E04}
-void *operator new[](size_t size, EGG::Heap *heap, int align) noexcept {
+void *operator new[](size_t size, EGG::Heap *heap, int align) {
     return EGG::Heap::alloc(size, align, heap);
 }
 

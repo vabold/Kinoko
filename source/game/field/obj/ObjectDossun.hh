@@ -10,7 +10,7 @@ class ObjectDossunTsuibiHolder;
 /// to stomp down and hit the floor. If a Thwomp is positioned such that there is no floor beneath
 /// it, then the init function will be stuck in an infinite loop, causing the race to never start.
 class ObjectDossun : public ObjectCollidable {
-friend ObjectDossunTsuibiHolder;
+    friend ObjectDossunTsuibiHolder;
 
 public:
     ObjectDossun(const System::MapdataGeoObj &params);

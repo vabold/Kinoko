@@ -22,7 +22,7 @@ namespace Host {
 Context::Context() {
     m_contextMemory = malloc(MEMORY_SPACE_SIZE);
     ASSERT(m_contextMemory && EGG::SceneManager::s_rootHeap);
-    memcpy(m_contextMemory, static_cast<void*>(EGG::SceneManager::s_rootHeap), MEMORY_SPACE_SIZE);
+    memcpy(m_contextMemory, static_cast<void *>(EGG::SceneManager::s_rootHeap), MEMORY_SPACE_SIZE);
 
     m_ptrs.m_rootList = Abstract::Memory::MEMiHeapHead::s_rootList;
     m_ptrs.m_archiveList = EGG::Archive::s_archiveList;

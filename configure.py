@@ -27,7 +27,8 @@ n.variable('compiler', 'g++')
 n.newline()
 
 common_ccflags = [
-    '-DKINOKO_EGG_OPERATOR_NEW',
+    '-DREVOLUTION',
+    '-fcheck-new',
     '-fno-asynchronous-unwind-tables',
     '-fno-exceptions',
     '-fno-rtti',

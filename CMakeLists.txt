@@ -11,6 +11,8 @@ option(KINOKO_USE_RTTI "Enable RTTI (disable -fno-rtti)" OFF)
 # Common flags
 set(COMMON_CXX_FLAGS
     -DKINOKO_EGG_OPERATOR_NEW
+    -DREVOLUTION
+    -fcheck-new
     -fno-asynchronous-unwind-tables
     -fno-exceptions
     -fshort-wchar
