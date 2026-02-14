@@ -5,6 +5,8 @@
 #include "game/field/obj/ObjectDossunTsuibiHolder.hh"
 #include "game/field/obj/ObjectDossunYokoMove.hh"
 
+#include "game/field/ObjectDirector.hh"
+
 namespace Field {
 
 /// @addr{0x8075EAFC}
@@ -33,5 +35,10 @@ ObjectDossunc::ObjectDossunc(const System::MapdataGeoObj &params) : ObjectCollid
 
 /// @addr{0x80764B08}
 ObjectDossunc::~ObjectDossunc() = default;
+
+/// @addr{0x80764A38}
+void ObjectDossunc::load() {
+    ObjectDirector::Instance()->addObjectNoImpl(this);
+}
 
 } // namespace Field

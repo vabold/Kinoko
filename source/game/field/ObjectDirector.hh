@@ -25,7 +25,7 @@ public:
     void init();
     void calc();
     void addObject(ObjectCollidable *obj);
-    void addObjectNoImpl(ObjectNoImpl *obj);
+    void addObjectNoImpl(ObjectBase *obj);
     void addManagedObject(ObjectCollidable *obj);
 
     size_t checkKartObjectCollision(Kart::KartObject *kartObj,
