@@ -31,7 +31,7 @@ private:
         Hit = 5,
     };
 
-    void checkCollision(const EGG::Vector3f &hitDepth);
+    void checkIntraCollision(const EGG::Vector3f &hitDepth);
 
     void startHit(f32 velFactor, EGG::Vector3f &hitDepth);
 

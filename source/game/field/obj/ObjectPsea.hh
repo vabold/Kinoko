@@ -27,7 +27,6 @@ public:
 
 private:
     u16 m_frame;
-    s16 m_cycleDuration;
     const f32 m_period;
     f32 m_initPosY;
 

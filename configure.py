@@ -28,6 +28,7 @@ n.newline()
 
 common_ccflags = [
     '-DREVOLUTION',
+    '-fcheck-new',
     '-fno-asynchronous-unwind-tables',
     '-fno-exceptions',
     '-fno-rtti',

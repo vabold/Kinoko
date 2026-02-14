@@ -146,7 +146,7 @@ Kart::Reaction ObjectPylon::onCollision(Kart::KartObject *kartObj,
         return Kart::Reaction::WeakWall;
     }
 
-    checkCollision(hitDepth);
+    checkIntraCollision(hitDepth);
     m_state = State::Moving;
     const EGG::Vector3f &zAxis = kartObj->componentZAxis();
     EGG::Vector3f cross = hitDepth.cross(zAxis);
@@ -168,7 +168,7 @@ Kart::Reaction ObjectPylon::onCollision(Kart::KartObject *kartObj,
 /// position if it finds itself to be colliding with any of its neighbors. However, it is not
 /// guaranteed that its neighbors have had their AABBs updated yet for this frame, as they may not
 /// be processed until a later iteration in checkKartObjectCollision.
-void ObjectPylon::checkCollision(const EGG::Vector3f &hitDepth) {
+void ObjectPylon::checkIntraCollision(const EGG::Vector3f &hitDepth) {
     constexpr f32 TRAVEL_RADIUS = 1200.0f;
 
     m_pos -= hitDepth;

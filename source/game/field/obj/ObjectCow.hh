@@ -167,7 +167,7 @@ public:
     void loadRail() override {}
 
 private:
-    void checkCollision();
+    void checkIntraCollision();
 
     ObjectCowLeader *m_leader;
     std::span<ObjectCowFollower *> m_followers;

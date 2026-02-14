@@ -629,7 +629,6 @@ void KartMove::calcStickyRoad() {
 
     EGG::Vector3f pos = dynamics()->pos();
     EGG::Vector3f vel = dynamics()->movingObjVel() + m_speed * m_vel1Dir;
-    EGG::Vector3f down = -STICKY_RADIUS * componentYAxis();
     Field::CollisionInfo colInfo;
     colInfo.bbox.setZero();
     Field::KCLTypeMask kcl_flags = KCL_NONE;

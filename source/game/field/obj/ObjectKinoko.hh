@@ -34,7 +34,7 @@ protected:
     const EGG::Vector3f m_objRot; // the initial rotation of the object
     s16 m_pulseFrame;
     s16 m_restFrame;
-    s16 m_pulseFalloff;
+    f32 m_pulseFalloff;
     u16 m_oscFrame;
 };
 

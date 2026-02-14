@@ -35,8 +35,8 @@ public:
 
 private:
     Abstract::g3d::AnmObjChrRes m_anmObjChrRes;
-    AnmType m_anmType;
-    size_t m_idx;
+    [[maybe_unused]] AnmType m_anmType;
+    [[maybe_unused]] size_t m_idx;
 };
 
 class AnmMgr {
@@ -54,7 +54,7 @@ public:
     }
 
 private:
-    DrawMdl *m_parent;
+    [[maybe_unused]] DrawMdl *m_parent;
     std::list<AnmNodeChr> m_anmList;
     std::array<AnmNodeChr *, static_cast<size_t>(AnmType::Max) - 1> m_activeAnims;
 };

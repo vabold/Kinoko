@@ -12,8 +12,8 @@ ObjectCollisionBase::~ObjectCollisionBase() = default;
 
 /// @addr{0x80834348}
 bool ObjectCollisionBase::check(ObjectCollisionBase &rhs, EGG::Vector3f &distance) {
-    constexpr f32 INITIAL_MAX_VALUE = std::sqrt(std::numeric_limits<f32>::max());
-    STATIC_ASSERT(std::bit_cast<u32>(INITIAL_MAX_VALUE) == 0x5f7fffff);
+    // std::sqrt(std::numeric_limits<f32>::max());
+    constexpr f32 INITIAL_MAX_VALUE = std::bit_cast<f32>(0x5f7fffff);
 
     f32 rad = getBoundingRadius() + rhs.getBoundingRadius();
     f32 sqDist = rad * rad;

@@ -9,6 +9,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Common flags
 set(COMMON_CXX_FLAGS
     -DREVOLUTION
+    -fcheck-new
     -fno-asynchronous-unwind-tables
     -fno-exceptions
     -fno-rtti
