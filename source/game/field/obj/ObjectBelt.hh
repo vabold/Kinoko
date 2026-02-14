@@ -142,7 +142,7 @@ public:
     }
 
     [[nodiscard]] virtual EGG::Vector3f calcRoadVelocity(u32 variant, const EGG::Vector3f &pos,
-            u32 timeOffset) const = 0;
+            s32 timeOffset) const = 0;
 
     [[nodiscard]] virtual bool isMoving(u32 variant, const EGG::Vector3f &pos) const = 0;
 

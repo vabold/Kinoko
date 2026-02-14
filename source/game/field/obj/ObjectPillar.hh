@@ -51,11 +51,12 @@ public:
     Kart::Reaction onCollision(Kart::KartObject * /*kartObj*/, Kart::Reaction reactionOnKart,
             Kart::Reaction /*reactionOnObj*/, EGG::Vector3f & /*hitDepth*/) override {
         auto *raceMgr = System::RaceManager::Instance();
-        return raceMgr->timer() < m_fallStart ? Kart::Reaction::WallAllSpeed : reactionOnKart;
+        return raceMgr->timer() < static_cast<u32>(m_fallStart) ? Kart::Reaction::WallAllSpeed :
+                                                                  reactionOnKart;
     }
 
 private:
-    const u32 m_fallStart; ///< The number of frames before the pillar will start to fall.
+    const s32 m_fallStart; ///< The number of frames before the pillar will start to fall.
 };
 
 /// @brief Represents the entirety of a pillar that falls on Dry Dry Ruins.
@@ -91,7 +92,7 @@ private:
     [[nodiscard]] f32 calcRot(s32 frame) const;
 
     State m_state;              ///< 0 when upright, 1 when falling, and 2 afterwards.
-    const u32 m_fallStart;      ///< The number of frames before the pillar will start to fall.
+    const s32 m_fallStart;      ///< The number of frames before the pillar will start to fall.
     const f32 m_targetRotation; ///< How much the pillar rotates during the fall, in radians.
     const f32 m_initRot;
     EGG::Vector3f m_setupRot;    ///< Initial rotation of the pillar.

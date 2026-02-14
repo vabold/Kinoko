@@ -44,7 +44,7 @@ private:
 
     const f32 m_finalVel;
     const f32 m_accel;
-    const u32 m_stopTime;
+    const s32 m_stopTime;
     f32 m_cruiseTime;            ///< How long to spend at cruising speed before decelerating.
     EGG::Vector3f m_currTangent; ///< It's @ref EGG::Vector3f::ey unless it flies up in the air.
     EGG::Vector3f m_currUp;      ///< It's @ref EGG::Vector3f::ey unless it flies up in the air.

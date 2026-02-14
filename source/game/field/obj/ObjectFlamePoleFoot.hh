@@ -24,6 +24,7 @@ public:
 
     /// @addr{0x806814C4}
     [[nodiscard]] f32 getCollisionRadius() const override {
+        ASSERT(m_mapObj);
         return 245.0f * static_cast<f32>(m_mapObj->setting(2));
     }
 
@@ -91,8 +92,9 @@ private:
 
     EGG::Matrix34f m_workMatrix;
     ObjectFlamePole *m_pole;
-    u32 m_extraCycleFrames; ///< Used to increase the animation cycle beyond the typical 540 frames
-    u32 m_initDelay;
+    const s32 m_extraCycleFrames; ///< Used to increase the animation cycle beyond the typical 540
+                                  ///< frames
+    const s32 m_initDelay;
     f32 m_poleScale;
     s32 m_eruptUpDuration;
     s32 m_eruptDownDuration;
@@ -123,7 +125,7 @@ private:
                     &ObjectFlamePoleFoot::calcState5>(5)},
     }};
 
-    static constexpr u32 CYCLE_FRAMES = 540;
+    static constexpr s32 CYCLE_FRAMES = 540;
 };
 
 } // namespace Field

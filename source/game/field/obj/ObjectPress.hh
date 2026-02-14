@@ -51,12 +51,14 @@ private:
     void calcRaising();
 
     bool m_startingRise; ///< Used to delay state change by 1 frame
-    u32 m_raisedTimer;   ///< Number of frames remaining in raised state
+    s32 m_raisedTimer;   ///< Number of frames remaining in raised state
     u32 m_anmDuration;
     f32 m_loweringVelocity;
     f32 m_raisedHeight;
     f32 m_loweredHeight;
     bool m_startedLowered; ///< Used to induce crush effect even if it hit floor this frame
+
+    const s32 m_raisedDuration;
 
     static constexpr f32 ANM_RATE = 2.0f;
 };

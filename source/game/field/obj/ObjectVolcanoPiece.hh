@@ -205,20 +205,20 @@ private:
     };
 
     const EGG::Matrix34f &calcShakeAndFall(EGG::Vector3f *vel, u32 timeOffset);
-    State calcState(u32 frame) const;
-    f32 calcT(u32 frame) const;
+    State calcState(s32 frame) const;
+    f32 calcT(s32 frame) const;
 
     char m_modelName[16];
     const EGG::Vector3f m_initialPos;
     const EGG::Vector3f m_initialRot;
-    const u32 m_restDuration;
-    const u32 m_shakeDuration;
-    const u32 m_quakeDuration;
+    const s32 m_restDuration;
+    const s32 m_shakeDuration;
+    const s32 m_quakeDuration;
     EGG::Matrix34f m_rtMat;
     ObjColMgr *m_colMgrB;
     ObjColMgr *m_colMgrC;
 
-    static constexpr u32 FALL_DURATION = 900;
+    static constexpr s32 FALL_DURATION = 900;
 };
 
 } // namespace Field

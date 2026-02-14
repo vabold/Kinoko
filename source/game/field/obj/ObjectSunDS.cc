@@ -7,8 +7,7 @@ namespace Field {
 /// @addr{0x806DDDD8}
 ObjectSunDS::ObjectSunDS(const System::MapdataGeoObj &params)
     : ObjectProjectileLauncher(params), StateManager(this, STATE_ENTRIES),
-      m_revolutionSpeed(static_cast<f32>(params.setting(0))),
-      m_startFrame(static_cast<s32>(params.setting(1))) {}
+      m_revolutionSpeed(params.setting(0)), m_startFrame(params.setting(1)) {}
 
 /// @addr{0x806DDF68}
 ObjectSunDS::~ObjectSunDS() = default;

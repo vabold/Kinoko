@@ -38,14 +38,14 @@ public:
 
     const EGG::Vector3f m_initialPos;
     const EGG::Vector3f m_initialRot;
-    u16 m_timeOffset;
-    u16 m_periodDenom;
-    u16 m_restFrames; ///< How long bulldozers stop moving for
-    u16 m_fullPeriod; ///< m_periodDenom + 2 * m_restFrames
-    u16 m_amplitude;
-    bool m_left; ///< Flips the sin wave direction.
-    f32 m_period;
-    u16 m_halfPeriod;
+    const s16 m_timeOffset;
+    const s16 m_periodDenom;
+    const s16 m_restFrames; ///< How long bulldozers stop moving for
+    const s16 m_fullPeriod; ///< m_periodDenom + 2 * m_restFrames
+    const s16 m_amplitude;
+    const bool m_left; ///< Flips the sin wave direction.
+    const f32 m_period;
+    const s16 m_halfPeriod;
     EGG::Matrix34f m_rtMat; ///< Exists solely so getUpdatedMatrix can return a reference.
 };
 

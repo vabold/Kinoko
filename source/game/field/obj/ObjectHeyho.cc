@@ -21,7 +21,7 @@ ObjectHeyho::ObjectHeyho(const System::MapdataGeoObj &params)
     // We form an acceleration constant so multiplying with (pos - center) gives v^2
     // This way, we can inversely correlate height difference with speed
     ASSERT(m_apex - m_midpoint.y > std::numeric_limits<f32>::epsilon());
-    f32 maxVel = static_cast<f32>(static_cast<s16>(params.setting(0)));
+    f32 maxVel = static_cast<f32>(params.setting(0));
     m_maxVelSq = maxVel * maxVel;
     m_accel = m_maxVelSq / (m_apex - m_midpoint.y);
 }
