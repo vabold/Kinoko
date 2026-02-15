@@ -111,6 +111,18 @@ public:
     [[nodiscard]] u16 prismCache(u32 idx) const {
         return m_prismCache[idx];
     }
+
+    [[nodiscard]] const std::span<KCollisionPrism> &prisms() const {
+        return m_prisms;
+    }
+
+    [[nodiscard]] const std::span<EGG::Vector3f> &nrms() const {
+        return m_nrms;
+    }
+
+    [[nodiscard]] const std::span<EGG::Vector3f> &vertices() const {
+        return m_vertices;
+    }
     /// @endGetters
 
     [[nodiscard]] static EGG::Vector3f GetVertex(f32 height, const EGG::Vector3f &vertex1,

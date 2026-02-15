@@ -105,6 +105,10 @@ public:
     /// @endSetters
 
     /// @beginGetters
+    [[nodiscard]] const KColData *data() const {
+        return m_data;
+    }
+
     [[nodiscard]] NoBounceWallColInfo *noBounceWallInfo() const {
         return m_noBounceWallInfo;
     }
