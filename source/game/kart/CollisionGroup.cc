@@ -91,9 +91,7 @@ CollisionGroup::CollisionGroup() : m_hitboxScale(1.0f) {
     m_collisionData.reset();
 }
 
-CollisionGroup::~CollisionGroup() {
-    delete[] m_hitboxes.data();
-}
+CollisionGroup::~CollisionGroup() = default;
 
 /// @brief Initializes the hitbox array based on the KartParam's BSP hitboxes
 /// @addr{0x805B84C0}
@@ -111,7 +109,7 @@ f32 CollisionGroup::initHitboxes(const std::array<BSP::Hitbox, 16> &hitboxes) {
         }
     }
 
-    m_hitboxes = std::span<Hitbox>(new Hitbox[bspHitboxCount], bspHitboxCount);
+    m_hitboxes = owning_span<Hitbox>(bspHitboxCount);
     u16 hitboxIdx = 0;
 
     for (const auto &bspHitbox : hitboxes) {
@@ -159,7 +157,7 @@ f32 CollisionGroup::computeCollisionLimits() {
 /// @addr{0x805B875C}
 /// @param radius The radius of the tire
 void CollisionGroup::createSingleHitbox(f32 radius, const EGG::Vector3f &relPos) {
-    m_hitboxes = std::span<Hitbox>(new Hitbox[1], 1);
+    m_hitboxes = owning_span<Hitbox>(1);
 
     // TODO: Do we need for loop if this is just one?
     // And how exactly will we identify to free the BSP::Hitbox on destruction?

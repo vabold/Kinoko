@@ -41,7 +41,7 @@ private:
     ItemDirector();
     ~ItemDirector() override;
 
-    std::span<KartItem> m_karts;
+    owning_span<KartItem> m_karts;
 
     static ItemDirector *s_instance; ///< @addr{0x809C3618}
 };

@@ -41,7 +41,7 @@ ObjectVolcanoBallLauncher::ObjectVolcanoBallLauncher(const System::MapdataGeoObj
     f32 burnDuration = static_cast<f32>(static_cast<s16>(params.setting(3)));
     u32 ballCount = static_cast<u32>((fallTime + burnDuration) / m_cycleDuration) + 2;
 
-    m_balls = std::span<ObjectVolcanoBall *>(new ObjectVolcanoBall *[ballCount], ballCount);
+    m_balls = owning_span<ObjectVolcanoBall *>(ballCount);
 
     for (auto *&ball : m_balls) {
         ball = new ObjectVolcanoBall(accel, finalVel, endPosY, params, vel);
@@ -52,9 +52,7 @@ ObjectVolcanoBallLauncher::ObjectVolcanoBallLauncher(const System::MapdataGeoObj
 }
 
 /// @addr{0x806E384C}
-ObjectVolcanoBallLauncher::~ObjectVolcanoBallLauncher() {
-    delete[] m_balls.data();
-}
+ObjectVolcanoBallLauncher::~ObjectVolcanoBallLauncher() = default;
 
 /// @addr{0x806E388C}
 void ObjectVolcanoBallLauncher::init() {

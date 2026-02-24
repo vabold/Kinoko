@@ -110,7 +110,7 @@ protected:
 
     s16 m_railIdx;
     u16 m_pointCount;
-    std::span<System::MapdataPointInfo::Point> m_points;
+    std::span<const System::MapdataPointInfo::Point> m_points;
     bool m_isOscillating;
     f32 m_speed;
     bool m_usePerPointVelocities;
@@ -156,7 +156,7 @@ private:
     EGG::Vector3f lerp(f32 t, u32 currIdx, u32 nextIdx) const;
 
     EGG::Vector3f m_currentDirection;
-    std::span<RailLineTransition> m_transitions;
+    std::span<const RailLineTransition> m_transitions;
 };
 
 class RailSmoothInterpolator : public RailInterpolator {
@@ -192,10 +192,10 @@ private:
     [[nodiscard]] f32 calcT(f32 t) const;
     void calcNextSegment();
 
-    std::span<RailSplineTransition> m_transitions;
+    std::span<const RailSplineTransition> m_transitions;
     u32 m_estimatorSampleCount;
     f32 m_estimatorStep;
-    std::span<f32> m_pathPercentages;
+    std::span<const f32> m_pathPercentages;
     EGG::Vector3f m_prevPos;
     f32 m_velocity;
 };

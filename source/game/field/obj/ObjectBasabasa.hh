@@ -88,8 +88,8 @@ public:
     void loadRail() override {}
 
 private:
-    std::span<ObjectBasabasaDummy *> m_bats; ///< The array of individual bats
-    const u32 m_initialTimer;                ///< The m_cycleTimer starts and resets to this value
+    owning_span<ObjectBasabasaDummy *> m_bats; ///< The array of individual bats
+    const u32 m_initialTimer;                  ///< The m_cycleTimer starts and resets to this value
     const u32 m_batsPerGroup; ///< Number of bats that will spawn before resetting the m_cycleTimer
     const u32 m_startFrame;   ///< Initial delay before the spawner will start calculating
     const u32 m_batSpacing;   ///< How many frames in between bat spawns

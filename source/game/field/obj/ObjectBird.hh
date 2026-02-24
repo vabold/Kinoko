@@ -43,7 +43,7 @@ public:
 
 protected:
     ObjectBirdLeader *m_leader;
-    std::span<ObjectBirdFollower *> m_followers;
+    owning_span<ObjectBirdFollower *> m_followers;
 };
 
 /// @brief The main bird within an @ref ObjectBird. Other birds follow this leader.

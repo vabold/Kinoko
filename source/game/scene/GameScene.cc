@@ -166,7 +166,7 @@ void GameScene::getMemoryLeakTags() {
         return;
     }
 
-    std::span<u32> tags = std::span<u32>(new u32[count], count);
+    owning_span<u32> tags = owning_span<u32>(count);
     for (auto &tag : tags) {
         tag = 0; // empty tag
     }
@@ -180,8 +180,6 @@ void GameScene::getMemoryLeakTags() {
         printf(", %d", tags[i]);
     }
     printf("]\n");
-
-    delete[] tags.data();
 }
 
 size_t GameScene::getMemoryLeakTagCount() {
@@ -195,7 +193,7 @@ void GameScene::ViewTags(void *block, Abstract::Memory::MEMiHeapHead * /*heap*/,
     Abstract::Memory::MEMiExpBlockHead *blockHead =
             static_cast<Abstract::Memory::MEMiExpBlockHead *>(
                     SubOffset(block, sizeof(Abstract::Memory::MEMiExpBlockHead)));
-    std::span<u32> *span = reinterpret_cast<std::span<u32> *>(param);
+    owning_span<u32> *span = reinterpret_cast<owning_span<u32> *>(param);
     for (auto &tag : *span) {
         if (tag == 0) {
             tag = blockHead->m_tag;

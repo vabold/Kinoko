@@ -17,9 +17,7 @@ Rail::Rail(u16 idx, System::MapdataPointInfo *info) {
 
 /// @addr{0x806ECC40}
 /// TODO: If we make m_points allocate on the heap, then we need to free here
-Rail::~Rail() {
-    delete[] m_floorNrms.data();
-}
+Rail::~Rail() = default;
 
 /// @addr{0x806ED110}
 void Rail::addPoint(f32 scale, const EGG::Vector3f &point) {
@@ -34,7 +32,7 @@ void Rail::checkSphereFull() {
         return;
     }
 
-    m_floorNrms = std::span<EGG::Vector3f>(new EGG::Vector3f[m_pointCount], m_pointCount);
+    m_floorNrms = owning_span<EGG::Vector3f>(m_pointCount);
 
     for (size_t i = 0; i < m_pointCount; ++i) {
         CollisionInfo info;
@@ -58,7 +56,7 @@ void Rail::checkSphereFull() {
 /// @addr{0x806EF9B4}
 RailLine::RailLine(u16 idx, System::MapdataPointInfo *info) : Rail(idx, info) {
     m_dirCount = m_isOscillating ? m_pointCount - 1 : m_pointCount;
-    m_transitions = std::span<RailLineTransition>(new RailLineTransition[m_dirCount], m_dirCount);
+    m_transitions = owning_span<RailLineTransition>(m_dirCount);
     m_pathLength = 0.0f;
 
     for (u16 i = 0; i < m_pointCount - 1; ++i) {
@@ -79,15 +77,12 @@ RailLine::RailLine(u16 idx, System::MapdataPointInfo *info) : Rail(idx, info) {
 }
 
 /// @addr{0x806EFD6C}
-RailLine::~RailLine() {
-    delete[] m_transitions.data();
-}
+RailLine::~RailLine() = default;
 
 /// @addr{0x806ED57C}
 RailSpline::RailSpline(u16 idx, System::MapdataPointInfo *info) : Rail(idx, info) {
     m_transitionCount = m_isOscillating ? m_pointCount - 1 : m_pointCount;
-    m_transitions = std::span<RailSplineTransition>(new RailSplineTransition[m_transitionCount],
-            m_transitionCount);
+    m_transitions = owning_span<RailSplineTransition>(m_transitionCount);
     m_estimatorSampleCount = 10;
     m_estimatorStep = 1.0f / static_cast<f32>(m_estimatorSampleCount);
 
@@ -106,10 +101,7 @@ RailSpline::RailSpline(u16 idx, System::MapdataPointInfo *info) : Rail(idx, info
 }
 
 /// @addr{0x806ED828}
-RailSpline::~RailSpline() {
-    delete[] m_transitions.data();
-    delete[] m_pathPercentages.data();
-}
+RailSpline::~RailSpline() = default;
 
 /// @addr{0x806ED8BC}
 void RailSpline::onPointsChanged() {
@@ -120,7 +112,7 @@ void RailSpline::onPointsChanged() {
 
     m_pathLength = 0.0f;
 
-    for (auto &transition : m_transitions) {
+    for (const auto &transition : m_transitions) {
         m_pathLength += transition.m_length;
     }
 }
@@ -134,7 +126,7 @@ void RailSpline::onPointAdded() {
 
     m_pathLength = 0.0f;
 
-    for (auto &transition : m_transitions) {
+    for (const auto &transition : m_transitions) {
         m_pathLength += transition.m_length;
     }
 }
@@ -143,7 +135,7 @@ void RailSpline::onPointAdded() {
 void RailSpline::invalidateTransitions(bool lastOnly) {
     if (!m_doNotAllocatePathPercentages) {
         size_t count = m_estimatorSampleCount * m_transitionCount + 1;
-        m_pathPercentages = std::span<f32>(new f32[count], count);
+        m_pathPercentages = owning_span<f32>(count);
     }
 
     m_segmentCount = 0;

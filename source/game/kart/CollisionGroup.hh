@@ -159,7 +159,7 @@ public:
 private:
     f32 m_boundingRadius;
     CollisionData m_collisionData;
-    std::span<Hitbox> m_hitboxes;
+    owning_span<Hitbox> m_hitboxes;
     f32 m_hitboxScale;
 };
 
