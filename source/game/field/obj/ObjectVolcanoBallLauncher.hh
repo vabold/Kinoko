@@ -30,7 +30,7 @@ public:
     void loadRail() override {}
 
 private:
-    std::span<ObjectVolcanoBall *> m_balls;
+    owning_span<ObjectVolcanoBall *> m_balls;
     const f32 m_initDelay;
     const f32 m_cycleDuration;
     u32 m_currBallIdx;

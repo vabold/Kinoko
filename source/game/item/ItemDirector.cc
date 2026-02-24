@@ -36,7 +36,7 @@ void ItemDirector::DestroyInstance() {
 /// @addr{0x807992D8}
 ItemDirector::ItemDirector() {
     size_t playerCount = System::RaceConfig::Instance()->raceScenario().playerCount;
-    m_karts = std::span<KartItem>(new KartItem[playerCount], playerCount);
+    m_karts = owning_span<KartItem>(playerCount);
 
     for (size_t i = 0; i < playerCount; ++i) {
         m_karts[i].init(i);
@@ -49,8 +49,6 @@ ItemDirector::~ItemDirector() {
         s_instance = nullptr;
         WARN("ItemDirector instance not explicitly handled!");
     }
-
-    delete[] m_karts.data();
 }
 
 ItemDirector *ItemDirector::s_instance = nullptr; ///< @addr{0x809C3618}

@@ -35,9 +35,9 @@ public:
     void loadRail() override {}
 
 protected:
-    std::span<ObjectProjectile *> m_projectiles;
+    owning_span<ObjectProjectile *> m_projectiles;
     ObjectProjectileLauncher *m_launcher; // The rDH sun or the RSGB ship
-    std::span<s16> m_pointIdxs;
+    owning_span<s16> m_pointIdxs;
 };
 
 } // namespace Field

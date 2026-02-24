@@ -60,7 +60,7 @@ private:
         }
     }
 
-    std::span<SphereLink> m_links;
+    owning_span<SphereLink> m_links;
 };
 
 class ObjectHanachanPart : public ObjectCollidable {

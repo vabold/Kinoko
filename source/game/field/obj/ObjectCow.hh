@@ -170,7 +170,7 @@ private:
     void checkIntraCollision();
 
     ObjectCowLeader *m_leader;
-    std::span<ObjectCowFollower *> m_followers;
+    owning_span<ObjectCowFollower *> m_followers;
 };
 
 } // namespace Field

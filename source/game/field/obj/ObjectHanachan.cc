@@ -8,7 +8,7 @@ namespace Field {
 HanachanChainManager::HanachanChainManager(const std::span<const f32> &linkDistances) {
     size_t count = linkDistances.size() + 1;
 
-    m_links = std::span(new SphereLink[count], count);
+    m_links = owning_span<Field::SphereLink>(count);
     m_links[0].initLinkLen(linkDistances[0]);
 
     for (size_t i = 1; i < count - 1; ++i) {
@@ -25,9 +25,7 @@ HanachanChainManager::HanachanChainManager(const std::span<const f32> &linkDista
 }
 
 /// @addr{0x806F31F4}
-HanachanChainManager::~HanachanChainManager() {
-    delete[] m_links.data();
-}
+HanachanChainManager::~HanachanChainManager() = default;
 
 /// @addr{0x806F49BC}
 void HanachanChainManager::calc() {

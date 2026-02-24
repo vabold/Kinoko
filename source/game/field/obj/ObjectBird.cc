@@ -16,7 +16,7 @@ ObjectBird::ObjectBird(const System::MapdataGeoObj &params) : ObjectCollidable(p
         count = 5;
     }
 
-    m_followers = std::span<ObjectBirdFollower *>(new ObjectBirdFollower *[count], count);
+    m_followers = owning_span<ObjectBirdFollower *>(count);
 
     for (u32 i = 0; i < count; ++i) {
         auto *bird = new ObjectBirdFollower(params, this, i);
@@ -26,9 +26,7 @@ ObjectBird::ObjectBird(const System::MapdataGeoObj &params) : ObjectCollidable(p
 }
 
 /// @addr{0x8077CDC8}
-ObjectBird::~ObjectBird() {
-    delete[] m_followers.data();
-}
+ObjectBird::~ObjectBird() = default;
 
 /// @addr{0x8077BFC8}
 void ObjectBird::calc() {

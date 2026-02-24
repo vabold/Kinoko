@@ -19,7 +19,7 @@ public:
 private:
     s16 m_count;
     s16 m_fieldCount;
-    std::span<s16> m_reactions;
+    owning_span<s16> m_reactions;
     const s16 *m_slots;
 };
 

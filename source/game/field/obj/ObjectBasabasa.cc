@@ -83,7 +83,7 @@ ObjectBasabasa::ObjectBasabasa(const System::MapdataGeoObj &params)
             1;
     u32 batCount = groupCount * m_batsPerGroup;
 
-    m_bats = std::span<ObjectBasabasaDummy *>(new ObjectBasabasaDummy *[batCount], batCount);
+    m_bats = owning_span<ObjectBasabasaDummy *>(batCount);
 
     for (auto *&bat : m_bats) {
         bat = new ObjectBasabasaDummy(params);
@@ -95,9 +95,7 @@ ObjectBasabasa::ObjectBasabasa(const System::MapdataGeoObj &params)
 }
 
 /// @addr{0x806B72F4}
-ObjectBasabasa::~ObjectBasabasa() {
-    delete[] m_bats.data();
-}
+ObjectBasabasa::~ObjectBasabasa() = default;
 
 /// @addr{0x806B7334}
 void ObjectBasabasa::init() {

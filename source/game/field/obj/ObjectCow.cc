@@ -437,8 +437,7 @@ ObjectCowHerd::ObjectCowHerd(const System::MapdataGeoObj &params) : ObjectCollid
     m_leader = new ObjectCowLeader(params);
     m_leader->load();
 
-    m_followers =
-            std::span<ObjectCowFollower *>(new ObjectCowFollower *[followerCount], followerCount);
+    m_followers = owning_span<ObjectCowFollower *>(followerCount);
 
     for (u32 i = 0; i < followerCount; ++i) {
         auto *&child = m_followers[i];
@@ -456,9 +455,7 @@ ObjectCowHerd::ObjectCowHerd(const System::MapdataGeoObj &params) : ObjectCollid
 }
 
 /// @addr{0x806BEFEC}
-ObjectCowHerd::~ObjectCowHerd() {
-    delete[] m_followers.data();
-}
+ObjectCowHerd::~ObjectCowHerd() = default;
 
 /// @addr{0x806BF02C}
 /// @brief Assigns the herd's rail to each child.

@@ -25,11 +25,11 @@ public:
     virtual ~Rail();
 
     virtual f32 getPathLength() const = 0;
-    virtual const std::span<RailLineTransition> &getLinearTransitions() const = 0;
-    virtual const std::span<RailSplineTransition> &getSplineTransitions() const = 0;
+    virtual const owning_span<RailLineTransition> &getLinearTransitions() const = 0;
+    virtual const owning_span<RailSplineTransition> &getSplineTransitions() const = 0;
     virtual s32 getEstimatorSampleCount() const = 0;
     virtual f32 getEstimatorStep() const = 0;
-    virtual const std::span<f32> &getPathPercentages() const = 0;
+    virtual const owning_span<f32> &getPathPercentages() const = 0;
 
     void addPoint(f32 scale, const EGG::Vector3f &point);
     void checkSphereFull();
@@ -42,7 +42,7 @@ public:
         return m_isOscillating;
     }
 
-    [[nodiscard]] const std::span<System::MapdataPointInfo::Point> &points() const {
+    [[nodiscard]] const owning_span<System::MapdataPointInfo::Point> &points() const {
         return m_points;
     }
 
@@ -53,7 +53,7 @@ public:
     }
 
     [[nodiscard]] const EGG::Vector3f &floorNrm(u16 idx) const {
-        ASSERT(m_floorNrms.data() && idx < m_floorNrms.size());
+        ASSERT(!m_floorNrms.empty() && idx < m_floorNrms.size());
         return m_floorNrms[idx];
     }
 
@@ -63,14 +63,14 @@ protected:
 
     u16 m_pointCount;
     bool m_isOscillating;
-    std::span<System::MapdataPointInfo::Point> m_points;
+    owning_span<System::MapdataPointInfo::Point> m_points;
     f32 m_someScale;
 
 private:
     u16 m_idx;
     u16 m_pointCapacity;
     bool m_hasCheckedCol;
-    std::span<EGG::Vector3f> m_floorNrms;
+    owning_span<EGG::Vector3f> m_floorNrms;
 };
 
 class RailLine : public Rail {
@@ -90,8 +90,8 @@ public:
 
     /// @addr{0x806F0994}
     /// @brief In the base game we return a nullptr. To mimic this, return an empty vector.
-    [[nodiscard]] const std::span<f32> &getPathPercentages() const override {
-        static std::span<f32> EMPTY_PERCENTAGES;
+    [[nodiscard]] const owning_span<f32> &getPathPercentages() const override {
+        static owning_span<f32> EMPTY_PERCENTAGES;
         return EMPTY_PERCENTAGES;
     }
 
@@ -102,14 +102,14 @@ private:
     }
 
     /// @addr{0x806F09B8}
-    [[nodiscard]] const std::span<RailLineTransition> &getLinearTransitions() const override {
+    [[nodiscard]] const owning_span<RailLineTransition> &getLinearTransitions() const override {
         return m_transitions;
     }
 
     /// @addr{0x806F09B0}
     /// @brief In the base game we return a nullptr. To mimic this, return an empty vector.
-    [[nodiscard]] const std::span<RailSplineTransition> &getSplineTransitions() const override {
-        static std::span<RailSplineTransition> EMPTY_TRANSITIONS;
+    [[nodiscard]] const owning_span<RailSplineTransition> &getSplineTransitions() const override {
+        static owning_span<RailSplineTransition> EMPTY_TRANSITIONS;
         return EMPTY_TRANSITIONS;
     }
 
@@ -117,7 +117,7 @@ private:
     void onPointAdded() override {}
 
     u16 m_dirCount;
-    std::span<RailLineTransition> m_transitions;
+    owning_span<RailLineTransition> m_transitions;
     f32 m_pathLength;
 };
 
@@ -137,7 +137,7 @@ public:
     }
 
     /// @addr{0x806EF984}
-    [[nodiscard]] const std::span<f32> &getPathPercentages() const override {
+    [[nodiscard]] const owning_span<f32> &getPathPercentages() const override {
         return m_pathPercentages;
     }
 
@@ -148,13 +148,13 @@ private:
     }
 
     /// @addr{0x806EF9A4}
-    [[nodiscard]] const std::span<RailLineTransition> &getLinearTransitions() const override {
-        static std::span<RailLineTransition> EMPTY_TRANSITIONS;
+    [[nodiscard]] const owning_span<RailLineTransition> &getLinearTransitions() const override {
+        static owning_span<RailLineTransition> EMPTY_TRANSITIONS;
         return EMPTY_TRANSITIONS;
     }
 
     /// @addr{0x806EF99C}
-    [[nodiscard]] const std::span<RailSplineTransition> &getSplineTransitions() const override {
+    [[nodiscard]] const owning_span<RailSplineTransition> &getSplineTransitions() const override {
         return m_transitions;
     }
 
@@ -173,10 +173,10 @@ private:
     [[nodiscard]] EGG::Vector3f cubicBezier(f32 t, const RailSplineTransition &transition) const;
 
     u16 m_transitionCount;
-    std::span<RailSplineTransition> m_transitions;
+    owning_span<RailSplineTransition> m_transitions;
     u32 m_estimatorSampleCount;
     f32 m_estimatorStep;
-    std::span<f32> m_pathPercentages;
+    owning_span<f32> m_pathPercentages;
     s32 m_segmentCount;
     f32 m_pathLength;
     bool m_doNotAllocatePathPercentages;

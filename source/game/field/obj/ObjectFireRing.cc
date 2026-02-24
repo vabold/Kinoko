@@ -7,7 +7,7 @@ ObjectFireRing::ObjectFireRing(const System::MapdataGeoObj &params)
     : ObjectCollidable(params), m_phase(0.0f) {
     size_t fireballCount = std::max<u32>(1, params.setting(0));
     m_angSpeed = static_cast<f32>(static_cast<s16>(params.setting(1)));
-    m_fireballs = std::span<ObjectFireball *>(new ObjectFireball *[fireballCount], fireballCount);
+    m_fireballs = owning_span<ObjectFireball *>(fireballCount);
     f32 distance = 100.0f * static_cast<f32>(params.setting(3));
 
     for (size_t i = 0; i < fireballCount; ++i) {
@@ -27,9 +27,7 @@ ObjectFireRing::ObjectFireRing(const System::MapdataGeoObj &params)
 }
 
 /// @addr{0x8076892C}
-ObjectFireRing::~ObjectFireRing() {
-    delete[] m_fireballs.data();
-}
+ObjectFireRing::~ObjectFireRing() = default;
 
 /// @addr{0x807683F0}
 void ObjectFireRing::init() {
