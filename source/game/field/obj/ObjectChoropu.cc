@@ -31,8 +31,7 @@ ObjectChoropu::ObjectChoropu(const System::MapdataGeoObj &params)
 
         s16 height = parse<s16>(collisionSet->params.cylinder.height);
         size_t groundCount = static_cast<size_t>(MAX_GROUND_LEN / EGG::Mathf::abs(height * 2)) + 1;
-        m_groundObjs = std::span<ObjectChoropuGround *>(new ObjectChoropuGround *[groundCount],
-                groundCount);
+        m_groundObjs = owning_span<ObjectChoropuGround *>(groundCount);
 
         for (auto *&obj : m_groundObjs) {
             obj = new ObjectChoropuGround(m_pos, m_rot, m_scale);
@@ -48,9 +47,7 @@ ObjectChoropu::ObjectChoropu(const System::MapdataGeoObj &params)
 }
 
 /// @addr{0x806B9B8C}
-ObjectChoropu::~ObjectChoropu() {
-    delete[] m_groundObjs.data();
-}
+ObjectChoropu::~ObjectChoropu() = default;
 
 /// @addr{0x806B9BF8}
 void ObjectChoropu::init() {

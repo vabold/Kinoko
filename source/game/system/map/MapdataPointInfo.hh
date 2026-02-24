@@ -37,14 +37,14 @@ public:
         return m_settings[idx];
     }
 
-    [[nodiscard]] const std::span<Point> &points() const {
+    [[nodiscard]] const owning_span<Point> &points() const {
         return m_points;
     }
 
 private:
     [[maybe_unused]] const SData *m_rawData;
     std::array<u8, 2> m_settings;
-    std::span<Point> m_points;
+    owning_span<Point> m_points;
 };
 
 class MapdataPointInfoAccessor

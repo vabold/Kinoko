@@ -24,7 +24,7 @@ public:
     }
 
 private:
-    std::span<ObjectFireball *> m_fireballs;
+    owning_span<ObjectFireball *> m_fireballs;
     u32 m_spokes; // The number of fireball "segments"
     f32 m_angSpeed;
     f32 m_degAngle;

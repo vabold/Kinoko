@@ -23,7 +23,7 @@ public:
             }
         }
 
-        m_projectiles = std::span<ObjectProjectile *>(new ObjectProjectile *[count], count);
+        m_projectiles = owning_span<ObjectProjectile *>(count);
 
         size_t curIdx = 0;
 
@@ -36,14 +36,11 @@ public:
         }
 
         u16 pointCount = m_launcher->railInterpolator()->pointCount();
-        m_pointIdxs = std::span<s16>(new s16[pointCount], pointCount);
+        m_pointIdxs = owning_span<s16>(pointCount);
     }
 
     /// @addr{0x806DE780}
-    ~ObjectSunManager() override {
-        delete[] m_projectiles.data();
-        delete[] m_pointIdxs.data();
-    }
+    ~ObjectSunManager() override = default;
 };
 
 } // namespace Field

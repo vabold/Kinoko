@@ -8,17 +8,12 @@ namespace Field {
 /// To account for this, we split the base game's constructor into two overloads.
 /// This overload enables conversion from std::array into a span, which initializes the points.
 ObjectCollisionConvexHull::ObjectCollisionConvexHull(const std::span<const EGG::Vector3f> &points)
-    : ObjectCollisionConvexHull(points.size()) {
-    for (size_t i = 0; i < points.size(); ++i) {
-        m_points[i] = points[i];
-    }
+    : m_points(points), m_initRadius(70.0f), m_worldPoints(points.size()), m_worldRadius(70.0f) {
+    ASSERT(points.size() < 0x100);
 }
 
 /// @addr{0x808365A8}
-ObjectCollisionConvexHull::~ObjectCollisionConvexHull() {
-    delete[] m_points.data();
-    delete[] m_worldPoints.data();
-}
+ObjectCollisionConvexHull::~ObjectCollisionConvexHull() = default;
 
 /// @addr{0x808366D0}
 void ObjectCollisionConvexHull::transform(const EGG::Matrix34f &mat, const EGG::Vector3f &scale) {
@@ -86,8 +81,8 @@ ObjectCollisionConvexHull::ObjectCollisionConvexHull(size_t count) : m_initRadiu
 
     m_worldRadius = 70.0f;
 
-    m_points = std::span<EGG::Vector3f>(new EGG::Vector3f[count], count);
-    m_worldPoints = std::span<EGG::Vector3f>(new EGG::Vector3f[count], count);
+    m_points = owning_span<EGG::Vector3f>(count);
+    m_worldPoints = owning_span<EGG::Vector3f>(count);
 }
 
 } // namespace Field

@@ -35,7 +35,7 @@ public:
 private:
     void calcSquash();
 
-    std::span<ObjectCarTGE *> m_cars;
+    owning_span<ObjectCarTGE *> m_cars;
     u32 m_squashTimer; ///< Normally an array, one for each player.
 
     static constexpr u32 SQUASH_MAX = 600;
