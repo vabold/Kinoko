@@ -7,6 +7,8 @@
 namespace System {
 
 class CameraManager : EGG::Disposer {
+    friend class Host::Context;
+
 public:
     static CameraManager *CreateInstance();
     static void DestroyInstance();

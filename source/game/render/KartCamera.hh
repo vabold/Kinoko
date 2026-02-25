@@ -41,6 +41,8 @@ private:
 /// @brief Manager class for the forward and backwards cameras.
 /// @details Responsible for setting the camera state and performing camera collision checks.
 class KartCamera {
+    friend class Host::Context;
+
 public:
     KartCamera();
     ~KartCamera();
