@@ -10,6 +10,8 @@ class ObjectFlamePole;
 
 /// @brief Represents the geysers on Bowser's Castle.
 class ObjectFlamePoleFoot final : public ObjectKCL, public StateManager {
+    friend class Host::Context;
+
 public:
     ObjectFlamePoleFoot(const System::MapdataGeoObj &params);
     ~ObjectFlamePoleFoot() override;
@@ -106,7 +108,7 @@ private:
     f32 m_eruptAccel;
     f32 m_initEruptVel;
 
-    static u32 FLAMEPOLE_COUNT;
+    static u32 s_flamePoleCount;
 
     static constexpr std::array<StateManagerEntry, 6> STATE_ENTRIES = {{
             {StateEntry<ObjectFlamePoleFoot, &ObjectFlamePoleFoot::enterExpanding,
