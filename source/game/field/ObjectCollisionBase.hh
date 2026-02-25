@@ -22,6 +22,8 @@ struct GJKState {
 /// @details Implementation is done via the GJK distance algorithm.
 /// https://en.wikipedia.org/wiki/Gilbert-Johnson-Keerthi_distance_algorithm
 class ObjectCollisionBase {
+    friend class Host::Context;
+
 public:
     ObjectCollisionBase();
     virtual ~ObjectCollisionBase();
