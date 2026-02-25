@@ -31,6 +31,8 @@ typedef f32 (*PlayPolicyFunc)(f32 start, f32 end, f32 frame);
 }
 
 class FrameCtrl {
+    friend class Host::Context;
+
 public:
     FrameCtrl(f32 start, f32 end, PlayPolicyFunc policy)
         : m_frame(0.0f), m_updateRate(1.0f), m_startFrame(start), m_endFrame(end),
