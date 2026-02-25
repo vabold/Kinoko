@@ -5,11 +5,11 @@
 namespace Field {
 
 /// @addr{0x806ED160}
-RailInterpolator::RailInterpolator(f32 speed, u32 idx) : m_currVel(0.0f) {
+RailInterpolator::RailInterpolator(f32 speed, u32 idx)
+    : m_points(RailManager::Instance()->rail(idx)->points()), m_currVel(0.0f) {
     m_railIdx = idx;
     auto *rail = RailManager::Instance()->rail(idx);
     m_pointCount = rail->pointCount();
-    m_points = rail->points();
     m_isOscillating = rail->isOscillating();
     m_speed = speed;
 }
@@ -403,7 +403,8 @@ void RailSmoothInterpolator::getPathLocation(f32 t, s16 &idx, f32 &len) {
 /// @addr{0x806EF224}
 void RailSmoothInterpolator::calcCubicBezier(f32 t, u32 currIdx, u32 nextIdx, EGG::Vector3f &pos,
         EGG::Vector3f &dir) const {
-    auto &transition = m_movementDirectionForward ? m_transitions[currIdx] : m_transitions[nextIdx];
+    const auto &transition =
+            m_movementDirectionForward ? m_transitions[currIdx] : m_transitions[nextIdx];
 
     pos = calcCubicBezierPos(t, transition);
     dir = calcCubicBezierTangentDir(t, transition);

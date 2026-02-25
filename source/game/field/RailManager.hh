@@ -43,13 +43,9 @@ private:
     void createPaths();
 
     std::vector<Rail *> m_rails;
-    std::span<RailInterpolator *> m_interpolators;
     u16 m_totalRails;
-    u16 m_interpolatorTotal;
     u16 m_extraInterplatorCount;
     u16 m_pointCount;
-    u16 m_cameraPointCount;
-    u16 m_cameraCount;
 
     static RailManager *s_instance; ///< @addr{0x809C22B0}
 };

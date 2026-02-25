@@ -20,7 +20,7 @@ ObjectHighwayManager::ObjectHighwayManager()
         }
     }
 
-    m_cars = std::span<ObjectCarTGE *>(new ObjectCarTGE *[carCount], carCount);
+    m_cars = owning_span<ObjectCarTGE *>(carCount);
     size_t idx = 0;
 
     for (auto *&obj : objDir->managedObjects()) {
@@ -35,10 +35,7 @@ ObjectHighwayManager::ObjectHighwayManager()
 }
 
 /// @addr{0x806D2FE8}
-ObjectHighwayManager::~ObjectHighwayManager() {
-    // The manager does not own the underlying objects. Only free the array itself.
-    delete[] m_cars.data();
-}
+ObjectHighwayManager::~ObjectHighwayManager() = default;
 
 /// @addr{0x806D332C}
 void ObjectHighwayManager::init() {

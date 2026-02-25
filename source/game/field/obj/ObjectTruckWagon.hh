@@ -134,7 +134,7 @@ public:
     void loadRail() override {}
 
 private:
-    std::span<ObjectTruckWagonCart *> m_carts;
+    owning_span<ObjectTruckWagonCart *> m_carts;
     const s32 m_spawn2Frame;   ///< Frame that the second minecart in a cycle spawns
     const s32 m_cycleDuration; ///< Total duration of a cycle
     s32 m_cycleFrame;          ///< Current frame modulo cycle duration

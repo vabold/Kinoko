@@ -16,7 +16,7 @@ ObjectWoodboxW::ObjectWoodboxW(const System::MapdataGeoObj &params) : ObjectColl
         boxCount = DEFAULT_BOX_COUNT;
     }
 
-    m_boxes = std::span<ObjectWoodboxWSub *>(new ObjectWoodboxWSub *[boxCount], boxCount);
+    m_boxes = owning_span<ObjectWoodboxWSub *>(boxCount);
 
     for (auto *&box : m_boxes) {
         box = new ObjectWoodboxWSub(params);
@@ -25,9 +25,7 @@ ObjectWoodboxW::ObjectWoodboxW(const System::MapdataGeoObj &params) : ObjectColl
 }
 
 /// @addr{0x8077E120}
-ObjectWoodboxW::~ObjectWoodboxW() {
-    delete[] m_boxes.data();
-}
+ObjectWoodboxW::~ObjectWoodboxW() = default;
 
 /// @addr{0x8077E1A0}
 void ObjectWoodboxW::init() {

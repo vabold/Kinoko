@@ -53,11 +53,7 @@ KColData::KColData(const void *file) {
     computeBBox();
 }
 
-KColData::~KColData() {
-    delete[] m_prisms.data();
-    delete[] m_nrms.data();
-    delete[] m_vertices.data();
-}
+KColData::~KColData() = default;
 
 /// @addr{0x807C24C0}
 void KColData::narrowScopeLocal(const EGG::Vector3f &pos, f32 radius, KCLTypeMask mask) {
@@ -308,7 +304,7 @@ void KColData::preloadPrisms() {
 
     EGG::RamStream stream = EGG::RamStream(m_prismData, sizeof(KCollisionPrism) * prismCount);
 
-    m_prisms = std::span<KCollisionPrism>(new KCollisionPrism[prismCount], prismCount);
+    m_prisms = owning_span<KCollisionPrism>(prismCount);
 
     // Because the prisms are one-indexed, we insert an empty prism
     stream.skip(sizeof(KCollisionPrism));
@@ -333,7 +329,7 @@ void KColData::preloadNormals() {
                                  reinterpret_cast<uintptr_t>(m_nrmData)) /
             sizeof(EGG::Vector3f);
 
-    m_nrms = std::span<EGG::Vector3f>(new EGG::Vector3f[normalCount], normalCount);
+    m_nrms = owning_span<EGG::Vector3f>(normalCount);
     EGG::RamStream stream = EGG::RamStream(m_nrmData, sizeof(EGG::Vector3f) * normalCount);
 
     for (auto &nrm : m_nrms) {
@@ -349,7 +345,7 @@ void KColData::preloadVertices() {
             (reinterpret_cast<uintptr_t>(m_nrmData) - reinterpret_cast<uintptr_t>(m_posData)) /
             sizeof(EGG::Vector3f);
 
-    m_vertices = std::span<EGG::Vector3f>(new EGG::Vector3f[vertexCount], vertexCount);
+    m_vertices = owning_span<EGG::Vector3f>(vertexCount);
     EGG::RamStream stream = EGG::RamStream(m_posData, sizeof(EGG::Vector3f) * vertexCount);
 
     for (auto &vert : m_vertices) {

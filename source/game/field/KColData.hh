@@ -112,16 +112,16 @@ public:
         return m_prismCache[idx];
     }
 
-    [[nodiscard]] const std::span<KCollisionPrism> &prisms() const {
-        return m_prisms;
+    [[nodiscard]] std::span<const KCollisionPrism> prisms() const {
+        return m_prisms.view();
     }
 
-    [[nodiscard]] const std::span<EGG::Vector3f> &nrms() const {
-        return m_nrms;
+    [[nodiscard]] std::span<const EGG::Vector3f> nrms() const {
+        return m_nrms.view();
     }
 
-    [[nodiscard]] const std::span<EGG::Vector3f> &vertices() const {
-        return m_vertices;
+    [[nodiscard]] std::span<const EGG::Vector3f> vertices() const {
+        return m_vertices.view();
     }
     /// @endGetters
 
@@ -171,9 +171,9 @@ private:
 
     /// @brief Optimizes for time by avoiding unnecessary byteswapping.
     /// The Wii doesn't have this problem because big endian is always assumed.
-    std::span<KCollisionPrism> m_prisms;
-    std::span<EGG::Vector3f> m_nrms;
-    std::span<EGG::Vector3f> m_vertices;
+    owning_span<KCollisionPrism> m_prisms;
+    owning_span<EGG::Vector3f> m_nrms;
+    owning_span<EGG::Vector3f> m_vertices;
 };
 
 } // namespace Field

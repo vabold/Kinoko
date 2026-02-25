@@ -26,6 +26,10 @@ public:
     [[nodiscard]] ItemInventory &inventory() {
         return m_inventory;
     }
+
+    [[nodiscard]] const ItemInventory &inventory() const {
+        return m_inventory;
+    }
     /// @endGetters
 
 private:

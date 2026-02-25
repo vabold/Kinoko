@@ -211,7 +211,7 @@ ObjectTruckWagon::ObjectTruckWagon(const System::MapdataGeoObj &params)
         return;
     }
 
-    m_carts = std::span<ObjectTruckWagonCart *>(new ObjectTruckWagonCart *[CART_COUNT], CART_COUNT);
+    m_carts = owning_span<ObjectTruckWagonCart *>(CART_COUNT);
 
     for (auto *&cart : m_carts) {
         cart = new ObjectTruckWagonCart(params);
@@ -227,9 +227,7 @@ ObjectTruckWagon::ObjectTruckWagon(const System::MapdataGeoObj &params)
 }
 
 /// @addr{0x806E21EC}
-ObjectTruckWagon::~ObjectTruckWagon() {
-    delete[] m_carts.data();
-}
+ObjectTruckWagon::~ObjectTruckWagon() = default;
 
 /// @addr{0x806E222C}
 void ObjectTruckWagon::init() {

@@ -33,11 +33,11 @@ public:
 protected:
     ObjectCollisionConvexHull(size_t count);
 
-    std::span<EGG::Vector3f> m_points;
+    owning_span<EGG::Vector3f> m_points;
 
 private:
     const f32 m_initRadius;
-    std::span<EGG::Vector3f> m_worldPoints;
+    owning_span<EGG::Vector3f> m_worldPoints;
     f32 m_worldRadius;
 };
 
