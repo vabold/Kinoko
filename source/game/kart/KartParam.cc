@@ -11,7 +11,11 @@ KartParam::KartParam(Character character, Vehicle vehicle, u8 playerIdx) {
     m_isBike = vehicle >= Vehicle::Standard_Bike_S;
     if (m_isBike) {
         initBikeDispParams(vehicle);
+    } else {
+        initKartDispParams(vehicle);
     }
+
+    initCameraParams(character);
 }
 
 KartParam::~KartParam() = default;
@@ -34,11 +38,25 @@ void KartParam::initBikeDispParams(Vehicle vehicle) {
     m_bikeDisp = BikeDisp(dispParamsStream);
 }
 
+void KartParam::initKartDispParams(Vehicle vehicle) {
+    auto *fileManager = KartParamFileManager::Instance();
+
+    auto dispParamsStream = fileManager->getKartDispParamsStream(vehicle);
+    m_kartDisp = KartDisp(dispParamsStream);
+}
+
 void KartParam::initHitboxes(Vehicle vehicle) {
     auto *fileManager = KartParamFileManager::Instance();
 
     auto hitboxStream = fileManager->getHitboxStream(vehicle);
     m_bsp = BSP(hitboxStream);
+}
+
+void KartParam::initCameraParams(Character character) {
+    auto *fileManager = KartParamFileManager::Instance();
+
+    auto cameraStream = fileManager->getKartCameraStream(character);
+    m_camera = KartCameraParam(cameraStream);
 }
 
 KartParam::BikeDisp::BikeDisp() = default;
@@ -48,9 +66,20 @@ KartParam::BikeDisp::BikeDisp(EGG::RamStream &stream) {
 }
 
 void KartParam::BikeDisp::read(EGG::RamStream &stream) {
-    stream.skip(0xc);
+    m_cameraDistY = stream.read_f32();
+    stream.skip(0x8);
     m_handlePos.read(stream);
     m_handleRot.read(stream);
+}
+
+KartParam::KartDisp::KartDisp() = default;
+
+KartParam::KartDisp::KartDisp(EGG::RamStream &stream) {
+    read(stream);
+}
+
+void KartParam::KartDisp::read(EGG::RamStream &stream) {
+    m_cameraDistY = stream.read_f32();
 }
 
 KartParam::Stats::Stats() = default;
@@ -185,6 +214,21 @@ void BSP::read(EGG::RamStream &stream) {
 
     rumbleHeight = stream.read_f32();
     rumbleSpeed = stream.read_f32();
+}
+
+KartParam::KartCameraParam::KartCameraParam() = default;
+
+KartParam::KartCameraParam::KartCameraParam(EGG::RamStream &stream) {
+    read(stream);
+}
+
+void KartParam::KartCameraParam::read(EGG::RamStream &stream) {
+    for (auto &camera : m_cameraEntries) {
+        camera.fov = stream.read_f32();
+        camera.dist = stream.read_f32();
+        camera.posY = stream.read_f32();
+        camera.targetPosY = stream.read_f32();
+    }
 }
 
 } // namespace Kart
