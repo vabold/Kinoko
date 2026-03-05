@@ -160,7 +160,7 @@ void KTestSystem::parseOptions(int argc, char **argv) {
             ASSERT(i + 1 < argc);
 
             size_t size;
-            u8 *data = Abstract::File::Load(argv[++i], size);
+            u8 *data = Abstract::File::LoadHost(argv[++i], size);
 
             if (size == 0) {
                 PANIC("Failed to load suite data!");
@@ -258,7 +258,7 @@ void KTestSystem::startNextTestCase() {
     constexpr u32 KRKG_SIGNATURE = 0x4b524b47; // KRKG
 
     size_t size;
-    u8 *krkg = Abstract::File::Load(getCurrentTestCase().krkgPath.data(), size);
+    u8 *krkg = Abstract::File::LoadHost(getCurrentTestCase().krkgPath.data(), size);
     m_stream = EGG::RamStream(krkg, static_cast<u32>(size));
     m_currentFrame = -1;
     m_sync = true;
@@ -463,7 +463,7 @@ const KTestSystem::TestCase &KTestSystem::getCurrentTestCase() const {
 /// @param arg Unused optional argument.
 void KTestSystem::OnInit(System::RaceConfig *config, void * /* arg */) {
     size_t size;
-    u8 *rkg = Abstract::File::Load(Instance()->getCurrentTestCase().rkgPath.data(), size);
+    u8 *rkg = Abstract::File::LoadHost(Instance()->getCurrentTestCase().rkgPath.data(), size);
     config->setGhost(rkg);
     delete[] rkg;
 

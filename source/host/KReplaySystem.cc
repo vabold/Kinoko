@@ -61,7 +61,8 @@ void KReplaySystem::parseOptions(int argc, char **argv) {
             ASSERT(i + 1 < argc);
 
             m_currentGhostFileName = argv[++i];
-            m_currentRawGhost = Abstract::File::Load(m_currentGhostFileName, m_currentRawGhostSize);
+            m_currentRawGhost =
+                    Abstract::File::LoadHost(m_currentGhostFileName, m_currentRawGhostSize);
 
             if (m_currentRawGhostSize < System::RKG_HEADER_SIZE ||
                     m_currentRawGhostSize > sizeof(System::RawGhostFile)) {
