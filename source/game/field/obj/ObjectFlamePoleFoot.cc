@@ -15,10 +15,10 @@ ObjectFlamePoleFoot::ObjectFlamePoleFoot(const System::MapdataGeoObj &params)
     m_initDelay = params.setting(1);
     m_poleScale = static_cast<f32>(params.setting(2));
 
-    ++FLAMEPOLE_COUNT;
+    ++s_flamePoleCount;
 
     if (m_poleScale == 0.0f) {
-        m_poleScale = 3.0f + static_cast<f32>(FLAMEPOLE_COUNT % 3);
+        m_poleScale = 3.0f + static_cast<f32>(s_flamePoleCount % 3);
     }
 
     m_pole = new ObjectFlamePole(params, m_pos, m_rot, m_scale);
@@ -27,7 +27,7 @@ ObjectFlamePoleFoot::ObjectFlamePoleFoot(const System::MapdataGeoObj &params)
 
 /// @addr{0x8067EBE0}
 ObjectFlamePoleFoot::~ObjectFlamePoleFoot() {
-    FLAMEPOLE_COUNT = 0;
+    s_flamePoleCount = 0;
 }
 
 /// @addr{0x8067EC94}
@@ -215,6 +215,6 @@ void ObjectFlamePoleFoot::calcEruptingStay() {
     m_heightOffset = m_scaledHeight + AMPLITUDE * EGG::Mathf::SinFIdx(DEG2FIDX * angle);
 }
 
-u32 ObjectFlamePoleFoot::FLAMEPOLE_COUNT = 0;
+u32 ObjectFlamePoleFoot::s_flamePoleCount = 0;
 
 } // namespace Field

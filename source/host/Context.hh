@@ -8,6 +8,11 @@
 
 class KSystem;
 
+namespace Abstract::g3d {
+class FrameCtrl;
+class ResAnmChr;
+} // namespace Abstract::g3d
+
 namespace Abstract::Memory {
 class MEMList;
 } // namespace Abstract::Memory
@@ -54,8 +59,8 @@ namespace Host {
 /// @brief Contexts can be used to restore a previous memory state for the current session.
 /// @details Contexts can be thought of like savestates, where we can save and load a given
 /// checkpoint. Contexts work by performing a memcpy of the entire game heap, which is reliable
-/// since we override operator new with an EGG::Heap implementation. Because the location of certain
-/// singletons could change per-race, we also have to capture them in the Context.
+/// since we override operator new with an EGG::Heap implementation. For variables with static
+/// storage duration, they may exist out of the heap. Thus, we need to manually copy those.
 class Context {
 public:
     Context();
@@ -71,12 +76,15 @@ public:
     static void SetActiveContext(const Context &rhs);
 
 private:
-    struct Pointers {
+    struct Statics {
         Abstract::Memory::MEMList m_rootList;
         Abstract::Memory::MEMList m_archiveList;
         Abstract::Memory::MEMList m_heapList;
         EGG::Heap *m_currentHeap;
+        EGG::Heap *m_allocatableHeap;
         EGG::Heap *m_heapForCreateScene;
+        u16 m_heapOptionFlg;
+        EGG::Heap *m_rootHeap;
         Field::BoxColManager *m_boxColMgr;
         Field::CollisionDirector *m_colDir;
         Field::CourseColMgr *m_courseColMgr;
@@ -93,10 +101,19 @@ private:
         void *m_onInitCallbackArg;
         System::RaceManager *m_raceMgr;
         System::ResourceManager *m_resMgr;
+        Abstract::g3d::ResAnmChr *m_thunderScaleUpAnmChr;
+        Abstract::g3d::ResAnmChr *m_thunderScaleDownAnmChr;
+        Abstract::g3d::ResAnmChr *m_pressScaleUpAnmChr;
+        f32 m_frameCtrlBaseUpdateRate;
+        std::array<std::array<f32, 4>, 4> m_dotProductCache;
+        f32 m_wanwanMaxPitch;
+        f32 m_basabasaInitialXRange;
+        f32 m_basabasaInitialYRange;
+        u32 m_flamePoleCount;
     };
 
     void *m_contextMemory;
-    Pointers m_ptrs;
+    Statics m_statics;
 };
 
 } // namespace Host
