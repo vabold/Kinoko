@@ -4,6 +4,7 @@
 #include "game/field/CollisionDirector.hh"
 #include "game/field/ObjectDirector.hh"
 #include "game/field/RailManager.hh"
+#include "game/field/jugem/JugemDirector.hh"
 #include "game/item/ItemDirector.hh"
 #include "game/kart/KartObjectManager.hh"
 #include "game/render/KartCamera.hh"
@@ -45,6 +46,7 @@ void RaceScene::createEngines() {
     {
         ScopeLock<GroupID> lock(GroupID::Object);
         Field::BoxColManager::CreateInstance();
+        Field::JugemDirector::CreateInstance();
     }
 
     {
@@ -94,6 +96,7 @@ void RaceScene::initEngines() {
     {
         ScopeLock<GroupID> lock(GroupID::Object);
         Field::ObjectDirector::Instance()->init();
+        Field::JugemDirector::Instance()->init();
     }
 
     m_heap->disableAllocation();
@@ -108,6 +111,7 @@ void RaceScene::calcEngines() {
     Field::BoxColManager::Instance()->calc();
     Field::ObjectDirector::Instance()->calc();
     Kart::KartObjectManager::Instance()->calc();
+    Field::JugemDirector::Instance()->calc();
     Item::ItemDirector::Instance()->calc();
     raceMgr->random().next();
 }
@@ -117,6 +121,7 @@ void RaceScene::destroyEngines() {
     System::KPadDirector::Instance()->endGhostProxies();
     Render::KartCamera::DestroyInstance();
     Kart::KartObjectManager::DestroyInstance();
+    Field::JugemDirector::DestroyInstance();
     Field::ObjectDirector::DestroyInstance();
     Field::RailManager::DestroyInstance();
     Field::CollisionDirector::DestroyInstance();
