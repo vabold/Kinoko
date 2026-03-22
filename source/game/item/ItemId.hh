@@ -1,10 +1,10 @@
 #pragma once
 
-namespace Item {
+namespace Kinoko::Item {
 
 enum class ItemId {
     TRIPLE_MUSHROOM = 0x5,
     NONE = 0x14,
 };
 
-} // namespace Item
+} // namespace Kinoko::Item

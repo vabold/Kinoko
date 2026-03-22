@@ -3,7 +3,7 @@
 #include "game/field/obj/ObjectProjectile.hh"
 #include "game/field/obj/ObjectProjectileLauncher.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief The base class for a manager object which is responsible for synchronizing a set of
 /// projectiles and a projectile launcher.
@@ -40,4 +40,4 @@ protected:
     owning_span<s16> m_pointIdxs;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

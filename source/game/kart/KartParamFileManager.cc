@@ -1,6 +1,6 @@
 #include "KartParamFileManager.hh"
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @addr{0x80591C9C}
 void KartParamFileManager::clear() {
@@ -209,4 +209,4 @@ bool KartParamFileManager::validate() const {
 
 KartParamFileManager *KartParamFileManager::s_instance = nullptr;
 
-} // namespace Kart
+} // namespace Kinoko::Kart

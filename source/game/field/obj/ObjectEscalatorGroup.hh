@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectEscalator;
 
@@ -36,4 +36,4 @@ private:
     ObjectEscalator *m_leftEscalator;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

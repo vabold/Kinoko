@@ -21,7 +21,7 @@
 #include <game/system/RaceConfig.hh>
 #include <game/system/RaceManager.hh>
 
-namespace Host {
+namespace Kinoko::Host {
 
 Context::Context() {
     m_contextMemory = malloc(MEMORY_SPACE_SIZE);
@@ -183,4 +183,4 @@ void Context::SetActiveContext(const Context &rhs) {
     Field::ObjectFlamePoleFoot::s_flamePoleCount = rhs.m_statics.m_flamePoleCount;
 }
 
-} // namespace Host
+} // namespace Kinoko::Host

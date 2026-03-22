@@ -2,7 +2,7 @@
 
 #include "game/kart/KartParamFileManager.hh"
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 KartParam::KartParam(Character character, Vehicle vehicle, u8 playerIdx) {
     initStats(character, vehicle);
@@ -229,4 +229,4 @@ void KartParam::KartCameraParam::read(EGG::RamStream &stream) {
     targetPosY = stream.read_f32();
 }
 
-} // namespace Kart
+} // namespace Kinoko::Kart

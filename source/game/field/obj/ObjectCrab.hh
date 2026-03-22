@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectCrab final : public ObjectCollidable {
 public:
@@ -63,4 +63,4 @@ private:
     static constexpr u32 COUNT = 3;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

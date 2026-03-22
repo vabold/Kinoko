@@ -1,6 +1,6 @@
 #include "KartTire.hh"
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @addr{0x8059AA44}
 KartTire::KartTire(KartSuspensionPhysics::TireType tireType, u16 bspWheelIdx)
@@ -61,4 +61,4 @@ void KartTireRearBike::createPhysics(u16 tireIdx) {
     m_wheelPhysics = new WheelPhysics(tireIdx, 1);
 }
 
-} // namespace Kart
+} // namespace Kinoko::Kart

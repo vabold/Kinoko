@@ -4,7 +4,7 @@
 
 #include "game/system/RaceManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief The oscillating platforms before and after the indoor section on Grumble Volcano.
 class ObjectVolcanoRock final : public ObjectKCL {
@@ -52,4 +52,4 @@ private:
     EGG::Matrix34f m_rtMat; ///< Rotation and translation matrix
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

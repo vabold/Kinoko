@@ -15,7 +15,7 @@
 
 #include <ScopeLock.hh>
 
-namespace Scene {
+namespace Kinoko::Scene {
 
 /// @addr{0x80553B88}
 RaceScene::RaceScene() {
@@ -152,4 +152,4 @@ void RaceScene::onReinit() {
     configure();
 }
 
-} // namespace Scene
+} // namespace Kinoko::Scene

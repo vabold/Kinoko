@@ -5,7 +5,7 @@
 
 #include <string>
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief Handles the synchronization between the @ref ObjectSunDS and @ref ObjectFireSnake
 /// projectiles.
@@ -43,4 +43,4 @@ public:
     ~ObjectSunManager() override = default;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

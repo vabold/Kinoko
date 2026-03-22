@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief Represents the rising water on GCN Peach Beach and Delfino Pier battle stage.
 /// @details In the base game, there are 5 subclasses owned by ObjectPsea. In terms of collision,
@@ -33,4 +33,4 @@ private:
     static constexpr s16 CYCLE_DURATION = 1200;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

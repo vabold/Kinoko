@@ -1,6 +1,6 @@
 #pragma once
 
-namespace EGG {
+namespace Kinoko::EGG {
 
 class Scene;
 
@@ -11,4 +11,4 @@ public:
     virtual void destroy(int sceneID) const = 0;
 };
 
-} // namespace EGG
+} // namespace Kinoko::EGG

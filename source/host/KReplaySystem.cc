@@ -9,6 +9,8 @@
 
 #include <iomanip>
 
+namespace Kinoko {
+
 /// @brief Initializes the system.
 void KReplaySystem::init() {
     ASSERT(m_currentGhostFileName);
@@ -220,3 +222,5 @@ void KReplaySystem::OnInit(System::RaceConfig *config, void * /* arg */) {
     config->setGhost(Instance()->m_currentRawGhost);
     config->raceScenario().players[0].type = System::RaceConfig::Player::Type::Ghost;
 }
+
+} // namespace Kinoko

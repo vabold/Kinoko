@@ -9,7 +9,7 @@
 
 #include "game/system/RaceManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806E4224}
 ObjectWanwan::ObjectWanwan(const System::MapdataGeoObj &params)
@@ -496,4 +496,4 @@ void ObjectWanwan::SampleHermiteInterp(f32 start, f32 end, f32 startTangent, f32
     }
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

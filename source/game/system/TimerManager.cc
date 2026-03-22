@@ -1,6 +1,6 @@
 #include "TimerManager.hh"
 
-namespace System {
+namespace Kinoko::System {
 
 /// @addr{0x8051C374}
 Timer::Timer() : min(0), sec(0), mil(0), valid(false) {}
@@ -66,4 +66,4 @@ void TimerManager::calc() {
     ++m_frameCounter;
 }
 
-} // namespace System
+} // namespace Kinoko::System

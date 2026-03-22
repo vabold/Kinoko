@@ -12,6 +12,8 @@
 #include <list>
 #include <vector>
 
+namespace Kinoko {
+
 namespace Field {
 
 class BoxColUnit;
@@ -184,3 +186,5 @@ private:
 };
 
 } // namespace Kart
+
+} // namespace Kinoko

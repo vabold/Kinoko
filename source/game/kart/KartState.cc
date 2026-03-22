@@ -8,7 +8,7 @@
 
 #include "game/system/RaceManager.hh"
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 struct StartBoostEntry {
     f32 range;
@@ -412,4 +412,4 @@ void KartState::resetEjection() {
     m_status.resetBit(eStatus::HalfPipeRamp, eStatus::RejectRoad);
 }
 
-} // namespace Kart
+} // namespace Kinoko::Kart

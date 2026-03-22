@@ -7,7 +7,7 @@
 
 #include "game/kart/KartObject.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8081EFEC}
 ObjectCollidable::ObjectCollidable(const System::MapdataGeoObj &params)
@@ -134,4 +134,4 @@ void ObjectCollidable::registerManagedObject() {
     ObjectDirector::Instance()->addManagedObject(this);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

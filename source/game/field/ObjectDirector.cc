@@ -9,7 +9,7 @@
 #include "game/system/CourseMap.hh"
 #include "game/system/RaceConfig.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8082A2B4}
 void ObjectDirector::init() {
@@ -410,4 +410,4 @@ f32 ObjectDirector::s_wanwanMaxPitch; ///< @addr{0x808C70E8}
 
 ObjectDirector *ObjectDirector::s_instance = nullptr; ///< @addr{0x809C4330}
 
-} // namespace Field
+} // namespace Kinoko::Field

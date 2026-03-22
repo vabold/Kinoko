@@ -7,7 +7,7 @@
 #include <Common.hh>
 
 /// @brief Represents the host application.
-namespace Host {
+namespace Kinoko::Host {
 
 class SceneCreatorDynamic final : public EGG::SceneCreator {
 public:
@@ -19,4 +19,4 @@ private:
     void destroy(SceneId sceneId) const;
 };
 
-} // namespace Host
+} // namespace Kinoko::Host

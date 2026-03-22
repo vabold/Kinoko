@@ -3,7 +3,7 @@
 #include "game/field/CollisionDirector.hh"
 #include "game/field/RailManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806CE828}
 ObjectHeyho::ObjectHeyho(const System::MapdataGeoObj &params)
@@ -244,4 +244,4 @@ void ObjectHeyho::calcInterp() {
     setMatrixTangentTo(m_up, m_forward);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

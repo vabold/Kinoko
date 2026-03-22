@@ -11,7 +11,7 @@
 #include <egg/core/BitFlag.hh>
 #include <egg/math/Matrix.hh>
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectBase {
 public:
@@ -163,4 +163,4 @@ protected:
     const System::MapdataGeoObj *m_mapObj;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

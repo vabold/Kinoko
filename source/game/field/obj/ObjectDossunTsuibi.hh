@@ -1,6 +1,6 @@
 #include "game/field/obj/ObjectDossun.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectDossunTsuibiHolder;
 
@@ -31,4 +31,4 @@ private:
     ObjectDossunTsuibiHolder *m_holder;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -9,7 +9,7 @@
 
 #include "game/system/RaceManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806BBEC0}
 ObjectCow::ObjectCow(const System::MapdataGeoObj &params) : ObjectCollidable(params) {
@@ -519,4 +519,4 @@ void ObjectCowHerd::checkIntraCollision() {
     }
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -1,6 +1,6 @@
 #include "KartSuspension.hh"
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @addr{0x80598B08}
 KartSuspension::KartSuspension() = default;
@@ -35,4 +35,4 @@ KartSuspensionRearBike::KartSuspensionRearBike() = default;
 /// @addr{0x8059938C}
 KartSuspensionRearBike::~KartSuspensionRearBike() = default;
 
-} // namespace Kart
+} // namespace Kinoko::Kart

@@ -2,7 +2,7 @@
 
 #include <egg/math/Vector.hh>
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief One link in a chain where each link's position is limited by the other links.
 class SphereLink {
@@ -77,4 +77,4 @@ private:
     static constexpr EGG::Vector3f GRAVITY = EGG::Vector3f(0.0f, 2.5f, 0.0f);
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

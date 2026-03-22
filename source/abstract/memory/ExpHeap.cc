@@ -3,7 +3,7 @@
 #include <limits>
 #include <new> // placement new
 
-namespace Abstract::Memory {
+namespace Kinoko::Abstract::Memory {
 
 Region::Region(void *start, void *end) : start(start), end(end) {}
 
@@ -360,4 +360,4 @@ bool MEMiExpHeapHead::recycleRegion(const Region &initialRegion) {
     return true;
 }
 
-} // namespace Abstract::Memory
+} // namespace Kinoko::Abstract::Memory

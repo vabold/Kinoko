@@ -1,6 +1,6 @@
 #include "ObjectFireRing.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x80767FF4}
 ObjectFireRing::ObjectFireRing(const System::MapdataGeoObj &params)
@@ -54,4 +54,4 @@ void ObjectFireRing::calc() {
     }
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

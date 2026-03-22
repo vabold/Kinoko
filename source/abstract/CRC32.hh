@@ -2,7 +2,7 @@
 
 #include "Common.hh"
 
-namespace Abstract {
+namespace Kinoko::Abstract {
 
 /// @addr{0x801D1CA0}
 [[nodiscard]] constexpr u32 CalcCRC32(u8 *data, u32 size) {
@@ -36,4 +36,4 @@ namespace Abstract {
     return ~ret;
 }
 
-} // namespace Abstract
+} // namespace Kinoko::Abstract

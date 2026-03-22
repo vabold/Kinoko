@@ -4,7 +4,7 @@
 #include "game/field/RailManager.hh"
 #include "game/field/obj/ObjectHeyhoShip.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806D2368}
 ObjectHeyhoShipManager::ObjectHeyhoShipManager() {
@@ -78,4 +78,4 @@ void ObjectHeyhoShipManager::calc() {
     }
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

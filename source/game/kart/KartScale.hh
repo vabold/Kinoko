@@ -3,7 +3,7 @@
 #include "game/kart/KartObjectProxy.hh"
 #include "game/kart/KartParam.hh"
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @brief Mainly responsible for calculating scaling for the squish/unsquish animation.
 class KartScale : protected KartObjectProxy {
@@ -67,4 +67,4 @@ private:
     }};
 };
 
-} // namespace Kart
+} // namespace Kinoko::Kart

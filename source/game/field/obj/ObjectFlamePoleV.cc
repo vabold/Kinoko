@@ -2,7 +2,7 @@
 
 #include "game/system/RaceManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806C3AA4}
 ObjectFlamePoleV::ObjectFlamePoleV(const System::MapdataGeoObj &params)
@@ -88,4 +88,4 @@ void ObjectFlamePoleV::calcLowering() {
     m_currOffsetY = m_loweringStartOffsetY - m_fallSpeed * static_cast<f32>(m_currentFrame);
 }
 
-}; // namespace Field
+}; // namespace Kinoko::Field

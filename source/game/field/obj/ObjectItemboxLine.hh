@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectItemboxPress;
 
@@ -27,4 +27,4 @@ private:
     u32 m_curPressIdx;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

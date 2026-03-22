@@ -1,6 +1,6 @@
 #include "ObjectDrivableDirector.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8081B500}
 void ObjectDrivableDirector::init() {
@@ -238,4 +238,4 @@ ObjectDrivableDirector::~ObjectDrivableDirector() {
 
 ObjectDrivableDirector *ObjectDrivableDirector::s_instance = nullptr; ///< @addr{0x809C4310}
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -3,7 +3,7 @@
 #include "game/field/StateManager.hh"
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class RailInterpolator;
 
@@ -173,4 +173,4 @@ private:
     owning_span<ObjectCowFollower *> m_followers;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

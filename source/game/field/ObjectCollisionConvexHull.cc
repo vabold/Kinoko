@@ -1,6 +1,6 @@
 #include "ObjectCollisionConvexHull.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x808364E0}
 /// @brief Creates a convex hull with the provided points.
@@ -85,4 +85,4 @@ ObjectCollisionConvexHull::ObjectCollisionConvexHull(size_t count) : m_initRadiu
     m_worldPoints = owning_span<EGG::Vector3f>(count);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

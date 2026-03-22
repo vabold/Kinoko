@@ -3,7 +3,7 @@
 #include "game/field/StateManager.hh"
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief Shy guys on DK Summit.
 class ObjectHeyho : public ObjectCollidable, public StateManager {
@@ -75,4 +75,4 @@ private:
     static constexpr f32 COLLISION_RADIUS = 100.0f;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

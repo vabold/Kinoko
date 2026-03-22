@@ -4,7 +4,7 @@
 #include "game/kart/KartObject.hh"
 #include "game/kart/KartState.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806DD934}
 ObjectOilSFC::ObjectOilSFC(const System::MapdataGeoObj &params) : ObjectCollidable(params) {}
@@ -19,4 +19,4 @@ Kart::Reaction ObjectOilSFC::onCollision(Kart::KartObject *kartObj, Kart::Reacti
     return touchingGround ? reactionOnKart : Kart::Reaction::None;
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

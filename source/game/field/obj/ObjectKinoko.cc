@@ -1,6 +1,6 @@
 #include "ObjectKinoko.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8080761C}
 ObjectKinoko::ObjectKinoko(const System::MapdataGeoObj &params)
@@ -110,4 +110,4 @@ ObjectKinokoNm::ObjectKinokoNm(const System::MapdataGeoObj &params) : ObjectKCL(
 /// @addr{0x80827A9C}
 ObjectKinokoNm::~ObjectKinokoNm() = default;
 
-} // namespace Field
+} // namespace Kinoko::Field

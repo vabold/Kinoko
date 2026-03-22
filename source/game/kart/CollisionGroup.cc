@@ -1,6 +1,6 @@
 #include "CollisionGroup.hh"
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @addr{0x805B821C}
 void CollisionData::reset() {
@@ -195,4 +195,4 @@ void CollisionGroup::setHitboxScale(f32 scale) {
     }
 }
 
-} // namespace Kart
+} // namespace Kinoko::Kart

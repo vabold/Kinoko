@@ -1,6 +1,6 @@
 #include "ObjectBeltEasy.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x807FC578}
 ObjectBeltEasy::ObjectBeltEasy(const System::MapdataGeoObj &params) : ObjectBelt(params) {
@@ -23,4 +23,4 @@ EGG::Vector3f ObjectBeltEasy::calcRoadVelocity(u32 variant, const EGG::Vector3f 
     }
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

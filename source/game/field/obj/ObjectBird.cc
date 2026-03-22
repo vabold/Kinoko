@@ -4,7 +4,7 @@
 
 #include "game/system/RaceManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8077BD80}
 ObjectBird::ObjectBird(const System::MapdataGeoObj &params) : ObjectCollidable(params) {
@@ -168,4 +168,4 @@ void ObjectBirdFollower::calcPos() {
     m_flags.setBit(eFlags::Position);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

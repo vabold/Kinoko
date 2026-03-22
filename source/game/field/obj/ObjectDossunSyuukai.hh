@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectDossun.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief Thwomps that move along a rail and stomp.
 class ObjectDossunSyuukai final : public ObjectDossun {
@@ -35,4 +35,4 @@ private:
     bool m_rotating;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

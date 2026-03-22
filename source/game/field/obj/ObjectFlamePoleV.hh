@@ -3,7 +3,7 @@
 #include "game/field/StateManager.hh"
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectFlamePoleV final : public ObjectCollidable, public StateManager {
 public:
@@ -120,4 +120,4 @@ private:
     }};
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

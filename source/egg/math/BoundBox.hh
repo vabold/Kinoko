@@ -2,7 +2,7 @@
 
 #include "egg/math/Vector.hh"
 
-namespace EGG {
+namespace Kinoko::EGG {
 
 /// @brief A representation of a bounding rectangle.
 struct BoundBox2f {
@@ -65,4 +65,4 @@ struct BoundBox3f {
     Vector3f max;
 };
 
-} // namespace EGG
+} // namespace Kinoko::EGG

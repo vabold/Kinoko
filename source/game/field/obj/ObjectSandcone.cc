@@ -2,7 +2,7 @@
 
 #include "game/system/RaceManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x80686F84}
 ObjectSandcone::ObjectSandcone(const System::MapdataGeoObj &params) : ObjectKCL(params) {
@@ -69,4 +69,4 @@ bool ObjectSandcone::checkCollisionCached(f32 radius, const EGG::Vector3f &pos,
     return m_objColMgr->checkSphereCachedFullPush(radius, pos, prevPos, mask, info, maskOut);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

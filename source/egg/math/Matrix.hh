@@ -2,7 +2,7 @@
 
 #include "egg/math/Quat.hh"
 
-namespace EGG {
+namespace Kinoko::EGG {
 
 using namespace Mathf;
 
@@ -426,4 +426,4 @@ inline constexpr Matrix34f Matrix34f::ident(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 
 inline constexpr Matrix34f Matrix34f::zero(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
         0.0f, 0.0f, 0.0f);
 
-} // namespace EGG
+} // namespace Kinoko::EGG

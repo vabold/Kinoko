@@ -2,7 +2,7 @@
 
 #include "game/field/CourseColMgr.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x807C4CE8}
 ObjColMgr::ObjColMgr(const void *file)
@@ -619,4 +619,4 @@ bool ObjColMgr::checkSphereCachedFullPush(f32 radius, const EGG::Vector3f &pos,
             prevPosWrtModel, typeflags, info, typeMaskOut);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

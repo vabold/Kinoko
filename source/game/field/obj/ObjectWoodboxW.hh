@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectWoodboxWSub;
 
@@ -28,4 +28,4 @@ private:
     u32 m_nextBoxIdx;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

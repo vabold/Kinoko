@@ -9,7 +9,7 @@
 
 #include <egg/math/Math.hh>
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @addr{0x80574114}
 KartHalfPipe::KartHalfPipe() : m_prevPos(EGG::Vector3f::zero) {}
@@ -329,4 +329,4 @@ void KartHalfPipe::StuntManager::setProperties(size_t idx) {
     angleDeltaFactor = 1.0f;
 }
 
-} // namespace Kart
+} // namespace Kinoko::Kart

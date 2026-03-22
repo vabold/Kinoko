@@ -3,7 +3,7 @@
 #include "game/field/StateManager.hh"
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief Represents a single bat. It's owned and managed by @ref ObjectBasabasa.
 class ObjectBasabasaDummy final : public ObjectCollidable, public StateManager {
@@ -110,4 +110,4 @@ private:
     static f32 s_initialYRange;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

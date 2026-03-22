@@ -9,7 +9,7 @@
 
 #include <vector>
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief The manager class for SNES Ghost Valley 2 blocks.
 /// @details Blocks are constructed via this manager. When blocks are added, they're placed in a
@@ -119,4 +119,4 @@ private:
     std::vector<ObjectObakeBlock *> m_calcBlocks; ///< Actively falling blocks
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

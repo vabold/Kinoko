@@ -4,6 +4,8 @@
 
 #include "game/system/ResourceManager.hh"
 
+namespace Kinoko {
+
 namespace Host {
 
 class Context;
@@ -72,3 +74,5 @@ private:
 };
 
 } // namespace Kart
+
+} // namespace Kinoko

@@ -5,7 +5,7 @@
 
 #include "game/system/RaceManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806E3458}
 ObjectVolcanoBallLauncher::ObjectVolcanoBallLauncher(const System::MapdataGeoObj &params)
@@ -86,4 +86,4 @@ void ObjectVolcanoBallLauncher::calc() {
     }
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

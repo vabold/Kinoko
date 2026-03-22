@@ -1,8 +1,9 @@
 #include "egg/core/ExpHeap.hh"
 
+using namespace Kinoko;
 using namespace Abstract::Memory;
 
-namespace EGG {
+namespace Kinoko::EGG {
 
 /// @addr{0x802296E8}
 Heap::Heap(MEMiHeapHead *handle) : m_handle(handle), m_children(Disposer::getLinkOffset()) {
@@ -130,7 +131,7 @@ Heap *Heap::findContainHeap(const void *block) {
     return handle ? findHeap(handle) : nullptr;
 }
 
-} // namespace EGG
+} // namespace Kinoko::EGG
 
 /// @addr{0x80229DCC}
 void *operator new(size_t size) {

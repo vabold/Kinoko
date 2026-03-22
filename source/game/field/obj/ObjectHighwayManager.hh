@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectCarTGE;
 
@@ -41,4 +41,4 @@ private:
     static constexpr u32 SQUASH_MAX = 600;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

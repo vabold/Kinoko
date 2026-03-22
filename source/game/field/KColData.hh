@@ -8,7 +8,7 @@
 // Credit: em-eight/mkw
 // Credit: stblr/Hanachan
 
-namespace Field {
+namespace Kinoko::Field {
 
 struct CollisionInfoPartial {
     EGG::BoundBox3f bbox;
@@ -176,4 +176,4 @@ private:
     owning_span<EGG::Vector3f> m_vertices;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

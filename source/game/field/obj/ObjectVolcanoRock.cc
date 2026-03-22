@@ -1,6 +1,6 @@
 #include "ObjectVolcanoRock.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8081A198}
 ObjectVolcanoRock::ObjectVolcanoRock(const System::MapdataGeoObj &params)
@@ -40,4 +40,4 @@ EGG::Vector3f ObjectVolcanoRock::calcPos(u32 frame) {
     return m_initialPos + m_transform.multVector33(zDisplacement + yDisplacement);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

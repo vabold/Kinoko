@@ -2,8 +2,7 @@
 
 #include <cmath>
 
-namespace Abstract {
-namespace g3d {
+namespace Kinoko::Abstract::g3d {
 
 /// @addr{0x800604F0}
 f32 PlayPolicy_Onetime(f32 /*start*/, f32 /*end*/, f32 frame) {
@@ -27,5 +26,4 @@ f32 PlayPolicy_Loop(f32 start, f32 end, f32 frame) {
 
 f32 FrameCtrl::s_baseUpdateRate = 1.0f;
 
-} // namespace g3d
-} // namespace Abstract
+} // namespace Kinoko::Abstract::g3d

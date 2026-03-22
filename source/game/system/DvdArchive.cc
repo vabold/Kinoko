@@ -4,7 +4,7 @@
 
 #include <egg/core/Decomp.hh>
 
-namespace System {
+namespace Kinoko::System {
 
 /// @addr{0x80518CC0}
 DvdArchive::DvdArchive()
@@ -156,4 +156,4 @@ void DvdArchive::unmount() {
     m_state = State::Cleared;
 }
 
-} // namespace System
+} // namespace Kinoko::System

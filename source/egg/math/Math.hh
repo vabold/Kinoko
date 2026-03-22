@@ -4,6 +4,8 @@
 
 #include <cmath>
 
+namespace Kinoko {
+
 static constexpr f32 F_PI = 3.1415927f;      ///< Floating point representation of pi
 static constexpr f32 F_TAU = 6.2831855f;     ///< Floating point representation of tau/2pi
 static constexpr f32 DEG2RAD = 0.017453292f; ///< F_PI / 180.0f. Double precision and casted down.
@@ -804,3 +806,5 @@ static inline constexpr u32 FindRootsQuadratic(f32 a, f32 b, f32 c, f32 &root1, 
 }
 
 } // namespace EGG::Mathf
+
+} // namespace Kinoko

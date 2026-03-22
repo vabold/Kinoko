@@ -3,7 +3,7 @@
 #include "game/kart/KartObjectProxy.hh"
 
 /// @brief Pertains to rendering the kart model.
-namespace Render {
+namespace Kinoko::Render {
 
 /// @brief Included in Kinoko because it mysteriously sets an angle member variable in KartBody.
 class KartModel : Kart::KartObjectProxy {
@@ -43,4 +43,4 @@ public:
     ~KartModelBike();
 };
 
-} // namespace Render
+} // namespace Kinoko::Render

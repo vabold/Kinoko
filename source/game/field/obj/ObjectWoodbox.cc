@@ -1,6 +1,6 @@
 #include "ObjectWoodbox.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8077E5E4}
 ObjectWoodbox::ObjectWoodbox(const System::MapdataGeoObj &params) : ObjectBreakable(params) {}
@@ -23,4 +23,4 @@ void ObjectWoodbox::calcCollisionTransform() {
     m_collision->transform(m_transform, m_scale, getCollisionTranslation());
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

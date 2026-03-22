@@ -8,7 +8,7 @@
 #include <list>
 
 /// @brief Pertains to scene handling.
-namespace Scene {
+namespace Kinoko::Scene {
 
 /// @brief Interface for menu and race scenes.
 class GameScene : public EGG::Scene {
@@ -63,4 +63,4 @@ private:
     [[maybe_unused]] size_t m_totalMemoryUsed;
 };
 
-} // namespace Scene
+} // namespace Kinoko::Scene

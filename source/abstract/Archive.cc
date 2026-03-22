@@ -2,7 +2,7 @@
 
 #include <cstring>
 
-namespace Abstract {
+namespace Kinoko::Abstract {
 
 /// @addr{0x80124500}
 ArchiveHandle::ArchiveHandle(void *archiveStart) : m_startAddress(archiveStart) {
@@ -115,4 +115,4 @@ bool ArchiveHandle::open(s32 entryId, FileInfo &info) const {
     return true;
 }
 
-} // namespace Abstract
+} // namespace Kinoko::Abstract

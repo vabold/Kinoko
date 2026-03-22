@@ -3,7 +3,7 @@
 #include "game/field/obj/ObjectCollidable.hh"
 #include "game/field/obj/ObjectFireball.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectFirebar : public ObjectCollidable {
 public:
@@ -32,4 +32,4 @@ private:
     EGG::Vector3f m_initDir;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

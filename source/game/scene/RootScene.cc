@@ -9,7 +9,7 @@
 
 #include <ScopeLock.hh>
 
-namespace Scene {
+namespace Kinoko::Scene {
 
 /// @addr{0x80542878}
 RootScene::RootScene() {
@@ -77,4 +77,4 @@ void RootScene::checkMemory() {
 }
 #endif // BUILD_DEBUG
 
-} // namespace Scene
+} // namespace Kinoko::Scene

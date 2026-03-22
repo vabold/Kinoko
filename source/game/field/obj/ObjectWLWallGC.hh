@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectKCL.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectWLWallGC : public ObjectKCL {
 public:
@@ -50,4 +50,4 @@ private:
     EGG::Matrix34f m_currTransform;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -2,6 +2,8 @@
 
 #include "game/field/ObjectCollisionConvexHull.hh"
 
+namespace Kinoko {
+
 namespace Kart {
 
 class KartObject;
@@ -32,3 +34,5 @@ private:
 };
 
 } // namespace Field
+
+} // namespace Kinoko

@@ -4,7 +4,7 @@
 
 #include "game/system/RaceManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x807FC248}
 ObjectBelt::ObjectBelt(const System::MapdataGeoObj &params)
@@ -39,4 +39,4 @@ bool ObjectBelt::calcCollision(const EGG::Vector3f &v0, const EGG::Vector3f & /*
     return true;
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

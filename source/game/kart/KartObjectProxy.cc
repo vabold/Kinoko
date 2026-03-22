@@ -16,7 +16,7 @@
 
 #include <algorithm>
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @addr{0x8059018C}
 KartObjectProxy::KartObjectProxy() : m_accessor(nullptr) {
@@ -473,4 +473,4 @@ void KartObjectProxy::ApplyAll(const KartAccessor *pointers) {
 
 std::list<KartObjectProxy *> KartObjectProxy::s_proxyList; ///< @addr{0x809C1900}
 
-} // namespace Kart
+} // namespace Kinoko::Kart

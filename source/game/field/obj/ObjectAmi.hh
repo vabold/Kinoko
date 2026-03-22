@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectDrivable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectAmi final : public ObjectDrivable {
 public:
@@ -100,4 +100,4 @@ private:
     static constexpr EGG::Vector3f DIMS = EGG::Vector3f(2600.0f, 2000.0f, 13800.0f);
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

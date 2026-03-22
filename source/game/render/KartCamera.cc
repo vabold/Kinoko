@@ -2,7 +2,7 @@
 
 #include "game/field/CollisionDirector.hh"
 
-namespace Render {
+namespace Kinoko::Render {
 
 /// @addr{0x805A21D0}
 void KartCamera::calc() {
@@ -200,4 +200,4 @@ void KartCamera::calcCollision(KartCameraState &state, bool isBackwards) const {
 
 KartCamera *KartCamera::s_instance = nullptr;
 
-} // namespace Render
+} // namespace Kinoko::Render

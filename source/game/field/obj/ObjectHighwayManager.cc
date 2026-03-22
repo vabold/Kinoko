@@ -3,7 +3,7 @@
 #include "game/field/ObjectDirector.hh"
 #include "game/field/obj/ObjectCarTGE.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806D2908}
 ObjectHighwayManager::ObjectHighwayManager()
@@ -64,4 +64,4 @@ void ObjectHighwayManager::calcSquash() {
     m_squashTimer = std::min<u32>(m_squashTimer + 1, SQUASH_MAX);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

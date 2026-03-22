@@ -1,6 +1,6 @@
 #include "MapdataGeoObj.hh"
 
-namespace System {
+namespace Kinoko::System {
 
 MapdataGeoObj::MapdataGeoObj(const SData *data) : m_rawData(data) {
     EGG::RamStream stream = EGG::RamStream(data, sizeof(SData));
@@ -30,4 +30,4 @@ MapdataGeoObjAccessor::MapdataGeoObjAccessor(const MapSectionHeader *header)
 
 MapdataGeoObjAccessor::~MapdataGeoObjAccessor() = default;
 
-} // namespace System
+} // namespace Kinoko::System

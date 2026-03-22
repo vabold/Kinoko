@@ -4,7 +4,7 @@
 
 #include <egg/math/Vector.hh>
 
-namespace System {
+namespace Kinoko::System {
 
 class MapdataCheckPathAccessor;
 
@@ -90,4 +90,4 @@ private:
     f32 m_lapProportion;
 };
 
-} // namespace System
+} // namespace Kinoko::System

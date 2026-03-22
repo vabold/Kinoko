@@ -7,7 +7,7 @@
 
 #include <egg/core/SceneManager.hh>
 
-namespace Scene {
+namespace Kinoko::Scene {
 
 /// @addr{0x8051A1E0}
 GameScene::GameScene() {
@@ -209,4 +209,4 @@ void GameScene::IncreaseTagCount(void * /*block*/, Abstract::Memory::MEMiHeapHea
 }
 #endif // BUILD_DEBUG
 
-} // namespace Scene
+} // namespace Kinoko::Scene

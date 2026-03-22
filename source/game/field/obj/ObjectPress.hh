@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief Represents the Toad's Factory stompers.
 /// @details This is also a base class for item boxes that get squished by stompers.
@@ -100,4 +100,4 @@ private:
     bool m_startingWindup;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

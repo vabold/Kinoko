@@ -4,6 +4,8 @@
 
 #include "game/field/ObjectCollisionBase.hh"
 
+namespace Kinoko {
+
 namespace Kart {
 
 class KartObject;
@@ -64,3 +66,5 @@ protected:
 };
 
 } // namespace Field
+
+} // namespace Kinoko

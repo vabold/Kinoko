@@ -4,7 +4,7 @@
 
 #include <egg/math/Vector.hh>
 
-namespace System {
+namespace Kinoko::System {
 
 class MapdataPointInfo;
 
@@ -117,4 +117,4 @@ private:
     owning_span<MapdataAreaBase *> m_sortedEntries;
 };
 
-} // namespace System
+} // namespace Kinoko::System

@@ -1,8 +1,12 @@
+#pragma once
+
 #include "host/KSystem.hh"
 
 #include <egg/core/SceneManager.hh>
 
 #include <game/system/RaceConfig.hh>
+
+namespace Kinoko {
 
 /// @brief Kinoko system designed to execute replays.
 class KReplaySystem : public KSystem {
@@ -43,3 +47,5 @@ private:
     const u8 *m_currentRawGhost;
     size_t m_currentRawGhostSize;
 };
+
+} // namespace Kinoko

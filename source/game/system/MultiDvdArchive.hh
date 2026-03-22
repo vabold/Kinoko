@@ -4,7 +4,7 @@
 
 const char *const SZS_EXTENSION = ".szs";
 
-namespace System {
+namespace Kinoko::System {
 
 class MultiDvdArchive {
 public:
@@ -37,4 +37,4 @@ private:
     u16 m_archiveCount;
 };
 
-} // namespace System
+} // namespace Kinoko::System

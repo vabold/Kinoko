@@ -5,8 +5,7 @@
 
 // Credit: kiwi515/ogws
 
-namespace Abstract {
-namespace g3d {
+namespace Kinoko::Abstract::g3d {
 
 /// @brief Represents a binary resource file which contains object models, textures, and animations.
 /// @details All resource files start with a header of length 0x10. The header is followed by a root
@@ -42,5 +41,4 @@ private:
     const Data *m_data;
 };
 
-} // namespace g3d
-} // namespace Abstract
+} // namespace Kinoko::Abstract::g3d

@@ -2,7 +2,7 @@
 
 #include "game/field/ObjectDirector.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x80764CC8}
 ObjectPropeller::ObjectPropeller(const System::MapdataGeoObj &params)
@@ -100,4 +100,4 @@ bool ObjectPropeller::checkCollision(ObjectCollisionBase *lhs, EGG::Vector3f &di
     return hasCol;
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

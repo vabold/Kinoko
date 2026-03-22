@@ -24,7 +24,7 @@
 #include <egg/math/Math.hh>
 #include <egg/math/Quat.hh>
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 struct CannonParameter {
     f32 speed;
@@ -2801,4 +2801,4 @@ void KartMoveBike::tryStartWheelie() {
     }
 }
 
-} // namespace Kart
+} // namespace Kinoko::Kart

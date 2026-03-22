@@ -2,7 +2,7 @@
 
 #include "game/field/ObjectCollisionBase.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectCollisionSphere : public ObjectCollisionBase {
 public:
@@ -29,4 +29,4 @@ private:
     EGG::Vector3f m_center;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -2,7 +2,7 @@
 
 #include <cstring>
 
-namespace System {
+namespace Kinoko::System {
 
 static size_t SUFFIX_SIZE = 8;
 
@@ -145,4 +145,4 @@ u16 MultiDvdArchive::rippedArchiveCount() const {
     return count;
 }
 
-} // namespace System
+} // namespace Kinoko::System

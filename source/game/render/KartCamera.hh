@@ -3,7 +3,7 @@
 #include "game/kart/KartMove.hh"
 #include "game/kart/KartObjectManager.hh"
 
-namespace Render {
+namespace Kinoko::Render {
 
 /// @brief Tracks the current state of the front and backwards player cameras.
 class KartCameraState {
@@ -103,4 +103,4 @@ private:
     static KartCamera *s_instance;
 };
 
-} // namespace Render
+} // namespace Kinoko::Render

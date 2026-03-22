@@ -3,6 +3,8 @@
 #include <egg/core/BitFlag.hh>
 #include <egg/math/Vector.hh>
 
+namespace Kinoko {
+
 namespace Host {
 
 class Context;
@@ -136,3 +138,5 @@ private:
 };
 
 } // namespace Field
+
+} // namespace Kinoko

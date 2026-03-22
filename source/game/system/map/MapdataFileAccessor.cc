@@ -1,6 +1,6 @@
 #include "MapdataFileAccessor.hh"
 
-namespace System {
+namespace Kinoko::System {
 
 /// @addr{0x80512C2C}
 MapdataFileAccessor::MapdataFileAccessor(const MapdataFileAccessor::SData *data) : m_rawData(data) {
@@ -27,4 +27,4 @@ const MapSectionHeader *MapdataFileAccessor::findSection(u32 signature) const {
     return sectionPtr;
 }
 
-} // namespace System
+} // namespace Kinoko::System

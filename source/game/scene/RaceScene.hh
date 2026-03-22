@@ -2,7 +2,7 @@
 
 #include "game/scene/GameScene.hh"
 
-namespace Scene {
+namespace Kinoko::Scene {
 
 /// @brief Represents an instance of a race
 class RaceScene final : public GameScene {
@@ -18,4 +18,4 @@ public:
     void onReinit() override;
 };
 
-} // namespace Scene
+} // namespace Kinoko::Scene

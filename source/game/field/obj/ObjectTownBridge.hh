@@ -1,6 +1,6 @@
 #include "game/field/obj/ObjectKCL.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectTownBridge final : public ObjectKCL {
 public:
@@ -44,4 +44,4 @@ private:
     ObjColMgr *m_flatColMgr;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

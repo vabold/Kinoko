@@ -3,6 +3,8 @@
 #include "egg/core/Scene.hh"
 #include "egg/core/SceneCreator.hh"
 
+namespace Kinoko {
+
 namespace Host {
 
 class Context;
@@ -96,3 +98,5 @@ private:
 };
 
 } // namespace EGG
+
+} // namespace Kinoko

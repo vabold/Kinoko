@@ -2,7 +2,7 @@
 
 #include "egg/math/Vector.hh"
 
-namespace EGG {
+namespace Kinoko::EGG {
 
 /// @brief Represents a plane in 3D space, expressed with n.dot(x) = d for point x on the plane.
 /// @details Documentation from Real-Time Collision Detection by Christer Ericson,
@@ -34,4 +34,4 @@ struct Plane3f {
     f32 d;      ///< Negated dot product. n.dot(x) = d => n.dot(x) - d = 0
 };
 
-} // namespace EGG
+} // namespace Kinoko::EGG

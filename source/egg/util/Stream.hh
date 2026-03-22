@@ -4,7 +4,7 @@
 
 #include <string>
 
-namespace EGG {
+namespace Kinoko::EGG {
 
 /// @brief A stream of data, abstracted to allow for continuous seeking.
 class Stream {
@@ -118,4 +118,4 @@ private:
     u32 m_size;
 };
 
-} // namespace EGG
+} // namespace Kinoko::EGG

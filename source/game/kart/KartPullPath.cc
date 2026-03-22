@@ -4,7 +4,7 @@
 
 #include <egg/geom/Plane.hh>
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @addr{0x8059308C}
 KartPullPathTracker::KartPullPathTracker(KartPullPath *handle, Type type)
@@ -282,4 +282,4 @@ void KartPullPath::setTrackerPointInfo(System::MapdataPointInfo *info) {
     m_regionalTracker.setPointInfo(info);
 }
 
-} // namespace Kart
+} // namespace Kinoko::Kart

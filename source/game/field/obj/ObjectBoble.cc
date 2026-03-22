@@ -1,6 +1,6 @@
 #include "ObjectBoble.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8075DB3C}
 ObjectBoble::ObjectBoble(const System::MapdataGeoObj &params) : ObjectCollidable(params) {}
@@ -40,4 +40,4 @@ void ObjectBoble::calcTangent() {
     setMatrixTangentTo(axis.cross(m_curTangentDir), m_curTangentDir);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

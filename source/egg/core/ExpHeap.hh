@@ -4,7 +4,7 @@
 
 #include <abstract/memory/ExpHeap.hh>
 
-namespace EGG {
+namespace Kinoko::EGG {
 
 /// @brief High-level implementation of a memory heap for managing dynamic memory allocation.
 /// Allocation may occur anywhere within the memory space the heap is created from.
@@ -61,4 +61,4 @@ private:
     ExpHeap(Abstract::Memory::MEMiHeapHead *handle);
 };
 
-} // namespace EGG
+} // namespace Kinoko::EGG

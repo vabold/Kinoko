@@ -6,7 +6,7 @@
 
 #include <algorithm>
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8067E6F4}
 ObjectFlamePoleFoot::ObjectFlamePoleFoot(const System::MapdataGeoObj &params)
@@ -217,4 +217,4 @@ void ObjectFlamePoleFoot::calcEruptingStay() {
 
 u32 ObjectFlamePoleFoot::s_flamePoleCount = 0;
 
-} // namespace Field
+} // namespace Kinoko::Field

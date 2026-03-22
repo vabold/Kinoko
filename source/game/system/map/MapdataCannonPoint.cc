@@ -2,7 +2,7 @@
 
 #include "game/system/CourseMap.hh"
 
-namespace System {
+namespace Kinoko::System {
 
 MapdataCannonPoint::MapdataCannonPoint(const SData *data) : m_rawData(data) {
     EGG::RamStream stream = EGG::RamStream(data, sizeof(SData));
@@ -25,4 +25,4 @@ MapdataCannonPointAccessor::MapdataCannonPointAccessor(const MapSectionHeader *h
 
 MapdataCannonPointAccessor::~MapdataCannonPointAccessor() = default;
 
-} // namespace System
+} // namespace Kinoko::System

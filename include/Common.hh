@@ -11,6 +11,8 @@
 #include <limits>
 #include <utility>
 
+namespace Kinoko {
+
 enum class Course {
     Mario_Circuit = 0,
     Moo_Moo_Meadows = 1,
@@ -425,3 +427,5 @@ static constexpr auto DEFAULT_OPT = Abstract::Memory::MEMiHeapHead::OptFlag().se
 static constexpr auto DEFAULT_OPT = Abstract::Memory::MEMiHeapHead::OptFlag().setBit(
         Abstract::Memory::MEMiHeapHead::eOptFlag::ZeroFillAlloc);
 #endif
+
+} // namespace Kinoko

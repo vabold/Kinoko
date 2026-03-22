@@ -2,7 +2,7 @@
 
 #include "game/system/CourseMap.hh"
 
-namespace System {
+namespace Kinoko::System {
 
 MapdataPointInfo::MapdataPointInfo(const SData *data) : m_rawData(data) {
     EGG::RamStream stream =
@@ -57,4 +57,4 @@ void MapdataPointInfoAccessor::init(const MapdataPointInfo::SData *start, u16 co
     }
 }
 
-} // namespace System
+} // namespace Kinoko::System

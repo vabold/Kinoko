@@ -6,7 +6,7 @@
 #include "game/system/RaceConfig.hh"
 #include "game/system/RaceManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806B5C84}
 ObjectBasabasaDummy::ObjectBasabasaDummy(const System::MapdataGeoObj &params)
@@ -131,4 +131,4 @@ void ObjectBasabasa::calc() {
 f32 ObjectBasabasa::s_initialXRange;
 f32 ObjectBasabasa::s_initialYRange;
 
-} // namespace Field
+} // namespace Kinoko::Field

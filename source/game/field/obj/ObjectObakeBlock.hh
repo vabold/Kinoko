@@ -4,7 +4,7 @@
 
 #include <egg/math/BoundBox.hh>
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectObakeBlock : public ObjectBase {
 public:
@@ -54,4 +54,4 @@ private:
     s32 m_fallFrame; ///< Frame the block starts falling, or 0 if it never falls.
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -1,6 +1,6 @@
 #include "ObjectPakkunF.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x807743A4}
 ObjectPakkunF::ObjectPakkunF(const System::MapdataGeoObj &params)
@@ -120,4 +120,4 @@ void ObjectPakkunF::enterAttack() {
     m_attackFrames = static_cast<s32>(attackAnm->frameCount()) + LINGERING_FRAMES;
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

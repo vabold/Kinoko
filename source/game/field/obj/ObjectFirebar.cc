@@ -1,6 +1,6 @@
 #include "ObjectFirebar.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x807678F4}
 ObjectFirebar::ObjectFirebar(const System::MapdataGeoObj &params) : ObjectCollidable(params) {
@@ -53,4 +53,4 @@ void ObjectFirebar::calc() {
     }
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

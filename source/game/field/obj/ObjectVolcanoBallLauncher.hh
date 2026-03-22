@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectVolcanoBall;
 
@@ -37,4 +37,4 @@ private:
     bool m_active; ///< False when the volcano is dormant, true after @ref m_initDelay
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -4,7 +4,7 @@
 
 #include "game/system/RaceManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectBirdLeader;
 class ObjectBirdFollower;
@@ -90,4 +90,4 @@ private:
     f32 m_baseSpeed;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -2,7 +2,7 @@
 
 #include "game/field/ObjectDirector.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8082C234}
 ObjectPsea::ObjectPsea(const System::MapdataGeoObj &params)
@@ -36,4 +36,4 @@ void ObjectPsea::calc() {
     m_flags.setBit(eFlags::Position);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

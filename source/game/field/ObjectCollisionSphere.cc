@@ -1,6 +1,6 @@
 #include "ObjectCollisionSphere.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x808368D0}
 ObjectCollisionSphere::ObjectCollisionSphere(f32 radius, const EGG::Vector3f &center)
@@ -47,4 +47,4 @@ const EGG::Vector3f &ObjectCollisionSphere::getSupport(const EGG::Vector3f &v) c
     return m_worldPos.dot(v) > m_center.dot(v) ? m_worldPos : m_center;
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

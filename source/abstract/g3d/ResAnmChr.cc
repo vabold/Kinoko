@@ -2,8 +2,7 @@
 
 // Credit: kiwi515/ogws
 
-namespace Abstract {
-namespace g3d {
+namespace Kinoko::Abstract::g3d {
 
 /// @addr{0x80055540}
 ChrAnmResult ResAnmChr::getAnmResult(f32 frame, size_t idx) const {
@@ -290,5 +289,4 @@ const std::array<ResAnmChr::GetAnmResultFunc, ResAnmChr::NUM_RESULT_FUNCS>
                 &GetAnmResult_Stub,
         }};
 
-} // namespace g3d
-} // namespace Abstract
+} // namespace Kinoko::Abstract::g3d

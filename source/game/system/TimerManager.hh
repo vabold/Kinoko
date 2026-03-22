@@ -2,7 +2,7 @@
 
 #include <Common.hh>
 
-namespace System {
+namespace Kinoko::System {
 
 /// @brief A simple struct to represent a lap or race finish time.
 struct Timer {
@@ -116,4 +116,4 @@ private:
     u32 m_frameCounter;
 };
 
-} // namespace System
+} // namespace Kinoko::System

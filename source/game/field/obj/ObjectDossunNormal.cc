@@ -1,6 +1,6 @@
 #include "ObjectDossunNormal.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x80760188}
 ObjectDossunNormal::ObjectDossunNormal(const System::MapdataGeoObj &params)
@@ -74,4 +74,4 @@ void ObjectDossunNormal::calcInactive() {
     }
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

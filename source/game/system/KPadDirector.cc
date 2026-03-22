@@ -1,6 +1,6 @@
 #include "KPadDirector.hh"
 
-namespace System {
+namespace Kinoko::System {
 
 /// @addr{0x805238F0}
 void KPadDirector::calc() {
@@ -68,4 +68,4 @@ KPadDirector::~KPadDirector() {
 
 KPadDirector *KPadDirector::s_instance = nullptr; ///< @addr{0x809BD70C}
 
-} // namespace System
+} // namespace Kinoko::System

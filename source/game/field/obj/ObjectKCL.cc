@@ -5,7 +5,7 @@
 
 #include <egg/math/Math.hh>
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8081A980}
 ObjectKCL::ObjectKCL(const System::MapdataGeoObj &params)
@@ -307,4 +307,4 @@ bool ObjectKCL::checkCollisionCached(f32 radius, const EGG::Vector3f &pos,
     return m_objColMgr->checkSphereCachedFullPush(radius, pos, prevPos, mask, info, maskOut);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

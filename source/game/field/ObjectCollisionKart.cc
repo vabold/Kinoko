@@ -6,7 +6,7 @@
 
 #include "game/system/RaceConfig.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8081E0CC}
 ObjectCollisionKart::ObjectCollisionKart() : m_kartObject(nullptr) {}
@@ -387,4 +387,4 @@ const EGG::Vector3f &ObjectCollisionKart::translation(size_t idx) {
     return objCol ? objCol->translation() : EGG::Vector3f::zero;
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

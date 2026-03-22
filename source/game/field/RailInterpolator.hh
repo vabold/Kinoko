@@ -8,7 +8,7 @@
 
 #include <egg/math/Vector.hh>
 
-namespace Field {
+namespace Kinoko::Field {
 
 class RailInterpolator {
 public:
@@ -200,4 +200,4 @@ private:
     f32 m_velocity;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field
