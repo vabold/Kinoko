@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectPress.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8076D9E4}
 ObjectItemboxPress::ObjectItemboxPress(const System::MapdataGeoObj &params)
@@ -49,4 +49,4 @@ void ObjectItemboxPress::calcPosition() {
     m_flags.setBit(eFlags::Position);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

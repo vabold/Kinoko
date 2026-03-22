@@ -1,6 +1,6 @@
 #include "ObjectBeltCurveA.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x807FC90C}
 ObjectBeltCurveA::ObjectBeltCurveA(const System::MapdataGeoObj &params) : ObjectBelt(params) {
@@ -58,4 +58,4 @@ f32 ObjectBeltCurveA::calcDirSwitchVelocity(u32 t) const {
     }
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

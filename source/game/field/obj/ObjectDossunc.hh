@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief Holder class for one of various Thwomp "modes".
 class ObjectDossunc final : public ObjectCollidable {
@@ -14,4 +14,4 @@ public:
     void load() override;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

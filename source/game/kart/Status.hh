@@ -2,7 +2,7 @@
 
 #include <egg/core/BitFlag.hh>
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @brief This is a union of the 5 bitfields contained within KartState
 enum class eStatus {
@@ -96,4 +96,4 @@ enum class eStatus {
 };
 typedef EGG::TBitFlagExt<static_cast<size_t>(eStatus::FlagMax), eStatus> Status;
 
-} // namespace Kart
+} // namespace Kinoko::Kart

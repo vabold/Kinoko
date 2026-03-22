@@ -3,7 +3,7 @@
 #include "egg/math/Math.hh"
 #include "egg/math/Vector.hh"
 
-namespace EGG {
+namespace Kinoko::EGG {
 
 /// @brief A quaternion, used to represent 3D rotation.
 /// @details A quaternion is comprised of a scalar (w) and a vector (v).
@@ -258,4 +258,4 @@ struct Quatf {
 
 inline constexpr Quatf Quatf::ident = Quatf(1.0f, Vector3f::zero);
 
-} // namespace EGG
+} // namespace Kinoko::EGG

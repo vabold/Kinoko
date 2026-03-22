@@ -4,6 +4,8 @@
 
 #include <span>
 
+namespace Kinoko {
+
 namespace Host {
 
 class Context;
@@ -47,3 +49,5 @@ private:
 };
 
 } // namespace Item
+
+} // namespace Kinoko

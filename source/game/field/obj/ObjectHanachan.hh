@@ -5,7 +5,7 @@
 #include "game/field/StateManager.hh"
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief Class that interfaces with the chain links corresponding to wiggler body parts.
 class HanachanChainManager {
@@ -256,4 +256,4 @@ private:
     }};
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

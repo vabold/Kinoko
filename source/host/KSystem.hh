@@ -4,6 +4,8 @@
 
 #include "host/Context.hh"
 
+namespace Kinoko {
+
 /// @brief Base interface for a Kinoko system.
 class KSystem : EGG::Disposer {
     friend class Context;
@@ -30,3 +32,5 @@ public:
 protected:
     static KSystem *s_instance;
 };
+
+} // namespace Kinoko

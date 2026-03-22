@@ -7,6 +7,8 @@
 
 // Credit: em-eight/mkw
 
+namespace Kinoko {
+
 namespace Host {
 
 class Context;
@@ -150,3 +152,5 @@ private:
 };
 
 } // namespace Field
+
+} // namespace Kinoko

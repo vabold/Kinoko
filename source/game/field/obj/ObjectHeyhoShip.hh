@@ -3,7 +3,7 @@
 #include "game/field/StateManager.hh"
 #include "game/field/obj/ObjectProjectileLauncher.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief The ship on GBA Shy Guy Beach that shoots cannonballs.
 class ObjectHeyhoShip final : public ObjectProjectileLauncher {
@@ -37,4 +37,4 @@ public:
     u32 m_framesSinceLastLaunch;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -3,7 +3,7 @@
 #include "game/field/obj/ObjectCollidable.hh"
 #include "game/field/obj/ObjectFireball.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectFireRing : public ObjectCollidable {
 public:
@@ -31,4 +31,4 @@ private:
     f32 m_phase;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

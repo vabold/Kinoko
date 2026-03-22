@@ -3,7 +3,7 @@
 #include "game/system/CourseMap.hh"
 #include "game/system/map/MapdataGeoObj.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806F09C8}
 RailManager *RailManager::CreateInstance() {
@@ -80,4 +80,4 @@ void RailManager::createPaths() {
 
 RailManager *RailManager::s_instance = nullptr; ///> @addr{0x809C22B0}
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -5,7 +5,7 @@
 
 #include <egg/math/Math.hh>
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @addr{inlined in 0x80577FC4}
 KartBurnout::KartBurnout() = default;
@@ -82,4 +82,4 @@ bool KartBurnout::isActive() const {
     return status().onBit(eStatus::Burnout);
 }
 
-} // namespace Kart
+} // namespace Kinoko::Kart

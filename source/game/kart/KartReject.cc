@@ -11,7 +11,7 @@
 #include <egg/math/Math.hh>
 #include <egg/math/Quat.hh>
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @addr{Inlined in 0x80577FC4}
 KartReject::KartReject() = default;
@@ -188,4 +188,4 @@ bool KartReject::calcCollision(Field::CollisionInfo &colInfo, Field::KCLTypeMask
     return false;
 }
 
-} // namespace Kart
+} // namespace Kinoko::Kart

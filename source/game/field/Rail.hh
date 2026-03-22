@@ -2,7 +2,7 @@
 
 #include "game/system/map/MapdataPointInfo.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 struct RailLineTransition {
     f32 m_length;
@@ -182,4 +182,4 @@ private:
     bool m_doNotAllocatePathPercentages;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

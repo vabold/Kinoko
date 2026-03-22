@@ -1,10 +1,10 @@
 #pragma once
 
-namespace Host {
+namespace Kinoko::Host {
 
 enum class SceneId {
     Root = 0,
     Race = 2,
 };
 
-} // namespace Host
+} // namespace Kinoko::Host

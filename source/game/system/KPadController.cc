@@ -2,7 +2,7 @@
 
 #include <cstring>
 
-namespace System {
+namespace Kinoko::System {
 
 /// @addr{0x8051EBA8}
 KPadController::KPadController() : m_connected(false) {}
@@ -289,4 +289,4 @@ void KPadPlayer::endGhostProxy() {
     ghostController->setAcceptingInputs(false);
 }
 
-} // namespace System
+} // namespace Kinoko::System

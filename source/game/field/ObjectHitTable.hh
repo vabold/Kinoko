@@ -6,7 +6,7 @@
 
 #include <span>
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectHitTable {
 public:
@@ -23,4 +23,4 @@ private:
     const s16 *m_slots;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

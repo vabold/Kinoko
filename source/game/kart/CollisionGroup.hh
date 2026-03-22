@@ -10,7 +10,7 @@
 #include <span>
 
 /// @brief Pertains to kart-related functionality.
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @brief Information about the current collision and its properties.
 /// @see KCollisionTypes.hh
@@ -163,4 +163,4 @@ private:
     f32 m_hitboxScale;
 };
 
-} // namespace Kart
+} // namespace Kinoko::Kart

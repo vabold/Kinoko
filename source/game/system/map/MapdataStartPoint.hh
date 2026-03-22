@@ -4,7 +4,7 @@
 
 #include <egg/math/Vector.hh>
 
-namespace System {
+namespace Kinoko::System {
 
 class MapdataStartPoint {
 public:
@@ -35,4 +35,4 @@ public:
     ~MapdataStartPointAccessor() override;
 };
 
-} // namespace System
+} // namespace Kinoko::System

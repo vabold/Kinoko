@@ -7,7 +7,7 @@
 #include "game/kart/KartCollide.hh"
 #include "game/kart/KartObject.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806DFE9C}
 ObjectTruckWagonCart::ObjectTruckWagonCart(const System::MapdataGeoObj &params)
@@ -271,4 +271,4 @@ void ObjectTruckWagon::calc() {
     m_cycleFrame = m_cycleFrame % (m_spawn2Frame + m_cycleDuration) + 1;
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

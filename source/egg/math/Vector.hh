@@ -6,7 +6,7 @@
 
 #include <format>
 
-namespace EGG {
+namespace Kinoko::EGG {
 
 /// @brief A 2D float vector.
 struct Vector2f {
@@ -388,4 +388,4 @@ inline constexpr Vector3f Vector3f::ez = Vector3f(0.0f, 0.0f, 1.0f); ///< @addr{
 inline constexpr Vector3f Vector3f::inf = Vector3f(std::numeric_limits<f32>::infinity(),
         std::numeric_limits<f32>::infinity(), std::numeric_limits<f32>::infinity());
 
-} // namespace EGG
+} // namespace Kinoko::EGG

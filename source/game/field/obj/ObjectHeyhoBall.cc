@@ -2,7 +2,7 @@
 
 #include "game/field/ObjectDirector.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806D02C4}
 ObjectHeyhoBall::ObjectHeyhoBall(const System::MapdataGeoObj &params)
@@ -117,4 +117,4 @@ void ObjectHeyhoBall::calcExploding() {
     }
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

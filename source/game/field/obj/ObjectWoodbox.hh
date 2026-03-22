@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectBreakable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectWoodbox : public ObjectBreakable {
 public:
@@ -17,4 +17,4 @@ public:
     void calcCollisionTransform() override;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

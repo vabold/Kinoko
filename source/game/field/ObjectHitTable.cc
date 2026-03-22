@@ -4,7 +4,7 @@
 
 #include <egg/util/Stream.hh>
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x807F9278}
 ObjectHitTable::ObjectHitTable(const char *filename) {
@@ -43,4 +43,4 @@ s16 ObjectHitTable::slot(ObjectId id) const {
     return i < SLOT_COUNT ? parse<s16>(m_slots[i]) : -1;
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

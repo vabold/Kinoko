@@ -3,7 +3,7 @@
 #include "game/field/ObjectCollisionCylinder.hh"
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectPropeller final : public ObjectCollidable {
 public:
@@ -32,4 +32,4 @@ private:
     std::array<ObjectCollisionCylinder *, 3> m_blades;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -3,7 +3,7 @@
 #include "game/field/StateManager.hh"
 #include "game/field/obj/ObjectProjectile.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectFireSnakeKid : public ObjectCollidable {
 public:
@@ -97,4 +97,4 @@ private:
     static constexpr f32 GRAVITY = 3.0f;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

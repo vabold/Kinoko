@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectDrivable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectTuribashi final : public ObjectDrivable {
 public:
@@ -98,4 +98,4 @@ private:
     static constexpr f32 HALF_LENGTH = 7243.3198f;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

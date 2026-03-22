@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectKCL.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief Represents an individual escalator on Coconut Mall.
 /// @details Escalators have two settings which are used to determine two framecounts at which the
@@ -148,4 +148,4 @@ private:
     static constexpr f32 MIN_HEIGHT_OFFSET = 0.5f * (17.5f * STEP_HEIGHT);
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -2,7 +2,7 @@
 
 #include "game/item/ItemId.hh"
 
-namespace Item {
+namespace Kinoko::Item {
 
 /// @nosubgrouping
 class ItemInventory {
@@ -31,4 +31,4 @@ private:
     int m_currentCount;
 };
 
-} // namespace Item
+} // namespace Kinoko::Item

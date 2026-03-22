@@ -2,7 +2,7 @@
 
 #include <Common.hh>
 
-namespace System {
+namespace Kinoko::System {
 
 struct MapSectionHeader {
     s32 magic;
@@ -56,4 +56,4 @@ protected:
     const MapSectionHeader *m_sectionHeader;
 };
 
-} // namespace System
+} // namespace Kinoko::System

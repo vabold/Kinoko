@@ -8,7 +8,7 @@
 // Credit: em-eight/mkw
 // Credit: stblr/Hanachan
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x807BDC5C}
 KColData::KColData(const void *file) {
@@ -726,4 +726,4 @@ void CollisionInfo::transformInfo(CollisionInfo &rhs, const EGG::Matrix34f &mtx,
     perpendicularity = std::max(perpendicularity, rhs.perpendicularity);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

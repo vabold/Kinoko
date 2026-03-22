@@ -7,6 +7,8 @@
 
 #include <abstract/File.hh>
 
+namespace Kinoko {
+
 // We use an unscoped enum to avoid static_casting in all usecases
 // This is defined in the source due to its lack of scoping
 enum Changelog {
@@ -469,3 +471,5 @@ void KTestSystem::OnInit(System::RaceConfig *config, void * /* arg */) {
 
     config->raceScenario().players[0].type = System::RaceConfig::Player::Type::Ghost;
 }
+
+} // namespace Kinoko

@@ -2,7 +2,7 @@
 
 #include "game/system/ResourceManager.hh"
 
-namespace System {
+namespace Kinoko::System {
 
 /// @addr{0x805127EC}
 void CourseMap::init() {
@@ -496,4 +496,4 @@ void *CourseMap::LoadFile(const char *filename) {
 
 CourseMap *CourseMap::s_instance = nullptr; ///< @addr{0x809BD6E8}
 
-} // namespace System
+} // namespace Kinoko::System

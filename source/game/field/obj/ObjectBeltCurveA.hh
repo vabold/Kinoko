@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectBelt.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief The curved conveyor belt at the end of the factory on Toad's Factory.
 /// @details This conveyor switches direction twice.
@@ -28,4 +28,4 @@ private:
     EGG::Matrix34f m_initMat;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -6,7 +6,7 @@
 
 #include <egg/math/Matrix.hh>
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @brief Manages wheel physics and collision checks.
 /// @nosubgrouping
@@ -142,4 +142,4 @@ private:
     EGG::Vector3f m_bottomDir;
 };
 
-} // namespace Kart
+} // namespace Kinoko::Kart

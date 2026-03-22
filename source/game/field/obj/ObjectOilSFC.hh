@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectOilSFC final : public ObjectCollidable {
 public:
@@ -13,4 +13,4 @@ public:
             Kart::Reaction reactionOnObj, EGG::Vector3f &hitDepth) override;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

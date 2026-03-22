@@ -2,8 +2,7 @@
 
 // Credit: kiwi515/ogws
 
-namespace Abstract {
-namespace g3d {
+namespace Kinoko::Abstract::g3d {
 
 struct ResBlockHeaderData {
     u32 signature;
@@ -21,5 +20,4 @@ struct ResFileHeaderData {
 };
 STATIC_ASSERT(sizeof(ResFileHeaderData) == 0x10);
 
-} // namespace g3d
-} // namespace Abstract
+} // namespace Kinoko::Abstract::g3d

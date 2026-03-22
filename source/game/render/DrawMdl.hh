@@ -2,7 +2,7 @@
 
 #include "game/render/AnmMgr.hh"
 
-namespace Render {
+namespace Kinoko::Render {
 
 class DrawMdl {
 public:
@@ -23,4 +23,4 @@ private:
     AnmMgr *m_anmMgr;
 };
 
-} // namespace Render
+} // namespace Kinoko::Render

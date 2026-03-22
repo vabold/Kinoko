@@ -1,7 +1,6 @@
 #include "ResDic.hh"
 
-namespace Abstract {
-namespace g3d {
+namespace Kinoko::Abstract::g3d {
 
 ResDic::ResDic(const void *data) : m_data(reinterpret_cast<const Data *>(data)) {}
 
@@ -37,5 +36,4 @@ const ResDic::NodeData *ResDic::get(const char *pName, u32 len) const {
     return nullptr;
 }
 
-} // namespace g3d
-} // namespace Abstract
+} // namespace Kinoko::Abstract::g3d

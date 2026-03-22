@@ -2,7 +2,7 @@
 
 #include <egg/math/Matrix.hh>
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @brief State management for most components of a kart's physics
 /// @details Whenever another kart class is done with their calculations, they call to this class to
@@ -234,4 +234,4 @@ private:
     void stabilize() override;
 };
 
-} // namespace Kart
+} // namespace Kinoko::Kart

@@ -4,7 +4,7 @@
 
 #include <egg/math/Vector.hh>
 
-namespace System {
+namespace Kinoko::System {
 
 /// @brief Converts a raw stick input into an input usable by the state.
 /// @param rawStick The raw stick input to convert.
@@ -350,4 +350,4 @@ private:
     u8 m_ghostBuffer[RKG_UNCOMPRESSED_INPUT_DATA_SECTION_SIZE];
 };
 
-} // namespace System
+} // namespace Kinoko::System

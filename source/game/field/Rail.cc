@@ -2,7 +2,7 @@
 
 #include "game/field/CollisionDirector.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806EC9A4}
 Rail::Rail(u16 idx, System::MapdataPointInfo *info) {
@@ -272,4 +272,4 @@ EGG::Vector3f RailSpline::cubicBezier(f32 t, const RailSplineTransition &transit
     return res;
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -9,7 +9,7 @@
 
 #include <egg/math/Math.hh>
 
-namespace Render {
+namespace Kinoko::Render {
 
 KartModel::KartModel() {
     m_somethingLeft = false;
@@ -184,4 +184,4 @@ KartModelBike::KartModelBike() = default;
 /// @addr{0x807D3F58}
 KartModelBike::~KartModelBike() = default;
 
-} // namespace Render
+} // namespace Kinoko::Render

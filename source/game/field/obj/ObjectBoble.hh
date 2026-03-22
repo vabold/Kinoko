@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectBoble : public ObjectCollidable {
 public:
@@ -29,4 +29,4 @@ private:
     EGG::Vector3f m_curTangentDir;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

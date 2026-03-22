@@ -4,7 +4,7 @@
 #include "game/field/obj/ObjectFlamePole.hh"
 #include "game/field/obj/ObjectKCL.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectFlamePole;
 
@@ -128,4 +128,4 @@ private:
     static constexpr u32 CYCLE_FRAMES = 540;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

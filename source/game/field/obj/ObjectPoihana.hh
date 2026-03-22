@@ -3,7 +3,7 @@
 #include "game/field/StateManager.hh"
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectPoihanaBase : public ObjectCollidable, virtual public StateManager {
 public:
@@ -134,4 +134,4 @@ private:
     }};
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

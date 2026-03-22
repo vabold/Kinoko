@@ -4,7 +4,7 @@
 
 #include "game/system/RaceManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x80805A4C}
 ObjectTuribashi::ObjectTuribashi(const System::MapdataGeoObj &params) : ObjectDrivable(params) {}
@@ -226,4 +226,4 @@ bool ObjectTuribashi::checkSphereImpl(f32 radius, const EGG::Vector3f &v0,
     return true;
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

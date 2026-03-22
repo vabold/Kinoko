@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief The traffic cones on Daisy Circuit.
 class ObjectPylon final : public ObjectCollidable {
@@ -57,4 +57,4 @@ private:
     static constexpr u32 STATE_COOLDOWN_FRAMES = 5;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

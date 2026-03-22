@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectFireball : public ObjectCollidable {
 public:
@@ -43,4 +43,4 @@ private:
     f32 m_angle;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

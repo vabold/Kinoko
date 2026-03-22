@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief The falling rocks on GCN DK Mountain
 class ObjectRock : public ObjectCollidable {
@@ -50,4 +50,4 @@ private:
     static constexpr f32 INITIAL_ANGULAR_SPEED = 3.0f;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

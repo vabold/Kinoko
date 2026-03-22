@@ -6,6 +6,8 @@
 
 #define COLLISION_ARR_LENGTH 0x40
 
+namespace Kinoko {
+
 namespace Host {
 
 class Context;
@@ -118,3 +120,5 @@ private:
 };
 
 } // namespace Field
+
+} // namespace Kinoko

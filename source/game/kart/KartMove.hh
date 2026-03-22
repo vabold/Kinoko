@@ -12,7 +12,7 @@
 
 #include <egg/core/BitFlag.hh>
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @brief Responsible for reacting to player inputs and moving the kart.
 /// @nosubgrouping
@@ -559,4 +559,4 @@ private:
     const TurningParameters *m_turningParams; ///< Inside/outside drifting bike turn info.
 };
 
-} // namespace Kart
+} // namespace Kinoko::Kart

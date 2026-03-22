@@ -4,7 +4,7 @@
 
 #include "game/system/RaceManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x807FAB58}
 ObjectAurora::ObjectAurora(const System::MapdataGeoObj &params) : ObjectDrivable(params) {}
@@ -311,4 +311,4 @@ bool ObjectAurora::calcCollision(f32 radius, const EGG::Vector3f &vel, u32 time,
     return true;
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

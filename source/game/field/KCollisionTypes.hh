@@ -184,7 +184,7 @@ STATIC_ASSERT(KCL_TYPE_6CEBDFFF == 0x6CEBDFFF);
 #define KCL_TYPE_ANY_INVISIBLE_WALL \
     (KCL_TYPE_INVISIBLE_WALL | KCL_TYPE_BIT(COL_TYPE_HALFPIPE_INVISIBLE_WALL))
 
-namespace Field {
+namespace Kinoko::Field {
 /// @brief The header of the KCL file format. It is 0x3C bytes long (for Mario %Kart Wii).
 struct KColHeader {
     u32 pos_data_offset;        ///< 0-indexed offset to array of position vectors.
@@ -205,4 +205,4 @@ STATIC_ASSERT(sizeof(KColHeader) == 0x3c);
 
 typedef u32 KCLTypeMask;
 
-} // namespace Field
+} // namespace Kinoko::Field

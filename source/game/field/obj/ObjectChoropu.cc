@@ -5,7 +5,7 @@
 
 #include "game/system/RaceManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806B96A0}
 ObjectChoropu::ObjectChoropu(const System::MapdataGeoObj &params)
@@ -327,4 +327,4 @@ ObjectChoropuHoll::ObjectChoropuHoll(const System::MapdataGeoObj &params)
 /// @addr{0x806BBE6C}
 ObjectChoropuHoll::~ObjectChoropuHoll() = default;
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -1,6 +1,6 @@
 #include "DrawMdl.hh"
 
-namespace Render {
+namespace Kinoko::Render {
 
 /// @addr{0x8055DDEC}
 void DrawMdl::linkAnims(size_t idx, const Abstract::g3d::ResFile *resFile, const char *name,
@@ -12,4 +12,4 @@ void DrawMdl::linkAnims(size_t idx, const Abstract::g3d::ResFile *resFile, const
     m_anmMgr->linkAnims(idx, resFile, name, anmType);
 }
 
-} // namespace Render
+} // namespace Kinoko::Render

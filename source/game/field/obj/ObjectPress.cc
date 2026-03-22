@@ -5,7 +5,7 @@
 
 #include "game/kart/KartObject.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x80777564}
 ObjectPress::ObjectPress(const System::MapdataGeoObj &params)
@@ -246,4 +246,4 @@ void ObjectPressSenko::startWindup() {
     m_windUpTimer = WINDUP_DURATION;
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

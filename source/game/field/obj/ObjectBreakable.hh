@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectBreakable : public ObjectCollidable {
 public:
@@ -32,4 +32,4 @@ protected:
     u32 m_state;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

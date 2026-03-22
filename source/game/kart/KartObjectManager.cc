@@ -6,7 +6,7 @@
 
 #include <abstract/g3d/ResFile.hh>
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @addr{0x8058FEE0}
 void KartObjectManager::init() {
@@ -108,4 +108,4 @@ Abstract::g3d::ResAnmChr *KartObjectManager::s_thunderScaleDownAnmChr = nullptr;
 Abstract::g3d::ResAnmChr *KartObjectManager::s_pressScaleUpAnmChr = nullptr;
 KartObjectManager *KartObjectManager::s_instance = nullptr;
 
-} // namespace Kart
+} // namespace Kinoko::Kart

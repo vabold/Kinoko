@@ -1,6 +1,6 @@
 #include "ObjectCollisionCylinder.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x80836068}
 ObjectCollisionCylinder::ObjectCollisionCylinder(f32 radius, f32 height,
@@ -36,4 +36,4 @@ void ObjectCollisionCylinder::transform(const EGG::Matrix34f &mat, const EGG::Ve
     ObjectCollisionCylinder::transform(mat, scale);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

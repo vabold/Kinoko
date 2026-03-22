@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectParasolR : public ObjectCollidable {
 public:
@@ -15,4 +15,4 @@ public:
     }
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

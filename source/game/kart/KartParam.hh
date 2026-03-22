@@ -2,7 +2,7 @@
 
 #include <egg/math/Vector.hh>
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @brief Houses hitbox and wheel positions, radii, and suspension info.
 struct BSP {
@@ -219,4 +219,4 @@ private:
     u16 m_tireCount;
 };
 
-} // namespace Kart
+} // namespace Kinoko::Kart

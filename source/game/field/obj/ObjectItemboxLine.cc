@@ -3,7 +3,7 @@
 #include "game/field/obj/ObjectItemboxPress.hh"
 #include "game/field/obj/ObjectPress.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8076D044}
 ObjectItemboxLine::ObjectItemboxLine(const System::MapdataGeoObj &params)
@@ -55,4 +55,4 @@ void ObjectItemboxLine::calc() {
     m_curPressIdx = (m_curPressIdx + 1) % m_press.size();
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

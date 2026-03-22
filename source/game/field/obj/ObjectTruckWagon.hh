@@ -4,7 +4,7 @@
 
 #include "game/field/StateManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief The individual minecarts that spawn from the @ref ObjectTruckWagon spawner.
 class ObjectTruckWagonCart final : public ObjectCollidable, public StateManager {
@@ -141,4 +141,4 @@ private:
     s32 m_curCartIdx;          ///< Index into @ref m_carts representing the next cart to spawn
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

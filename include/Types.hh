@@ -6,6 +6,8 @@
 #include <span>
 #include <type_traits>
 
+namespace Kinoko {
+
 typedef int8_t s8;
 typedef int16_t s16;
 typedef int32_t s32;
@@ -160,3 +162,5 @@ private:
     T *m_data;     ///< Pointer to the underlying buffer
     size_t m_size; ///< The number of T elements that fit in the buffer
 };
+
+} // namespace Kinoko

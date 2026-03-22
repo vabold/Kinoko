@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectDossun.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief Represents Thwomps that move sideways on the ground on rBC.
 class ObjectDossunYokoMove final : public ObjectDossun {
@@ -26,4 +26,4 @@ public:
     }
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

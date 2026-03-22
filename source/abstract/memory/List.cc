@@ -1,6 +1,6 @@
 #include "List.hh"
 
-namespace Abstract::Memory {
+namespace Kinoko::Abstract::Memory {
 
 MEMList::MEMList() : MEMList(0) {}
 
@@ -79,4 +79,4 @@ MEMLink *MEMList::getLink(void *object) {
     return reinterpret_cast<MEMLink *>(GetAddrNum(object) + m_offset);
 }
 
-} // namespace Abstract::Memory
+} // namespace Kinoko::Abstract::Memory

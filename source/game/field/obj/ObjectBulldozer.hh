@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectKCL.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief Represents the bulldozers at the end of Toad's Factory.
 /// @details Their oscillation is represented as a sin wave, with two resting periods.
@@ -49,4 +49,4 @@ public:
     EGG::Matrix34f m_rtMat; ///< Exists solely so getUpdatedMatrix can return a reference.
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

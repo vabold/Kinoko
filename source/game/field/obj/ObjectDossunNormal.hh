@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectDossun.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief A Thwomp that remains in one position and stomps downward.
 class ObjectDossunNormal final : public ObjectDossun {
@@ -21,4 +21,4 @@ private:
     void calcInactive();
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

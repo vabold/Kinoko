@@ -3,7 +3,7 @@
 #include "game/field/StateManager.hh"
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectKuribo : public ObjectCollidable, public StateManager {
 public:
@@ -53,4 +53,4 @@ private:
     }};
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

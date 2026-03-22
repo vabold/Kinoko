@@ -2,7 +2,7 @@
 
 #include "game/field/RailManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806ED160}
 RailInterpolator::RailInterpolator(f32 speed, u32 idx)
@@ -498,4 +498,4 @@ void RailSmoothInterpolator::calcNextSegment() {
     }
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -2,7 +2,7 @@
 
 #include "game/system/CourseMap.hh"
 
-namespace System {
+namespace Kinoko::System {
 
 /// @addr{0x80516050}
 MapdataAreaBase::MapdataAreaBase(const SData *data, s16 index) : m_rawData(data), m_index(index) {
@@ -178,4 +178,4 @@ void MapdataAreaAccessor::sort() {
     }
 }
 
-} // namespace System
+} // namespace Kinoko::System

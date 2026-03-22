@@ -6,6 +6,8 @@
 #include <functional>
 #include <optional>
 
+namespace Kinoko {
+
 class KSystem;
 
 namespace Abstract::g3d {
@@ -122,3 +124,5 @@ private:
 };
 
 } // namespace Host
+
+} // namespace Kinoko

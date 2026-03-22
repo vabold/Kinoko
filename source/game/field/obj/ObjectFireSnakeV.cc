@@ -4,7 +4,7 @@
 
 #include "game/system/RaceManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806C2B70}
 ObjectFireSnakeV::ObjectFireSnakeV(const System::MapdataGeoObj &params)
@@ -130,4 +130,4 @@ void ObjectFireSnakeV::calcHighBounce() {
     m_pos = m_visualPos;
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -4,7 +4,7 @@
 
 #include <cmath>
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806DB184}
 ObjectKuribo::ObjectKuribo(const System::MapdataGeoObj &params)
@@ -157,4 +157,4 @@ EGG::Vector3f ObjectKuribo::interpolate(f32 scale, const EGG::Vector3f &v0,
     return v0 + (v1 - v0) * scale;
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

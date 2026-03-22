@@ -2,7 +2,7 @@
 
 #include "game/system/RaceConfig.hh"
 
-namespace System {
+namespace Kinoko::System {
 
 #define ARCHIVE_COUNT 2
 
@@ -97,4 +97,4 @@ MultiDvdArchive *ResourceManager::Create(u8 i) {
 
 ResourceManager *ResourceManager::s_instance = nullptr;
 
-} // namespace System
+} // namespace Kinoko::System

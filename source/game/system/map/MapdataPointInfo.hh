@@ -7,7 +7,7 @@
 
 #include <span>
 
-namespace System {
+namespace Kinoko::System {
 
 class MapdataPointInfo {
 public:
@@ -56,4 +56,4 @@ public:
     void init(const MapdataPointInfo::SData *start, u16 count);
 };
 
-} // namespace System
+} // namespace Kinoko::System

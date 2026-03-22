@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectKCL.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief The moving crane platforms after the second turn of Toad's Factory.
 /// @details Moves in a simple sine wave. There is both an x-axis and y-axis wave, though the
@@ -36,4 +36,4 @@ private:
     f32 m_yFreq;                    ///< 2pi / m_yPeriod
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

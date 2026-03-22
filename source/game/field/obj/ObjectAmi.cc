@@ -6,7 +6,7 @@
 
 #include <egg/math/Math.hh>
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x80807ED0}
 ObjectAmi::ObjectAmi(const System::MapdataGeoObj &params) : ObjectDrivable(params) {}
@@ -237,4 +237,4 @@ f32 ObjectAmi::TemporalSin(u32 t) {
     return EGG::Mathf::SinFIdx(RAD2FIDX * (F_PI * static_cast<f32>(t) / 35.0f));
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

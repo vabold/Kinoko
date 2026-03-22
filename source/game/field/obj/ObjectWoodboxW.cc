@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectWoodboxWSub.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8077DF24}
 ObjectWoodboxW::ObjectWoodboxW(const System::MapdataGeoObj &params) : ObjectCollidable(params) {
@@ -51,4 +51,4 @@ void ObjectWoodboxW::calc() {
     m_nextBoxIdx = (m_nextBoxIdx + 1) % m_boxes.size();
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

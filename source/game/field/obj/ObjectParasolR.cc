@@ -1,6 +1,6 @@
 #include "ObjectParasolR.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8077902C}
 ObjectParasolR::ObjectParasolR(const System::MapdataGeoObj &params) : ObjectCollidable(params) {}
@@ -8,4 +8,4 @@ ObjectParasolR::ObjectParasolR(const System::MapdataGeoObj &params) : ObjectColl
 /// @addr{0x80779EFC}
 ObjectParasolR::~ObjectParasolR() = default;
 
-} // namespace Field
+} // namespace Kinoko::Field

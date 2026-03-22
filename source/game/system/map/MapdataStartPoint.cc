@@ -6,7 +6,7 @@
 #include <egg/math/Math.hh>
 #include <egg/math/Quat.hh>
 
-namespace System {
+namespace Kinoko::System {
 
 // We have to define these early so they're available for findKartStartPoint
 static constexpr s8 X_TRANSLATION_TABLE[12][12] = {
@@ -114,4 +114,4 @@ MapdataStartPointAccessor::MapdataStartPointAccessor(const MapSectionHeader *hea
 
 MapdataStartPointAccessor::~MapdataStartPointAccessor() = default;
 
-} // namespace System
+} // namespace Kinoko::System

@@ -9,7 +9,7 @@
 
 #include <egg/math/Math.hh>
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @addr{0x8059940C}
 WheelPhysics::WheelPhysics(u16 wheelIdx, u16 bspWheelIdx)
@@ -246,4 +246,4 @@ void KartSuspensionPhysics::calcSuspension(const EGG::Vector3f &forward,
     m_tirePhysics->calcSuspension(forward);
 }
 
-} // namespace Kart
+} // namespace Kinoko::Kart

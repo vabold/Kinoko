@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectBase.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 struct StateManagerEntry {
     u16 id;
@@ -67,4 +67,4 @@ protected:
     void *m_obj;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

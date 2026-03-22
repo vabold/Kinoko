@@ -2,7 +2,7 @@
 
 #include <egg/math/Matrix.hh>
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief Houses the state of an object in terms of the Gilbert–Johnson–Keerthi (GJK) algorithm.
 struct GJKState {
@@ -59,4 +59,4 @@ private:
     static std::array<std::array<f32, 4>, 4> s_dotProductCache;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

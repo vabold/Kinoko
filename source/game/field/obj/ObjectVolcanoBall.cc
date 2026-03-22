@@ -1,6 +1,6 @@
 #include "ObjectVolcanoBall.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806E2904}
 ObjectVolcanoBall::ObjectVolcanoBall(f32 accel, f32 finalVel, f32 endPosY,
@@ -40,4 +40,4 @@ void ObjectVolcanoBall::calcFalling() {
     }
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

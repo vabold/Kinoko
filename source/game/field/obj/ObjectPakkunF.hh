@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief Represents the piranhas on GCN Mario Circuit.
 /// @details This object does not include the pipe that is normally found underneath the piranha.
@@ -47,4 +47,4 @@ private:
     const u32 m_waitDuration;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

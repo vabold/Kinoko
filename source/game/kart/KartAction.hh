@@ -2,7 +2,7 @@
 
 #include "game/kart/KartObjectProxy.hh"
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 enum class Action {
     None = -1,
@@ -171,4 +171,4 @@ private:
     static const std::array<EndActionFunc, MAX_ACTION> s_onEnd;
 };
 
-} // namespace Kart
+} // namespace Kinoko::Kart

@@ -4,8 +4,7 @@
 
 // Credit: kiwi515/ogws
 
-namespace Abstract {
-namespace g3d {
+namespace Kinoko::Abstract::g3d {
 
 enum class AnmPolicy : u32 {
     OneTime = 0,
@@ -83,5 +82,4 @@ private:
     static f32 s_baseUpdateRate;
 };
 
-} // namespace g3d
-} // namespace Abstract
+} // namespace Kinoko::Abstract::g3d

@@ -6,7 +6,7 @@
 
 // Credit: em-eight/mkw
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x807C28D8}
 void CourseColMgr::init() {
@@ -593,4 +593,4 @@ bool CourseColMgr::doCheckMaskOnlyPush(KColData *data, CollisionCheckFunc collis
 
 CourseColMgr *CourseColMgr::s_instance = nullptr; ///< @addr{0x809C3C10}
 
-} // namespace Field
+} // namespace Kinoko::Field

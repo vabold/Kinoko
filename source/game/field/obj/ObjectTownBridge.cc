@@ -4,7 +4,7 @@
 
 #include <algorithm>
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x80809448}
 ObjectTownBridge::ObjectTownBridge(const System::MapdataGeoObj &params) : ObjectKCL(params) {
@@ -120,4 +120,4 @@ ObjectTownBridge::State ObjectTownBridge::calcState(u32 t) const {
     return State::Lowered;
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

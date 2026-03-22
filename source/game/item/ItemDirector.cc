@@ -2,7 +2,7 @@
 
 #include "game/system/RaceConfig.hh"
 
-namespace Item {
+namespace Kinoko::Item {
 
 /// @addr{0x80799794}
 void ItemDirector::init() {
@@ -53,4 +53,4 @@ ItemDirector::~ItemDirector() {
 
 ItemDirector *ItemDirector::s_instance = nullptr; ///< @addr{0x809C3618}
 
-} // namespace Item
+} // namespace Kinoko::Item

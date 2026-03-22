@@ -4,7 +4,7 @@
 
 #include <egg/math/Vector.hh>
 
-namespace System {
+namespace Kinoko::System {
 
 /// @brief This class represents the course's respawn positions.
 class MapdataJugemPoint {
@@ -42,4 +42,4 @@ public:
     ~MapdataJugemPointAccessor() override;
 };
 
-} // namespace System
+} // namespace Kinoko::System

@@ -2,7 +2,7 @@
 
 #include "game/system/CourseMap.hh"
 
-namespace System {
+namespace Kinoko::System {
 
 MapdataStageInfo::MapdataStageInfo(const SData *data) : m_rawData(data) {
     EGG::RamStream stream = EGG::RamStream(data, sizeof(SData));
@@ -19,4 +19,4 @@ MapdataStageInfoAccessor::MapdataStageInfoAccessor(const MapSectionHeader *heade
 
 MapdataStageInfoAccessor::~MapdataStageInfoAccessor() = default;
 
-} // namespace System
+} // namespace Kinoko::System

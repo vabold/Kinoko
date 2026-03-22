@@ -2,7 +2,7 @@
 
 #include "game/system/RaceManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806DDDD8}
 ObjectSunDS::ObjectSunDS(const System::MapdataGeoObj &params)
@@ -46,4 +46,4 @@ s16 ObjectSunDS::launchPointIdx() {
     return m_railInterpolator->curPointIdx();
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

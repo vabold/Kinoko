@@ -4,6 +4,8 @@
 
 #include <egg/core/ExpHeap.hh>
 
+using namespace Kinoko;
+
 #if defined(__arm64__) || defined(__aarch64__)
 static void FlushDenormalsToZero() {
     uint64_t fpcr;

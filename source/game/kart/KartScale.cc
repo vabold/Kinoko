@@ -2,7 +2,7 @@
 
 #include "game/kart/KartObjectManager.hh"
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @addr{0x8056AD44}
 KartScale::KartScale(const KartParam::Stats &stats) {
@@ -140,4 +140,4 @@ EGG::Vector3f KartScale::getAnmScale(f32 frame) const {
     return scaleAnm->getAnmResult(frame, 0).scale();
 }
 
-} // namespace Kart
+} // namespace Kinoko::Kart

@@ -2,7 +2,7 @@
 
 #include "game/field/ObjectDirector.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806F2FE8}
 HanachanChainManager::HanachanChainManager(const std::span<const f32> &linkDistances) {
@@ -342,4 +342,4 @@ ObjectHanachan::RailAlignment ObjectHanachan::calcRailAlignment() const {
                                          RailAlignment::MisalignedRight;
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

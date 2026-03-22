@@ -1,6 +1,6 @@
 #include "ObjectShip64.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x80765C94}
 ObjectShip64::ObjectShip64(const System::MapdataGeoObj &params) : ObjectCollidable(params) {}
@@ -69,4 +69,4 @@ bool ObjectShip64::checkCollision(ObjectCollisionBase *lhs, EGG::Vector3f &dist)
     return has_col;
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

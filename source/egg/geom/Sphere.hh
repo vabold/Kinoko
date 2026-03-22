@@ -2,7 +2,7 @@
 
 #include "egg/math/Vector.hh"
 
-namespace EGG {
+namespace Kinoko::EGG {
 
 /// @brief Represents a sphere in 3D space.
 struct Sphere3f {
@@ -24,4 +24,4 @@ struct Sphere3f {
     f32 radius;
 };
 
-} // namespace EGG
+} // namespace Kinoko::EGG

@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectId.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief Maps to SObjectCollisionSet::mode. Determines what type of collision an object has.
 enum class CollisionMode {
@@ -70,4 +70,4 @@ private:
     const s16 *m_slots;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

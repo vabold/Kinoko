@@ -8,7 +8,7 @@
 
 #include <vector>
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectChoropuGround;
 class ObjectChoropuHoll;
@@ -142,4 +142,4 @@ private:
     static constexpr f32 RADIUS = 300.0f;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

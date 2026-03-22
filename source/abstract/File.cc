@@ -2,7 +2,7 @@
 
 #include <fstream>
 
-namespace Abstract::File {
+namespace Kinoko::Abstract::File {
 
 u8 *Load(const char *path, size_t &size) {
     char filepath[256];
@@ -37,4 +37,4 @@ int Remove(const char *path) {
     return std::remove(path);
 }
 
-} // namespace Abstract::File
+} // namespace Kinoko::Abstract::File

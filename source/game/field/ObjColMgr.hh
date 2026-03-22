@@ -2,7 +2,7 @@
 
 #include "game/field/KColData.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief Manager for an object's KCL interactions.
 /// @nosubgrouping
@@ -89,4 +89,4 @@ private:
     EGG::Vector3f m_movingObjVel;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field
