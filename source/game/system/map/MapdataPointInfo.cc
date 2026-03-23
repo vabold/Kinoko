@@ -2,7 +2,7 @@
 
 #include "game/system/CourseMap.hh"
 
-namespace System {
+namespace Kinoko::System {
 
 MapdataPointInfo::MapdataPointInfo(const SData *data) : m_rawData(data) {
     EGG::RamStream stream =
@@ -10,14 +10,12 @@ MapdataPointInfo::MapdataPointInfo(const SData *data) : m_rawData(data) {
     read(stream);
 }
 
-MapdataPointInfo::~MapdataPointInfo() {
-    delete[] m_points.data();
-}
+MapdataPointInfo::~MapdataPointInfo() = default;
 
 void MapdataPointInfo::read(EGG::RamStream &stream) {
     u16 count = stream.read_u16();
 
-    m_points = std::span<Point>(new Point[count], count);
+    m_points = owning_span<Point>(count);
 
     for (auto &setting : m_settings) {
         setting = stream.read_u8();
@@ -59,4 +57,4 @@ void MapdataPointInfoAccessor::init(const MapdataPointInfo::SData *start, u16 co
     }
 }
 
-} // namespace System
+} // namespace Kinoko::System

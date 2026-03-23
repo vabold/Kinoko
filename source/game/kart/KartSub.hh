@@ -2,7 +2,7 @@
 
 #include "game/kart/KartMove.hh"
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 class KartObject;
 
@@ -54,4 +54,4 @@ private:
     static constexpr f32 DT = 1.0f; ///< Delta time.
 };
 
-} // namespace Kart
+} // namespace Kinoko::Kart

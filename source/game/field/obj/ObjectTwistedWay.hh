@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectDrivable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief The wavy road in Bowser's Castle.
 /// @details Behaves as a sine wave with a period of 120 frames and an amplitude which varies
@@ -117,4 +117,4 @@ private:
     static constexpr f32 HALF_DEPTH = 7500.0f; ///< Half the length of the wavy road
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

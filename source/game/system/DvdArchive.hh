@@ -2,7 +2,7 @@
 
 #include <egg/core/Archive.hh>
 
-namespace System {
+namespace Kinoko::System {
 
 class DvdArchive {
 public:
@@ -47,4 +47,4 @@ private:
     State m_state;
 };
 
-} // namespace System
+} // namespace Kinoko::System

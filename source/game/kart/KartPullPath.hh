@@ -4,7 +4,7 @@
 
 #include "game/system/map/MapdataPointInfo.hh"
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 class KartPullPath;
 
@@ -108,4 +108,4 @@ private:
     s16 m_areaId;
 };
 
-} // namespace Kart
+} // namespace Kinoko::Kart

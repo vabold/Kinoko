@@ -6,8 +6,7 @@
 
 // Credit: kiwi515/ogws
 
-namespace Abstract {
-namespace g3d {
+namespace Kinoko::Abstract::g3d {
 
 /// @brief Essentially a lookup table to find different sections within the resource file.
 class ResDic {
@@ -63,5 +62,4 @@ private:
     const Data *m_data;
 };
 
-} // namespace g3d
-} // namespace Abstract
+} // namespace Kinoko::Abstract::g3d

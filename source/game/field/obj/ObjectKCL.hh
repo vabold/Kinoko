@@ -3,7 +3,7 @@
 #include "game/field/ObjColMgr.hh"
 #include "game/field/obj/ObjectDrivable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectKCL : public ObjectDrivable {
 public:
@@ -115,4 +115,4 @@ protected:
     s32 m_lastScaleUpdateFrame;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

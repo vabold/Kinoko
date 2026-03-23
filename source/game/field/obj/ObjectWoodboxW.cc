@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectWoodboxWSub.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8077DF24}
 ObjectWoodboxW::ObjectWoodboxW(const System::MapdataGeoObj &params) : ObjectCollidable(params) {
@@ -16,7 +16,7 @@ ObjectWoodboxW::ObjectWoodboxW(const System::MapdataGeoObj &params) : ObjectColl
         boxCount = DEFAULT_BOX_COUNT;
     }
 
-    m_boxes = std::span<ObjectWoodboxWSub *>(new ObjectWoodboxWSub *[boxCount], boxCount);
+    m_boxes = owning_span<ObjectWoodboxWSub *>(boxCount);
 
     for (auto *&box : m_boxes) {
         box = new ObjectWoodboxWSub(params);
@@ -25,9 +25,7 @@ ObjectWoodboxW::ObjectWoodboxW(const System::MapdataGeoObj &params) : ObjectColl
 }
 
 /// @addr{0x8077E120}
-ObjectWoodboxW::~ObjectWoodboxW() {
-    delete[] m_boxes.data();
-}
+ObjectWoodboxW::~ObjectWoodboxW() = default;
 
 /// @addr{0x8077E1A0}
 void ObjectWoodboxW::init() {
@@ -53,4 +51,4 @@ void ObjectWoodboxW::calc() {
     m_nextBoxIdx = (m_nextBoxIdx + 1) % m_boxes.size();
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

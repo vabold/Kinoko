@@ -144,6 +144,10 @@ STATIC_ASSERT(KCL_TYPE_OBJECT_WALL == 0x4000D000);
             ~KCL_TYPE_BIT(COL_TYPE_CANNON_TRIGGER) & \
             ~KCL_TYPE_BIT(COL_TYPE_FORCE_RECALCULATE_ROUTE))
 
+#define KCL_TYPE_CAMERA_COLLIDABLE \
+    (KCL_TYPE_VEHICLE_COLLIDEABLE & ~KCL_TYPE_BIT(COL_TYPE_INVISIBLE_WALL2) & \
+            ~KCL_TYPE_BIT(COL_TYPE_ITEM_STATE_MODIFIER))
+
 /// 0xE0F8BDFF
 #define KCL_TYPE_NON_DIRECTIONAL \
     (KCL_TYPE_VEHICLE_COLLIDEABLE & ~KCL_TYPE_BIT(COL_TYPE_ITEM_STATE_MODIFIER) & \
@@ -180,7 +184,7 @@ STATIC_ASSERT(KCL_TYPE_6CEBDFFF == 0x6CEBDFFF);
 #define KCL_TYPE_ANY_INVISIBLE_WALL \
     (KCL_TYPE_INVISIBLE_WALL | KCL_TYPE_BIT(COL_TYPE_HALFPIPE_INVISIBLE_WALL))
 
-namespace Field {
+namespace Kinoko::Field {
 /// @brief The header of the KCL file format. It is 0x3C bytes long (for Mario %Kart Wii).
 struct KColHeader {
     u32 pos_data_offset;        ///< 0-indexed offset to array of position vectors.
@@ -201,4 +205,4 @@ STATIC_ASSERT(sizeof(KColHeader) == 0x3c);
 
 typedef u32 KCLTypeMask;
 
-} // namespace Field
+} // namespace Kinoko::Field

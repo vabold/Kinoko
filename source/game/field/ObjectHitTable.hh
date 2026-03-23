@@ -6,7 +6,7 @@
 
 #include <span>
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectHitTable {
 public:
@@ -19,8 +19,8 @@ public:
 private:
     s16 m_count;
     s16 m_fieldCount;
-    std::span<s16> m_reactions;
+    owning_span<s16> m_reactions;
     const s16 *m_slots;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

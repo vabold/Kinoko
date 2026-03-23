@@ -9,7 +9,7 @@
 
 #include <egg/core/BitFlag.hh>
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 enum class Reaction {
     None = 0,
@@ -230,4 +230,4 @@ private:
     static std::array<ObjectCollisionHandler, 33> s_objectCollisionHandlers;
 };
 
-} // namespace Kart
+} // namespace Kinoko::Kart

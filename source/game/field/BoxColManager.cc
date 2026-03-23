@@ -5,7 +5,7 @@
 
 #include <numeric>
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x80786ED0}
 BoxColUnit::BoxColUnit() : m_pos(nullptr), m_radius(0.0f), m_range(0.0f), m_userData(nullptr) {}
@@ -625,4 +625,4 @@ void BoxColManager::searchImpl(f32 radius, const EGG::Vector3f &pos, const BoxCo
 
 BoxColManager *BoxColManager::s_instance = nullptr; ///< @addr{0x809C2EF0}
 
-} // namespace Field
+} // namespace Kinoko::Field

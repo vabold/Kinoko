@@ -1,6 +1,6 @@
 #include "ObjectPenguin.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x80775624} @addr{0x8077708C}
 ObjectPenguin::ObjectPenguin(const System::MapdataGeoObj &params) : ObjectCollidable(params) {}
@@ -134,4 +134,4 @@ void ObjectPenguinS::calcRail() {
     m_railInterpolator->setCurrVel(static_cast<f32>(curPoint.setting[1]));
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -2,7 +2,7 @@
 
 #include <abstract/memory/List.hh>
 
-namespace EGG {
+namespace Kinoko::EGG {
 
 class Heap;
 
@@ -32,4 +32,4 @@ private:
     Abstract::Memory::MEMLink m_link;
 };
 
-} // namespace EGG
+} // namespace Kinoko::EGG

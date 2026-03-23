@@ -9,9 +9,7 @@
 
 // Credit: kiwi515/ogws
 
-namespace Abstract {
-namespace g3d {
-
+namespace Kinoko::Abstract::g3d {
 struct ChrAnmResult {
     enum Flag {
         FLAG_ANM_EXISTS = (1 << 0),
@@ -240,5 +238,4 @@ private:
     ResAnmChr m_resAnmChr;
 };
 
-} // namespace g3d
-} // namespace Abstract
+} // namespace Kinoko::Abstract::g3d

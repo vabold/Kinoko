@@ -2,7 +2,7 @@
 
 #include "game/field/RailManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806DDA84}
 ObjectSniper::ObjectSniper()
@@ -38,4 +38,4 @@ void ObjectSniper::calc() {
     }
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

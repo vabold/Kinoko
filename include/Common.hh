@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <Logger.hh>
+#include <Types.hh>
 
 #include <egg/core/Heap.hh>
 
@@ -11,21 +11,9 @@
 #include <bit>
 #include <cassert>
 #include <limits>
-#include <type_traits>
 #include <utility>
 
-typedef int8_t s8;
-typedef int16_t s16;
-typedef int32_t s32;
-typedef int64_t s64;
-
-typedef uint8_t u8;
-typedef uint16_t u16;
-typedef uint32_t u32;
-typedef uint64_t u64;
-
-typedef float f32;
-typedef double f64;
+namespace Kinoko {
 
 enum class Course {
     Mario_Circuit = 0,
@@ -441,3 +429,5 @@ static constexpr auto DEFAULT_OPT = Abstract::Memory::MEMiHeapHead::OptFlag().se
 static constexpr auto DEFAULT_OPT = Abstract::Memory::MEMiHeapHead::OptFlag().setBit(
         Abstract::Memory::MEMiHeapHead::eOptFlag::ZeroFillAlloc);
 #endif
+
+} // namespace Kinoko

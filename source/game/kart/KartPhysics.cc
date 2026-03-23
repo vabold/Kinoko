@@ -2,7 +2,7 @@
 
 #include <egg/math/Quat.hh>
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @addr{0x8059F5BC}
 KartPhysics::KartPhysics(bool isBike) {
@@ -93,4 +93,4 @@ KartPhysics *KartPhysics::Create(const KartParam &param) {
     return physics;
 }
 
-} // namespace Kart
+} // namespace Kinoko::Kart

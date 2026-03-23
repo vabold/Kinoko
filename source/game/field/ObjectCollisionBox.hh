@@ -2,7 +2,7 @@
 
 #include "game/field/ObjectCollisionConvexHull.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @details Inherits ObjectCollisionConvexHull, as a box is a convex hull of its vertices.
 class ObjectCollisionBox : public ObjectCollisionConvexHull {
@@ -20,4 +20,4 @@ private:
     EGG::Vector3f m_scale;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

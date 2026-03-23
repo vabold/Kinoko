@@ -5,7 +5,7 @@
 #include "game/kart/KartCollide.hh"
 #include "game/kart/KartObject.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806B7710}
 ObjectCarA::ObjectCarA(const System::MapdataGeoObj &params)
@@ -150,4 +150,4 @@ void ObjectCarA::calcPos() {
     m_flags.setBit(eFlags::Position);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

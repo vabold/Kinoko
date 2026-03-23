@@ -2,7 +2,7 @@
 
 #include "game/kart/KartSuspensionPhysics.hh"
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @brief Doesn't do much besides hold a pointer to KartSuspensionPhysics.
 /// @nosubgrouping
@@ -40,4 +40,4 @@ public:
     ~KartSuspensionRearBike();
 };
 
-} // namespace Kart
+} // namespace Kinoko::Kart

@@ -1,6 +1,6 @@
 #include "KartBoost.hh"
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @addr{0x80588D28}
 KartBoost::KartBoost() : m_timers{0}, m_active{false} {
@@ -83,4 +83,4 @@ void KartBoost::reset() {
     m_speedLimit = -1.0f;
 }
 
-} // namespace Kart
+} // namespace Kinoko::Kart

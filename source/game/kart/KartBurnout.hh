@@ -2,7 +2,7 @@
 
 #include "game/kart/KartObjectProxy.hh"
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @brief Calculates the duration of burnout and rotation induced
 /// when holding acceleration too long during the race countdown.
@@ -33,4 +33,4 @@ private:
     f32 m_pitch;
 };
 
-} // namespace Kart
+} // namespace Kinoko::Kart

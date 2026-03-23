@@ -1,6 +1,6 @@
 #include "ItemInventory.hh"
 
-namespace Item {
+namespace Kinoko::Item {
 
 ItemInventory::ItemInventory() = default;
 
@@ -30,4 +30,4 @@ void ItemInventory::clear() {
     m_currentCount = 0;
 }
 
-} // namespace Item
+} // namespace Kinoko::Item

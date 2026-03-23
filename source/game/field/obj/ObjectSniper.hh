@@ -3,7 +3,7 @@
 #include "game/field/obj/ObjectProjectile.hh"
 #include "game/field/obj/ObjectProjectileLauncher.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief The base class for a manager object which is responsible for synchronizing a set of
 /// projectiles and a projectile launcher.
@@ -35,9 +35,9 @@ public:
     void loadRail() override {}
 
 protected:
-    std::span<ObjectProjectile *> m_projectiles;
+    owning_span<ObjectProjectile *> m_projectiles;
     ObjectProjectileLauncher *m_launcher; // The rDH sun or the RSGB ship
-    std::span<s16> m_pointIdxs;
+    owning_span<s16> m_pointIdxs;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

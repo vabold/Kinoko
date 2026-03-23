@@ -4,12 +4,14 @@
 #include "game/field/obj/ObjectFlamePole.hh"
 #include "game/field/obj/ObjectKCL.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectFlamePole;
 
 /// @brief Represents the geysers on Bowser's Castle.
 class ObjectFlamePoleFoot final : public ObjectKCL, public StateManager {
+    friend class Host::Context;
+
 public:
     ObjectFlamePoleFoot(const System::MapdataGeoObj &params);
     ~ObjectFlamePoleFoot() override;
@@ -106,7 +108,7 @@ private:
     f32 m_eruptAccel;
     f32 m_initEruptVel;
 
-    static u32 FLAMEPOLE_COUNT;
+    static u32 s_flamePoleCount;
 
     static constexpr std::array<StateManagerEntry, 6> STATE_ENTRIES = {{
             {StateEntry<ObjectFlamePoleFoot, &ObjectFlamePoleFoot::enterExpanding,
@@ -126,4 +128,4 @@ private:
     static constexpr u32 CYCLE_FRAMES = 540;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

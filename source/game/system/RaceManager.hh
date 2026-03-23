@@ -7,6 +7,8 @@
 
 #include <egg/math/Vector.hh>
 
+namespace Kinoko {
+
 namespace Host {
 
 class Context;
@@ -165,3 +167,5 @@ private:
 };
 
 } // namespace System
+
+} // namespace Kinoko

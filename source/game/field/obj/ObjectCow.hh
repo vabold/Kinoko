@@ -3,7 +3,7 @@
 #include "game/field/StateManager.hh"
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class RailInterpolator;
 
@@ -170,7 +170,7 @@ private:
     void checkIntraCollision();
 
     ObjectCowLeader *m_leader;
-    std::span<ObjectCowFollower *> m_followers;
+    owning_span<ObjectCowFollower *> m_followers;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -2,7 +2,7 @@
 
 #include <Common.hh>
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @brief State management for boosts (start boost, mushrooms, mini-turbos)
 /// @nosubgrouping
@@ -52,4 +52,4 @@ private:
     f32 m_speedLimit;
 };
 
-} // namespace Kart
+} // namespace Kinoko::Kart

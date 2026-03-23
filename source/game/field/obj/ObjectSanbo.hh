@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectSanbo final : public ObjectCollidable {
 public:
@@ -28,4 +28,4 @@ private:
     EGG::Vector3f m_tangent;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

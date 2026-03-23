@@ -3,7 +3,7 @@
 #include "game/field/StateManager.hh"
 #include "game/field/obj/ObjectProjectile.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief The cannonball projectiles on GBA Shy Guy Beach.
 class ObjectHeyhoBall final : public ObjectProjectile, public StateManager {
@@ -104,4 +104,4 @@ private:
     }};
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

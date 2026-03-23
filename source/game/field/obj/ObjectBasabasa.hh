@@ -3,7 +3,7 @@
 #include "game/field/StateManager.hh"
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief Represents a single bat. It's owned and managed by @ref ObjectBasabasa.
 class ObjectBasabasaDummy final : public ObjectCollidable, public StateManager {
@@ -69,6 +69,8 @@ private:
 /// @details Spawns bats in small groups, whose size is determined by @ref m_batsPerGroup. After
 /// that many bats have been spawned, it resets the @ref m_cycleTimer.
 class ObjectBasabasa final : public ObjectCollidable {
+    friend class Host::Context;
+
 public:
     ObjectBasabasa(const System::MapdataGeoObj &params);
     ~ObjectBasabasa() override;
@@ -87,14 +89,25 @@ public:
     /// @addr{0x806B7620}
     void loadRail() override {}
 
+    [[nodiscard]] static f32 initialXRange() {
+        return s_initialXRange;
+    }
+
+    [[nodiscard]] static f32 initialYRange() {
+        return s_initialYRange;
+    }
+
 private:
-    std::span<ObjectBasabasaDummy *> m_bats; ///< The array of individual bats
-    const u32 m_initialTimer;                ///< The m_cycleTimer starts and resets to this value
+    owning_span<ObjectBasabasaDummy *> m_bats; ///< The array of individual bats
+    const u32 m_initialTimer;                  ///< The m_cycleTimer starts and resets to this value
     const u32 m_batsPerGroup; ///< Number of bats that will spawn before resetting the m_cycleTimer
     const u32 m_startFrame;   ///< Initial delay before the spawner will start calculating
     const u32 m_batSpacing;   ///< How many frames in between bat spawns
     u32 m_cycleTimer;         ///< Used to determine when to spawn next bat
     u32 m_batsActive;         ///< The number of bats currently spawned
+
+    static f32 s_initialXRange;
+    static f32 s_initialYRange;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

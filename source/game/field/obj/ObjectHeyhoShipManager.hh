@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectSniper.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectHeyhoShipManager final : public ObjectSniper {
 public:
@@ -13,4 +13,4 @@ public:
     void calc() override;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

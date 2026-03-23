@@ -10,7 +10,7 @@
 
 #include <cstring>
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8081F828}
 ObjectBase::ObjectBase(const System::MapdataGeoObj &params)
@@ -245,4 +245,4 @@ EGG::Vector3f ObjectBase::AdjustVecForward(f32 sidewaysScalar, f32 forwardScalar
     return sideways + newForward;
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

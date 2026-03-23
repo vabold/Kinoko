@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectDrivable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief The base class for a conveyor belt which induces road velocity.
 class ObjectBelt : public ObjectDrivable {
@@ -154,4 +154,4 @@ private:
             KCLTypeMask mask, CollisionInfo *info, KCLTypeMask *maskOut, u32 timeOffset);
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

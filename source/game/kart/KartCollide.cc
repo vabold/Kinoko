@@ -12,7 +12,7 @@
 #include <egg/math/BoundBox.hh>
 #include <egg/math/Math.hh>
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @addr{0x8056E56C}
 KartCollide::KartCollide() {
@@ -1187,4 +1187,4 @@ std::array<KartCollide::ObjectCollisionHandler, 33> KartCollide::s_objectCollisi
         &KartCollide::handleReactExplosionLoseItem,
 }};
 
-} // namespace Kart
+} // namespace Kinoko::Kart

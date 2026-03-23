@@ -8,7 +8,7 @@
 #include <list>
 
 /// @brief Pertains to scene handling.
-namespace Scene {
+namespace Kinoko::Scene {
 
 /// @brief Interface for menu and race scenes.
 class GameScene : public EGG::Scene {
@@ -27,6 +27,9 @@ public:
     virtual void destroyEngines() = 0;
     virtual void configure() = 0;
     virtual void onReinit() {}
+
+    static void initCamera();
+    static void calcCamera();
 
 protected:
     void appendResource(System::MultiDvdArchive *archive, s32 id);
@@ -60,4 +63,4 @@ private:
     [[maybe_unused]] size_t m_totalMemoryUsed;
 };
 
-} // namespace Scene
+} // namespace Kinoko::Scene

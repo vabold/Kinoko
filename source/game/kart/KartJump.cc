@@ -10,7 +10,7 @@
 
 #include <egg/math/Math.hh>
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @addr{0x80575A44}
 KartJump::KartJump(KartMove *move) : m_move(move) {
@@ -313,4 +313,4 @@ void KartJumpBike::init() {
     status().setBit(eStatus::TrickRot);
 }
 
-} // namespace Kart
+} // namespace Kinoko::Kart

@@ -4,7 +4,7 @@
 
 #include <optional>
 
-namespace Host {
+namespace Kinoko::Host {
 
 enum class EOption {
     Invalid = -1,
@@ -20,4 +20,4 @@ namespace Option {
 std::optional<EOption> CheckFlag(const char *arg);
 
 } // namespace Option
-} // namespace Host
+} // namespace Kinoko::Host

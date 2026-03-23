@@ -1,6 +1,6 @@
 #include "ObjectFirebar.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x807678F4}
 ObjectFirebar::ObjectFirebar(const System::MapdataGeoObj &params) : ObjectCollidable(params) {
@@ -8,7 +8,7 @@ ObjectFirebar::ObjectFirebar(const System::MapdataGeoObj &params) : ObjectCollid
     size_t fireballCount = std::max<u32>(1, params.setting(0) * m_spokes);
     m_angSpeed = static_cast<f32>(static_cast<s16>(params.setting(1)));
 
-    m_fireballs = std::span<ObjectFireball *>(new ObjectFireball *[fireballCount], fireballCount);
+    m_fireballs = owning_span<ObjectFireball *>(fireballCount);
 
     for (size_t i = 0; i < fireballCount; ++i) {
         m_fireballs[i] = new ObjectFireball(params);
@@ -29,9 +29,7 @@ ObjectFirebar::ObjectFirebar(const System::MapdataGeoObj &params) : ObjectCollid
 }
 
 /// @addr{0x807688AC}
-ObjectFirebar::~ObjectFirebar() {
-    delete[] m_fireballs.data();
-}
+ObjectFirebar::~ObjectFirebar() = default;
 
 /// @addr{0x80767DEC}
 void ObjectFirebar::init() {
@@ -55,4 +53,4 @@ void ObjectFirebar::calc() {
     }
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

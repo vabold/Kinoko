@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectWoodboxWSub;
 
@@ -23,9 +23,9 @@ public:
     void createCollision() override {}
 
 private:
-    std::span<ObjectWoodboxWSub *> m_boxes;
+    owning_span<ObjectWoodboxWSub *> m_boxes;
     s32 m_framesUntilSpawn;
     u32 m_nextBoxIdx;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

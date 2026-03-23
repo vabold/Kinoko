@@ -4,7 +4,7 @@
 
 #include "game/system/RaceManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectBirdLeader;
 class ObjectBirdFollower;
@@ -43,7 +43,7 @@ public:
 
 protected:
     ObjectBirdLeader *m_leader;
-    std::span<ObjectBirdFollower *> m_followers;
+    owning_span<ObjectBirdFollower *> m_followers;
 };
 
 /// @brief The main bird within an @ref ObjectBird. Other birds follow this leader.
@@ -90,4 +90,4 @@ private:
     f32 m_baseSpeed;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

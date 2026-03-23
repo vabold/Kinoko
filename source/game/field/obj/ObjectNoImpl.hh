@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectBase.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectNoImpl final : public ObjectBase {
 public:
@@ -14,4 +14,4 @@ public:
     void calcCollisionTransform() override {}
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

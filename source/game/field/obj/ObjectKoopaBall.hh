@@ -4,7 +4,7 @@
 
 #include "game/render/DrawMdl.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectKoopaBall final : public ObjectCollidable {
 public:
@@ -59,4 +59,4 @@ private:
     static constexpr f32 INITIAL_Y_VEL = -30.0f;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

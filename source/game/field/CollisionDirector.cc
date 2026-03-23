@@ -2,7 +2,7 @@
 
 #include "game/field/ObjectDrivableDirector.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8078E4F0}
 void CollisionDirector::checkCourseColNarrScLocal(f32 radius, const EGG::Vector3f &pos,
@@ -279,4 +279,4 @@ CollisionDirector::~CollisionDirector() {
 
 CollisionDirector *CollisionDirector::s_instance = nullptr; ///< @addr{0x809C2F44}
 
-} // namespace Field
+} // namespace Kinoko::Field

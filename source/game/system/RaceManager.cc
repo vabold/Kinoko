@@ -9,7 +9,7 @@
 #include "game/kart/KartObjectManager.hh"
 #include "game/kart/KartState.hh"
 
-namespace System {
+namespace Kinoko::System {
 
 /// @addr{0x80532F88}
 void RaceManager::init() {
@@ -289,4 +289,4 @@ void RaceManager::Player::endRace(const Timer &finishTime) {
 
 RaceManager *RaceManager::s_instance = nullptr; ///< @addr{0x809BD730}
 
-} // namespace System
+} // namespace Kinoko::System

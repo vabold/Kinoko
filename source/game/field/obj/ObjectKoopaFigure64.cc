@@ -4,7 +4,7 @@
 
 #include "game/system/RaceManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806DA914}
 ObjectKoopaFigure64::ObjectKoopaFigure64(const System::MapdataGeoObj &params)
@@ -73,4 +73,4 @@ void ObjectKoopaFigure64::calcCollisionTransform() {
     m_collision->transform(posMat.multiplyTo(rotMat.multiplyTo(targetMat)), m_scale);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -6,6 +6,7 @@
 #include "game/field/RailManager.hh"
 #include "game/item/ItemDirector.hh"
 #include "game/kart/KartObjectManager.hh"
+#include "game/render/KartCamera.hh"
 #include "game/system/CourseMap.hh"
 #include "game/system/KPadDirector.hh"
 #include "game/system/RaceConfig.hh"
@@ -14,7 +15,7 @@
 
 #include <ScopeLock.hh>
 
-namespace Scene {
+namespace Kinoko::Scene {
 
 /// @addr{0x80553B88}
 RaceScene::RaceScene() {
@@ -26,6 +27,11 @@ RaceScene::~RaceScene() = default;
 
 /// @addr{0x80554208}
 void RaceScene::createEngines() {
+    {
+        ScopeLock<GroupID> lock(GroupID::Gfx);
+        Render::KartCamera::CreateInstance();
+    }
+
     {
         ScopeLock<GroupID> lock(GroupID::Course);
         System::CourseMap::CreateInstance()->init();
@@ -71,6 +77,11 @@ void RaceScene::initEngines() {
     }
 
     {
+        ScopeLock<GroupID> lock(GroupID::Gfx);
+        initCamera();
+    }
+
+    {
         ScopeLock<GroupID> lock(GroupID::Race);
         System::RaceManager::Instance()->init();
     }
@@ -104,6 +115,7 @@ void RaceScene::calcEngines() {
 /// @addr{0x805549B0}
 void RaceScene::destroyEngines() {
     System::KPadDirector::Instance()->endGhostProxies();
+    Render::KartCamera::DestroyInstance();
     Kart::KartObjectManager::DestroyInstance();
     Field::ObjectDirector::DestroyInstance();
     Field::RailManager::DestroyInstance();
@@ -140,4 +152,4 @@ void RaceScene::onReinit() {
     configure();
 }
 
-} // namespace Scene
+} // namespace Kinoko::Scene

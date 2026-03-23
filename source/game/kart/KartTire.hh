@@ -2,7 +2,7 @@
 
 #include "game/kart/KartSuspensionPhysics.hh"
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @brief A holder for a wheel's physics data.
 /// @nosubgrouping
@@ -55,4 +55,4 @@ public:
     void createPhysics(u16 tireIdx) override;
 };
 
-} // namespace Kart
+} // namespace Kinoko::Kart

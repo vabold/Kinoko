@@ -4,6 +4,8 @@
 
 #include "game/system/ResourceManager.hh"
 
+namespace Kinoko {
+
 namespace Host {
 
 class Context;
@@ -25,6 +27,8 @@ public:
     [[nodiscard]] EGG::RamStream getVehicleStream(Vehicle vehicle) const;
     [[nodiscard]] EGG::RamStream getHitboxStream(Vehicle vehicle) const;
     [[nodiscard]] EGG::RamStream getBikeDispParamsStream(Vehicle vehicle) const;
+    [[nodiscard]] EGG::RamStream getKartDispParamsStream(Vehicle vehicle) const;
+    [[nodiscard]] EGG::RamStream getKartCameraStream(Character character) const;
 
     static KartParamFileManager *CreateInstance();
     static void DestroyInstance();
@@ -60,11 +64,15 @@ private:
 
     [[nodiscard]] bool validate() const;
 
-    FileInfo m_kartParam;     // kartParam.bin
-    FileInfo m_driverParam;   // driverParam.bin
-    FileInfo m_bikeDispParam; // bikePartsDispParam.bin
+    FileInfo m_kartParam;       // kartParam.bin
+    FileInfo m_driverParam;     // driverParam.bin
+    FileInfo m_bikeDispParam;   // bikePartsDispParam.bin
+    FileInfo m_kartDispParam;   // kartPartsDispParam.bin
+    FileInfo m_kartCameraParam; // kartCameraParam.bin
 
     static KartParamFileManager *s_instance;
 };
 
 } // namespace Kart
+
+} // namespace Kinoko

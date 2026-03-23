@@ -2,6 +2,8 @@
 
 #include "game/system/MultiDvdArchive.hh"
 
+namespace Kinoko {
+
 namespace Host {
 
 class Context;
@@ -54,3 +56,5 @@ private:
 };
 
 } // namespace System
+
+} // namespace Kinoko

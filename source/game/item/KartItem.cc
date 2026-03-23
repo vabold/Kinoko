@@ -5,7 +5,7 @@
 
 #include "game/system/RaceManager.hh"
 
-namespace Item {
+namespace Kinoko::Item {
 
 /// @addr{0x8079754C}
 KartItem::KartItem() {
@@ -77,4 +77,4 @@ void KartItem::useMushroom() {
     m_inventory.useItem(1);
 }
 
-} // namespace Item
+} // namespace Kinoko::Item

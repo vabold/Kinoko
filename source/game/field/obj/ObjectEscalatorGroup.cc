@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectEscalator.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8080178C}
 ObjectEscalatorGroup::ObjectEscalatorGroup(const System::MapdataGeoObj &params)
@@ -33,4 +33,4 @@ ObjectEscalatorGroup::ObjectEscalatorGroup(const System::MapdataGeoObj &params)
 /// @addr{0x80802D20}
 ObjectEscalatorGroup::~ObjectEscalatorGroup() = default;
 
-} // namespace Field
+} // namespace Kinoko::Field

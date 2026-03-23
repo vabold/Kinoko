@@ -2,7 +2,7 @@
 
 #include "game/system/map/MapdataAccessorBase.hh"
 
-namespace System {
+namespace Kinoko::System {
 
 class MapdataFileAccessor {
 public:
@@ -30,4 +30,4 @@ private:
     u32 m_sectionDefOffset;
 };
 
-} // namespace System
+} // namespace Kinoko::System

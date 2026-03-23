@@ -2,7 +2,7 @@
 
 #include "egg/core/ExpHeap.hh"
 
-namespace EGG {
+namespace Kinoko::EGG {
 
 /*------------*
     Lifecycle
@@ -218,4 +218,4 @@ u16 SceneManager::s_heapOptionFlg = DEFAULT_OPT;
 
 Heap *SceneManager::s_rootHeap = nullptr;
 
-} // namespace EGG
+} // namespace Kinoko::EGG

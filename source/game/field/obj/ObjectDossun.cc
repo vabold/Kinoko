@@ -5,7 +5,7 @@
 
 #include "game/kart/KartObject.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x80764510}
 ObjectDossun::ObjectDossun(const System::MapdataGeoObj &params)
@@ -188,4 +188,4 @@ void ObjectDossun::checkFloorCollision() {
     m_touchingGround = true;
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

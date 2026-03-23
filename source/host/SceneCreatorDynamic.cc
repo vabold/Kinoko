@@ -3,7 +3,7 @@
 #include <game/scene/RaceScene.hh>
 #include <game/scene/RootScene.hh>
 
-namespace Host {
+namespace Kinoko::Host {
 
 EGG::Scene *SceneCreatorDynamic::create(int sceneId) const {
     return create(static_cast<SceneId>(sceneId));
@@ -37,4 +37,4 @@ void SceneCreatorDynamic::destroy(SceneId sceneId) const {
     }
 }
 
-} // namespace Host
+} // namespace Kinoko::Host

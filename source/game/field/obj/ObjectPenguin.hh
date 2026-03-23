@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief The base class for penguins on N64 Sherbet Land.
 /// @details In the base game, the cave penguins derive from this class, but they do not override
@@ -94,4 +94,4 @@ private:
     s32 m_anmTimer;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

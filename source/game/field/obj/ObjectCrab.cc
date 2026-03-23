@@ -5,7 +5,7 @@
 
 #include "game/system/RaceManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8088344C}
 ObjectCrab::ObjectCrab(const System::MapdataGeoObj &params)
@@ -148,4 +148,4 @@ void ObjectCrab::calcTransMat(const EGG::Vector3f &rot) {
     m_flags.setBit(eFlags::Matrix);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -4,7 +4,7 @@
 
 #include <abstract/File.hh>
 
-namespace System {
+namespace Kinoko::System {
 
 /// @addr{0x8052DD40}
 void RaceConfig::init() {
@@ -110,4 +110,4 @@ RaceConfig::InitCallback RaceConfig::s_onInitCallback = nullptr;
 /// @brief The argument sent into the callback. This is expected to be reinterpret_casted.
 void *RaceConfig::s_onInitCallbackArg = nullptr;
 
-} // namespace System
+} // namespace Kinoko::System

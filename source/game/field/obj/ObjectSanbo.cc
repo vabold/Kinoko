@@ -3,7 +3,7 @@
 #include "game/field/CollisionDirector.hh"
 #include "game/field/KColData.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x80779F3C}
 ObjectSanbo::ObjectSanbo(const System::MapdataGeoObj &params) : ObjectCollidable(params) {
@@ -86,4 +86,4 @@ void ObjectSanbo::checkSphere() {
     setMatrixTangentTo(m_up, m_tangent);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "game/kart/KartParam.hh"
 #include "game/kart/Status.hh"
 
 #include "game/field/KCollisionTypes.hh"
@@ -10,6 +11,8 @@
 
 #include <list>
 #include <vector>
+
+namespace Kinoko {
 
 namespace Field {
 
@@ -162,6 +165,9 @@ public:
     [[nodiscard]] const Status &status() const;
     [[nodiscard]] const EGG::Vector3f &wheelPos(u16 idx) const;
     [[nodiscard]] const EGG::Vector3f &wheelEdgePos(u16 idx) const;
+    [[nodiscard]] f32 cameraDistY() const;
+    [[nodiscard]] s32 hopStickX() const;
+    [[nodiscard]] KartParam::Stats::DriftType vehicleType() const;
 
     [[nodiscard]] static std::list<KartObjectProxy *> &proxyList() {
         return s_proxyList;
@@ -180,3 +186,5 @@ private:
 };
 
 } // namespace Kart
+
+} // namespace Kinoko

@@ -4,7 +4,7 @@
 
 #include <cmath>
 
-namespace Field {
+namespace Kinoko::Field {
 
 ObjectCollisionBase::ObjectCollisionBase() = default;
 
@@ -299,4 +299,4 @@ void ObjectCollisionBase::calcSimplex(GJKState &state) const {
 
 std::array<std::array<f32, 4>, 4> ObjectCollisionBase::s_dotProductCache = {{}};
 
-} // namespace Field
+} // namespace Kinoko::Field

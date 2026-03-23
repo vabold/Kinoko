@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectWoodbox.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectWoodboxWSub final : public ObjectWoodbox {
 public:
@@ -33,4 +33,4 @@ private:
     void calcPosition();
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

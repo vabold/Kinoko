@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectFireSnake.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectFireSnakeV final : public ObjectFireSnake {
 public:
@@ -81,4 +81,4 @@ private:
     static constexpr u32 COL_CHECK_DELAY_FRAMES = 10;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

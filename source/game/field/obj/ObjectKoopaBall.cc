@@ -4,7 +4,7 @@
 
 #include "game/kart/KartCollide.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x80770384}
 ObjectKoopaBall::ObjectKoopaBall(const System::MapdataGeoObj &params)
@@ -193,4 +193,4 @@ void ObjectKoopaBall::checkSphereFull() {
     }
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

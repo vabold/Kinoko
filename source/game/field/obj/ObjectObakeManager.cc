@@ -4,7 +4,7 @@
 
 #include "game/system/RaceManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8080B0D8}
 ObjectObakeManager::ObjectObakeManager(const System::MapdataGeoObj &params)
@@ -530,4 +530,4 @@ std::pair<s32, s32> ObjectObakeManager::SpatialIndex(const EGG::Vector3f &pos) {
     return std::make_pair(x, z);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

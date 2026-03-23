@@ -1,6 +1,6 @@
 #include "game/system/map/MapdataCheckPath.hh"
 
-namespace System {
+namespace Kinoko::System {
 
 /// @addr{0x80515098}
 MapdataCheckPath::MapdataCheckPath(const SData *data) : m_rawData(data), m_depth(-1) {
@@ -79,4 +79,4 @@ f32 MapdataCheckPathAccessor::lapProportion() const {
     return m_lapProportion;
 }
 
-} // namespace System
+} // namespace Kinoko::System

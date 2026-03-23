@@ -7,7 +7,7 @@
 
 #include "game/field/ObjectDirector.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8075EAFC}
 ObjectDossunc::ObjectDossunc(const System::MapdataGeoObj &params) : ObjectCollidable(params) {
@@ -41,4 +41,4 @@ void ObjectDossunc::load() {
     ObjectDirector::Instance()->addObjectNoImpl(this);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

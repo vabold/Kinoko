@@ -6,7 +6,7 @@
 
 #include <egg/core/BitFlag.hh>
 
-namespace Item {
+namespace Kinoko::Item {
 
 /// @brief State management for item usage
 /// @nosubgrouping
@@ -26,6 +26,10 @@ public:
     [[nodiscard]] ItemInventory &inventory() {
         return m_inventory;
     }
+
+    [[nodiscard]] const ItemInventory &inventory() const {
+        return m_inventory;
+    }
     /// @endGetters
 
 private:
@@ -40,4 +44,4 @@ private:
     ItemInventory m_inventory;
 };
 
-} // namespace Item
+} // namespace Kinoko::Item

@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief Abstract class that represents an object thrown by an @ref ObjectProjectileLauncher.
 class ObjectProjectile : public ObjectCollidable {
@@ -26,4 +26,4 @@ protected:
     const s16 m_idx;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -2,7 +2,7 @@
 
 #include "game/field/CollisionDirector.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 SphereLink::SphereLink() : m_prev(nullptr), m_next(nullptr) {}
 
@@ -176,4 +176,4 @@ void SphereLink::calcSpring() {
     }
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

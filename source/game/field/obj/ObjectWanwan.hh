@@ -3,7 +3,7 @@
 #include "game/field/StateManager.hh"
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief The wooden stake that the chain chomp is chained to.
 class ObjectWanwanPile final : public ObjectCollidable {
@@ -144,4 +144,4 @@ private:
     }};
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

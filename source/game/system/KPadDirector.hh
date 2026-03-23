@@ -2,6 +2,8 @@
 
 #include "game/system/KPadController.hh"
 
+namespace Kinoko {
+
 namespace Host {
 
 class Context;
@@ -56,3 +58,5 @@ private:
 };
 
 } // namespace System
+
+} // namespace Kinoko

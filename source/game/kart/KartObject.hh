@@ -5,7 +5,7 @@
 #include "game/kart/KartParam.hh"
 #include "game/kart/KartPhysics.hh"
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @brief The highest level abstraction for a kart.
 class KartObject : public KartObjectProxy {
@@ -43,4 +43,4 @@ public:
     void createTires() override;
 };
 
-} // namespace Kart
+} // namespace Kinoko::Kart

@@ -1,6 +1,6 @@
 #include "ObjectHeyhoShip.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806D18FC}
 ObjectHeyhoShip::ObjectHeyhoShip(const System::MapdataGeoObj &params)
@@ -60,4 +60,4 @@ void ObjectHeyhoShip::calcPos() {
     m_pos.y = m_yAmplitude * EGG::Mathf::SinFIdx(fidx) + m_pos.y;
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

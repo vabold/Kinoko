@@ -9,6 +9,8 @@
 #include <limits>
 #include <type_traits>
 
+namespace Kinoko {
+
 // We can't include Common.hh, because we have a cyclic dependency
 typedef uint32_t u32;
 
@@ -508,3 +510,5 @@ private:
 };
 
 } // namespace EGG
+
+} // namespace Kinoko

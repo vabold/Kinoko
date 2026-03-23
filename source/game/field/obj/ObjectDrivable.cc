@@ -2,7 +2,7 @@
 
 #include "game/field/ObjectDrivableDirector.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8081A6D0}
 ObjectDrivable::ObjectDrivable(const System::MapdataGeoObj &params) : ObjectBase(params) {}
@@ -26,4 +26,4 @@ void ObjectDrivable::loadAABB(f32 radius) {
     m_boxColUnit = boxColMgr->insertDrivable(radius, 0.0f, &pos, false, this);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

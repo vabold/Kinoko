@@ -12,7 +12,7 @@
 #include "game/system/RaceConfig.hh"
 #include "game/system/RaceManager.hh"
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @addr{0x8058DDBC}
 KartObject::KartObject(KartParam *param) {
@@ -238,4 +238,4 @@ void KartObjectBike::createTires() {
         sus->init(wheelIdx, KartSuspensionPhysics::TireType::Bike, wheelIdx);
     }
 }
-} // namespace Kart
+} // namespace Kinoko::Kart

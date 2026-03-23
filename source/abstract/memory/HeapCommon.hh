@@ -6,6 +6,8 @@
 
 #include <array>
 
+namespace Kinoko {
+
 namespace Host {
 
 class Context;
@@ -72,3 +74,5 @@ private:
 };
 
 } // namespace Abstract::Memory
+
+} // namespace Kinoko

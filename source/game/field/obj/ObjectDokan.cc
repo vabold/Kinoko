@@ -4,7 +4,7 @@
 
 #include "game/kart/KartCollide.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x807787F0}
 ObjectDokan::ObjectDokan(const System::MapdataGeoObj &params) : ObjectCollidable(params) {}
@@ -90,4 +90,4 @@ void ObjectDokan::calcFloor() {
     }
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

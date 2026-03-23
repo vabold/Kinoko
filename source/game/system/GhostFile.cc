@@ -4,7 +4,7 @@
 
 #include <cstring>
 
-namespace System {
+namespace Kinoko::System {
 
 /// @addr{0x8051C398}
 GhostFile::GhostFile(const RawGhostFile &raw) {
@@ -155,4 +155,4 @@ bool RawGhostFile::isValid(const u8 *rkg) const {
     return true;
 }
 
-} // namespace System
+} // namespace Kinoko::System

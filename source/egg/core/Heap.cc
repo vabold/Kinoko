@@ -1,8 +1,9 @@
 #include "egg/core/ExpHeap.hh"
 
+using namespace Kinoko;
 using namespace Abstract::Memory;
 
-namespace EGG {
+namespace Kinoko::EGG {
 
 /// @addr{0x802296E8}
 Heap::Heap(MEMiHeapHead *handle) : m_handle(handle), m_children(Disposer::getLinkOffset()) {
@@ -130,7 +131,7 @@ Heap *Heap::findContainHeap(const void *block) {
     return handle ? findHeap(handle) : nullptr;
 }
 
-} // namespace EGG
+} // namespace Kinoko::EGG
 
 /// @addr{0x80229DCC}
 void *operator new(size_t size) {
@@ -189,8 +190,6 @@ EGG::Heap *EGG::Heap::s_allocatableHeap = nullptr; ///< @addr{0x80386EA8}
 // hack needed to hide operator new symbols for gcc
 asm(".hidden _Znwm");
 asm(".hidden _Znwmi");
-asm(".hidden _ZnwmPN3EGG4HeapEi");
 asm(".hidden _Znam");
 asm(".hidden _Znami");
-asm(".hidden _ZnamPN3EGG4HeapEi");
 #endif

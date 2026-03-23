@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectDokan final : public ObjectCollidable {
 public:
@@ -29,4 +29,4 @@ private:
     EGG::Vector3f m_velocity;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

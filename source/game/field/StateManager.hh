@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectBase.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 struct StateManagerEntry {
     u16 id;
@@ -32,9 +32,7 @@ protected:
         m_entryIds = std::span(new u16[m_entries.size()], m_entries.size());
 
         // The base game initializes all entries to 0xffff, possibly to avoid an uninitialized value
-        for (auto &id : m_entryIds) {
-            id = 0xffff;
-        }
+        memset(m_entryIds.data(), 0xff, m_entryIds.size());
 
         for (size_t i = 0; i < m_entryIds.size(); ++i) {
             m_entryIds[m_entries[i].id] = i;
@@ -69,4 +67,4 @@ protected:
     void *m_obj;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

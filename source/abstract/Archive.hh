@@ -6,7 +6,7 @@
 #define U8_SIGNATURE 0x55AA382D
 
 /// @brief An abstraction of components from the nw4r and RVL libraries.
-namespace Abstract {
+namespace Kinoko::Abstract {
 
 class ArchiveHandle {
 public:
@@ -78,4 +78,4 @@ private:
     const char *m_strings;
 };
 
-} // namespace Abstract
+} // namespace Kinoko::Abstract

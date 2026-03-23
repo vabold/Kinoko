@@ -2,7 +2,7 @@
 
 #include "egg/core/SceneManager.hh"
 
-namespace EGG {
+namespace Kinoko::EGG {
 
 /// @addr{0x8023AD10}
 Scene::Scene() {
@@ -16,4 +16,4 @@ Scene::Scene() {
 /// @addr{0x8023AD84}
 Scene::~Scene() = default;
 
-} // namespace EGG
+} // namespace Kinoko::EGG

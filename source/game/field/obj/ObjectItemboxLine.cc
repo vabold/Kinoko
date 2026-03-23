@@ -3,7 +3,7 @@
 #include "game/field/obj/ObjectItemboxPress.hh"
 #include "game/field/obj/ObjectPress.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8076D044}
 ObjectItemboxLine::ObjectItemboxLine(const System::MapdataGeoObj &params)
@@ -18,7 +18,7 @@ ObjectItemboxLine::ObjectItemboxLine(const System::MapdataGeoObj &params)
         pressCount = DEFAULT_PRESS_COUNT;
     }
 
-    m_press = std::span<ObjectItemboxPress *>(new ObjectItemboxPress *[pressCount], pressCount);
+    m_press = owning_span<ObjectItemboxPress *>(pressCount);
 
     for (auto *&press : m_press) {
         press = new ObjectItemboxPress(params);
@@ -28,10 +28,7 @@ ObjectItemboxLine::ObjectItemboxLine(const System::MapdataGeoObj &params)
 }
 
 /// @addr{0x8076D558}
-ObjectItemboxLine::~ObjectItemboxLine() {
-    // Individual objects' lifecycle is managed by the ObjectDirector.
-    delete[] m_press.data();
-}
+ObjectItemboxLine::~ObjectItemboxLine() = default;
 
 /// @addr{0x8076D604}
 void ObjectItemboxLine::init() {
@@ -58,4 +55,4 @@ void ObjectItemboxLine::calc() {
     m_curPressIdx = (m_curPressIdx + 1) % m_press.size();
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

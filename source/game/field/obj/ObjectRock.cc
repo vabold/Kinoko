@@ -4,7 +4,7 @@
 
 #include "game/kart/KartCollide.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr {0x8076F2E0}
 ObjectRock::ObjectRock(const System::MapdataGeoObj &params) : ObjectCollidable(params) {}
@@ -140,4 +140,4 @@ Kart::Reaction ObjectRock::onCollision(Kart::KartObject * /*kartObj*/,
     return reactionOnKart;
 }
 
-} // namespace Field
+} // namespace Kinoko::Field
