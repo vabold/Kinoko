@@ -118,6 +118,7 @@ RaceManager::Player::Player() {
 
     m_currentLap = 0;
     m_maxLap = 1;
+    m_drivingWrongWay = false;
     m_inputs = &KPadDirector::Instance()->playerInput();
 }
 
@@ -154,13 +155,24 @@ void RaceManager::Player::calc() {
         return;
     }
 
+    System::MapdataCheckPoint *checkpoint = nullptr;
+
     if (m_checkpointFactor < 0.0f || m_checkpointId != checkpointId) {
-        calcCheckpoint(checkpointId, distanceRatio);
+        checkpoint = calcCheckpoint(checkpointId, distanceRatio);
+    } else {
+        checkpoint = CourseMap::Instance()->getCheckPoint(m_checkpointId);
     }
 
     m_raceCompletion = static_cast<f32>(m_currentLap) +
             (m_checkpointStartLapCompletion + m_checkpointFactor * distanceRatio);
     m_raceCompletion = std::min(m_raceCompletion, static_cast<f32>(m_currentLap) + 0.99999f);
+
+    const EGG::Vector3f &bodyFront = kart->bodyFront();
+    if (bodyFront.x != 0.0f && bodyFront.z != 0.0f) {
+        EGG::Vector2f frontXZ = EGG::Vector2f(bodyFront.x, bodyFront.z);
+        frontXZ.normalise();
+        m_drivingWrongWay = checkpoint->dir().dot(frontXZ) <= -0.5f;
+    }
 }
 
 /// @addr{0x8053572C}
