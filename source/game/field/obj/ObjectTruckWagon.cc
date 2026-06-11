@@ -214,7 +214,7 @@ ObjectTruckWagon::ObjectTruckWagon(const System::MapdataGeoObj &params)
     m_carts = owning_span<ObjectTruckWagonCart *>(CART_COUNT);
 
     for (auto *&cart : m_carts) {
-        cart = new ObjectTruckWagonCart(params);
+        cart = EGG::egg_new<ObjectTruckWagonCart>(params);
         cart->load();
     }
 

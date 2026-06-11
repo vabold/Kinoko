@@ -21,18 +21,18 @@ KartObject::KartObject(KartParam *param) {
 
 /// @addr{0x8058DEF0}
 KartObject::~KartObject() {
-    delete m_pointers.param;
-    delete m_pointers.body;
-    delete m_pointers.sub;
-    delete m_pointers.model;
-    delete m_pointers.objectCollisionKart;
+    EGG::egg_delete(m_pointers.param);
+    EGG::egg_delete(m_pointers.body);
+    EGG::egg_delete(m_pointers.sub);
+    EGG::egg_delete(m_pointers.model);
+    EGG::egg_delete(m_pointers.objectCollisionKart);
 
     for (auto *susp : m_pointers.suspensions) {
-        delete susp;
+        EGG::egg_delete(susp);
     }
 
     for (auto *tire : m_pointers.tires) {
-        delete tire;
+        EGG::egg_delete(tire);
     }
 }
 
@@ -65,9 +65,10 @@ void KartObject::createTires() {
         u16 bspWheelIdx = BSP_WHEEL_INDICES[i];
         KartSuspensionPhysics::TireType tireType = X_MIRRORED_TIRE[i];
 
-        KartSuspension *sus = new KartSuspension;
-        KartTire *tire = (bspWheelIdx == 0) ? new KartTireFront(tireType, bspWheelIdx) :
-                                              new KartTire(tireType, bspWheelIdx);
+        KartSuspension *sus = EGG::egg_new<KartSuspension>();
+        KartTire *tire = (bspWheelIdx == 0) ?
+                EGG::egg_new<KartTireFront>(tireType, bspWheelIdx) :
+                EGG::egg_new<KartTire>(tireType, bspWheelIdx);
 
         m_pointers.suspensions.push_back(sus);
         m_pointers.tires.push_back(tire);
@@ -78,7 +79,7 @@ void KartObject::createTires() {
 
 /// @addr{0x8058E5F8}
 KartBody *KartObject::createBody(KartPhysics *physics) {
-    return new KartBodyKart(physics);
+    return EGG::egg_new<KartBodyKart>(physics);
 }
 
 /// @addr{0x8058E22C}
@@ -92,7 +93,7 @@ void KartObject::init() {
     for (u16 tireIdx = 0; tireIdx < m_pointers.param->tireCount(); ++tireIdx) {
         m_pointers.tires[tireIdx]->init(tireIdx);
     }
-    m_pointers.objectCollisionKart = new Field::ObjectCollisionKart();
+    m_pointers.objectCollisionKart = EGG::egg_new<Field::ObjectCollisionKart>();
 }
 
 /// @addr{0x8058E188}
@@ -139,7 +140,7 @@ void KartObject::prepareTiresAndSuspensions() {
 
 /// @addr{0x8058E724}
 void KartObject::createSub() {
-    m_pointers.sub = new KartSub;
+    m_pointers.sub = EGG::egg_new<KartSub>();
     m_pointers.sub->createSubsystems(m_pointers.param->isBike(), m_pointers.param->stats());
 }
 
@@ -148,9 +149,9 @@ void KartObject::createModel() {
     s_proxyList.clear();
 
     if (isBike()) {
-        m_pointers.model = new Render::KartModelBike;
+        m_pointers.model = EGG::egg_new<Render::KartModelBike>();
     } else {
-        m_pointers.model = new Render::KartModelKart;
+        m_pointers.model = EGG::egg_new<Render::KartModelKart>();
     }
 
     ApplyAll(&m_pointers);
@@ -177,13 +178,13 @@ const KartAccessor *KartObject::accessor() const {
 KartObject *KartObject::Create(Character character, Vehicle vehicle, u8 playerIdx) {
     s_proxyList.clear();
 
-    KartParam *param = new KartParam(character, vehicle, playerIdx);
+    KartParam *param = EGG::egg_new<KartParam>(character, vehicle, playerIdx);
 
     KartObject *object = nullptr;
     if (vehicle < Vehicle::Standard_Bike_S) {
-        object = new KartObject(param);
+        object = EGG::egg_new<KartObject>(param);
     } else {
-        object = new KartObjectBike(param);
+        object = EGG::egg_new<KartObjectBike>(param);
     }
 
     object->init();
@@ -212,9 +213,9 @@ KartObjectBike::~KartObjectBike() = default;
 /// @addr{0x8058F260}
 KartBody *KartObjectBike::createBody(KartPhysics *physics) {
     if (m_pointers.param->isVehicleRelativeBike()) {
-        return new KartBodyQuacker(physics);
+        return EGG::egg_new<KartBodyQuacker>(physics);
     } else {
-        return new KartBodyBike(physics);
+        return EGG::egg_new<KartBodyBike>(physics);
     }
 }
 
@@ -225,11 +226,11 @@ void KartObjectBike::createTires() {
         KartTire *tire = nullptr;
 
         if (wheelIdx == 0 || wheelIdx == 2) {
-            sus = new KartSuspensionFrontBike;
-            tire = new KartTireFrontBike(KartSuspensionPhysics::TireType::Bike, 0);
+            sus = EGG::egg_new<KartSuspensionFrontBike>();
+            tire = EGG::egg_new<KartTireFrontBike>(KartSuspensionPhysics::TireType::Bike, 0);
         } else {
-            sus = new KartSuspensionRearBike;
-            tire = new KartTireRearBike(KartSuspensionPhysics::TireType::Bike, 1);
+            sus = EGG::egg_new<KartSuspensionRearBike>();
+            tire = EGG::egg_new<KartTireRearBike>(KartSuspensionPhysics::TireType::Bike, 1);
         }
 
         m_pointers.suspensions.push_back(sus);

@@ -44,7 +44,7 @@ ObjectVolcanoBallLauncher::ObjectVolcanoBallLauncher(const System::MapdataGeoObj
     m_balls = owning_span<ObjectVolcanoBall *>(ballCount);
 
     for (auto *&ball : m_balls) {
-        ball = new ObjectVolcanoBall(accel, finalVel, endPosY, params, vel);
+        ball = EGG::egg_new<ObjectVolcanoBall>(accel, finalVel, endPosY, params, vel);
         ball->load();
     }
 

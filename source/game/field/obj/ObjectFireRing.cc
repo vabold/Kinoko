@@ -11,7 +11,7 @@ ObjectFireRing::ObjectFireRing(const System::MapdataGeoObj &params)
     f32 distance = 100.0f * static_cast<f32>(params.setting(3));
 
     for (size_t i = 0; i < fireballCount; ++i) {
-        m_fireballs[i] = new ObjectFireball(params);
+        m_fireballs[i] = EGG::egg_new<ObjectFireball>(params);
         m_fireballs[i]->load();
         m_fireballs[i]->setDistance(distance);
         m_fireballs[i]->setAngle(static_cast<f32>(i) * (360.0f / fireballCount));

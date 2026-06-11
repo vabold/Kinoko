@@ -43,9 +43,10 @@ public:
         return s_instance;
     }
 
-private:
     ResourceManager();
     ~ResourceManager() override;
+
+private:
 
     // 0: Core archive
     // 1: Course archive

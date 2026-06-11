@@ -41,7 +41,7 @@ public:
     template <MapdataDerived T>
     [[nodiscard]] T *parseMapdata(u32 sectionName) const {
         const MapSectionHeader *sectionPtr = m_course->findSection(sectionName);
-        return sectionPtr ? new T(sectionPtr) : nullptr;
+        return sectionPtr ? EGG::egg_new<T>(sectionPtr) : nullptr;
     }
 
     [[nodiscard]] s16 findSector(const EGG::Vector3f &pos, u16 checkpointIdx, f32 &distanceRatio);
@@ -184,9 +184,10 @@ public:
         return s_instance;
     }
 
-private:
     CourseMap();
     ~CourseMap() override;
+
+private:
 
     [[nodiscard]] s16 findSectorBetweenSides(const EGG::Vector3f &pos,
             MapdataCheckPoint *checkpoint, f32 &distanceRatio);

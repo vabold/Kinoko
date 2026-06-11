@@ -19,8 +19,8 @@ ObjectEscalatorGroup::ObjectEscalatorGroup(const System::MapdataGeoObj &params)
     m_flags.setBit(eFlags::Position, eFlags::Scale);
     m_scale = SCALE;
 
-    m_rightEscalator = new ObjectEscalator(params, false);
-    m_leftEscalator = new ObjectEscalator(params, true);
+    m_rightEscalator = EGG::egg_new<ObjectEscalator>(params, false);
+    m_leftEscalator = EGG::egg_new<ObjectEscalator>(params, true);
 
     calcTransform();
     m_rightEscalator->m_initialPos = m_pos + m_transform.multVector33(RIGHT_OFFSET);

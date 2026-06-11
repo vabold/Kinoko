@@ -61,8 +61,8 @@ struct KartAccessor {
     Field::ObjectCollisionKart *objectCollisionKart;
     KartState *state;
 
-    std::vector<KartSuspension *> suspensions;
-    std::vector<KartTire *> tires;
+    std::vector<KartSuspension *, EGG::Allocator<KartSuspension *>> suspensions;
+    std::vector<KartTire *, EGG::Allocator<KartTire *>> tires;
 
     Field::BoxColUnit *boxColUnit;
 };
@@ -169,7 +169,7 @@ public:
     [[nodiscard]] s32 hopStickX() const;
     [[nodiscard]] KartParam::Stats::DriftType vehicleType() const;
 
-    [[nodiscard]] static std::list<KartObjectProxy *> &proxyList() {
+    [[nodiscard]] static std::list<KartObjectProxy *, EGG::Allocator<KartObjectProxy *>> &proxyList() {
         return s_proxyList;
     }
     /// @endGetters
@@ -182,7 +182,7 @@ private:
 
     const KartAccessor *m_accessor;
 
-    static std::list<KartObjectProxy *> s_proxyList; ///< List of all KartObjectProxy children.
+    static std::list<KartObjectProxy *, EGG::Allocator<KartObjectProxy *>> s_proxyList; ///< List of all KartObjectProxy children.
 };
 
 } // namespace Kart

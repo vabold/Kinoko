@@ -122,8 +122,8 @@ ObjectHanachan::ObjectHanachan(const System::MapdataGeoObj &params)
     constexpr EGG::Vector3f SCALE_VEC = EGG::Vector3f(SCALE, SCALE, SCALE);
 
     auto *&head = headPart();
-    head = new ObjectHanachanHead("BossHanachanHead", EGG::Vector3f::zero, EGG::Vector3f::ez,
-            EGG::Vector3f::ez);
+    head = EGG::egg_new<ObjectHanachanHead>("BossHanachanHead", EGG::Vector3f::zero,
+            EGG::Vector3f::ez, EGG::Vector3f::ez);
     head->setScale(SCALE_VEC);
 
     const auto &mdlNames = ObjectHanachanBody::MDL_NAMES;
@@ -131,7 +131,7 @@ ObjectHanachan::ObjectHanachan(const System::MapdataGeoObj &params)
     auto parts = bodyParts();
     for (size_t i = 0; i < parts.size(); ++i) {
         auto *&part = parts[i];
-        part = new ObjectHanachanBody(params, mdlNames[i % mdlNameCount]);
+        part = EGG::egg_new<ObjectHanachanBody>(params, mdlNames[i % mdlNameCount]);
         part->setScale(SCALE_VEC);
     }
 

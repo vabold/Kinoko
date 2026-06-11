@@ -22,15 +22,15 @@ ObjectTownBridge::~ObjectTownBridge() {
     // Whichever ObjColMgr is active will be destroyed naturally as part of ObjectKCL's destructor.
     // We need to destroy the other ones to avoid leaking. The base game does not bother doing this.
     if (m_flatColMgr != m_objColMgr) {
-        delete m_flatColMgr;
+        EGG::egg_delete(m_flatColMgr);
     }
 
     if (m_midColMgr != m_objColMgr) {
-        delete m_midColMgr;
+        EGG::egg_delete(m_midColMgr);
     }
 
     if (m_raisedColMgr != m_objColMgr) {
-        delete m_raisedColMgr;
+        EGG::egg_delete(m_raisedColMgr);
     }
 }
 
@@ -66,10 +66,10 @@ void ObjectTownBridge::createCollision() {
     char filepath[128];
 
     snprintf(filepath, sizeof(filepath), "%s2.kcl", name);
-    m_midColMgr = new ObjColMgr(resMgr->getFile(filepath, nullptr, System::ArchiveId::Course));
+    m_midColMgr = EGG::egg_new<ObjColMgr>(resMgr->getFile(filepath, nullptr, System::ArchiveId::Course));
 
     snprintf(filepath, sizeof(filepath), "%s3.kcl", name);
-    m_flatColMgr = new ObjColMgr(resMgr->getFile(filepath, nullptr, System::ArchiveId::Course));
+    m_flatColMgr = EGG::egg_new<ObjColMgr>(resMgr->getFile(filepath, nullptr, System::ArchiveId::Course));
 
     m_raisedColMgr = m_objColMgr;
 }

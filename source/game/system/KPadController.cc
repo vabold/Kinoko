@@ -14,9 +14,9 @@ void KPadController::calc() {
 
 /// @addr{0x80520730}
 KPadGhostController::KPadGhostController() : m_acceptingInputs(false) {
-    m_buttonsStreams[0] = new KPadGhostFaceButtonsStream;
-    m_buttonsStreams[1] = new KPadGhostDirectionButtonsStream;
-    m_buttonsStreams[2] = new KPadGhostTrickButtonsStream;
+    m_buttonsStreams[0] = EGG::egg_new<KPadGhostFaceButtonsStream>();
+    m_buttonsStreams[1] = EGG::egg_new<KPadGhostDirectionButtonsStream>();
+    m_buttonsStreams[2] = EGG::egg_new<KPadGhostTrickButtonsStream>();
 }
 
 /// @addr{0x80520924}

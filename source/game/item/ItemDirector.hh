@@ -39,9 +39,10 @@ public:
         return s_instance;
     }
 
-private:
     ItemDirector();
     ~ItemDirector() override;
+
+private:
 
     owning_span<KartItem> m_karts;
 

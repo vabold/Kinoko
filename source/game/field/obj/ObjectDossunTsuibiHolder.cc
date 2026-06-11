@@ -10,7 +10,7 @@ ObjectDossunTsuibiHolder::ObjectDossunTsuibiHolder(const System::MapdataGeoObj &
       m_facingBackwards(false), m_forwardVel(static_cast<f32>(m_mapObj->setting(0))),
       m_stillDuration(static_cast<u32>(m_mapObj->setting(3))) {
     for (auto *&dossun : m_dossuns) {
-        dossun = new ObjectDossunTsuibi(params, this);
+        dossun = EGG::egg_new<ObjectDossunTsuibi>(params, this);
         dossun->load();
     }
 }

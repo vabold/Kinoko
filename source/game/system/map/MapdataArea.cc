@@ -136,7 +136,8 @@ MapdataAreaAccessor::~MapdataAreaAccessor() = default;
 void MapdataAreaAccessor::init(const MapdataAreaBase::SData *start, u16 count) {
     if (count != 0) {
         m_entryCount = count;
-        m_entries = new MapdataAreaBase *[count];
+        m_entries = static_cast<MapdataAreaBase **>(
+                EGG::egg_alloc(count * sizeof(MapdataAreaBase *)));
     }
 
     for (u16 i = 0; i < count; ++i) {
@@ -152,10 +153,10 @@ void MapdataAreaAccessor::init(const MapdataAreaBase::SData *start, u16 count) {
 
         switch (shape) {
         case MapdataAreaBase::Shape::Box:
-            m_entries[i] = new MapdataAreaBox(data, i);
+            m_entries[i] = EGG::egg_new<MapdataAreaBox>(data, i);
             break;
         case MapdataAreaBase::Shape::Cylinder:
-            m_entries[i] = new MapdataAreaCylinder(data, i);
+            m_entries[i] = EGG::egg_new<MapdataAreaCylinder>(data, i);
             break;
         default:
             PANIC("Invalid area shape!");

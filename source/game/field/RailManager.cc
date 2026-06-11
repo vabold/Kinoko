@@ -8,7 +8,7 @@ namespace Kinoko::Field {
 /// @addr{0x806F09C8}
 RailManager *RailManager::CreateInstance() {
     ASSERT(!s_instance);
-    s_instance = new RailManager;
+    s_instance = EGG::egg_new<RailManager>();
     s_instance->createPaths();
     return s_instance;
 }
@@ -18,7 +18,7 @@ void RailManager::DestroyInstance() {
     ASSERT(s_instance);
     auto *instance = s_instance;
     s_instance = nullptr;
-    delete instance;
+    EGG::egg_delete(instance);
 }
 
 /// @addr{0x806F0A3C}
@@ -32,7 +32,7 @@ RailManager::~RailManager() {
     }
 
     for (auto *&rail : m_rails) {
-        delete rail;
+        EGG::egg_delete(rail);
     }
 }
 
@@ -57,9 +57,9 @@ void RailManager::createPaths() {
             }
 
             if (isSpline) {
-                m_rails.push_back(new RailSpline(i, pointInfo));
+                m_rails.push_back(EGG::egg_new<RailSpline>(i, pointInfo));
             } else {
-                m_rails.push_back(new RailLine(i, pointInfo));
+                m_rails.push_back(EGG::egg_new<RailLine>(i, pointInfo));
             }
 
             isObjectRoute = true;
@@ -71,9 +71,9 @@ void RailManager::createPaths() {
         }
 
         if (isSpline) {
-            m_rails.push_back(new RailSpline(i, pointInfo));
+            m_rails.push_back(EGG::egg_new<RailSpline>(i, pointInfo));
         } else {
-            m_rails.push_back(new RailLine(i, pointInfo));
+            m_rails.push_back(EGG::egg_new<RailLine>(i, pointInfo));
         }
     }
 }

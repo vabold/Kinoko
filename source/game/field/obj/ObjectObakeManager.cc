@@ -13,8 +13,8 @@ ObjectObakeManager::ObjectObakeManager(const System::MapdataGeoObj &params)
     static constexpr f32 BLOCK_HEIGHT = 130.0f;
     static constexpr size_t MAX_FALLING_BLOCKS = 256;
 
-    m_colBox = new ObjectCollisionBox(BLOCK_WIDTH, BLOCK_HEIGHT, BLOCK_WIDTH, EGG::Vector3f::zero);
-    m_colSphere = new ObjectCollisionSphere(1.0f, EGG::Vector3f::zero);
+    m_colBox = EGG::egg_new<ObjectCollisionBox>(BLOCK_WIDTH, BLOCK_HEIGHT, BLOCK_WIDTH, EGG::Vector3f::zero);
+    m_colSphere = EGG::egg_new<ObjectCollisionSphere>(1.0f, EGG::Vector3f::zero);
 
     addBlock(params);
 
@@ -24,11 +24,11 @@ ObjectObakeManager::ObjectObakeManager(const System::MapdataGeoObj &params)
 
 /// @addr{0x8080BEA4}
 ObjectObakeManager::~ObjectObakeManager() {
-    delete m_colBox;
-    delete m_colSphere;
+    EGG::egg_delete(m_colBox);
+    EGG::egg_delete(m_colSphere);
 
     for (auto *&block : m_blocks) {
-        delete block;
+        EGG::egg_delete(block);
     }
 }
 
@@ -162,7 +162,7 @@ bool ObjectObakeManager::checkSphereCachedFullPush(f32 radius, const EGG::Vector
 
 /// @addr{0x8080B244}
 void ObjectObakeManager::addBlock(const System::MapdataGeoObj &params) {
-    auto *block = new ObjectObakeBlock(params);
+    auto *block = EGG::egg_new<ObjectObakeBlock>(params);
     m_blocks.push_back(block);
     auto [spatialX, spatialZ] = SpatialIndex(block->pos());
     m_blockCache[spatialZ][spatialX] = block;

@@ -12,7 +12,7 @@ ObjectKoopaBall::ObjectKoopaBall(const System::MapdataGeoObj &params)
 
 /// @addr{0x80771F70}
 ObjectKoopaBall::~ObjectKoopaBall() {
-    delete m_bombCoreDrawMdl;
+    EGG::egg_delete(m_bombCoreDrawMdl);
 }
 
 /// @addr{0x807703D0}
@@ -39,7 +39,7 @@ void ObjectKoopaBall::init() {
     m_angSpeed = INITIAL_ANGULAR_SPEED;
     m_vel.y = INITIAL_Y_VEL;
 
-    m_bombCoreDrawMdl = new Render::DrawMdl;
+    m_bombCoreDrawMdl = EGG::egg_new<Render::DrawMdl>();
 
     auto *resMgr = System::ResourceManager::Instance();
     const void *file = resMgr->getFile("bombCore.brres", nullptr, System::ArchiveId::Core);

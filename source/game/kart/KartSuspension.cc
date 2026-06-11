@@ -7,12 +7,12 @@ KartSuspension::KartSuspension() = default;
 
 /// @addr{0x8058F52C}
 KartSuspension::~KartSuspension() {
-    delete m_physics;
+    EGG::egg_delete(m_physics);
 }
 
 /// @addr{0x80598B60}
 void KartSuspension::init(u16 wheelIdx, KartSuspensionPhysics::TireType tireType, u16 bspWheelIdx) {
-    m_physics = new KartSuspensionPhysics(wheelIdx, tireType, bspWheelIdx);
+    m_physics = EGG::egg_new<KartSuspensionPhysics>(wheelIdx, tireType, bspWheelIdx);
 }
 
 /// @addr{0x80598BD4}

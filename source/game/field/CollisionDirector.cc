@@ -248,7 +248,7 @@ bool CollisionDirector::findClosestCollisionEntry(KCLTypeMask * /*typeMask*/, KC
 /// @addr{0x8078DFE8}
 CollisionDirector *CollisionDirector::CreateInstance() {
     ASSERT(!s_instance);
-    s_instance = new CollisionDirector;
+    s_instance = EGG::egg_new<CollisionDirector>();
     return s_instance;
 }
 
@@ -257,7 +257,7 @@ void CollisionDirector::DestroyInstance() {
     ASSERT(s_instance);
     auto *instance = s_instance;
     s_instance = nullptr;
-    delete instance;
+    EGG::egg_delete(instance);
 }
 
 /// @addr{0x8078E33C}

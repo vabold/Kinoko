@@ -24,7 +24,7 @@ ObjectFireSnake::ObjectFireSnake(const System::MapdataGeoObj &params)
 
     for (u32 i = 0; i < 2; ++i) {
         auto *&kid = m_kids[i];
-        kid = new ObjectFireSnakeKid(params);
+        kid = EGG::egg_new<ObjectFireSnakeKid>(params);
         kid->load();
         f32 scale = (0.75f - 0.25f * static_cast<f32>(i)) * m_scale.y;
         kid->setScale(EGG::Vector3f(scale, scale, scale));

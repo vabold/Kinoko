@@ -89,7 +89,7 @@ void GameScene::calcCamera() {
 
 /// @addr{0x8051AA58}
 void GameScene::appendResource(System::MultiDvdArchive *archive, s32 id) {
-    m_resources.push_back(new Resource(archive, id));
+    m_resources.push_back(EGG::egg_new<Resource>(archive, id));
 }
 
 /// @addr{Inlined in 0x8051AA58}
@@ -123,7 +123,7 @@ void GameScene::unmountResources() {
         Resource *resource = *iter;
         resourceManager->unmount(resource->archive);
         iter = m_resources.erase(iter);
-        delete resource;
+        EGG::egg_delete(resource);
     }
 }
 

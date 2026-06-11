@@ -125,7 +125,7 @@ public:
 
     /// @addr{0x806B9428}
     void createCollision() override {
-        m_collision = new ObjectCollisionSphere(RADIUS, EGG::Vector3f::zero);
+        m_collision = EGG::egg_new<ObjectCollisionSphere>(RADIUS, EGG::Vector3f::zero);
     }
 
     /// @addr{0x806BBE40}

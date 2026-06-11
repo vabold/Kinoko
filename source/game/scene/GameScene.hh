@@ -57,7 +57,7 @@ private:
 #endif // BUILD_DEBUG
 
     EGG::ExpHeap::GroupSizeRecord m_groupSizeRecord;
-    std::list<Resource *> m_resources; ///< List of all active resources in the scene.
+    std::list<Resource *, EGG::Allocator<Resource *>> m_resources; ///< List of all active resources in the scene.
     int m_nextSceneId;
 
     [[maybe_unused]] size_t m_totalMemoryUsed;

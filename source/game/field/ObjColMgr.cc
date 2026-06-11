@@ -8,13 +8,13 @@ namespace Kinoko::Field {
 ObjColMgr::ObjColMgr(const void *file)
     : m_mtx(EGG::Matrix34f::ident), m_mtxInv(EGG::Matrix34f::ident), m_kclScale(1.0f),
       m_movingObjVel(EGG::Vector3f::zero) {
-    m_data = new KColData(file);
+    m_data = EGG::egg_new<KColData>(file);
 }
 
 /// @addr{0x807C4D6C}
 ObjColMgr::~ObjColMgr() {
     ASSERT(m_data);
-    delete m_data;
+    EGG::egg_delete(m_data);
 }
 
 /// @addr{0x807C4DC8}

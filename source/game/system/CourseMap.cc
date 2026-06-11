@@ -7,8 +7,8 @@ namespace Kinoko::System {
 /// @addr{0x805127EC}
 void CourseMap::init() {
     void *buffer = LoadFile("course.kmp");
-    m_course =
-            new MapdataFileAccessor(reinterpret_cast<const MapdataFileAccessor::SData *>(buffer));
+    m_course = EGG::egg_new<MapdataFileAccessor>(
+            reinterpret_cast<const MapdataFileAccessor::SData *>(buffer));
 
     constexpr u32 AREA_SIGNATURE = 0x41524541;
     constexpr u32 CANNON_POINT_SIGNATURE = 0x434e5054;
@@ -209,7 +209,7 @@ s16 CourseMap::getCurrentAreaID(s16 i, const EGG::Vector3f &pos, MapdataAreaBase
 /// @addr{0x80512694}
 CourseMap *CourseMap::CreateInstance() {
     ASSERT(!s_instance);
-    s_instance = new CourseMap;
+    s_instance = EGG::egg_new<CourseMap>();
     return s_instance;
 }
 
@@ -218,7 +218,7 @@ void CourseMap::DestroyInstance() {
     ASSERT(s_instance);
     auto *instance = s_instance;
     s_instance = nullptr;
-    delete instance;
+    EGG::egg_delete(instance);
 }
 
 /// @addr{0x8051276C}
@@ -233,16 +233,16 @@ CourseMap::~CourseMap() {
         WARN("CourseMap instance not explicitly handled!");
     }
 
-    delete m_course;
-    delete m_startPoint;
-    delete m_checkPath;
-    delete m_checkPoint;
-    delete m_pointInfo;
-    delete m_geoObj;
-    delete m_area;
-    delete m_jugemPoint;
-    delete m_cannonPoint;
-    delete m_stageInfo;
+    EGG::egg_delete(m_course);
+    EGG::egg_delete(m_startPoint);
+    EGG::egg_delete(m_checkPath);
+    EGG::egg_delete(m_checkPoint);
+    EGG::egg_delete(m_pointInfo);
+    EGG::egg_delete(m_geoObj);
+    EGG::egg_delete(m_area);
+    EGG::egg_delete(m_jugemPoint);
+    EGG::egg_delete(m_cannonPoint);
+    EGG::egg_delete(m_stageInfo);
 }
 
 s16 CourseMap::findSectorBetweenSides(const EGG::Vector3f &pos, MapdataCheckPoint *checkpoint,

@@ -1,5 +1,7 @@
 #include "Stream.hh"
 
+#include <cstring>
+
 namespace Kinoko::EGG {
 
 Stream::Stream() : m_endian(std::endian::big), m_index(0) {}
@@ -117,9 +119,9 @@ void RamStream::write(void *input, u32 size) {
 }
 
 // Expects a null-terminated char array, and moves the index past the null terminator
-std::string RamStream::read_string() {
-    std::string ret(reinterpret_cast<char *>(m_buffer + m_index));
-    m_index += ret.size() + 1;
+const char *RamStream::read_string() {
+    const char *ret = reinterpret_cast<char *>(m_buffer + m_index);
+    m_index += strlen(ret) + 1;
     ASSERT(!bad());
     return ret;
 }

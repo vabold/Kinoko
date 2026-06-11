@@ -8,12 +8,12 @@ KartTire::KartTire(KartSuspensionPhysics::TireType tireType, u16 bspWheelIdx)
 
 /// @addr{0x8058EC08}
 KartTire::~KartTire() {
-    delete m_wheelPhysics;
+    EGG::egg_delete(m_wheelPhysics);
 }
 
 /// @addr{0x8059AB14}
 void KartTire::createPhysics(u16 tireIdx) {
-    m_wheelPhysics = new WheelPhysics(tireIdx, 1);
+    m_wheelPhysics = EGG::egg_new<WheelPhysics>(tireIdx, 1);
 }
 
 /// @addr{0x8059AAB0}
@@ -36,7 +36,7 @@ KartTireFront::~KartTireFront() = default;
 
 /// @addr{0x8059AC1C}
 void KartTireFront::createPhysics(u16 tireIdx) {
-    m_wheelPhysics = new WheelPhysics(tireIdx, 0);
+    m_wheelPhysics = EGG::egg_new<WheelPhysics>(tireIdx, 0);
 }
 
 KartTireFrontBike::KartTireFrontBike(KartSuspensionPhysics::TireType tireType, u16 bspWheelIdx)
@@ -47,7 +47,7 @@ KartTireFrontBike::~KartTireFrontBike() = default;
 
 /// @addr{0x8059B038}
 void KartTireFrontBike::createPhysics(u16 tireIdx) {
-    m_wheelPhysics = new WheelPhysics(tireIdx, 0);
+    m_wheelPhysics = EGG::egg_new<WheelPhysics>(tireIdx, 0);
 }
 
 KartTireRearBike::KartTireRearBike(KartSuspensionPhysics::TireType tireType, u16 bspWheelIdx)
@@ -58,7 +58,7 @@ KartTireRearBike::~KartTireRearBike() = default;
 
 /// @addr{0x8059B1FC}
 void KartTireRearBike::createPhysics(u16 tireIdx) {
-    m_wheelPhysics = new WheelPhysics(tireIdx, 1);
+    m_wheelPhysics = EGG::egg_new<WheelPhysics>(tireIdx, 1);
 }
 
 } // namespace Kinoko::Kart

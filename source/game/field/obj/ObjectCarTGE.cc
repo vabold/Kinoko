@@ -98,7 +98,7 @@ ObjectCarTGE::ObjectCarTGE(const System::MapdataGeoObj &params)
 
 /// @addr{0x806D691C}
 ObjectCarTGE::~ObjectCarTGE() {
-    delete m_auxCollision;
+    EGG::egg_delete(m_auxCollision);
 }
 
 /// @addr{0x806D6B14}
@@ -175,7 +175,7 @@ void ObjectCarTGE::createCollision() {
     f32 radius = isTruck ? TRUCK_RADIUS : NORMAL_RADIUS;
     f32 height = isTruck ? TRUCK_HEIGHT : NORMAL_HEIGHT;
 
-    m_auxCollision = new ObjectCollisionCylinder(radius, height, collisionCenter());
+    m_auxCollision = EGG::egg_new<ObjectCollisionCylinder>(radius, height, collisionCenter());
 }
 
 /// @addr{0x806D7BF8}

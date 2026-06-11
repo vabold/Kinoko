@@ -13,7 +13,7 @@ ObjectKCL::ObjectKCL(const System::MapdataGeoObj &params)
 
 /// @addr{0x8067EAFC}
 ObjectKCL::~ObjectKCL() {
-    delete m_objColMgr;
+    EGG::egg_delete(m_objColMgr);
 }
 
 /// @addr{0x8081AA58}
@@ -22,7 +22,7 @@ void ObjectKCL::createCollision() {
     snprintf(filepath, sizeof(filepath), "%s.kcl", getKclName());
 
     auto *resMgr = System::ResourceManager::Instance();
-    m_objColMgr = new ObjColMgr(resMgr->getFile(filepath, nullptr, System::ArchiveId::Course));
+    m_objColMgr = EGG::egg_new<ObjColMgr>(resMgr->getFile(filepath, nullptr, System::ArchiveId::Course));
 }
 
 /// @addr{0x80681490}

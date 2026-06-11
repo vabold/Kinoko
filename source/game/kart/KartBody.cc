@@ -47,7 +47,7 @@ KartBodyKart::KartBodyKart(KartPhysics *physics) : KartBody(physics) {}
 
 /// @addr{0x8056E494}
 KartBodyKart::~KartBodyKart() {
-    delete m_physics;
+    EGG::egg_delete(m_physics);
 }
 
 /// @addr{0x8056D858}
@@ -55,7 +55,7 @@ KartBodyBike::KartBodyBike(KartPhysics *physics) : KartBody(physics) {}
 
 /// @addr{0x8056E2BC}
 KartBodyBike::~KartBodyBike() {
-    delete m_physics;
+    EGG::egg_delete(m_physics);
 }
 
 /// @addr{0x8056DD54}

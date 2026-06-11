@@ -102,7 +102,7 @@ public:
 
     /// @addr{0x806C818C}
     void createCollision() override {
-        m_collision = new ObjectCollisionSphere(150.0f, collisionCenter());
+        m_collision = EGG::egg_new<ObjectCollisionSphere>(150.0f, collisionCenter());
     }
 
     void calcCollisionTransform() override;
