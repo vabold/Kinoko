@@ -44,7 +44,7 @@ set(RK_INCLUDE_DIRS
 file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/**/*.cc)
 list(FILTER SOURCE_FILES EXCLUDE REGEX ".*/host/main\\.cc$")
 
-add_library(libkinoko SHARED ${SOURCE_FILES})
+add_library(libkinoko ${SOURCE_FILES})
 target_include_directories(libkinoko SYSTEM
     PUBLIC ${RK_INCLUDE_DIRS}
 )
