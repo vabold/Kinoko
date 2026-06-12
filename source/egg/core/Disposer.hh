@@ -12,9 +12,16 @@ class Disposer {
     friend class Heap;
 
 public:
+    #if defined(__clang__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Winvalid-constexpr"
+    #endif
     [[nodiscard]] static constexpr u16 getLinkOffset() {
-        return reinterpret_cast<uintptr_t>(&reinterpret_cast<Disposer *>(NULL)->m_link);
+        return reinterpret_cast<uintptr_t>(&reinterpret_cast<Disposer *>(0)->m_link);
     }
+    #if defined(__clang__)
+    #pragma clang diagnostic pop
+    #endif
 
 protected:
     Disposer();

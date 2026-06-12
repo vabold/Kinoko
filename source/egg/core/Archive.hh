@@ -38,10 +38,17 @@ public:
 private:
     Archive(void *archiveStart);
 
+    #if defined(__clang__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Winvalid-constexpr"
+    #endif
     [[nodiscard]] static constexpr uintptr_t GetLinkOffset() {
         // offsetof doesn't work, so instead of hardcoding an offset, we derive it ourselves
-        return reinterpret_cast<uintptr_t>(&reinterpret_cast<Archive *>(NULL)->m_link);
+        return reinterpret_cast<uintptr_t>(&reinterpret_cast<Archive *>(0)->m_link);
     }
+    #if defined(__clang__)
+    #pragma clang diagnostic pop
+    #endif
 
     Abstract::ArchiveHandle m_handle;
     s32 m_refCount = 1;

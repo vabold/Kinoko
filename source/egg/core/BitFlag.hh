@@ -2,6 +2,7 @@
 
 #include <Logger.hh>
 
+#include <algorithm>
 #include <array>
 #include <cstddef>
 #include <cstdint>

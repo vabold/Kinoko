@@ -13,19 +13,19 @@ namespace Kinoko::Field {
 ObjectDossunc::ObjectDossunc(const System::MapdataGeoObj &params) : ObjectCollidable(params) {
     switch (params.setting(1)) {
     case 0: {
-        auto *dossunNormal = new ObjectDossunNormal(params);
+        auto *dossunNormal = EGG::egg_new<ObjectDossunNormal>(params);
         dossunNormal->load();
     } break;
     case 1: {
-        auto *dossunSyuukai = new ObjectDossunSyuukai(params);
+        auto *dossunSyuukai = EGG::egg_new<ObjectDossunSyuukai>(params);
         dossunSyuukai->load();
     } break;
     case 2: {
-        auto *dossunTsuibi = new ObjectDossunTsuibiHolder(params);
+        auto *dossunTsuibi = EGG::egg_new<ObjectDossunTsuibiHolder>(params);
         dossunTsuibi->load();
     } break;
     case 3: {
-        auto *dossunYokoMove = new ObjectDossunYokoMove(params);
+        auto *dossunYokoMove = EGG::egg_new<ObjectDossunYokoMove>(params);
         dossunYokoMove->load();
     } break;
     default:

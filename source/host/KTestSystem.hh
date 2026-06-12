@@ -55,10 +55,13 @@ private:
         u8 jugemId;
     };
 
+public:
     KTestSystem();
+    ~KTestSystem() override;
+
+private:
     KTestSystem(const KTestSystem &) = delete;
     KTestSystem(KTestSystem &&) = delete;
-    ~KTestSystem() override;
 
     template <IntegralType T>
     void checkDesync(const T &t0, const T &t1, const char *name) {
@@ -143,7 +146,7 @@ private:
 
     EGG::SceneManager *m_sceneMgr;
     EGG::RamStream m_stream;
-    std::queue<TestCase> m_testCases;
+    std::queue<TestCase, std::deque<TestCase, EGG::Allocator<TestCase>>> m_testCases;
     Host::EOption m_testMode; ///< Differentiates between test suite and ghost+krkg
 
     u16 m_versionMajor;

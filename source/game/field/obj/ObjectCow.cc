@@ -434,7 +434,7 @@ ObjectCowHerd::ObjectCowHerd(const System::MapdataGeoObj &params) : ObjectCollid
 
     u8 followerCount = params.setting(0);
 
-    m_leader = new ObjectCowLeader(params);
+    m_leader = EGG::egg_new<ObjectCowLeader>(params);
     m_leader->load();
 
     m_followers = owning_span<ObjectCowFollower *>(followerCount);
@@ -446,7 +446,7 @@ ObjectCowHerd::ObjectCowHerd(const System::MapdataGeoObj &params) : ObjectCollid
         f32 x = EGG::Mathf::CosFIdx(RAD2FIDX * rot);
         EGG::Vector3f pos = EGG::Vector3f(x, 0.0f, z) * FOLLOWER_SPACING;
 
-        child = new ObjectCowFollower(params, pos, rot);
+        child = EGG::egg_new<ObjectCowFollower>(params, pos, rot);
         child->load();
     }
 

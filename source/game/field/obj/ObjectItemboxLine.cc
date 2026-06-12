@@ -10,7 +10,7 @@ ObjectItemboxLine::ObjectItemboxLine(const System::MapdataGeoObj &params)
     : ObjectCollidable(params) {
     constexpr u32 DEFAULT_PRESS_COUNT = 5;
 
-    auto *senko = new ObjectPressSenko(params);
+    auto *senko = EGG::egg_new<ObjectPressSenko>(params);
     senko->load();
 
     u32 pressCount = params.setting(6);
@@ -21,7 +21,7 @@ ObjectItemboxLine::ObjectItemboxLine(const System::MapdataGeoObj &params)
     m_press = owning_span<ObjectItemboxPress *>(pressCount);
 
     for (auto *&press : m_press) {
-        press = new ObjectItemboxPress(params);
+        press = EGG::egg_new<ObjectItemboxPress>(params);
         press->load();
         press->setSenko(senko);
     }

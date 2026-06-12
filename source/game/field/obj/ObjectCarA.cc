@@ -58,7 +58,7 @@ void ObjectCarA::createCollision() {
     constexpr f32 RADIUS = 210.0f;
     constexpr f32 HEIGHT = 200.0f;
 
-    m_collision = new ObjectCollisionCylinder(RADIUS, HEIGHT, collisionCenter());
+    m_collision = EGG::egg_new<ObjectCollisionCylinder>(RADIUS, HEIGHT, collisionCenter());
 }
 
 /// @addr{0x806B7BC4}

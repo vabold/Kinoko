@@ -54,6 +54,9 @@ public:
 
     void calc();
 
+    KartCamera();
+    ~KartCamera();
+
     static KartCamera *CreateInstance();
     static void DestroyInstance();
 
@@ -62,8 +65,6 @@ public:
     }
 
 private:
-    KartCamera();
-    ~KartCamera();
 
     /// @addr{0x805A2B84}
     void calcForward(f32 t, const Kart::KartObjectProxy *proxy) {

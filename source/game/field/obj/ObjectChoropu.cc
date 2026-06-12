@@ -34,7 +34,7 @@ ObjectChoropu::ObjectChoropu(const System::MapdataGeoObj &params)
         m_groundObjs = owning_span<ObjectChoropuGround *>(groundCount);
 
         for (auto *&obj : m_groundObjs) {
-            obj = new ObjectChoropuGround(m_pos, m_rot, m_scale);
+            obj = EGG::egg_new<ObjectChoropuGround>(m_pos, m_rot, m_scale);
             obj->load();
             obj->resize(RADIUS, MAX_SPEED);
         }
@@ -42,7 +42,7 @@ ObjectChoropu::ObjectChoropu(const System::MapdataGeoObj &params)
         m_groundHeight = m_groundObjs.front()->height();
     }
 
-    m_objHoll = new ObjectChoropuHoll(params);
+    m_objHoll = EGG::egg_new<ObjectChoropuHoll>(params);
     m_objHoll->load();
 }
 

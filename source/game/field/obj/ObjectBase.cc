@@ -33,9 +33,9 @@ ObjectBase::ObjectBase(const char *name, const EGG::Vector3f &pos, const EGG::Ve
 
 /// @addr{0x8067E3C4}
 ObjectBase::~ObjectBase() {
-    delete m_resFile;
-    delete m_drawMdl;
-    delete m_railInterpolator;
+    EGG::egg_delete(m_resFile);
+    EGG::egg_delete(m_drawMdl);
+    EGG::egg_delete(m_railInterpolator);
 }
 
 /// @addr{0x808217B8}
@@ -64,8 +64,8 @@ void ObjectBase::loadGraphics() {
     auto *resMgr = System::ResourceManager::Instance();
     const void *resFile = resMgr->getFile(filename, nullptr, System::ArchiveId::Course);
     if (resFile) {
-        m_resFile = new Abstract::g3d::ResFile(resFile);
-        m_drawMdl = new Render::DrawMdl;
+        m_resFile = EGG::egg_new<Abstract::g3d::ResFile>(resFile);
+        m_drawMdl = EGG::egg_new<Render::DrawMdl>();
     }
 }
 
@@ -85,9 +85,9 @@ void ObjectBase::loadRail() {
     f32 speed = static_cast<f32>(m_mapObj->setting(0));
 
     if (point->setting(0) == 0) {
-        m_railInterpolator = new RailLinearInterpolator(speed, pathId);
+        m_railInterpolator = EGG::egg_new<RailLinearInterpolator>(speed, pathId);
     } else {
-        m_railInterpolator = new RailSmoothInterpolator(speed, pathId);
+        m_railInterpolator = EGG::egg_new<RailSmoothInterpolator>(speed, pathId);
     }
 }
 

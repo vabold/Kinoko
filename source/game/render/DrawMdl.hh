@@ -9,7 +9,7 @@ public:
     DrawMdl() : m_anmMgr(nullptr) {}
 
     ~DrawMdl() {
-        delete m_anmMgr;
+        EGG::egg_delete(m_anmMgr);
     }
 
     void linkAnims(size_t idx, const Abstract::g3d::ResFile *resFile, const char *name,

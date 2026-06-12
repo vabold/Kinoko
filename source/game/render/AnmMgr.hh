@@ -55,7 +55,7 @@ public:
 
 private:
     [[maybe_unused]] DrawMdl *m_parent;
-    std::list<AnmNodeChr> m_anmList;
+    std::list<AnmNodeChr, EGG::Allocator<AnmNodeChr>> m_anmList;
     std::array<AnmNodeChr *, static_cast<size_t>(AnmType::Max) - 1> m_activeAnims;
 };
 

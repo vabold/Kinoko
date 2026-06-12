@@ -84,7 +84,7 @@ void ObjectHwanwan::calcUp() {
 /// @addr{0x806C5354}
 ObjectHwanwanManager::ObjectHwanwanManager(const System::MapdataGeoObj &params)
     : ObjectCollidable(params) {
-    m_hwanwan = new ObjectHwanwan(params);
+    m_hwanwan = EGG::egg_new<ObjectHwanwan>(params);
     m_hwanwan->setScale(EGG::Vector3f(2.0f, 2.0f, 2.0f));
     m_hwanwan->load();
 }

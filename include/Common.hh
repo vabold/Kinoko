@@ -8,6 +8,8 @@
 #include <egg/core/Heap.hh>
 
 #include <array>
+#include <bit>
+#include <cassert>
 #include <limits>
 #include <utility>
 

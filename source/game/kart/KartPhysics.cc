@@ -7,15 +7,16 @@ namespace Kinoko::Kart {
 /// @addr{0x8059F5BC}
 KartPhysics::KartPhysics(bool isBike) {
     m_pose = EGG::Matrix34f::ident;
-    m_dynamics = isBike ? new KartDynamicsBike : new KartDynamics;
-    m_hitboxGroup = new CollisionGroup;
+    m_dynamics = isBike ? static_cast<KartDynamics *>(EGG::egg_new<KartDynamicsBike>()) :
+                         EGG::egg_new<KartDynamics>();
+    m_hitboxGroup = EGG::egg_new<CollisionGroup>();
     m_fc = 50.0f; // set immediately after in KartPhysics::Create()
 }
 
 /// @addr{0x8059F6F8}
 KartPhysics::~KartPhysics() {
-    delete m_dynamics;
-    delete m_hitboxGroup;
+    EGG::egg_delete(m_dynamics);
+    EGG::egg_delete(m_hitboxGroup);
 }
 
 /// @addr{0x8059F7C8}
@@ -82,7 +83,7 @@ void KartPhysics::shiftDecayMovingRoadVel(const EGG::Vector3f &v, f32 maxPullSpe
 
 /// @addr{0x805A04A0}
 KartPhysics *KartPhysics::Create(const KartParam &param) {
-    KartPhysics *physics = new KartPhysics(param.isBike());
+    KartPhysics *physics = EGG::egg_new<KartPhysics>(param.isBike());
 
     const BSP &bsp = param.bsp();
 

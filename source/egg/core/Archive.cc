@@ -15,7 +15,7 @@ Archive::~Archive() {
 /// @addr{0x8020fa38}
 void Archive::unmount() {
     if (--m_refCount <= 0) {
-        delete this;
+        egg_delete(this);
     }
 }
 
@@ -55,7 +55,7 @@ Archive *Archive::Mount(void *archiveStart) {
 
     if (!archive) {
         // Create a new archive and add it to the list
-        archive = new Archive(archiveStart);
+        archive = ::new (egg_alloc(sizeof(Archive), static_cast<s32>(alignof(Archive)))) Archive(archiveStart);
         s_archiveList.append(archive);
     } else {
         // It already exists, increase the reference count

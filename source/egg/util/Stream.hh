@@ -2,7 +2,6 @@
 
 #include <Common.hh>
 
-#include <string>
 
 namespace Kinoko::EGG {
 
@@ -101,7 +100,7 @@ public:
         return m_index > m_size;
     }
 
-    [[nodiscard]] std::string read_string();
+    [[nodiscard]] const char *read_string();
     [[nodiscard]] RamStream split(u32 size);
     void setBufferAndSize(void *buffer, u32 size);
 

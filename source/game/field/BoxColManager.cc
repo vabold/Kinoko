@@ -3,6 +3,8 @@
 #include "game/field/obj/ObjectCollidable.hh"
 #include "game/field/obj/ObjectDrivable.hh"
 
+#include <egg/core/Heap.hh>
+
 #include <numeric>
 
 namespace Kinoko::Field {
@@ -334,7 +336,7 @@ bool BoxColManager::isSphereInSpatialCache(f32 radius, const EGG::Vector3f &pos,
 /// @addr{0x807855DC}
 BoxColManager *BoxColManager::CreateInstance() {
     ASSERT(!s_instance);
-    s_instance = new BoxColManager;
+    s_instance = EGG::egg_new<BoxColManager>();
     return s_instance;
 }
 
@@ -343,7 +345,7 @@ void BoxColManager::DestroyInstance() {
     ASSERT(s_instance);
     auto *instance = s_instance;
     s_instance = nullptr;
-    delete instance;
+    EGG::egg_delete(instance);
 }
 
 BoxColManager *BoxColManager::Instance() {

@@ -59,9 +59,11 @@ private:
         size_t size;
     };
 
+public:
     KartParamFileManager();
     ~KartParamFileManager() override;
 
+private:
     [[nodiscard]] bool validate() const;
 
     FileInfo m_kartParam;       // kartParam.bin

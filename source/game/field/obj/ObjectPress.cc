@@ -110,7 +110,7 @@ void ObjectPress::createCollision() {
             EGG::Vector3f(-45.5f, 143.8f, 40.5f) * POINT_SCALE,
     }};
 
-    m_collision = new ObjectCollisionConvexHull(POINTS);
+    m_collision = EGG::egg_new<ObjectCollisionConvexHull>(POINTS);
 }
 
 /// @addr{0x807782D4}

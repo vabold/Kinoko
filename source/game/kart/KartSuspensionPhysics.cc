@@ -17,12 +17,12 @@ WheelPhysics::WheelPhysics(u16 wheelIdx, u16 bspWheelIdx)
 
 /// @addr{0x8059A9C4}
 WheelPhysics::~WheelPhysics() {
-    delete m_hitboxGroup;
+    EGG::egg_delete(m_hitboxGroup);
 }
 
 /// @addr{0x80599470}
 void WheelPhysics::init() {
-    m_hitboxGroup = new CollisionGroup;
+    m_hitboxGroup = EGG::egg_new<CollisionGroup>();
     m_hitboxGroup->createSingleHitbox(10.0f, EGG::Vector3f::zero);
 }
 

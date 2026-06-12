@@ -45,13 +45,13 @@ MapdataPointInfoAccessor::~MapdataPointInfoAccessor() = default;
 void MapdataPointInfoAccessor::init(const MapdataPointInfo::SData *start, u16 count) {
     if (count != 0) {
         m_entryCount = count;
-        m_entries = new MapdataPointInfo *[count];
+        m_entries = static_cast<MapdataPointInfo **>(EGG::egg_alloc(count * sizeof(MapdataPointInfo *)));
     }
 
     uintptr_t data = reinterpret_cast<uintptr_t>(start);
 
     for (u16 i = 0; i < count; ++i) {
-        m_entries[i] = new MapdataPointInfo(reinterpret_cast<MapdataPointInfo::SData *>(data));
+        m_entries[i] = EGG::egg_new<MapdataPointInfo>(reinterpret_cast<MapdataPointInfo::SData *>(data));
         data += m_entries[i]->pointCount() * sizeof(MapdataPointInfo::Point) +
                 offsetof(MapdataPointInfo::SData, points);
     }

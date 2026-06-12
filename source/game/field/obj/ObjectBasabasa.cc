@@ -82,7 +82,7 @@ ObjectBasabasa::ObjectBasabasa(const System::MapdataGeoObj &params)
     m_bats = owning_span<ObjectBasabasaDummy *>(batCount);
 
     for (auto *&bat : m_bats) {
-        bat = new ObjectBasabasaDummy(params);
+        bat = EGG::egg_new<ObjectBasabasaDummy>(params);
         bat->load();
     }
 

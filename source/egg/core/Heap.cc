@@ -131,55 +131,15 @@ Heap *Heap::findContainHeap(const void *block) {
     return handle ? findHeap(handle) : nullptr;
 }
 
+void *egg_alloc(size_t size, s32 align, Heap *pHeap) {
+    return Heap::alloc(size, align, pHeap);
+}
+
+void egg_free(void *block, Heap *pHeap) {
+    Heap::free(block, pHeap);
+}
+
 } // namespace Kinoko::EGG
-
-/// @addr{0x80229DCC}
-void *operator new(size_t size) {
-    return EGG::Heap::alloc(size, 4, nullptr);
-}
-
-/// @addr{0x80229DD8}
-void *operator new(size_t size, int align) {
-    return EGG::Heap::alloc(size, align, nullptr);
-}
-
-/// @addr{0x80229DE0}
-void *operator new(size_t size, EGG::Heap *heap, int align) {
-    return EGG::Heap::alloc(size, align, heap);
-}
-
-/// @addr{0x80229DF0}
-void *operator new[](size_t size) {
-    return EGG::Heap::alloc(size, 4, nullptr);
-}
-
-/// @addr{0x80229DFC}
-void *operator new[](size_t size, int align) {
-    return EGG::Heap::alloc(size, align, nullptr);
-}
-
-/// @addr{0x80229E04}
-void *operator new[](size_t size, EGG::Heap *heap, int align) {
-    return EGG::Heap::alloc(size, align, heap);
-}
-
-/// @addr{0x80229E14}
-void operator delete(void *block) noexcept {
-    EGG::Heap::free(block, nullptr);
-}
-
-void operator delete(void *block, size_t /* size */) noexcept {
-    EGG::Heap::free(block, nullptr);
-}
-
-/// @addr{0x80229EE0}
-void operator delete[](void *block) noexcept {
-    EGG::Heap::free(block, nullptr);
-}
-
-void operator delete[](void *block, size_t /* size */) noexcept {
-    EGG::Heap::free(block, nullptr);
-}
 
 MEMList EGG::Heap::s_heapList = MEMList(EGG::Heap::getOffset()); ///< @addr{0x80384320}
 

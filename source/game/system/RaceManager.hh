@@ -154,9 +154,10 @@ public:
         return s_instance;
     }
 
-private:
     RaceManager();
     ~RaceManager() override;
+
+private:
 
     Random m_random;
     Player m_player;

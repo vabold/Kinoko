@@ -6,22 +6,34 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+option(KINOKO_USE_RTTI "Enable RTTI (disable -fno-rtti)" OFF)
+
 # Common flags
 set(COMMON_CXX_FLAGS
     -DREVOLUTION
     -fcheck-new
     -fno-asynchronous-unwind-tables
     -fno-exceptions
-    -fno-rtti
     -fshort-wchar
     -fstack-protector-strong
     -Wall
     -Werror
     -Wextra
     -Wno-delete-non-virtual-dtor
-    -Wno-packed-bitfield-compat
     -Wsuggest-override
 )
+
+if(NOT KINOKO_USE_RTTI)
+    list(APPEND COMMON_CXX_FLAGS -fno-rtti)
+endif()
+
+set(GAME_CXX_FLAGS
+)
+
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    # using GCC
+    list(APPEND COMMON_CXX_FLAGS -Wno-packed-bitfield-compat)
+endif()
 
 set(RK_INCLUDE_DIRS
     include
@@ -29,15 +41,18 @@ set(RK_INCLUDE_DIRS
 )
 
 # Source files
-file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/**/*.cc)
+file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/**/*.cc)
 list(FILTER SOURCE_FILES EXCLUDE REGEX ".*/host/main\\.cc$")
 
 add_library(libkinoko ${SOURCE_FILES})
 target_include_directories(libkinoko SYSTEM
     PUBLIC ${RK_INCLUDE_DIRS}
 )
-target_compile_options(libkinoko PRIVATE ${COMMON_CXX_FLAGS})
+target_compile_options(libkinoko PRIVATE ${COMMON_CXX_FLAGS} ${GAME_CXX_FLAGS})
 target_compile_features(libkinoko PUBLIC cxx_std_23)
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    target_link_libraries(libkinoko PRIVATE stdc++)
+endif()
 
 # Create targets
 add_executable(kinoko source/host/main.cc)

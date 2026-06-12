@@ -4,6 +4,7 @@
 #include "host/SceneCreatorDynamic.hh"
 
 #include <abstract/File.hh>
+#include <egg/core/Heap.hh>
 
 #include <game/system/RaceManager.hh>
 
@@ -17,8 +18,8 @@ void KReplaySystem::init() {
     ASSERT(m_currentRawGhost);
     ASSERT(m_currentGhost);
 
-    auto *sceneCreator = new Host::SceneCreatorDynamic;
-    m_sceneMgr = new EGG::SceneManager(sceneCreator);
+    auto *sceneCreator = EGG::egg_new<Host::SceneCreatorDynamic>();
+    m_sceneMgr = EGG::egg_new<EGG::SceneManager>(sceneCreator);
 
     System::RaceConfig::RegisterInitCallback(OnInit, nullptr);
     Abstract::File::Remove("results.txt");
@@ -74,7 +75,7 @@ void KReplaySystem::parseOptions(int argc, char **argv) {
             // Creating the raw ghost file validates it
             System::RawGhostFile file = System::RawGhostFile(m_currentRawGhost);
 
-            m_currentGhost = new System::GhostFile(file);
+            m_currentGhost = EGG::egg_new<System::GhostFile>(file);
             ASSERT(m_currentGhost);
         } break;
         case Host::EOption::Invalid:
@@ -87,7 +88,7 @@ void KReplaySystem::parseOptions(int argc, char **argv) {
 
 KReplaySystem *KReplaySystem::CreateInstance() {
     ASSERT(!s_instance);
-    s_instance = new KReplaySystem;
+    s_instance = EGG::egg_new<KReplaySystem>();
     return static_cast<KReplaySystem *>(s_instance);
 }
 
@@ -95,7 +96,7 @@ void KReplaySystem::DestroyInstance() {
     ASSERT(s_instance);
     auto *instance = s_instance;
     s_instance = nullptr;
-    delete instance;
+    EGG::egg_delete(instance);
 }
 
 KReplaySystem::KReplaySystem()
@@ -108,9 +109,9 @@ KReplaySystem::~KReplaySystem() {
         WARN("KReplaySystem instance not explicitly handled!");
     }
 
-    delete m_sceneMgr;
-    delete m_currentGhost;
-    delete m_currentRawGhost;
+    EGG::egg_delete(m_sceneMgr);
+    EGG::egg_delete(m_currentGhost);
+    EGG::egg_free(const_cast<u8 *>(m_currentRawGhost));
 }
 
 /// @brief Determines whether or not the ghost simulation should end.

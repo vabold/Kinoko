@@ -111,9 +111,10 @@ public:
         return s_instance;
     }
 
-private:
     CollisionDirector();
     ~CollisionDirector() override;
+
+private:
 
     const CollisionEntry *m_closestCollisionEntry;
     std::array<CollisionEntry, COLLISION_ARR_LENGTH> m_entries;

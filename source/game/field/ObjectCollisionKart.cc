@@ -13,7 +13,7 @@ ObjectCollisionKart::ObjectCollisionKart() : m_kartObject(nullptr) {}
 
 /// @addr{0x8081E0E4}
 ObjectCollisionKart::~ObjectCollisionKart() {
-    delete m_hull;
+    EGG::egg_delete(m_hull);
 }
 
 /// @addr{0x8081D090}
@@ -26,7 +26,7 @@ void ObjectCollisionKart::init(u32 idx) {
     m_playerIdx = idx;
 
     auto vehicle = System::RaceConfig::Instance()->raceScenario().players[idx].vehicle;
-    m_hull = new ObjectCollisionConvexHull(GetVehicleVertices(vehicle));
+    m_hull = EGG::egg_new<ObjectCollisionConvexHull>(GetVehicleVertices(vehicle));
 }
 
 /// @addr{0x8081E170}

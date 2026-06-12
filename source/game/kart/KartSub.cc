@@ -23,19 +23,20 @@ KartSub::KartSub() = default;
 
 /// @addr{0x80598AC8}
 KartSub::~KartSub() {
-    delete m_collide;
-    delete m_state;
-    delete m_move;
-    delete m_action;
+    EGG::egg_delete(m_collide);
+    EGG::egg_delete(m_state);
+    EGG::egg_delete(m_move);
+    EGG::egg_delete(m_action);
 }
 
 /// @addr{0x80595D48}
 void KartSub::createSubsystems(bool isBike, const KartParam::Stats &stats) {
-    m_move = isBike ? new KartMoveBike : new KartMove;
-    m_action = new KartAction;
+    m_move = isBike ? static_cast<KartMove *>(EGG::egg_new<KartMoveBike>()) :
+                     EGG::egg_new<KartMove>();
+    m_action = EGG::egg_new<KartAction>();
     m_move->createSubsystems(stats);
-    m_state = new KartState;
-    m_collide = new KartCollide;
+    m_state = EGG::egg_new<KartState>();
+    m_collide = EGG::egg_new<KartCollide>();
 }
 
 /// @brief Called during static construction of KartObject to synchronize the pointers.

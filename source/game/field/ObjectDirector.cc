@@ -125,7 +125,7 @@ f32 ObjectDirector::risingWaterKillPlaneHeight() const {
 /// @addr{0x8082A784}
 ObjectDirector *ObjectDirector::CreateInstance() {
     ASSERT(!s_instance);
-    s_instance = new ObjectDirector;
+    s_instance = EGG::egg_new<ObjectDirector>();
 
     ObjectDrivableDirector::CreateInstance();
 
@@ -139,7 +139,7 @@ void ObjectDirector::DestroyInstance() {
     ASSERT(s_instance);
     auto *instance = s_instance;
     s_instance = nullptr;
-    delete instance;
+    EGG::egg_delete(instance);
 
     ObjectDrivableDirector::DestroyInstance();
 }
@@ -157,7 +157,7 @@ ObjectDirector::~ObjectDirector() {
     }
 
     for (auto *&obj : m_objects) {
-        delete obj;
+        EGG::egg_delete(obj);
     }
 }
 
@@ -224,17 +224,17 @@ void ObjectDirector::createObjects() {
     }
 
     if (course == Course::Moonview_Highway) {
-        auto *highwayMgr = new ObjectHighwayManager;
+        auto *highwayMgr = EGG::egg_new<ObjectHighwayManager>();
         highwayMgr->load();
     }
 
     if (sun) {
-        auto *sunMgr = new ObjectSunManager;
+        auto *sunMgr = EGG::egg_new<ObjectSunManager>();
         sunMgr->load();
     }
 
     if (course == Course::GBA_Shy_Guy_Beach) {
-        auto *shipMgr = new ObjectHeyhoShipManager;
+        auto *shipMgr = EGG::egg_new<ObjectHeyhoShipManager>();
         shipMgr->load();
     }
 }
@@ -244,142 +244,142 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
     ObjectId id = static_cast<ObjectId>(params.id());
     switch (id) {
     case ObjectId::Psea:
-        return new ObjectPsea(params);
+        return EGG::egg_new<ObjectPsea>(params);
     case ObjectId::Woodbox:
-        return new ObjectWoodbox(params);
+        return EGG::egg_new<ObjectWoodbox>(params);
     case ObjectId::WLWallGC:
-        return new ObjectWLWallGC(params);
+        return EGG::egg_new<ObjectWLWallGC>(params);
     case ObjectId::CarA1:
     case ObjectId::CarA2:
     case ObjectId::CarA3:
-        return new ObjectCarA(params);
+        return EGG::egg_new<ObjectCarA>(params);
     case ObjectId::Basabasa:
-        return new ObjectBasabasa(params);
+        return EGG::egg_new<ObjectBasabasa>(params);
     case ObjectId::HeyhoShipGBA:
-        return new ObjectHeyhoShip(params);
+        return EGG::egg_new<ObjectHeyhoShip>(params);
     case ObjectId::KartTruck:
     case ObjectId::CarBody:
-        return new ObjectCarTGE(params);
+        return EGG::egg_new<ObjectCarTGE>(params);
     case ObjectId::KoopaBall:
-        return new ObjectKoopaBall(params);
+        return EGG::egg_new<ObjectKoopaBall>(params);
     case ObjectId::W_Woodbox:
-        return new ObjectWoodboxW(params);
+        return EGG::egg_new<ObjectWoodboxW>(params);
     case ObjectId::SunDS:
-        return new ObjectSunDS(params);
+        return EGG::egg_new<ObjectSunDS>(params);
     case ObjectId::ItemboxLine:
-        return new ObjectItemboxLine(params);
+        return EGG::egg_new<ObjectItemboxLine>(params);
     case ObjectId::VolcanoBall:
-        return new ObjectVolcanoBallLauncher(params);
+        return EGG::egg_new<ObjectVolcanoBallLauncher>(params);
     case ObjectId::PenguinS:
-        return new ObjectPenguinS(params);
+        return EGG::egg_new<ObjectPenguinS>(params);
     case ObjectId::PenguinM:
-        return new ObjectPenguin(params);
+        return EGG::egg_new<ObjectPenguin>(params);
     case ObjectId::Dossunc:
-        return new ObjectDossunc(params);
+        return EGG::egg_new<ObjectDossunc>(params);
     case ObjectId::Boble:
-        return new ObjectBoble(params);
+        return EGG::egg_new<ObjectBoble>(params);
     case ObjectId::Hanachan:
-        return new ObjectHanachan(params);
+        return EGG::egg_new<ObjectHanachan>(params);
     case ObjectId::Seagull:
-        return new ObjectBird(params);
+        return EGG::egg_new<ObjectBird>(params);
     case ObjectId::Crab:
-        return new ObjectCrab(params);
+        return EGG::egg_new<ObjectCrab>(params);
     case ObjectId::Hwanwan:
-        return new ObjectHwanwanManager(params);
+        return EGG::egg_new<ObjectHwanwanManager>(params);
     case ObjectId::HeyhoBallGBA:
-        return new ObjectHeyhoBall(params);
+        return EGG::egg_new<ObjectHeyhoBall>(params);
     case ObjectId::DokanSFC:
-        return new ObjectDokan(params);
+        return EGG::egg_new<ObjectDokan>(params);
     case ObjectId::Pylon:
-        return new ObjectPylon(params);
+        return EGG::egg_new<ObjectPylon>(params);
     case ObjectId::OilSFC:
-        return new ObjectOilSFC(params);
+        return EGG::egg_new<ObjectOilSFC>(params);
     case ObjectId::ParasolR:
-        return new ObjectParasolR(params);
+        return EGG::egg_new<ObjectParasolR>(params);
     case ObjectId::KoopaFigure64:
-        return new ObjectKoopaFigure64(params);
+        return EGG::egg_new<ObjectKoopaFigure64>(params);
     case ObjectId::Kuribo:
-        return new ObjectKuribo(params);
+        return EGG::egg_new<ObjectKuribo>(params);
     case ObjectId::Choropu:
     case ObjectId::Choropu2:
-        return new ObjectChoropu(params);
+        return EGG::egg_new<ObjectChoropu>(params);
     case ObjectId::Cow:
-        return new ObjectCowHerd(params);
+        return EGG::egg_new<ObjectCowHerd>(params);
     case ObjectId::PakkunF:
-        return new ObjectPakkunF(params);
+        return EGG::egg_new<ObjectPakkunF>(params);
     case ObjectId::WLFirebarGC:
     case ObjectId::KoopaFirebar:
-        return new ObjectFirebar(params);
+        return EGG::egg_new<ObjectFirebar>(params);
     case ObjectId::Wanwan:
-        return new ObjectWanwan(params);
+        return EGG::egg_new<ObjectWanwan>(params);
     case ObjectId::Poihana:
-        return new ObjectPoihana(params);
+        return EGG::egg_new<ObjectPoihana>(params);
     case ObjectId::Propeller:
-        return new ObjectPropeller(params);
+        return EGG::egg_new<ObjectPropeller>(params);
     case ObjectId::DKRockGC:
-        return new ObjectRock(params);
+        return EGG::egg_new<ObjectRock>(params);
     case ObjectId::Sanbo:
-        return new ObjectSanbo(params);
+        return EGG::egg_new<ObjectSanbo>(params);
     case ObjectId::TruckWagon:
-        return new ObjectTruckWagon(params);
+        return EGG::egg_new<ObjectTruckWagon>(params);
     case ObjectId::Heyho:
-        return new ObjectHeyho(params);
+        return EGG::egg_new<ObjectHeyho>(params);
     case ObjectId::Press:
-        return new ObjectPress(params);
+        return EGG::egg_new<ObjectPress>(params);
     case ObjectId::WLFireRingGC:
-        return new ObjectFireRing(params);
+        return EGG::egg_new<ObjectFireRing>(params);
     case ObjectId::FireSnake:
-        return new ObjectFireSnake(params);
+        return EGG::egg_new<ObjectFireSnake>(params);
     case ObjectId::FireSnakeV:
-        return new ObjectFireSnakeV(params);
+        return EGG::egg_new<ObjectFireSnakeV>(params);
     case ObjectId::PuchiPakkun:
-        return new ObjectPuchiPakkun(params);
+        return EGG::egg_new<ObjectPuchiPakkun>(params);
     case ObjectId::KinokoUd:
-        return new ObjectKinokoUd(params);
+        return EGG::egg_new<ObjectKinokoUd>(params);
     case ObjectId::KinokoBend:
-        return new ObjectKinokoBend(params);
+        return EGG::egg_new<ObjectKinokoBend>(params);
     case ObjectId::VolcanoRock:
-        return new ObjectVolcanoRock(params);
+        return EGG::egg_new<ObjectVolcanoRock>(params);
     case ObjectId::BulldozerL:
     case ObjectId::BulldozerR:
-        return new ObjectBulldozer(params);
+        return EGG::egg_new<ObjectBulldozer>(params);
     case ObjectId::KinokoNm:
-        return new ObjectKinokoNm(params);
+        return EGG::egg_new<ObjectKinokoNm>(params);
     case ObjectId::Crane:
-        return new ObjectCrane(params);
+        return EGG::egg_new<ObjectCrane>(params);
     case ObjectId::VolcanoPiece:
-        return new ObjectVolcanoPiece(params);
+        return EGG::egg_new<ObjectVolcanoPiece>(params);
     case ObjectId::FlamePole:
-        return new ObjectFlamePoleFoot(params);
+        return EGG::egg_new<ObjectFlamePoleFoot>(params);
     case ObjectId::TwistedWay:
-        return new ObjectTwistedWay(params);
+        return EGG::egg_new<ObjectTwistedWay>(params);
     case ObjectId::TownBridge:
-        return new ObjectTownBridge(params);
+        return EGG::egg_new<ObjectTownBridge>(params);
     case ObjectId::DKShip64:
-        return new ObjectShip64(params);
+        return EGG::egg_new<ObjectShip64>(params);
     case ObjectId::Turibashi:
-        return new ObjectTuribashi(params);
+        return EGG::egg_new<ObjectTuribashi>(params);
     case ObjectId::Aurora:
-        return new ObjectAurora(params);
+        return EGG::egg_new<ObjectAurora>(params);
     case ObjectId::DCPillar:
-        return new ObjectPillar(params);
+        return EGG::egg_new<ObjectPillar>(params);
     case ObjectId::Sandcone:
-        return new ObjectSandcone(params);
+        return EGG::egg_new<ObjectSandcone>(params);
     case ObjectId::FlamePoleV:
     case ObjectId::FlamePoleVBig:
-        return new ObjectFlamePoleV(params);
+        return EGG::egg_new<ObjectFlamePoleV>(params);
     case ObjectId::Ami:
-        return new ObjectAmi(params);
+        return EGG::egg_new<ObjectAmi>(params);
     case ObjectId::BeltEasy:
-        return new ObjectBeltEasy(params);
+        return EGG::egg_new<ObjectBeltEasy>(params);
     case ObjectId::BeltCrossing:
-        return new ObjectBeltCrossing(params);
+        return EGG::egg_new<ObjectBeltCrossing>(params);
     case ObjectId::BeltCurveA:
-        return new ObjectBeltCurveA(params);
+        return EGG::egg_new<ObjectBeltCurveA>(params);
     case ObjectId::Escalator:
-        return new ObjectEscalator(params);
+        return EGG::egg_new<ObjectEscalator>(params);
     case ObjectId::EscalatorGroup:
-        return new ObjectEscalatorGroup(params);
+        return EGG::egg_new<ObjectEscalatorGroup>(params);
 
     // Non-specified objects are stock collidable objects by default
     // However, we need to specify an impl, so we don't use default
@@ -397,12 +397,12 @@ ObjectBase *ObjectDirector::createObject(const System::MapdataGeoObj &params) {
     case ObjectId::DKTreeB64c:
     case ObjectId::TownTreeDsc:
     case ObjectId::PakkunDokan:
-        return new ObjectCollidable(params);
+        return EGG::egg_new<ObjectCollidable>(params);
     case ObjectId::WLDokanGC:
     case ObjectId::Mdush:
-        return new ObjectKCL(params);
+        return EGG::egg_new<ObjectKCL>(params);
     default:
-        return new ObjectNoImpl(params);
+        return EGG::egg_new<ObjectNoImpl>(params);
     }
 }
 

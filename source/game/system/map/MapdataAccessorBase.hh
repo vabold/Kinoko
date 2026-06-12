@@ -2,6 +2,8 @@
 
 #include <Common.hh>
 
+#include <egg/core/Heap.hh>
+
 namespace Kinoko::System {
 
 struct MapSectionHeader {
@@ -20,11 +22,10 @@ public:
     virtual ~MapdataAccessorBase() {
         if (m_entries) {
             for (size_t i = 0; i < m_entryCount; ++i) {
-                delete m_entries[i];
+                EGG::egg_delete(m_entries[i]);
             }
+            EGG::egg_free(m_entries);
         }
-
-        delete[] m_entries;
     }
 
     [[nodiscard]] T *get(u16 i) const {
@@ -42,11 +43,11 @@ public:
     void init(const TData *start, u16 count) {
         if (count != 0) {
             m_entryCount = count;
-            m_entries = new T *[count];
+            m_entries = static_cast<T **>(EGG::egg_alloc(count * sizeof(T *)));
         }
 
         for (u16 i = 0; i < count; ++i) {
-            m_entries[i] = new T(&start[i]);
+            m_entries[i] = EGG::egg_new<T>(&start[i]);
         }
     }
 

@@ -83,9 +83,10 @@ public:
         return s_instance;
     }
 
-private:
     RaceConfig();
     ~RaceConfig() override;
+
+private:
 
     Scenario m_raceScenario;
     RawGhostFile m_ghost;

@@ -34,7 +34,7 @@ ObjectWanwan::ObjectWanwan(const System::MapdataGeoObj &params)
         m_attackArc = 30.0f;
     }
 
-    auto *pile = new ObjectWanwanPile(m_pos, m_rot, m_scale);
+    auto *pile = EGG::egg_new<ObjectWanwanPile>(m_pos, m_rot, m_scale);
     pile->load();
 
     m_anchor = m_pos + ANCHOR_OFFSET;

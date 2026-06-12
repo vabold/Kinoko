@@ -2,6 +2,8 @@
 
 #include "host/SceneCreatorDynamic.hh"
 
+#include <egg/core/Heap.hh>
+
 #include <game/kart/KartObjectManager.hh>
 #include <game/system/RaceManager.hh>
 
@@ -31,8 +33,8 @@ struct TestHeader {
 
 /// @brief Initializes the system.
 void KTestSystem::init() {
-    auto *sceneCreator = new Host::SceneCreatorDynamic;
-    m_sceneMgr = new EGG::SceneManager(sceneCreator);
+    auto *sceneCreator = EGG::egg_new<Host::SceneCreatorDynamic>();
+    m_sceneMgr = EGG::egg_new<EGG::SceneManager>(sceneCreator);
 
     System::RaceConfig::RegisterInitCallback(OnInit, nullptr);
     Abstract::File::Remove("results.txt");
@@ -235,7 +237,7 @@ void KTestSystem::parseOptions(int argc, char **argv) {
 
 KTestSystem *KTestSystem::CreateInstance() {
     ASSERT(!s_instance);
-    s_instance = new KTestSystem;
+    s_instance = EGG::egg_new<KTestSystem>();
     return static_cast<KTestSystem *>(s_instance);
 }
 
@@ -243,7 +245,7 @@ void KTestSystem::DestroyInstance() {
     ASSERT(s_instance);
     auto *instance = s_instance;
     s_instance = nullptr;
-    delete instance;
+    EGG::egg_delete(instance);
 }
 
 KTestSystem::KTestSystem() : m_testMode(Host::EOption::Invalid) {}
@@ -296,7 +298,7 @@ void KTestSystem::startNextTestCase() {
 bool KTestSystem::popTestCase() {
     ASSERT(m_testCases.size() > 0);
     m_testCases.pop();
-    delete[] m_stream.data();
+    EGG::egg_free(m_stream.data());
 
     return !m_testCases.empty();
 }
@@ -467,7 +469,7 @@ void KTestSystem::OnInit(System::RaceConfig *config, void * /* arg */) {
     size_t size;
     u8 *rkg = Abstract::File::LoadHost(Instance()->getCurrentTestCase().rkgPath.data(), size);
     config->setGhost(rkg);
-    delete[] rkg;
+    EGG::egg_free(rkg);
 
     config->raceScenario().players[0].type = System::RaceConfig::Player::Type::Ghost;
 }
