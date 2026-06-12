@@ -85,6 +85,10 @@ public:
         return m_prevCount;
     }
 
+    [[nodiscard]] const EGG::Vector2f &dir() const {
+        return m_dir;
+    }
+
     [[nodiscard]] u16 id() const {
         return m_id;
     }

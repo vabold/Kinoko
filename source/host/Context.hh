@@ -32,6 +32,7 @@ class CourseColMgr;
 class ObjectCollisionBase;
 class ObjectDirector;
 class ObjectDrivableDirector;
+class JugemDirector;
 class RailManager;
 } // namespace Field
 
@@ -94,6 +95,7 @@ private:
         Field::BoxColManager *m_boxColMgr;
         Field::CollisionDirector *m_colDir;
         Field::CourseColMgr *m_courseColMgr;
+        Field::JugemDirector *m_jugemDir;
         Field::ObjectDirector *m_objDir;
         Field::ObjectDrivableDirector *m_objDrivableDir;
         Field::RailManager *m_railMgr;
