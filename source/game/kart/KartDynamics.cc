@@ -2,7 +2,7 @@
 
 #include <egg/math/Math.hh>
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @addr{0x805B4AF8}
 KartDynamics::KartDynamics() {
@@ -256,4 +256,4 @@ void KartDynamicsBike::stabilize() {
     m_mainRot = m_mainRot.slerpTo(q.multSwap(m_mainRot), m_stabilizationFactor);
 }
 
-} // namespace Kart
+} // namespace Kinoko::Kart

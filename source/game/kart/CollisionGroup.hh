@@ -10,7 +10,7 @@
 #include <span>
 
 /// @brief Pertains to kart-related functionality.
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @brief Information about the current collision and its properties.
 /// @see KCollisionTypes.hh
@@ -159,8 +159,8 @@ public:
 private:
     f32 m_boundingRadius;
     CollisionData m_collisionData;
-    std::span<Hitbox> m_hitboxes;
+    owning_span<Hitbox> m_hitboxes;
     f32 m_hitboxScale;
 };
 
-} // namespace Kart
+} // namespace Kinoko::Kart

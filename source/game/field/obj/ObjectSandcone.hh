@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectKCL.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectSandcone : public ObjectKCL {
 public:
@@ -35,4 +35,4 @@ private:
     EGG::Vector3f m_finalPos; ///< Not in base game. Stores position of fully poured sandcone.
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectKCL.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief Represents an object that eventually shakes and then falls, e.g. the ultra rock on GV.
 class ObjectVolcanoPiece final : public ObjectKCL {
@@ -221,4 +221,4 @@ private:
     static constexpr u32 FALL_DURATION = 900;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -4,6 +4,8 @@
 
 #include <abstract/g3d/ResAnmChr.hh>
 
+namespace Kinoko {
+
 namespace Host {
 
 class Context;
@@ -65,3 +67,5 @@ private:
 };
 
 } // namespace Kart
+
+} // namespace Kinoko

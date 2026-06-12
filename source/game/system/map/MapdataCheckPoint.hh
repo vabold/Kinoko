@@ -4,7 +4,7 @@
 
 #include <egg/math/Vector.hh>
 
-namespace System {
+namespace Kinoko::System {
 
 class MapdataCheckPoint;
 class MapdataCheckPointAccessor;
@@ -85,6 +85,10 @@ public:
         return m_prevCount;
     }
 
+    [[nodiscard]] const EGG::Vector2f &dir() const {
+        return m_dir;
+    }
+
     [[nodiscard]] u16 id() const {
         return m_id;
     }
@@ -156,4 +160,4 @@ private:
     u16 m_finishLineCheckpointId;
 };
 
-} // namespace System
+} // namespace Kinoko::System

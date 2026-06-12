@@ -9,7 +9,7 @@
 
 #include "game/system/RaceConfig.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806D5EE4}
 ObjectCarTGE::ObjectCarTGE(const System::MapdataGeoObj &params)
@@ -340,4 +340,4 @@ void ObjectCarTGE::calcPos() {
     setMatrixTangentTo(m_up, m_tangent);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

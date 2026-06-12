@@ -4,7 +4,7 @@
 
 #include <egg/math/Vector.hh>
 
-namespace System {
+namespace Kinoko::System {
 
 class MapdataGeoObj {
 public:
@@ -69,4 +69,4 @@ public:
     ~MapdataGeoObjAccessor() override;
 };
 
-} // namespace System
+} // namespace Kinoko::System

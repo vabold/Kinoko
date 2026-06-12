@@ -2,7 +2,7 @@
 
 #include "game/field/CollisionDirector.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x80747198}
 ObjectPoihanaBase::ObjectPoihanaBase(const System::MapdataGeoObj &params)
@@ -174,4 +174,4 @@ void ObjectPoihana::calcUp() {
     m_up = up;
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

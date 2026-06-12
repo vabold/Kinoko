@@ -2,7 +2,7 @@
 
 #include "game/system/CourseMap.hh"
 
-namespace System {
+namespace Kinoko::System {
 
 /// @addr{0x80516050}
 MapdataAreaBase::MapdataAreaBase(const SData *data, s16 index) : m_rawData(data), m_index(index) {
@@ -127,14 +127,11 @@ MapdataAreaAccessor::MapdataAreaAccessor(const MapSectionHeader *header)
     init(reinterpret_cast<const MapdataAreaBase::SData *>(m_sectionHeader + 1),
             parse<u16>(m_sectionHeader->count));
 
-    m_sortedEntries =
-            std::span<MapdataAreaBase *>(new MapdataAreaBase *[m_entryCount], m_entryCount);
+    m_sortedEntries = owning_span<MapdataAreaBase *>(m_entryCount);
 }
 
 /// @addr{0x80518BDC}
-MapdataAreaAccessor::~MapdataAreaAccessor() {
-    delete m_sortedEntries.data();
-}
+MapdataAreaAccessor::~MapdataAreaAccessor() = default;
 
 void MapdataAreaAccessor::init(const MapdataAreaBase::SData *start, u16 count) {
     if (count != 0) {
@@ -181,4 +178,4 @@ void MapdataAreaAccessor::sort() {
     }
 }
 
-} // namespace System
+} // namespace Kinoko::System

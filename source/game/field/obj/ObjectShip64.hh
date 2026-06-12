@@ -3,7 +3,7 @@
 #include "game/field/ObjectCollisionCylinder.hh"
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectShip64 final : public ObjectCollidable {
 public:
@@ -37,4 +37,4 @@ private:
     ObjectCollisionCylinder *m_auxCollision;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

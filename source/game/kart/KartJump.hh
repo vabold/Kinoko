@@ -3,7 +3,7 @@
 #include "game/kart/KartObjectProxy.hh"
 #include "game/system/KPadController.hh"
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @brief Determined by the KCL, this represents the variation of the trick that will be performed.
 /// @details This is also directly used to determine the duration of the trick boost.
@@ -113,4 +113,4 @@ private:
     void init() override;
 };
 
-} // namespace Kart
+} // namespace Kinoko::Kart

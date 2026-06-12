@@ -6,7 +6,7 @@
 
 #include <array>
 
-namespace System {
+namespace Kinoko::System {
 
 static constexpr size_t RKG_HEADER_SIZE = 0x88;
 static constexpr size_t RKG_UNCOMPRESSED_INPUT_DATA_SECTION_SIZE = 0x2774;
@@ -132,4 +132,4 @@ private:
     const u8 *m_inputs;
 };
 
-} // namespace System
+} // namespace Kinoko::System

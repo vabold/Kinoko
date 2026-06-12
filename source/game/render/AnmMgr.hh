@@ -4,7 +4,7 @@
 
 #include <abstract/g3d/ResFile.hh>
 
-namespace Render {
+namespace Kinoko::Render {
 
 class DrawMdl;
 
@@ -59,4 +59,4 @@ private:
     std::array<AnmNodeChr *, static_cast<size_t>(AnmType::Max) - 1> m_activeAnims;
 };
 
-} // namespace Render
+} // namespace Kinoko::Render

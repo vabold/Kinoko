@@ -6,7 +6,7 @@
 
 #include <egg/math/Matrix.hh>
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @brief Manages the lifecycle of KartDynamics, handles moving floors and trick rotation.
 /// @nosubgrouping
@@ -148,4 +148,4 @@ private:
     f32 m_fc;                 /// @rename
 };
 
-} // namespace Kart
+} // namespace Kinoko::Kart

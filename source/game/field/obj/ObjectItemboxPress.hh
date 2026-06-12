@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectPressSenko;
 
@@ -57,4 +57,4 @@ private:
     ObjectPressSenko *m_senko;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

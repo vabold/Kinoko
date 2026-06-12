@@ -4,7 +4,7 @@
 
 #include <egg/util/Stream.hh>
 
-namespace System {
+namespace Kinoko::System {
 
 class MapdataStageInfo {
 public:
@@ -39,4 +39,4 @@ public:
     ~MapdataStageInfoAccessor() override;
 };
 
-} // namespace System
+} // namespace Kinoko::System

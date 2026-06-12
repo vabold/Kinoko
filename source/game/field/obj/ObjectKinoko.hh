@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectKCL.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 enum class KinokoType : u16 {
     Light = 0,
@@ -99,4 +99,4 @@ private:
     KinokoType m_type;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -4,6 +4,8 @@
 
 #include <egg/core/ExpHeap.hh>
 
+namespace Kinoko {
+
 template <typename T>
 class ScopeLock;
 
@@ -30,3 +32,5 @@ public:
         heap->setGroupID(static_cast<u16>(GroupID::None));
     }
 };
+
+} // namespace Kinoko

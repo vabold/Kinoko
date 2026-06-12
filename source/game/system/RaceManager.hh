@@ -7,6 +7,8 @@
 
 #include <egg/math/Vector.hh>
 
+namespace Kinoko {
+
 namespace Host {
 
 class Context;
@@ -49,6 +51,10 @@ public:
             return m_jugemId;
         }
 
+        [[nodiscard]] bool drivingWrongWay() const {
+            return m_drivingWrongWay;
+        }
+
         [[nodiscard]] const std::array<Timer, 3> &lapTimers() const {
             return m_lapTimers;
         }
@@ -85,6 +91,7 @@ public:
         s16 m_currentLap;
         s8 m_maxLap;
         s8 m_maxKcp;
+        bool m_drivingWrongWay;
         std::array<Timer, 3> m_lapTimers;
         Timer m_raceTimer;
         const KPad *m_inputs;
@@ -165,3 +172,5 @@ private:
 };
 
 } // namespace System
+
+} // namespace Kinoko

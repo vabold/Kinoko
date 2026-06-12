@@ -4,7 +4,7 @@
 
 #include <cstring>
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x807FD938}
 ObjectBulldozer::ObjectBulldozer(const System::MapdataGeoObj &params)
@@ -102,4 +102,4 @@ f32 ObjectBulldozer::calcStateAndPosition(u32 timeOffset) const {
             (1.0f + EGG::Mathf::cos(m_period * static_cast<f32>(t))) * 0.5f;
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

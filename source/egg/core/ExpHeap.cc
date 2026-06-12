@@ -2,9 +2,9 @@
 
 #include <limits>
 
-using namespace Abstract::Memory;
+namespace Kinoko::EGG {
 
-namespace EGG {
+using namespace Abstract::Memory;
 
 ExpHeap::ExpHeap(MEMiHeapHead *handle) : Heap(handle) {}
 
@@ -145,4 +145,4 @@ void ExpHeap::GroupSizeRecord::addSize(u16 groupID, size_t size) {
     m_entries[groupID] += size;
 }
 
-} // namespace EGG
+} // namespace Kinoko::EGG

@@ -1,6 +1,6 @@
 #include "ObjectCollisionBox.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x80833840}
 ObjectCollisionBox::ObjectCollisionBox(f32 x, f32 y, f32 z, const EGG::Vector3f &center)
@@ -130,4 +130,4 @@ void ObjectCollisionBox::transform(const EGG::Matrix34f &mat, const EGG::Vector3
     ObjectCollisionConvexHull::transform(mat, EGG::Vector3f::unit, speed);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -1,11 +1,13 @@
 #include "GameScene.hh"
 
+#include "game/render/KartCamera.hh"
+
 #include "game/system/KPadDirector.hh"
 #include "game/system/ResourceManager.hh"
 
 #include <egg/core/SceneManager.hh>
 
-namespace Scene {
+namespace Kinoko::Scene {
 
 /// @addr{0x8051A1E0}
 GameScene::GameScene() {
@@ -49,6 +51,7 @@ GameScene::~GameScene() {
 void GameScene::calc() {
     System::KPadDirector::Instance()->calc();
     calcEngines();
+    calcCamera();
 }
 
 /// @addr{0x8051AB58}
@@ -72,6 +75,16 @@ void GameScene::reinit() {
     } else {
         m_sceneMgr->changeSiblingScene(m_nextSceneId);
     }
+}
+
+/// @addr{0x805A1A8C}
+void GameScene::initCamera() {
+    Render::KartCamera::Instance()->init();
+}
+
+/// @addr{0x805A1AF0}
+void GameScene::calcCamera() {
+    Render::KartCamera::Instance()->calc();
 }
 
 /// @addr{0x8051AA58}
@@ -153,7 +166,7 @@ void GameScene::getMemoryLeakTags() {
         return;
     }
 
-    std::span<u32> tags = std::span<u32>(new u32[count], count);
+    owning_span<u32> tags = owning_span<u32>(count);
     for (auto &tag : tags) {
         tag = 0; // empty tag
     }
@@ -167,8 +180,6 @@ void GameScene::getMemoryLeakTags() {
         printf(", %d", tags[i]);
     }
     printf("]\n");
-
-    delete[] tags.data();
 }
 
 size_t GameScene::getMemoryLeakTagCount() {
@@ -182,7 +193,7 @@ void GameScene::ViewTags(void *block, Abstract::Memory::MEMiHeapHead * /*heap*/,
     Abstract::Memory::MEMiExpBlockHead *blockHead =
             static_cast<Abstract::Memory::MEMiExpBlockHead *>(
                     SubOffset(block, sizeof(Abstract::Memory::MEMiExpBlockHead)));
-    std::span<u32> *span = reinterpret_cast<std::span<u32> *>(param);
+    owning_span<u32> *span = reinterpret_cast<owning_span<u32> *>(param);
     for (auto &tag : *span) {
         if (tag == 0) {
             tag = blockHead->m_tag;
@@ -198,4 +209,4 @@ void GameScene::IncreaseTagCount(void * /*block*/, Abstract::Memory::MEMiHeapHea
 }
 #endif // BUILD_DEBUG
 
-} // namespace Scene
+} // namespace Kinoko::Scene

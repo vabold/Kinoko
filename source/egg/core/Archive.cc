@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <cstddef>
 
-namespace EGG {
+namespace Kinoko::EGG {
 
 /// @brief Removes the archive from the static list.
 /// @addr{0x8020f6ec}
@@ -71,4 +71,4 @@ Archive::Archive(void *archiveStart) : m_handle(archiveStart) {}
 Abstract::Memory::MEMList Archive::s_archiveList =
         Abstract::Memory::MEMList(Archive::GetLinkOffset());
 
-} // namespace EGG
+} // namespace Kinoko::EGG

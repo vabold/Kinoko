@@ -3,7 +3,7 @@
 #include "game/kart/KartObjectProxy.hh"
 #include "game/kart/KartPhysics.hh"
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @nosubgrouping
 class KartBody : protected KartObjectProxy {
@@ -64,4 +64,4 @@ public:
     [[nodiscard]] EGG::Matrix34f wheelMatrix(u16 wheelIdx) override;
 };
 
-} // namespace Kart
+} // namespace Kinoko::Kart

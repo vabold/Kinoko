@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectDossunTsuibi.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x807614D0}
 ObjectDossunTsuibiHolder::ObjectDossunTsuibiHolder(const System::MapdataGeoObj &params)
@@ -222,4 +222,4 @@ void ObjectDossunTsuibiHolder::updateRot(f32 rot) {
     m_dossuns[1]->m_rot.y = m_rot.y;
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

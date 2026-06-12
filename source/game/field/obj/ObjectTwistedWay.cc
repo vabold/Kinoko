@@ -6,7 +6,7 @@
 
 #include <egg/math/Math.hh>
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x80813BD4}
 ObjectTwistedWay::ObjectTwistedWay(const System::MapdataGeoObj &params) : ObjectDrivable(params) {}
@@ -339,4 +339,4 @@ f32 ObjectTwistedWay::calcWave(f32 zPercent, u32 t) {
     return AMPLITUDE * (high * (high * (low * (low * angle))));
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

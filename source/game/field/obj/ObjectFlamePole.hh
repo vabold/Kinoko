@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief The flamepole that erupts from a geyser on Bowser's Castle.
 class ObjectFlamePole final : public ObjectCollidable {
@@ -43,4 +43,4 @@ private:
     static constexpr f32 RADIUS = 70.0f;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

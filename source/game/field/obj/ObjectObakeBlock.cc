@@ -1,6 +1,6 @@
 #include "ObjectObakeBlock.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8080AD20}
 ObjectObakeBlock::ObjectObakeBlock(const System::MapdataGeoObj &params)
@@ -62,4 +62,4 @@ void ObjectObakeBlock::calc() {
     }
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

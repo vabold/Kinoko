@@ -2,7 +2,7 @@
 
 #include "game/system/RaceManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x80817DE8}
 ObjectVolcanoPiece::ObjectVolcanoPiece(const System::MapdataGeoObj &params)
@@ -313,4 +313,4 @@ f32 ObjectVolcanoPiece::calcT(u32 frame) const {
     return static_cast<f32>(frame - m_quakeDuration - FALL_DURATION);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

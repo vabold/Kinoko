@@ -4,7 +4,7 @@
 #include "game/field/ObjectCollisionBase.hh"
 #include "game/field/obj/ObjectBase.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectDrivable : public ObjectBase {
 public:
@@ -77,4 +77,4 @@ public:
             KCLTypeMask *maskOut, u32 timeOffset) = 0;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

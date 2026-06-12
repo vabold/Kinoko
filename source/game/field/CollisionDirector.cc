@@ -2,13 +2,54 @@
 
 #include "game/field/ObjectDrivableDirector.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8078E4F0}
 void CollisionDirector::checkCourseColNarrScLocal(f32 radius, const EGG::Vector3f &pos,
         KCLTypeMask mask, u32 timeOffset) {
     CourseColMgr::Instance()->scaledNarrowScopeLocal(1.0f, radius, nullptr, pos, mask);
     ObjectDrivableDirector::Instance()->colNarScLocal(radius, pos, mask, timeOffset);
+}
+
+/// @addr{0x8078F320}
+bool CollisionDirector::checkSpherePartialPush(f32 radius, const EGG::Vector3f &pos,
+        const EGG::Vector3f &prevPos, KCLTypeMask flags, CollisionInfoPartial *info,
+        KCLTypeMask *typeMaskOut, u32 timeOffset) {
+    if (info) {
+        info->bbox.setZero();
+    }
+
+    if (typeMaskOut) {
+        *typeMaskOut = KCL_NONE;
+    }
+
+    auto *courseColMgr = CourseColMgr::Instance();
+    auto *noBounceInfo = courseColMgr->noBounceWallInfo();
+    if (noBounceInfo) {
+        noBounceInfo->bbox.setZero();
+        noBounceInfo->dist = std::numeric_limits<f32>::min();
+    }
+
+    bool colliding = flags &&
+            courseColMgr->checkSpherePartialPush(1.0f, radius, nullptr, pos, prevPos, flags, info,
+                    typeMaskOut);
+
+    colliding |= ObjectDrivableDirector::Instance()->checkSpherePartialPush(radius, pos, prevPos,
+            flags, info, typeMaskOut, timeOffset);
+
+    if (colliding) {
+        if (info) {
+            info->tangentOff = info->bbox.min + info->bbox.max;
+        }
+
+        if (noBounceInfo) {
+            noBounceInfo->tangentOff = noBounceInfo->bbox.min + noBounceInfo->bbox.max;
+        }
+    }
+
+    courseColMgr->clearNoBounceWallInfo();
+
+    return colliding;
 }
 
 /// @addr{0x8078F500}
@@ -279,4 +320,4 @@ CollisionDirector::~CollisionDirector() {
 
 CollisionDirector *CollisionDirector::s_instance = nullptr; ///< @addr{0x809C2F44}
 
-} // namespace Field
+} // namespace Kinoko::Field

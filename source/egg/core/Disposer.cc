@@ -2,7 +2,7 @@
 
 #include "egg/core/Heap.hh"
 
-namespace EGG {
+namespace Kinoko::EGG {
 
 /// @addr{0x8021A0F0}
 Disposer::Disposer() {
@@ -19,4 +19,4 @@ Disposer::~Disposer() {
     }
 }
 
-} // namespace EGG
+} // namespace Kinoko::EGG

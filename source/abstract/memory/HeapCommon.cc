@@ -2,7 +2,7 @@
 
 #include <cstring>
 
-namespace Abstract::Memory {
+namespace Kinoko::Abstract::Memory {
 
 MEMList &MEMiHeapHead::getChildList() {
     return m_childList;
@@ -98,4 +98,4 @@ MEMList &MEMiHeapHead::findListContainHeap() const {
 
 MEMList MEMiHeapHead::s_rootList = MEMList(MEMiHeapHead::getLinkOffset());
 
-} // namespace Abstract::Memory
+} // namespace Kinoko::Abstract::Memory

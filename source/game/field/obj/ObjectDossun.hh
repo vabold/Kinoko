@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 class ObjectDossunTsuibiHolder;
 
 /// @brief Base class for the various different Thwomp types in the game.
@@ -101,4 +101,4 @@ private:
     static constexpr f32 RISING_VEL = 10.0f;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

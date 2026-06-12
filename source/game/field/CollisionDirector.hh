@@ -6,6 +6,8 @@
 
 #define COLLISION_ARR_LENGTH 0x40
 
+namespace Kinoko {
+
 namespace Host {
 
 class Context;
@@ -58,6 +60,9 @@ public:
     void checkCourseColNarrScLocal(f32 radius, const EGG::Vector3f &pos, KCLTypeMask mask,
             u32 timeOffset);
 
+    [[nodiscard]] bool checkSpherePartialPush(f32 radius, const EGG::Vector3f &pos,
+            const EGG::Vector3f &prevPos, KCLTypeMask flags, CollisionInfoPartial *info,
+            KCLTypeMask *typeMaskOut, u32 timeOffset);
     [[nodiscard]] bool checkSphereFull(f32 radius, const EGG::Vector3f &v0, const EGG::Vector3f &v1,
             KCLTypeMask flags, CollisionInfo *pInfo, KCLTypeMask *pFlagsOut, u32 timeOffset);
     [[nodiscard]] bool checkSphereFullPush(f32 radius, const EGG::Vector3f &v0,
@@ -118,3 +123,5 @@ private:
 };
 
 } // namespace Field
+
+} // namespace Kinoko

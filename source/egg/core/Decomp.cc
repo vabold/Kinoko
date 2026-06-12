@@ -1,6 +1,6 @@
 #include "Decomp.hh"
 
-namespace EGG::Decomp {
+namespace Kinoko::EGG::Decomp {
 
 /// @addr{0x8021997C}
 s32 GetExpandSize(const u8 *src) {
@@ -53,4 +53,4 @@ s32 DecodeSZS(const u8 *src, u8 *dst) {
     return expandSize;
 }
 
-} // namespace EGG::Decomp
+} // namespace Kinoko::EGG::Decomp

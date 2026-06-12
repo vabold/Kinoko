@@ -4,7 +4,7 @@
 
 #include <egg/util/Stream.hh>
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x807F9278}
 ObjectHitTable::ObjectHitTable(const char *filename) {
@@ -16,7 +16,7 @@ ObjectHitTable::ObjectHitTable(const char *filename) {
 
     m_count = stream.read_s16();
     m_fieldCount = stream.read_s16();
-    m_reactions = std::span<s16>(new s16[m_count], m_count);
+    m_reactions = owning_span<s16>(m_count);
 
     for (auto &reaction : m_reactions) {
         stream.skip(0x2);
@@ -28,9 +28,7 @@ ObjectHitTable::ObjectHitTable(const char *filename) {
 }
 
 /// @addr{0x807F9348}
-ObjectHitTable::~ObjectHitTable() {
-    delete[] m_reactions.data();
-}
+ObjectHitTable::~ObjectHitTable() = default;
 
 Kart::Reaction ObjectHitTable::reaction(s16 i) const {
     ASSERT(i != -1);
@@ -45,4 +43,4 @@ s16 ObjectHitTable::slot(ObjectId id) const {
     return i < SLOT_COUNT ? parse<s16>(m_slots[i]) : -1;
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

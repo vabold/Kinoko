@@ -10,6 +10,8 @@
 
 #include <queue>
 
+namespace Kinoko {
+
 /// @brief Kinoko system designed to execute tests.
 class KTestSystem final : public KSystem {
 public:
@@ -150,3 +152,5 @@ private:
     u16 m_currentFrame;
     bool m_sync;
 };
+
+} // namespace Kinoko

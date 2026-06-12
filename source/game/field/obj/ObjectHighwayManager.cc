@@ -3,7 +3,7 @@
 #include "game/field/ObjectDirector.hh"
 #include "game/field/obj/ObjectCarTGE.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806D2908}
 ObjectHighwayManager::ObjectHighwayManager()
@@ -20,7 +20,7 @@ ObjectHighwayManager::ObjectHighwayManager()
         }
     }
 
-    m_cars = std::span<ObjectCarTGE *>(new ObjectCarTGE *[carCount], carCount);
+    m_cars = owning_span<ObjectCarTGE *>(carCount);
     size_t idx = 0;
 
     for (auto *&obj : objDir->managedObjects()) {
@@ -35,10 +35,7 @@ ObjectHighwayManager::ObjectHighwayManager()
 }
 
 /// @addr{0x806D2FE8}
-ObjectHighwayManager::~ObjectHighwayManager() {
-    // The manager does not own the underlying objects. Only free the array itself.
-    delete[] m_cars.data();
-}
+ObjectHighwayManager::~ObjectHighwayManager() = default;
 
 /// @addr{0x806D332C}
 void ObjectHighwayManager::init() {
@@ -67,4 +64,4 @@ void ObjectHighwayManager::calcSquash() {
     m_squashTimer = std::min<u32>(m_squashTimer + 1, SQUASH_MAX);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

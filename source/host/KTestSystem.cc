@@ -7,6 +7,8 @@
 
 #include <abstract/File.hh>
 
+namespace Kinoko {
+
 // We use an unscoped enum to avoid static_casting in all usecases
 // This is defined in the source due to its lack of scoping
 enum Changelog {
@@ -328,7 +330,7 @@ KTestSystem::TestData KTestSystem::findCurrentFrameEntry() {
     f32 speed = 0.0f;
     f32 acceleration = 0.0f;
     f32 softSpeedLimit = 0.0f;
-    EGG::Quatf mainRot;
+    EGG::Quatf mainRot = EGG::Quatf::ident; // Initialize to avoid maybe-uninitialized warning
     EGG::Vector3f angVel2;
     f32 raceCompletion = 0.0f;
     u16 checkpointId = 0;
@@ -469,3 +471,5 @@ void KTestSystem::OnInit(System::RaceConfig *config, void * /* arg */) {
 
     config->raceScenario().players[0].type = System::RaceConfig::Player::Type::Ghost;
 }
+
+} // namespace Kinoko

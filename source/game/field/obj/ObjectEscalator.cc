@@ -7,7 +7,7 @@
 
 #include <algorithm>
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x807FFB20}
 ObjectEscalator::ObjectEscalator(const System::MapdataGeoObj &params, bool reverse /* = false */)
@@ -411,4 +411,4 @@ f32 ObjectEscalator::calcSpeed(s32 t) {
     return m_speed[2];
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

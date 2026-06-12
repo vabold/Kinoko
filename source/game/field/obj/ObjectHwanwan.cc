@@ -2,7 +2,7 @@
 
 #include "game/field/CollisionDirector.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806E95B0}
 ObjectHwanwan::ObjectHwanwan(const System::MapdataGeoObj &params)
@@ -131,4 +131,4 @@ void ObjectHwanwanManager::calcState() {
     }
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

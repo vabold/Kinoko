@@ -9,7 +9,7 @@
 
 #include <egg/math/Math.hh>
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @addr{0x805672CC}
 KartAction::KartAction()
@@ -656,4 +656,4 @@ const std::array<KartAction::EndActionFunc, KartAction::MAX_ACTION> KartAction::
         &KartAction::endStub,
 }};
 
-} // namespace Kart
+} // namespace Kinoko::Kart

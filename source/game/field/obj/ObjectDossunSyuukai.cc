@@ -1,6 +1,6 @@
 #include "ObjectDossunSyuukai.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x80760B20}
 ObjectDossunSyuukai::ObjectDossunSyuukai(const System::MapdataGeoObj &params)
@@ -104,4 +104,4 @@ void ObjectDossunSyuukai::calcRotating() {
     }
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

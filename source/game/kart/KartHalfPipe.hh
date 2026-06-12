@@ -4,7 +4,7 @@
 
 #include "game/system/KPadController.hh"
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @brief Handles the physics and boosts associated with zippers.
 /// @nosubgrouping
@@ -73,4 +73,4 @@ private:
     StuntManager m_stuntManager;
 };
 
-} // namespace Kart
+} // namespace Kinoko::Kart

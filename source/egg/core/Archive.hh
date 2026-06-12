@@ -5,6 +5,8 @@
 #include <abstract/Archive.hh>
 #include <abstract/memory/List.hh>
 
+namespace Kinoko {
+
 namespace Host {
 
 class Context;
@@ -49,3 +51,5 @@ private:
 };
 
 } // namespace EGG
+
+} // namespace Kinoko

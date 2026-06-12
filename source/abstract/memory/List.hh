@@ -2,7 +2,7 @@
 
 #include "abstract/memory/Memory.hh"
 
-namespace Abstract::Memory {
+namespace Kinoko::Abstract::Memory {
 
 /// @brief Link of an intrusive doubly-linked list.
 struct MEMLink {
@@ -32,4 +32,4 @@ private:
     [[nodiscard]] MEMLink *getLink(void *object);
 };
 
-} // namespace Abstract::Memory
+} // namespace Kinoko::Abstract::Memory

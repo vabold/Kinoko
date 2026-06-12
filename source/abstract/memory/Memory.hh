@@ -4,6 +4,8 @@
 
 #include <cstdint>
 
+namespace Kinoko {
+
 // We can't include Common.hh, because we have a cyclic dependency
 // Instead, we redefine the types for use in memory code
 typedef int8_t s8;
@@ -50,3 +52,5 @@ static inline uintptr_t RoundDown(uintptr_t value, uintptr_t alignment) {
 static inline void *RoundDown(void *ptr, uintptr_t alignment) {
     return GetAddrPtr(RoundDown(GetAddrNum(ptr), alignment));
 }
+
+} // namespace Kinoko

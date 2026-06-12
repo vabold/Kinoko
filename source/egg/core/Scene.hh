@@ -2,7 +2,7 @@
 
 #include <Common.hh>
 
-namespace EGG {
+namespace Kinoko::EGG {
 
 class SceneManager;
 
@@ -85,4 +85,4 @@ protected:
     SceneManager *m_sceneMgr;
 };
 
-} // namespace EGG
+} // namespace Kinoko::EGG

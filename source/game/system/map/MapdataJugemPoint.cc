@@ -2,7 +2,7 @@
 
 #include "game/system/CourseMap.hh"
 
-namespace System {
+namespace Kinoko::System {
 
 /// @addr{0x805183A8}
 MapdataJugemPoint::MapdataJugemPoint(const SData *data) : m_rawData(data) {
@@ -24,4 +24,4 @@ MapdataJugemPointAccessor::MapdataJugemPointAccessor(const MapSectionHeader *hea
 
 MapdataJugemPointAccessor::~MapdataJugemPointAccessor() = default;
 
-} // namespace System
+} // namespace Kinoko::System

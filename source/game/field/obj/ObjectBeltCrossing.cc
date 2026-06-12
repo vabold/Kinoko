@@ -1,6 +1,6 @@
 #include "ObjectBeltCrossing.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x807FC764}
 ObjectBeltCrossing::ObjectBeltCrossing(const System::MapdataGeoObj &params) : ObjectBelt(params) {
@@ -28,4 +28,4 @@ bool ObjectBeltCrossing::isMoving(u32 variant, const EGG::Vector3f & /*pos*/) co
     return variant == 0 || variant == 1;
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

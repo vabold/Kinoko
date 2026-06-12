@@ -4,7 +4,7 @@
 
 #include <functional>
 
-namespace Abstract::Memory {
+namespace Kinoko::Abstract::Memory {
 
 /// @brief Represents a region of memory.
 struct Region {
@@ -111,4 +111,4 @@ private:
     static constexpr u32 EXP_HEAP_SIGNATURE = 0x45585048; // EXPH
 };
 
-} // namespace Abstract::Memory
+} // namespace Kinoko::Abstract::Memory

@@ -4,7 +4,7 @@
 #include "game/field/RailManager.hh"
 #include "game/field/obj/ObjectHeyhoShip.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806D2368}
 ObjectHeyhoShipManager::ObjectHeyhoShipManager() {
@@ -16,7 +16,7 @@ ObjectHeyhoShipManager::ObjectHeyhoShipManager() {
         }
     }
 
-    m_projectiles = std::span<ObjectProjectile *>(new ObjectProjectile *[count], count);
+    m_projectiles = owning_span<ObjectProjectile *>(count);
     size_t curIdx = 0;
     for (auto *&obj : managedObjs) {
         if (strcmp(obj->getName(), "HeyhoBallGBA") == 0) {
@@ -27,14 +27,11 @@ ObjectHeyhoShipManager::ObjectHeyhoShipManager() {
     }
 
     u16 pointCount = m_launcher->railInterpolator()->pointCount();
-    m_pointIdxs = std::span<s16>(new s16[pointCount], pointCount);
+    m_pointIdxs = owning_span<s16>(pointCount);
 }
 
 /// @addr{0x806D2514}
-ObjectHeyhoShipManager::~ObjectHeyhoShipManager() {
-    delete[] m_projectiles.data();
-    delete[] m_pointIdxs.data();
-}
+ObjectHeyhoShipManager::~ObjectHeyhoShipManager() = default;
 
 /// @addr{0x806D2590}
 void ObjectHeyhoShipManager::init() {
@@ -81,4 +78,4 @@ void ObjectHeyhoShipManager::calc() {
     }
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

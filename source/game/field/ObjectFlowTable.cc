@@ -4,7 +4,7 @@
 
 #include <cstring>
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8082C10C}
 ObjectFlowTable::ObjectFlowTable(const char *filename) {
@@ -33,4 +33,4 @@ ObjectId ObjectFlowTable::getIdFromName(const char *name) const {
     return ObjectId::None;
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

@@ -3,7 +3,7 @@
 #include "game/field/StateManager.hh"
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief Represents a fireball that is launched from the volcanoes on Grumble Volcano.
 class ObjectVolcanoBall final : public ObjectCollidable, public StateManager {
@@ -74,4 +74,4 @@ private:
     }};
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

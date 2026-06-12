@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief The Bowser statues on N64 Bowser's Castle.
 /// @details The big statue by the first turn has collision while the mini ones do not.
@@ -46,4 +46,4 @@ private:
     static constexpr u32 CYCLE_DURATION = FIRE_DURATION + COOLDOWN_DURATION;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

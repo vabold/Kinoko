@@ -5,7 +5,7 @@
 
 #include "game/system/RaceManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x806C0D18}
 ObjectFireSnakeKid::ObjectFireSnakeKid(const System::MapdataGeoObj &params)
@@ -256,4 +256,4 @@ void ObjectFireSnake::calcBounce(f32 initialVel) {
     m_flags.setBit(eFlags::Position);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

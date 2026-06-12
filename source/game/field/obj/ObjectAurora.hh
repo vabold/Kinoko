@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectDrivable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectAurora : public ObjectDrivable {
 public:
@@ -84,4 +84,4 @@ private:
     static constexpr EGG::Vector3f COLLISION_SIZE = EGG::Vector3f(2000.0f, 2000.0f, 15000.0f);
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

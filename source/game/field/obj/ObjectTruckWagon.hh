@@ -4,7 +4,7 @@
 
 #include "game/field/StateManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief The individual minecarts that spawn from the @ref ObjectTruckWagon spawner.
 class ObjectTruckWagonCart final : public ObjectCollidable, public StateManager {
@@ -134,11 +134,11 @@ public:
     void loadRail() override {}
 
 private:
-    std::span<ObjectTruckWagonCart *> m_carts;
+    owning_span<ObjectTruckWagonCart *> m_carts;
     const s32 m_spawn2Frame;   ///< Frame that the second minecart in a cycle spawns
     const s32 m_cycleDuration; ///< Total duration of a cycle
     s32 m_cycleFrame;          ///< Current frame modulo cycle duration
     s32 m_curCartIdx;          ///< Index into @ref m_carts representing the next cart to spawn
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

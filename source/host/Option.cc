@@ -2,7 +2,7 @@
 
 #include <cstring>
 
-namespace Host::Option {
+namespace Kinoko::Host::Option {
 
 std::optional<EOption> CheckFlag(const char *arg) {
     ASSERT(arg);
@@ -54,4 +54,4 @@ std::optional<EOption> CheckFlag(const char *arg) {
     return std::nullopt;
 }
 
-} // namespace Host::Option
+} // namespace Kinoko::Host::Option

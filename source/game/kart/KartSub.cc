@@ -17,7 +17,7 @@
 
 #include <egg/math/Math.hh>
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 KartSub::KartSub() = default;
 
@@ -455,4 +455,4 @@ void KartSub::calcMovingWater() {
     }
 }
 
-} // namespace Kart
+} // namespace Kinoko::Kart

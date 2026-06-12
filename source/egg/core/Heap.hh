@@ -7,6 +7,8 @@
 #include <list>
 #include <new>
 
+namespace Kinoko {
+
 namespace Host {
 
 class Context;
@@ -136,11 +138,13 @@ protected:
 
 } // namespace EGG
 
+} // namespace Kinoko
+
 [[nodiscard]] void *operator new(size_t size);
 [[nodiscard]] void *operator new(size_t size, int align);
-[[nodiscard]] void *operator new(size_t size, EGG::Heap *heap, int align);
+[[nodiscard]] void *operator new(size_t size, Kinoko::EGG::Heap *heap, int align);
 [[nodiscard]] void *operator new[](size_t size);
 [[nodiscard]] void *operator new[](size_t size, int align);
-[[nodiscard]] void *operator new[](size_t size, EGG::Heap *heap, int align);
+[[nodiscard]] void *operator new[](size_t size, Kinoko::EGG::Heap *heap, int align);
 void operator delete(void *block) noexcept;
 void operator delete[](void *block) noexcept;

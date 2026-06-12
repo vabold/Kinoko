@@ -7,7 +7,7 @@
 
 #include "game/system/RaceManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8082CAD8}
 ObjectPylon::ObjectPylon(const System::MapdataGeoObj &params)
@@ -393,4 +393,4 @@ void ObjectPylon::calcComeBack() {
     }
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

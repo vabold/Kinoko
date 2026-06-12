@@ -3,7 +3,7 @@
 #include "game/kart/KartObjectProxy.hh"
 #include "game/kart/Status.hh"
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @brief Houses various flags and other variables to preserve the kart's state.
 /// @details Most notably, this class is the direct observer of the input state,
@@ -125,4 +125,4 @@ private:
     s16 m_trickableTimer;
 };
 
-} // namespace Kart
+} // namespace Kinoko::Kart

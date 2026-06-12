@@ -4,6 +4,8 @@
 
 #include <functional>
 
+namespace Kinoko {
+
 namespace Host {
 
 class Context;
@@ -94,3 +96,5 @@ private:
 };
 
 } // namespace System
+
+} // namespace Kinoko

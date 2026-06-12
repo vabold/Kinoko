@@ -8,7 +8,7 @@
 
 #include "game/system/RaceManager.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief The stationary portion of the Dry Dry Ruins pillars. It just acts as a wall.
 class ObjectPillarBase : public ObjectKCL {
@@ -101,4 +101,4 @@ private:
     s32 m_groundFrame;           ///< Frame the pillar has finished falling.
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

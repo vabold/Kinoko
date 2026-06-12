@@ -2,6 +2,8 @@
 
 #include "game/kart/KartObjectProxy.hh"
 
+namespace Kinoko {
+
 namespace Field {
 struct CollisionInfo;
 }
@@ -27,3 +29,5 @@ private:
 };
 
 } // namespace Kart
+
+} // namespace Kinoko

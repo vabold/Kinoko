@@ -2,7 +2,7 @@
 
 #include <Common.hh>
 
-namespace Field {
+namespace Kinoko::Field {
 
 enum class ObjectId {
     None = 0x0,
@@ -174,4 +174,4 @@ static constexpr bool IsObjectBlacklisted(u16 id) {
     }
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

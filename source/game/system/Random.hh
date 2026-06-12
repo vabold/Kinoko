@@ -4,7 +4,7 @@
 
 #include <Common.hh>
 
-namespace System {
+namespace Kinoko::System {
 
 class Random {
 public:
@@ -45,4 +45,4 @@ private:
     static constexpr f32 MUL = 1.0f / 4294967296.0f; // 1 / (2 ^ 32)
 };
 
-} // namespace System
+} // namespace Kinoko::System

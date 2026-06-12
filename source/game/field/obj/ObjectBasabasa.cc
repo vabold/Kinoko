@@ -6,11 +6,7 @@
 #include "game/system/RaceConfig.hh"
 #include "game/system/RaceManager.hh"
 
-namespace Field {
-
-/// @brief Scoped within the TU so that ObjectBasabasa can set and ObjectBasabasaDummy can access.
-static f32 s_initialX;
-static f32 s_initialY;
+namespace Kinoko::Field {
 
 /// @addr{0x806B5C84}
 ObjectBasabasaDummy::ObjectBasabasaDummy(const System::MapdataGeoObj &params)
@@ -30,10 +26,10 @@ void ObjectBasabasaDummy::init() {
 
     auto &rng = System::RaceManager::Instance()->random();
     rng.next();
-    f32 y = rng.getF32(s_initialY);
-    f32 x = rng.getF32(s_initialX);
+    f32 y = rng.getF32(ObjectBasabasa::initialYRange());
+    f32 x = rng.getF32(ObjectBasabasa::initialXRange());
 
-    m_initialPos = EGG::Vector3f(x - s_initialX * 0.5f, y, 0.0f);
+    m_initialPos = EGG::Vector3f(x - ObjectBasabasa::initialXRange() * 0.5f, y, 0.0f);
 
     m_nextStateId = 0;
 }
@@ -83,21 +79,19 @@ ObjectBasabasa::ObjectBasabasa(const System::MapdataGeoObj &params)
             1;
     u32 batCount = groupCount * m_batsPerGroup;
 
-    m_bats = std::span<ObjectBasabasaDummy *>(new ObjectBasabasaDummy *[batCount], batCount);
+    m_bats = owning_span<ObjectBasabasaDummy *>(batCount);
 
     for (auto *&bat : m_bats) {
         bat = new ObjectBasabasaDummy(params);
         bat->load();
     }
 
-    s_initialX = params.setting(3);
-    s_initialY = params.setting(4);
+    s_initialXRange = params.setting(3);
+    s_initialYRange = params.setting(4);
 }
 
 /// @addr{0x806B72F4}
-ObjectBasabasa::~ObjectBasabasa() {
-    delete[] m_bats.data();
-}
+ObjectBasabasa::~ObjectBasabasa() = default;
 
 /// @addr{0x806B7334}
 void ObjectBasabasa::init() {
@@ -134,4 +128,7 @@ void ObjectBasabasa::calc() {
     ++m_cycleTimer;
 }
 
-} // namespace Field
+f32 ObjectBasabasa::s_initialXRange;
+f32 ObjectBasabasa::s_initialYRange;
+
+} // namespace Kinoko::Field

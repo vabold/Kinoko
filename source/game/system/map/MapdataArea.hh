@@ -4,7 +4,7 @@
 
 #include <egg/math/Vector.hh>
 
-namespace System {
+namespace Kinoko::System {
 
 class MapdataPointInfo;
 
@@ -109,12 +109,12 @@ public:
     void sort();
 
     [[nodiscard]] MapdataAreaBase *getSorted(u16 i) const {
-        ASSERT(m_sortedEntries.data());
+        ASSERT(!m_sortedEntries.empty());
         return i < m_entryCount ? m_sortedEntries[i] : nullptr;
     }
 
 private:
-    std::span<MapdataAreaBase *> m_sortedEntries;
+    owning_span<MapdataAreaBase *> m_sortedEntries;
 };
 
-} // namespace System
+} // namespace Kinoko::System

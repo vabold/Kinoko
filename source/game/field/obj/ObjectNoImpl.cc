@@ -2,7 +2,7 @@
 
 #include "game/field/ObjectDirector.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 ObjectNoImpl::ObjectNoImpl(const System::MapdataGeoObj &params) : ObjectBase(params) {}
 
@@ -12,4 +12,4 @@ void ObjectNoImpl::load() {
     ObjectDirector::Instance()->addObjectNoImpl(this);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

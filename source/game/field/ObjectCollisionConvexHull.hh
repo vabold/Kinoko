@@ -2,7 +2,7 @@
 
 #include "game/field/ObjectCollisionBase.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief Smallest convex shape that encloses a given set of points.
 class ObjectCollisionConvexHull : public ObjectCollisionBase {
@@ -33,12 +33,12 @@ public:
 protected:
     ObjectCollisionConvexHull(size_t count);
 
-    std::span<EGG::Vector3f> m_points;
+    owning_span<EGG::Vector3f> m_points;
 
 private:
     const f32 m_initRadius;
-    std::span<EGG::Vector3f> m_worldPoints;
+    owning_span<EGG::Vector3f> m_worldPoints;
     f32 m_worldRadius;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

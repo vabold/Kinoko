@@ -5,7 +5,7 @@
 
 #include <ranges>
 
-namespace System {
+namespace Kinoko::System {
 
 /// @addr{0x805154E4}
 MapdataCheckPoint::MapdataCheckPoint(const SData *data)
@@ -240,4 +240,4 @@ void MapdataCheckPointAccessor::init() {
     m_finishLineCheckpointId = finishLineCheckpointId;
 }
 
-} // namespace System
+} // namespace Kinoko::System

@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectBelt.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief The conveyers outside of the factory on Toad's Factory.
 class ObjectBeltEasy final : public ObjectBelt {
@@ -20,4 +20,4 @@ private:
     }
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

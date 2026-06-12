@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectBelt.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief The conveyers in the first section of Toad's Factory.
 class ObjectBeltCrossing final : public ObjectBelt {
@@ -16,4 +16,4 @@ public:
     [[nodiscard]] bool isMoving(u32 variant, const EGG::Vector3f &pos) const override;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

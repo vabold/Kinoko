@@ -1,6 +1,6 @@
 #include "ObjectWoodboxWSub.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x8077E34C}
 ObjectWoodboxWSub::ObjectWoodboxWSub(const System::MapdataGeoObj &params) : ObjectWoodbox(params) {}
@@ -29,4 +29,4 @@ void ObjectWoodboxWSub::calcPosition() {
     m_flags.setBit(eFlags::Position);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

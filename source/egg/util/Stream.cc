@@ -1,6 +1,6 @@
 #include "Stream.hh"
 
-namespace EGG {
+namespace Kinoko::EGG {
 
 Stream::Stream() : m_endian(std::endian::big), m_index(0) {}
 
@@ -141,4 +141,4 @@ RamStream RamStream::split(u32 size) {
     return stream;
 }
 
-} // namespace EGG
+} // namespace Kinoko::EGG

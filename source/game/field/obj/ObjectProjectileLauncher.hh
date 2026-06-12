@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @brief Abstract class that moves along its own rail and throws projectiles.
 class ObjectProjectileLauncher : public ObjectCollidable {
@@ -22,4 +22,4 @@ public:
     virtual s16 launchPointIdx() = 0;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

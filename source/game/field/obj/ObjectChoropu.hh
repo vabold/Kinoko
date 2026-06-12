@@ -8,7 +8,7 @@
 
 #include <vector>
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectChoropuGround;
 class ObjectChoropuHoll;
@@ -46,7 +46,7 @@ private:
     void calcGroundObjs();
     [[nodiscard]] EGG::Matrix34f calcInterpolatedPose(f32 t) const;
 
-    std::span<ObjectChoropuGround *> m_groundObjs;
+    owning_span<ObjectChoropuGround *> m_groundObjs;
     ObjectChoropuHoll *m_objHoll;
     s16 m_startFrameOffset;
     u16 m_idleDuration;
@@ -142,4 +142,4 @@ private:
     static constexpr f32 RADIUS = 300.0f;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

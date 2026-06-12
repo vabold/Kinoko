@@ -6,7 +6,7 @@
 #include "game/kart/KartCollide.hh"
 #include "game/kart/KartObject.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectHwanwan : public ObjectCollidable, public StateManager {
     friend class ObjectHwanwanManager;
@@ -102,4 +102,4 @@ private:
     ObjectHwanwan *m_hwanwan;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

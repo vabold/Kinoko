@@ -6,6 +6,8 @@
 
 #include <vector>
 
+namespace Kinoko {
+
 namespace Host {
 
 class Context;
@@ -69,3 +71,5 @@ private:
 };
 
 } // namespace Field
+
+} // namespace Kinoko

@@ -3,7 +3,7 @@
 #include <egg/core/ExpHeap.hh>
 #include <egg/core/Scene.hh>
 
-namespace Scene {
+namespace Kinoko::Scene {
 
 /// @brief The parent scene for all other scenes.
 class RootScene final : public EGG::Scene {
@@ -24,4 +24,4 @@ private:
     EGG::ExpHeap::GroupSizeRecord m_groupSizeRecord;
 };
 
-} // namespace Scene
+} // namespace Kinoko::Scene

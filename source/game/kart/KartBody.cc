@@ -2,7 +2,7 @@
 
 #include <egg/math/Math.hh>
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @addr{0x8056C394}
 KartBody::KartBody(KartPhysics *physics) : m_physics(physics) {
@@ -96,4 +96,4 @@ EGG::Matrix34f KartBodyQuacker::wheelMatrix(u16 /* wheelIdx */) {
     return mat;
 }
 
-} // namespace Kart
+} // namespace Kinoko::Kart

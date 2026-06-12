@@ -3,7 +3,7 @@
 #include "game/field/obj/ObjectCollidable.hh"
 #include "game/field/obj/ObjectFireball.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectFireRing : public ObjectCollidable {
 public:
@@ -22,7 +22,7 @@ public:
     void createCollision() override {}
 
 private:
-    std::span<ObjectFireball *> m_fireballs;
+    owning_span<ObjectFireball *> m_fireballs;
     f32 m_angSpeed;
     f32 m_degAngle;
     EGG::Vector3f m_axis;
@@ -31,4 +31,4 @@ private:
     f32 m_phase;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

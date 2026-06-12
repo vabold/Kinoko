@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectVolcanoBall;
 
@@ -30,11 +30,11 @@ public:
     void loadRail() override {}
 
 private:
-    std::span<ObjectVolcanoBall *> m_balls;
+    owning_span<ObjectVolcanoBall *> m_balls;
     const f32 m_initDelay;
     const f32 m_cycleDuration;
     u32 m_currBallIdx;
     bool m_active; ///< False when the volcano is dormant, true after @ref m_initDelay
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

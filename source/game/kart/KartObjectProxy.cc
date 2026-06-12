@@ -16,7 +16,7 @@
 
 #include <algorithm>
 
-namespace Kart {
+namespace Kinoko::Kart {
 
 /// @addr{0x8059018C}
 KartObjectProxy::KartObjectProxy() : m_accessor(nullptr) {
@@ -438,6 +438,25 @@ const EGG::Vector3f &KartObjectProxy::wheelEdgePos(u16 idx) const {
     return tirePhysics(idx)->wheelEdgePos();
 }
 
+/// @addr{0x805909C8}
+f32 KartObjectProxy::cameraDistY() const {
+    if (isBike()) {
+        return param()->bikeDisp().m_cameraDistY;
+    } else {
+        return param()->kartDisp().m_cameraDistY;
+    }
+}
+
+/// @addr{0x805909F4}
+s32 KartObjectProxy::hopStickX() const {
+    return move()->hopStickX();
+}
+
+/// @addr{0x80590A10}
+KartParam::Stats::DriftType KartObjectProxy::vehicleType() const {
+    return param()->stats().driftType;
+}
+
 /// @addr{0x805901D0}
 void KartObjectProxy::apply(size_t idx) {
     m_accessor = KartObjectManager::Instance()->object(idx)->accessor();
@@ -454,4 +473,4 @@ void KartObjectProxy::ApplyAll(const KartAccessor *pointers) {
 
 std::list<KartObjectProxy *> KartObjectProxy::s_proxyList; ///< @addr{0x809C1900}
 
-} // namespace Kart
+} // namespace Kinoko::Kart

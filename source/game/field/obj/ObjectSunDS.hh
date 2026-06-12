@@ -3,7 +3,7 @@
 #include "game/field/StateManager.hh"
 #include "game/field/obj/ObjectProjectileLauncher.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectSunDS : public ObjectProjectileLauncher, public StateManager {
 public:
@@ -55,4 +55,4 @@ private:
     }};
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

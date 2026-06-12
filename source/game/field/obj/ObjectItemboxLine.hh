@@ -2,7 +2,7 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectItemboxPress;
 
@@ -22,9 +22,9 @@ public:
     }
 
 private:
-    std::span<ObjectItemboxPress *> m_press;
+    owning_span<ObjectItemboxPress *> m_press;
     u32 m_stompCooldown; ///< Number of frames in between stomps
     u32 m_curPressIdx;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

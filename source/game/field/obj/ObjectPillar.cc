@@ -3,7 +3,7 @@
 
 #include "game/field/ObjectDirector.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{Inlined in 0x807FED80}
 ObjectPillarBase::ObjectPillarBase(const System::MapdataGeoObj &params) : ObjectKCL(params) {}
@@ -115,4 +115,4 @@ f32 ObjectPillar::calcRot(s32 frame) const {
     return std::min(m_targetRotation, m_initRot + STEP * static_cast<f32>(frame * frame * frame));
 }
 
-} // namespace Field
+} // namespace Kinoko::Field

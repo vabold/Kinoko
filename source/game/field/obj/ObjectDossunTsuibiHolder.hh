@@ -4,7 +4,7 @@
 
 #include <array>
 
-namespace Field {
+namespace Kinoko::Field {
 
 class ObjectDossunTsuibi;
 
@@ -98,4 +98,4 @@ private:
     static constexpr f32 DOSSUN_POS_OFFSET = 500.0f;
 };
 
-} // namespace Field
+} // namespace Kinoko::Field

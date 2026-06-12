@@ -6,7 +6,7 @@
 
 #include <egg/math/Vector.hh>
 
-namespace System {
+namespace Kinoko::System {
 
 class MapdataCannonPoint {
 public:
@@ -54,4 +54,4 @@ public:
     ~MapdataCannonPointAccessor() override;
 };
 
-} // namespace System
+} // namespace Kinoko::System

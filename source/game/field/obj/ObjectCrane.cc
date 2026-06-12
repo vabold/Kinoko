@@ -1,6 +1,6 @@
 #include "ObjectCrane.hh"
 
-namespace Field {
+namespace Kinoko::Field {
 
 /// @addr{0x807FE658}
 ObjectCrane::ObjectCrane(const System::MapdataGeoObj &params)
@@ -45,4 +45,4 @@ void ObjectCrane::calc() {
     setMovingObjVel(m_pos - prevPos);
 }
 
-} // namespace Field
+} // namespace Kinoko::Field
