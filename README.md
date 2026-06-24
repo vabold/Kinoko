@@ -55,19 +55,30 @@ cd out
 ./kinoko test -s testCases.bin
 ```
 
-## Replaying a Ghost
+## Running Kinoko
 
-The simplest use of Kinoko is to just determine whether or not a ghost finishes the race with the timer matching what is present in the ghost `.rkg` file header. To replay a ghost, you can run:
+Kinoko currently has two different "modes" it can operate under:
+- Replay Mode
+- Testcase Mode
 
-```
-./kinoko replay -g pathTo.rkg
-```
+---
 
-## Creating New Test Cases
+### Replay Mode
+`./kinoko replay (-g | -G | --ghost) relativePathToGhost.rkg`
 
+This mode simply takes in a time trial ghost file and attempts to play it back. The return code will indicate whether the playback succeeded or not. The following scenarios and their respective return codes are possible:
+- The ghost finished the race and the timer matches the RKG: `0` (success)
+- The ghost finished the race but the timer did not match the RKG: `1` (failure)
+- The ghost playback exceeded 10 minutes: `1` (failure)*
+
+\* If a desync occurs, it is most likely to result in the timer exceeding 10 minutes.
+
+---
+
+### Testcase Mode
 When a ghost doesn't play back correctly, we want to be able to capture the exact frame that a desynchronization occurs, as well as gain insight as to what variables desynced. There are two ways to evaluate test cases in Kinoko. Both approaches require generating a `.krkg` file.
 
-### Create KRKG
+#### Create KRKG
 
 Test cases use a custom `.krkg` file format, which stores relevant in-game memory values to validate accuracy on every frame of a race. This file is generated using a custom version of MKW-SP.
 
