@@ -114,11 +114,19 @@ jobs:
           name: Kinoko output
       - name: Calculate progression
         run: python3 tools/progress.py results.txt
-      - name: Install graphviz
-        run: sudo apt install graphviz
       - name: Create doxygen dir
         run: mkdir -p out/website/docs
-      - uses: mattnotmitt/doxygen-action@v1
+
+      - name: Generate documentation
+        run: |
+          sudo apt-get install -y graphviz
+          curl https://www.doxygen.nl/files/doxygen-1.17.0.linux.bin.tar.gz --output doxygen-1.17.0.linux.bin.tar.gz
+          tar xzf doxygen-1.17.0.linux.bin.tar.gz
+          cd doxygen-1.17.0
+          sudo make install
+          cd ..
+          doxygen
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:
