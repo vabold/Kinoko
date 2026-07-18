@@ -382,13 +382,13 @@ void KartSub::updateSuspOvertravel(const EGG::Vector3f &suspOvertravel) {
 void KartSub::tryEndHWG() {
     auto &status = KartObjectProxy::status();
 
-    if (status.onBit(eStatus::UnlockRotation)) {
+    if (status.onBit(eStatus::SoftWallUnlockRotation)) {
         if (EGG::Mathf::abs(move()->speed()) > 15.0f ||
                 status.onBit(eStatus::AirtimeOver20, eStatus::AllWheelsCollision)) {
-            status.resetBit(eStatus::UnlockRotation);
+            status.resetBit(eStatus::SoftWallUnlockRotation);
         } else if (status.onBit(eStatus::TouchingGround)) {
             if (EGG::Mathf::abs(componentXAxis().dot(EGG::Vector3f::ey)) > 0.8f) {
-                status.resetBit(eStatus::UnlockRotation);
+                status.resetBit(eStatus::SoftWallUnlockRotation);
             }
         }
     }
@@ -401,7 +401,7 @@ void KartSub::tryEndHWG() {
     }
 
     if (status.offBit(eStatus::InAction)) {
-        dynamics()->setForceUpright(status.offBit(eStatus::UnlockRotation));
+        dynamics()->setForceUpright(status.offBit(eStatus::SoftWallUnlockRotation));
     }
 }
 

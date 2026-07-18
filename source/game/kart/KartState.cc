@@ -167,7 +167,7 @@ void KartState::calcCollisions() {
                     static_cast<f32>(collide()->numFloorOnlyCollisions());
 
             if (avgSoftWallColHeight - avgFloorOnlyColHeight >= 40.0f) {
-                m_status.resetBit(eStatus::UnlockRotation);
+                m_status.resetBit(eStatus::SoftWallUnlockRotation);
             } else {
                 softWallCollision = true;
             }
@@ -280,7 +280,7 @@ void KartState::calcCollisions() {
         m_softWallSpeed = wallNrm;
         m_softWallSpeed.normalise();
         if (effectiveSoftWallCount > 0 && m_status.offBit(eStatus::Hop)) {
-            m_status.setBit(eStatus::UnlockRotation);
+            m_status.setBit(eStatus::SoftWallUnlockRotation);
         }
 
         if (hwg) {

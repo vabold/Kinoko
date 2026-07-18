@@ -1687,7 +1687,7 @@ void KartMove::calcStandstillBoostRot() {
         if (System::RaceManager::Instance()->stage() == System::RaceManager::Stage::Countdown) {
             next = 0.015f * -state()->startBoostCharge();
         } else if (status.offBit(eStatus::ChargingSSMT)) {
-            if (status.offBit(eStatus::JumpPad, eStatus::RampBoost, eStatus::UnlockRotation)) {
+            if (status.offBit(eStatus::JumpPad, eStatus::RampBoost, eStatus::SoftWallUnlockRotation)) {
                 f32 speedDiff = m_lastSpeed - m_speed;
                 scalar = std::min(3.0f, std::max(speedDiff, -3.0f));
 
@@ -1848,7 +1848,7 @@ void KartMove::calcVehicleRotation(f32 turn) {
     f32 tiltMagnitude = 0.0f;
     auto &status = KartObjectProxy::status();
 
-    if (status.offBit(eStatus::InAction, eStatus::UnlockRotation) &&
+    if (status.offBit(eStatus::InAction, eStatus::SoftWallUnlockRotation) &&
             status.onBit(eStatus::AnyWheelCollision)) {
         EGG::Vector3f front = componentZAxis();
         front = front.perpInPlane(m_up, true);
@@ -2537,7 +2537,7 @@ void KartMoveBike::calcVehicleRotation(f32 turn) {
 
     if (status.onBit(eStatus::BeforeRespawn, eStatus::InAction, eStatus::Wheelie,
                 eStatus::OverZipper, eStatus::RejectRoadTrigger, eStatus::AirtimeOver20,
-                eStatus::UnlockRotation, eStatus::SoftWallPush, eStatus::HWG,
+                eStatus::SoftWallUnlockRotation, eStatus::SoftWallPush, eStatus::HWG,
                 eStatus::CannonStart, eStatus::InCannon)) {
         m_leanRot *= m_turningParams->leanRotDecayFactor;
     } else if (!state()->isDrifting()) {
