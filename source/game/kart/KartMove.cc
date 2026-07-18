@@ -1347,8 +1347,7 @@ void KartMove::calcVehicleSpeed() {
                         status.onBit(eStatus::HalfPipeRamp) ? 5.0f : calcVehicleAcceleration();
             } else {
                 if (status.offBit(eStatus::Brake) ||
-                        status.onBit(eStatus::DisableBackwardsAccel,
-                                eStatus::SoftWallPush)) {
+                        status.onBit(eStatus::DisableBackwardsAccel, eStatus::SoftWallPush)) {
                     m_speed *= m_speed > 0.0f ? 0.98f : 0.95f;
                 } else if (m_drivingDirection == DrivingDirection::Braking) {
                     m_acceleration = -1.5f;
@@ -1687,7 +1686,8 @@ void KartMove::calcStandstillBoostRot() {
         if (System::RaceManager::Instance()->stage() == System::RaceManager::Stage::Countdown) {
             next = 0.015f * -state()->startBoostCharge();
         } else if (status.offBit(eStatus::ChargingSSMT)) {
-            if (status.offBit(eStatus::JumpPad, eStatus::RampBoost, eStatus::SoftWallUnlockRotation)) {
+            if (status.offBit(eStatus::JumpPad, eStatus::RampBoost,
+                        eStatus::SoftWallUnlockRotation)) {
                 f32 speedDiff = m_lastSpeed - m_speed;
                 scalar = std::min(3.0f, std::max(speedDiff, -3.0f));
 
