@@ -80,10 +80,10 @@ enum class eStatus {
     JumpPadDisableYsusForce = 86,
     HalfpipeMidair = 87,
 
-    UNK2 = 97,
-    SomethingWallCollision = 99,
-    SoftWallDrift = 100,
-    HWG = 101, ///< Set when "Horizontal Wall Glitch" is active.
+    SoftWallSuspension = 97,      ///< Changes wheel physics after touching a soft wall.
+    SoftWallPush = 99,            ///< Tracks whether we are being pushed by a soft wall or HWG.
+    SoftWallUnlockRotation = 100, ///< Set when we are in "Barrel Roll" state.
+    HWG = 101,                    ///< Set when "Horizontal Wall Glitch" is active.
     AfterCannon = 102,
     ActionMidZipper = 103,  ///< Set when we enter an action while mid-air from a zipper.
     ChargeStartBoost = 104, ///< Like @ref m_bAccelerate but during countdown.

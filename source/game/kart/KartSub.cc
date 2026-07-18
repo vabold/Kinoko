@@ -195,7 +195,7 @@ void KartSub::calcPass1() {
 
     auto &status = KartObjectProxy::status();
 
-    if (status.onBit(eStatus::SomethingWallCollision)) {
+    if (status.onBit(eStatus::SoftWallPush)) {
         const EGG::Vector3f &softWallSpeed = state()->softWallSpeed();
         f32 speedFactor = 5.0f;
         EGG::Vector3f effectiveSpeed;
@@ -382,18 +382,18 @@ void KartSub::updateSuspOvertravel(const EGG::Vector3f &suspOvertravel) {
 void KartSub::tryEndHWG() {
     auto &status = KartObjectProxy::status();
 
-    if (status.onBit(eStatus::SoftWallDrift)) {
+    if (status.onBit(eStatus::SoftWallUnlockRotation)) {
         if (EGG::Mathf::abs(move()->speed()) > 15.0f ||
                 status.onBit(eStatus::AirtimeOver20, eStatus::AllWheelsCollision)) {
-            status.resetBit(eStatus::SoftWallDrift);
+            status.resetBit(eStatus::SoftWallUnlockRotation);
         } else if (status.onBit(eStatus::TouchingGround)) {
             if (EGG::Mathf::abs(componentXAxis().dot(EGG::Vector3f::ey)) > 0.8f) {
-                status.resetBit(eStatus::SoftWallDrift);
+                status.resetBit(eStatus::SoftWallUnlockRotation);
             }
         }
     }
 
-    if (status.onBit(eStatus::HWG) && status.offBit(eStatus::SomethingWallCollision)) {
+    if (status.onBit(eStatus::HWG) && status.offBit(eStatus::SoftWallPush)) {
         if (status.offBit(eStatus::WallCollision, eStatus::Wall3Collision) ||
                 status.onBit(eStatus::AllWheelsCollision)) {
             status.resetBit(eStatus::HWG);
@@ -401,7 +401,7 @@ void KartSub::tryEndHWG() {
     }
 
     if (status.offBit(eStatus::InAction)) {
-        dynamics()->setForceUpright(status.offBit(eStatus::SoftWallDrift));
+        dynamics()->setForceUpright(status.offBit(eStatus::SoftWallUnlockRotation));
     }
 }
 

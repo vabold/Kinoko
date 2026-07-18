@@ -184,20 +184,20 @@ public:
         return m_movement;
     }
 
-    [[nodiscard]] f32 suspBottomHeightSoftWall() const {
-        return m_suspBottomHeightSoftWall;
+    [[nodiscard]] f32 sumHitboxBottomHeightSoftWall() const {
+        return m_sumHitboxBottomHeightSoftWall;
     }
 
-    [[nodiscard]] u16 someSoftWallTimer() const {
-        return m_someSoftWallTimer;
+    [[nodiscard]] u16 numSoftWallCollisions() const {
+        return m_numSoftWallCollisions;
     }
 
-    [[nodiscard]] f32 suspBottomHeightNonSoftWall() const {
-        return m_suspBottomHeightNonSoftWall;
+    [[nodiscard]] f32 sumHitboxBottomHeightFloorOnly() const {
+        return m_sumHitboxBottomHeightFloorOnly;
     }
 
-    [[nodiscard]] u16 someNonSoftWallTimer() const {
-        return m_someNonSoftWallTimer;
+    [[nodiscard]] u16 numFloorOnlyCollisions() const {
+        return m_numFloorOnlyCollisions;
     }
 
     [[nodiscard]] f32 colPerpendicularity() const {
@@ -219,10 +219,10 @@ private:
     s16 m_solidOobTimer;
     s16 m_shrinkTimer;
     f32 m_smoothedBack; // 0x50
-    f32 m_suspBottomHeightSoftWall;
-    u16 m_someSoftWallTimer;
-    f32 m_suspBottomHeightNonSoftWall;
-    u16 m_someNonSoftWallTimer;
+    f32 m_sumHitboxBottomHeightSoftWall;
+    u16 m_numSoftWallCollisions;
+    f32 m_sumHitboxBottomHeightFloorOnly;
+    u16 m_numFloorOnlyCollisions;
     s16 m_poleAngVelTimer;
     f32 m_poleYaw;
     f32 m_colPerpendicularity;
