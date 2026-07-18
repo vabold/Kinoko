@@ -33,10 +33,10 @@ void KartCollide::init() {
     m_solidOobTimer = 0;
     m_shrinkTimer = 0;
     m_smoothedBack = 0.0f;
-    m_suspBottomHeightNonSoftWall = 0.0f;
-    m_suspBottomHeightSoftWall = 0.0f;
-    m_someNonSoftWallTimer = 0;
-    m_someSoftWallTimer = 0;
+    m_sumHitboxBottomHeightFloorOnly = 0.0f;
+    m_sumHitboxBottomHeightSoftWall = 0.0f;
+    m_numFloorOnlyCollisions = 0;
+    m_numSoftWallCollisions = 0;
     m_poleAngVelTimer = 0;
     m_poleYaw = 0.0f;
     m_colPerpendicularity = 0.0f;
@@ -275,13 +275,13 @@ void KartCollide::calcFloorEffect() {
         m_surfaceFlags.setBit(eSurfaceFlags::Offroad, eSurfaceFlags::GroundBoostPanelOrRamp);
     }
 
-    m_suspBottomHeightNonSoftWall = 0.0f;
+    m_sumHitboxBottomHeightFloorOnly = 0.0f;
     m_surfaceFlags.resetBit(eSurfaceFlags::Wall, eSurfaceFlags::SolidOOB, eSurfaceFlags::BoostRamp,
             eSurfaceFlags::Offroad, eSurfaceFlags::Trickable, eSurfaceFlags::NotTrickable,
             eSurfaceFlags::StopHalfPipeState);
-    m_suspBottomHeightSoftWall = 0.0f;
-    m_someNonSoftWallTimer = 0;
-    m_someSoftWallTimer = 0;
+    m_sumHitboxBottomHeightSoftWall = 0.0f;
+    m_numFloorOnlyCollisions = 0;
+    m_numSoftWallCollisions = 0;
 
     Field::KCLTypeMask mask = KCL_NONE;
     calcTriggers(&mask, pos(), false);
@@ -716,8 +716,8 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
     constexpr Field::KCLTypeMask BOOST_RAMP_MASK = KCL_TYPE_BIT(COL_TYPE_BOOST_RAMP);
 
     if (collisionData.bSoftWall) {
-        ++m_someSoftWallTimer;
-        m_suspBottomHeightSoftWall += hitbox.worldPos().y - hitbox.radius();
+        ++m_numSoftWallCollisions;
+        m_sumHitboxBottomHeightSoftWall += hitbox.worldPos().y - hitbox.radius();
     }
 
     if (!(*maskOut & KCL_TYPE_FLOOR)) {
@@ -772,8 +772,8 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
     }
 
     if (!collisionData.bSoftWall) {
-        ++m_someNonSoftWallTimer;
-        m_suspBottomHeightNonSoftWall += hitbox.worldPos().y - hitbox.radius();
+        ++m_numFloorOnlyCollisions;
+        m_sumHitboxBottomHeightFloorOnly += hitbox.worldPos().y - hitbox.radius();
     }
 
     if (*maskOut & KCL_TYPE_BIT(COL_TYPE_STICKY_ROAD)) {
