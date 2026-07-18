@@ -81,7 +81,7 @@ enum class eStatus {
     HalfpipeMidair = 87,
 
     SoftWallSuspension = 97, ///< Influences wheel physics after touching a soft wall or triggering HWG.
-    SoftWallPush = 99,       ///< Tracks whether we are being pushed by a soft wall or HWG. Also disables reversing.
+    SoftWallPush = 99,       ///< Tracks whether we are being pushed by a soft wall or HWG. Also disables backwards accel.
     UnlockRotation = 100,    ///< Tracks whether we are in "Barrel Roll" state.
     HWG = 101,               ///< Set when "Horizontal Wall Glitch" is active.
     AfterCannon = 102,
