@@ -150,7 +150,7 @@ void KartState::calcCollisions() {
 
     if (m_hwgTimer > 0) {
         if (--m_hwgTimer == 0) {
-            m_status.resetBit(eStatus::UNK2, eStatus::SomethingWallCollision);
+            m_status.resetBit(eStatus::SoftWallSuspension, eStatus::SoftWallPush);
         }
     }
 
@@ -167,7 +167,7 @@ void KartState::calcCollisions() {
                     static_cast<f32>(collide()->someNonSoftWallTimer());
 
             if (softSusp - nonSusp >= 40.0f) {
-                m_status.resetBit(eStatus::SoftWallDrift);
+                m_status.resetBit(eStatus::UnlockRotation);
             } else {
                 softWallCollision = true;
             }
@@ -276,11 +276,11 @@ void KartState::calcCollisions() {
     }
 
     if (softWallCount > 0 || hwg) {
-        m_status.setBit(eStatus::UNK2);
+        m_status.setBit(eStatus::SoftWallSuspension);
         m_softWallSpeed = wallNrm;
         m_softWallSpeed.normalise();
         if (softWallCount > 0 && m_status.offBit(eStatus::Hop)) {
-            m_status.setBit(eStatus::SoftWallDrift);
+            m_status.setBit(eStatus::UnlockRotation);
         }
 
         if (hwg) {
@@ -288,7 +288,7 @@ void KartState::calcCollisions() {
         }
 
         if (hitboxGroupSoftWallCollision || hwg || isBike()) {
-            m_status.setBit(eStatus::SomethingWallCollision);
+            m_status.setBit(eStatus::SoftWallPush);
             m_hwgTimer = 10;
 
             if (hwg) {

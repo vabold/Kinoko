@@ -1320,7 +1320,7 @@ void KartMove::calcVehicleSpeed() {
         return;
     }
 
-    if ((status.onAllBit(eStatus::SomethingWallCollision, eStatus::TouchingGround) &&
+    if ((status.onAllBit(eStatus::SoftWallPush, eStatus::TouchingGround) &&
                 status.offBit(eStatus::AnyWheelCollision)) ||
             status.offBit(eStatus::TouchingGround) ||
             status.onBit(eStatus::DisableAcceleration, eStatus::ChargingSSMT)) {
@@ -1348,7 +1348,7 @@ void KartMove::calcVehicleSpeed() {
             } else {
                 if (status.offBit(eStatus::Brake) ||
                         status.onBit(eStatus::DisableBackwardsAccel,
-                                eStatus::SomethingWallCollision)) {
+                                eStatus::SoftWallPush)) {
                     m_speed *= m_speed > 0.0f ? 0.98f : 0.95f;
                 } else if (m_drivingDirection == DrivingDirection::Braking) {
                     m_acceleration = -1.5f;
@@ -1687,7 +1687,7 @@ void KartMove::calcStandstillBoostRot() {
         if (System::RaceManager::Instance()->stage() == System::RaceManager::Stage::Countdown) {
             next = 0.015f * -state()->startBoostCharge();
         } else if (status.offBit(eStatus::ChargingSSMT)) {
-            if (status.offBit(eStatus::JumpPad, eStatus::RampBoost, eStatus::SoftWallDrift)) {
+            if (status.offBit(eStatus::JumpPad, eStatus::RampBoost, eStatus::UnlockRotation)) {
                 f32 speedDiff = m_lastSpeed - m_speed;
                 scalar = std::min(3.0f, std::max(speedDiff, -3.0f));
 
@@ -1848,7 +1848,7 @@ void KartMove::calcVehicleRotation(f32 turn) {
     f32 tiltMagnitude = 0.0f;
     auto &status = KartObjectProxy::status();
 
-    if (status.offBit(eStatus::InAction, eStatus::SoftWallDrift) &&
+    if (status.offBit(eStatus::InAction, eStatus::UnlockRotation) &&
             status.onBit(eStatus::AnyWheelCollision)) {
         EGG::Vector3f front = componentZAxis();
         front = front.perpInPlane(m_up, true);
@@ -2537,7 +2537,7 @@ void KartMoveBike::calcVehicleRotation(f32 turn) {
 
     if (status.onBit(eStatus::BeforeRespawn, eStatus::InAction, eStatus::Wheelie,
                 eStatus::OverZipper, eStatus::RejectRoadTrigger, eStatus::AirtimeOver20,
-                eStatus::SoftWallDrift, eStatus::SomethingWallCollision, eStatus::HWG,
+                eStatus::UnlockRotation, eStatus::SoftWallPush, eStatus::HWG,
                 eStatus::CannonStart, eStatus::InCannon)) {
         m_leanRot *= m_turningParams->leanRotDecayFactor;
     } else if (!state()->isDrifting()) {

@@ -86,7 +86,7 @@ void WheelPhysics::updateCollision(const EGG::Vector3f &bottom, const EGG::Vecto
             m_hitboxGroup->collisionData().reset();
         } else {
             m_hitboxGroup->setHitboxScale(move()->totalScale());
-            if (status.onBit(eStatus::UNK2)) {
+            if (status.onBit(eStatus::SoftWallSuspension)) {
                 m_hitboxGroup->hitbox(0).setLastPos(dynamics()->pos());
             }
 
@@ -122,7 +122,7 @@ void WheelPhysics::updateCollision(const EGG::Vector3f &bottom, const EGG::Vecto
 /// @addr{0x80599DC0}
 void WheelPhysics::calcSuspension(const EGG::Vector3f &forward) {
     f32 rate =
-            status().onBit(eStatus::SomethingWallCollision) ? 0.01f : collide()->floorMomentRate();
+            status().onBit(eStatus::SoftWallPush) ? 0.01f : collide()->floorMomentRate();
 
     collide()->applySomeFloorMoment(0.1f, rate, m_hitboxGroup, forward, move()->dir(), m_speed,
             true, true, status().offBit(eStatus::LargeFlipHit, eStatus::WheelieRot));
