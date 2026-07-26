@@ -29,7 +29,8 @@ protected:
     StateManager(void *obj, const std::span<const StateManagerEntry> &entries)
         : m_currentStateId(0), m_nextStateId(-1), m_currentFrame(0), m_entries(entries),
           m_obj(obj) {
-        m_entryIds = std::span(new u16[m_entries.size()], m_entries.size());
+        m_entryIds = std::span(static_cast<u16 *>(EGG::egg_alloc(m_entries.size() * sizeof(u16))),
+                m_entries.size());
 
         // The base game initializes all entries to 0xffff, possibly to avoid an uninitialized value
         memset(m_entryIds.data(), 0xff, m_entryIds.size());
@@ -40,7 +41,7 @@ protected:
     }
 
     virtual ~StateManager() {
-        delete[] m_entryIds.data();
+        EGG::egg_free(m_entryIds.data());
     }
 
     void calc() {

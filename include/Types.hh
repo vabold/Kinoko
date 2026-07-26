@@ -2,6 +2,8 @@
 
 #include <Logger.hh>
 
+#include <egg/core/Heap.hh>
+
 #include <cstdint>
 #include <span>
 #include <type_traits>
@@ -32,18 +34,19 @@ public:
     owning_span() : m_data(nullptr), m_size(0) {}
 
     /// @brief Allocates a buffer of T elements. Does not initialize any elements.
-    owning_span(size_t count) : m_data(new T[count]), m_size(count) {}
+    owning_span(size_t count) : m_data(EGG::egg_new_array<T>(count)), m_size(count) {}
 
     /// @brief Performs a deep copy from a std::span of const T
     /// @details Will compile to a memcpy for trivially copyable types
-    owning_span(const std::span<const T> &span) : m_data(new T[span.size()]), m_size(span.size()) {
+    owning_span(const std::span<const T> &span)
+        : m_data(EGG::egg_new_array<T>(span.size())), m_size(span.size()) {
         std::copy(span.begin(), span.end(), m_data);
     }
 
     /// @brief Copy constructor
     /// @details Performs a deep copy
     owning_span(const owning_span &rhs) : m_size(rhs.m_size) {
-        m_data = new T[m_size];
+        m_data = EGG::egg_new_array<T>(m_size);
         std::copy(rhs.begin(), rhs.end(), m_data);
     }
 
@@ -61,9 +64,9 @@ public:
     /// @details Deletes the existing buffer and performs a deep copy
     owning_span &operator=(const owning_span &rhs) {
         if (this != &rhs) {
-            delete[] m_data;
+            EGG::egg_delete_array(m_data, m_size);
             m_size = rhs.m_size;
-            m_data = new T[m_size];
+            m_data = EGG::egg_new_array<T>(m_size);
             std::copy(rhs.begin(), rhs.end(), m_data);
         }
 
@@ -74,7 +77,7 @@ public:
     /// @details Transfers ownership of the buffer and leaves rhs in an invalid state
     owning_span &operator=(owning_span &&rhs) {
         if (this != &rhs) {
-            delete[] m_data;
+            EGG::egg_delete_array(m_data, m_size);
             m_data = rhs.m_data;
             rhs.m_data = nullptr;
             m_size = rhs.m_size;
@@ -86,7 +89,7 @@ public:
 
     /// @brief Destroys the underlying buffer on teardown
     ~owning_span() {
-        delete[] m_data;
+        EGG::egg_delete_array(m_data, m_size);
     }
 
     /// @brief Indexes into the underlying buffer

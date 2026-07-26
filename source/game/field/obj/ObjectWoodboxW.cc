@@ -19,7 +19,7 @@ ObjectWoodboxW::ObjectWoodboxW(const System::MapdataGeoObj &params) : ObjectColl
     m_boxes = owning_span<ObjectWoodboxWSub *>(boxCount);
 
     for (auto *&box : m_boxes) {
-        box = new ObjectWoodboxWSub(params);
+        box = EGG::egg_new<ObjectWoodboxWSub>(params);
         box->load();
     }
 }

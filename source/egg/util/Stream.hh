@@ -2,8 +2,6 @@
 
 #include <Common.hh>
 
-#include <string>
-
 namespace Kinoko::EGG {
 
 /// @brief A stream of data, abstracted to allow for continuous seeking.
@@ -101,7 +99,7 @@ public:
         return m_index > m_size;
     }
 
-    [[nodiscard]] std::string read_string();
+    [[nodiscard]] const char *read_string();
     [[nodiscard]] RamStream split(u32 size);
     void setBufferAndSize(void *buffer, u32 size);
 

@@ -52,16 +52,16 @@ KartMove::KartMove() : m_smoothedUp(EGG::Vector3f::ey), m_scale(1.0f, 1.0f, 1.0f
 
 /// @addr{0x80587B78}
 KartMove::~KartMove() {
-    delete m_jump;
-    delete m_halfPipe;
-    delete m_kartScale;
+    EGG::egg_delete(m_jump);
+    EGG::egg_delete(m_halfPipe);
+    EGG::egg_delete(m_kartScale);
 }
 
 /// @addr{0x8057821C}
 void KartMove::createSubsystems(const KartParam::Stats &stats) {
-    m_jump = new KartJump(this);
-    m_halfPipe = new KartHalfPipe;
-    m_kartScale = new KartScale(stats);
+    m_jump = EGG::egg_new<KartJump>(this);
+    m_halfPipe = EGG::egg_new<KartHalfPipe>();
+    m_kartScale = EGG::egg_new<KartScale>(stats);
 }
 
 /// @stage All
@@ -2501,9 +2501,9 @@ void KartMoveBike::cancelWheelie() {
 
 /// @addr{0x80587BB8}
 void KartMoveBike::createSubsystems(const KartParam::Stats &stats) {
-    m_jump = new KartJumpBike(this);
-    m_halfPipe = new KartHalfPipe;
-    m_kartScale = new KartScale(stats);
+    m_jump = EGG::egg_new<KartJumpBike>(this);
+    m_halfPipe = EGG::egg_new<KartHalfPipe>();
+    m_kartScale = EGG::egg_new<KartScale>(stats);
 }
 
 /// @stage All

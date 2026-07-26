@@ -11,7 +11,7 @@ ObjectFirebar::ObjectFirebar(const System::MapdataGeoObj &params) : ObjectCollid
     m_fireballs = owning_span<ObjectFireball *>(fireballCount);
 
     for (size_t i = 0; i < fireballCount; ++i) {
-        m_fireballs[i] = new ObjectFireball(params);
+        m_fireballs[i] = EGG::egg_new<ObjectFireball>(params);
         m_fireballs[i]->load();
 
         f32 ring = 1.0f + static_cast<f32>(i / m_spokes);

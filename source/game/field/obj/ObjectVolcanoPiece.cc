@@ -17,8 +17,8 @@ ObjectVolcanoPiece::ObjectVolcanoPiece(const System::MapdataGeoObj &params)
 
 /// @addr{0x80803DA8}
 ObjectVolcanoPiece::~ObjectVolcanoPiece() {
-    delete m_colMgrB;
-    delete m_colMgrC;
+    EGG::egg_delete(m_colMgrB);
+    EGG::egg_delete(m_colMgrC);
 }
 
 /// @addr{0x80819400}
@@ -43,7 +43,7 @@ void ObjectVolcanoPiece::createCollision() {
             System::ArchiveId::Course);
 
     if (file) {
-        m_colMgrB = new ObjColMgr(file);
+        m_colMgrB = EGG::egg_new<ObjColMgr>(file);
     }
 
     snprintf(filepath, sizeof(filepath), "%sc.kcl", getKclName());
@@ -51,7 +51,7 @@ void ObjectVolcanoPiece::createCollision() {
             System::ArchiveId::Course);
 
     if (file) {
-        m_colMgrC = new ObjColMgr(file);
+        m_colMgrC = EGG::egg_new<ObjColMgr>(file);
     }
 
     EGG::Matrix34f rtMat;

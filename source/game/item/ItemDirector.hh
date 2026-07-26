@@ -39,10 +39,10 @@ public:
         return s_instance;
     }
 
-private:
     ItemDirector();
     ~ItemDirector() override;
 
+private:
     owning_span<KartItem> m_karts;
 
     static ItemDirector *s_instance; ///< @addr{0x809C3618}

@@ -7,7 +7,7 @@ ObjectShip64::ObjectShip64(const System::MapdataGeoObj &params) : ObjectCollidab
 
 /// @addr{0x80765DB0}
 ObjectShip64::~ObjectShip64() {
-    delete m_auxCollision;
+    EGG::egg_delete(m_auxCollision);
 }
 
 /// @addr{0x80765E30}
@@ -39,7 +39,7 @@ void ObjectShip64::createCollision() {
     constexpr f32 HEIGHT = 3500.0f;
 
     ObjectCollidable::createCollision();
-    m_auxCollision = new ObjectCollisionCylinder(RADIUS, HEIGHT, EGG::Vector3f::zero);
+    m_auxCollision = EGG::egg_new<ObjectCollisionCylinder>(RADIUS, HEIGHT, EGG::Vector3f::zero);
 }
 
 /// @addr{0x807668D4}

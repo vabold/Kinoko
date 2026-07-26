@@ -13,7 +13,7 @@ ObjectPropeller::ObjectPropeller(const System::MapdataGeoObj &params)
 /// @addr{0x80764E34}
 ObjectPropeller::~ObjectPropeller() {
     for (auto *&blade : m_blades) {
-        delete blade;
+        EGG::egg_delete(blade);
     }
 }
 
@@ -51,7 +51,7 @@ void ObjectPropeller::createCollision() {
     f32 height = static_cast<f32>(parse<s16>(params.height));
 
     for (auto *&blade : m_blades) {
-        blade = new ObjectCollisionCylinder(radius, height, colCenter);
+        blade = EGG::egg_new<ObjectCollisionCylinder>(radius, height, colCenter);
     }
 }
 

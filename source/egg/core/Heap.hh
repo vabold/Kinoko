@@ -136,15 +136,42 @@ protected:
     static Heap *s_allocatableHeap;
 };
 
+[[nodiscard]] void *egg_alloc(size_t size, s32 align = 4, Heap *pHeap = nullptr);
+void egg_free(void *block, Heap *pHeap = nullptr);
+
+template <typename T, typename... Args>
+[[nodiscard]] T *egg_new(Args &&...args) {
+    return ::new (egg_alloc(sizeof(T), static_cast<s32>(alignof(T))))
+            T(std::forward<Args>(args)...);
+}
+
+template <typename T>
+void egg_delete(const T *ptr) {
+    if (ptr) {
+        ptr->~T();
+        egg_free(const_cast<T *>(ptr));
+    }
+}
+
+template <typename T>
+[[nodiscard]] T *egg_new_array(size_t count) {
+    T *p = static_cast<T *>(egg_alloc(sizeof(T) * count, static_cast<s32>(alignof(T))));
+    for (size_t i = 0; i < count; ++i) {
+        ::new (p + i) T();
+    }
+    return p;
+}
+
+template <typename T>
+void egg_delete_array(T *ptr, size_t count) {
+    if (ptr) {
+        for (size_t i = count; i-- > 0;) {
+            ptr[i].~T();
+        }
+        egg_free(ptr);
+    }
+}
+
 } // namespace EGG
 
 } // namespace Kinoko
-
-[[nodiscard]] void *operator new(size_t size);
-[[nodiscard]] void *operator new(size_t size, int align);
-[[nodiscard]] void *operator new(size_t size, Kinoko::EGG::Heap *heap, int align);
-[[nodiscard]] void *operator new[](size_t size);
-[[nodiscard]] void *operator new[](size_t size, int align);
-[[nodiscard]] void *operator new[](size_t size, Kinoko::EGG::Heap *heap, int align);
-void operator delete(void *block) noexcept;
-void operator delete[](void *block) noexcept;

@@ -18,8 +18,8 @@ ObjectEscalatorGroup::ObjectEscalatorGroup(const System::MapdataGeoObj &params)
     addPos(POS_OFFSET);
     setScale(SCALE);
 
-    m_rightEscalator = new ObjectEscalator(params, false);
-    m_leftEscalator = new ObjectEscalator(params, true);
+    m_rightEscalator = EGG::egg_new<ObjectEscalator>(params, false);
+    m_leftEscalator = EGG::egg_new<ObjectEscalator>(params, true);
 
     calcTransform();
     m_rightEscalator->m_initialPos = pos() + transform().multVector33(RIGHT_OFFSET);

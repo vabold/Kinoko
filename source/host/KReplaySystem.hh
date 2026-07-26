@@ -23,13 +23,14 @@ public:
         return static_cast<KReplaySystem *>(s_instance);
     }
 
+    KReplaySystem();
+    ~KReplaySystem() override;
+
 private:
     typedef std::pair<const System::Timer &, const System::Timer &> DesyncingTimerPair;
 
-    KReplaySystem();
     KReplaySystem(const KReplaySystem &) = delete;
     KReplaySystem(KReplaySystem &&) = delete;
-    ~KReplaySystem() override;
 
     bool calcEnd() const;
     void reportFail(const std::string &msg) const;

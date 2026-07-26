@@ -125,10 +125,10 @@ public:
         return s_instance;
     }
 
-private:
     CourseColMgr();
     ~CourseColMgr() override;
 
+private:
     [[nodiscard]] bool doCheckWithPartialInfo(KColData *data, CollisionCheckFunc collisionCheckFunc,
             CollisionInfoPartial *info, KCLTypeMask *typeMask);
     [[nodiscard]] bool doCheckWithPartialInfoPush(KColData *data,

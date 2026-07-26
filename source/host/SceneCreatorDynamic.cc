@@ -1,5 +1,7 @@
 #include "SceneCreatorDynamic.hh"
 
+#include <egg/core/Heap.hh>
+
 #include <game/scene/RaceScene.hh>
 #include <game/scene/RootScene.hh>
 
@@ -17,9 +19,9 @@ void SceneCreatorDynamic::destroy(int sceneId) const {
 EGG::Scene *SceneCreatorDynamic::create(SceneId sceneId) const {
     switch (sceneId) {
     case SceneId::Root:
-        return new Scene::RootScene;
+        return EGG::egg_new<Scene::RootScene>();
     case SceneId::Race:
-        return new Scene::RaceScene;
+        return EGG::egg_new<Scene::RaceScene>();
     default:
         PANIC("Unreachable scene creation!");
     }

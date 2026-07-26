@@ -13,7 +13,7 @@ void CourseColMgr::init() {
     // In the base game, this file is loaded in CollisionDirector::CreateInstance and passed into
     // this function. It's simpler to just keep it here.
     void *file = LoadFile("course.kcl");
-    m_data = new KColData(file);
+    m_data = EGG::egg_new<KColData>(file);
 }
 
 /// @addr{0x807C293C}
@@ -368,7 +368,7 @@ void *CourseColMgr::LoadFile(const char *filename) {
 /// @addr{0x807C2824}
 CourseColMgr *CourseColMgr::CreateInstance() {
     ASSERT(!s_instance);
-    s_instance = new CourseColMgr;
+    s_instance = EGG::egg_new<CourseColMgr>();
     return s_instance;
 }
 
@@ -377,7 +377,7 @@ void CourseColMgr::DestroyInstance() {
     ASSERT(s_instance);
     auto *instance = s_instance;
     s_instance = nullptr;
-    delete instance;
+    EGG::egg_delete(instance);
 }
 
 /// @addr{0x807C29E4}
@@ -392,7 +392,7 @@ CourseColMgr::~CourseColMgr() {
     }
 
     ASSERT(m_data);
-    delete m_data;
+    EGG::egg_delete(m_data);
 }
 
 /// @addr{0x807C2BD8}

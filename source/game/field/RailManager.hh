@@ -2,6 +2,8 @@
 
 #include "game/field/RailInterpolator.hh"
 
+#include <egg/core/Allocator.hh>
+
 #include <vector>
 
 namespace Kinoko {
@@ -38,13 +40,13 @@ public:
         return s_instance;
     }
 
-private:
     RailManager();
     ~RailManager();
 
+private:
     void createPaths();
 
-    std::vector<Rail *> m_rails;
+    std::vector<Rail *, EGG::Allocator<Rail *>> m_rails;
     u16 m_totalRails;
     u16 m_extraInterplatorCount;
     u16 m_pointCount;

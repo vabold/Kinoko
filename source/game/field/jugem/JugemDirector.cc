@@ -7,7 +7,7 @@ namespace Kinoko::Field {
 /// @addr{0x8071E270}
 JugemDirector *JugemDirector::CreateInstance() {
     ASSERT(!s_instance);
-    s_instance = new JugemDirector;
+    s_instance = EGG::egg_new<JugemDirector>();
     return s_instance;
 }
 
@@ -21,7 +21,7 @@ void JugemDirector::DestroyInstance() {
     ASSERT(s_instance);
     auto *instance = s_instance;
     s_instance = nullptr;
-    delete instance;
+    EGG::egg_delete(instance);
 }
 
 /// @addr{0x8071E330}
@@ -29,14 +29,14 @@ JugemDirector::JugemDirector() : m_unit(nullptr) {}
 
 /// @addr{0x8071E390}
 JugemDirector::~JugemDirector() {
-    delete m_unit;
+    EGG::egg_delete(m_unit);
 }
 
 /// @addr{0x8071E480}
 void JugemDirector::createUnits() {
     // Assumes one unit
     const auto *kartObj = Kart::KartObjectManager::Instance()->object(0);
-    m_unit = new JugemUnit(kartObj);
+    m_unit = EGG::egg_new<JugemUnit>(kartObj);
 
     m_unit->createSwitchRace();
 }

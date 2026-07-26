@@ -20,7 +20,7 @@ ObjectCollidable::ObjectCollidable(const char *name, const EGG::Vector3f &pos,
 
 /// @addr{0x8067E384}
 ObjectCollidable::~ObjectCollidable() {
-    delete m_collision;
+    EGG::egg_delete(m_collision);
 }
 
 /// @addr{0x8081F0A0}
@@ -110,15 +110,16 @@ void ObjectCollidable::createCollision() {
 
     switch (static_cast<CollisionMode>(parse<s16>(collisionSet->mode))) {
     case CollisionMode::Sphere:
-        m_collision = new ObjectCollisionSphere(parse<s16>(collisionSet->params.sphere.radius),
-                collisionCenter());
+        m_collision = EGG::egg_new<ObjectCollisionSphere>(
+                parse<s16>(collisionSet->params.sphere.radius), collisionCenter());
         break;
     case CollisionMode::Cylinder:
-        m_collision = new ObjectCollisionCylinder(parse<s16>(collisionSet->params.cylinder.radius),
+        m_collision = EGG::egg_new<ObjectCollisionCylinder>(
+                parse<s16>(collisionSet->params.cylinder.radius),
                 parse<s16>(collisionSet->params.cylinder.height), collisionCenter());
         break;
     case CollisionMode::Box:
-        m_collision = new ObjectCollisionBox(parse<s16>(collisionSet->params.box.x),
+        m_collision = EGG::egg_new<ObjectCollisionBox>(parse<s16>(collisionSet->params.box.x),
                 parse<s16>(collisionSet->params.box.y), parse<s16>(collisionSet->params.box.z),
                 collisionCenter());
         break;

@@ -33,7 +33,7 @@ void ObjectDrivableDirector::addObject(ObjectDrivable *obj) {
 /// @brief Creates the rGV2 block manager. Also implicitly adds the block represented by params.
 void ObjectDrivableDirector::createObakeManager(const System::MapdataGeoObj &params) {
     ASSERT(!m_obakeManager);
-    m_obakeManager = new ObjectObakeManager(params);
+    m_obakeManager = EGG::egg_new<ObjectObakeManager>(params);
     m_obakeManager->load();
 }
 
@@ -209,7 +209,7 @@ void ObjectDrivableDirector::colNarScLocal(f32 radius, const EGG::Vector3f &pos,
 /// @addr{0x8081B428}
 ObjectDrivableDirector *ObjectDrivableDirector::CreateInstance() {
     ASSERT(!s_instance);
-    s_instance = new ObjectDrivableDirector;
+    s_instance = EGG::egg_new<ObjectDrivableDirector>();
     return s_instance;
 }
 
@@ -218,7 +218,7 @@ void ObjectDrivableDirector::DestroyInstance() {
     ASSERT(s_instance);
     auto *instance = s_instance;
     s_instance = nullptr;
-    delete instance;
+    EGG::egg_delete(instance);
 }
 
 /// @addr{0x8081B324}
@@ -232,7 +232,7 @@ ObjectDrivableDirector::~ObjectDrivableDirector() {
     }
 
     for (auto *&obj : m_objects) {
-        delete obj;
+        EGG::egg_delete(obj);
     }
 }
 

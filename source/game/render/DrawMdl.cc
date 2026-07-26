@@ -6,7 +6,7 @@ namespace Kinoko::Render {
 void DrawMdl::linkAnims(size_t idx, const Abstract::g3d::ResFile *resFile, const char *name,
         AnmType anmType) {
     if (!m_anmMgr) {
-        m_anmMgr = new AnmMgr(this);
+        m_anmMgr = EGG::egg_new<AnmMgr>(this);
     }
 
     m_anmMgr->linkAnims(idx, resFile, name, anmType);
