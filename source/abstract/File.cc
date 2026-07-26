@@ -1,5 +1,7 @@
 #include "File.hh"
 
+#include <egg/core/Heap.hh>
+
 #include <fstream>
 
 namespace Kinoko::Abstract::File {
@@ -21,7 +23,7 @@ u8 *Load(const char *path, size_t &size) {
     size = file.tellg();
     file.seekg(0, std::ios::beg);
 
-    u8 *buffer = new u8[size];
+    u8 *buffer = static_cast<u8 *>(EGG::egg_alloc(size, 4));
     file.read(reinterpret_cast<char *>(buffer), size);
 
     return buffer;

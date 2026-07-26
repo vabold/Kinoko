@@ -21,7 +21,7 @@ ObjectFlamePoleFoot::ObjectFlamePoleFoot(const System::MapdataGeoObj &params)
         m_poleScale = 3.0f + static_cast<f32>(s_flamePoleCount % 3);
     }
 
-    m_pole = new ObjectFlamePole(params, pos(), rot(), scale());
+    m_pole = EGG::egg_new<ObjectFlamePole>(params, pos(), rot(), scale());
     m_pole->load();
 }
 

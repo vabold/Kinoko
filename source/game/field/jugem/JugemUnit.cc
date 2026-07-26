@@ -12,15 +12,15 @@ namespace Kinoko::Field {
 /// @addr{0x80721514}
 JugemUnit::JugemUnit(const Kart::KartObject *kartObj)
     : StateManager(this, STATE_ENTRIES), m_kartObj(kartObj), m_switchReverse(nullptr) {
-    m_move = new JugemMove(kartObj);
-    m_interp = new JugemInterp(2);
+    m_move = EGG::egg_new<JugemMove>(kartObj);
+    m_interp = EGG::egg_new<JugemInterp>(2);
 }
 
 /// @addr{0x80721D2C}
 JugemUnit::~JugemUnit() {
-    delete m_switchReverse;
-    delete m_move;
-    delete m_interp;
+    EGG::egg_delete(m_switchReverse);
+    EGG::egg_delete(m_move);
+    EGG::egg_delete(m_interp);
 }
 
 /// @addr{0x807221C4}

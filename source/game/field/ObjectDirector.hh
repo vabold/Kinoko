@@ -6,6 +6,8 @@
 #include "game/field/obj/ObjectCollidable.hh"
 #include "game/field/obj/ObjectNoImpl.hh"
 
+#include <egg/core/Allocator.hh>
+
 #include <vector>
 
 namespace Kinoko {
@@ -56,11 +58,13 @@ public:
         return m_hitDepths[idx];
     }
 
-    [[nodiscard]] std::vector<ObjectCollidable *> &managedObjects() {
+    [[nodiscard]] std::vector<ObjectCollidable *, EGG::Allocator<ObjectCollidable *>> &
+    managedObjects() {
         return m_managedObjects;
     }
 
-    [[nodiscard]] const std::vector<ObjectCollidable *> &managedObjects() const {
+    [[nodiscard]] const std::vector<ObjectCollidable *, EGG::Allocator<ObjectCollidable *>> &
+    managedObjects() const {
         return m_managedObjects;
     }
 
@@ -87,10 +91,10 @@ public:
         return s_instance;
     }
 
-private:
     ObjectDirector();
     ~ObjectDirector() override;
 
+private:
     void createObjects();
     [[nodiscard]] ObjectBase *createObject(const System::MapdataGeoObj &params);
 
@@ -98,9 +102,11 @@ private:
     ObjectHitTable m_hitTableKart;
     ObjectHitTable m_hitTableKartObject;
 
-    std::vector<ObjectBase *> m_objects;          ///< All objects live here
-    std::vector<ObjectBase *> m_calcObjects;      ///< Objects needing calc() live here too.
-    std::vector<ObjectBase *> m_collisionObjects; ///< Objects having collision live here too
+    std::vector<ObjectBase *, EGG::Allocator<ObjectBase *>> m_objects; ///< All objects live here
+    std::vector<ObjectBase *, EGG::Allocator<ObjectBase *>>
+            m_calcObjects; ///< Objects needing calc() live here too.
+    std::vector<ObjectBase *, EGG::Allocator<ObjectBase *>>
+            m_collisionObjects; ///< Objects having collision live here too
 
     static constexpr size_t MAX_UNIT_COUNT = 0x100;
 
@@ -109,7 +115,7 @@ private:
     std::array<EGG::Vector3f, MAX_UNIT_COUNT> m_hitDepths;
     std::array<Kart::Reaction, MAX_UNIT_COUNT> m_reactions;
     ObjectPsea *m_psea;
-    std::vector<ObjectCollidable *> m_managedObjects;
+    std::vector<ObjectCollidable *, EGG::Allocator<ObjectCollidable *>> m_managedObjects;
 
     static f32 s_wanwanMaxPitch; ///< @addr{0x808C70E8}
 

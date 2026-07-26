@@ -51,10 +51,10 @@ public:
         return s_instance;
     }
 
-private:
     KartObjectManager();
     ~KartObjectManager() override;
 
+private:
     void loadScaleAnimations();
 
     size_t m_count;

@@ -4,6 +4,8 @@
 #include "game/field/obj/ObjectDrivable.hh"
 #include "game/field/obj/ObjectObakeManager.hh"
 
+#include <egg/core/Allocator.hh>
+
 #include <vector>
 
 namespace Kinoko {
@@ -59,13 +61,15 @@ public:
         return s_instance;
     }
 
-private:
     ObjectDrivableDirector();
     ~ObjectDrivableDirector() override;
 
-    std::vector<ObjectDrivable *> m_objects;     ///< All objects live here
-    std::vector<ObjectDrivable *> m_calcObjects; ///< Objects needing calc() live here too.
-    ObjectObakeManager *m_obakeManager;          ///< Manages rGV2 blocks and spatial indexing.
+private:
+    std::vector<ObjectDrivable *, EGG::Allocator<ObjectDrivable *>>
+            m_objects; ///< All objects live here
+    std::vector<ObjectDrivable *, EGG::Allocator<ObjectDrivable *>>
+            m_calcObjects;              ///< Objects needing calc() live here too.
+    ObjectObakeManager *m_obakeManager; ///< Manages rGV2 blocks and spatial indexing.
 
     static ObjectDrivableDirector *s_instance;
 };

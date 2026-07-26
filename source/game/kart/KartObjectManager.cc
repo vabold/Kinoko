@@ -34,7 +34,7 @@ void KartObjectManager::calc() {
 /// @addr{0x8058FAA8}
 KartObjectManager *KartObjectManager::CreateInstance() {
     ASSERT(!s_instance);
-    s_instance = new KartObjectManager;
+    s_instance = EGG::egg_new<KartObjectManager>();
     return s_instance;
 }
 
@@ -43,14 +43,14 @@ void KartObjectManager::DestroyInstance() {
     ASSERT(s_instance);
     auto *instance = s_instance;
     s_instance = nullptr;
-    delete instance;
+    EGG::egg_delete(instance);
 }
 
 /// @addr{0x8058FB2C}
 KartObjectManager::KartObjectManager() {
     const auto &raceScenario = System::RaceConfig::Instance()->raceScenario();
     m_count = raceScenario.playerCount;
-    m_objects = new KartObject *[m_count];
+    m_objects = static_cast<KartObject **>(EGG::egg_alloc(m_count * sizeof(KartObject *)));
     KartParamFileManager::CreateInstance();
 
     loadScaleAnimations();
@@ -73,14 +73,14 @@ KartObjectManager::~KartObjectManager() {
     KartParamFileManager::DestroyInstance();
 
     for (size_t i = 0; i < m_count; ++i) {
-        delete m_objects[i];
+        EGG::egg_delete(m_objects[i]);
     }
 
-    delete[] m_objects;
+    EGG::egg_free(m_objects);
 
-    delete s_thunderScaleUpAnmChr;
-    delete s_thunderScaleDownAnmChr;
-    delete s_pressScaleUpAnmChr;
+    EGG::egg_delete(s_thunderScaleUpAnmChr);
+    EGG::egg_delete(s_thunderScaleDownAnmChr);
+    EGG::egg_delete(s_pressScaleUpAnmChr);
 
     // If the proxy list is not cleared when we're done with the KartObjectManager, the list's
     // destructor calls delete on all of the links remaining in the list. Since the heaps are
@@ -96,11 +96,11 @@ void KartObjectManager::loadScaleAnimations() {
 
     // Copy construct onto the heap
     auto resAnmChr = Abstract::g3d::ResFile(file).resAnmChr("thunder_scale_up");
-    s_thunderScaleUpAnmChr = new Abstract::g3d::ResAnmChr(resAnmChr);
+    s_thunderScaleUpAnmChr = EGG::egg_new<Abstract::g3d::ResAnmChr>(resAnmChr);
     resAnmChr = Abstract::g3d::ResFile(file).resAnmChr("thunder_scale_down");
-    s_thunderScaleDownAnmChr = new Abstract::g3d::ResAnmChr(resAnmChr);
+    s_thunderScaleDownAnmChr = EGG::egg_new<Abstract::g3d::ResAnmChr>(resAnmChr);
     resAnmChr = Abstract::g3d::ResFile(file).resAnmChr("press_scale_up");
-    s_pressScaleUpAnmChr = new Abstract::g3d::ResAnmChr(resAnmChr);
+    s_pressScaleUpAnmChr = EGG::egg_new<Abstract::g3d::ResAnmChr>(resAnmChr);
 }
 
 Abstract::g3d::ResAnmChr *KartObjectManager::s_thunderScaleUpAnmChr = nullptr;

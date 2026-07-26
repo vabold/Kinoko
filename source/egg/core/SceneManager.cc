@@ -92,7 +92,7 @@ void SceneManager::destroyScene(Scene *scene) {
     // ADDED: The original library does not actually delete the scene, but we run into leaks
     // So, we delete the scene that's provided to the function
     auto *heap = scene->heap();
-    delete scene;
+    EGG::egg_delete(scene);
 
     m_currentScene = nullptr;
 

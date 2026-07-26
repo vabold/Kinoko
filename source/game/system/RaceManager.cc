@@ -76,7 +76,7 @@ MapdataJugemPoint *RaceManager::jugemPoint() const {
 /// @addr{0x80532084}
 RaceManager *RaceManager::CreateInstance() {
     ASSERT(!s_instance);
-    s_instance = new RaceManager;
+    s_instance = EGG::egg_new<RaceManager>();
     return s_instance;
 }
 
@@ -85,7 +85,7 @@ void RaceManager::DestroyInstance() {
     ASSERT(s_instance);
     auto *instance = s_instance;
     s_instance = nullptr;
-    delete instance;
+    EGG::egg_delete(instance);
 }
 
 /// @addr{0x805327A0}

@@ -116,7 +116,7 @@ public:
 
     /// @addr{0x80721EC0}
     void createSwitchRace() {
-        m_switchReverse = new JugemSwitchReverse;
+        m_switchReverse = EGG::egg_new<JugemSwitchReverse>();
     }
 
     /// @addr{0x80722100}

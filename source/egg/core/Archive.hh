@@ -26,6 +26,7 @@ class Archive : Disposer {
     friend class Host::Context;
 
 public:
+    Archive(void *archiveStart);
     ~Archive();
 
     void unmount();
@@ -36,8 +37,6 @@ public:
     [[nodiscard]] static Archive *Mount(void *archiveStart);
 
 private:
-    Archive(void *archiveStart);
-
     [[nodiscard]] static constexpr uintptr_t GetLinkOffset() {
         // offsetof doesn't work, so instead of hardcoding an offset, we derive it ourselves
         return reinterpret_cast<uintptr_t>(&reinterpret_cast<Archive *>(NULL)->m_link);

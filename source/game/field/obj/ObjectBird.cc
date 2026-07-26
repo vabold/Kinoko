@@ -8,7 +8,7 @@ namespace Kinoko::Field {
 
 /// @addr{0x8077BD80}
 ObjectBird::ObjectBird(const System::MapdataGeoObj &params) : ObjectCollidable(params) {
-    m_leader = new ObjectBirdLeader(params, this);
+    m_leader = EGG::egg_new<ObjectBirdLeader>(params, this);
     m_leader->load();
 
     u32 count = params.setting(1);
@@ -19,7 +19,7 @@ ObjectBird::ObjectBird(const System::MapdataGeoObj &params) : ObjectCollidable(p
     m_followers = owning_span<ObjectBirdFollower *>(count);
 
     for (u32 i = 0; i < count; ++i) {
-        auto *bird = new ObjectBirdFollower(params, this, i);
+        auto *bird = EGG::egg_new<ObjectBirdFollower>(params, this, i);
         m_followers[i] = bird;
         bird->load();
     }

@@ -21,7 +21,7 @@ void ItemDirector::calc() {
 /// @addr{0x80799138}
 ItemDirector *ItemDirector::CreateInstance() {
     ASSERT(!s_instance);
-    s_instance = new ItemDirector;
+    s_instance = EGG::egg_new<ItemDirector>();
     return s_instance;
 }
 
@@ -30,7 +30,7 @@ void ItemDirector::DestroyInstance() {
     ASSERT(s_instance);
     auto *instance = s_instance;
     s_instance = nullptr;
-    delete instance;
+    EGG::egg_delete(instance);
 }
 
 /// @addr{0x807992D8}

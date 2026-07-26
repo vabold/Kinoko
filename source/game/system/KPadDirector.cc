@@ -41,7 +41,7 @@ void KPadDirector::setHostPad(bool driftIsAuto) {
 /// @addr{0x8052313C}
 KPadDirector *KPadDirector::CreateInstance() {
     ASSERT(!s_instance);
-    return s_instance = new KPadDirector;
+    return s_instance = EGG::egg_new<KPadDirector>();
 }
 
 /// @addr{0x8052318C}
@@ -49,13 +49,13 @@ void KPadDirector::DestroyInstance() {
     ASSERT(s_instance);
     auto *instance = s_instance;
     s_instance = nullptr;
-    delete instance;
+    EGG::egg_delete(instance);
 }
 
 /// @addr{0x805232F0}
 KPadDirector::KPadDirector() {
-    m_ghostController = new KPadGhostController;
-    m_hostController = new KPadHostController;
+    m_ghostController = EGG::egg_new<KPadGhostController>();
+    m_hostController = EGG::egg_new<KPadHostController>();
 }
 
 /// @addr{0x805231DC}

@@ -43,7 +43,7 @@ Hitbox::Hitbox() : m_bspHitbox(nullptr), m_ownsBSP(false) {}
 /// @addr{0x805B8480}
 Hitbox::~Hitbox() {
     if (m_ownsBSP) {
-        delete m_bspHitbox;
+        EGG::egg_delete(m_bspHitbox);
     }
 }
 
@@ -163,7 +163,7 @@ void CollisionGroup::createSingleHitbox(f32 radius, const EGG::Vector3f &relPos)
     // And how exactly will we identify to free the BSP::Hitbox on destruction?
     for (auto &hitbox : m_hitboxes) {
         hitbox.reset();
-        BSP::Hitbox *bspHitbox = new BSP::Hitbox;
+        BSP::Hitbox *bspHitbox = EGG::egg_new<BSP::Hitbox>();
         hitbox.setBspHitbox(bspHitbox, true);
         bspHitbox->position = relPos;
         bspHitbox->radius = radius;

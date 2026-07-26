@@ -8,16 +8,16 @@ static size_t SUFFIX_SIZE = 8;
 
 /// @addr{0x8052A538}
 MultiDvdArchive::MultiDvdArchive(u16 archiveCount) : m_archiveCount(archiveCount) {
-    m_archives = new DvdArchive[archiveCount];
-    m_fileStarts = new void *[archiveCount];
-    m_fileSizes = new size_t[archiveCount];
-    m_suffixes = new char *[archiveCount];
-    m_formats = new Format[archiveCount];
+    m_archives = EGG::egg_new_array<DvdArchive>(archiveCount);
+    m_fileStarts = static_cast<void **>(EGG::egg_alloc(archiveCount * sizeof(void *)));
+    m_fileSizes = static_cast<size_t *>(EGG::egg_alloc(archiveCount * sizeof(size_t)));
+    m_suffixes = static_cast<char **>(EGG::egg_alloc(archiveCount * sizeof(char *)));
+    m_formats = EGG::egg_new_array<Format>(archiveCount);
 
     for (u16 i = 0; i < m_archiveCount; i++) {
         m_fileStarts[i] = nullptr;
         m_fileSizes[i] = 0;
-        m_suffixes[i] = new char[SUFFIX_SIZE];
+        m_suffixes[i] = static_cast<char *>(EGG::egg_alloc(SUFFIX_SIZE));
         strncpy(m_suffixes[i], SZS_EXTENSION, SUFFIX_SIZE);
         m_formats[i] = Format::Double;
     }
@@ -25,13 +25,13 @@ MultiDvdArchive::MultiDvdArchive(u16 archiveCount) : m_archiveCount(archiveCount
 
 /// @addr{0x8052A6DC}
 MultiDvdArchive::~MultiDvdArchive() {
-    delete[] m_archives;
+    EGG::egg_delete_array(m_archives, m_archiveCount);
     // WARN: Could lead to a memory leak if this is the only reference to the file!
-    delete[] m_fileStarts;
-    delete[] m_fileSizes;
+    EGG::egg_free(m_fileStarts);
+    EGG::egg_free(m_fileSizes);
     // WARN: Could lead to a memory leak if the pointer is not static!
-    delete[] m_suffixes;
-    delete[] m_formats;
+    EGG::egg_free(m_suffixes);
+    EGG::egg_delete_array(m_formats, m_archiveCount);
 }
 
 /// @addr{0x8052A760}

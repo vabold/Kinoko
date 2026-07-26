@@ -46,10 +46,10 @@ public:
         return s_instance;
     }
 
-private:
     KPadDirector();
     ~KPadDirector() override;
 
+private:
     KPadPlayer m_playerInput;
     KPadGhostController *m_ghostController;
     KPadHostController *m_hostController;
