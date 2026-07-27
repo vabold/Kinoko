@@ -51,10 +51,12 @@ public:
         return s_instance;
     }
 
+private:
+    EGG_NEW_DELETE_FRIEND
+
     KartObjectManager();
     ~KartObjectManager() override;
 
-private:
     void loadScaleAnimations();
 
     size_t m_count;

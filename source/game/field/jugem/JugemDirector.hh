@@ -24,10 +24,12 @@ public:
     [[nodiscard]] static JugemDirector *Instance();
     static void DestroyInstance();
 
+private:
+    EGG_NEW_DELETE_FRIEND
+
     JugemDirector();
     ~JugemDirector();
 
-private:
     void createUnits();
 
     JugemUnit *m_unit; ///< Assumes 1 Lakitu because 1 player

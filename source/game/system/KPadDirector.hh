@@ -46,10 +46,12 @@ public:
         return s_instance;
     }
 
+private:
+    EGG_NEW_DELETE_FRIEND
+
     KPadDirector();
     ~KPadDirector() override;
 
-private:
     KPadPlayer m_playerInput;
     KPadGhostController *m_ghostController;
     KPadHostController *m_hostController;

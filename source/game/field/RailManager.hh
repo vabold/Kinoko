@@ -40,10 +40,12 @@ public:
         return s_instance;
     }
 
+private:
+    EGG_NEW_DELETE_FRIEND
+
     RailManager();
     ~RailManager();
 
-private:
     void createPaths();
 
     std::vector<Rail *, EGG::Allocator<Rail *>> m_rails;

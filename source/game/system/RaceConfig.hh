@@ -83,10 +83,12 @@ public:
         return s_instance;
     }
 
+private:
+    EGG_NEW_DELETE_FRIEND
+
     RaceConfig();
     ~RaceConfig() override;
 
-private:
     Scenario m_raceScenario;
     RawGhostFile m_ghost;
 

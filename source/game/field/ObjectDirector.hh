@@ -91,10 +91,12 @@ public:
         return s_instance;
     }
 
+private:
+    EGG_NEW_DELETE_FRIEND
+
     ObjectDirector();
     ~ObjectDirector() override;
 
-private:
     void createObjects();
     [[nodiscard]] ObjectBase *createObject(const System::MapdataGeoObj &params);
 

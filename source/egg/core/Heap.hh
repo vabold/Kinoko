@@ -175,3 +175,11 @@ void egg_delete_array(T *ptr, size_t count) {
 } // namespace EGG
 
 } // namespace Kinoko
+
+/// @brief Grants Kinoko::EGG::egg_new and Kinoko::EGG::egg_delete access to a class' private
+/// constructors/destructor, without making them public.
+#define EGG_NEW_DELETE_FRIEND \
+    template <typename T, typename... Args> \
+    friend T *Kinoko::EGG::egg_new(Args &&...args); \
+    template <typename T> \
+    friend void Kinoko::EGG::egg_delete(const T *ptr);
