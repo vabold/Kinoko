@@ -111,10 +111,12 @@ public:
         return s_instance;
     }
 
+private:
+    EGG_NEW_DELETE_FRIEND
+
     CollisionDirector();
     ~CollisionDirector() override;
 
-private:
     const CollisionEntry *m_closestCollisionEntry;
     std::array<CollisionEntry, COLLISION_ARR_LENGTH> m_entries;
     size_t m_collisionEntryCount;

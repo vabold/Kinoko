@@ -39,10 +39,12 @@ public:
         return s_instance;
     }
 
+private:
+    EGG_NEW_DELETE_FRIEND
+
     ItemDirector();
     ~ItemDirector() override;
 
-private:
     owning_span<KartItem> m_karts;
 
     static ItemDirector *s_instance; ///< @addr{0x809C3618}

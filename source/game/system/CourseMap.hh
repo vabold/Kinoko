@@ -184,10 +184,12 @@ public:
         return s_instance;
     }
 
+private:
+    EGG_NEW_DELETE_FRIEND
+
     CourseMap();
     ~CourseMap() override;
 
-private:
     [[nodiscard]] s16 findSectorBetweenSides(const EGG::Vector3f &pos,
             MapdataCheckPoint *checkpoint, f32 &distanceRatio);
     [[nodiscard]] s16 findSectorOutsideSector(const EGG::Vector3f &pos,

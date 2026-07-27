@@ -56,11 +56,11 @@ private:
         u8 jugemId;
     };
 
-public:
+    EGG_NEW_DELETE_FRIEND
+
     KTestSystem();
     ~KTestSystem() override;
 
-private:
     KTestSystem(const KTestSystem &) = delete;
     KTestSystem(KTestSystem &&) = delete;
 

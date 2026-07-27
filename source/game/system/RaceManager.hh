@@ -154,10 +154,12 @@ public:
         return s_instance;
     }
 
+private:
+    EGG_NEW_DELETE_FRIEND
+
     RaceManager();
     ~RaceManager() override;
 
-private:
     Random m_random;
     Player m_player;
     TimerManager m_timerManager;

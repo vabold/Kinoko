@@ -43,10 +43,12 @@ public:
         return s_instance;
     }
 
+private:
+    EGG_NEW_DELETE_FRIEND
+
     ResourceManager();
     ~ResourceManager() override;
 
-private:
     // 0: Core archive
     // 1: Course archive
     MultiDvdArchive **m_archives;

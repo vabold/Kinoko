@@ -125,10 +125,12 @@ public:
         return s_instance;
     }
 
+private:
+    EGG_NEW_DELETE_FRIEND
+
     CourseColMgr();
     ~CourseColMgr() override;
 
-private:
     [[nodiscard]] bool doCheckWithPartialInfo(KColData *data, CollisionCheckFunc collisionCheckFunc,
             CollisionInfoPartial *info, KCLTypeMask *typeMask);
     [[nodiscard]] bool doCheckWithPartialInfoPush(KColData *data,

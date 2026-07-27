@@ -61,10 +61,12 @@ public:
         return s_instance;
     }
 
+private:
+    EGG_NEW_DELETE_FRIEND
+
     ObjectDrivableDirector();
     ~ObjectDrivableDirector() override;
 
-private:
     std::vector<ObjectDrivable *, EGG::Allocator<ObjectDrivable *>>
             m_objects; ///< All objects live here
     std::vector<ObjectDrivable *, EGG::Allocator<ObjectDrivable *>>
