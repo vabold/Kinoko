@@ -213,12 +213,12 @@ void ObjectDirector::createObjects() {
             default:
                 break;
             }
+        } else {
+            ObjectBase *object = createObject(*pObj);
+            object->load();
         }
 
-        ObjectBase *object = createObject(*pObj);
-        object->load();
-
-        if (object->id() == ObjectId::SunDS) {
+        if (static_cast<ObjectId>(pObj->id()) == ObjectId::SunDS) {
             sun = true;
         }
     }
