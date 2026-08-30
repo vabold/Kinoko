@@ -30,6 +30,10 @@ std::optional<EOption> CheckFlag(const char *arg) {
             return EOption::TargetFrame;
         }
 
+        if (strcmp(verbose_arg, "progress") == 0) {
+            return EOption::Progress;
+        }
+
         return EOption::Invalid;
     } else {
         switch (arg[1]) {
@@ -45,6 +49,9 @@ std::optional<EOption> CheckFlag(const char *arg) {
         case 'F':
         case 'f':
             return EOption::TargetFrame;
+        case 'P':
+        case 'p':
+            return EOption::Progress;
         default:
             return EOption::Invalid;
         }

@@ -6,6 +6,9 @@
 
 #include <game/system/RaceConfig.hh>
 
+#include <filesystem>
+#include <queue>
+
 namespace Kinoko {
 
 /// @brief Kinoko system designed to execute replays.
@@ -35,6 +38,10 @@ private:
     bool calcEnd() const;
     void reportFail(const std::string &msg) const;
 
+    bool runDirectory(const std::filesystem::path &dirPath);
+    bool runGhost(const std::filesystem::path &ghostPath);
+    void loadGhost(const std::filesystem::path &ghostPath);
+
     bool success() const;
     s32 getDesyncingTimerIdx() const;
     DesyncingTimerPair getDesyncingTimer(s32 i) const;
@@ -43,6 +50,11 @@ private:
 
     EGG::SceneManager *m_sceneMgr;
 
+    std::queue<std::filesystem::path> m_ghostArgs;
+    size_t m_progressInterval;
+    size_t m_replaysPlayed;
+    size_t m_replaysSynced;
+    std::filesystem::path m_currentGhostPath;
     const char *m_currentGhostFileName;
     const System::GhostFile *m_currentGhost;
     const u8 *m_currentRawGhost;
