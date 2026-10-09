@@ -91,7 +91,6 @@ private:
         EGG::Heap *m_allocatableHeap;
         EGG::Heap *m_heapForCreateScene;
         u16 m_heapOptionFlg;
-        EGG::Heap *m_rootHeap;
         Field::BoxColManager *m_boxColMgr;
         Field::CollisionDirector *m_colDir;
         Field::CourseColMgr *m_courseColMgr;

@@ -115,7 +115,6 @@ bool Context::operator==(const Context &rhs) const {
     ret = ret && m_statics.m_allocatableHeap == rhs.m_statics.m_allocatableHeap;
     ret = ret && m_statics.m_heapForCreateScene == rhs.m_statics.m_heapForCreateScene;
     ret = ret && m_statics.m_heapOptionFlg == rhs.m_statics.m_heapOptionFlg;
-    ret = ret && m_statics.m_rootHeap == rhs.m_statics.m_rootHeap;
     ret = ret && m_statics.m_boxColMgr == rhs.m_statics.m_boxColMgr;
     ret = ret && m_statics.m_colDir == rhs.m_statics.m_colDir;
     ret = ret && m_statics.m_courseColMgr == rhs.m_statics.m_courseColMgr;
@@ -158,7 +157,6 @@ void Context::SetActiveContext(const Context &rhs) {
     EGG::Heap::s_allocatableHeap = rhs.m_statics.m_allocatableHeap;
     EGG::SceneManager::s_heapForCreateScene = rhs.m_statics.m_heapForCreateScene;
     EGG::SceneManager::s_heapOptionFlg = rhs.m_statics.m_heapOptionFlg;
-    EGG::SceneManager::s_rootHeap = rhs.m_statics.m_rootHeap;
     Field::BoxColManager::s_instance = rhs.m_statics.m_boxColMgr;
     Field::CollisionDirector::s_instance = rhs.m_statics.m_colDir;
     Field::CourseColMgr::s_instance = rhs.m_statics.m_courseColMgr;
