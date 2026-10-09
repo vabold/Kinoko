@@ -35,6 +35,7 @@ Context::Context() {
     m_statics.m_currentHeap = EGG::Heap::s_currentHeap;
     m_statics.m_allocatableHeap = EGG::Heap::s_allocatableHeap;
     m_statics.m_heapForCreateScene = EGG::SceneManager::s_heapForCreateScene;
+    m_statics.m_heapOptionFlg = EGG::SceneManager::s_heapOptionFlg;
     m_statics.m_boxColMgr = Field::BoxColManager::s_instance;
     m_statics.m_colDir = Field::CollisionDirector::s_instance;
     m_statics.m_courseColMgr = Field::CourseColMgr::s_instance;
