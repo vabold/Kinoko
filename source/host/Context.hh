@@ -120,7 +120,10 @@ private:
         u32 m_flamePoleCount;
     };
 
+    [[nodiscard]] static size_t RootHeapSize();
+
     void *m_contextMemory;
+    size_t m_contextMemoryHeapSize;
     Statics m_statics;
 };
 
