@@ -210,6 +210,20 @@ void MEMiExpHeapHead::setGroupID(u16 groupID) {
     m_groupId = groupID;
 }
 
+/// @brief Helper function which finds the end of the used heap region (including the tail head)
+/// @return Pointer to the end of the used heap region (including the tail head)
+/// @details This is used by @ref Host::Context to discern the minimum `memcpy` size required to
+/// preserve the entire state of the heap. Falls back to @ref getHeapHead() if the tail block is not
+/// found.
+void *MEMiExpHeapHead::calcUsedEnd() {
+    MEMiExpBlockHead *tail = m_freeBlocks.m_tail;
+    if (tail && tail->getMemoryEnd() == getHeapEnd()) {
+        return AddOffset(tail, sizeof(MEMiExpBlockHead));
+    }
+
+    return getHeapEnd();
+}
+
 /// @addr{0x8019899C}
 void *MEMiExpHeapHead::allocFromHead(size_t size, s32 alignment) {
     MEMiExpBlockHead *found = nullptr;

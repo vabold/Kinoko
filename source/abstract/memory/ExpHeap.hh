@@ -88,6 +88,8 @@ public:
     [[nodiscard]] u16 getGroupID() const;
     void setGroupID(u16 groupID);
 
+    void *calcUsedEnd();
+
 private:
     enum class eAttribute {
         BestFitAlloc = 0,
