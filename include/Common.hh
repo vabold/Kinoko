@@ -424,8 +424,7 @@ static constexpr size_t MEMORY_SPACE_SIZE = 0x1000000;
 static constexpr auto DEFAULT_OPT = Abstract::Memory::MEMiHeapHead::OptFlag().setBit(
         Abstract::Memory::MEMiHeapHead::eOptFlag::DebugFillAlloc);
 #else
-static constexpr auto DEFAULT_OPT = Abstract::Memory::MEMiHeapHead::OptFlag().setBit(
-        Abstract::Memory::MEMiHeapHead::eOptFlag::ZeroFillAlloc);
+static constexpr auto DEFAULT_OPT = Abstract::Memory::MEMiHeapHead::OptFlag();
 #endif
 
 } // namespace Kinoko

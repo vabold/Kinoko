@@ -12,7 +12,11 @@
 namespace Kinoko::Kart {
 
 /// @addr{0x80574114}
-KartHalfPipe::KartHalfPipe() : m_prevPos(EGG::Vector3f::zero) {}
+KartHalfPipe::KartHalfPipe() : m_prevPos(EGG::Vector3f::zero) {
+    // Not initialized here in the base game because normally the game's heaps are zero-initialized
+    m_nextTimer = 0;
+    m_trick = System::Trick::None;
+}
 
 /// @addr{0x80574170}
 KartHalfPipe::~KartHalfPipe() = default;

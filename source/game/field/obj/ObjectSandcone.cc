@@ -10,6 +10,11 @@ ObjectSandcone::ObjectSandcone(const System::MapdataGeoObj &params) : ObjectKCL(
     m_finalHeightDelta = static_cast<f32>(params.setting(1));
     m_startFrame = params.setting(2);
     m_baseMtx.makeRT(rot(), pos());
+
+    // The base game doesn't initialize this explicitly, since EGG::Heaps are memset to 0.
+    // Upon loading the object, `ObjectSandcone::getUpdatedMatrix()` is called before `m_duration`
+    // was set.
+    m_duration = 0;
 }
 
 /// @addr{0x806871E0}

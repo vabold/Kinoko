@@ -121,6 +121,9 @@ public:
 
     /// @addr{0x80722100}
     void init() {
+        ASSERT(m_switchReverse);
+        m_switchReverse->init();
+
         m_pos.setZero();
         m_move->init();
     }

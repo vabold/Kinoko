@@ -48,6 +48,12 @@ KartMove::KartMove() : m_smoothedUp(EGG::Vector3f::ey), m_scale(1.0f, 1.0f, 1.0f
     m_padType.makeAllZero();
     m_flags.makeAllZero();
     m_jump = nullptr;
+
+    // The base game doesn't initialize this explicitly, since EGG::Heaps are memset to 0.
+    // KartSub::initAABB reads it before KartSub::resetPhysics calls setKartSpeedLimit.
+    // The AABB will get resized later in KartSub::resetPhysics, but we initialize here for
+    // posterity's sake.
+    m_hardSpeedLimit = 0.0f;
 }
 
 /// @addr{0x80587B78}
