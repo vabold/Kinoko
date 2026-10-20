@@ -16,7 +16,8 @@ namespace Kinoko::Kart {
 KartJump::KartJump(KartMove *move) : m_move(move) {
     m_cooldown = 0;
 
-    // The base game doesn't initialize this explicitly, since EGG::Heaps are memset to 0.
+    // The base game doesn't initialize these explicitly, since EGG::Heaps are memset to 0.
+    m_type = TrickType::StuntTrickBasic;
     m_nextAllowTimer = 0;
 }
 

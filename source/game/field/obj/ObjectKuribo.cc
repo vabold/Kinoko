@@ -12,6 +12,10 @@ ObjectKuribo::ObjectKuribo(const System::MapdataGeoObj &params)
     ASSERT(m_mapObj);
     m_animStep = static_cast<f32>(m_mapObj->setting(2)) / 100.0f;
     m_speedStep = static_cast<f32>(m_mapObj->setting(1)) / 100.0f;
+
+    // Not initialized here in the base game because normally the game's heaps are zero-initialized
+    m_rot = EGG::Vector3f::zero;
+    m_floorNrm = EGG::Vector3f::zero;
 }
 
 /// @addr{0x806DB3A0}
