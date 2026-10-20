@@ -317,7 +317,7 @@ void *MEMiExpHeapHead::allocUsedBlockFromFreeBlock(MEMiExpBlockHead *block, void
 
     if (rightRegion.getRange() < sizeof(MEMiExpBlockHead) + 4) {
         // Not enough room to insert a free memory block
-        rightRegion.end = rightRegion.start;
+        rightRegion.start = rightRegion.end;
     } else {
         m_freeBlocks.insert(MEMiExpBlockHead::createFree(rightRegion), prev);
     }
