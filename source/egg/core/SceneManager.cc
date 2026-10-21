@@ -1,6 +1,7 @@
 #include "SceneManager.hh"
 
 #include "egg/core/ExpHeap.hh"
+#include "egg/core/FrmHeap.hh"
 
 namespace Kinoko::EGG {
 
@@ -56,7 +57,17 @@ void SceneManager::createScene(int id, Scene *parent) {
         parentHeap->enableAllocation();
     }
 
+#ifdef BUILD_DEBUG
     ExpHeap *newHeap = ExpHeap::create(-1, parentHeap, s_heapOptionFlg);
+#else
+    Heap *newHeap = nullptr;
+    if (parentHeap == s_rootHeap) {
+        // The RootScene needs to have ExpHeap or else we can't delete the child FrmHeap
+        newHeap = ExpHeap::create(-1, parentHeap, s_heapOptionFlg);
+    } else {
+        newHeap = FrmHeap::create(-1, parentHeap, s_heapOptionFlg);
+    }
+#endif
     s_heapForCreateScene = newHeap;
 
     if (locked) {

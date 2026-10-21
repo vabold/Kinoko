@@ -18,6 +18,7 @@ class Context;
 namespace EGG {
 
 class ExpHeap;
+class FrmHeap;
 
 /// @brief A high-level representation of a memory heap for managing dynamic memory allocation.
 /// Interface for allocating and freeing memory blocks.
@@ -105,6 +106,10 @@ public:
 
     [[nodiscard]] static ExpHeap *dynamicCastToExp(Heap *heap) {
         return heap->getHeapKind() == Kind::Expanded ? reinterpret_cast<ExpHeap *>(heap) : nullptr;
+    }
+
+    [[nodiscard]] static FrmHeap *dynamicCastToFrm(Heap *heap) {
+        return heap->getHeapKind() == Kind::Frame ? reinterpret_cast<FrmHeap *>(heap) : nullptr;
     }
 
     [[nodiscard]] static Heap *getCurrentHeap() {

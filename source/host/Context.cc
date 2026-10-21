@@ -1,6 +1,7 @@
 #include "Context.hh"
 
 #include <egg/core/ExpHeap.hh>
+#include <egg/core/FrmHeap.hh>
 
 #include <egg/core/SceneManager.hh>
 
@@ -218,13 +219,20 @@ size_t Context::RootHeapSize() {
     auto *lastHeap = EGG::Heap::findContainHeap(static_cast<char *>(rootHeap->getEndAddress()) - 1);
     ASSERT(lastHeap);
 
+    void *usedEnd = nullptr;
+
     auto *expHeap = EGG::Heap::dynamicCastToExp(lastHeap);
-    ASSERT(expHeap);
-
-    auto *expHeapHead = expHeap->dynamicCastHandleToExp();
-    ASSERT(expHeapHead);
-
-    auto *usedEnd = expHeapHead->calcUsedEnd();
+    auto *frmHeap = EGG::Heap::dynamicCastToFrm(lastHeap);
+    ASSERT(expHeap || frmHeap);
+    if (expHeap) {
+        auto *expHeapHead = expHeap->dynamicCastHandleToExp();
+        ASSERT(expHeapHead);
+        usedEnd = expHeapHead->calcUsedEnd();
+    } else if (frmHeap) {
+        auto *frmHeapHead = frmHeap->dynamicCastHandleToFrm();
+        ASSERT(frmHeapHead);
+        usedEnd = frmHeapHead->calcUsedEnd();
+    }
 
     intptr_t heapSize = reinterpret_cast<intptr_t>(usedEnd) - reinterpret_cast<intptr_t>(rootHeap);
     ASSERT(heapSize > 0 && static_cast<size_t>(heapSize) < MEMORY_SPACE_SIZE);
