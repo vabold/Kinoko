@@ -15,6 +15,7 @@ public:
     /// @brief Temporarily changes the group ID of a given heap to better track memory allocation.
     /// @details Typical pattern is "ScopeLock<GroupID> lock(groupID);" to initialize a lock.
     ScopeLock(GroupID newID) {
+#ifdef BUILD_DEBUG
         EGG::ExpHeap *heap = EGG::Heap::dynamicCastToExp(EGG::Heap::getCurrentHeap());
         ASSERT(heap);
         GroupID prevID = static_cast<GroupID>(heap->getGroupID());
@@ -24,12 +25,15 @@ public:
         }
 
         heap->setGroupID(static_cast<u16>(newID));
+#endif
     }
 
     ~ScopeLock() {
+#ifdef BUILD_DEBUG
         EGG::ExpHeap *heap = EGG::Heap::dynamicCastToExp(EGG::Heap::getCurrentHeap());
         ASSERT(heap);
         heap->setGroupID(static_cast<u16>(GroupID::None));
+#endif
     }
 };
 
