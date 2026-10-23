@@ -43,3 +43,91 @@ div.headertitle {
 table.memname tr {
     float: left;
 }
+
+/* Object List page: show four course sections per row.
+   !important is needed to beat doxygen-awesome's generic ".contents table:not(...)" rules. */
+div.contents:has(table.object-grid),
+div.header:has(+ div.contents table.object-grid) .title {
+    max-width: none;
+}
+
+table.object-grid {
+    display: block !important;
+    container-type: inline-size;
+    width: 100%;
+    max-width: 100% !important;
+    margin: 0 !important;
+}
+
+table.object-grid > tbody {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--spacing-medium) var(--spacing-large);
+    max-width: 100% !important;
+}
+
+table.object-grid > tbody > tr {
+    display: contents;
+}
+
+table.object-grid > tbody > tr > td {
+    display: block;
+    min-width: 0;
+    padding: 0;
+    border: none;
+    background: none;
+}
+
+table.object-grid > tbody > tr > td h3 {
+    margin-top: 0;
+}
+
+table.object-grid table.markdownTable {
+    display: table !important;
+    width: 100%;
+    font-size: 0.85em;
+    margin: var(--spacing-medium) 0;
+    box-shadow: 0 0 0 1px var(--separator-color);
+    border-radius: var(--border-radius-small);
+}
+
+table.object-grid table.markdownTable > tbody {
+    display: table-row-group !important;
+    box-shadow: none;
+    margin: 0;
+}
+
+table.object-grid table.markdownTable td,
+table.object-grid table.markdownTable th {
+    padding: var(--spacing-small);
+}
+
+table.object-grid table.markdownTable span.tt {
+    padding: 0 2px;
+    border: none;
+}
+
+/* Keep ID, Name, and Class on one line; only the "What" column (3rd) wraps */
+table.object-grid table.markdownTable td,
+table.object-grid table.markdownTable td span.tt {
+    white-space: nowrap;
+}
+
+table.object-grid table.markdownTable td:nth-child(3) {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    width: 100%;
+}
+
+/* Fall back to two columns, then one, once the fixed columns no longer fit */
+@container (max-width: 1549px) {
+    table.object-grid > tbody {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@container (max-width: 789px) {
+    table.object-grid > tbody {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
