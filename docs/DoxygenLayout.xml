@@ -11,6 +11,7 @@
     </tab>
     <tab type="classlist" visible="yes" title=""/>
     <tab type="filelist" visible="yes" title=""/>
+    <tab type="user" visible="yes" title="Object List" url="@ref objectlist"/>
     <tab type="usergroup" title="TODO">
       <tab type="user" title="Poor Names" url="@ref rename"/>
       <tab type="user" title="Unused" url="@ref unused"/>
