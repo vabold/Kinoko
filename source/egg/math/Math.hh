@@ -666,7 +666,7 @@ static constexpr std::array<BaseAndDec32, 32> FRES_TABLE = {{
     u32 sign = static_cast<u32>(bits.u >> 32) & SIGN_MASK_F32;
 
     if (exponent < -1) {
-        bool nonzero = (bits.u & !SIGN_MASK_F64) != 0;
+        bool nonzero = (bits.u & ~SIGN_MASK_F64) != 0;
 
         if (nonzero) {
             // Create the largest normal number. It'll be a better approximation than infinity.
