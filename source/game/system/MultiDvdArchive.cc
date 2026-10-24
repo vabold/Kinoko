@@ -73,9 +73,9 @@ void MultiDvdArchive::load(const char *filename) {
         }
 
         if (m_formats[i] == Format::None) {
-            m_archives[i].load(m_fileStarts[i], m_fileSizes[i], true);
+            m_archives[i].load(m_fileStarts[i], m_fileSizes[i]);
         } else {
-            m_archives[i].load(buffer, true);
+            m_archives[i].load(buffer);
         }
     }
 }

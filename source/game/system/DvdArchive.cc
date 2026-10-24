@@ -54,13 +54,13 @@ void *DvdArchive::getFile(const char *filename, size_t *size) const {
 }
 
 /// @addr{0x80518E10}
-void DvdArchive::load(const char *path, bool decompress_) {
+void DvdArchive::load(const char *path) {
     if (m_state == State::Cleared) {
         rip(path);
     }
 
     if (m_state == State::Ripped) {
-        if (decompress_) {
+        if (EGG::Decomp::CheckCompressed(static_cast<u8 *>(m_fileStart))) {
             decompress();
             clearFile();
         } else {
@@ -85,13 +85,15 @@ void DvdArchive::load(const DvdArchive *other) {
 }
 
 /// @addr{0x80518FBC}
-void DvdArchive::load(void *fileStart, size_t fileSize, bool decompress_) {
+void DvdArchive::load(void *fileStart, size_t fileSize) {
     m_fileStart = fileStart;
     m_fileSize = fileSize;
-    if (decompress_) {
+    if (EGG::Decomp::CheckCompressed(static_cast<u8 *>(m_fileStart))) {
         decompress();
         m_fileStart = nullptr;
         m_fileSize = 0;
+    } else {
+        move();
     }
     mount();
 }
