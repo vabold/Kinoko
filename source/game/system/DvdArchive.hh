@@ -18,9 +18,9 @@ public:
 
     void decompress();
     void *getFile(const char *filename, size_t *size) const;
-    void load(const char *path, bool decompress_);
+    void load(const char *path);
     void load(const DvdArchive *other);
-    void load(void *fileStart, size_t fileSize, bool decompress_);
+    void load(void *fileStart, size_t fileSize);
     void mount();
     void move();
     void rip(const char *path);
