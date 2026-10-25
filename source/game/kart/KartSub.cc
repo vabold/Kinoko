@@ -315,6 +315,11 @@ void KartSub::calcPass1() {
             }
         }
 
+        // Optimization for Kinoko - KartCollide::applySomeFloorMoment() will re-compute the world
+        // inertia tensor for the kart on each iteration of the suspension loop. Since this value
+        // doesn't change within this loop, we compute it once and cache it.
+        collide()->setWorldInertiaTensor(dynamics()->calcWorldInertiaTensor());
+
         for (u16 wheelIdx = 0; wheelIdx < suspCount(); ++wheelIdx) {
             suspensionPhysics(wheelIdx)->calcSuspension(forward, vehicleCompensation);
         }

@@ -39,6 +39,8 @@ public:
         m_totalForce += pos;
     }
 
+    [[nodiscard]] EGG::Matrix34f calcWorldInertiaTensor() const;
+
     /// @beginSetters
     void setPos(const EGG::Vector3f &pos) {
         m_pos = pos;

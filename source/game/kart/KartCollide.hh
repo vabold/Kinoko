@@ -153,6 +153,10 @@ public:
     void setMovement(const EGG::Vector3f &v) {
         m_movement = v;
     }
+
+    void setWorldInertiaTensor(const EGG::Matrix34f &worldInertiaTensor) {
+        m_worldInertiaTensor = worldInertiaTensor;
+    }
     /// @endSetters
 
     /// @beginGetters
@@ -226,6 +230,11 @@ private:
     s16 m_poleAngVelTimer;
     f32 m_poleYaw;
     f32 m_colPerpendicularity;
+
+    /// @brief The world-space inertia tensor of the kart
+    /// @details We cache this value in Kinoko to avoid unnecessary recomputation in @ref
+    /// applySomeFloorMoment().
+    EGG::Matrix34f m_worldInertiaTensor;
 
     static std::array<ObjectCollisionHandler, 33> s_objectCollisionHandlers;
 };
