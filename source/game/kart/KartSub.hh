@@ -50,8 +50,6 @@ private:
     s16 m_sideCollisionTimer;  ///< Number of frames to apply movement from wall collision.
     f32 m_colPerpendicularity; ///< Dot product between floor and colliding wall normals.
     f32 m_someScale;           /// @rename
-
-    static constexpr f32 DT = 1.0f; ///< Delta time.
 };
 
 } // namespace Kinoko::Kart
