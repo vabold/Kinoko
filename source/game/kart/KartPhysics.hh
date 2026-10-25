@@ -18,7 +18,7 @@ public:
     void reset();
     void updatePose();
 
-    void calc(f32 dt, f32 maxSpeed, const EGG::Vector3f &scale, bool air);
+    void calc(f32 maxSpeed, const EGG::Vector3f &scale, bool air);
 
     /// @beginSetters
     void setPos(const EGG::Vector3f &pos) {

@@ -169,8 +169,7 @@ void KartSuspensionPhysics::setInitialState() {
 }
 
 /// @addr{0x8059A278}
-void KartSuspensionPhysics::calcCollision(f32 dt, const EGG::Vector3f &gravity,
-        const EGG::Matrix34f &mat) {
+void KartSuspensionPhysics::calcCollision(const EGG::Vector3f &gravity, const EGG::Matrix34f &mat) {
     m_maxTravelScaled = m_bspWheel->maxTravel * sub()->someScale();
 
     EGG::Vector3f scaledRelPos = m_bspWheel->relPosition * scale();
@@ -187,7 +186,7 @@ void KartSuspensionPhysics::calcCollision(f32 dt, const EGG::Vector3f &gravity,
 
     f32 y_down = m_tirePhysics->suspTravel() + 5.0f * sub()->someScale();
     m_tirePhysics->setSuspTravel(std::max(0.0f, std::min(m_maxTravelScaled, y_down)));
-    m_tirePhysics->setColVel(dt * 10.0f * gravity);
+    m_tirePhysics->setColVel(10.0f * gravity);
     m_tirePhysics->setPos(topmostPos + m_tirePhysics->suspTravel() * m_bottomDir);
 
     if (status().offBit(eStatus::SkipWheelCalc)) {

@@ -128,7 +128,7 @@ public:
 
     void setInitialState();
 
-    void calcCollision(f32 dt, const EGG::Vector3f &gravity, const EGG::Matrix34f &mat);
+    void calcCollision(const EGG::Vector3f &gravity, const EGG::Matrix34f &mat);
     void calcSuspension(const EGG::Vector3f &forward, const EGG::Vector3f &vehicleMovement);
 
 private:
