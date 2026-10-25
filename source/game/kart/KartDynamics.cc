@@ -227,6 +227,13 @@ void KartDynamics::applyWrenchScaled(const EGG::Vector3f &p, const EGG::Vector3f
     m_totalTorque += invPosRot.cross(invForceRot) * scale;
 }
 
+EGG::Matrix34f KartDynamics::calcWorldInertiaTensor() const {
+    EGG::Matrix34f rotMat;
+    rotMat.makeQ(m_mainRot);
+    EGG::Matrix34f tmp = rotMat.multiplyTo(m_invInertiaTensor);
+    return tmp.multiplyTo(rotMat.transpose());
+}
+
 KartDynamicsBike::KartDynamicsBike() = default;
 
 /// @addr{0x805B66E4}
