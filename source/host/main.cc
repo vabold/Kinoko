@@ -4,6 +4,11 @@
 
 #include <egg/core/ExpHeap.hh>
 
+#include <algorithm>
+#include <array>
+#include <string_view>
+#include <utility>
+
 using namespace Kinoko;
 
 #if defined(__arm64__) || defined(__aarch64__)
@@ -19,6 +24,13 @@ static void FlushDenormalsToZero() {
     _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);
 }
 #endif
+
+using ModeEntry = std::pair<std::string_view, KSystem *(*)()>;
+
+static constexpr std::array<ModeEntry, 2> MODE_MAP = {{
+        {"test", []() -> KSystem * { return KTestSystem::CreateInstance(); }},
+        {"replay", []() -> KSystem * { return KReplaySystem::CreateInstance(); }},
+}};
 
 static void *s_memorySpace = nullptr;
 static EGG::Heap *s_rootHeap = nullptr;
@@ -36,31 +48,20 @@ int main(int argc, char **argv) {
     FlushDenormalsToZero();
     InitMemory();
 
-    // The hashmap cannot be constexpr, as it heap-allocates
-    // Therefore, it cannot be static, as memory needs to be initialized first
-    // TODO: Allow memory initialization before any other static initializers
-    const std::unordered_map<std::string, std::function<KSystem *()>> modeMap = {
-            {"test", []() -> KSystem * { return KTestSystem::CreateInstance(); }},
-            {"replay", []() -> KSystem * { return KReplaySystem::CreateInstance(); }},
-    };
-
     if (argc < 2) {
         PANIC("Too few arguments!");
     }
 
-    KSystem *sys = nullptr;
-
     // The first argument is the executable, so we ignore it
     // The second argument is the mode
-    const std::string mode = argv[1];
+    const std::string_view mode = argv[1];
 
-    auto it = modeMap.find(mode);
-    if (it != modeMap.end()) {
-        sys = it->second();
-    } else {
+    auto it = std::ranges::find(MODE_MAP, mode, &ModeEntry::first);
+    if (it == MODE_MAP.end()) {
         PANIC("Invalid mode!");
     }
 
+    KSystem *sys = it->second();
     sys->parseOptions(argc - 2, argv + 2);
     sys->init();
     return sys->run() ? 0 : 1;
