@@ -50,6 +50,8 @@ common_ccflags = [
 
 target_cflags = [
     '-O3',
+    '-ffat-lto-objects',
+    '-flto',
     '--param inline-unit-growth=1000',
 ]
 
@@ -62,6 +64,11 @@ debug_cflags = [
 ]
 
 common_ldflags = []
+
+target_ldflags = [
+    '-flto',
+    '-flto-partition=one',
+]
 
 n.rule(
     'cc',
@@ -120,6 +127,7 @@ n.build(
     variables={
         'ldflags': ' '.join([
             *common_ldflags,
+            *target_ldflags,
         ])
     },
 )
