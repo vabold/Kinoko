@@ -83,6 +83,20 @@ public:
     };
     STATIC_ASSERT(sizeof(KCollisionPrism) == 0x10);
 
+    /// @brief Stores the vertex, height and normals of a collision prism
+    /// @details We introduce this struct in Kinoko in order to pre-fetch a prism's geometry rather
+    /// than accessing these fields from the various different arrays. This is a small performance
+    /// improvement due to cache locality.
+    struct alignas(0x40) KCollisionPrismGeometry {
+        EGG::Vector3f vtx;   ///< The first vertex of the tri
+        EGG::Vector3f enrm1; ///< The first edge's normal
+        EGG::Vector3f enrm2; ///< The second edge's normal
+        EGG::Vector3f enrm3; ///< The third edge's normal
+        EGG::Vector3f fnrm;  ///< The face normal
+        f32 height;          ///< The height of the tri
+    };
+    STATIC_ASSERT(sizeof(KCollisionPrismGeometry) == 0x40);
+
     KColData(const void *file);
     ~KColData();
 
@@ -111,34 +125,20 @@ public:
     [[nodiscard]] u16 prismCache(u32 idx) const {
         return m_prismCache[idx];
     }
-
-    [[nodiscard]] std::span<const KCollisionPrism> prisms() const {
-        return m_prisms.view();
-    }
-
-    [[nodiscard]] std::span<const EGG::Vector3f> nrms() const {
-        return m_nrms.view();
-    }
-
-    [[nodiscard]] std::span<const EGG::Vector3f> vertices() const {
-        return m_vertices.view();
-    }
     /// @endGetters
 
     [[nodiscard]] static EGG::Vector3f GetVertex(f32 height, const EGG::Vector3f &vertex1,
             const EGG::Vector3f &fnrm, const EGG::Vector3f &enrm3, const EGG::Vector3f &enrm);
 
 private:
-    void preloadPrisms();
-    void preloadNormals();
-    void preloadVertices();
+    void preloadPrismGeometry();
 
     template <CollisionCheckType Type>
-    [[nodiscard]] bool checkCollision(const KCollisionPrism &prism, f32 *distOut,
-            EGG::Vector3f *fnrmOut, u16 *flagsOut);
+    [[nodiscard]] bool checkCollision(u16 prismIdx, f32 *distOut, EGG::Vector3f *fnrmOut,
+            u16 *flagsOut);
 
-    [[nodiscard]] bool checkPointCollision(const KCollisionPrism &prism, f32 *distOut,
-            EGG::Vector3f *fnrmOut, u16 *flagsOut, bool movement);
+    [[nodiscard]] bool checkPointCollision(u16 prismIdx, f32 *distOut, EGG::Vector3f *fnrmOut,
+            u16 *flagsOut, bool movement);
     [[nodiscard]] bool checkSphereMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut);
     [[nodiscard]] bool checkPointMovement(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut);
     [[nodiscard]] bool checkPoint(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *attributeOut);
@@ -169,11 +169,14 @@ private:
     EGG::Vector3f m_cachedPos;
     f32 m_cachedRadius;
 
-    /// @brief Optimizes for time by avoiding unnecessary byteswapping.
-    /// The Wii doesn't have this problem because big endian is always assumed.
-    owning_span<KCollisionPrism> m_prisms;
-    owning_span<EGG::Vector3f> m_nrms;
-    owning_span<EGG::Vector3f> m_vertices;
+    /// @brief One-indexed array of each prism's geometry
+    /// @details Kinoko-specific optimization for cache locality. See @ref KCollisionPrismGeometry.
+    owning_span<KCollisionPrismGeometry> m_prismGeometry;
+
+    /// @brief One-indexed array of each prism's KCL attribute
+    /// @details Kept separate from @ref m_prismGeometry so that @ref KCollisionPrismGeometry can
+    /// have better cache alignment.
+    owning_span<u16> m_prismAttributes;
 };
 
 } // namespace Kinoko::Field
