@@ -27,8 +27,6 @@ public:
     virtual f32 getPathLength() const = 0;
     virtual std::span<const RailLineTransition> getLinearTransitions() const = 0;
     virtual std::span<const RailSplineTransition> getSplineTransitions() const = 0;
-    virtual s32 getEstimatorSampleCount() const = 0;
-    virtual f32 getEstimatorStep() const = 0;
     virtual std::span<const f32> getPathPercentages() const = 0;
 
     void addPoint(f32 scale, const EGG::Vector3f &point);
@@ -78,16 +76,6 @@ public:
     RailLine(u16 idx, System::MapdataPointInfo *info);
     ~RailLine() override;
 
-    /// @addr{0x806F09A8}
-    [[nodiscard]] s32 getEstimatorSampleCount() const override {
-        return 0;
-    }
-
-    /// @addr{0x806F099C}
-    [[nodiscard]] f32 getEstimatorStep() const override {
-        return 0.0f;
-    }
-
     /// @addr{0x806F0994}
     /// @brief In the base game we return a nullptr. To mimic this, return an empty vector.
     [[nodiscard]] std::span<const f32> getPathPercentages() const override {
@@ -126,19 +114,18 @@ public:
     RailSpline(u16 idx, System::MapdataPointInfo *info);
     ~RailSpline() override;
 
-    /// @addr{0x806EF994}
-    [[nodiscard]] s32 getEstimatorSampleCount() const override {
-        return m_estimatorSampleCount;
-    }
-
-    /// @addr{0x806EF98C}
-    [[nodiscard]] f32 getEstimatorStep() const override {
-        return m_estimatorStep;
-    }
-
     /// @addr{0x806EF984}
     [[nodiscard]] std::span<const f32> getPathPercentages() const override {
         return m_pathPercentages.view();
+    }
+
+    [[nodiscard]] static consteval u32 getEstimatorSampleCount() {
+        return ESTIMATOR_SAMPLE_COUNT;
+    }
+
+    /// @addr{0x806EF98C}
+    [[nodiscard]] static consteval f32 getEstimatorStep() {
+        return ESTIMATOR_STEP;
     }
 
 private:
@@ -174,12 +161,13 @@ private:
 
     u16 m_transitionCount;
     owning_span<RailSplineTransition> m_transitions;
-    u32 m_estimatorSampleCount;
-    f32 m_estimatorStep;
     owning_span<f32> m_pathPercentages;
     s32 m_segmentCount;
     f32 m_pathLength;
     bool m_doNotAllocatePathPercentages;
+
+    static constexpr u32 ESTIMATOR_SAMPLE_COUNT = 10;
+    static constexpr f32 ESTIMATOR_STEP = 1.0f / static_cast<f32>(ESTIMATOR_SAMPLE_COUNT);
 };
 
 } // namespace Kinoko::Field

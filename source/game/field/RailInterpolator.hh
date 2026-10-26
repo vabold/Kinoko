@@ -193,8 +193,6 @@ private:
     void calcNextSegment();
 
     std::span<const RailSplineTransition> m_transitions;
-    u32 m_estimatorSampleCount;
-    f32 m_estimatorStep;
     std::span<const f32> m_pathPercentages;
     EGG::Vector3f m_prevPos;
     f32 m_velocity;
