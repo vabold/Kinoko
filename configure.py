@@ -52,6 +52,8 @@ target_cflags = [
     '-O3',
     '-ffat-lto-objects',
     '-flto',
+    '-fno-math-errno',
+    '-fno-trapping-math',
     '--param inline-unit-growth=1000',
 ]
 
@@ -60,6 +62,7 @@ debug_cflags = [
     '-O0',
     '-ggdb',
     '-fcheck-new',
+    '-fsignaling-nans',
     '-fstack-protector-strong',
 ]
 
