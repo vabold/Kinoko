@@ -83,8 +83,6 @@ RailLine::~RailLine() = default;
 RailSpline::RailSpline(u16 idx, System::MapdataPointInfo *info) : Rail(idx, info) {
     m_transitionCount = m_isOscillating ? m_pointCount - 1 : m_pointCount;
     m_transitions = owning_span<RailSplineTransition>(m_transitionCount);
-    m_estimatorSampleCount = 10;
-    m_estimatorStep = 1.0f / static_cast<f32>(m_estimatorSampleCount);
 
     // This is normally not set until AFTER the call to invalidateTransitions,
     // but the expected behavior requires that this is set to false.
@@ -134,7 +132,7 @@ void RailSpline::onPointAdded() {
 /// @addr{0x806EDA04}
 void RailSpline::invalidateTransitions(bool lastOnly) {
     if (!m_doNotAllocatePathPercentages) {
-        size_t count = m_estimatorSampleCount * m_transitionCount + 1;
+        size_t count = ESTIMATOR_SAMPLE_COUNT * m_transitionCount + 1;
         m_pathPercentages = owning_span<f32>(count);
     }
 
@@ -149,12 +147,12 @@ void RailSpline::invalidateTransitions(bool lastOnly) {
             firstTransition.m_p2 =
                     calcCubicBezierP2(m_points[0].pos, m_points[1].pos, m_points[2].pos);
             firstTransition.m_p3 = m_points[1].pos;
-            firstTransition.m_length = estimateLength(firstTransition, m_estimatorSampleCount);
+            firstTransition.m_length = estimateLength(firstTransition, ESTIMATOR_SAMPLE_COUNT);
             firstTransition.m_lengthInv = 1.0f / firstTransition.m_length;
 
             for (u16 i = 1; i < m_transitionCount - 1; ++i) {
                 calcCubicBezierControlPoints(m_points[i - 1].pos, m_points[i].pos,
-                        m_points[i + 1].pos, m_points[i + 2].pos, m_estimatorSampleCount,
+                        m_points[i + 1].pos, m_points[i + 2].pos, ESTIMATOR_SAMPLE_COUNT,
                         m_transitions[i]);
             }
         }
@@ -168,7 +166,7 @@ void RailSpline::invalidateTransitions(bool lastOnly) {
                         .multInv(4.0f) +
                 m_points[m_transitionCount].pos;
         lastTransition.m_p3 = m_points[m_transitionCount].pos;
-        lastTransition.m_length = estimateLength(lastTransition, m_estimatorSampleCount);
+        lastTransition.m_length = estimateLength(lastTransition, ESTIMATOR_SAMPLE_COUNT);
         lastTransition.m_lengthInv = 1.0f / lastTransition.m_length;
     } else {
         if (!lastOnly) {
@@ -179,17 +177,17 @@ void RailSpline::invalidateTransitions(bool lastOnly) {
             firstTransition.m_p2 =
                     calcCubicBezierP2(m_points[0].pos, m_points[1].pos, m_points[2].pos);
             firstTransition.m_p3 = m_points[1].pos;
-            firstTransition.m_length = estimateLength(firstTransition, m_estimatorSampleCount);
+            firstTransition.m_length = estimateLength(firstTransition, ESTIMATOR_SAMPLE_COUNT);
             firstTransition.m_lengthInv = 1.0f / firstTransition.m_length;
 
             for (u16 i = 1; i < m_transitionCount - 1; ++i) {
                 if (i + 2 != m_transitionCount) {
                     calcCubicBezierControlPoints(m_points[i - 1].pos, m_points[i].pos,
-                            m_points[i + 1].pos, m_points[i + 2].pos, m_estimatorSampleCount,
+                            m_points[i + 1].pos, m_points[i + 2].pos, ESTIMATOR_SAMPLE_COUNT,
                             m_transitions[i]);
                 } else {
                     calcCubicBezierControlPoints(m_points[i - 1].pos, m_points[i].pos,
-                            m_points[i + 1].pos, m_points[0].pos, m_estimatorSampleCount,
+                            m_points[i + 1].pos, m_points[0].pos, ESTIMATOR_SAMPLE_COUNT,
                             m_transitions[i]);
                 }
             }
@@ -202,7 +200,7 @@ void RailSpline::invalidateTransitions(bool lastOnly) {
         lastTransition.m_p2 = calcCubicBezierP2(m_points[m_transitionCount - 1].pos,
                 m_points[0].pos, m_points[1].pos);
         lastTransition.m_p3 = m_points[0].pos;
-        lastTransition.m_length = estimateLength(lastTransition, m_estimatorSampleCount);
+        lastTransition.m_length = estimateLength(lastTransition, ESTIMATOR_SAMPLE_COUNT);
         lastTransition.m_lengthInv = 1.0f / lastTransition.m_length;
     }
 }
@@ -224,7 +222,7 @@ f32 RailSpline::estimateLength(const RailSplineTransition &transition, s32 count
     std::array<EGG::Vector3f, 11> waypoints;
 
     for (s32 i = 0; i < count + 1; ++i) {
-        waypoints[i] = cubicBezier(m_estimatorStep * static_cast<f32>(i), transition);
+        waypoints[i] = cubicBezier(ESTIMATOR_STEP * static_cast<f32>(i), transition);
     }
     f32 length = 0.0f;
 
