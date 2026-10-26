@@ -79,7 +79,6 @@ private:
     ObjectId m_dummyId;
     EGG::Vector3f m_scaledTangentDir;
     f32 m_currSpeed;
-    EGG::Vector3f m_up;
     EGG::Vector3f m_tangent;
     bool m_squashed;
     bool m_hasAuxCollision;
