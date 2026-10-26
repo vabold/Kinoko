@@ -460,12 +460,12 @@ static constexpr AtanEntry sArcTanTbl[32 + 1] = {
 
 /// @addr{0x8022F89C}
 [[nodiscard]] static inline constexpr f32 asin(f32 x) {
-    return ::asinl(x);
+    return static_cast<f32>(::asin(static_cast<f64>(x)));
 }
 
 /// @addr{0x8022F8C0}
 [[nodiscard]] static inline constexpr f32 acos(f32 x) {
-    return ::acosl(x);
+    return static_cast<f32>(::acos(static_cast<f64>(x)));
 }
 
 /// @addr{0x8022F8E4}
