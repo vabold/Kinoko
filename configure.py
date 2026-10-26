@@ -50,6 +50,7 @@ common_ccflags = [
 
 target_cflags = [
     '-O3',
+    '--param inline-unit-growth=1000',
 ]
 
 debug_cflags = [
