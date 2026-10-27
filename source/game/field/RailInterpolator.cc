@@ -439,6 +439,8 @@ EGG::Vector3f RailSmoothInterpolator::calcCubicBezierTangentDir(f32 t,
 }
 
 /// @addr{0x806EF0F8}
+/// @note For Kinoko, we introduce a slight performance improvement by early returning once the
+/// correct segment is found.
 f32 RailSmoothInterpolator::calcT(f32 t) const {
     constexpr u32 ESTIMATOR_SAMPLE_COUNT = RailSpline::getEstimatorSampleCount();
     constexpr f32 ESTIMATOR_STEP = RailSpline::getEstimatorStep();
@@ -446,27 +448,25 @@ f32 RailSmoothInterpolator::calcT(f32 t) const {
     u16 sampleIdx = m_movementDirectionForward ? m_currPointIdx * ESTIMATOR_SAMPLE_COUNT :
                                                  m_nextPointIdx * ESTIMATOR_SAMPLE_COUNT;
 
-    f32 delta = 0.0f;
-    u16 idx = 0;
-
     for (u16 i = 0; i < ESTIMATOR_SAMPLE_COUNT - 1; ++i) {
         f32 currPercent = m_pathPercentages[sampleIdx + i];
         f32 nextPercent = m_pathPercentages[sampleIdx + i + 1];
 
         if (currPercent <= t && nextPercent > t) {
-            delta = (t - currPercent) / (nextPercent - currPercent);
-            idx = i;
+            f32 delta = (t - currPercent) / (nextPercent - currPercent);
+            return ESTIMATOR_STEP * static_cast<f32>(i) + ESTIMATOR_STEP * delta;
         }
     }
 
     f32 lastPercent = m_pathPercentages[sampleIdx + ESTIMATOR_SAMPLE_COUNT - 1];
 
     if (lastPercent <= t && 1.0f >= t) {
-        idx = ESTIMATOR_SAMPLE_COUNT - 1;
-        delta = (t - lastPercent) / (1.0f - lastPercent);
+        u16 idx = ESTIMATOR_SAMPLE_COUNT - 1;
+        f32 delta = (t - lastPercent) / (1.0f - lastPercent);
+        return ESTIMATOR_STEP * static_cast<f32>(idx) + ESTIMATOR_STEP * delta;
     }
 
-    return ESTIMATOR_STEP * static_cast<f32>(idx) + ESTIMATOR_STEP * delta;
+    return 0.0f;
 }
 
 /// @addr{0x806EF664}
