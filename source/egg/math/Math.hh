@@ -31,15 +31,13 @@ namespace EGG::Mathf {
 /// @brief Fused multiply-add operation.
 /// @details We cannot use std::fma due to the Wii computing at 64-bit precision.
 [[nodiscard]] static inline constexpr f32 fma(f32 x, f32 y, f32 z) {
-    return static_cast<f32>(
-            static_cast<f64>(x) * force25Bit(static_cast<f64>(y)) + static_cast<f64>(z));
+    return static_cast<f32>(static_cast<f64>(x) * static_cast<f64>(y) + static_cast<f64>(z));
 }
 
 /// @brief Fused multiply-subtract operation.
 /// @details We cannot use std::fms due to the Wii computing at 64-bit precision.
 [[nodiscard]] static inline constexpr f32 fms(f32 x, f32 y, f32 z) {
-    return static_cast<f32>(
-            static_cast<f64>(x) * force25Bit(static_cast<f64>(y)) - static_cast<f64>(z));
+    return static_cast<f32>(static_cast<f64>(x) * static_cast<f64>(y) - static_cast<f64>(z));
 }
 
 // sin/cos struct
