@@ -1,16 +1,25 @@
 #include "KartCamera.hh"
 
 #include "game/field/CollisionDirector.hh"
+#include "game/field/ObjectDrivableDirector.hh"
 
 namespace Kinoko::Render {
 
 /// @addr{0x805A21D0}
+/// @note Kinoko skips the camera calculation entirely when there are no drivable objects requiring
+/// per-frame calculations. @ref KartCamera is only implemented in order to prevent desyncs that can
+/// occur for drivable or KCL objects, which means we can skip it if no such objects are loaded on
+/// the course.
 void KartCamera::calc() {
     constexpr f32 HOP_POS_INTERP_RATE = 0.8f;
     constexpr f32 FORWARD_INTERP_RATE = 0.35f;
     constexpr f32 HORIZ_POS_INTERP_RATE = 0.05f;
     constexpr f32 VERT_POS_INTERP_RATE = 0.03f;
     constexpr f32 FAST_VERT_POS_INTERP_RATE = 0.1f;
+
+    if (!Field::ObjectDrivableDirector::Instance()->hasCalcObjects()) {
+        return;
+    }
 
     const auto *kartObj = Kart::KartObjectManager::Instance()->object(0);
     EGG::Vector3f targetPos = kartObj->pos();
