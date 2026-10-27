@@ -51,17 +51,6 @@ void KartCollide::resetHitboxes() {
 }
 
 /// @stage All
-/// @brief On each frame, calculates the positions for each hitbox
-/// @addr{0x8056EE24}
-void KartCollide::calcHitboxes() {
-    CollisionGroup *hitboxGroup = physics()->hitboxGroup();
-    for (u16 idx = 0; idx < hitboxGroup->hitboxCount(); ++idx) {
-        hitboxGroup->hitbox(idx).calc(move()->totalScale(), body()->sinkDepth(), scale(), fullRot(),
-                pos());
-    }
-}
-
-/// @stage All
 /// @addr{0x80572C20}
 void KartCollide::findCollision() {
     bool wasHalfPipe = status().onBit(eStatus::EndHalfPipe, eStatus::ActionMidZipper);
