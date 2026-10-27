@@ -140,6 +140,12 @@ private:
     EGG::Vector3f m_topmostPos;
     f32 m_maxTravelScaled;
     EGG::Vector3f m_bottomDir;
+
+    /// @brief @ref m_bottomDir before applying the wheel matrix
+    /// @details This is introduced in Kinoko as a slight performance optimization to prevent
+    /// frequent recalculation of the local bottom direction, which doesn't change after the wheel
+    /// is initialized.
+    EGG::Vector3f m_localBottomDir;
 };
 
 } // namespace Kinoko::Kart

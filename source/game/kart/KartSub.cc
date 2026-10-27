@@ -266,8 +266,14 @@ void KartSub::calcPass1() {
     const EGG::Vector3f gravity(0.0f, -1.3f, 0.0f);
     f32 speedFactor = 1.0f;
     f32 handlingFactor = 0.0f;
+
+    // Kinoko-specific: the kart's position and rotation don't change within this loop, so compute
+    // the body matrix once instead of once per wheel in KartBody::wheelMatrix().
+    EGG::Matrix34f bodyMat;
+    bodyMat.makeQT(fullRot(), pos());
+
     for (u16 i = 0; i < suspCount(); ++i) {
-        const EGG::Matrix34f wheelMatrix = body()->wheelMatrix(i);
+        const EGG::Matrix34f wheelMatrix = body()->wheelMatrix(i, bodyMat);
         suspensionPhysics(i)->calcCollision(gravity, wheelMatrix);
 
         const CollisionData &colData = tirePhysics(i)->hitboxGroup()->collisionData();

@@ -87,6 +87,7 @@ void KartObject::init() {
     createSub();
     auto *physics = KartPhysics::Create(*m_pointers.param);
     auto *body = createBody(physics);
+    body->init(m_pointers.param->kartDisp(), m_pointers.param->bikeDisp());
     m_pointers.body = body;
     createTires();
     for (u16 tireIdx = 0; tireIdx < m_pointers.param->tireCount(); ++tireIdx) {

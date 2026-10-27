@@ -13,10 +13,16 @@ KartBody::KartBody(KartPhysics *physics) : m_physics(physics) {
 
 /// @addr{0x8056C604}
 /// @brief Computes a matrix to represent wheel rotation. For Karts, this is wheel-agnostic.
-EGG::Matrix34f KartBody::wheelMatrix(u16) {
-    EGG::Matrix34f mat;
-    mat.makeQT(fullRot(), pos());
-    return mat;
+/// @param bodyMat The kart's rotation and position matrix
+/// @details For Kinoko, we introduce a performance optimization by having the caller compute
+/// `bodyMat` once for all wheels, rather than recomputing on each `wheelMatrix` call.
+EGG::Matrix34f KartBody::wheelMatrix(u16, const EGG::Matrix34f &bodyMat) {
+    return bodyMat;
+}
+
+/// @addr{0x8056C458}
+void KartBody::init(const KartParam::KartDisp &kartDisp, const KartParam::BikeDisp &bikeDisp) {
+    setParams(kartDisp, bikeDisp);
 }
 
 /// @addr{0x8056C4B4}
@@ -62,38 +68,41 @@ KartBodyBike::~KartBodyBike() {
 /// @brief Computes a matrix to represent the rotation of a wheel.
 /// @details For the front wheel, we factor in the handlebar rotation.
 /// For the rear wheel, we only factor in the kart's rotation.
+/// For Kinoko, we introduce a performance optimization by having the caller compute `bodyMat`
+/// once for all wheels, rather than recomputing on each `wheelMatrix` call.
 /// @param wheelIdx 0 for front wheel, 1 for rear wheel
-EGG::Matrix34f KartBodyBike::wheelMatrix(u16 wheelIdx) {
-    EGG::Matrix34f mat;
-
-    mat.makeQT(fullRot(), pos());
+/// @param bodyMat The kart's rotation and position matrix
+EGG::Matrix34f KartBodyBike::wheelMatrix(u16 wheelIdx, const EGG::Matrix34f &bodyMat) {
     if (wheelIdx != 0) {
-        return mat;
+        return bodyMat;
     }
 
-    EGG::Vector3f position = param()->bikeDisp().m_handlePos * scale();
-    EGG::Vector3f rotation = DEG2RAD * param()->bikeDisp().m_handleRot;
-
-    EGG::Matrix34f handleMatrix;
-    handleMatrix.makeRT(rotation, position);
-    EGG::Matrix34f tmp = mat.multiplyTo(handleMatrix);
+    m_handleRotMat.setBase(3, m_handlePos * scale());
+    EGG::Matrix34f tmp = bodyMat.multiplyTo(m_handleRotMat);
 
     EGG::Vector3f yRotation = EGG::Vector3f(0.0f, DEG2RAD * m_anAngle, 0.0f);
     EGG::Matrix34f yRotMatrix;
     yRotMatrix.makeR(yRotation);
-    mat = tmp.multiplyTo(yRotMatrix);
 
-    return mat;
+    return tmp.multiplyTo(yRotMatrix);
+}
+
+/// @addr{0x8056D970}
+void KartBodyBike::setParams(const KartParam::KartDisp & /* kartDisp */,
+        const KartParam::BikeDisp &bikeDisp) {
+    m_handlePos = bikeDisp.m_handlePos;
+    m_handleRotMat.makeR(DEG2RAD * bikeDisp.m_handleRot);
 }
 
 KartBodyQuacker::KartBodyQuacker(KartPhysics *physics) : KartBodyBike(physics) {}
 
 KartBodyQuacker::~KartBodyQuacker() = default;
 
-EGG::Matrix34f KartBodyQuacker::wheelMatrix(u16 /* wheelIdx */) {
-    EGG::Matrix34f mat;
-    mat.makeQT(fullRot(), pos());
-    return mat;
+/// @param bodyMat The kart's rotation and position matrix
+/// @details For Kinoko, we introduce a performance optimization by having the caller compute
+/// `bodyMat` once for all wheels, rather than recomputing on each `wheelMatrix` call.
+EGG::Matrix34f KartBodyQuacker::wheelMatrix(u16 /* wheelIdx */, const EGG::Matrix34f &bodyMat) {
+    return bodyMat;
 }
 
 } // namespace Kinoko::Kart

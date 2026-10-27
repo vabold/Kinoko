@@ -11,7 +11,11 @@ public:
     KartBody(KartPhysics *physics);
     virtual ~KartBody() {}
 
-    [[nodiscard]] virtual EGG::Matrix34f wheelMatrix(u16);
+    [[nodiscard]] virtual EGG::Matrix34f wheelMatrix(u16, const EGG::Matrix34f &bodyMat);
+    virtual void setParams(const KartParam::KartDisp &kartDisp,
+            const KartParam::BikeDisp &bikeDisp) = 0;
+
+    void init(const KartParam::KartDisp &kartDisp, const KartParam::BikeDisp &bikeDisp);
 
     void reset();
     void calcSinkDepth();
@@ -46,6 +50,9 @@ class KartBodyKart : public KartBody {
 public:
     KartBodyKart(KartPhysics *physics);
     ~KartBodyKart() override;
+
+    /// @addr{0x8056CDC4}
+    void setParams(const KartParam::KartDisp &, const KartParam::BikeDisp &) override {}
 };
 
 class KartBodyBike : public KartBody {
@@ -53,7 +60,17 @@ public:
     KartBodyBike(KartPhysics *physics);
     ~KartBodyBike() override;
 
-    [[nodiscard]] EGG::Matrix34f wheelMatrix(u16 wheelIdx) override;
+    [[nodiscard]] EGG::Matrix34f wheelMatrix(u16 wheelIdx, const EGG::Matrix34f &bodyMat) override;
+    void setParams(const KartParam::KartDisp &kartDisp,
+            const KartParam::BikeDisp &bikeDisp) override;
+
+private:
+    EGG::Vector3f m_handlePos; ///< The relative position of the handlebar
+
+    /// @brief The rotation of the handlebar
+    /// @details Introduced in Kinoko as a slight performance improvement to prevent unnecessarily
+    /// recalculating the handlebar rotation matrix every frame in wheelMatrix().
+    EGG::Matrix34f m_handleRotMat;
 };
 
 class KartBodyQuacker : public KartBodyBike {
@@ -61,7 +78,7 @@ public:
     KartBodyQuacker(KartPhysics *physics);
     ~KartBodyQuacker() override;
 
-    [[nodiscard]] EGG::Matrix34f wheelMatrix(u16 wheelIdx) override;
+    [[nodiscard]] EGG::Matrix34f wheelMatrix(u16 wheelIdx, const EGG::Matrix34f &bodyMat) override;
 };
 
 } // namespace Kinoko::Kart
