@@ -54,6 +54,11 @@ public:
         return m_obakeManager;
     }
 
+    /// @brief Checks whether any drivable objects require per-frame calculations
+    [[nodiscard]] bool hasCalcObjects() const {
+        return !m_calcObjects.empty();
+    }
+
     static ObjectDrivableDirector *CreateInstance();
     static void DestroyInstance();
 
