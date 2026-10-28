@@ -222,6 +222,11 @@ private:
     f32 m_startTmp2;
     f32 m_startTmp3;
 
+    /// @brief Bitmask of the @ref MapdataAreaBase::Type values present in @ref m_area
+    /// @details This is a performance optimization for Kinoko which lets @ref getCurrentAreaID()
+    /// skip searching for AREA types that are not present in the course.
+    EGG::TBitFlag<u32, MapdataAreaBase::Type> m_areaTypeMask;
+
     static void *LoadFile(const char *filename); ///< @addr{0x809BD6E8}
 
     static CourseMap *s_instance;
