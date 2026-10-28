@@ -99,9 +99,17 @@ public:
     void calc();
 
     /// @beginGetters
-    [[nodiscard]] const Timer &currentTimer() const {
-        return m_currentTimer;
+
+    [[nodiscard]] Timer currentTimer() const;
+
+    /// @brief Retrieves the number of frames the timer has been updated since the race started
+    /// @return The number of frames since the race started, @ref m_frameCounter
+    /// @details @ref currentTimer() reflects frame `m_frameCounter - 1`, or zero if no frames
+    /// have elapsed.
+    [[nodiscard]] u32 frameCounter() const {
+        return m_frameCounter;
     }
+
     /// @endGetters
 
     /// @beginSetters
@@ -110,10 +118,39 @@ public:
     }
     /// @endSetters
 
+    /// @brief Finds the first frame counter value whose timer reads at least `minutes` minutes
+    /// @param minutes The number of minutes to search for
+    /// @return The first frame counter value whose timer reads at least `minutes` minutes
+    /// @details Kinoko-specific. The timer's minutes never decrease as the frame counter increases,
+    /// so callers can compare against this instead of converting the timer every frame.
+    [[nodiscard]] static consteval u32 FirstFrameWithMinutes(u16 minutes) {
+        u32 frame = 0;
+        while (CalcMinutes(CalcTotalMs(frame)) < minutes) {
+            ++frame;
+        }
+
+        return frame;
+    }
+
 private:
-    Timer m_currentTimer;
-    bool m_started;
-    u32 m_frameCounter;
+    bool m_started;     ///< Indicates whether the race has started
+    u32 m_frameCounter; ///< The number of frames since the race started
+
+    static constexpr f32 REFRESH_PERIOD = 1000.0f / 59.94f;
+    static constexpr f32 MILLISECONDS_TO_MINUTES = 1.0f / 60000.0f;
+    static constexpr f32 MILLISECONDS_TO_SECONDS = 1.0f / 1000.0f;
+    static constexpr f32 SECONDS_TO_MILLISECONDS = 1000.0f;
+    static constexpr f32 MINUTES_TO_MILLISECONDS = 60000.0f;
+
+    /// @brief Converts a frame counter value to the total number of elapsed milliseconds
+    [[nodiscard]] static constexpr u32 CalcTotalMs(u32 frame) {
+        return static_cast<u32>(static_cast<f32>(frame) * REFRESH_PERIOD);
+    }
+
+    /// @brief Converts a total number of elapsed milliseconds to whole minutes
+    [[nodiscard]] static constexpr u16 CalcMinutes(u32 totalMs) {
+        return static_cast<u16>(static_cast<f32>(totalMs) * MILLISECONDS_TO_MINUTES);
+    }
 };
 
 } // namespace Kinoko::System
