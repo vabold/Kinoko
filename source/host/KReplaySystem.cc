@@ -117,14 +117,14 @@ KReplaySystem::~KReplaySystem() {
 /// @brief Determines whether or not the ghost simulation should end.
 /// @return Whether the ghost should end or not.
 bool KReplaySystem::calcEnd() const {
-    constexpr u16 MAX_MINUTE_COUNT = 10;
+    constexpr u32 MAX_FRAME_COUNT = 10 * 60 * 60; // 10 minutes
 
     const auto *raceManager = System::RaceManager::Instance();
     if (raceManager->stage() == System::RaceManager::Stage::FinishGlobal) {
         return true;
     }
 
-    if (raceManager->timerManager().currentTimer().min >= MAX_MINUTE_COUNT) {
+    if (raceManager->timerManager().frameCounter() > MAX_FRAME_COUNT) {
         return true;
     }
 

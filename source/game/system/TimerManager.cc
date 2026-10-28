@@ -29,39 +29,17 @@ TimerManager::~TimerManager() = default;
 
 /// @addr{0x80535864}
 void TimerManager::init() {
-    m_currentTimer.min = 0;
-    m_currentTimer.sec = 0;
-    m_currentTimer.mil = 0;
-    m_currentTimer.valid = true;
-
     m_started = false;
     m_frameCounter = 0;
 }
 
 /// @addr{0x80535904}
+/// @note For Kinoko, we omit per-frame @ref Timer calculation as a performance improvement. Upon
+/// lap completion, @ref m_frameCounter is used to compute the lap/race time.
 void TimerManager::calc() {
-    constexpr f32 REFRESH_PERIOD = 1000.0f / 59.94f;
-    constexpr f32 MILLISECONDS_TO_MINUTES = 1.0f / 60000.0f;
-    constexpr f32 MILLISECONDS_TO_SECONDS = 1.0f / 1000.0f;
-    constexpr f32 SECONDS_TO_MILLISECONDS = 1000.0f;
-    constexpr f32 MINUTES_TO_MILLISECONDS = 60000.0f;
-
     if (!m_started) {
         return;
     }
-
-    u32 minutesMs = static_cast<u32>(static_cast<f32>(m_frameCounter) * REFRESH_PERIOD);
-    u16 minutes = static_cast<u16>(static_cast<f32>(minutesMs) * MILLISECONDS_TO_MINUTES);
-    u32 secondsMs = static_cast<u32>(
-            static_cast<f32>(minutesMs) - static_cast<f32>(minutes) * MINUTES_TO_MILLISECONDS);
-    u8 seconds = static_cast<u8>(static_cast<f32>(secondsMs) * MILLISECONDS_TO_SECONDS);
-    u16 milliseconds = static_cast<u16>(
-            static_cast<f32>(secondsMs) - static_cast<f32>(seconds) * SECONDS_TO_MILLISECONDS);
-
-    m_currentTimer.min = minutes;
-    m_currentTimer.sec = seconds;
-    m_currentTimer.mil = milliseconds;
-    m_currentTimer.valid = true;
 
     ++m_frameCounter;
 }
