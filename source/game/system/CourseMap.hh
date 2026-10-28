@@ -228,6 +228,11 @@ private:
     /// that represents the last time the sector was searched.
     u32 m_sectorSearchId;
 
+    /// @brief Whether the loaded course has a moving road AREA
+    /// @details This is a performance optimization for Kinoko which lets @ref getCurrentAreaID()
+    /// skip searching for AREA types that are not present in the course.
+    bool m_hasMovingRoadArea;
+
     static void *LoadFile(const char *filename); ///< @addr{0x809BD6E8}
 
     static CourseMap *s_instance;
