@@ -55,6 +55,7 @@ public:
     }
 
     /// @brief Checks whether any drivable objects require per-frame calculations
+    /// @return `true` if @ref m_calcObjects is non-empty, `false` otherwise
     [[nodiscard]] bool hasCalcObjects() const {
         return !m_calcObjects.empty();
     }
