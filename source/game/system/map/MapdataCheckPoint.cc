@@ -15,6 +15,7 @@ MapdataCheckPoint::MapdataCheckPoint(const SData *data)
     m_midpoint = 0.5f * (m_left + m_right);
     m_dir = EGG::Vector2f(m_right.y - m_left.y, m_left.x - m_right.x);
     m_dir.normalise();
+    m_lastSearchedId = 0;
 }
 
 void MapdataCheckPoint::read(EGG::Stream &stream) {

@@ -222,6 +222,12 @@ private:
     f32 m_startTmp2;
     f32 m_startTmp3;
 
+    /// @brief Identifies the current sector search for @ref MapdataCheckPoint::searched()
+    /// @details This is a performance optimization for Kinoko. Rather than clearing the "searched"
+    /// flag for every checkpoint whenever we call @ref findSector(), we can instead store an ID
+    /// that represents the last time the sector was searched.
+    u32 m_sectorSearchId;
+
     static void *LoadFile(const char *filename); ///< @addr{0x809BD6E8}
 
     static CourseMap *s_instance;
