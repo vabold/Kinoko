@@ -508,26 +508,18 @@ void BoxColManager::searchImpl(BoxColUnit *unit, const BoxColFlag &flag) {
     m_cacheRadius = -1.0f;
     m_cacheFlag = flag;
 
-    for (; highPointIdx > 7 && m_highPoints[highPointIdx - 8].z >= lowZPos;) {
-        highPointIdx -= 8;
-    }
-
-    for (; highPointIdx > 0 && m_highPoints[highPointIdx - 1].z >= lowZPos;) {
+    while (highPointIdx > 0 && m_highPoints[highPointIdx - 1].z >= lowZPos) {
         --highPointIdx;
     }
 
-    for (; lowPointIdx < maxIdx - 7 && m_lowPoints[lowPointIdx + 8].z <= highZPos;) {
-        lowPointIdx += 8;
-    }
-
-    for (; lowPointIdx < maxIdx && m_lowPoints[lowPointIdx + 1].z <= highZPos;) {
+    while (lowPointIdx < maxIdx && m_lowPoints[lowPointIdx + 1].z <= highZPos) {
         ++lowPointIdx;
     }
 
     u8 minLowPoint = m_highPoints[highPointIdx].minLowPoint;
 
-    for (int i = lowPointIdx; i >= minLowPoint; --i, --lowPointIdx) {
-        BoxColLowPoint &low = m_lowPoints[i];
+    for (; lowPointIdx >= minLowPoint; --lowPointIdx) {
+        BoxColLowPoint &low = m_lowPoints[lowPointIdx];
 
         if (low.highPoint >= highPointIdx && lowPointIdx != origLowPointIdx) {
             BoxColUnit &lowUnit = m_unitPool[low.unitID];
@@ -599,8 +591,8 @@ void BoxColManager::searchImpl(f32 radius, const EGG::Vector3f &pos, const BoxCo
 
     u8 minLowPoint = m_highPoints[highPointIdx].minLowPoint;
 
-    for (i = lowPointIdx; i >= minLowPoint; --i, --lowPointIdx) {
-        BoxColLowPoint &low = m_lowPoints[i];
+    for (; lowPointIdx >= minLowPoint; --lowPointIdx) {
+        BoxColLowPoint &low = m_lowPoints[lowPointIdx];
         if (low.highPoint >= highPointIdx) {
             BoxColUnit &unit = m_unitPool[low.unitID];
 
