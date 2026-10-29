@@ -15,10 +15,7 @@ public:
         m_unit->init();
     }
 
-    /// @addr{8071E6C0}
-    void calc() {
-        m_unit->calc();
-    }
+    void calc();
 
     static JugemDirector *CreateInstance();
     [[nodiscard]] static JugemDirector *Instance();
