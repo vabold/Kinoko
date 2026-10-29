@@ -7,7 +7,7 @@ physics) or fall back to @ref Kinoko::Field::ObjectNoImpl "ObjectNoImpl".
 
 Some courses also construct manager classes that coordinate their objects; see @ref objectlist_managers "Course Managers" at the bottom of this page.
 
-## Course Objects
+## Course Objects {#objectlist_courses}
 
 <table class="object-grid">
 <tr>
