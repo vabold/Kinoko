@@ -304,8 +304,13 @@ void KartCollide::calcFloorEffect() {
 
 /// @addr{0x805718D4}
 void KartCollide::calcTriggers(Field::KCLTypeMask *mask, const EGG::Vector3f &pos, bool twoPoint) {
+    // Kinoko-specific performance optimization: the non-directional check's result is only used to
+    // set the wall and solid OOB surface flags, so we skip checking against all other KCL types.
+    constexpr Field::KCLTypeMask NON_DIRECTIONAL_MASK =
+            KCL_TYPE_NON_DIRECTIONAL & (KCL_TYPE_WALL | KCL_TYPE_BIT(COL_TYPE_SOLID_OOB));
+
     EGG::Vector3f v1 = twoPoint ? physics()->pos() : EGG::Vector3f::inf;
-    Field::KCLTypeMask typeMask = twoPoint ? KCL_TYPE_DIRECTIONAL : KCL_TYPE_NON_DIRECTIONAL;
+    Field::KCLTypeMask typeMask = twoPoint ? KCL_TYPE_DIRECTIONAL : NON_DIRECTIONAL_MASK;
     f32 radius = twoPoint ? 80.0f : 100.0f * move()->totalScale();
     f32 scalar = -bsp().initialYPos * move()->totalScale() * 0.3f;
     EGG::Vector3f scaledPos = pos + scalar * componentYAxis();
@@ -326,10 +331,6 @@ void KartCollide::calcTriggers(Field::KCLTypeMask *mask, const EGG::Vector3f &po
     if (twoPoint) {
         handleTriggers(mask);
     } else {
-        if (*mask & KCL_TYPE_FLOOR) {
-            Field::CollisionDirector::Instance()->findClosestCollisionEntry(mask, KCL_TYPE_FLOOR);
-        }
-
         if (*mask & KCL_TYPE_WALL) {
             m_surfaceFlags.setBit(eSurfaceFlags::Wall);
         }
