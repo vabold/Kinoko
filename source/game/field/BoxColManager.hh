@@ -84,6 +84,7 @@ public:
 
     [[nodiscard]] ObjectCollidable *getNextObject();
     [[nodiscard]] ObjectDrivable *getNextDrivable();
+    [[nodiscard]] bool hasNextObject() const;
 
     void resetIterators();
 

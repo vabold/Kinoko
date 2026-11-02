@@ -35,6 +35,12 @@ size_t ObjectCollisionKart::checkCollision(const EGG::Matrix34f &mat, const EGG:
         return 0;
     }
 
+    // Performance improvement for Kinoko: the hull is only used to check collision against nearby
+    // objects. If there are none, then skip the transform since there are no collisions.
+    if (!BoxColManager::Instance()->hasNextObject()) {
+        return 0;
+    }
+
     const EGG::Vector3f &scale = m_kartObject->scale();
     m_hull->transform(mat, scale, v);
     m_hull->setBoundingRadius(scale.x * m_hull->initRadius());
