@@ -15,7 +15,8 @@ namespace Kinoko::Field {
 ObjectCarTGE::ObjectCarTGE(const System::MapdataGeoObj &params)
     : ObjectCollidable(params), StateManager(this, STATE_ENTRIES), m_auxCollision(nullptr),
       m_carName{}, m_mdlName{}, m_carType(CarType::Normal), m_dummyId(ObjectId::None),
-      m_scaledTangentDir(EGG::Vector3f::zero), m_currSpeed(0.0f), m_tangent(EGG::Vector3f::zero) {
+      m_scaledTangentDir(EGG::Vector3f::zero), m_currSpeed(0.0f), m_tangent(EGG::Vector3f::zero),
+      m_transformPending(false) {
     u32 carVariant = static_cast<u32>(params.setting(3));
     m_highwayVel = static_cast<f32>(params.setting(2));
     m_localVel = static_cast<f32>(params.setting(1));
@@ -184,6 +185,13 @@ void ObjectCarTGE::calcCollisionTransform() {
         return;
     }
 
+    // Performance optimization for Kinoko: the rotation derived from m_tangent is only read when
+    // checking collision against the kart, so it's computed here instead of calcPos().
+    if (m_transformPending) {
+        m_transformPending = false;
+        setMatrixTangentTo(OrthonormalBasis(m_tangent).base(1), m_tangent);
+    }
+
     calcTransform();
     col->transform(transform(), scale(), m_scaledTangentDir);
     calcTransform();
@@ -333,7 +341,9 @@ void ObjectCarTGE::calcPos() {
         setPos(curPos - m_tangent * t * 0.5f - EGG::Vector3f::ey * 5.0f);
     }
 
-    setMatrixTangentTo(OrthonormalBasis(m_tangent).base(1), m_tangent);
+    // Performance optimization for Kinoko: the rotation derived from m_tangent is only read when
+    // checking collision against the kart, so defer computing it until calcCollisionTransform().
+    m_transformPending = true;
 }
 
 } // namespace Kinoko::Field
