@@ -191,6 +191,12 @@ ObjectDrivable *BoxColManager::getNextDrivable() {
     return reinterpret_cast<ObjectDrivable *>(getNextImpl(m_nextDrivableID, eBoxColFlag::Drivable));
 }
 
+/// @brief Checks whether there are any remaining collidable object units to iterate
+/// @return `true` if the object iterator has not been exhausted, `false` otherwise
+bool BoxColManager::hasNextObject() const {
+    return m_nextObjectID != MAX_UNIT_COUNT;
+}
+
 /// @addr{0x80785F2C}
 void BoxColManager::resetIterators() {
     m_nextObjectID = -1;
