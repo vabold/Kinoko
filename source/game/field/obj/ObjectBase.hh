@@ -178,8 +178,6 @@ protected:
     static void SetRotTangentHorizontal(EGG::Matrix34f &mat, const EGG::Vector3f &up,
             const EGG::Vector3f &tangent);
     [[nodiscard]] static EGG::Matrix34f OrthonormalBasis(const EGG::Vector3f &v);
-    [[nodiscard]] static EGG::Matrix34f RailOrthonormalBasis(
-            const RailInterpolator &railInterpolator);
     [[nodiscard]] static EGG::Vector3f AdjustVecForward(f32 sidewaysScalar, f32 forwardScalar,
             f32 minSpeed, const EGG::Vector3f &src, EGG::Vector3f forward);
 

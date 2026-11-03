@@ -211,13 +211,6 @@ EGG::Matrix34f ObjectBase::OrthonormalBasis(const EGG::Vector3f &v) {
     return mat;
 }
 
-/// @addr{0x806B46A4}
-EGG::Matrix34f ObjectBase::RailOrthonormalBasis(const RailInterpolator &railInterpolator) {
-    EGG::Matrix34f mat = OrthonormalBasis(railInterpolator.curTangentDir());
-    mat.setBase(3, railInterpolator.curPos());
-    return mat;
-}
-
 /// @addr{0x807DE934}
 EGG::Vector3f ObjectBase::AdjustVecForward(f32 sidewaysScalar, f32 forwardScalar, f32 minSpeed,
         const EGG::Vector3f &src, EGG::Vector3f forward) {

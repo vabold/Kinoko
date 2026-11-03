@@ -68,8 +68,8 @@ void ObjectChoropu::init() {
         m_railInterpolator->init(0.0f, 0);
         m_railInterpolator->setPerPointVelocities(true);
 
-        m_railMat = RailOrthonormalBasis(*m_railInterpolator);
-        setPos(m_railMat.base(3));
+        m_railPos = m_railInterpolator->curPos();
+        setPos(m_railPos);
 
         disableCollision();
         m_objHoll->disableCollision();
@@ -93,7 +93,9 @@ void ObjectChoropu::calc() {
             return;
         }
 
-        m_railMat = RailOrthonormalBasis(*m_railInterpolator);
+        // Kinoko-specific: the base game computes RailOrthonormalBasis() here, but only its
+        // translation is ever used, so we skip computing the rotation.
+        m_railPos = m_railInterpolator->curPos();
     }
 
     StateManager::calc();
@@ -133,7 +135,7 @@ void ObjectChoropu::enterPeeking() {
 
         enableCollision();
     } else {
-        setPos(m_railMat.base(3));
+        setPos(m_railPos);
         setRot(EGG::Vector3f(rot().x, 0.0f, 0.0f));
         enableCollision();
 
@@ -152,7 +154,7 @@ void ObjectChoropu::enterPeeking() {
 void ObjectChoropu::enterJumping() {
     enableCollision();
 
-    setPos(m_isStationary ? m_transMat.base(3) : m_railMat.base(3));
+    setPos(m_isStationary ? m_transMat.base(3) : m_railPos);
     setRot(EGG::Vector3f(rot().x, rot().y, 0.0f));
 }
 
