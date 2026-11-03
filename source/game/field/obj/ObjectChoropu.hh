@@ -53,7 +53,7 @@ private:
     f32 m_groundHeight;
     bool m_isStationary; ///< rPG moles don't move while MMM moles do
     EGG::Matrix34f m_transMat;
-    EGG::Matrix34f m_railMat;
+    EGG::Vector3f m_railPos;
     f32 m_groundLength;
 
     static constexpr f32 RADIUS = 300.0f;
