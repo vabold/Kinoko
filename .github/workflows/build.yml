@@ -78,7 +78,7 @@ jobs:
         with:
           name: Kinoko
       - name: Download dependencies
-        run: curl -L -o Runtime.tar.gz ${{ secrets.RUNTIME_DEPENDENCIES }}
+        run: curl -L -o Runtime.tar.gz "${{ secrets.RUNTIME_DEPENDENCIES }}"
       - name: Extract dependencies
         run: tar -xzf Runtime.tar.gz -C out
       - name: Install packages
