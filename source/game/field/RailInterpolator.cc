@@ -289,6 +289,7 @@ void RailSmoothInterpolator::init(f32 t, u32 idx) {
     m_velocity = 0.0f;
     m_4a = false;
     m_usePerPointVelocities = false;
+    m_velocityPending = false;
 }
 
 /// @addr{0x806EEBEC}
@@ -309,8 +310,7 @@ RailInterpolator::Status RailSmoothInterpolator::calc() {
 
     calcCubicBezier(t, m_currPointIdx, m_nextPointIdx, m_curPos, m_curTangentDir);
 
-    EGG::Vector3f deltaPos = m_curPos - m_prevPos;
-    m_velocity = deltaPos.length();
+    m_velocityPending = true;
     m_segmentT += m_currSegmentVel;
 
     if (m_segmentT <= 1.0f) {
