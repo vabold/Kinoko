@@ -155,8 +155,15 @@ private:
     void calcNextSegment();
     EGG::Vector3f lerp(f32 t, u32 currIdx, u32 nextIdx) const;
 
+    /// @rename
     EGG::Vector3f m_currentDirection;
+
     std::span<const RailLineTransition> m_transitions;
+
+    /// @brief The length of @ref m_currentDirection
+    /// @details Kinoko-specific optimization. @ref setSpeed() is called every frame when using
+    /// per-point velocities, so we cache the length rather than recomputing it each time.
+    f32 m_segmentLength;
 };
 
 class RailSmoothInterpolator : public RailInterpolator {
