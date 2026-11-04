@@ -6,13 +6,15 @@ namespace Kinoko::Field {
 
 /// @addr{0x80817DE8}
 ObjectVolcanoPiece::ObjectVolcanoPiece(const System::MapdataGeoObj &params)
-    : ObjectKCL(params), m_initialPos(pos()), m_initialRot(rot()),
-      m_restDuration(params.setting(1) * 60),
+    : ObjectKCL(params), m_initialPos(pos()), m_restDuration(params.setting(1) * 60),
       m_shakeDuration(m_restDuration + params.setting(2) * 60),
       m_quakeDuration(m_shakeDuration + params.setting(7) + 1), m_colMgrB(nullptr),
       m_colMgrC(nullptr) {
     snprintf(m_modelName, sizeof(m_modelName), "VolcanoPiece%hd",
             static_cast<s16>(params.setting(0)));
+
+    // The object's rotation never changes, so compute m_rtMat up front
+    m_rtMat.makeRT(rot(), m_initialPos);
 }
 
 /// @addr{0x80803DA8}
@@ -56,7 +58,7 @@ void ObjectVolcanoPiece::createCollision() {
 
     EGG::Matrix34f rtMat;
     EGG::Matrix34f invMat;
-    rtMat.makeRT(m_initialRot, m_initialPos);
+    rtMat.makeRT(rot(), m_initialPos);
     rtMat.ps_inverse(invMat);
 
     m_objColMgr->setMtx(rtMat);
@@ -265,7 +267,9 @@ const EGG::Matrix34f &ObjectVolcanoPiece::calcShakeAndFall(EGG::Vector3f *vel, u
         *vel = EGG::Vector3f(0.0f, pos.y - prevPos.y, 0.0f);
     }
 
-    m_rtMat.makeRT(rot(), pos);
+    // Kinoko-specific optimization: the object's rotation never changes, so only update the
+    // translation component of m_rtMat
+    m_rtMat.setBase(3, pos);
     return m_rtMat;
 }
 

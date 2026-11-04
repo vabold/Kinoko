@@ -210,7 +210,6 @@ private:
 
     char m_modelName[16];
     const EGG::Vector3f m_initialPos;
-    const EGG::Vector3f m_initialRot;
     const u32 m_restDuration;
     const u32 m_shakeDuration;
     const u32 m_quakeDuration;
