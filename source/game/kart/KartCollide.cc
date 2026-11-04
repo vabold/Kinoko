@@ -864,8 +864,15 @@ void KartCollide::applySomeFloorMoment(f32 down, f32 rate, CollisionGroup *hitbo
         }
     }
 
-    proj.normalise();
-    rej.normalise();
+    // Kinoko-specific: reuse the lengths computed above rather than recomputing them in
+    // normalise(). This saves 2 square root calls.
+    if (proj.squaredLength() > std::numeric_limits<f32>::epsilon()) {
+        proj *= 1.0f / projNorm;
+    }
+
+    if (rej.squaredLength() > std::numeric_limits<f32>::epsilon()) {
+        rej *= 1.0f / rejNorm;
+    }
 
     proj *= projNorm_;
     rej *= rejNorm_;
