@@ -16,7 +16,9 @@ namespace Kinoko::Field {
 ObjectBase::ObjectBase(const System::MapdataGeoObj &params)
     : m_drawMdl(nullptr), m_resFile(nullptr), m_id(static_cast<ObjectId>(params.id())),
       m_railInterpolator(nullptr), m_mapObj(&params), m_pos(params.pos()), m_scale(params.scale()),
-      m_rot(params.rot() * DEG2RAD), m_rotLock(true), m_transform(EGG::Matrix34f::ident) {
+      m_rot(params.rot() * DEG2RAD), m_rotLock(true), m_transform(EGG::Matrix34f::ident),
+      m_pendingRot(PendingRotation::None), m_pendingWork0(EGG::Vector3f::zero),
+      m_pendingWork1(EGG::Vector3f::zero) {
     m_flags.setBit(eFlags::Position, eFlags::Rotation, eFlags::Scale);
 }
 
@@ -24,7 +26,9 @@ ObjectBase::ObjectBase(const System::MapdataGeoObj &params)
 ObjectBase::ObjectBase(const char *name, const EGG::Vector3f &pos, const EGG::Vector3f &rot,
         const EGG::Vector3f &scale)
     : m_drawMdl(nullptr), m_resFile(nullptr), m_railInterpolator(nullptr), m_mapObj(nullptr),
-      m_pos(pos), m_scale(scale), m_rot(rot), m_rotLock(true), m_transform(EGG::Matrix34f::ident) {
+      m_pos(pos), m_scale(scale), m_rot(rot), m_rotLock(true), m_transform(EGG::Matrix34f::ident),
+      m_pendingRot(PendingRotation::None), m_pendingWork0(EGG::Vector3f::zero),
+      m_pendingWork1(EGG::Vector3f::zero) {
     m_flags.setBit(eFlags::Position, eFlags::Rotation, eFlags::Scale);
     m_id = ObjectDirector::Instance()->flowTable().getIdFromName(name);
 }
@@ -108,6 +112,7 @@ const char *ObjectBase::getKclName() const {
 /// @addr{0x80821640}
 void ObjectBase::calcTransform() {
     if (m_flags.onBit(eFlags::Rotation)) {
+        m_pendingRot = PendingRotation::None;
         m_transform.makeRT(m_rot, m_pos);
         m_flags.resetBit(eFlags::Rotation, eFlags::Position);
     } else if (m_flags.onBit(eFlags::Position)) {
@@ -119,6 +124,7 @@ void ObjectBase::calcTransform() {
 void ObjectBase::calcRotLock() {
     if (!m_rotLock) {
         m_rotLock = true;
+        resolvePendingRotation();
         m_rot = m_transform.calcRPY();
     }
 }
@@ -141,15 +147,44 @@ void ObjectBase::linkAnims(const std::span<const char *> &names,
 void ObjectBase::setMatrixTangentTo(const EGG::Vector3f &up, const EGG::Vector3f &tangent) {
     m_rotLock = false;
     m_flags.setBit(eFlags::Matrix);
-    SetRotTangentHorizontal(m_transform, up, tangent);
+
+    // Kinoko-specific: defer computing the rotation until the transform is read
+    m_pendingRot = PendingRotation::TangentTo;
+    m_pendingWork0 = up;
+    m_pendingWork1 = tangent;
     m_transform.setBase(3, m_pos);
 }
 
 /// @addr{0x808218B0}
 void ObjectBase::setMatrixFromOrthonormalBasisAndPos(const EGG::Vector3f &v) {
     m_flags.setBit(eFlags::Matrix);
-    m_transform = OrthonormalBasis(v);
+
+    // Kinoko-specific: defer computing the rotation until the transform is read
+    m_pendingRot = PendingRotation::OrthonormalBasis;
+    m_pendingWork0 = v;
     m_transform.setBase(3, m_pos);
+}
+
+/// @brief Computes the rotation columns of @ref m_transform from the @ref PendingRotation, if any
+/// @details This produces the same rotation as computing it immediately, since the rotation only
+/// depends on the saved up and tangent vectors, and all other writes to @ref m_transform before
+/// this point either only touch the translation column or discard the pending rotation.
+void ObjectBase::resolvePendingRotation() {
+    switch (m_pendingRot) {
+    case PendingRotation::None:
+        return;
+    case PendingRotation::TangentTo:
+        SetRotTangentHorizontal(m_transform, m_pendingWork0, m_pendingWork1);
+        break;
+    case PendingRotation::OrthonormalBasis: {
+        EGG::Matrix34f basis = OrthonormalBasis(m_pendingWork0);
+        m_transform.setBase(0, basis.base(0));
+        m_transform.setBase(1, basis.base(1));
+        m_transform.setBase(2, basis.base(2));
+    } break;
+    }
+
+    m_pendingRot = PendingRotation::None;
 }
 
 /// @addr{0x806B38A8}
