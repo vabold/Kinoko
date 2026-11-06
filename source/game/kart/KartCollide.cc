@@ -231,11 +231,6 @@ void KartCollide::calcBodyCollision(f32 totalScale, f32 sinkDepth, const EGG::Qu
 
         if (Field::CollisionDirector::Instance()->checkSphereCachedFullPush(hitbox.radius(),
                     hitbox.worldPos(), hitbox.lastPos(), flags, &colInfo, &maskOut, 0)) {
-            if (!!(maskOut & KCL_TYPE_VEHICLE_COLLIDEABLE)) {
-                Field::CollisionDirector::Instance()->findClosestCollisionEntry(&maskOut,
-                        KCL_TYPE_VEHICLE_COLLIDEABLE);
-            }
-
             if (!FUN_805B6A9C(collisionData, hitbox, minMax, posRel, count, maskOut, colInfo)) {
                 bVar1 = true;
 
@@ -344,12 +339,12 @@ void KartCollide::handleTriggers(Field::KCLTypeMask *mask) {
 
     if (*mask & KCL_TYPE_BIT(COL_TYPE_EFFECT_TRIGGER)) {
         auto *colDir = Field::CollisionDirector::Instance();
-        if (colDir->findClosestCollisionEntry(mask, KCL_TYPE_BIT(COL_TYPE_EFFECT_TRIGGER))) {
-            if (colDir->closestCollisionEntry()->variant() == 4) {
-                halfPipe()->end(true);
-                status().setBit(eStatus::EndHalfPipe);
-                m_surfaceFlags.setBit(eSurfaceFlags::StopHalfPipeState);
-            }
+        const auto *entry =
+                colDir->findClosestCollisionEntry(mask, KCL_TYPE_BIT(COL_TYPE_EFFECT_TRIGGER));
+        if (entry && entry->variant() == 4) {
+            halfPipe()->end(true);
+            status().setBit(eStatus::EndHalfPipe);
+            m_surfaceFlags.setBit(eSurfaceFlags::StopHalfPipeState);
         }
     }
 }
@@ -362,8 +357,9 @@ void KartCollide::calcFallBoundary(Field::KCLTypeMask *mask, bool shortBoundary)
 
     if (shortBoundary) {
         auto *colDir = Field::CollisionDirector::Instance();
-        if (!colDir->findClosestCollisionEntry(mask, KCL_TYPE_BIT(COL_TYPE_FALL_BOUNDARY)) ||
-                colDir->closestCollisionEntry()->variant() != 7) {
+        const auto *entry =
+                colDir->findClosestCollisionEntry(mask, KCL_TYPE_BIT(COL_TYPE_FALL_BOUNDARY));
+        if (!entry || entry->variant() != 7) {
             return;
         }
     }
@@ -622,13 +618,14 @@ void KartCollide::processMovingWater(CollisionData &collisionData, Field::KCLTyp
     }
 
     auto *colDir = Field::CollisionDirector::Instance();
-    if (!colDir->findClosestCollisionEntry(maskOut, KCL_TYPE_BIT(COL_TYPE_MOVING_WATER))) {
+    const auto *entry =
+            colDir->findClosestCollisionEntry(maskOut, KCL_TYPE_BIT(COL_TYPE_MOVING_WATER));
+    if (!entry) {
         return;
     }
 
     state()->status().setBit(eStatus::StickyRoad);
 
-    auto *entry = colDir->closestCollisionEntry();
     switch (entry->variant()) {
     case 1:
         collisionData.bMovingWaterMomentum = true;
@@ -660,16 +657,16 @@ bool KartCollide::processWall(CollisionData &collisionData, Field::KCLTypeMask *
         return false;
     }
 
-    if ((*maskOut & KCL_TYPE_DRIVER_WALL_NO_INVISIBLE_WALL) &&
-            colDirector->findClosestCollisionEntry(maskOut,
-                    KCL_TYPE_DRIVER_WALL_NO_INVISIBLE_WALL)) {
-        auto *entry = colDirector->closestCollisionEntry();
+    if (*maskOut & KCL_TYPE_DRIVER_WALL_NO_INVISIBLE_WALL) {
+        const auto *entry = colDirector->findClosestCollisionEntry(maskOut,
+                KCL_TYPE_DRIVER_WALL_NO_INVISIBLE_WALL);
+        if (entry) {
+            collisionData.closestWallFlags = entry->baseType();
+            collisionData.closestWallSettings = entry->variant();
 
-        collisionData.closestWallFlags = entry->baseType();
-        collisionData.closestWallSettings = entry->variant();
-
-        if (entry->attribute.onBit(Field::CollisionDirector::eCollisionAttribute::Soft)) {
-            collisionData.bSoftWall = true;
+            if (entry->attribute.onBit(Field::CollisionDirector::eCollisionAttribute::Soft)) {
+                collisionData.bSoftWall = true;
+            }
         }
     }
 
@@ -697,11 +694,10 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
 
     auto *colDirector = Field::CollisionDirector::Instance();
 
-    if (!colDirector->findClosestCollisionEntry(maskOut, KCL_TYPE_FLOOR)) {
+    const auto *closestColEntry = colDirector->findClosestCollisionEntry(maskOut, KCL_TYPE_FLOOR);
+    if (!closestColEntry) {
         return;
     }
-
-    const auto *closestColEntry = colDirector->closestCollisionEntry();
 
     if (closestColEntry->attribute.offBit(
                 Field::CollisionDirector::eCollisionAttribute::Trickable)) {
@@ -731,11 +727,12 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
         move()->padType().setBit(KartMove::ePadType::BoostPanel);
     }
 
-    if (!!(*maskOut & BOOST_RAMP_MASK) &&
-            colDirector->findClosestCollisionEntry(maskOut, BOOST_RAMP_MASK)) {
-        closestColEntry = colDirector->closestCollisionEntry();
+    const auto *boostRampEntry = (*maskOut & BOOST_RAMP_MASK) ?
+            colDirector->findClosestCollisionEntry(maskOut, BOOST_RAMP_MASK) :
+            nullptr;
+    if (boostRampEntry) {
         move()->padType().setBit(KartMove::ePadType::BoostRamp);
-        state()->setBoostRampType(closestColEntry->variant());
+        state()->setBoostRampType(boostRampEntry->variant());
         m_surfaceFlags.setBit(eSurfaceFlags::BoostRamp, eSurfaceFlags::Trickable);
     } else {
         state()->setBoostRampType(-1);
@@ -752,24 +749,28 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
     }
 
     Field::KCLTypeMask halfPipeRampMask = KCL_TYPE_BIT(COL_TYPE_HALFPIPE_RAMP);
-    if ((*maskOut & halfPipeRampMask) &&
-            colDirector->findClosestCollisionEntry(maskOut, halfPipeRampMask)) {
-        status.setBit(eStatus::HalfPipeRamp);
-        state()->setHalfPipeInvisibilityTimer(2);
-        if (colDirector->closestCollisionEntry()->variant() == 1) {
-            move()->padType().setBit(KartMove::ePadType::BoostPanel);
+    if (*maskOut & halfPipeRampMask) {
+        const auto *entry = colDirector->findClosestCollisionEntry(maskOut, halfPipeRampMask);
+        if (entry) {
+            status.setBit(eStatus::HalfPipeRamp);
+            state()->setHalfPipeInvisibilityTimer(2);
+            if (entry->variant() == 1) {
+                move()->padType().setBit(KartMove::ePadType::BoostPanel);
+            }
         }
     }
 
     Field::KCLTypeMask jumpPadMask = KCL_TYPE_BIT(COL_TYPE_JUMP_PAD);
-    if (*maskOut & jumpPadMask && colDirector->findClosestCollisionEntry(maskOut, jumpPadMask)) {
-        if (status.offAnyBit(eStatus::TouchingGround, eStatus::JumpPad) &&
-                status.offBit(eStatus::JumpPadMushroomVelYInc)) {
-            move()->padType().setBit(KartMove::ePadType::JumpPad);
-            closestColEntry = colDirector->closestCollisionEntry();
-            state()->setJumpPadVariant(closestColEntry->variant());
+    if (*maskOut & jumpPadMask) {
+        const auto *entry = colDirector->findClosestCollisionEntry(maskOut, jumpPadMask);
+        if (entry) {
+            if (status.offAnyBit(eStatus::TouchingGround, eStatus::JumpPad) &&
+                    status.offBit(eStatus::JumpPadMushroomVelYInc)) {
+                move()->padType().setBit(KartMove::ePadType::JumpPad);
+                state()->setJumpPadVariant(entry->variant());
+            }
+            collisionData.bTrickable = true;
         }
-        collisionData.bTrickable = true;
     }
 }
 
@@ -777,8 +778,10 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
 /// @brief Checks if we are colliding with a cannon trigger and sets the state flag if so.
 void KartCollide::processCannon(Field::KCLTypeMask *maskOut) {
     auto *colDirector = Field::CollisionDirector::Instance();
-    if (colDirector->findClosestCollisionEntry(maskOut, KCL_TYPE_BIT(COL_TYPE_CANNON_TRIGGER))) {
-        state()->setCannonPointId(colDirector->closestCollisionEntry()->variant());
+    const auto *entry =
+            colDirector->findClosestCollisionEntry(maskOut, KCL_TYPE_BIT(COL_TYPE_CANNON_TRIGGER));
+    if (entry) {
+        state()->setCannonPointId(entry->variant());
         status().setBit(eStatus::CannonStart);
     }
 }
