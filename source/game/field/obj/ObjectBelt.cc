@@ -21,11 +21,12 @@ bool ObjectBelt::calcCollision(const EGG::Vector3f &v0, const EGG::Vector3f & /*
     }
 
     auto *colDir = CollisionDirector::Instance();
-    if (!colDir->findClosestCollisionEntry(maskOut, KCL_TYPE_BIT(COL_TYPE_MOVING_ROAD))) {
+    const auto *entry =
+            colDir->findClosestCollisionEntry(maskOut, KCL_TYPE_BIT(COL_TYPE_MOVING_ROAD));
+    if (!entry) {
         return false;
     }
 
-    const auto *entry = colDir->closestCollisionEntry();
     if (!isMoving(entry->variant(), v0)) {
         return false;
     }
