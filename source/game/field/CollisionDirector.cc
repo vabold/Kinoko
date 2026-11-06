@@ -247,7 +247,6 @@ bool CollisionDirector::checkSphereCachedFullPush(f32 radius, const EGG::Vector3
 void CollisionDirector::resetCollisionEntries(KCLTypeMask *ptr) {
     *ptr = 0;
     m_collisionEntryCount = 0;
-    m_closestCollisionEntry = nullptr;
 }
 
 /// @brief Called when we find a piece of collision we are touching and want to save it temporarily.
@@ -269,9 +268,12 @@ void CollisionDirector::pushCollisionEntry(f32 dist, KCLTypeMask *typeMask, KCLT
 /// @brief Finds the closest KCL triangle out of the list of tris we are colliding with
 /// @addr{0x807BD96C}
 /// @param type Filters the result for particular KCL types
-/// @return Whether there was a collision entry for the provided type
-bool CollisionDirector::findClosestCollisionEntry(KCLTypeMask * /*typeMask*/, KCLTypeMask type) {
-    m_closestCollisionEntry = nullptr;
+/// @return A pointer to the closest collision entry matching `type`, or `nullptr` if there is none
+/// @details Unlike the base game, which caches the result in a member and returns a bool, Kinoko
+/// returns the entry directly.
+const CollisionDirector::CollisionEntry *CollisionDirector::findClosestCollisionEntry(
+        KCLTypeMask * /*typeMask*/, KCLTypeMask type) const {
+    const CollisionEntry *closest = nullptr;
     f32 minDist = -std::numeric_limits<f32>::min();
 
     for (size_t i = 0; i < m_collisionEntryCount; ++i) {
@@ -279,11 +281,11 @@ bool CollisionDirector::findClosestCollisionEntry(KCLTypeMask * /*typeMask*/, KC
         u32 typeMask = entry.typeMask & type;
         if (typeMask != 0 && entry.dist > minDist) {
             minDist = entry.dist;
-            m_closestCollisionEntry = &entry;
+            closest = &entry;
         }
     }
 
-    return !!m_closestCollisionEntry;
+    return closest;
 }
 
 /// @addr{0x8078DFE8}
@@ -304,7 +306,6 @@ void CollisionDirector::DestroyInstance() {
 /// @addr{0x8078E33C}
 CollisionDirector::CollisionDirector() {
     m_collisionEntryCount = 0;
-    m_closestCollisionEntry = nullptr;
     CourseColMgr::CreateInstance()->init();
 }
 

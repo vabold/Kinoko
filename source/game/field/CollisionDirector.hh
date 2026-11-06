@@ -96,13 +96,8 @@ public:
         entry.attribute.changeBit(trickable, eCollisionAttribute::Trickable);
     }
 
-    bool findClosestCollisionEntry(KCLTypeMask *typeMask, KCLTypeMask type);
-
-    /// @beginGetters
-    [[nodiscard]] const CollisionEntry *closestCollisionEntry() const {
-        return m_closestCollisionEntry;
-    }
-    /// @endGetters
+    [[nodiscard]] const CollisionEntry *findClosestCollisionEntry(KCLTypeMask *typeMask,
+            KCLTypeMask type) const;
 
     static CollisionDirector *CreateInstance();
     static void DestroyInstance();
@@ -117,7 +112,6 @@ private:
     CollisionDirector();
     ~CollisionDirector() override;
 
-    const CollisionEntry *m_closestCollisionEntry;
     std::array<CollisionEntry, COLLISION_ARR_LENGTH> m_entries;
     size_t m_collisionEntryCount;
 
