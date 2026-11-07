@@ -7,7 +7,9 @@
 namespace Kinoko::Field {
 
 /// @addr {0x8076F2E0}
-ObjectRock::ObjectRock(const System::MapdataGeoObj &params) : ObjectCollidable(params) {}
+ObjectRock::ObjectRock(const System::MapdataGeoObj &params) : ObjectCollidable(params) {
+    m_transformPending = false;
+}
 
 /// @addr{0x8076F344}
 ObjectRock::~ObjectRock() = default;
@@ -53,6 +55,29 @@ void ObjectRock::calc() {
     m_colTranslate.z = scaledTang.z;
 }
 
+/// @note This override does not exist in the base game. We override it to handle the deferred
+/// transform computation for the rock.
+void ObjectRock::calcCollisionTransform() {
+    if (m_transformPending) {
+        m_transformPending = false;
+
+        // m_angRad and the rail tangent are unchanged since the last calcTangibleSub() call, so we
+        // don't need to cache them separately.
+        EGG::Vector3f tangDir = m_railInterpolator->curTangentDir();
+        tangDir.y = 0.0f;
+        tangDir.normalise();
+        EGG::Matrix34f basis = OrthonormalBasis(tangDir);
+
+        EGG::Matrix34f mat;
+        mat.makeR(EGG::Vector3f(m_angRad, 0.0f, 0.0f));
+        mat = basis.multiplyTo(mat);
+        mat.setBase(3, pos());
+        setTransform(mat);
+    }
+
+    ObjectCollidable::calcCollisionTransform();
+}
+
 // @addr{0x8076F768}
 void ObjectRock::calcTangible() {
     auto railStatus = m_railInterpolator->calc();
@@ -83,18 +108,11 @@ void ObjectRock::calcIntangible() {
 
 /// @addr{0x8076F91C}
 void ObjectRock::calcTangibleSub() {
-    EGG::Vector3f tangDir = m_railInterpolator->curTangentDir();
-    tangDir.y = 0.0f;
-    tangDir.normalise();
-    EGG::Matrix34f m = OrthonormalBasis(tangDir);
     m_angRad += m_angSpd * DEG2RAD;
 
-    EGG::Matrix34f mat(EGG::Matrix34f::ident);
-    EGG::Vector3f vRot(m_angRad, 0.0f, 0.0f);
-    mat.makeR(vRot);
-    mat = m.multiplyTo(mat);
-    mat.setBase(3, pos());
-    setTransform(mat);
+    // Kinoko-specific: the transform is only read when checking collision against the kart, so
+    // defer computing it until calcCollisionTransform().
+    m_transformPending = true;
 }
 
 // @addr {0x8076FA60}

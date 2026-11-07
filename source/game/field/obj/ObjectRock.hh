@@ -18,6 +18,8 @@ public:
         return 1;
     }
 
+    void calcCollisionTransform() override;
+
     /// @addr{0x8077036C}
     [[nodiscard]] const EGG::Vector3f &getCollisionTranslation() const override {
         return m_colTranslate;
@@ -46,6 +48,12 @@ private:
     f32 m_angSpd;
     int m_cooldownTimer;
     f32 m_angRad;
+
+    /// @brief Whether the transform still needs to be updated from @ref m_angRad and the rail
+    /// @details Kinoko-specific optimization. The transform is only read when checking collision
+    /// against the kart, so @ref calcTangibleSub() defers computing it to @ref
+    /// calcCollisionTransform().
+    bool m_transformPending;
 
     static constexpr f32 INITIAL_ANGULAR_SPEED = 3.0f;
 };
