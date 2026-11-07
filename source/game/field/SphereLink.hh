@@ -12,7 +12,7 @@ public:
 
     void initLinkLen(f32 length);
     void init();
-    void calcStiffness();
+    void calcStiffness(const EGG::Vector3f &dir, f32 dist);
     void calc();
     void calcConstraints(f32 scale);
     void checkCollision();
@@ -63,7 +63,7 @@ public:
     /// @endGetters
 
 private:
-    void calcSpring();
+    void calcSpring(const EGG::Vector3f &prevDir, f32 prevDist);
 
     SphereLink *m_prev;
     SphereLink *m_next;
