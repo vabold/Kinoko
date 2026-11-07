@@ -17,6 +17,8 @@ public:
         return 1;
     }
 
+    void calcCollisionTransform() override;
+
 private:
     enum class State {
         Walking = 0,
@@ -41,7 +43,7 @@ private:
     StateResult calcState();
 
     void calcCurRot(const EGG::Vector3f &rot);
-    void calcTransMat(const EGG::Vector3f &rot);
+    void calcTransMat(const EGG::Vector3f &rot, const EGG::Vector3f &tangent);
 
     const f32 m_vel;
     u32 m_stillDuration;
@@ -55,6 +57,14 @@ private:
     // In the base game, there is a m_timer member variable at offset 0xcc which ends up resulting
     // in the calc function being run only once during the intro timer.
     bool m_introCalc;
+
+    /// @brief Whether the crab's transform calculation is pending for collision
+    // Kinoko-specific: the crab's transform is only read when checking collision against the kart,
+    // so calcState() defers calcTransMat() to calcCollisionTransform().
+    bool m_transMatPending;
+
+    /// @brief The rail tangent for the deferred calcTransMat()
+    EGG::Vector3f m_pendingTangent;
 
     static constexpr f32 YAW = F_PI / 2.0f;
     STATIC_ASSERT(YAW == 1.5707964f);
