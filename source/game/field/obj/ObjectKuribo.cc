@@ -127,6 +127,8 @@ void ObjectKuribo::calcRot() {
 }
 
 /// @addr{0x806DCB58}
+/// @note Kinoko-specific: the collision check is performed through @ref m_floorQuery, since a
+/// Goomba resting on the floor often repeats the exact same check every frame.
 void ObjectKuribo::checkSphereFull() {
     constexpr f32 RADIUS = 50.0f;
 
@@ -139,8 +141,7 @@ void ObjectKuribo::checkSphereFull() {
     EGG::Vector3f colPos = pos();
     colPos.y += RADIUS;
 
-    bool hasCol = CollisionDirector::Instance()->checkSphereFull(RADIUS, colPos, EGG::Vector3f::inf,
-            KCL_TYPE_FLOOR, &colInfo, nullptr, 0);
+    bool hasCol = m_floorQuery.checkSphereFull(RADIUS, colPos, KCL_TYPE_FLOOR, &colInfo);
 
     if (hasCol) {
         addPos(colInfo.tangentOff);

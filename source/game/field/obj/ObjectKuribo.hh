@@ -1,5 +1,6 @@
 #pragma once
 
+#include "game/field/CollisionQueryCache.hh"
 #include "game/field/StateManager.hh"
 #include "game/field/obj/ObjectCollidable.hh"
 
@@ -39,6 +40,8 @@ private:
     EGG::Vector3f m_rot;
     EGG::Vector3f m_floorNrm;
     f32 m_animTimer;
+
+    CollisionQueryCache m_floorQuery; ///< Performs the floor collision check
 
     static constexpr std::array<StateManagerEntry, 4> STATE_ENTRIES = {{
             {StateEntry<ObjectKuribo, &ObjectKuribo::enterStateStub,

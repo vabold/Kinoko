@@ -45,14 +45,16 @@ void ObjectCow::setup() {
 }
 
 /// @addr{0x806BC87C}
+/// @note Kinoko-specific: the collision check is performed through @ref m_floorQuery, since a cow
+/// standing still often repeats the exact same check every frame.
 void ObjectCow::calcFloor() {
     constexpr f32 RADIUS = 50.0f;
     constexpr EGG::Vector3f POS_OFFSET = EGG::Vector3f(0.0f, RADIUS, 0.0f);
 
     CollisionInfo info;
 
-    bool hasCol = CollisionDirector::Instance()->checkSphereFull(RADIUS, pos() + POS_OFFSET,
-            EGG::Vector3f::inf, KCL_TYPE_64EBDFFF, &info, nullptr, 0);
+    bool hasCol =
+            m_floorQuery.checkSphereFull(RADIUS, pos() + POS_OFFSET, KCL_TYPE_64EBDFFF, &info);
 
     if (hasCol) {
         addPos(info.tangentOff);

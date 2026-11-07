@@ -1,5 +1,6 @@
 #pragma once
 
+#include "game/field/CollisionQueryCache.hh"
 #include "game/field/StateManager.hh"
 #include "game/field/obj/ObjectCollidable.hh"
 
@@ -41,6 +42,8 @@ protected:
     EGG::Vector3f m_targetDir;
     EGG::Vector3f m_upForce; ///< Used by calcPos to counteract gravity
     f32 m_interpRate;
+
+    CollisionQueryCache m_floorQuery; ///< Performs the floor collision check
 
     static constexpr EGG::Vector3f GRAVITY_FORCE = EGG::Vector3f(0.0f, 2.0f, 0.0f);
 };
