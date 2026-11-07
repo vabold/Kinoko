@@ -84,6 +84,12 @@ private:
     bool m_hasAuxCollision;
     f32 m_hitAngle;
 
+    /// @brief Whether the transform's rotation still needs to be updated from @ref m_tangent
+    /// @details This is a performance optimization for Kinoko. The car's rotation is only read when
+    /// checking collision against the kart, so @ref calcPos() defers computing it to @ref
+    /// calcCollisionTransform().
+    bool m_transformPending;
+
     static constexpr std::array<StateManagerEntry, 3> STATE_ENTRIES = {{
             {StateEntry<ObjectCarTGE, &ObjectCarTGE::enterStateStub, &ObjectCarTGE::calcStateStub>(
                     0)},
