@@ -38,10 +38,9 @@ void ObjectHwanwan::calc() {
 
     checkFloorCollision();
 
-    EGG::Matrix34f mat;
-    SetRotTangentHorizontal(mat, m_up, m_tangent);
-    mat.setBase(3, m_workPos);
-    setTransform(mat);
+    // Kinoko-specific: setMatrixTangentTo() defers computing the rotation until it is read
+    setPos(m_workPos);
+    setMatrixTangentTo(m_up, m_tangent);
 }
 
 /// @addr{0x806EA784}
