@@ -10,7 +10,7 @@ namespace Kinoko::Field {
 /// @addr{0x8088344C}
 ObjectCrab::ObjectCrab(const System::MapdataGeoObj &params)
     : ObjectCollidable(params), m_vel(static_cast<f32>(static_cast<s16>(params.setting(0)))),
-      m_backwards(!!params.setting(1)), m_introCalc(false) {}
+      m_backwards(!!params.setting(1)), m_introCalc(false), m_transMatPending(false) {}
 
 /// @addr{0x808837B8}
 ObjectCrab::~ObjectCrab() = default;
@@ -23,7 +23,8 @@ void ObjectCrab::init() {
 
     m_railInterpolator->setCurrVel(m_vel);
     setPos(m_railInterpolator->curPos());
-    calcTransMat(m_curRot);
+    calcTransMat(m_curRot, m_railInterpolator->curTangentDir());
+    m_transMatPending = false;
 
     m_stillDuration = 0;
     m_stillFrame = 0;
@@ -72,6 +73,20 @@ void ObjectCrab::calc() {
     }
 }
 
+/// @details This is not overridden in the base game, but we override it in Kinoko to handle the
+/// deferred transform calculation for collision.
+void ObjectCrab::calcCollisionTransform() {
+    // Kinoko-specific: first compute the transform deferred by calcState(), if any. This matches
+    // computing it immediately, since the crab's position and m_curRot are only changed by
+    // calcState() right before it defers another calcTransMat() call.
+    if (m_transMatPending) {
+        m_transMatPending = false;
+        calcTransMat(m_curRot, m_pendingTangent);
+    }
+
+    ObjectCollidable::calcCollisionTransform();
+}
+
 bool ObjectCrab::calcRail() {
     if (m_still) {
         if (m_stillDuration <= ++m_stillFrame) {
@@ -106,7 +121,11 @@ ObjectCrab::StateResult ObjectCrab::calcState() {
     if (m_statePhase == StatePhase::Start) {
         setPos(m_railInterpolator->curPos());
         calcCurRot(INIT_ROT);
-        calcTransMat(m_curRot);
+
+        // Kinoko-specific: defer calcTransMat() until the transform is needed for collision
+        m_pendingTangent = m_railInterpolator->curTangentDir();
+        m_transMatPending = true;
+
         m_statePhase = StatePhase::Middle;
     }
 
@@ -130,13 +149,13 @@ void ObjectCrab::calcCurRot(const EGG::Vector3f &rot) {
     m_curRot.y = m_railInterpolator->isMovementDirectionForward() ? m_curRot.y : -m_curRot.y;
 }
 
-void ObjectCrab::calcTransMat(const EGG::Vector3f &rot) {
+void ObjectCrab::calcTransMat(const EGG::Vector3f &rot, const EGG::Vector3f &tangent) {
     EGG::Matrix34f rotMat;
     rotMat.makeR(rot);
     rotMat = rotMat.multiplyTo(EGG::Matrix34f::ident);
 
     EGG::Matrix34f mat;
-    mat.makeOrthonormalBasisLocal(m_railInterpolator->curTangentDir(), EGG::Vector3f::ey);
+    mat.makeOrthonormalBasisLocal(tangent, EGG::Vector3f::ey);
     mat = mat.multiplyTo(rotMat);
     mat.setBase(3, pos());
     setTransform(mat);
