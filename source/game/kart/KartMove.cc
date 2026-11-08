@@ -1277,11 +1277,19 @@ void KartMove::calcRotation() {
         }
 
         const EGG::Vector3f forward = dynamics()->mainRot().rotateVector(EGG::Vector3f::ez);
-        f32 angle = EGG::Mathf::atan2(forward.cross(m_dir).length(), forward.dot(m_dir));
-        angle = EGG::Mathf::abs(angle) * RAD2DEG;
+        const EGG::Vector3f cross = forward.cross(m_dir);
+        f32 dot = forward.dot(m_dir);
 
-        if (angle > 60.0f) {
-            turn *= std::max(0.0f, 1.0f - (angle - 60.0f) / 40.0f);
+        // OPT: the angle only matters if it exceeds 60 degrees. If dot is positive and |cross| <=
+        // dot, then atan2() is within its first octant (up to sqrt rounding), so the angle is at
+        // most 45 degrees and we can skip computing it.
+        if (dot <= 0.0f || cross.squaredLength() > dot * dot) {
+            f32 angle = EGG::Mathf::atan2(cross.length(), dot);
+            angle = EGG::Mathf::abs(angle) * RAD2DEG;
+
+            if (angle > 60.0f) {
+                turn *= std::max(0.0f, 1.0f - (angle - 60.0f) / 40.0f);
+            }
         }
     }
 
