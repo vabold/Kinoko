@@ -33,8 +33,8 @@ void CourseMap::init() {
     ASSERT(m_area);
     m_area->sort();
 
-    // As a performance optimization for Kinoko, we pre-emptively check whether the course have
-    // moving road AREA so we can skip the search on other courses.
+    // OPT: Pre-emptively check whether the course have moving road AREA so we can skip the search
+    // on other courses.
     m_hasMovingRoadArea = false;
     for (u16 i = 0; i < m_area->size(); ++i) {
         MapdataAreaBase::Type type = getArea(i)->type();
@@ -198,8 +198,7 @@ f32 CourseMap::getCheckPointEntryOffsetExact(u16 i, const EGG::Vector3f &pos,
 
 /// @addr{0x80516808}
 s16 CourseMap::getCurrentAreaID(s16 i, const EGG::Vector3f &pos, MapdataAreaBase::Type type) const {
-    // As a Kinoko performance optimization, we skip the search entirely if the course has no moving
-    // road area
+    // OPT: We skip the search entirely if the course has no moving road area
     if (!m_hasMovingRoadArea) {
         return -1;
     }
@@ -501,9 +500,9 @@ s16 CourseMap::searchPrevCheckpoint(const EGG::Vector3f &pos, s16 depth,
 }
 
 /// @addr{0x80511E00}
-/// @note Rather than clearing every checkpoint, we can introduce a performance improvement for
-/// Kinoko by leveraging @ref m_sectorSearchId to indicate a new search is being performed. This
-/// way, we don't need to explicitly clear a "searched" flag for each checkpoint.
+/// @note OPT: Rather than clearing every checkpoint, we leverage @ref m_sectorSearchId to indicate
+/// a new search is being performed. This way, we don't need to explicitly clear a "searched" flag
+/// for each checkpoint.
 void CourseMap::clearSectorChecked() {
     if (++m_sectorSearchId != 0) {
         return;

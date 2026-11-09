@@ -34,8 +34,8 @@ void TimerManager::init() {
 }
 
 /// @addr{0x80535904}
-/// @note For Kinoko, we omit per-frame @ref Timer calculation as a performance improvement. Upon
-/// lap completion, @ref m_frameCounter is used to compute the lap/race time.
+/// @note OPT: We omit per-frame @ref Timer calculation. Upon lap completion, @ref m_frameCounter is
+/// used to compute the lap/race time.
 void TimerManager::calc() {
     if (!m_started) {
         return;

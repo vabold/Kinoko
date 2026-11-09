@@ -140,10 +140,10 @@ private:
     u16 m_id;
 
     /// @brief The @ref CourseMap::m_sectorSearchId in which this checkpoint was last searched
-    /// @details This is a performance improvement for Kinoko. The base game stores a boolean that
-    /// is cleared on every checkpoint before each search in @ref CourseMap::findSector(). By
-    /// referencing @ref m_lastSearchedId instead, we can determine if the checkpoint has been
-    /// found in the current search without having to clear it explicitly.
+    /// @details OPT: The base game stores a boolean that is cleared on every checkpoint before each
+    /// search in @ref CourseMap::findSector(). By referencing @ref m_lastSearchedId instead, we can
+    /// determine if the checkpoint has been found in the current search without having to clear it
+    /// explicitly.
     u32 m_lastSearchedId;
 
     std::array<MapdataCheckPoint *, MAX_NEIGHBORS> m_prevPoints;

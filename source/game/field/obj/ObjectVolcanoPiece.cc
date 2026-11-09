@@ -267,8 +267,7 @@ const EGG::Matrix34f &ObjectVolcanoPiece::calcShakeAndFall(EGG::Vector3f *vel, u
         *vel = EGG::Vector3f(0.0f, pos.y - prevPos.y, 0.0f);
     }
 
-    // Kinoko-specific optimization: the object's rotation never changes, so only update the
-    // translation component of m_rtMat
+    // OPT: The object's rotation never changes, so only update the translation component of m_rtMat
     m_rtMat.setBase(3, pos);
     return m_rtMat;
 }

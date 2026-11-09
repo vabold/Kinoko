@@ -148,7 +148,7 @@ void ObjectBase::setMatrixTangentTo(const EGG::Vector3f &up, const EGG::Vector3f
     m_rotLock = false;
     m_flags.setBit(eFlags::Matrix);
 
-    // Kinoko-specific: defer computing the rotation until the transform is read
+    // OPT: Defer computing the rotation until the transform is read
     m_pendingRot = PendingRotation::TangentTo;
     m_pendingWork0 = up;
     m_pendingWork1 = tangent;
@@ -159,7 +159,7 @@ void ObjectBase::setMatrixTangentTo(const EGG::Vector3f &up, const EGG::Vector3f
 void ObjectBase::setMatrixFromOrthonormalBasisAndPos(const EGG::Vector3f &v) {
     m_flags.setBit(eFlags::Matrix);
 
-    // Kinoko-specific: defer computing the rotation until the transform is read
+    // OPT: Defer computing the rotation until the transform is read
     m_pendingRot = PendingRotation::OrthonormalBasis;
     m_pendingWork0 = v;
     m_transform.setBase(3, m_pos);

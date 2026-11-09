@@ -201,7 +201,7 @@ void KartCamera::calcCollision(KartCameraState &state, bool isBackwards) const {
     Field::CollisionInfo info;
     Field::KCLTypeMask mask;
 
-    // Kinoko-specific performance optimization: Skip course KCL and only query drivable objects
+    // OPT: Skip course KCL and only query drivable objects
     info.reset();
     Field::CollisionDirector::Instance()->resetCollisionEntries(&mask);
 

@@ -46,9 +46,9 @@ void ObjectFirebar::calc() {
         m_degAngle += 360.0f;
     }
 
-    // Every fireball on the same spoke shares the same angle. For Kinoko, we can leverage this fact
-    // to introduce a small performance improvement by building each spoke's rotation matrix once
-    // instead of calling RotateAxisAngle() once per fireball.
+    // OPT: Every fireball on the same spoke shares the same angle. For Kinoko, we can leverage this
+    // fact to introduce a small performance improvement by building each spoke's rotation matrix
+    // once instead of calling RotateAxisAngle() once per fireball.
     size_t spokeCount = std::min<size_t>(m_spokes, m_fireballs.size());
     for (size_t spoke = 0; spoke < spokeCount; ++spoke) {
         EGG::Matrix34f mat;

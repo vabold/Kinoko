@@ -95,8 +95,8 @@ void ObjectChoropu::calc() {
             return;
         }
 
-        // Kinoko-specific: the base game computes RailOrthonormalBasis() here, but only its
-        // translation is ever used, so we skip computing the rotation.
+        // OPT: The base game computes RailOrthonormalBasis() here, but only its translation is ever
+        // used, so we skip computing the rotation.
         m_railPos = m_railInterpolator->curPos();
     }
 
