@@ -223,14 +223,14 @@ private:
     f32 m_startTmp3;
 
     /// @brief Identifies the current sector search for @ref MapdataCheckPoint::searched()
-    /// @details This is a performance optimization for Kinoko. Rather than clearing the "searched"
-    /// flag for every checkpoint whenever we call @ref findSector(), we can instead store an ID
-    /// that represents the last time the sector was searched.
+    /// @details OPT: Rather than clearing the "searched" flag for every checkpoint whenever we call
+    /// @ref findSector(), we can instead store an ID that represents the last time the sector was
+    /// searched.
     u32 m_sectorSearchId;
 
     /// @brief Whether the loaded course has a moving road AREA
-    /// @details This is a performance optimization for Kinoko which lets @ref getCurrentAreaID()
-    /// skip searching for AREA types that are not present in the course.
+    /// @details OPT: Lets @ref getCurrentAreaID() skip searching for AREA types that are not
+    /// present in the course.
     bool m_hasMovingRoadArea;
 
     static void *LoadFile(const char *filename); ///< @addr{0x809BD6E8}

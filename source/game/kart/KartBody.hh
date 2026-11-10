@@ -68,8 +68,8 @@ private:
     EGG::Vector3f m_handlePos; ///< The relative position of the handlebar
 
     /// @brief The rotation of the handlebar
-    /// @details Introduced in Kinoko as a slight performance improvement to prevent unnecessarily
-    /// recalculating the handlebar rotation matrix every frame in wheelMatrix().
+    /// @details OPT: Prevents unnecessarily recalculating the handlebar rotation matrix every frame
+    /// in wheelMatrix().
     EGG::Matrix34f m_handleRotMat;
 };
 

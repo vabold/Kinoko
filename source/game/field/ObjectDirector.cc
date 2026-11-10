@@ -21,9 +21,9 @@ void ObjectDirector::init() {
 
     ObjectDrivableDirector::Instance()->init();
 
-    // As a Kinoko performance optimization, we can skip updating seagull objects if there are no
-    // ObjectDrivable or ObjectKCL objects registered to ObjectDrivableDirector, since seagulls are
-    // only implemented in order to properly update drivable object transformation matrices.
+    // OPT: We can skip updating seagull objects if there are no ObjectDrivable or ObjectKCL objects
+    // registered to ObjectDrivableDirector, since seagulls are only implemented in order to
+    // properly update drivable object transformation matrices.
     if (!m_calcObjects.empty() && !ObjectDrivableDirector::Instance()->hasCalcObjects()) {
         auto *newEnd = std::remove_if(m_calcObjects.begin(), m_calcObjects.end(),
                 [](const ObjectBase *obj) { return obj->id() == ObjectId::Seagull; });

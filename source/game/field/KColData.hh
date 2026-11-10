@@ -84,9 +84,9 @@ public:
     STATIC_ASSERT(sizeof(KCollisionPrism) == 0x10);
 
     /// @brief Stores the vertex, height and normals of a collision prism
-    /// @details We introduce this struct in Kinoko in order to pre-fetch a prism's geometry rather
-    /// than accessing these fields from the various different arrays. This is a small performance
-    /// improvement due to cache locality.
+    /// @details OPT: We introduce this struct in Kinoko in order to pre-fetch a prism's geometry
+    /// rather than accessing these fields from the various different arrays. This is a small
+    /// performance improvement due to cache locality.
     struct alignas(0x40) KCollisionPrismGeometry {
         EGG::Vector3f vtx;   ///< The first vertex of the tri
         EGG::Vector3f enrm1; ///< The first edge's normal
@@ -170,7 +170,7 @@ private:
     f32 m_cachedRadius;
 
     /// @brief One-indexed array of each prism's geometry
-    /// @details Kinoko-specific optimization for cache locality. See @ref KCollisionPrismGeometry.
+    /// @details OPT: Optimization for cache locality. See @ref KCollisionPrismGeometry.
     owning_span<KCollisionPrismGeometry> m_prismGeometry;
 
     /// @brief One-indexed array of each prism's KCL attribute

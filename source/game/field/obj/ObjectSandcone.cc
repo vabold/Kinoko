@@ -37,7 +37,7 @@ const EGG::Matrix34f &ObjectSandcone::getUpdatedMatrix(u32 timeOffset) {
 
     if (t > m_startFrame + m_duration) {
         // The sandcone has finished "flowing", so just return the final position.
-        // For Kinoko, we introduce a slight performance improvement by caching the m_finalPos.
+        // OPT: We introduce a slight performance improvement by caching the m_finalPos.
         m_currentMtx.setBase(3, m_finalPos);
     } else if (t > m_startFrame) {
         EGG::Vector3f deltaPos = EGG::Vector3f::ey * ((t - m_startFrame) * m_flowRate);

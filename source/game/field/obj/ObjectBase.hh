@@ -205,9 +205,9 @@ protected:
 
 private:
     /// @brief The source of a rotation for @ref m_transform which has not been computed yet
-    /// @details Kinoko-specific optimization. Many objects recompute their rotation every frame,
-    /// but it is usually only read when checking collision against the kart, so the rotation
-    /// columns of @ref m_transform are only computed when the matrix is next read.
+    /// @details OPT: Many objects recompute their rotation every frame, but it is usually only read
+    /// when checking collision against the kart, so the rotation columns of @ref m_transform are
+    /// only computed when the matrix is next read.
     enum class PendingRotation {
         None,             ///< @ref m_transform is up-to-date
         TangentTo,        ///< @ref SetRotTangentHorizontal() with the pending up and tangent

@@ -35,8 +35,8 @@ size_t ObjectCollisionKart::checkCollision(const EGG::Matrix34f &mat, const EGG:
         return 0;
     }
 
-    // Performance improvement for Kinoko: the hull is only used to check collision against nearby
-    // objects. If there are none, then skip the transform since there are no collisions.
+    // OPT: The hull is only used to check collision against nearby objects. If there are none, then
+    // skip the transform since there are no collisions.
     if (!BoxColManager::Instance()->hasNextObject()) {
         return 0;
     }
