@@ -205,11 +205,12 @@ bool ObjectEscalator::checkCollision(f32 radius, const EGG::Vector3f &pos,
     }
 
     auto *colDir = CollisionDirector::Instance();
-    if (!colDir->findClosestCollisionEntry(maskOut, KCL_TYPE_BIT(COL_TYPE_MOVING_ROAD))) {
+    const auto *entry =
+            colDir->findClosestCollisionEntry(maskOut, KCL_TYPE_BIT(COL_TYPE_MOVING_ROAD));
+    if (!entry) {
         return false;
     }
 
-    auto *entry = colDir->closestCollisionEntry();
     if (entry->dist > info->movingFloorDist) {
         info->movingFloorDist = entry->dist;
 
@@ -239,11 +240,12 @@ bool ObjectEscalator::checkCollisionCached(f32 radius, const EGG::Vector3f &pos,
     }
 
     auto *colDir = CollisionDirector::Instance();
-    if (!colDir->findClosestCollisionEntry(maskOut, KCL_TYPE_BIT(COL_TYPE_MOVING_ROAD))) {
+    const auto *entry =
+            colDir->findClosestCollisionEntry(maskOut, KCL_TYPE_BIT(COL_TYPE_MOVING_ROAD));
+    if (!entry) {
         return false;
     }
 
-    auto *entry = colDir->closestCollisionEntry();
     if (entry->dist > info->movingFloorDist) {
         info->movingFloorDist = entry->dist;
 
