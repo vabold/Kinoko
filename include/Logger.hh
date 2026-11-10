@@ -22,7 +22,11 @@
         } \
     } while (0)
 
+#ifdef BUILD_DEBUG
 #define ASSERT(e) RUNTIME_ASSERT(e)
+#else
+#define ASSERT(e) static_cast<void>(e)
+#endif
 
 #define PANIC(m, ...) \
     do { \
