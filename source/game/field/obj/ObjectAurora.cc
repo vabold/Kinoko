@@ -198,7 +198,7 @@ bool ObjectAurora::checkSpherePartialImpl(f32 radius, const EGG::Vector3f &v0,
             colDirector->setCurrentCollisionVariant(7);
             colDirector->setCurrentCollisionTrickable(true);
         } else {
-            *pFlagsOut |= KCL_TYPE_BIT(COL_TYPE_ROTATING_ROAD);
+            *pFlagsOut |= KCL_TYPE_BIT(COL_TYPE_ROAD2);
         }
 
         if (vel.z > COLLISION_SIZE.z - 600.0f * 4.0f) {
@@ -255,7 +255,7 @@ bool ObjectAurora::checkSphereFullImpl(f32 radius, const EGG::Vector3f &v0,
             colDirector->setCurrentCollisionVariant(7);
             colDirector->setCurrentCollisionTrickable(true);
         } else {
-            *pFlagsOut |= KCL_TYPE_BIT(COL_TYPE_ROTATING_ROAD);
+            *pFlagsOut |= KCL_TYPE_BIT(COL_TYPE_ROAD2);
         }
 
         if (vel.z > COLLISION_SIZE.z - 600.0f * 4.0f) {
