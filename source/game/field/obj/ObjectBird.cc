@@ -44,7 +44,11 @@ void ObjectBird::calc() {
                 continue;
             }
 
-            posDelta.normalise();
+            // OPT: equivalent to posDelta.normalise(), reusing the length from above
+            if (posDelta.squaredLength() > std::numeric_limits<f32>::epsilon()) {
+                posDelta *= 1.0f / len;
+            }
+
             m_followers[j]->setPos(secondPos - posDelta * (MIN_SPACING - len));
         }
     }
@@ -155,8 +159,13 @@ void ObjectBirdFollower::calcPos() {
 
     m_velocity += posDelta;
 
-    if (m_velocity.length() > m_baseSpeed * MAX_SPEED_FACTOR) {
-        m_velocity.normalise();
+    f32 speed = m_velocity.length();
+    if (speed > m_baseSpeed * MAX_SPEED_FACTOR) {
+        // OPT: equivalent to m_velocity.normalise(), reusing the length from above
+        if (m_velocity.squaredLength() > std::numeric_limits<f32>::epsilon()) {
+            m_velocity *= 1.0f / speed;
+        }
+
         m_velocity *= m_baseSpeed * MAX_SPEED_FACTOR;
     }
 
