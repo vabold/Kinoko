@@ -163,7 +163,7 @@ struct Quatf {
     /// @brief Performs spherical linear interpolation.
     /// @details Slerp is a method in which you can create smooth rotations between two quaternions.
     [[nodiscard]] constexpr Quatf slerpTo(const Quatf &q1, f32 t) const {
-        f32 dot_ = std::max(-1.0f, std::min(1.0f, dot(q1)));
+        f32 dot_ = std::clamp(dot(q1), -1.0f, 1.0f);
         bool bDot = dot_ < 0.0f;
         dot_ = Mathf::abs(dot_);
 

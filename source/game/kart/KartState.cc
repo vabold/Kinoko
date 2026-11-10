@@ -361,7 +361,7 @@ void KartState::calcStartBoost() {
         m_startBoostCharge *= START_BOOST_FALLOFF;
     }
 
-    m_startBoostCharge = std::max(0.0f, std::min(1.0f, m_startBoostCharge));
+    m_startBoostCharge = std::clamp(m_startBoostCharge, 0.0f, 1.0f);
 }
 
 /// @stage 1
