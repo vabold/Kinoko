@@ -185,6 +185,10 @@ bool CourseColMgr::checkPointCachedPartial(f32 scale, KColData *data, const EGG:
         data = m_data;
     }
 
+    if (data->prismCache(0) == 0) {
+        return false;
+    }
+
     m_kclScale = scale;
 
     f32 invScale = 1.0f / scale;

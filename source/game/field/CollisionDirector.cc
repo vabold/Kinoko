@@ -20,7 +20,7 @@ bool CollisionDirector::checkSpherePartialPush(f32 radius, const EGG::Vector3f &
     }
 
     if (typeMaskOut) {
-        *typeMaskOut = KCL_NONE;
+        resetCollisionEntries(typeMaskOut);
     }
 
     auto *courseColMgr = CourseColMgr::Instance();
@@ -197,6 +197,16 @@ bool CollisionDirector::checkSphereCachedPartialPush(f32 radius, const EGG::Vect
 
     colliding |= ObjectDrivableDirector::Instance()->checkSphereCachedPartialPush(radius, pos,
             prevPos, typeMask, info, typeMaskOut, timeOffset);
+
+    if (colliding) {
+        if (info) {
+            info->tangentOff = info->bbox.min + info->bbox.max;
+        }
+
+        if (noBounceInfo) {
+            noBounceInfo->tangentOff = noBounceInfo->bbox.min + noBounceInfo->bbox.max;
+        }
+    }
 
     courseColMgr->clearNoBounceWallInfo();
 
