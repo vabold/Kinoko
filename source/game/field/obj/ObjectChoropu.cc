@@ -3,6 +3,8 @@
 #include "game/field/ObjectDirector.hh"
 #include "game/field/RailManager.hh"
 
+#include "game/kart/Reaction.hh"
+
 #include "game/system/RaceManager.hh"
 
 namespace Kinoko::Field {

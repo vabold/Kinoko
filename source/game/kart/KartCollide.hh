@@ -4,45 +4,13 @@
 #include "game/kart/KartAction.hh"
 #include "game/kart/KartObjectProxy.hh"
 #include "game/kart/KartPullPath.hh"
+#include "game/kart/Reaction.hh"
 
 #include "game/field/CourseColMgr.hh"
 
 #include <egg/core/BitFlag.hh>
 
 namespace Kinoko::Kart {
-
-enum class Reaction {
-    None = 0,
-    UNK_3 = 3,
-    UNK_4 = 4,
-    UNK_5 = 5,
-    UNK_7 = 7,
-    WallAllSpeed = 8,
-    SpinAllSpeed = 9,
-    SpinSomeSpeed = 10,
-    FireSpin = 11,
-    ClipThroughSomeSpeed = 12,
-    SmallLaunch = 13,
-    KnockbackSomeSpeedLoseItem = 14,
-    LaunchSpinLoseItem = 15,
-    KnockbackBumpLoseItem = 16,
-    LongCrushLoseItem = 17,
-    SmallBump = 18,
-    BigBump = 19,
-    SpinShrink = 20,
-    HighLaunchLoseItem = 21,
-    SpinHitSomeSpeed = 22,
-    WeakWall = 23,
-    Wall = 24,
-    LaunchSpin = 25,
-    WallSpark = 26,
-    RubberWall = 27,
-    Wall2 = 28,
-    UntrickableJumpPad = 29,
-    ShortCrushLoseItem = 30,
-    CrushRespawn = 31,
-    ExplosionLoseItem = 32,
-};
 
 /// @brief Manages body+wheel collision and its influence on position/velocity/etc.
 /// @nosubgrouping

@@ -5,6 +5,7 @@
 #include "game/field/obj/ObjectRegistry.hh"
 
 #include "game/kart/KartObject.hh"
+#include "game/kart/Reaction.hh"
 
 #include "game/system/CourseMap.hh"
 #include "game/system/RaceConfig.hh"

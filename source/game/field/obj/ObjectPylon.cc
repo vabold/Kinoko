@@ -4,6 +4,7 @@
 #include "game/field/ObjectDirector.hh"
 
 #include "game/kart/KartObject.hh"
+#include "game/kart/Reaction.hh"
 
 #include "game/system/RaceManager.hh"
 

@@ -1,5 +1,7 @@
 #include "ObjectHitTable.hh"
 
+#include "game/kart/Reaction.hh"
+
 #include "game/system/ResourceManager.hh"
 
 #include <egg/util/Stream.hh>

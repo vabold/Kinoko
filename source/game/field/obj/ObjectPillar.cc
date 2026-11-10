@@ -3,6 +3,8 @@
 
 #include "game/field/ObjectDirector.hh"
 
+#include "game/kart/Reaction.hh"
+
 namespace Kinoko::Field {
 
 /// @addr{Inlined in 0x807FED80}

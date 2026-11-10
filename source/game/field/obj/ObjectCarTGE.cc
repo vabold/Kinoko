@@ -6,6 +6,7 @@
 #include "game/field/obj/ObjectHighwayManager.hh"
 
 #include "game/kart/KartObject.hh"
+#include "game/kart/Reaction.hh"
 
 #include "game/system/RaceConfig.hh"
 

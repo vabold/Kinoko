@@ -2,6 +2,8 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
+#include "game/kart/Reaction.hh"
+
 namespace Kinoko::Field {
 
 class ObjectDokan final : public ObjectCollidable {

@@ -4,7 +4,7 @@
 #include "game/field/obj/ObjectCollidable.hh"
 #include "game/field/obj/ObjectKCL.hh"
 
-#include "game/kart/KartCollide.hh"
+#include "game/kart/Reaction.hh"
 
 #include "game/system/RaceManager.hh"
 
