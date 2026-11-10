@@ -20,6 +20,7 @@ public:
     void calc() override;
     bool run() override;
     void parseOptions(int argc, char **argv) override;
+    void printHelp() const override;
 
     static KTestSystem *CreateInstance();
     static void DestroyInstance();
