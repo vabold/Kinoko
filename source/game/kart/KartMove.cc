@@ -107,7 +107,7 @@ void KartMove::calcTurn() {
     }
 
     m_weightedTurn = m_rawTurn * reactivity + m_weightedTurn * (1.0f - reactivity);
-    m_weightedTurn = std::max(-1.0f, std::min(1.0f, m_weightedTurn));
+    m_weightedTurn = std::clamp(m_weightedTurn, -1.0f, 1.0f);
 
     m_realTurn = m_weightedTurn;
 
@@ -117,7 +117,7 @@ void KartMove::calcTurn() {
 
     m_realTurn = (m_weightedTurn + static_cast<f32>(m_hopStickX)) * 0.5f;
     m_realTurn = m_realTurn * 0.8f + 0.2f * static_cast<f32>(m_hopStickX);
-    m_realTurn = std::max(-1.0f, std::min(1.0f, m_realTurn));
+    m_realTurn = std::clamp(m_realTurn, -1.0f, 1.0f);
 }
 
 /// @addr{0x8057829C}
@@ -465,7 +465,7 @@ void KartMove::calcTop() {
                              eStatus::OverZipper) &&
                             (status.offBit(eStatus::ZipperBoost) || m_zipperBoostTimer > 15))) {
                 f32 topDotZ = 0.8f - 6.0f * (EGG::Mathf::abs(inputTop.dot(componentZAxis())));
-                scalar = std::min(0.8f, std::max(0.3f, topDotZ));
+                scalar = std::clamp(topDotZ, 0.3f, 0.8f);
             }
 
             m_smoothedUp += (inputTop - m_smoothedUp) * scalar;
@@ -989,7 +989,7 @@ void KartMove::calcAutoDrift() {
         }
 
         f32 halfTarget = 0.5f * param()->stats().driftOutsideTargetAngle;
-        m_autoDriftAngle = std::min(halfTarget, std::max(-halfTarget, m_autoDriftAngle));
+        m_autoDriftAngle = std::clamp(m_autoDriftAngle, -halfTarget, halfTarget);
     } else {
         status.resetBit(eStatus::DriftAuto);
         m_hopStickX = 0;
@@ -1114,7 +1114,7 @@ void KartMove::startManualDrift() {
         }
 
         m_outsideDriftAngle += driftAngle * static_cast<f32>(-m_hopStickX);
-        m_outsideDriftAngle = std::max(-60.0f, std::min(60.0f, m_outsideDriftAngle));
+        m_outsideDriftAngle = std::clamp(m_outsideDriftAngle, -60.0f, 60.0f);
     }
 
     status.resetBit(eStatus::Hop, eStatus::SlipdriftCharge);
@@ -1388,7 +1388,7 @@ void KartMove::calcDeceleration() {
     if (EGG::Mathf::abs(m_speed) < 30.0f && m_smoothedUp.y > 0.0f && initialVel > 0.0f) {
         initialVel = std::min(initialVel * 2.0f, 2.0f);
         vel += initialVel;
-        vel *= std::min(0.5f, std::max(-0.5f, -bodyFront().y));
+        vel *= std::clamp(-bodyFront().y, -0.5f, 0.5f);
     }
     m_speed += vel;
 }
@@ -1519,7 +1519,7 @@ void KartMove::calcAcceleration() {
 
     m_softSpeedLimit = std::min(m_hardSpeedLimit, m_softSpeedLimit);
 
-    m_speed = std::min(m_softSpeedLimit, std::max(-m_softSpeedLimit, m_speed));
+    m_speed = std::clamp(m_speed, -m_softSpeedLimit, m_softSpeedLimit);
 
     if (status.onBit(eStatus::JumpPad)) {
         m_speed = std::max(m_speed, m_jumpPadMinSpeed);
@@ -1695,7 +1695,7 @@ void KartMove::calcStandstillBoostRot() {
             if (status.offBit(eStatus::JumpPad, eStatus::RampBoost,
                         eStatus::SoftWallUnlockRotation)) {
                 f32 speedDiff = m_lastSpeed - m_speed;
-                scalar = std::min(3.0f, std::max(speedDiff, -3.0f));
+                scalar = std::clamp(speedDiff, -3.0f, 3.0f);
 
                 if (status.onBit(eStatus::MushroomBoost)) {
                     next = (scalar * 0.15f) * 0.25f;
@@ -1751,7 +1751,7 @@ void KartMove::calcDive() {
         stickY *= (airtime / 50.0f);
     }
 
-    m_divingRot = std::max(-DIVE_LIMIT, std::min(DIVE_LIMIT, m_divingRot + stickY * 0.005f));
+    m_divingRot = std::clamp(m_divingRot + stickY * 0.005f, -DIVE_LIMIT, DIVE_LIMIT);
 
     EGG::Vector3f angVel2 = dynamics()->angVel2();
     angVel2.x += m_divingRot;
@@ -1825,7 +1825,7 @@ bool KartMove::calcZipperCollision(f32 radius, f32 scale, EGG::Vector3f &pos,
 
 /// @addr{0x805879A4}
 f32 KartMove::calcSlerpRate(f32 scale, const EGG::Quatf &from, const EGG::Quatf &to) const {
-    f32 dotNorm = std::max(-1.0f, std::min(1.0f, from.dot(to)));
+    f32 dotNorm = std::clamp(from.dot(to), -1.0f, 1.0f);
     f32 acos = EGG::Mathf::acos(dotNorm);
     return acos > 0.0f ? std::min(0.1f, scale / acos) : 0.1f;
 }
@@ -1859,19 +1859,15 @@ void KartMove::calcVehicleRotation(f32 turn) {
         EGG::Vector3f front = componentZAxis();
         front = front.perpInPlane(m_up, true);
         EGG::Vector3f frontSpeed = velocity().rej(front).perpInPlane(m_up, false);
-        f32 magnitude = tiltMagnitude;
 
         if (frontSpeed.squaredLength() > std::numeric_limits<f32>::epsilon()) {
-            magnitude = frontSpeed.length();
+            tiltMagnitude = frontSpeed.length();
 
             if (front.z * frontSpeed.x - front.x * frontSpeed.z > 0.0f) {
-                magnitude = -magnitude;
+                tiltMagnitude = -tiltMagnitude;
             }
 
-            tiltMagnitude = -1.0f;
-            if (-1.0f <= magnitude) {
-                tiltMagnitude = std::min(1.0f, magnitude);
-            }
+            tiltMagnitude = std::clamp(tiltMagnitude, -1.0f, 1.0f);
         }
     } else if (status.offBit(eStatus::Hop) || m_hopPosY <= 0.0f) {
         EGG::Vector3f angVel0 = dynamics()->angVel0();
@@ -2707,7 +2703,7 @@ void KartMoveBike::calcWheelie() {
         m_wheelieRot += m_wheelieRotDec;
     }
 
-    m_wheelieRot = std::max(0.0f, std::min(m_wheelieRot, m_maxWheelieRot));
+    m_wheelieRot = std::clamp(m_wheelieRot, 0.0f, m_maxWheelieRot);
 
     f32 vel1DirUp = m_vel1Dir.dot(EGG::Vector3f::ey);
 

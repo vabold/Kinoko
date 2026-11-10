@@ -140,9 +140,9 @@ void KartDynamics::calc(f32 maxSpeed, bool air) {
     EGG::Vector3f t1 = m_invInertiaTensor.multVector33(m_totalTorque);
     m_angVel0 += (t1 + m_invInertiaTensor.multVector33(t1 + m_totalTorque)) * 0.5f;
 
-    m_angVel0.x = std::min(0.4f, std::max(-0.4f, m_angVel0.x));
-    m_angVel0.y = std::min(0.4f, std::max(-0.4f, m_angVel0.y)) * m_angVel0YFactor;
-    m_angVel0.z = std::min(0.8f, std::max(-0.8f, m_angVel0.z));
+    m_angVel0.x = std::clamp(m_angVel0.x, -0.4f, 0.4f);
+    m_angVel0.y = std::clamp(m_angVel0.y, -0.4f, 0.4f) * m_angVel0YFactor;
+    m_angVel0.z = std::clamp(m_angVel0.z, -0.8f, 0.8f);
 
     if (m_forceUpright) {
         forceUpright();
