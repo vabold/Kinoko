@@ -4,8 +4,8 @@
 #include "game/field/RailInterpolator.hh"
 #include "game/field/RailManager.hh"
 
-#include "game/kart/KartCollide.hh"
 #include "game/kart/KartObject.hh"
+#include "game/kart/Reaction.hh"
 
 #include "game/system/RaceManager.hh"
 

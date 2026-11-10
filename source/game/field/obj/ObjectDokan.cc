@@ -2,8 +2,6 @@
 
 #include "game/field/CollisionDirector.hh"
 
-#include "game/kart/KartCollide.hh"
-
 namespace Kinoko::Field {
 
 /// @addr{0x807787F0}

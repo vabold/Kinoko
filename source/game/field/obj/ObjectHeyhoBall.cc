@@ -2,6 +2,8 @@
 
 #include "game/field/ObjectDirector.hh"
 
+#include "game/kart/Reaction.hh"
+
 namespace Kinoko::Field {
 
 /// @addr{0x806D02C4}

@@ -2,9 +2,11 @@
 
 #include "game/field/obj/ObjectId.hh"
 
-#include "game/kart/KartCollide.hh"
-
 #include <span>
+
+namespace Kinoko::Kart {
+enum class Reaction;
+} // namespace Kinoko::Kart
 
 namespace Kinoko::Field {
 

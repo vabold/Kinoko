@@ -6,6 +6,7 @@
 #include "game/field/ObjectDirector.hh"
 
 #include "game/kart/KartObject.hh"
+#include "game/kart/Reaction.hh"
 
 namespace Kinoko::Field {
 

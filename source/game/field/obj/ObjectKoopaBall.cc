@@ -2,7 +2,7 @@
 
 #include "game/field/CollisionDirector.hh"
 
-#include "game/kart/KartCollide.hh"
+#include "game/kart/Reaction.hh"
 
 namespace Kinoko::Field {
 
