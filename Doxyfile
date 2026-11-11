@@ -95,10 +95,10 @@ ALIASES                += beginGetters="\name Getters^^\{"
 ALIASES                += endGetters="\}"
 ALIASES                += beginSetters="\name Setters^^\{"
 ALIASES                += endSetters="\}"
-ALIASES                += beginPublicColFuncs="\name Public Collision Functions^^\{"
-ALIASES                += endPublicColFuncs="\}"
-ALIASES                += beginPrivateColFuncs="\name Public Collision Functions^^\{"
-ALIASES                += endPrivateColFuncs="\}"
+ALIASES                += beginPublicColCheckFuncs="\name Public Collision Check Functions^^\{"
+ALIASES                += endPublicColCheckFuncs="\}"
+ALIASES                += beginPrivateColCheckFuncs="\name Private Collision Check Functions^^\{"
+ALIASES                += endPrivateColCheckFuncs="\}"
 
 # When the TOC_INCLUDE_HEADINGS tag is set to a non-zero value, all headings up
 # to that level are automatically included in the table of contents, even if
