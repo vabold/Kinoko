@@ -13,8 +13,8 @@ public:
     ~ObjectFireball() = default;
 
     /// @addr{0x80768728}
-    [[nodiscard]] u32 loadFlags() const override {
-        return 1;
+    [[nodiscard]] LoadFlags loadFlags() const override {
+        return LoadFlags(eLoadFlags::Calc);
     }
 
     /// @addr{0x8076871C}

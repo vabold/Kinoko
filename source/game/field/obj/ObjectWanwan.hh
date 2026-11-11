@@ -16,8 +16,8 @@ public:
     ~ObjectWanwanPile() override = default;
 
     /// @addr{0x806E9560}
-    [[nodiscard]] u32 loadFlags() const override {
-        return 1;
+    [[nodiscard]] LoadFlags loadFlags() const override {
+        return LoadFlags(eLoadFlags::Calc);
     }
 
     /// @addr{0x806E9554}
@@ -41,8 +41,8 @@ public:
     void calc() override;
 
     /// @addr{0x806E94BC}
-    [[nodiscard]] u32 loadFlags() const override {
-        return 3;
+    [[nodiscard]] LoadFlags loadFlags() const override {
+        return LoadFlags(eLoadFlags::Calc, eLoadFlags::Draw);
     }
 
     Kart::Reaction onCollision(Kart::KartObject *kartObj, Kart::Reaction reactionOnKart,

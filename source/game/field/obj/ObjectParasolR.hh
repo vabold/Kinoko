@@ -10,8 +10,8 @@ public:
     ~ObjectParasolR() override;
 
     /// @addr{0x80779EF4}
-    [[nodiscard]] u32 loadFlags() const override {
-        return 1;
+    [[nodiscard]] LoadFlags loadFlags() const override {
+        return LoadFlags(eLoadFlags::Calc);
     }
 };
 

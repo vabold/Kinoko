@@ -41,6 +41,16 @@ struct TBitFlag {
         setBit(e);
     }
 
+    /// @brief Constructor that initializes the bit flags with the given enums.
+    /// @details Matches the expression `bits = mask`.
+    /// @tparam ...Es Variadic template for packing.
+    /// @param ...es Enum values representing the bits to set.
+    template <typename... Es>
+        requires(std::is_same_v<Es, E> && ...)
+    constexpr TBitFlag(Es... es) : TBitFlag() {
+        (setBit(es), ...);
+    }
+
     /// @brief Conversion operator to the underlying integral type.
     [[nodiscard]] constexpr operator T() const {
         return getDirect();

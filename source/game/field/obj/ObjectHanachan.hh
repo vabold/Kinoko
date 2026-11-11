@@ -77,8 +77,8 @@ public:
     ~ObjectHanachanPart() = default;
 
     /// @addr{0x806CCAD0}
-    [[nodiscard]] u32 loadFlags() const override {
-        return 1;
+    [[nodiscard]] LoadFlags loadFlags() const override {
+        return LoadFlags(eLoadFlags::Calc);
     }
 
     /// @addr{0x806CCB88}
@@ -162,8 +162,8 @@ public:
     }
 
     /// @addr{0x806CC9FC}
-    [[nodiscard]] u32 loadFlags() const override {
-        return 1;
+    [[nodiscard]] LoadFlags loadFlags() const override {
+        return LoadFlags(eLoadFlags::Calc);
     }
 
     /// @addr{0x806CC9F8}

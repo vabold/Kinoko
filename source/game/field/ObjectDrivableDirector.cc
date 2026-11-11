@@ -23,7 +23,7 @@ void ObjectDrivableDirector::calc() {
 
 /// @addr{0x8081B6C8}
 void ObjectDrivableDirector::addObject(ObjectDrivable *obj) {
-    if (obj->loadFlags() & 1) {
+    if (obj->loadFlags().onBit(ObjectBase::eLoadFlags::Calc)) {
         m_calcObjects.push_back(obj);
     }
 

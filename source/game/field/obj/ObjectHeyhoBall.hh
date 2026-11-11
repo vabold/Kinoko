@@ -24,8 +24,8 @@ public:
             EGG::Vector3f &hitDepth) override;
 
     /// @addr{0x806D18EC}
-    [[nodiscard]] u32 loadFlags() const override {
-        return 1;
+    [[nodiscard]] LoadFlags loadFlags() const override {
+        return LoadFlags(eLoadFlags::Calc);
     }
 
     void initProjectile(const EGG::Vector3f &pos) override;

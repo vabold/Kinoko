@@ -23,6 +23,18 @@ public:
     };
     typedef EGG::TBitFlag<u16, eFlags> Flags;
 
+    /// @brief Describes whether the object needs to be updated every frame
+    /// @details For the current purposes of Kinoko, we really only care about `Calc`. The others
+    /// are effectively unused.
+    enum class eLoadFlags {
+        Calc = 0,         ///< The state of the object should be recalculated every frame
+        Draw = 1,         ///< The object should be re-drawn every frame
+        AlwaysRecalc = 2, ///< The object's @ref BoxColUnit will always be recalculated
+    };
+
+    /// @brief A bitfield of @ref eLoadFlags that represents the update requirements of the object
+    typedef EGG::TBitFlag<u8, eLoadFlags> LoadFlags;
+
     ObjectBase(const System::MapdataGeoObj &params);
     ObjectBase(const char *name, const EGG::Vector3f &pos, const EGG::Vector3f &rot,
             const EGG::Vector3f &scale);
@@ -42,9 +54,13 @@ public:
     [[nodiscard]] virtual const char *getName() const;
 
     /// @addr{0x806BF434}
-    [[nodiscard]] virtual u32 loadFlags() const {
+    /// @brief Returns a bitmask indicating which lifecycle hooks should be called for the object
+    /// @return No flags set by default
+    /// @details In Kinoko, the only effective behavior of this bitmask is to determine whether
+    /// calc() should be called. The other bits are unused.
+    [[nodiscard]] virtual LoadFlags loadFlags() const {
         // TODO: This references LOD to determine load flags
-        return 0;
+        return LoadFlags();
     }
 
     [[nodiscard]] virtual const char *getKclName() const;

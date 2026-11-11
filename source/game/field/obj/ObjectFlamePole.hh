@@ -23,8 +23,8 @@ public:
     }
 
     /// @addr{0x80681820}
-    [[nodiscard]] u32 loadFlags() const override {
-        return 1;
+    [[nodiscard]] LoadFlags loadFlags() const override {
+        return LoadFlags(eLoadFlags::Calc);
     }
 
     [[nodiscard]] const char *getResources() const override {

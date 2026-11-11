@@ -18,8 +18,8 @@ public:
     }
 
     /// @addr{0x8074815C}
-    [[nodiscard]] u32 loadFlags() const override {
-        return 1;
+    [[nodiscard]] LoadFlags loadFlags() const override {
+        return LoadFlags(eLoadFlags::Calc);
     }
 
 protected:

@@ -16,8 +16,8 @@ ObjectAurora::~ObjectAurora() = default;
 void ObjectAurora::init() {}
 
 /// @addr{0x807FB688}
-u32 ObjectAurora::loadFlags() const {
-    return 1;
+ObjectBase::LoadFlags ObjectAurora::loadFlags() const {
+    return LoadFlags(eLoadFlags::Calc);
 }
 
 /// @addr{0x807FB684}
