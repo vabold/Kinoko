@@ -1,7 +1,7 @@
 #pragma once
 /// @file KCollisionTypes.hh
 /// This file houses information about KCL types, as well as the struct for collision prisms.
-/// KCL files define collision for Mario %Kart Wii and other games. They organize collision
+/// KCL files define collision for Mario Kart Wii and other games. They organize collision
 /// triangles using an octree, which allows for efficient indexing. Each triangle is associated with
 /// a 16-bit flag, which determines the effect the triangle has on the player colliding with it.
 /// <center><table><caption id="kcl_flag_components">KCL Flag Components</caption>
@@ -188,7 +188,7 @@ STATIC_ASSERT(KCL_TYPE_6CEBDFFF == 0x6CEBDFFF);
     (KCL_TYPE_INVISIBLE_WALL | KCL_TYPE_BIT(COL_TYPE_HALFPIPE_INVISIBLE_WALL))
 
 namespace Kinoko::Field {
-/// @brief The header of the KCL file format. It is 0x3C bytes long (for Mario %Kart Wii).
+/// @brief The header of the KCL file format. It is 0x3C bytes long (for Mario Kart Wii).
 struct KColHeader {
     u32 pos_data_offset;        ///< 0-indexed offset to array of position vectors.
     u32 nrm_data_offset;        ///< 0-indexed offset to array of normal vectors.
