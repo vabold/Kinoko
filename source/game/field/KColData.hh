@@ -14,7 +14,7 @@ struct CollisionInfoPartial {
     EGG::BoundBox3f bbox;
     EGG::Vector3f tangentOff;
 
-    void update(const EGG::Vector3f &offset) {
+    void updateBBox(const EGG::Vector3f &offset) {
         bbox.min = bbox.min.minimize(offset);
         bbox.max = bbox.max.maximize(offset);
     }
@@ -30,6 +30,11 @@ struct CollisionInfo {
     f32 wallDist;
     f32 movingFloorDist;
     f32 perpendicularity;
+
+    void updateBBox(const EGG::Vector3f &offset) {
+        bbox.min = bbox.min.minimize(offset);
+        bbox.max = bbox.max.maximize(offset);
+    }
 
     void updateFloor(f32 dist, const EGG::Vector3f &fnrm) {
         if (dist > floorDist) {

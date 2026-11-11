@@ -429,8 +429,7 @@ bool CourseColMgr::doCheckWithPartialInfo(KColData *data, CollisionCheckFunc col
             }
             if (flags & KCL_TYPE_SOLID_SURFACE) {
                 EGG::Vector3f offset = fnrm * dist;
-                info->bbox.min = info->bbox.min.minimize(offset);
-                info->bbox.max = info->bbox.max.maximize(offset);
+                info->updateBBox(offset);
             }
         }
     }
@@ -459,8 +458,7 @@ bool CourseColMgr::doCheckWithPartialInfoPush(KColData *data, CollisionCheckFunc
             }
             if (flags & KCL_TYPE_SOLID_SURFACE) {
                 EGG::Vector3f offset = fnrm * dist;
-                info->bbox.min = info->bbox.min.minimize(offset);
-                info->bbox.max = info->bbox.max.maximize(offset);
+                info->updateBBox(offset);
             }
         } else {
             if (m_localMtx) {

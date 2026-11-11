@@ -185,8 +185,7 @@ bool ObjectAurora::checkSpherePartialImpl(f32 radius, const EGG::Vector3f &v0,
     }
 
     if (pInfo) {
-        pInfo->bbox.min = pInfo->bbox.min.minimize(bbox);
-        pInfo->bbox.max = pInfo->bbox.max.maximize(bbox);
+        pInfo->updateBBox(bbox);
     }
 
     if (pFlagsOut) {
@@ -240,8 +239,7 @@ bool ObjectAurora::checkSphereFullImpl(f32 radius, const EGG::Vector3f &v0,
     }
 
     if (pInfo) {
-        pInfo->bbox.min = pInfo->bbox.min.minimize(bbox);
-        pInfo->bbox.max = pInfo->bbox.max.maximize(bbox);
+        pInfo->updateBBox(bbox);
 
         pInfo->updateFloor(dist, fnrm);
     }
