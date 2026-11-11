@@ -20,8 +20,8 @@ public:
     void calc() override;
 
     /// @addr{0x8077CCF4}
-    [[nodiscard]] u32 loadFlags() const override {
-        return 1;
+    [[nodiscard]] LoadFlags loadFlags() const override {
+        return LoadFlags(eLoadFlags::Calc);
     }
 
     /// @addr{0x8077CCF0}
@@ -56,8 +56,8 @@ public:
     void calc() override;
 
     /// @addr{0x8077CCD4}
-    [[nodiscard]] u32 loadFlags() const override {
-        return 1;
+    [[nodiscard]] LoadFlags loadFlags() const override {
+        return LoadFlags(eLoadFlags::Calc);
     }
 
     void loadAnims() override;

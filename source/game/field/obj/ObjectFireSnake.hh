@@ -11,8 +11,8 @@ public:
     ~ObjectFireSnakeKid() override;
 
     /// @addr{0x806C2B60}
-    [[nodiscard]] u32 loadFlags() const override {
-        return 1;
+    [[nodiscard]] LoadFlags loadFlags() const override {
+        return LoadFlags(eLoadFlags::Calc);
     }
 };
 
@@ -25,8 +25,8 @@ public:
     void calc() override;
 
     /// @addr{0x806C2A5C}
-    [[nodiscard]] u32 loadFlags() const override {
-        return 1;
+    [[nodiscard]] LoadFlags loadFlags() const override {
+        return LoadFlags(eLoadFlags::Calc);
     }
 
     void initProjectile(const EGG::Vector3f &pos) override;

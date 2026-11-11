@@ -27,8 +27,8 @@ public:
     }
 
     /// @addr{0x80803CF8}
-    [[nodiscard]] u32 loadFlags() const override {
-        return 1;
+    [[nodiscard]] LoadFlags loadFlags() const override {
+        return LoadFlags(eLoadFlags::Calc);
     }
 
     [[nodiscard]] bool checkPointPartial(const EGG::Vector3f &pos, const EGG::Vector3f &prevPos,

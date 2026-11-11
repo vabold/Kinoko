@@ -24,8 +24,8 @@ public:
     }
 
     /// @addr{0x80777324}
-    [[nodiscard]] u32 loadFlags() const override {
-        return 1;
+    [[nodiscard]] LoadFlags loadFlags() const override {
+        return LoadFlags(eLoadFlags::Calc);
     }
 
     /// @addr{0x807757A0}

@@ -49,9 +49,7 @@ void ObjectDirector::calc() {
 
 /// @addr{0x8082B0E8}
 void ObjectDirector::addObject(ObjectCollidable *obj) {
-    u32 loadFlags = obj->loadFlags();
-
-    if (loadFlags & 1) {
+    if (obj->loadFlags().onBit(ObjectBase::eLoadFlags::Calc)) {
         m_calcObjects.push_back(obj);
     }
 

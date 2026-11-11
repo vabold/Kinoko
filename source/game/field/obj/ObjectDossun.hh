@@ -18,8 +18,8 @@ public:
 
     void init() override;
 
-    [[nodiscard]] u32 loadFlags() const override {
-        return 1;
+    [[nodiscard]] LoadFlags loadFlags() const override {
+        return LoadFlags(eLoadFlags::Calc);
     }
 
     void calcCollisionTransform() override;

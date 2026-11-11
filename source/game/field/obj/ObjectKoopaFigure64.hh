@@ -16,8 +16,8 @@ public:
 
     /// @addr{0x806C0854}
     /// @details The game defines this in a GeoObjectSmoke base class, but we don't implement it.
-    [[nodiscard]] u32 loadFlags() const override {
-        return 1;
+    [[nodiscard]] LoadFlags loadFlags() const override {
+        return LoadFlags(eLoadFlags::Calc);
     }
 
     /// @addr{0x806DB154}

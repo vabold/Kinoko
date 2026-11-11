@@ -17,8 +17,8 @@ public:
     void calc() override;
 
     /// @addr{0x8080ACD8}
-    [[nodiscard]] u32 loadFlags() const override {
-        return 1;
+    [[nodiscard]] LoadFlags loadFlags() const override {
+        return LoadFlags(eLoadFlags::Calc);
     }
 
     void createCollision() override;

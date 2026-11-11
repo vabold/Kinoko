@@ -17,8 +17,8 @@ public:
     void calcCollisionTransform() override;
 
     /// @addr{0x806D02B4}
-    [[nodiscard]] u32 loadFlags() const override {
-        return 3;
+    [[nodiscard]] LoadFlags loadFlags() const override {
+        return LoadFlags(eLoadFlags::Calc, eLoadFlags::Draw);
     }
 
 private:

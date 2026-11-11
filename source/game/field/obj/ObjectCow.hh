@@ -57,8 +57,8 @@ public:
     void calc() override;
 
     /// @addr{0x806BF42C}
-    [[nodiscard]] u32 loadFlags() const override {
-        return 1;
+    [[nodiscard]] LoadFlags loadFlags() const override {
+        return LoadFlags(eLoadFlags::Calc);
     }
 
 private:
@@ -104,8 +104,8 @@ public:
     void calc() override;
 
     /// @addr{0x806BF424}
-    [[nodiscard]] u32 loadFlags() const override {
-        return 1;
+    [[nodiscard]] LoadFlags loadFlags() const override {
+        return LoadFlags(eLoadFlags::Calc);
     }
 
     /// @addr{0x806BF420}
@@ -156,8 +156,8 @@ public:
     void calc() override;
 
     /// @addr{0x806BF42C}
-    [[nodiscard]] u32 loadFlags() const override {
-        return 1;
+    [[nodiscard]] LoadFlags loadFlags() const override {
+        return LoadFlags(eLoadFlags::Calc);
     }
 
     /// @addr{0x806BF348}

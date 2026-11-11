@@ -10,7 +10,7 @@ public:
     ~ObjectAurora() override;
 
     void init() override;
-    [[nodiscard]] u32 loadFlags() const override;
+    [[nodiscard]] LoadFlags loadFlags() const override;
     void createCollision() override;
     void calcCollisionTransform() override;
     f32 getCollisionRadius() const override;

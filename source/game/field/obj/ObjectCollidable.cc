@@ -68,7 +68,7 @@ void ObjectCollidable::loadAABB(f32 maxSpeed) {
 void ObjectCollidable::loadAABB(f32 radius, f32 maxSpeed) {
     auto *boxColMgr = BoxColManager::Instance();
     const EGG::Vector3f &pos = getPosition();
-    bool alwaysRecalc = loadFlags() & 0x5;
+    bool alwaysRecalc = loadFlags().onAnyBit(eLoadFlags::Calc, eLoadFlags::AlwaysRecalc);
     m_boxColUnit = boxColMgr->insertObject(radius, maxSpeed, &pos, alwaysRecalc, this);
 }
 

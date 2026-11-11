@@ -25,8 +25,8 @@ public:
     void calc() override;
 
     /// @addr{0x806BBE34}
-    [[nodiscard]] u32 loadFlags() const override {
-        return 1;
+    [[nodiscard]] LoadFlags loadFlags() const override {
+        return LoadFlags(eLoadFlags::Calc);
     }
 
     Kart::Reaction onCollision(Kart::KartObject *kartObj, Kart::Reaction reactionOnKart,
@@ -77,8 +77,8 @@ public:
     ~ObjectChoropuGround() override;
 
     /// @addr{0x806BBEB0}
-    [[nodiscard]] u32 loadFlags() const override {
-        return 1;
+    [[nodiscard]] LoadFlags loadFlags() const override {
+        return LoadFlags(eLoadFlags::Calc);
     }
 
     /// @addr{0x806B9164}
@@ -114,8 +114,8 @@ public:
     }
 
     /// @addr{0x806BBE64}
-    [[nodiscard]] u32 loadFlags() const override {
-        return 1;
+    [[nodiscard]] LoadFlags loadFlags() const override {
+        return LoadFlags(eLoadFlags::Calc);
     }
 
     /// @addr{0x806BBE58}

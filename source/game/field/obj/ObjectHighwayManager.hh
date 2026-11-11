@@ -15,8 +15,8 @@ public:
     void calc() override;
 
     /// @addr{0x806D5C6C}
-    [[nodiscard]] u32 loadFlags() const override {
-        return 1;
+    [[nodiscard]] LoadFlags loadFlags() const override {
+        return LoadFlags(eLoadFlags::Calc);
     }
 
     /// @addr{0x806D5C68}
