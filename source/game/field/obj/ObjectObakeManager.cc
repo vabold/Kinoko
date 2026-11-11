@@ -205,7 +205,7 @@ bool ObjectObakeManager::checkSpherePartialImpl(f32 radius, const EGG::Vector3f 
                         collided = false;
                     } else {
                         if (info) {
-                            info->update(dist);
+                            info->updateBBox(dist);
                         }
 
                         if (maskOut) {
@@ -232,7 +232,7 @@ bool ObjectObakeManager::checkSpherePartialImpl(f32 radius, const EGG::Vector3f 
                         collided = false;
                     } else {
                         if (info) {
-                            info->update(dist);
+                            info->updateBBox(dist);
                         }
 
                         if (maskOut) {
@@ -290,7 +290,7 @@ bool ObjectObakeManager::checkSpherePartialPushImpl(f32 radius, const EGG::Vecto
                         collided = false;
                     } else {
                         if (info) {
-                            info->update(dist);
+                            info->updateBBox(dist);
                         }
 
                         if (maskOut) {
@@ -320,7 +320,7 @@ bool ObjectObakeManager::checkSpherePartialPushImpl(f32 radius, const EGG::Vecto
                         collided = false;
                     } else {
                         if (info) {
-                            info->update(dist);
+                            info->updateBBox(dist);
                         }
 
                         if (maskOut) {

@@ -211,8 +211,7 @@ bool ObjectTwistedWay::checkWallCollision(f32 angle, f32 radius, u32 t, const EG
 
     if (dist > 0.0f) {
         if (pInfo) {
-            pInfo->bbox.min = pInfo->bbox.min.minimize(bbox);
-            pInfo->bbox.max = pInfo->bbox.max.maximize(bbox);
+            pInfo->updateBBox(bbox);
 
             if constexpr (std::is_same_v<T, CollisionInfo>) {
                 pInfo->updateWall(dist, fnrm);
@@ -240,8 +239,7 @@ bool ObjectTwistedWay::checkWallCollision(f32 angle, f32 radius, u32 t, const EG
     }
 
     if (pInfo) {
-        pInfo->bbox.min = pInfo->bbox.min.minimize(bbox);
-        pInfo->bbox.max = pInfo->bbox.max.maximize(bbox);
+        pInfo->updateBBox(bbox);
 
         if constexpr (std::is_same_v<T, CollisionInfo>) {
             pInfo->updateWall(dist, wnrm);
@@ -278,8 +276,7 @@ bool ObjectTwistedWay::checkFloorCollision(f32 angle, f32 radius, const EGG::Vec
     EGG::Vector3f fnrm = EGG::Vector3f(sin, cos, 0.0f);
 
     if (pInfo) {
-        pInfo->bbox.min = pInfo->bbox.min.minimize(bbox);
-        pInfo->bbox.max = pInfo->bbox.max.maximize(bbox);
+        pInfo->updateBBox(bbox);
 
         if constexpr (std::is_same_v<T, CollisionInfo>) {
             pInfo->updateFloor(dist, fnrm);

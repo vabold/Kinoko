@@ -170,8 +170,7 @@ bool ObjectAmi::checkSphereImpl(f32 radius, const EGG::Vector3f &v0, const EGG::
     }
 
     if (pInfo) {
-        pInfo->bbox.min = pInfo->bbox.min.minimize(bbox);
-        pInfo->bbox.max = pInfo->bbox.max.maximize(bbox);
+        pInfo->updateBBox(bbox);
 
         if constexpr (std::is_same_v<T, CollisionInfo>) {
             pInfo->updateFloor(dist, fnrm);
