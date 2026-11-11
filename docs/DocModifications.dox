@@ -1,0 +1,196 @@
+// Documentation tweaks for symbols that are declared elsewhere, kept out of the source files.
+// Doxygen reads this file via INPUT in the Doxyfile; it is never compiled.
+
+///////////////////////////////////////////////////////////////////////////////////////
+// Hide "referenced by" for elements that have a large number of uses
+///////////////////////////////////////////////////////////////////////////////////////
+
+/// @def ASSERT
+/// @hiderefby
+
+/// @def KCL_TYPE_BIT
+/// @hiderefby
+
+/// @fn Kinoko::EGG::egg_new(Args &&...args)
+/// @hiderefby
+
+/// @fn Kinoko::EGG::egg_delete(const T *ptr)
+/// @hiderefby
+
+/// @var Kinoko::EGG::BoundBox3f::min
+/// @hiderefby
+
+/// @var Kinoko::EGG::BoundBox3f::max
+/// @hiderefby
+
+/// @fn Kinoko::EGG::Matrix34f::setBase
+/// @hiderefby
+
+/// @fn Kinoko::EGG::Matrix34f::ps_multVector
+/// @hiderefby
+
+/// @fn Kinoko::EGG::Matrix34f::base
+/// @hiderefby
+
+/// @var Kinoko::EGG::Matrix34f::ident
+/// @hiderefby
+
+/// @var Kinoko::EGG::Quatf::v
+/// @hiderefby
+
+/// @var Kinoko::EGG::Quatf::w
+/// @hiderefby
+
+/// @var Kinoko::EGG::Quatf::ident
+/// @hiderefby
+
+/// @fn Kinoko::EGG::TBitFlag::setBit
+/// @hiderefby
+
+/// @fn Kinoko::EGG::TBitFlagExt::setBit
+/// @hiderefby
+
+/// @fn Kinoko::EGG::TBitFlagExt::resetBit
+/// @hiderefby
+
+/// @fn Kinoko::EGG::TBitFlagExt::onBit
+/// @hiderefby
+
+/// @fn Kinoko::EGG::TBitFlagExt::offBit
+/// @hiderefby
+
+/// @fn Kinoko::EGG::Vector3f::setZero
+/// @hiderefby
+
+/// @fn Kinoko::EGG::Vector3f::cross
+/// @hiderefby
+
+/// @fn Kinoko::EGG::Vector3f::squaredLength
+/// @hiderefby
+
+/// @fn Kinoko::EGG::Vector3f::dot
+/// @hiderefby
+
+/// @fn Kinoko::EGG::Vector3f::length
+/// @hiderefby
+
+/// @fn Kinoko::EGG::Vector3f::normalise
+/// @hiderefby
+
+/// @fn Kinoko::EGG::Vector3f::normalise2
+/// @hiderefby
+
+/// @var Kinoko::EGG::Vector3f::x
+/// @hiderefby
+
+/// @var Kinoko::EGG::Vector3f::y
+/// @hiderefby
+
+/// @var Kinoko::EGG::Vector3f::z
+/// @hiderefby
+
+/// @var Kinoko::EGG::Vector3f::zero
+/// @hiderefby
+
+/// @var Kinoko::EGG::Vector3f::ex
+/// @hiderefby
+
+/// @var Kinoko::EGG::Vector3f::ey
+/// @hiderefby
+
+/// @var Kinoko::EGG::Vector3f::ez
+/// @hiderefby
+
+/// @var Kinoko::EGG::Vector3f::inf
+/// @hiderefby
+
+/// @fn Kinoko::Field::CollisionDirector::Instance
+/// @hiderefby
+
+/// @var Kinoko::Field::CollisionInfo::tangentOff
+/// @hiderefby
+
+/// @fn Kinoko::Field::CourseColMgr::Instance
+/// @hiderefby
+
+/// @fn Kinoko::Field::ObjectBase::setPos
+/// @hiderefby
+
+/// @fn Kinoko::Field::ObjectBase::addPos
+/// @hiderefby
+
+/// @fn Kinoko::Field::ObjectBase::pos
+/// @hiderefby
+
+/// @fn Kinoko::Field::ObjectBase::scale
+/// @hiderefby
+
+/// @fn Kinoko::Field::ObjectBase::rot
+/// @hiderefby
+
+/// @fn Kinoko::Field::ObjectBase::transform
+/// @hiderefby
+
+/// @fn Kinoko::Field::ObjectBase::calcTransform
+/// @hiderefby
+
+/// @var Kinoko::Field::ObjectBase::m_railInterpolator
+/// @hiderefby
+
+/// @fn Kinoko::Field::ObjectCollidable::ObjectCollidable(const System::MapdataGeoObj &params)
+/// @hiderefby
+
+/// @fn Kinoko::Field::ObjectDirector::Instance
+/// @hiderefby
+
+/// @var Kinoko::Field::ObjectKCL::m_objColMgr
+/// @hiderefby
+
+/// @fn Kinoko::Field::RailInterpolator::curPos
+/// @hiderefby
+
+/// @fn Kinoko::Field::RailInterpolator::curTangentDir
+/// @hiderefby
+
+/// @var Kinoko::Field::StateManager::m_nextStateId
+/// @hiderefby
+
+/// @var Kinoko::Field::StateManager::m_currentFrame
+/// @hiderefby
+
+/// @fn Kinoko::Kart::KartObjectProxy::move
+/// @hiderefby
+
+/// @fn Kinoko::Kart::KartObjectProxy::param
+/// @hiderefby
+
+/// @fn Kinoko::Kart::KartObjectProxy::physics
+/// @hiderefby
+
+/// @fn Kinoko::Kart::KartObjectProxy::dynamics
+/// @hiderefby
+
+/// @fn Kinoko::Kart::KartObjectProxy::state
+/// @hiderefby
+
+/// @fn Kinoko::Kart::KartObjectProxy::pos
+/// @hiderefby
+
+/// @fn Kinoko::Kart::KartObjectProxy::status
+/// @hiderefby
+
+/// @fn Kinoko::System::MapdataGeoObj::setting
+/// @hiderefby
+
+/// @fn Kinoko::System::RaceManager::timer
+/// @hiderefby
+
+/// @fn Kinoko::System::RaceManager::Instance
+/// @hiderefby
+
+///////////////////////////////////////////////////////////////////////////////////////
+// Show inheritance as an "Inherited by" list for classes whose diagram is too large
+///////////////////////////////////////////////////////////////////////////////////////
+
+/// @class Kinoko::Field::ObjectBase
+/// @inheritancegraph{TEXT}

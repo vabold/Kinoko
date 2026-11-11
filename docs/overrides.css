@@ -3,6 +3,66 @@
     display: none;
 }
 
+/* Colors for the @desync content box (same treatment as @warning / @bug) */
+html {
+    --desync-color: #fde0cc;
+    --desync-color-dark: #e8590c;
+    --desync-color-darker: #6b2400;
+}
+
+@media (prefers-color-scheme: dark) {
+    html:not(.light-mode) {
+        --desync-color: #3a2210;
+        --desync-color-dark: #ff8a3d;
+        --desync-color-darker: #ffd9b8;
+    }
+}
+
+html.dark-mode {
+    --desync-color: #3a2210;
+    --desync-color-dark: #ff8a3d;
+    --desync-color-darker: #ffd9b8;
+}
+
+dl.desync {
+    padding: var(--spacing-medium);
+    margin: var(--spacing-medium) 0;
+    overflow: hidden;
+    margin-left: 0;
+    border-radius: var(--border-radius-small);
+    background: var(--desync-color);
+    border-left: 8px solid var(--desync-color-dark);
+    color: var(--desync-color-darker);
+}
+
+dl.desync dt a {
+    color: var(--desync-color-dark) !important;
+    font-weight: bold !important;
+}
+
+dl.desync dd {
+    margin-inline-start: 0px;
+}
+
+dl.desync code, dl.desync span.tt {
+    background: var(--section-code-background);
+    border: 1px solid var(--section-code-border);
+}
+
+dl.desync div.fragment, dl.desync pre.fragment {
+    background: var(--section-code-background);
+    border: 1px solid var(--section-code-border);
+}
+
+/* Added/removed lines in diff fragments (classes applied by overrides.js) */
+div.fragment div.line.diff-add {
+    background: rgba(46, 160, 67, 0.18);
+}
+
+div.fragment div.line.diff-del {
+    background: rgba(248, 81, 73, 0.18);
+}
+
 /* Add border to cell descriptions (left) */
 td.mdescLeft {
     border-left: 1px solid var(--separator-color);
@@ -26,6 +86,16 @@ td.memItemLeft, td.memItemRight {
 h2.groupheader {
     margin-top: 0px;
     margin-bottom: 0px;
+}
+
+/* Member group headers (e.g. Getters/Setters). Doxygen 1.18's doxygen.css hardcodes light-mode
+   colors for these, so restyle them for dark mode. */
+html.dark-mode div.groupHeader {
+    color: var(--primary-dark-color);
+    box-shadow: 13px 0 var(--page-background-color),
+               -13px 0 var(--page-background-color),
+                13px 1px var(--separator-color),
+               -13px 1px var(--separator-color);
 }
 
 /* Remove "Definition at line XXX" */

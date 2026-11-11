@@ -122,9 +122,9 @@ jobs:
       - name: Generate documentation
         run: |
           sudo apt-get install -y graphviz
-          curl https://www.doxygen.nl/files/doxygen-1.17.0.linux.bin.tar.gz --output doxygen-1.17.0.linux.bin.tar.gz
-          tar xzf doxygen-1.17.0.linux.bin.tar.gz
-          cd doxygen-1.17.0
+          curl https://www.doxygen.nl/files/doxygen-1.18.0.linux.bin.tar.gz --output doxygen-1.18.0.linux.bin.tar.gz
+          tar xzf doxygen-1.18.0.linux.bin.tar.gz
+          cd doxygen-1.18.0
           sudo make install
           cd ..
           doxygen
