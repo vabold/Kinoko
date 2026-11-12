@@ -8,7 +8,8 @@ namespace Kinoko::Field {
 
 /// @addr{0x806DA914}
 ObjectKoopaFigure64::ObjectKoopaFigure64(const System::MapdataGeoObj &params)
-    : ObjectCollidable(params), m_isBigStatue(params.setting(1) == 1),
+    : ObjectCollidable(params),
+      m_isBigStatue(params.setting(1) == 1),
       m_startDelay(static_cast<u32>(params.setting(2))) {}
 
 /// @addr{0x806DB114}

@@ -79,6 +79,7 @@ public:
     void setMovingObjVel(const EGG::Vector3f &v) {
         m_movingObjVel = v;
     }
+
     /// @endSetters
 
 private:

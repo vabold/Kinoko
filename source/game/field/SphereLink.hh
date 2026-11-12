@@ -42,6 +42,7 @@ public:
     void addSpringForce(const EGG::Vector3f &force) {
         m_springForce += force;
     }
+
     /// @endSetters
 
     /// @beginGetters
@@ -60,6 +61,7 @@ public:
     [[nodiscard]] static constexpr const EGG::Vector3f &Gravity() {
         return GRAVITY;
     }
+
     /// @endGetters
 
 private:

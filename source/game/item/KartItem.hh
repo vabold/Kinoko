@@ -30,6 +30,7 @@ public:
     [[nodiscard]] const ItemInventory &inventory() const {
         return m_inventory;
     }
+
     /// @endGetters
 
 private:

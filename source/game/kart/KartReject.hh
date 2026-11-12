@@ -6,7 +6,7 @@ namespace Kinoko {
 
 namespace Field {
 struct CollisionInfo;
-}
+} // namespace Field
 
 namespace Kart {
 

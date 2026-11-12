@@ -116,6 +116,7 @@ public:
     void setTangentOff(const EGG::Vector3f &v) {
         m_tangentOff = v;
     }
+
     void setMovement(const EGG::Vector3f &v) {
         m_movement = v;
     }
@@ -123,6 +124,7 @@ public:
     void setWorldInertiaTensor(const EGG::Matrix34f &worldInertiaTensor) {
         m_worldInertiaTensor = worldInertiaTensor;
     }
+
     /// @endSetters
 
     /// @beginGetters
@@ -173,6 +175,7 @@ public:
     [[nodiscard]] f32 colPerpendicularity() const {
         return m_colPerpendicularity;
     }
+
     /// @endGetters
 
 private:

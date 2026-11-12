@@ -6,8 +6,10 @@ namespace Kinoko::Field {
 
 /// @addr{0x807614D0}
 ObjectDossunTsuibiHolder::ObjectDossunTsuibiHolder(const System::MapdataGeoObj &params)
-    : ObjectCollidable(params), m_stillTimer(static_cast<u32>(params.setting(2))),
-      m_facingBackwards(false), m_forwardVel(static_cast<f32>(m_mapObj->setting(0))),
+    : ObjectCollidable(params),
+      m_stillTimer(static_cast<u32>(params.setting(2))),
+      m_facingBackwards(false),
+      m_forwardVel(static_cast<f32>(m_mapObj->setting(0))),
       m_stillDuration(static_cast<u32>(m_mapObj->setting(3))) {
     for (auto *&dossun : m_dossuns) {
         dossun = EGG::egg_new<ObjectDossunTsuibi>(params, this);

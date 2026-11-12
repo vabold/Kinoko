@@ -24,6 +24,7 @@ public:
     [[nodiscard]] ItemId id() const {
         return m_currentId;
     }
+
     /// @endGetters
 
 private:

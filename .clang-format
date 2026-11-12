@@ -1,5 +1,5 @@
 AccessModifierOffset: -4
-AlignAfterOpenBracket: DontAlign
+AlignAfterOpenBracket: false
 AlignConsecutiveAssignments: None
 AlignConsecutiveBitFields: None
 AlignConsecutiveDeclarations: None
@@ -14,44 +14,53 @@ AllowShortEnumsOnASingleLine: True
 AllowShortFunctionsOnASingleLine: Empty
 AllowShortIfStatementsOnASingleLine: Never
 AllowShortLoopsOnASingleLine: False
-AlwaysBreakAfterReturnType: None
 AlwaysBreakBeforeMultilineStrings: True
-AlwaysBreakTemplateDeclarations: Yes
-BinPackArguments: True
-BinPackParameters: True
 BitFieldColonSpacing: Both
+BreakAfterReturnType: Automatic
 BreakBeforeBinaryOperators: None
 BreakBeforeBraces: Attach
 BreakBeforeTernaryOperators: False
 BreakStringLiterals: True
+BreakTemplateDeclarations: Yes
 ColumnLimit: 100
 ContinuationIndentWidth: 8
+EmptyLineBeforeAccessModifier: Always
+FixNamespaceComments: True
 IncludeBlocks: Preserve
 IndentAccessModifiers: False
 IndentCaseLabels: False
-IndentGotoLabels: True
+IndentGotoLabels: OuterIndent
+IndentRequiresClause: True
 IndentWidth: 4
 InsertBraces: True
 InsertNewlineAtEOF: true
-KeepEmptyLinesAtTheStartOfBlocks: False
+KeepEmptyLines:
+    AtStartOfBlock: False
 MaxEmptyLinesToKeep: 1
 Language: Cpp
+PackArguments:
+    BinPack: BinPack
+PackConstructorInitializers: NextLine
+PackParameters:
+    BinPack: BinPack
 PointerAlignment: Right
-SortIncludes: CaseSensitive
+ReferenceAlignment: Right
+SeparateDefinitionBlocks: Always
+ShortNamespaceLines: 0
+SortIncludes:
+    Enabled: True
+    IgnoreCase: False
 SpaceAfterCStyleCast: False
 SpaceAfterLogicalNot: False
 SpaceBeforeAssignmentOperators: True
 SpaceBeforeCaseColon: False
 SpaceBeforeParens: ControlStatements
 SpaceBeforeSquareBrackets: False
-SpaceInEmptyBlock: False
-SpaceInEmptyParentheses: False
+SpaceInEmptyBraces: Never
 SpacesBeforeTrailingComments: 1
-SpacesInCStyleCastParentheses: False
-SpacesInConditionalStatement: False
 SpacesInLineCommentPrefix:
     Minimum: 1
     Maximum: 1
-SpacesInParentheses: False
+SpacesInParens: Never
 SpacesInSquareBrackets: False
 UseTab: Never

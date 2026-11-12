@@ -6,7 +6,9 @@ namespace Kinoko::Field {
 
 /// @addr{0x807C4CE8}
 ObjColMgr::ObjColMgr(const void *file)
-    : m_mtx(EGG::Matrix34f::ident), m_mtxInv(EGG::Matrix34f::ident), m_kclScale(1.0f),
+    : m_mtx(EGG::Matrix34f::ident),
+      m_mtxInv(EGG::Matrix34f::ident),
+      m_kclScale(1.0f),
       m_movingObjVel(EGG::Vector3f::zero) {
     m_data = EGG::egg_new<KColData>(file);
 }

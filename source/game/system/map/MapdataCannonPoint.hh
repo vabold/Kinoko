@@ -36,6 +36,7 @@ public:
     s16 parameterIdx() const {
         return m_parameterIdx;
     }
+
     /// @endGetters
 
 private:

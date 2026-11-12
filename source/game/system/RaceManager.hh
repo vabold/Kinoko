@@ -31,6 +31,7 @@ public:
     class Player {
     public:
         Player();
+
         virtual ~Player() {}
 
         void init();
@@ -71,6 +72,7 @@ public:
         [[nodiscard]] const KPad *inputs() const {
             return m_inputs;
         }
+
         /// @endGetters
 
     private:
@@ -145,6 +147,7 @@ public:
     [[nodiscard]] u32 timer() const {
         return m_timer;
     }
+
     /// @endGetters
 
     static RaceManager *CreateInstance();

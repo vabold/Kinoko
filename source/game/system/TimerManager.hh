@@ -128,6 +128,7 @@ public:
     void setStarted(bool isSet) {
         m_started = isSet;
     }
+
     /// @endSetters
 
 private:

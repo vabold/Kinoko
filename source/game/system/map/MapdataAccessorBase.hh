@@ -16,6 +16,7 @@ class MapdataAccessorBase {
 public:
     MapdataAccessorBase(const MapSectionHeader *header)
         : m_entries(nullptr), m_entryCount(0), m_sectionHeader(header) {}
+
     MapdataAccessorBase(const MapdataAccessorBase &) = delete;
     MapdataAccessorBase(MapdataAccessorBase &&) = delete;
 

@@ -23,22 +23,27 @@ struct SObjectCollisionSet {
     char resources[64];
     u8 _62[0x6a - 0x62];
     s16 mode;
+
     union {
         struct {
             s16 radius;
         } sphere;
+
         struct {
             s16 radius;
             s16 height;
         } cylinder;
+
         struct {
             s16 x;
             s16 y;
             s16 z;
         } box;
     } params;
+
     u8 _72[0x74 - 0x72];
 };
+
 STATIC_ASSERT(sizeof(SObjectCollisionSet) == 0x74);
 
 class ObjectFlowTable {

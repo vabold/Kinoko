@@ -33,6 +33,7 @@ public:
         f32 dist;
         EGG::Vector3f fnrm;
     };
+
     STATIC_ASSERT(sizeof(NoBounceWallColInfo) == 0x34);
 
     void init();
@@ -104,6 +105,7 @@ public:
     void setLocalMtx(EGG::Matrix34f *mtx) {
         m_localMtx = mtx;
     }
+
     /// @endSetters
 
     /// @beginGetters
@@ -114,6 +116,7 @@ public:
     [[nodiscard]] NoBounceWallColInfo *noBounceWallInfo() const {
         return m_noBounceWallInfo;
     }
+
     /// @endGetters
 
     static void *LoadFile(const char *filename);

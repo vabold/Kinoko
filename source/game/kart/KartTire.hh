@@ -20,6 +20,7 @@ public:
     [[nodiscard]] WheelPhysics *wheelPhysics() {
         return m_wheelPhysics;
     }
+
     /// @endGetters
 
 protected:

@@ -105,6 +105,7 @@ public:
     [[nodiscard]] f32 radius() const {
         return m_radius;
     }
+
     /// @endGetters
 
 private:
@@ -154,6 +155,7 @@ public:
     [[nodiscard]] const CollisionData &collisionData() const {
         return m_collisionData;
     }
+
     /// @endGetters
 
 private:

@@ -11,7 +11,9 @@ namespace Kinoko::Field {
 
 /// @addr{0x807FFB20}
 ObjectEscalator::ObjectEscalator(const System::MapdataGeoObj &params, bool reverse /* = false */)
-    : ObjectKCL(params), m_initialPos(pos()), m_initialRot(rot()),
+    : ObjectKCL(params),
+      m_initialPos(pos()),
+      m_initialRot(rot()),
       m_stillFrames(
               {static_cast<s32>(params.setting(2)) * 60, static_cast<s32>(params.setting(4)) * 60}),
       m_speed({(reverse ? -1.0f : 1.0f) *

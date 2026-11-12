@@ -4,14 +4,17 @@ namespace Kinoko::Field {
 
 /// @addr{0x8081A198}
 ObjectVolcanoRock::ObjectVolcanoRock(const System::MapdataGeoObj &params)
-    : ObjectKCL(params), m_initialPos(pos()), m_initialRot(rot()),
+    : ObjectKCL(params),
+      m_initialPos(pos()),
+      m_initialRot(rot()),
       m_phaseShift(static_cast<s16>(params.setting(3))),
       m_zPeriod(std::max<s16>(static_cast<s16>(params.setting(1)), 2)),
       m_yPeriod(std::max<s16>(static_cast<s16>(params.setting(4)), 2)),
       m_zAmplitude(static_cast<f32>(static_cast<s16>(params.setting(2)))),
       m_yAmplitude(static_cast<f32>(static_cast<s16>(params.setting(5)))),
       m_zAngVel(6.2831855f / static_cast<f32>(m_zPeriod)),
-      m_yAngVel(6.2831855f / static_cast<f32>(m_yPeriod)), m_variant(!!params.setting(0)) {
+      m_yAngVel(6.2831855f / static_cast<f32>(m_yPeriod)),
+      m_variant(!!params.setting(0)) {
     setPos(calcPos(0));
 }
 

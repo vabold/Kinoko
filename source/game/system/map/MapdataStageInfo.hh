@@ -14,6 +14,7 @@ public:
         u8 translationMode;
         u8 _3[0xc - 0x3];
     };
+
     STATIC_ASSERT(sizeof(SData) == 0xc);
 
     MapdataStageInfo(const SData *data);

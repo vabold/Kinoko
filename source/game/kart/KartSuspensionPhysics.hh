@@ -48,6 +48,7 @@ public:
     void setColVel(const EGG::Vector3f &vec) {
         m_colVel = vec;
     }
+
     /// @endSetters
 
     /// @beginGetters
@@ -90,6 +91,7 @@ public:
     [[nodiscard]] f32 _74() const {
         return m_74;
     }
+
     /// @endGetters
 
 private:

@@ -666,7 +666,12 @@ KColData::KCollisionPrism::KCollisionPrism() = default;
 
 KColData::KCollisionPrism::KCollisionPrism(f32 height, u16 posIndex, u16 faceNormIndex,
         u16 edge1NormIndex, u16 edge2NormIndex, u16 edge3NormIndex, u16 attribute)
-    : height(height), pos_i(posIndex), fnrm_i(faceNormIndex), enrm1_i(edge1NormIndex),
-      enrm2_i(edge2NormIndex), enrm3_i(edge3NormIndex), attribute(attribute) {}
+    : height(height),
+      pos_i(posIndex),
+      fnrm_i(faceNormIndex),
+      enrm1_i(edge1NormIndex),
+      enrm2_i(edge2NormIndex),
+      enrm3_i(edge3NormIndex),
+      attribute(attribute) {}
 
 } // namespace Kinoko::Field

@@ -100,7 +100,9 @@ void KReplaySystem::DestroyInstance() {
 }
 
 KReplaySystem::KReplaySystem()
-    : m_currentGhostFileName(nullptr), m_currentGhost(nullptr), m_currentRawGhost(nullptr),
+    : m_currentGhostFileName(nullptr),
+      m_currentGhost(nullptr),
+      m_currentRawGhost(nullptr),
       m_currentRawGhostSize(0) {}
 
 KReplaySystem::~KReplaySystem() {

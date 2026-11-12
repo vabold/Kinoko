@@ -27,7 +27,10 @@ constexpr StateManagerEntry StateEntry(u16 id) {
 class StateManager {
 protected:
     StateManager(void *obj, const std::span<const StateManagerEntry> &entries)
-        : m_currentStateId(0), m_nextStateId(-1), m_currentFrame(0), m_entries(entries),
+        : m_currentStateId(0),
+          m_nextStateId(-1),
+          m_currentFrame(0),
+          m_entries(entries),
           m_obj(obj) {
         m_entryIds = std::span(static_cast<u16 *>(EGG::egg_alloc(m_entries.size() * sizeof(u16))),
                 m_entries.size());

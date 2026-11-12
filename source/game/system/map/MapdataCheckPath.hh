@@ -18,6 +18,7 @@ public:
         u8 next[6];
         u8 _0e[0x10 - 0x0e];
     };
+
     STATIC_ASSERT(sizeof(SData) == 0x10);
 
     MapdataCheckPath(const SData *data);
@@ -55,6 +56,7 @@ public:
     [[nodiscard]] f32 oneOverCount() const {
         return m_oneOverCount;
     }
+
     /// @endGetters
 
 private:

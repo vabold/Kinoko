@@ -35,6 +35,7 @@ enum class Trick {
 /// @brief Represents a set of controller inputs.
 struct RaceInputState {
     RaceInputState();
+
     virtual ~RaceInputState() {}
 
     void reset();
@@ -177,6 +178,7 @@ struct KPadGhostTrickButtonsStream : public KPadGhostButtonsStream {
 class KPadController {
 public:
     KPadController();
+
     virtual ~KPadController() {}
 
     /// @addr{0x8051CE7C}
@@ -185,6 +187,7 @@ public:
     }
 
     virtual void reset(bool /*driftIsAuto*/) {}
+
     virtual void calcImpl() {}
 
     void calc();

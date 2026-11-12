@@ -10,7 +10,8 @@ namespace Kinoko::Field {
 
 /// @addr{0x806B5C84}
 ObjectBasabasaDummy::ObjectBasabasaDummy(const System::MapdataGeoObj &params)
-    : ObjectCollidable(params), StateManager(this, STATE_ENTRIES),
+    : ObjectCollidable(params),
+      StateManager(this, STATE_ENTRIES),
       m_bigBump(params.setting(7) == 1) {
     m_active = true;
 }
@@ -67,8 +68,10 @@ void ObjectBasabasaDummy::calcState0() {
 
 /// @addr{0x806B70D0}
 ObjectBasabasa::ObjectBasabasa(const System::MapdataGeoObj &params)
-    : ObjectCollidable(params), m_initialTimer(params.setting(1)),
-      m_batsPerGroup(params.setting(2)), m_startFrame(params.setting(6)),
+    : ObjectCollidable(params),
+      m_initialTimer(params.setting(1)),
+      m_batsPerGroup(params.setting(2)),
+      m_startFrame(params.setting(6)),
       m_batSpacing(static_cast<u32>(static_cast<f32>(params.setting(5)) /
               static_cast<f32>(params.setting(0)) / static_cast<f32>(m_batsPerGroup))) {
     f32 railLen = RailManager::Instance()->rail(params.pathId())->getPathLength();

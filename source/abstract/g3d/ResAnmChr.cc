@@ -40,6 +40,7 @@ public:
     void operator++(int) {
         mPtr++;
     }
+
     void operator--(int) {
         mPtr--;
     }

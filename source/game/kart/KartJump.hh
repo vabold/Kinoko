@@ -60,6 +60,7 @@ public:
     void setBoostRampEnabled(bool isSet) {
         m_boostRampEnabled = isSet;
     }
+
     /// @endSetters
 
     /// @beginGetters
@@ -70,12 +71,15 @@ public:
     [[nodiscard]] TrickType type() const {
         return m_type;
     }
+
     [[nodiscard]] SurfaceVariant variant() const {
         return m_variant;
     }
+
     [[nodiscard]] s16 cooldown() const {
         return m_cooldown;
     }
+
     /// @endGetters
 
 protected:

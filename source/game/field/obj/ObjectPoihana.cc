@@ -6,8 +6,12 @@ namespace Kinoko::Field {
 
 /// @addr{0x80747198}
 ObjectPoihanaBase::ObjectPoihanaBase(const System::MapdataGeoObj &params)
-    : StateManager(this, {}), ObjectCollidable(params), m_walkState(WalkState::NeedTarget),
-      m_heightOffset(0.0f), m_radius(150.0f), m_targetPos(EGG::Vector3f::zero) {}
+    : StateManager(this, {}),
+      ObjectCollidable(params),
+      m_walkState(WalkState::NeedTarget),
+      m_heightOffset(0.0f),
+      m_radius(150.0f),
+      m_targetPos(EGG::Vector3f::zero) {}
 
 /// @addr{0x80747208}
 ObjectPoihanaBase::~ObjectPoihanaBase() = default;

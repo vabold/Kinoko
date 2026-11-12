@@ -16,8 +16,11 @@ struct Quatf {
     constexpr Quatf() = default;
 #endif
     constexpr Quatf(const Quatf &q) = default;
+
     constexpr Quatf(f32 w_, const Vector3f &v_) : v(v_), w(w_) {}
+
     constexpr Quatf(f32 w_, f32 x_, f32 y_, f32 z_) : v(x_, y_, z_), w(w_) {}
+
     constexpr ~Quatf() = default;
 
     constexpr Quatf &operator=(const Quatf &q) {

@@ -85,6 +85,7 @@ public:
         m_decayingStuntRot = EGG::Quatf::ident;
         m_decayingExtraRot = EGG::Quatf::ident;
     }
+
     /// @endSetters
 
     /// @beginGetters
@@ -123,6 +124,7 @@ public:
     [[nodiscard]] f32 fc() const {
         return m_fc;
     }
+
     /// @endGetters
 
     [[nodiscard]] static KartPhysics *Create(const KartParam &param);

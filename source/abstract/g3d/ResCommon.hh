@@ -8,6 +8,7 @@ struct ResBlockHeaderData {
     u32 signature;
     u32 size;
 };
+
 STATIC_ASSERT(sizeof(ResBlockHeaderData) == 0x8);
 
 struct ResFileHeaderData {
@@ -18,6 +19,7 @@ struct ResFileHeaderData {
     u16 headerSize;
     u16 dataBlocks;
 };
+
 STATIC_ASSERT(sizeof(ResFileHeaderData) == 0x10);
 
 } // namespace Kinoko::Abstract::g3d

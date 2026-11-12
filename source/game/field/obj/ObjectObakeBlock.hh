@@ -32,6 +32,7 @@ public:
     void setFallState(FallState state) {
         m_fallState = state;
     }
+
     /// @endSetters
 
     /// @beginGetters
@@ -42,6 +43,7 @@ public:
     [[nodiscard]] s32 fallFrame() const {
         return m_fallFrame;
     }
+
     /// @endGetters
 
 private:

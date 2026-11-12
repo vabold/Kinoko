@@ -14,6 +14,7 @@ public:
         EGG::Vector3f rot;
         u8 _18[0x1c - 0x18];
     };
+
     static_assert(sizeof(SData) == 0x1c);
 
     MapdataJugemPoint(const SData *data);
@@ -27,6 +28,7 @@ public:
     const EGG::Vector3f &rot() const {
         return m_rot;
     }
+
     /// @endGetters
 
 private:

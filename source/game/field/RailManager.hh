@@ -31,6 +31,7 @@ public:
         ASSERT(idx < m_rails.size());
         return m_rails[idx];
     }
+
     /// @endGetters
 
     static RailManager *CreateInstance();

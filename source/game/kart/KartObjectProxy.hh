@@ -173,6 +173,7 @@ public:
     proxyList() {
         return s_proxyList;
     }
+
     /// @endGetters
 
 protected:

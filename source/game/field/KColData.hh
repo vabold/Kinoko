@@ -32,6 +32,7 @@ public:
         u16 enrm3_i;
         u16 attribute;
     };
+
     STATIC_ASSERT(sizeof(KCollisionPrism) == 0x10);
 
     /// @brief Stores the vertex, height and normals of a collision prism
@@ -46,6 +47,7 @@ public:
         EGG::Vector3f fnrm;  ///< The face normal
         f32 height;          ///< The height of the tri
     };
+
     STATIC_ASSERT(sizeof(KCollisionPrismGeometry) == 0x40);
 
     KColData(const void *file);
@@ -76,6 +78,7 @@ public:
     [[nodiscard]] u16 prismCache(u32 idx) const {
         return m_prismCache[idx];
     }
+
     /// @endGetters
 
     [[nodiscard]] static EGG::Vector3f GetVertex(f32 height, const EGG::Vector3f &vertex1,

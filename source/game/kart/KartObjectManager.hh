@@ -30,6 +30,7 @@ public:
         ASSERT(i < m_count);
         return m_objects[i];
     }
+
     /// @endGetters
 
     static KartObjectManager *CreateInstance();

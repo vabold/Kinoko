@@ -102,6 +102,7 @@ public:
     [[nodiscard]] const CollisionEntry *closestCollisionEntry() const {
         return m_closestCollisionEntry;
     }
+
     /// @endGetters
 
     static CollisionDirector *CreateInstance();

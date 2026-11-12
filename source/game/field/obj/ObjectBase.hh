@@ -41,12 +41,16 @@ public:
     virtual ~ObjectBase();
 
     virtual void init() {}
+
     virtual void calc() {}
+
     virtual void calcModel();
     virtual void load() = 0;
     [[nodiscard]] virtual const char *getResources() const;
     virtual void loadGraphics();
+
     virtual void loadAnims() {}
+
     virtual void createCollision() = 0;
     virtual void loadRail();
     virtual void calcCollisionTransform() = 0;

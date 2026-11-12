@@ -26,6 +26,7 @@ public:
         u8 prevPt;
         u8 nextPt;
     };
+
     STATIC_ASSERT(sizeof(SData) == 0x14);
 
     enum class SectorOccupancy {
@@ -62,6 +63,7 @@ public:
     void clearSearched() {
         m_lastSearchedId = 0;
     }
+
     /// @endSetters
 
     /// @beginGetters
@@ -102,6 +104,7 @@ public:
         ASSERT(i < m_nextPoints.size());
         return m_nextPoints[i].checkpoint;
     }
+
     /// @endGetters
 
     enum class CheckArea {

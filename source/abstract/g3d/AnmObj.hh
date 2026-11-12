@@ -34,7 +34,10 @@ class FrameCtrl {
 
 public:
     FrameCtrl(f32 start, f32 end, PlayPolicyFunc policy)
-        : m_frame(0.0f), m_updateRate(1.0f), m_startFrame(start), m_endFrame(end),
+        : m_frame(0.0f),
+          m_updateRate(1.0f),
+          m_startFrame(start),
+          m_endFrame(end),
           m_playPolicy(policy) {
         ASSERT(m_playPolicy);
     }
@@ -55,6 +58,7 @@ public:
     [[nodiscard]] PlayPolicyFunc playPolicy() const {
         return m_playPolicy;
     }
+
     /// @endGetters
 
     /// @beginSetters
@@ -70,6 +74,7 @@ public:
         ASSERT(func);
         m_playPolicy = func;
     }
+
     /// @endSetters
 
 private:

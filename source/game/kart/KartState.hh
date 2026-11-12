@@ -46,6 +46,7 @@ public:
     void setTrickableTimer(s16 val) {
         m_trickableTimer = val;
     }
+
     /// @endSetters
 
     /// @beginGetters

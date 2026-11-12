@@ -102,6 +102,7 @@ private:
     }
 
     void onPointsChanged() override {}
+
     void onPointAdded() override {}
 
     u16 m_dirCount;
