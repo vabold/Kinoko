@@ -1,67 +1,13 @@
 #pragma once
 
-#include "game/field/KCollisionTypes.hh"
+#include "game/field/CollisionInfo.hh"
 
 #include <egg/math/BoundBox.hh>
-#include <egg/math/Matrix.hh>
 
 // Credit: em-eight/mkw
 // Credit: stblr/Hanachan
 
 namespace Kinoko::Field {
-
-struct CollisionInfoPartial {
-    EGG::BoundBox3f bbox;
-    EGG::Vector3f tangentOff;
-
-    void updateBBox(const EGG::Vector3f &offset) {
-        bbox.min = bbox.min.minimize(offset);
-        bbox.max = bbox.max.maximize(offset);
-    }
-};
-
-struct CollisionInfo {
-    EGG::BoundBox3f bbox;
-    EGG::Vector3f tangentOff;
-    EGG::Vector3f floorNrm;
-    EGG::Vector3f wallNrm;
-    EGG::Vector3f roadVelocity;
-    f32 floorDist;
-    f32 wallDist;
-    f32 movingFloorDist;
-    f32 perpendicularity;
-
-    void updateBBox(const EGG::Vector3f &offset) {
-        bbox.min = bbox.min.minimize(offset);
-        bbox.max = bbox.max.maximize(offset);
-    }
-
-    void updateFloor(f32 dist, const EGG::Vector3f &fnrm) {
-        if (dist > floorDist) {
-            floorDist = dist;
-            floorNrm = fnrm;
-        }
-    }
-
-    void updateWall(f32 dist, const EGG::Vector3f &fnrm) {
-        if (dist > wallDist) {
-            wallDist = dist;
-            wallNrm = fnrm;
-        }
-    }
-
-    void reset() {
-        bbox.setZero();
-        movingFloorDist = -std::numeric_limits<f32>::min();
-        wallDist = -std::numeric_limits<f32>::min();
-        floorDist = -std::numeric_limits<f32>::min();
-        perpendicularity = 0.0f;
-    }
-
-    void update(f32 now_dist, const EGG::Vector3f &offset, const EGG::Vector3f &fnrm,
-            u32 kclAttributeTypeBit);
-    void transformInfo(CollisionInfo &rhs, const EGG::Matrix34f &mtx, const EGG::Vector3f &v);
-};
 
 /// @brief Performs lookups for KCL triangles
 /// @nosubgrouping

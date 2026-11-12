@@ -6,7 +6,7 @@
 #include "game/kart/KartState.hh"
 
 #include "game/field/CollisionDirector.hh"
-#include "game/field/CourseColMgr.hh"
+#include "game/field/CollisionInfo.hh"
 
 #include <egg/math/Math.hh>
 #include <egg/math/Quat.hh>

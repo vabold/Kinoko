@@ -6,6 +6,7 @@
 #include <egg/core/SceneManager.hh>
 
 #include <game/field/CollisionDirector.hh>
+#include <game/field/CourseColMgr.hh>
 #include <game/field/ObjectDirector.hh>
 #include <game/field/ObjectDrivableDirector.hh>
 #include <game/field/RailManager.hh>

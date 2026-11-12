@@ -8,7 +8,7 @@
 #include "game/kart/KartReject.hh"
 #include "game/kart/KartState.hh"
 
-#include "game/field/CourseColMgr.hh"
+#include "game/field/CollisionInfo.hh"
 
 #include <egg/core/BitFlag.hh>
 

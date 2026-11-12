@@ -46,7 +46,7 @@ bool ObjColMgr::checkPointPartial(const EGG::Vector3f &pos, const EGG::Vector3f 
 
     if (info) {
         CollisionInfoPartial tempInfo;
-        tempInfo.bbox.setZero();
+        tempInfo.reset();
 
         if (courseColMgr->noBounceWallInfo()) {
             courseColMgr->setLocalMtx(&m_mtx);
@@ -54,15 +54,7 @@ bool ObjColMgr::checkPointPartial(const EGG::Vector3f &pos, const EGG::Vector3f 
 
         if (courseColMgr->checkPointPartial(m_kclScale, m_data, posWrtModel, prevPosWrtModel, flags,
                     &tempInfo, typeMaskOut)) {
-            tempInfo.bbox.min = m_mtx.ps_multVector33(tempInfo.bbox.min);
-            tempInfo.bbox.max = m_mtx.ps_multVector33(tempInfo.bbox.max);
-
-            EGG::Vector3f min = tempInfo.bbox.min;
-            tempInfo.bbox.min = min.minimize(tempInfo.bbox.max);
-            tempInfo.bbox.max = min.maximize(tempInfo.bbox.max);
-
-            info->bbox.min = info->bbox.min.minimize(tempInfo.bbox.min);
-            info->bbox.max = info->bbox.max.maximize(tempInfo.bbox.max);
+            info->transformInfo(tempInfo, m_mtx);
 
             return true;
         }
@@ -84,7 +76,7 @@ bool ObjColMgr::checkPointPartialPush(const EGG::Vector3f &pos, const EGG::Vecto
 
     if (info) {
         CollisionInfoPartial tempInfo;
-        tempInfo.bbox.setZero();
+        tempInfo.reset();
 
         if (courseColMgr->noBounceWallInfo()) {
             courseColMgr->setLocalMtx(&m_mtx);
@@ -92,15 +84,7 @@ bool ObjColMgr::checkPointPartialPush(const EGG::Vector3f &pos, const EGG::Vecto
 
         if (courseColMgr->checkPointPartialPush(m_kclScale, m_data, posWrtModel, prevPosWrtModel,
                     flags, &tempInfo, typeMaskOut)) {
-            tempInfo.bbox.min = m_mtx.ps_multVector33(tempInfo.bbox.min);
-            tempInfo.bbox.max = m_mtx.ps_multVector33(tempInfo.bbox.max);
-
-            EGG::Vector3f min = tempInfo.bbox.min;
-            tempInfo.bbox.min = min.minimize(tempInfo.bbox.max);
-            tempInfo.bbox.max = min.maximize(tempInfo.bbox.max);
-
-            info->bbox.min = info->bbox.min.minimize(tempInfo.bbox.min);
-            info->bbox.max = info->bbox.max.maximize(tempInfo.bbox.max);
+            info->transformInfo(tempInfo, m_mtx);
 
             return true;
         }
@@ -183,7 +167,7 @@ bool ObjColMgr::checkSpherePartial(f32 radius, const EGG::Vector3f &pos,
 
     if (info) {
         CollisionInfoPartial tempInfo;
-        tempInfo.bbox.setZero();
+        tempInfo.reset();
 
         if (courseColMgr->noBounceWallInfo()) {
             courseColMgr->setLocalMtx(&m_mtx);
@@ -191,15 +175,7 @@ bool ObjColMgr::checkSpherePartial(f32 radius, const EGG::Vector3f &pos,
 
         if (courseColMgr->checkSpherePartial(m_kclScale, radius, m_data, posWrtModel,
                     prevPosWrtModel, flags, &tempInfo, typeMaskOut)) {
-            tempInfo.bbox.min = m_mtx.ps_multVector33(tempInfo.bbox.min);
-            tempInfo.bbox.max = m_mtx.ps_multVector33(tempInfo.bbox.max);
-
-            EGG::Vector3f min = tempInfo.bbox.min;
-            tempInfo.bbox.min = min.minimize(tempInfo.bbox.max);
-            tempInfo.bbox.max = min.maximize(tempInfo.bbox.max);
-
-            info->bbox.min = info->bbox.min.minimize(tempInfo.bbox.min);
-            info->bbox.max = info->bbox.max.maximize(tempInfo.bbox.max);
+            info->transformInfo(tempInfo, m_mtx);
 
             return true;
         }
@@ -222,7 +198,7 @@ bool ObjColMgr::checkSpherePartialPush(f32 radius, const EGG::Vector3f &pos,
 
     if (info) {
         CollisionInfoPartial tempInfo;
-        tempInfo.bbox.setZero();
+        tempInfo.reset();
 
         if (courseColMgr->noBounceWallInfo()) {
             courseColMgr->setLocalMtx(&m_mtx);
@@ -230,15 +206,7 @@ bool ObjColMgr::checkSpherePartialPush(f32 radius, const EGG::Vector3f &pos,
 
         if (courseColMgr->checkSpherePartialPush(m_kclScale, radius, m_data, posWrtModel,
                     prevPosWrtModel, flags, &tempInfo, typeMaskOut)) {
-            tempInfo.bbox.min = m_mtx.ps_multVector33(tempInfo.bbox.min);
-            tempInfo.bbox.max = m_mtx.ps_multVector33(tempInfo.bbox.max);
-
-            EGG::Vector3f min = tempInfo.bbox.min;
-            tempInfo.bbox.min = min.minimize(tempInfo.bbox.max);
-            tempInfo.bbox.max = min.maximize(tempInfo.bbox.max);
-
-            info->bbox.min = info->bbox.min.minimize(tempInfo.bbox.min);
-            info->bbox.max = info->bbox.max.maximize(tempInfo.bbox.max);
+            info->transformInfo(tempInfo, m_mtx);
 
             return true;
         }
@@ -325,7 +293,7 @@ bool ObjColMgr::checkPointCachedPartial(const EGG::Vector3f &pos, const EGG::Vec
 
     if (info) {
         CollisionInfoPartial tempInfo;
-        tempInfo.bbox.setZero();
+        tempInfo.reset();
 
         if (courseColMgr->noBounceWallInfo()) {
             courseColMgr->setLocalMtx(&m_mtx);
@@ -333,15 +301,7 @@ bool ObjColMgr::checkPointCachedPartial(const EGG::Vector3f &pos, const EGG::Vec
 
         if (courseColMgr->checkPointCachedPartial(m_kclScale, m_data, posWrtModel, prevPosWrtModel,
                     flags, &tempInfo, typeMaskOut)) {
-            tempInfo.bbox.min = m_mtx.ps_multVector33(tempInfo.bbox.min);
-            tempInfo.bbox.max = m_mtx.ps_multVector33(tempInfo.bbox.max);
-
-            EGG::Vector3f min = tempInfo.bbox.min;
-            tempInfo.bbox.min = min.minimize(tempInfo.bbox.max);
-            tempInfo.bbox.max = min.maximize(tempInfo.bbox.max);
-
-            info->bbox.min = info->bbox.min.minimize(tempInfo.bbox.min);
-            info->bbox.max = info->bbox.max.maximize(tempInfo.bbox.max);
+            info->transformInfo(tempInfo, m_mtx);
 
             return true;
         }
@@ -367,7 +327,7 @@ bool ObjColMgr::checkPointCachedPartialPush(const EGG::Vector3f &pos, const EGG:
 
     if (info) {
         CollisionInfoPartial tempInfo;
-        tempInfo.bbox.setZero();
+        tempInfo.reset();
 
         if (courseColMgr->noBounceWallInfo()) {
             courseColMgr->setLocalMtx(&m_mtx);
@@ -375,15 +335,7 @@ bool ObjColMgr::checkPointCachedPartialPush(const EGG::Vector3f &pos, const EGG:
 
         if (courseColMgr->checkPointCachedPartialPush(m_kclScale, m_data, posWrtModel,
                     prevPosWrtModel, flags, &tempInfo, typeMaskOut)) {
-            tempInfo.bbox.min = m_mtx.ps_multVector33(tempInfo.bbox.min);
-            tempInfo.bbox.max = m_mtx.ps_multVector33(tempInfo.bbox.max);
-
-            EGG::Vector3f min = tempInfo.bbox.min;
-            tempInfo.bbox.min = min.minimize(tempInfo.bbox.max);
-            tempInfo.bbox.max = min.maximize(tempInfo.bbox.max);
-
-            info->bbox.min = info->bbox.min.minimize(tempInfo.bbox.min);
-            info->bbox.max = info->bbox.max.maximize(tempInfo.bbox.max);
+            info->transformInfo(tempInfo, m_mtx);
 
             return true;
         }
@@ -478,7 +430,7 @@ bool ObjColMgr::checkSphereCachedPartial(f32 radius, const EGG::Vector3f &pos,
 
     if (info) {
         CollisionInfoPartial tempInfo;
-        tempInfo.bbox.setZero();
+        tempInfo.reset();
 
         if (courseColMgr->noBounceWallInfo()) {
             courseColMgr->setLocalMtx(&m_mtx);
@@ -486,15 +438,7 @@ bool ObjColMgr::checkSphereCachedPartial(f32 radius, const EGG::Vector3f &pos,
 
         if (courseColMgr->checkSphereCachedPartial(m_kclScale, radius, m_data, posWrtModel,
                     prevPosWrtModel, typeflags, &tempInfo, typeMaskOut)) {
-            tempInfo.bbox.min = m_mtx.ps_multVector33(tempInfo.bbox.min);
-            tempInfo.bbox.max = m_mtx.ps_multVector33(tempInfo.bbox.max);
-
-            EGG::Vector3f min = tempInfo.bbox.min;
-            tempInfo.bbox.min = min.minimize(tempInfo.bbox.max);
-            tempInfo.bbox.max = min.maximize(tempInfo.bbox.max);
-
-            info->bbox.min = info->bbox.min.minimize(tempInfo.bbox.min);
-            info->bbox.max = info->bbox.max.maximize(tempInfo.bbox.max);
+            info->transformInfo(tempInfo, m_mtx);
 
             return true;
         }
@@ -521,7 +465,7 @@ bool ObjColMgr::checkSphereCachedPartialPush(f32 radius, const EGG::Vector3f &po
 
     if (info) {
         CollisionInfoPartial tempInfo;
-        tempInfo.bbox.setZero();
+        tempInfo.reset();
 
         if (courseColMgr->noBounceWallInfo()) {
             courseColMgr->setLocalMtx(&m_mtx);
@@ -529,15 +473,7 @@ bool ObjColMgr::checkSphereCachedPartialPush(f32 radius, const EGG::Vector3f &po
 
         if (courseColMgr->checkSphereCachedPartialPush(m_kclScale, radius, m_data, posWrtModel,
                     prevPosWrtModel, typeflags, &tempInfo, typeMaskOut)) {
-            tempInfo.bbox.min = m_mtx.ps_multVector33(tempInfo.bbox.min);
-            tempInfo.bbox.max = m_mtx.ps_multVector33(tempInfo.bbox.max);
-
-            EGG::Vector3f min = tempInfo.bbox.min;
-            tempInfo.bbox.min = min.minimize(tempInfo.bbox.max);
-            tempInfo.bbox.max = min.maximize(tempInfo.bbox.max);
-
-            info->bbox.min = info->bbox.min.minimize(tempInfo.bbox.min);
-            info->bbox.max = info->bbox.max.maximize(tempInfo.bbox.max);
+            info->transformInfo(tempInfo, m_mtx);
 
             return true;
         }
