@@ -1,6 +1,6 @@
 #pragma once
 
-#include "game/field/CourseColMgr.hh"
+#include "game/field/CollisionInfo.hh"
 
 #include <egg/math/Vector.hh>
 

@@ -1,5 +1,6 @@
 #include "CollisionDirector.hh"
 
+#include "game/field/CourseColMgr.hh"
 #include "game/field/ObjectDrivableDirector.hh"
 
 namespace Kinoko::Field {

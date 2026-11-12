@@ -1,6 +1,6 @@
 #pragma once
 
-#include "game/field/CourseColMgr.hh"
+#include "game/field/CollisionInfo.hh"
 #include "game/field/ObjectCollisionBase.hh"
 #include "game/field/obj/ObjectBase.hh"
 

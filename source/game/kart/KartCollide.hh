@@ -6,7 +6,7 @@
 #include "game/kart/KartPullPath.hh"
 #include "game/kart/Reaction.hh"
 
-#include "game/field/CourseColMgr.hh"
+#include "game/field/CollisionInfo.hh"
 
 #include <egg/core/BitFlag.hh>
 
