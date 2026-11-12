@@ -48,14 +48,17 @@ public:
     [[nodiscard]] void *getMemoryEnd() const;
 
     u16 m_signature;
+
     union {
         u16 val;
+
         struct {
             u16 direction : 1;
             u16 alignment : 7;
             u16 groupId : 8;
         } fields;
     } m_attribute;
+
     u32 m_size;
 #ifdef BUILD_DEBUG
     u32 m_tag;

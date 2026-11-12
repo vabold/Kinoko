@@ -39,7 +39,9 @@ public:
 
     virtual void createSubsystems(const KartParam::Stats &stats);
     virtual void calcTurn();
+
     virtual void calcWheelie() {}
+
     virtual void setTurnParams();
     virtual void init(bool b1, bool b2);
     virtual void clear();
@@ -100,8 +102,11 @@ public:
     void applyForce(f32 force, const EGG::Vector3f &hitDir, bool stop);
     virtual void calcVehicleRotation(f32 turn);
     virtual void hop();
+
     virtual void onHop() {}
+
     virtual void onWallCollision() {}
+
     virtual void calcMtCharge();
     virtual void initOob();
 
@@ -222,6 +227,7 @@ public:
     void setPadType(PadType type) {
         m_padType = type;
     }
+
     /// @endSetters
 
     /// @beginGetters
@@ -347,6 +353,7 @@ public:
     [[nodiscard]] KartBurnout &burnout() {
         return m_burnout;
     }
+
     /// @endGetters
 
 protected:

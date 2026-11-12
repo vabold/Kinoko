@@ -8,6 +8,7 @@ namespace Kinoko::Field {
 class JugemSwitch {
 public:
     JugemSwitch() : m_isOn(false) {}
+
     virtual ~JugemSwitch() = default;
 
     [[nodiscard]] bool isOn() const {

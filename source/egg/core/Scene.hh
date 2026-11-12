@@ -27,10 +27,15 @@ public:
      *----------*/
 
     virtual void calc() {}
+
     virtual void enter() {}
+
     virtual void exit() {}
+
     virtual void reinit() {}
+
     virtual void incoming_childDestroy() {}
+
     virtual void outgoing_childCreate() {}
 
     /// @beginSetters
@@ -49,6 +54,7 @@ public:
     void setSceneMgr(SceneManager *sceneMgr) {
         m_sceneMgr = sceneMgr;
     }
+
     /// @endSetters
 
     /// @beginGetters
@@ -71,6 +77,7 @@ public:
     [[nodiscard]] SceneManager *sceneMgr() const {
         return m_sceneMgr;
     }
+
     /// @endGetters
 
 protected:

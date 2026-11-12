@@ -15,6 +15,7 @@ public:
     virtual ~KartDynamics();
 
     virtual void forceUpright() {}
+
     virtual void stabilize();
 
     void init();
@@ -125,6 +126,7 @@ public:
     void setKillExtVelY(bool isSet) {
         m_killExtVelY = isSet;
     }
+
     /// @endSetters
 
     /// @beginGetters
@@ -187,6 +189,7 @@ public:
     [[nodiscard]] f32 speedFix() const {
         return m_speedFix;
     }
+
     /// @endGetters
 
 protected:

@@ -50,6 +50,7 @@ public:
     [[nodiscard]] u16 presenceFlag() const {
         return m_presenceFlag;
     }
+
     /// @endGetters
 
 private:

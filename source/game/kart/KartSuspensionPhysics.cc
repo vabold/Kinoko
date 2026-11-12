@@ -129,7 +129,9 @@ void WheelPhysics::calcSuspension(const EGG::Vector3f &forward) {
 
 /// @addr{0x80599ED4}
 KartSuspensionPhysics::KartSuspensionPhysics(u16 wheelIdx, TireType tireType, u16 bspWheelIdx)
-    : m_tirePhysics(nullptr), m_tireType(tireType), m_bspWheelIdx(bspWheelIdx),
+    : m_tirePhysics(nullptr),
+      m_tireType(tireType),
+      m_bspWheelIdx(bspWheelIdx),
       m_wheelIdx(wheelIdx) {}
 
 /// @addr{0x8059AA04}

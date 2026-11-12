@@ -51,6 +51,7 @@ public:
         u16 value; // at 0x2
         s16 slope; // at 0x4
     };
+
     struct FVS48Data {
         f32 scale;                // at 0x0
         f32 offset;               // at 0x4
@@ -62,6 +63,7 @@ public:
         f32 value; // at 0x4
         f32 slope; // at 0x8
     };
+
     struct FVS96Data {
         Frm96Data frameValues[1]; // at 0x0
     };
@@ -147,8 +149,8 @@ public:
 
             FLAG_HAS_SRT_MASK = FLAG_HAS_SCALE | FLAG_HAS_ROT | FLAG_HAS_TRANS,
 
-            FLAG_SCALE_FMT_MASK =
-                    FLAG_SCALE_FVS32_FMT | FLAG_SCALE_FVS48_FMT | FLAG_SCALE_FVS96_FMT,
+            FLAG_SCALE_FMT_MASK = FLAG_SCALE_FVS32_FMT | FLAG_SCALE_FVS48_FMT |
+                    FLAG_SCALE_FVS96_FMT,
 
             FLAG_ROT_FMT_MASK = FLAG_ROT_FVS32_FMT | FLAG_ROT_FVS48_FMT | FLAG_ROT_FVS96_FMT |
                     FLAG_ROT_CV8_FMT | FLAG_ROT_CV16_FMT | FLAG_ROT_CV32_FMT,
@@ -165,6 +167,7 @@ public:
         u32 flags;
         AnmData anms[1];
     };
+
     STATIC_ASSERT(sizeof(NodeData) == 0xC);
 
     struct InfoData {
@@ -180,6 +183,7 @@ public:
         AnmPolicy policy;
         u32 scalingRule;
     };
+
     STATIC_ASSERT(sizeof(InfoData) == 0xC);
 
     struct Data {
@@ -192,6 +196,7 @@ public:
         s32 originalPath;
         InfoData info;
     };
+
     STATIC_ASSERT(sizeof(Data) == 0x2C);
 
     ResAnmChr(const void *data) : m_rawData(reinterpret_cast<const Data *>(data)) {

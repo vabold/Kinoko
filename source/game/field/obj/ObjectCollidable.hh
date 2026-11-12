@@ -39,7 +39,9 @@ public:
     }
 
     virtual void onWallCollision(Kart::KartObject *, const EGG::Vector3f &) {}
+
     virtual void onObjectCollision(Kart::KartObject *) {}
+
     virtual bool checkCollision(ObjectCollisionBase *lhs, EGG::Vector3f &dist);
 
     /// @addr{0x8068173C}

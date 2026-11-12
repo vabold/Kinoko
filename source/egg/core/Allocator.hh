@@ -9,6 +9,7 @@ struct Allocator {
     using value_type = T;
 
     Allocator() = default;
+
     template <typename U>
     constexpr Allocator(const Allocator<U> &) noexcept {}
 

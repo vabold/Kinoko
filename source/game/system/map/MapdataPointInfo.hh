@@ -21,6 +21,7 @@ public:
         u8 settings[2];
         Point points[];
     };
+
     STATIC_ASSERT(sizeof(SData) == 0x4);
 
     MapdataPointInfo(const SData *data);

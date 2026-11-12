@@ -22,6 +22,7 @@ public:
     [[nodiscard]] KartSuspensionPhysics *suspPhysics() {
         return m_physics;
     }
+
     /// @endGetters
 
 private:

@@ -35,11 +35,13 @@ public:
             u32 val;
             u8 str[4];
         };
+
         union {
             struct {
                 u32 parent;
                 u32 next;
             } directory;
+
             struct {
                 u32 startAddress;
                 u32 length;

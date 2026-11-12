@@ -4,7 +4,9 @@ namespace Kinoko::Field {
 
 /// @addr{0x80833840}
 ObjectCollisionBox::ObjectCollisionBox(f32 x, f32 y, f32 z, const EGG::Vector3f &center)
-    : ObjectCollisionConvexHull(8), m_dimensions(x, y, z), m_center(center),
+    : ObjectCollisionConvexHull(8),
+      m_dimensions(x, y, z),
+      m_center(center),
       m_scale(EGG::Vector3f::unit) {
     f32 radius = getBoundingRadius();
     EGG::Vector3f scaledDims = m_dimensions - EGG::Vector3f(radius, radius, radius);

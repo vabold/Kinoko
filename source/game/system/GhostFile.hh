@@ -70,6 +70,7 @@ private:
 
     u8 m_buffer[0x2800];
 };
+
 STATIC_ASSERT(sizeof(RawGhostFile) == 0x2800);
 
 /// @brief Parsed representation of a binary ghost file.
@@ -110,6 +111,7 @@ public:
     [[nodiscard]] bool driftIsAuto() const {
         return m_driftIsAuto;
     }
+
     /// @endGetters
 
 private:

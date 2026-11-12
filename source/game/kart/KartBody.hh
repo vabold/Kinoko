@@ -9,6 +9,7 @@ namespace Kinoko::Kart {
 class KartBody : protected KartObjectProxy {
 public:
     KartBody(KartPhysics *physics);
+
     virtual ~KartBody() {}
 
     [[nodiscard]] virtual EGG::Matrix34f wheelMatrix(u16, const EGG::Matrix34f &bodyMat);
@@ -27,6 +28,7 @@ public:
     void setAngle(f32 val) {
         m_anAngle = val;
     }
+
     /// @endSetters
 
     /// @beginGetters
@@ -37,6 +39,7 @@ public:
     [[nodiscard]] f32 sinkDepth() const {
         return m_sinkDepth;
     }
+
     /// @endGetters
 
 protected:

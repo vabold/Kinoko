@@ -8,8 +8,12 @@ namespace Kinoko::System {
 
 /// @addr{0x80518CC0}
 DvdArchive::DvdArchive()
-    : m_archive(nullptr), m_archiveStart(nullptr), m_archiveSize(0), m_fileStart(nullptr),
-      m_fileSize(0), m_state(State::Cleared) {}
+    : m_archive(nullptr),
+      m_archiveStart(nullptr),
+      m_archiveSize(0),
+      m_fileStart(nullptr),
+      m_fileSize(0),
+      m_state(State::Cleared) {}
 
 /// @addr{0x80518CF4}
 DvdArchive::~DvdArchive() {

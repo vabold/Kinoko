@@ -39,6 +39,7 @@ public:
     [[nodiscard]] f32 speedLimit() const {
         return m_speedLimit;
     }
+
     /// @endGetters
 
 private:

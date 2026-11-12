@@ -36,14 +36,18 @@ public:
     void enterFalling();
     void enterHighBounce();
     void enterRest();
+
     void enterBounce() {}
+
     void enterDespawning() {}
 
     void calcDespawned() {}
+
     void calcFalling();
     void calcHighBounce();
     void calcRest();
     void calcBounce();
+
     void calcDespawning() {}
 
 protected:

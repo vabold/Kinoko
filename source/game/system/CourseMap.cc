@@ -240,8 +240,14 @@ void CourseMap::DestroyInstance() {
 
 /// @addr{0x8051276C}
 CourseMap::CourseMap()
-    : m_course(nullptr), m_startPoint(nullptr), m_stageInfo(nullptr), m_startTmpAngle(0.0f),
-      m_startTmp0(0.0f), m_startTmp1(0.0f), m_startTmp2(0.0f), m_startTmp3(0.0f),
+    : m_course(nullptr),
+      m_startPoint(nullptr),
+      m_stageInfo(nullptr),
+      m_startTmpAngle(0.0f),
+      m_startTmp0(0.0f),
+      m_startTmp1(0.0f),
+      m_startTmp2(0.0f),
+      m_startTmp3(0.0f),
       m_sectorSearchId(0) {}
 
 /// @addr{0x805127AC}

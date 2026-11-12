@@ -19,6 +19,7 @@ public:
         s32 ofsString;
         s32 ofsData;
     };
+
     STATIC_ASSERT(sizeof(NodeData) == 0x10);
 
     struct Data {

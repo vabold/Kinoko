@@ -61,12 +61,12 @@ jobs:
       - name: Install clang-format
         run: |
           chmod u+x llvm.sh
-          sudo ./llvm.sh 16
-          sudo apt install clang-format-16
+          sudo ./llvm.sh 23
+          sudo apt install clang-format-23
       - name: Format Kinoko
         run: |
           dirs="include source"
-          find $dirs -regex '.*\.\(c\|h\|cc\|hh\)' | xargs clang-format-16 --dry-run -Werror
+          find $dirs -regex '.*\.\(c\|h\|cc\|hh\)' | xargs clang-format-23 --dry-run -Werror
 
   verify:
     name: Verify

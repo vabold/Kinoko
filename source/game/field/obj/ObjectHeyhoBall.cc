@@ -8,8 +8,10 @@ namespace Kinoko::Field {
 
 /// @addr{0x806D02C4}
 ObjectHeyhoBall::ObjectHeyhoBall(const System::MapdataGeoObj &params)
-    : ObjectProjectile(params), StateManager(this, STATE_ENTRIES),
-      m_airtime(static_cast<f32>(params.setting(1))), m_initPos(params.pos()) {
+    : ObjectProjectile(params),
+      StateManager(this, STATE_ENTRIES),
+      m_airtime(static_cast<f32>(params.setting(1))),
+      m_initPos(params.pos()) {
     registerManagedObject();
 }
 

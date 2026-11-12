@@ -175,6 +175,7 @@ public:
     [[nodiscard]] f32 startTmp3() const {
         return m_startTmp3;
     }
+
     /// @endGetters
 
     static CourseMap *CreateInstance();

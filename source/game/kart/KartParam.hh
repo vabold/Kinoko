@@ -14,6 +14,7 @@ struct BSP {
         u16 wallsOnly;
         u16 tireCollisionIdx;
     };
+
     STATIC_ASSERT(sizeof(Hitbox) == 0x18);
 
     /// @brief Info pertaining to the suspension, position, etc. of a wheel.
@@ -28,6 +29,7 @@ struct BSP {
         f32 sphereRadius;
         u32 _28;
     };
+
     STATIC_ASSERT(sizeof(Wheel) == 0x2c);
 
     BSP();
@@ -44,6 +46,7 @@ struct BSP {
     f32 rumbleHeight; ///< Max vertical distance of the vehicle body's rumble animation.
     u16 rumbleSpeed;  ///< Speed of the vehicle body's rumble animation.
 };
+
 STATIC_ASSERT(sizeof(BSP) == 0x25c);
 
 /// @brief Houses stats regarding a given character/vehicle combo.
@@ -62,6 +65,7 @@ public:
         EGG::Vector3f m_handleRot;
         u8 _24[0xb0 - 0x24];
     };
+
     STATIC_ASSERT(sizeof(BikeDisp) == 0xB0);
 
     struct KartDisp {
@@ -73,6 +77,7 @@ public:
         f32 m_cameraDistY;
         u8 _004[0x150 - 0x004];
     };
+
     STATIC_ASSERT(sizeof(KartDisp) == 0x150);
 
     /// @brief Various character/vehicle-related handling and speed stats.
@@ -131,6 +136,7 @@ public:
         f32 megaScale;
         f32 shrinkScale;
     };
+
     STATIC_ASSERT(sizeof(Stats) == 0x18c);
 
     struct KartCameraParam {
@@ -156,6 +162,7 @@ public:
     void setSuspCount(u16 suspCount) {
         m_suspCount = suspCount;
     }
+
     /// @endSetters
 
     /// @beginGetters
@@ -199,6 +206,7 @@ public:
     [[nodiscard]] u16 tireCount() const {
         return m_tireCount;
     }
+
     /// @endGetters
 
 private:

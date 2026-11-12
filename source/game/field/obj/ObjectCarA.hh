@@ -35,7 +35,9 @@ private:
     void calcPos();
 
     void enterStop();
+
     void enterAccel() {}
+
     void enterCruising();
 
     void calcStop();

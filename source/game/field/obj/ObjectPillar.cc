@@ -39,8 +39,11 @@ void ObjectPillarC::calcCollisionTransform() {
 
 /// @addr{0x807FED80}
 ObjectPillar::ObjectPillar(const System::MapdataGeoObj &params)
-    : ObjectKCL(params), m_state(State::Upright), m_fallStart(static_cast<u32>(params.setting(0))),
-      m_targetRotation(F_PI * static_cast<f32>(params.setting(1)) / 180.0f), m_initRot(rot().x),
+    : ObjectKCL(params),
+      m_state(State::Upright),
+      m_fallStart(static_cast<u32>(params.setting(0))),
+      m_targetRotation(F_PI * static_cast<f32>(params.setting(1)) / 180.0f),
+      m_initRot(rot().x),
       m_setupRot(EGG::Vector3f::zero) {
     m_base = EGG::egg_new<ObjectPillarBase>(params);
     m_collidable = EGG::egg_new<ObjectPillarC>(params);

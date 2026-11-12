@@ -19,6 +19,7 @@ public:
     }
 
     virtual void initCollision() {}
+
     virtual void loadAABB(f32 radius);
 
     [[nodiscard]] virtual bool checkPointPartial(const EGG::Vector3f &pos,

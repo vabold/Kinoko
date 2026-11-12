@@ -9,7 +9,8 @@ namespace Kinoko::Field {
 
 /// @addr{0x806E3458}
 ObjectVolcanoBallLauncher::ObjectVolcanoBallLauncher(const System::MapdataGeoObj &params)
-    : ObjectCollidable(params), m_initDelay(static_cast<f32>(static_cast<s16>(params.setting(1)))),
+    : ObjectCollidable(params),
+      m_initDelay(static_cast<f32>(static_cast<s16>(params.setting(1)))),
       m_cycleDuration(static_cast<f32>(static_cast<s16>(params.setting(2)))) {
     const auto *rail = RailManager::Instance()->rail(params.pathId());
     ASSERT(rail);

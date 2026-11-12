@@ -14,10 +14,18 @@ namespace Kinoko::Field {
 
 /// @addr{0x8081F828}
 ObjectBase::ObjectBase(const System::MapdataGeoObj &params)
-    : m_drawMdl(nullptr), m_resFile(nullptr), m_id(static_cast<ObjectId>(params.id())),
-      m_railInterpolator(nullptr), m_mapObj(&params), m_pos(params.pos()), m_scale(params.scale()),
-      m_rot(params.rot() * DEG2RAD), m_rotLock(true), m_transform(EGG::Matrix34f::ident),
-      m_pendingRot(PendingRotation::None), m_pendingWork0(EGG::Vector3f::zero),
+    : m_drawMdl(nullptr),
+      m_resFile(nullptr),
+      m_id(static_cast<ObjectId>(params.id())),
+      m_railInterpolator(nullptr),
+      m_mapObj(&params),
+      m_pos(params.pos()),
+      m_scale(params.scale()),
+      m_rot(params.rot() * DEG2RAD),
+      m_rotLock(true),
+      m_transform(EGG::Matrix34f::ident),
+      m_pendingRot(PendingRotation::None),
+      m_pendingWork0(EGG::Vector3f::zero),
       m_pendingWork1(EGG::Vector3f::zero) {
     m_flags.setBit(eFlags::Position, eFlags::Rotation, eFlags::Scale);
 }
@@ -25,9 +33,17 @@ ObjectBase::ObjectBase(const System::MapdataGeoObj &params)
 /// @addr{0x8081FB04}
 ObjectBase::ObjectBase(const char *name, const EGG::Vector3f &pos, const EGG::Vector3f &rot,
         const EGG::Vector3f &scale)
-    : m_drawMdl(nullptr), m_resFile(nullptr), m_railInterpolator(nullptr), m_mapObj(nullptr),
-      m_pos(pos), m_scale(scale), m_rot(rot), m_rotLock(true), m_transform(EGG::Matrix34f::ident),
-      m_pendingRot(PendingRotation::None), m_pendingWork0(EGG::Vector3f::zero),
+    : m_drawMdl(nullptr),
+      m_resFile(nullptr),
+      m_railInterpolator(nullptr),
+      m_mapObj(nullptr),
+      m_pos(pos),
+      m_scale(scale),
+      m_rot(rot),
+      m_rotLock(true),
+      m_transform(EGG::Matrix34f::ident),
+      m_pendingRot(PendingRotation::None),
+      m_pendingWork0(EGG::Vector3f::zero),
       m_pendingWork1(EGG::Vector3f::zero) {
     m_flags.setBit(eFlags::Position, eFlags::Rotation, eFlags::Scale);
     m_id = ObjectDirector::Instance()->flowTable().getIdFromName(name);

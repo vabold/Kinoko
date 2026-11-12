@@ -77,12 +77,16 @@ void ObjectHanachanHead::calcCollisionTransform() {
 }
 
 ObjectHanachanBody::ObjectHanachanBody(const System::MapdataGeoObj &params, const char *mdlName)
-    : ObjectHanachanPart(params), m_mdlName(mdlName), m_lastSegment(false),
+    : ObjectHanachanPart(params),
+      m_mdlName(mdlName),
+      m_lastSegment(false),
       m_lastPos(EGG::Vector3f::zero) {}
 
 ObjectHanachanBody::ObjectHanachanBody(const char *name, const EGG::Vector3f &pos,
         const EGG::Vector3f &rot, const EGG::Vector3f &scale, const char *mdlName)
-    : ObjectHanachanPart(name, pos, rot, scale), m_mdlName(mdlName), m_lastSegment(false),
+    : ObjectHanachanPart(name, pos, rot, scale),
+      m_mdlName(mdlName),
+      m_lastSegment(false),
       m_lastPos(EGG::Vector3f::zero) {}
 
 /// @addr{0x806CCAD8}
@@ -105,7 +109,9 @@ void ObjectHanachanBody::calcCollisionTransform() {
 
 /// @addr{0x806C8A5C}
 ObjectHanachan::ObjectHanachan(const System::MapdataGeoObj &params)
-    : ObjectCollidable(params), StateManager(this, STATE_ENTRIES), m_chain(BODY_PART_DISTANCES),
+    : ObjectCollidable(params),
+      StateManager(this, STATE_ENTRIES),
+      m_chain(BODY_PART_DISTANCES),
       m_movingVel(static_cast<f32>(static_cast<s16>(params.setting(0)))) {
     constexpr f32 SCALE = 3.0f;
     constexpr EGG::Vector3f SCALE_VEC = EGG::Vector3f(SCALE, SCALE, SCALE);

@@ -27,6 +27,7 @@ public:
     virtual void calcEngines() = 0;
     virtual void destroyEngines() = 0;
     virtual void configure() = 0;
+
     virtual void onReinit() {}
 
     static void initCamera();

@@ -96,12 +96,12 @@ private:
 
     template <typename T>
         requires std::is_same_v<T, CollisionInfo> || std::is_same_v<T, CollisionInfoPartial>
-    using CheckPointFunc = bool(ObjColMgr::*)(const EGG::Vector3f &pos,
+    using CheckPointFunc = bool (ObjColMgr::*)(const EGG::Vector3f &pos,
             const EGG::Vector3f &prevPos, KCLTypeMask mask, T *info, KCLTypeMask *maskOut);
 
     template <typename T>
         requires std::is_same_v<T, CollisionInfo> || std::is_same_v<T, CollisionInfoPartial>
-    using CheckSphereFunc = bool(ObjColMgr::*)(f32 radius, const EGG::Vector3f &pos,
+    using CheckSphereFunc = bool (ObjColMgr::*)(f32 radius, const EGG::Vector3f &pos,
             const EGG::Vector3f &prevPos, KCLTypeMask mask, T *info, KCLTypeMask *maskOut);
 
     template <typename T>

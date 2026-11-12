@@ -157,9 +157,13 @@ void ObjectDirector::DestroyInstance() {
 
 /// @addr{0x8082A38C}
 ObjectDirector::ObjectDirector()
-    : m_flowTable("ObjFlow.bin"), m_hitTableKart("GeoHitTableKart.bin"),
-      m_hitTableKartObject("GeoHitTableKartObj.bin"), m_objects(MAX_UNIT_COUNT),
-      m_calcObjects(MAX_UNIT_COUNT), m_collisionObjects(MAX_UNIT_COUNT), m_psea(nullptr),
+    : m_flowTable("ObjFlow.bin"),
+      m_hitTableKart("GeoHitTableKart.bin"),
+      m_hitTableKartObject("GeoHitTableKartObj.bin"),
+      m_objects(MAX_UNIT_COUNT),
+      m_calcObjects(MAX_UNIT_COUNT),
+      m_collisionObjects(MAX_UNIT_COUNT),
+      m_psea(nullptr),
       m_managedObjects(MAX_MANAGED_OBJECTS) {}
 
 /// @addr{0x8082A694}

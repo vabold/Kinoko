@@ -26,6 +26,7 @@ public:
     [[nodiscard]] const char *getKclName() const override {
         return m_type == KinokoType::Light ? "kinoko_r" : "kinoko_d_r";
     }
+
     virtual void calcOscillation() = 0;
 
 protected:

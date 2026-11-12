@@ -6,9 +6,12 @@ namespace Kinoko::Field {
 
 /// @addr{0x80817DE8}
 ObjectVolcanoPiece::ObjectVolcanoPiece(const System::MapdataGeoObj &params)
-    : ObjectKCL(params), m_initialPos(pos()), m_restDuration(params.setting(1) * 60),
+    : ObjectKCL(params),
+      m_initialPos(pos()),
+      m_restDuration(params.setting(1) * 60),
       m_shakeDuration(m_restDuration + params.setting(2) * 60),
-      m_quakeDuration(m_shakeDuration + params.setting(7) + 1), m_colMgrB(nullptr),
+      m_quakeDuration(m_shakeDuration + params.setting(7) + 1),
+      m_colMgrB(nullptr),
       m_colMgrC(nullptr) {
     snprintf(m_modelName, sizeof(m_modelName), "VolcanoPiece%hd",
             static_cast<s16>(params.setting(0)));

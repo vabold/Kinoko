@@ -22,7 +22,7 @@
 // Credit: em-eight/mkw
 
 /// Computes the "Base Type" portion of the KCL flags. It's the lower 5 bits of the flag.
-#define KCL_ATTRIBUTE_TYPE(x) ((x)&0x1f)
+#define KCL_ATTRIBUTE_TYPE(x) ((x) & 0x1f)
 /// Converts an attribute to the type mask bitfield for that attribute. The game uses this method in
 /// order to create a mask that represents multiple KCL attributes.
 #define KCL_TYPE_BIT(x) (1 << (x))
@@ -204,6 +204,7 @@ struct KColHeader {
     u32 area_xy_blocks_shift;   ///< Used to initialize octree navigation. @see searchBlock.
     f32 sphere_radius;          ///< Clamps the sphere we check collision against. @see searchBlock.
 };
+
 STATIC_ASSERT(sizeof(KColHeader) == 0x3c);
 
 typedef u32 KCLTypeMask;
