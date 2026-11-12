@@ -1,75 +1,68 @@
 #pragma once
 
-#include "game/field/StateManager.hh"
 #include "game/field/obj/ObjectCollidable.hh"
 
-namespace Kinoko::Field {
+namespace Kinoko {
 
-/// @brief Represents a single bat. It's owned and managed by @ref ObjectBasabasa.
-class ObjectBasabasaDummy final : public ObjectCollidable, public StateManager {
+namespace Host {
+
+class Context;
+
+} // namespace Host
+
+namespace Field {
+
+/// @brief Represents a single Swooper (bat). It's owned and managed by @ref ObjectBasabasa.
+/// @note This class normally inherits from @ref StateManager. However, the bat's second state is
+/// only ever used when the bat is hit by a star or a shock. For the purposes of Kinoko, we can
+/// simplify by removing the inheritance and just calling @ref calcState() directly in @ref calc().
+class ObjectBasabasaDummy final : public ObjectCollidable {
 public:
     ObjectBasabasaDummy(const System::MapdataGeoObj &params);
     ~ObjectBasabasaDummy() override;
 
     void init() override;
-
-    /// @addr{0x806B602C}
-    void calc() override {
-        StateManager::calc();
-    }
-
-    /// @addr{0x806B7700}
-    [[nodiscard]] LoadFlags loadFlags() const override {
-        return LoadFlags(eLoadFlags::Calc, eLoadFlags::Draw);
-    }
-
-    /// @addr{0x806B76F4}
-    [[nodiscard]] virtual const char *getKclName() const override {
-        return "basabasa";
-    }
-
+    void calc() override;
+    [[nodiscard]] LoadFlags loadFlags() const override;
+    [[nodiscard]] virtual const char *getKclName() const override;
     Kart::Reaction onCollision(Kart::KartObject *kartObj, Kart::Reaction reactionOnKart,
             Kart::Reaction reactionOnObj, EGG::Vector3f &hitDepth) override;
 
+    /// @beginSetters
+
+    /// @brief Sets whether the bat is spawned
+    /// @param isSet Whether the bat should be active or not
     void setActive(bool isSet) {
         m_active = isSet;
     }
 
+    /// @endSetters
+
+    /// @beginGetters
+
+    /// @brief Checks whether the bat is currently spawned
+    /// @return `true` if the bat is active, `false` otherwise
     [[nodiscard]] bool active() const {
         return m_active;
     }
 
+    /// @endGetters
+
 private:
-    /// @addr{0x806B5C80}
-    void enterState0() {}
+    void calcState();
 
-    /// @addr{0x806B6288}
-    /// @brief This is run when a bat is hit with a start or other item. We can ignore for Kinoko.
-    void enterState1() {}
-
-    void calcState0();
-
-    /// @addr{0x806B652C}
-    /// @brief This is run when a bat is hit with a start or other item. We can ignore for Kinoko.
-    void calcState1() {}
-
-    const bool m_bigBump;       ///< Affects the severity of the "push" when colliding with bat
-    EGG::Vector3f m_initialPos; ///< RNG-based starting position for the bat
-    bool m_active;              ///< Whether or not this bat is currently spawned
-
-    static constexpr std::array<StateManagerEntry, 2> STATE_ENTRIES = {{
-            {StateEntry<ObjectBasabasaDummy, &ObjectBasabasaDummy::enterState0,
-                    &ObjectBasabasaDummy::calcState0>(0)},
-            {StateEntry<ObjectBasabasaDummy, &ObjectBasabasaDummy::enterState1,
-                    &ObjectBasabasaDummy::calcState1>(1)},
-    }};
+    const bool m_bigBump;      ///< Affects the severity of the "push" when colliding with bat
+    EGG::Vector3f m_posOffset; ///< RNG-based starting position offset for the bat
+    bool m_active;             ///< Whether or not this bat is currently spawned
 };
 
-/// @brief Can be thought of as the bat "spawner". It's the class that manages an array of bats.
+/// @brief Can be thought of as the Swooper (bat) "spawner". Manages an array of bats.
 /// @details Spawns bats in small groups, whose size is determined by @ref m_batsPerGroup. After
 /// that many bats have been spawned, it resets the @ref m_cycleTimer.
 class ObjectBasabasa final : public ObjectCollidable {
-    friend class Host::Context;
+    /// @brief Grants access to static member variables so a @ref Host::Context can restore their
+    /// values on context switch
+    friend Host::Context;
 
 public:
     ObjectBasabasa(const System::MapdataGeoObj &params);
@@ -77,37 +70,44 @@ public:
 
     void init() override;
     void calc() override;
+    [[nodiscard]] LoadFlags loadFlags() const override;
+    void createCollision() override;
+    void loadRail() override;
 
-    /// @addr{0x806B7628}
-    [[nodiscard]] LoadFlags loadFlags() const override {
-        return LoadFlags(eLoadFlags::Calc, eLoadFlags::Draw);
-    }
+    /// @beginGetters
 
-    /// @addr{0x806B761C}
-    void createCollision() override {}
-
-    /// @addr{0x806B7620}
-    void loadRail() override {}
-
-    [[nodiscard]] static f32 initialXRange() {
+    /// @brief Exposes the range of initial X positions so the dummy can access it
+    /// @return The range of initial X positions for the bats
+    [[nodiscard]] static f32 InitialXRange() {
         return s_initialXRange;
     }
 
-    [[nodiscard]] static f32 initialYRange() {
+    /// @brief Exposes the range of initial Y positions so the dummy can access it
+    /// @return The range of initial Y positions for the bats
+    [[nodiscard]] static f32 InitialYRange() {
         return s_initialYRange;
     }
 
+    /// @endGetters
+
 private:
     owning_span<ObjectBasabasaDummy *> m_bats; ///< The array of individual bats
-    const u32 m_initialTimer;                  ///< The m_cycleTimer starts and resets to this value
-    const u32 m_batsPerGroup; ///< Number of bats that will spawn before resetting the m_cycleTimer
+    const u32 m_initialTimer; ///< The @ref m_cycleTimer starts and resets to this value
+    const u32 m_batsPerGroup; ///< Number of bats that spawn before resetting @ref m_cycleTimer
     const u32 m_startFrame;   ///< Initial delay before the spawner will start calculating
     const u32 m_batSpacing;   ///< How many frames in between bat spawns
     u32 m_cycleTimer;         ///< Used to determine when to spawn next bat
     u32 m_batsActive;         ///< The number of bats currently spawned
 
+    /// @addr{0x809C2200}
+    /// @brief Range of random offsets for the bats' initial X-axis position
     static f32 s_initialXRange;
+
+    /// @addr{0x809C2204}
+    /// @brief Range of random offsets for the bats' initial Y-axis position
     static f32 s_initialYRange;
 };
 
-} // namespace Kinoko::Field
+} // namespace Field
+
+} // namespace Kinoko
