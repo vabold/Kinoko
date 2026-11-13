@@ -1,6 +1,11 @@
 #include "ObjectKuribo.hh"
 
 #include "game/field/CollisionDirector.hh"
+#include "game/field/RailInterpolator.hh"
+
+#include "game/render/DrawMdl.hh"
+
+#include "game/system/map/MapdataGeoObj.hh"
 
 #include <cmath>
 

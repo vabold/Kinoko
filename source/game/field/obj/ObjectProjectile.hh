@@ -2,6 +2,8 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
+#include "game/system/map/MapdataGeoObj.hh"
+
 namespace Kinoko::Field {
 
 /// @brief Abstract class that represents an object thrown by an @ref ObjectProjectileLauncher.

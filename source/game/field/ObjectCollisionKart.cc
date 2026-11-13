@@ -1,5 +1,6 @@
 #include "ObjectCollisionKart.hh"
 
+#include "game/field/BoxColManager.hh"
 #include "game/field/ObjectDirector.hh"
 
 #include "game/kart/KartObjectManager.hh"

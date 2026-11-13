@@ -7,6 +7,8 @@
 #include "game/kart/KartObject.hh"
 #include "game/kart/Reaction.hh"
 
+#include "game/system/map/MapdataGeoObj.hh"
+
 namespace Kinoko::Field {
 
 /// @addr{0x806DFE9C}

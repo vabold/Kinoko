@@ -4,6 +4,8 @@
 #include "game/field/RailManager.hh"
 #include "game/field/obj/ObjectHeyhoShip.hh"
 
+#include <cstring>
+
 namespace Kinoko::Field {
 
 /// @addr{0x806D2368}

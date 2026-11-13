@@ -1,5 +1,7 @@
 #include "ObjectShip64.hh"
 
+#include "game/field/RailInterpolator.hh"
+
 namespace Kinoko::Field {
 
 /// @addr{0x80765C94}

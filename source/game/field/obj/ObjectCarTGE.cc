@@ -9,6 +9,9 @@
 #include "game/kart/Reaction.hh"
 
 #include "game/system/RaceConfig.hh"
+#include "game/system/map/MapdataGeoObj.hh"
+
+#include <cstring>
 
 namespace Kinoko::Field {
 

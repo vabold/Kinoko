@@ -1,5 +1,7 @@
 #include "ObjectHeyhoShip.hh"
 
+#include "game/system/map/MapdataGeoObj.hh"
+
 namespace Kinoko::Field {
 
 /// @addr{0x806D18FC}

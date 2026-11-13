@@ -1,6 +1,8 @@
 #include "ObjectTownBridge.hh"
 
 #include "game/system/RaceManager.hh"
+#include "game/system/ResourceManager.hh"
+#include "game/system/map/MapdataGeoObj.hh"
 
 #include <algorithm>
 

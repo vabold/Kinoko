@@ -1,5 +1,6 @@
 #include "ObjectCollidable.hh"
 
+#include "game/field/BoxColManager.hh"
 #include "game/field/ObjectCollisionBox.hh"
 #include "game/field/ObjectCollisionCylinder.hh"
 #include "game/field/ObjectCollisionSphere.hh"

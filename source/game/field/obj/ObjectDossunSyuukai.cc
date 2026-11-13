@@ -1,5 +1,7 @@
 #include "ObjectDossunSyuukai.hh"
 
+#include "game/field/RailInterpolator.hh"
+
 namespace Kinoko::Field {
 
 /// @addr{0x80760B20}

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "game/field/RailInterpolator.hh"
 #include "game/field/StateManager.hh"
 #include "game/field/obj/ObjectProjectileLauncher.hh"
 

@@ -1,5 +1,9 @@
 #include "ObjectVolcanoBall.hh"
 
+#include "game/field/RailInterpolator.hh"
+
+#include "game/system/map/MapdataGeoObj.hh"
+
 namespace Kinoko::Field {
 
 /// @addr{0x806E2904}

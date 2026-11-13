@@ -1,5 +1,6 @@
 #include "ObjectItemboxPress.hh"
 
+#include "game/field/RailInterpolator.hh"
 #include "game/field/obj/ObjectPress.hh"
 
 namespace Kinoko::Field {

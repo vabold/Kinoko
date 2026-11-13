@@ -1,5 +1,7 @@
 #include "ObjectPenguin.hh"
 
+#include "game/render/DrawMdl.hh"
+
 namespace Kinoko::Field {
 
 /// @addr{0x80775624} @addr{0x8077708C}

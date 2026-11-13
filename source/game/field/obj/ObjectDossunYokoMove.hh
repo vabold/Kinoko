@@ -1,5 +1,6 @@
 #pragma once
 
+#include "game/field/RailInterpolator.hh"
 #include "game/field/obj/ObjectDossun.hh"
 
 namespace Kinoko::Field {
