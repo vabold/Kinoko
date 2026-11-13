@@ -3,6 +3,8 @@
 #include "game/field/CollisionDirector.hh"
 #include "game/field/RailManager.hh"
 
+#include "game/system/map/MapdataGeoObj.hh"
+
 namespace Kinoko::Field {
 
 /// @addr{0x806CE828}

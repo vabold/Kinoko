@@ -3,6 +3,7 @@
 #include "game/field/ObjectDirector.hh"
 
 #include "game/system/RaceManager.hh"
+#include "game/system/map/MapdataGeoObj.hh"
 
 namespace Kinoko::Field {
 

@@ -4,6 +4,8 @@
 
 #include "game/kart/Reaction.hh"
 
+#include "game/system/map/MapdataGeoObj.hh"
+
 namespace Kinoko::Field {
 
 /// @addr{0x806D02C4}
@@ -63,7 +65,7 @@ void ObjectHeyhoBall::initProjectile(const EGG::Vector3f &pos) {
 
 /// @addr{0x806D0A3C}
 void ObjectHeyhoBall::enterFalling() {
-    if (!getUnit()) {
+    if (!unit()) {
         loadAABB(0.0f);
         resize(BLAST_RADIUS, 0.0f);
     }
@@ -93,7 +95,7 @@ void ObjectHeyhoBall::calcExploding() {
     if (m_currentFrame >= EXPLODE_FRAMES) {
         setScale(BALL_SCALE);
 
-        if (getUnit()) {
+        if (unit()) {
             unregisterCollision();
         }
 

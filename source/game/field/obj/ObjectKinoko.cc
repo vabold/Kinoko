@@ -1,5 +1,7 @@
 #include "ObjectKinoko.hh"
 
+#include "game/system/map/MapdataGeoObj.hh"
+
 namespace Kinoko::Field {
 
 /// @addr{0x8080761C}

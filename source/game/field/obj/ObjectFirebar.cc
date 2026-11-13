@@ -1,5 +1,7 @@
 #include "ObjectFirebar.hh"
 
+#include "game/system/map/MapdataGeoObj.hh"
+
 namespace Kinoko::Field {
 
 /// @addr{0x807678F4}

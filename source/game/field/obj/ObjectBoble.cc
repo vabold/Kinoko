@@ -1,5 +1,7 @@
 #include "ObjectBoble.hh"
 
+#include "game/field/RailInterpolator.hh"
+
 namespace Kinoko::Field {
 
 /// @addr{0x8075DB3C}

@@ -3,6 +3,8 @@
 #include "game/field/obj/ObjectItemboxPress.hh"
 #include "game/field/obj/ObjectPress.hh"
 
+#include "game/system/map/MapdataGeoObj.hh"
+
 namespace Kinoko::Field {
 
 /// @addr{0x8076D044}

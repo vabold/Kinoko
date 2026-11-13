@@ -3,6 +3,8 @@
 #include "game/field/StateManager.hh"
 #include "game/field/obj/ObjectCollidable.hh"
 
+#include "game/render/DrawMdl.hh"
+
 namespace Kinoko::Field {
 
 /// @brief Shy guys on DK Summit.

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "game/field/ObjectDirector.hh"
+#include "game/field/RailInterpolator.hh"
 #include "game/field/obj/ObjectSniper.hh"
 
 #include <string>

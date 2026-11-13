@@ -3,6 +3,7 @@
 #include "game/field/CollisionDirector.hh"
 
 #include "game/system/RaceManager.hh"
+#include "game/system/map/MapdataGeoObj.hh"
 
 namespace Kinoko::Field {
 
@@ -66,7 +67,7 @@ void ObjectFireSnakeV::enterFalling() {
 
     ObjectFireSnake::enterFalling();
 
-    if (getUnit()) {
+    if (unit()) {
         unregisterCollision();
     }
 
@@ -82,7 +83,7 @@ void ObjectFireSnakeV::calcFalling() {
     constexpr f32 INITIAL_Y_VELOCITY = 120.0f;
     constexpr f32 AABB_DELAY_FRAMES = 5;
 
-    if (m_currentFrame > AABB_DELAY_FRAMES && !getUnit()) {
+    if (m_currentFrame > AABB_DELAY_FRAMES && !unit()) {
         loadAABB(0.0f);
     }
 

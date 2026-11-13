@@ -1,6 +1,7 @@
 #include "game/field/obj/ObjectBulldozer.hh"
 
 #include "game/system/RaceManager.hh"
+#include "game/system/map/MapdataGeoObj.hh"
 
 #include <cstring>
 

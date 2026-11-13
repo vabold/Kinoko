@@ -4,6 +4,7 @@
 #include "game/field/ObjectDirector.hh"
 
 #include "game/system/RaceManager.hh"
+#include "game/system/map/MapdataGeoObj.hh"
 
 namespace Kinoko::Field {
 
@@ -87,7 +88,7 @@ void ObjectFireSnake::onLaunch() {
 
 /// @addr{0x806C1930}
 void ObjectFireSnake::enterDespawned() {
-    if (getUnit()) {
+    if (unit()) {
         unregisterCollision();
     }
 
@@ -97,7 +98,7 @@ void ObjectFireSnake::enterDespawned() {
 
 /// @addr{0x806C19E8}
 void ObjectFireSnake::enterFalling() {
-    if (!getUnit()) {
+    if (!unit()) {
         loadAABB(0.0f);
     }
 }
@@ -207,11 +208,11 @@ void ObjectFireSnake::calcChildren() {
     u32 idx = 10;
     for (auto *&kid : m_kids) {
         if (m_currentStateId == 1 && idx == m_currentFrame) {
-            if (!kid->getUnit()) {
+            if (!kid->unit()) {
                 kid->loadAABB(0.0f);
             }
         } else if (m_currentStateId == 0 && m_currentFrame == 0) {
-            if (kid->getUnit()) {
+            if (kid->unit()) {
                 kid->unregisterCollision();
             }
         }

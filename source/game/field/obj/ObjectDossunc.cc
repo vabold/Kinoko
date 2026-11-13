@@ -7,6 +7,8 @@
 
 #include "game/field/ObjectDirector.hh"
 
+#include "game/system/map/MapdataGeoObj.hh"
+
 namespace Kinoko::Field {
 
 /// @addr{0x8075EAFC}

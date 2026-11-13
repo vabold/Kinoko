@@ -1,5 +1,7 @@
 #include "ObjectDrivableDirector.hh"
 
+#include "game/field/BoxColManager.hh"
+
 namespace Kinoko::Field {
 
 /// @addr{0x8081B500}

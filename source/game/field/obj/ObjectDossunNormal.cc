@@ -1,5 +1,7 @@
 #include "ObjectDossunNormal.hh"
 
+#include "game/system/map/MapdataGeoObj.hh"
+
 namespace Kinoko::Field {
 
 /// @addr{0x80760188}

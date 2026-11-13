@@ -4,6 +4,8 @@
 #include "game/field/obj/ObjectFlamePole.hh"
 #include "game/field/obj/ObjectKCL.hh"
 
+#include "game/system/map/MapdataGeoObj.hh"
+
 namespace Kinoko::Field {
 
 class ObjectFlamePole;

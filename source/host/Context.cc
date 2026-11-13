@@ -1,5 +1,7 @@
 #include "Context.hh"
 
+#include "game/field/BoxColManager.hh"
+
 #include <egg/core/ExpHeap.hh>
 #include <egg/core/FrmHeap.hh>
 

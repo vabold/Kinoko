@@ -1,8 +1,11 @@
 #include "ObjectRock.hh"
 
 #include "game/field/CollisionDirector.hh"
+#include "game/field/RailInterpolator.hh"
 
 #include "game/kart/Reaction.hh"
+
+#include "game/system/map/MapdataGeoObj.hh"
 
 namespace Kinoko::Field {
 

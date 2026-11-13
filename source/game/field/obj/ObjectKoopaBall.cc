@@ -1,6 +1,7 @@
 #include "ObjectKoopaBall.hh"
 
 #include "game/field/CollisionDirector.hh"
+#include "game/field/RailInterpolator.hh"
 
 #include "game/kart/Reaction.hh"
 

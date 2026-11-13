@@ -2,6 +2,8 @@
 
 #include "game/field/obj/ObjectDossunTsuibi.hh"
 
+#include "game/system/map/MapdataGeoObj.hh"
+
 namespace Kinoko::Field {
 
 /// @addr{0x807614D0}

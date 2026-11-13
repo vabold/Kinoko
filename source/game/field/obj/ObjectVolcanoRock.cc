@@ -1,5 +1,7 @@
 #include "ObjectVolcanoRock.hh"
 
+#include "game/system/map/MapdataGeoObj.hh"
+
 namespace Kinoko::Field {
 
 /// @addr{0x8081A198}

@@ -3,6 +3,8 @@
 #include "game/field/ObjectDirector.hh"
 #include "game/field/obj/ObjectCarTGE.hh"
 
+#include <cstring>
+
 namespace Kinoko::Field {
 
 /// @addr{0x806D2908}
