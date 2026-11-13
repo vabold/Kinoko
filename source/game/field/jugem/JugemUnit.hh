@@ -179,11 +179,6 @@ private:
     JugemMove *m_move;
     JugemInterp *m_interp;
 
-    [[nodiscard]] static EGG::Vector3f Interpolate(f32 t, const EGG::Vector3f &v0,
-            const EGG::Vector3f &v1) {
-        return v0 + (v1 - v0) * t;
-    }
-
     static constexpr std::array<StateManagerEntry, 2> STATE_ENTRIES = {{
             StateEntry<JugemUnit, &JugemUnit::enterIdle, &JugemUnit::calcIdle>(0),
             StateEntry<JugemUnit, &JugemUnit::enterReverse, &JugemUnit::calcReverse>(1),

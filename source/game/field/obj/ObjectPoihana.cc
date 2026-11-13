@@ -51,7 +51,7 @@ void ObjectPoihana::init() {
 
 /// @addr{0x80747530}
 void ObjectPoihana::calcCurRot(f32 t) {
-    m_curRot = Interpolate(t, m_curRot, m_floorNrm);
+    m_curRot = m_curRot.interpolate(t, m_floorNrm);
     if (m_curRot.squaredLength() > std::numeric_limits<f32>::epsilon()) {
         m_curRot.normalise2();
     } else {
@@ -153,7 +153,7 @@ void ObjectPoihana::calcStep() {
     calcCurRot(0.1f);
     calcUp();
 
-    m_vel = Interpolate(0.05f, m_vel, m_targetVel);
+    m_vel = m_vel.interpolate(0.05f, m_targetVel);
 }
 
 /// @addr{0x80749610}
@@ -168,7 +168,7 @@ void ObjectPoihana::calcDir() {
 
 /// @addr{0x807496C4}
 void ObjectPoihana::calcUp() {
-    EGG::Vector3f up = Interpolate(0.1f, m_workMat.base(2), m_dir);
+    EGG::Vector3f up = m_workMat.base(2).interpolate(0.1f, m_dir);
     if (up.squaredLength() > std::numeric_limits<f32>::epsilon()) {
         up.normalise2();
     } else {

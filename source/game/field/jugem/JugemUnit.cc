@@ -67,7 +67,7 @@ void JugemUnit::calcReverse() {
     switch (m_state) {
     case State::Away: {
         bool isDoneInterpolating = m_interp->calc(1.0f);
-        EGG::Vector3f localPos = Interpolate(m_interp->rate(), AWAY_LOCAL_POS, DESCEND_LOCAL_POS);
+        EGG::Vector3f localPos = AWAY_LOCAL_POS.interpolate(m_interp->rate(), DESCEND_LOCAL_POS);
         m_move->setAwayOrDescending(true);
         m_move->setAnchorPos(transformLocalToWorldUpright(localPos));
         m_move->setForwardFromKartObjMainRot(true);
@@ -81,7 +81,7 @@ void JugemUnit::calcReverse() {
     } break;
     case State::Descending: {
         bool isDoneInterpolating = m_interp->calc(1.0f);
-        EGG::Vector3f localPos = Interpolate(m_interp->rate(), DESCEND_LOCAL_POS, STAY_LOCAL_POS);
+        EGG::Vector3f localPos = DESCEND_LOCAL_POS.interpolate(m_interp->rate(), STAY_LOCAL_POS);
         m_move->setAwayOrDescending(true);
         m_move->setAnchorPos(transformLocalToWorldUpright(localPos));
         m_move->setForwardFromKartObjMainRot(true);

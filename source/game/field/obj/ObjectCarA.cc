@@ -141,7 +141,7 @@ void ObjectCarA::calcCruising() {
 
 /// @addr{0x806B8D3C}
 void ObjectCarA::calcPos() {
-    m_currUp = Interpolate(0.1f, m_currUp, EGG::Vector3f::ey);
+    m_currUp = m_currUp.interpolate(0.1f, EGG::Vector3f::ey);
     m_currUp.normalise2();
 
     setMatrixTangentTo(m_currUp, m_currTangent);

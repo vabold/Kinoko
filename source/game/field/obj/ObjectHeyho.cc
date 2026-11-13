@@ -229,7 +229,7 @@ void ObjectHeyho::calcMotion() {
 
 /// @addr{0x806CFFB0}
 void ObjectHeyho::calcInterp() {
-    m_up = Interpolate(0.2f, m_up, m_floorNrm);
+    m_up = m_up.interpolate(0.2f, m_floorNrm);
     m_up.normalise2();
     m_forward.normalise2();
     setMatrixTangentTo(m_up, m_forward);

@@ -76,7 +76,7 @@ void ObjectHwanwan::checkFloorCollision() {
 
 /// @addr{0x806EAAE8}
 void ObjectHwanwan::calcUp() {
-    m_up = Interpolate(0.1f, m_up, m_targetUp);
+    m_up = m_up.interpolate(0.1f, m_targetUp);
     if (m_up.squaredLength() > std::numeric_limits<f32>::epsilon()) {
         m_up.normalise2();
     } else {

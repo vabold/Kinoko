@@ -67,7 +67,7 @@ const EGG::Matrix34f &ObjectWLWallGC::getUpdatedMatrix(u32 timeOffset) {
         t = 1.0f - static_cast<f32>(time - m_retractingFrame) / static_cast<f32>(m_moveDuration);
     }
 
-    m_currTransform.setBase(3, Interpolate(t, m_initialPos, m_targetPos));
+    m_currTransform.setBase(3, m_initialPos.interpolate(t, m_targetPos));
 
     return m_currTransform;
 }

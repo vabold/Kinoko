@@ -85,9 +85,9 @@ void ObjectTruckWagonCart::calcState0() {
     if (m_railInterpolator->curPointIdx() != 3) {
         setPos(railPos);
 
-        m_up = Interpolate(0.1f, m_up,
+        m_up = m_up.interpolate(0.1f,
                 m_railInterpolator->floorNrm(m_railInterpolator->nextPointIdx()));
-        m_tangent = Interpolate(0.1f, m_tangent, m_railInterpolator->curTangentDir());
+        m_tangent = m_tangent.interpolate(0.1f, m_railInterpolator->curTangentDir());
         m_up.normalise2();
         m_tangent.normalise2();
 
@@ -121,8 +121,8 @@ void ObjectTruckWagonCart::calcState0() {
         setPos(EGG::Vector3f(pos().x, m_vel.y + pos().y, pos().z));
     }
 
-    m_up = Interpolate(0.1f, m_up, floorNrm);
-    m_tangent = Interpolate(0.1f, m_tangent, tangent);
+    m_up = m_up.interpolate(0.1f, floorNrm);
+    m_tangent = m_tangent.interpolate(0.1f, tangent);
     m_up.normalise2();
     m_tangent.normalise2();
 
@@ -154,8 +154,8 @@ void ObjectTruckWagonCart::calcState1() {
     mat.setAxisRotation(m_pitch, tanXZ);
     mat.setBase(3, EGG::Vector3f::zero);
 
-    m_up = Interpolate(0.1f, m_up, mat.ps_multVector(EGG::Vector3f::ey));
-    m_tangent = Interpolate(0.1f, m_tangent, tanXZ);
+    m_up = m_up.interpolate(0.1f, mat.ps_multVector(EGG::Vector3f::ey));
+    m_tangent = m_tangent.interpolate(0.1f, tanXZ);
     m_tangent.y = 0.0f;
 
     m_up.normalise2();

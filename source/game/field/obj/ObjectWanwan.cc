@@ -388,7 +388,7 @@ void ObjectWanwan::calcBounce() {
 
 /// @addr{0x806E7E38}
 void ObjectWanwan::calcTangent(f32 t) {
-    m_tangent = Interpolate(t, m_tangent, m_targetDir);
+    m_tangent = m_tangent.interpolate(t, m_targetDir);
     if (m_tangent.squaredLength() > std::numeric_limits<f32>::epsilon()) {
         m_tangent.normalise2();
     } else {
@@ -398,7 +398,7 @@ void ObjectWanwan::calcTangent(f32 t) {
 
 /// @addr{0x806E7F64}
 void ObjectWanwan::calcUp(f32 t) {
-    m_up = Interpolate(t, m_up, m_targetUp);
+    m_up = m_up.interpolate(t, m_targetUp);
     if (m_up.squaredLength() > std::numeric_limits<f32>::epsilon()) {
         m_up.normalise2();
     } else {
