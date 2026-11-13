@@ -25,7 +25,7 @@ void ObjectBoble::calc() {
 
 /// @addr{0x8075E070}
 void ObjectBoble::calcTangent() {
-    m_curTangentDir = Interpolate(0.2f, m_curTangentDir, m_railInterpolator->curTangentDir());
+    m_curTangentDir = m_curTangentDir.interpolate(0.2f, m_railInterpolator->curTangentDir());
     m_curTangentDir.normalise();
 
     EGG::Vector3f axis = m_curTangentDir.cross(EGG::Vector3f::ex);

@@ -67,7 +67,7 @@ public:
 private:
     /// @addr{0x805A2B84}
     void calcForward(f32 t, const Kart::KartObjectProxy *proxy) {
-        m_forward = Interpolate(t, m_forward, proxy->move()->smoothedForward());
+        m_forward = m_forward.interpolate(t, proxy->move()->smoothedForward());
         m_right = EGG::Vector3f::ey.perpInPlane(m_forward, true);
     }
 
@@ -78,11 +78,6 @@ private:
     void initPos();
 
     void calcCollision(KartCameraState &state, bool isRear) const;
-
-    /// @addr{0x805A2C34}
-    static EGG::Vector3f Interpolate(f32 t, const EGG::Vector3f &v0, const EGG::Vector3f &v1) {
-        return v0 + (v1 - v0) * t;
-    }
 
     f32 m_driftYaw; ///< Rotation induced when drifting
     f32 m_hopPosY;  ///< Induces a downwards camera position offset

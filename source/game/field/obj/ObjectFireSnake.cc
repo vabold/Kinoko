@@ -180,7 +180,7 @@ void ObjectFireSnake::calcRest() {
 
     calcTransform();
 
-    EGG::Vector3f tangent = Interpolate(0.3f, transform().base(2), m_bounceDir);
+    EGG::Vector3f tangent = transform().base(2).interpolate(0.3f, m_bounceDir);
     tangent.normalise2();
 
     setMatrixTangentTo(EGG::Vector3f::ey, tangent);

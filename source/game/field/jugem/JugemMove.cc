@@ -80,7 +80,7 @@ void JugemMove::calc() {
         fVar7 = 8.0f;
     } else {
         m_velDirInterpRate = std::min(1.0f, m_velDirInterpRate + 0.02f);
-        m_velDir = Interpolate(m_velDirInterpRate, local_80, local_74);
+        m_velDir = local_80.interpolate(m_velDirInterpRate, local_74);
         fVar7 = 25.0f;
     }
 
@@ -172,7 +172,7 @@ void JugemMove::setForwardFromKartObjMainRot(bool setCurr) {
 
 /// @addr{0x80720024}
 EGG::Matrix34f JugemMove::calcOrthonormalBasis() {
-    m_currForward = Interpolate(m_forwardInterpRate, m_currForward, m_targetForward);
+    m_currForward = m_currForward.interpolate(m_forwardInterpRate, m_targetForward);
     m_currForward.normalise();
 
     const EGG::Vector3f &up = EGG::Vector3f::ey;
@@ -225,7 +225,7 @@ EGG::Vector3f JugemMove::calcOscillation(const EGG::Matrix34f &mat) {
 EGG::Matrix34f JugemMove::FUN_807202BC() {
     constexpr EGG::Vector3f VEC_809C28E4 = EGG::Vector3f(0.0f, 100.0f, 0.0f);
 
-    m_dir = Interpolate(0.1f, m_dir, m_velDir);
+    m_dir = m_dir.interpolate(0.1f, m_velDir);
     f32 fVar2 = m_dir.normalise();
     fVar2 = std::min(20.0f, fVar2);
 

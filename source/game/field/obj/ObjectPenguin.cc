@@ -19,7 +19,7 @@ void ObjectPenguin::init() {
 void ObjectPenguin::calcRot() {
     constexpr f32 INTERP_RATE = 0.2f;
 
-    m_basis = Interpolate(INTERP_RATE, m_basis, m_railInterpolator->curTangentDir());
+    m_basis = m_basis.interpolate(INTERP_RATE, m_railInterpolator->curTangentDir());
     m_basis.normalise();
     setMatrixFromOrthonormalBasisAndPos(m_basis);
 }

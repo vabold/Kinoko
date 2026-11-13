@@ -27,7 +27,7 @@ void ObjectShip64::calc() {
 
     setPos(m_railInterpolator->curPos());
 
-    m_tangent = Interpolate(0.2f, m_tangent, m_railInterpolator->curTangentDir());
+    m_tangent = m_tangent.interpolate(0.2f, m_railInterpolator->curTangentDir());
     m_tangent.normalise();
 
     setMatrixFromOrthonormalBasisAndPos(m_tangent);

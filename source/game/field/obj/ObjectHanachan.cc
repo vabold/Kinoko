@@ -241,7 +241,7 @@ void ObjectHanachan::calcBody() {
     auto *&head = headPart();
     head->calcTransform();
     EGG::Vector3f forward = head->transform().base(2);
-    EGG::Vector3f dir = Interpolate(0.1f, forward, m_railInterpolator->curTangentDir());
+    EGG::Vector3f dir = forward.interpolate(0.1f, m_railInterpolator->curTangentDir());
     head->calcTransformFromUpAndTangent(m_chain.pos(0), m_chain.up(0), dir);
 
     auto parts = bodyParts();

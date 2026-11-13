@@ -117,7 +117,7 @@ void ObjectKuribo::calcAnim() {
 
 /// @addr{0x806DCC9C}
 void ObjectKuribo::calcRot() {
-    m_rot = Interpolate(0.1f, m_rot, m_floorNrm);
+    m_rot = m_rot.interpolate(0.1f, m_floorNrm);
 
     if (m_rot.squaredLength() > std::numeric_limits<f32>::epsilon()) {
         m_rot.normalise2();

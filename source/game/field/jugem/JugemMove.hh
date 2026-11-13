@@ -59,11 +59,6 @@ private:
     EGG::Vector3f calcOscillation(const EGG::Matrix34f &mat);
     [[nodiscard]] EGG::Matrix34f FUN_807202BC();
 
-    [[nodiscard]] static EGG::Vector3f Interpolate(f32 t, const EGG::Vector3f &v0,
-            const EGG::Vector3f &v1) {
-        return v0 + (v1 - v0) * t;
-    }
-
     const Kart::KartObject *m_kartObj;
     EGG::Vector3f m_pos;
     EGG::Vector3f m_transPos;

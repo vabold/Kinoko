@@ -133,7 +133,7 @@ void ObjectCowLeader::calc() {
     calcFloor();
 
     m_prevTangent = m_tangent;
-    m_tangent = Interpolate(m_interpRate, m_tangent, m_targetDir);
+    m_tangent = m_tangent.interpolate(m_interpRate, m_targetDir);
 
     if (m_tangent.squaredLength() > std::numeric_limits<f32>::epsilon()) {
         m_tangent.normalise2();
@@ -141,7 +141,7 @@ void ObjectCowLeader::calc() {
         m_tangent = EGG::Vector3f::ez;
     }
 
-    m_up = Interpolate(0.1f, m_up, m_floorNrm);
+    m_up = m_up.interpolate(0.1f, m_floorNrm);
 
     if (m_up.squaredLength() > std::numeric_limits<f32>::epsilon()) {
         m_up.normalise2();
@@ -294,7 +294,7 @@ void ObjectCowFollower::calc() {
     calcFloor();
 
     m_prevTangent = m_tangent;
-    m_tangent = Interpolate(m_interpRate, m_tangent, m_targetDir);
+    m_tangent = m_tangent.interpolate(m_interpRate, m_targetDir);
 
     if (m_tangent.squaredLength() > std::numeric_limits<f32>::epsilon()) {
         m_tangent.normalise2();
@@ -302,7 +302,7 @@ void ObjectCowFollower::calc() {
         m_tangent = EGG::Vector3f::ez;
     }
 
-    m_up = Interpolate(0.1f, m_up, m_floorNrm);
+    m_up = m_up.interpolate(0.1f, m_floorNrm);
 
     if (m_up.squaredLength() > std::numeric_limits<f32>::epsilon()) {
         m_up.normalise2();

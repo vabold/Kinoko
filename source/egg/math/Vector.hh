@@ -362,6 +362,16 @@ struct Vector3f {
         return ret;
     }
 
+    /// @brief Linearly interpolates this vector towards the provided vector at the provided rate
+    /// @param t The interpolation rate
+    /// @param v The vector to interpolate towards
+    /// @return The interpolated vector
+    /// @details This function exists in multiple different translation units. Rather than re-define
+    /// this function in multiple places, we move the implementation here for Kinoko.
+    [[nodiscard]] constexpr EGG::Vector3f interpolate(f32 t, const EGG::Vector3f &v) const {
+        return *this + (v - *this) * t;
+    }
+
     /// @brief Initializes a Vector3f by reading 12 bytes from the stream.
     void read(Stream &stream) {
         x = stream.read_f32();
