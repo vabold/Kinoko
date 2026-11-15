@@ -47,7 +47,7 @@ void ObjectBasabasaDummy::init() {
 /// @copybrief ObjectBase::calc()
 /// @details Simply calls @ref calcState().
 /// @note Normally this class inherits from @ref StateManager and this function calls into @ref
-/// StateManager::calc() "StateManager::calc()". However, the bats second state is only used when
+/// StateManager::calc() "StateManager::calc()". However, the bat's second state is only used when
 /// the bat is hit with a star or a shock. For the purposes of Kinoko, we can simplify here and just
 /// call @ref calcState().
 void ObjectBasabasaDummy::calc() {
@@ -64,7 +64,7 @@ ObjectBase::LoadFlags ObjectBasabasaDummy::loadFlags() const {
 
 /// @addr{0x806B76F4}
 /// @copybrief ObjectBase::getKclName()
-/// @return Retuns `"basabasa"` so that the individual bat's collision is used
+/// @return Returns `"basabasa"` so that the individual bat's collision is used
 const char *ObjectBasabasaDummy::getKclName() const {
     return "basabasa";
 }
@@ -92,7 +92,7 @@ Kart::Reaction ObjectBasabasaDummy::onCollision(Kart::KartObject * /*kartObj*/,
 /// @details If the bat is inactive (despawned), then early returns. Updates the bat's rail
 /// interpolator. If the bat has reached the end of the rail, sets @ref m_active to `false` and
 /// disables its collision. Otherwise, updates its position and transformation based on the rail
-/// interpolator and initial position.
+/// interpolator and position offset.
 void ObjectBasabasaDummy::calcState() {
     if (!m_active) {
         return;

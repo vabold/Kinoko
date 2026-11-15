@@ -56,9 +56,9 @@ Some courses also construct manager classes that coordinate their objects; see @
 | `0x1F8` | `bulldozer_left` | Bulldozer | @ref Kinoko::Field::ObjectBulldozer "ObjectBulldozer" |
 | `0x1F9` | `bulldozer_right` | Bulldozer | @ref Kinoko::Field::ObjectBulldozer "ObjectBulldozer" |
 | `0x1FB` | `Crane` | Moving crane platform outside factory | @ref Kinoko::Field::ObjectCrane "ObjectCrane" |
-| `0x25A` | `BeltEasy` | Conveyers outside the factory | @ref Kinoko::Field::ObjectBeltEasy "ObjectBeltEasy" |
-| `0x25B` | `BeltCrossing` | First set of conveyer belts | @ref Kinoko::Field::ObjectBeltCrossing "ObjectBeltCrossing" |
-| `0x25C` | `BeltCurveA` | Curved conveyer at end of factory | @ref Kinoko::Field::ObjectBeltCurveA "ObjectBeltCurveA" |
+| `0x25A` | `BeltEasy` | Conveyor belts outside the factory | @ref Kinoko::Field::ObjectBeltEasy "ObjectBeltEasy" |
+| `0x25B` | `BeltCrossing` | First set of conveyor belts | @ref Kinoko::Field::ObjectBeltCrossing "ObjectBeltCrossing" |
+| `0x25C` | `BeltCurveA` | Curved conveyor at end of factory | @ref Kinoko::Field::ObjectBeltCurveA "ObjectBeltCurveA" |
 
 </td>
 </tr>

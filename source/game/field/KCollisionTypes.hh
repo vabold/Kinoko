@@ -52,13 +52,13 @@ typedef enum {
     COL_TYPE_FORCE_RECALCULATE_ROUTE = 0x12, ///< Forces CPU pathing recalculation.
     COL_TYPE_HALFPIPE_RAMP = 0x13,           ///< Bowser's Castle half-pipe ramps.
     COL_TYPE_PLAYER_WALL = 0x14,             ///< Allows items to pass through but not players.
-    COL_TYPE_MOVING_ROAD = 0x15,             ///< TF conveyers and CM escalators.
+    COL_TYPE_MOVING_ROAD = 0x15,             ///< TF conveyor belts and CM escalators.
     COL_TYPE_STICKY_ROAD = 0x16,             ///< Player sticks if within 200 units (rBC stairs).
     COL_TYPE_ROAD2 = 0x17,                   ///< @ref COL_TYPE_ROAD but with more variants.
     COL_TYPE_SOUND_TRIGGER = 0x18,           ///< Triggers for changing sound effects per-course.
     COL_TYPE_WEAK_WALL = 0x19,               ///< Pushes player away only at low speeds.
     COL_TYPE_EFFECT_TRIGGER = 0x1a,          ///< Activates various effects based on variant.
-    COL_TYPE_ITEM_STATE_MODIFIER = 0x1b,     ///< Stops items when leaving curved TF conveyers.
+    COL_TYPE_ITEM_STATE_MODIFIER = 0x1b,     ///< Stops items when leaving curved TF conveyor belts.
     COL_TYPE_HALFPIPE_INVISIBLE_WALL = 0x1c, ///< Invisible wall after a half-pipe jump, like in BC.
     COL_TYPE_ROTATING_ROAD = 0x1d,           ///< Chain Chomp Roulette.
     COL_TYPE_SPECIAL_WALL = 0x1e,            ///< Various other wall types, determined by variant.
