@@ -2,16 +2,18 @@
 
 #include "game/field/obj/ObjectCollidable.hh"
 
-#include "game/system/RaceManager.hh"
-
 namespace Kinoko::Field {
 
 class ObjectBirdLeader;
 class ObjectBirdFollower;
 
 /// @brief Represents a group of birds.
-/// @details ObjectBird holds an @ref ObjectBirdLeader and a variable number of @ref
+/// @details this class holds an @ref ObjectBirdLeader and a variable number of @ref
 /// ObjectBirdFollower objects whose positions are offset from the leader's position.
+/// @note This object must be implemented in Kinoko to prevent certain ghost replays from desyncing
+/// on Toad's Factory. @ref ObjectBirdFollower::calc() performs a collision check between the birds
+/// and the environment to prevent them from flying through floors. Because of this, birds flying
+/// near @ref ObjectCrane instances can cause the crane's transformation matrix to update.
 class ObjectBird final : public ObjectCollidable {
 public:
     ObjectBird(const System::MapdataGeoObj &params);
@@ -19,64 +21,58 @@ public:
 
     void calc() override;
 
-    /// @addr{0x8077CCF4}
-    [[nodiscard]] LoadFlags loadFlags() const override {
-        return LoadFlags(eLoadFlags::Calc);
-    }
+    void loadGraphics() override;
+    void createCollision() override;
+    void loadRail() override;
+    [[nodiscard]] LoadFlags loadFlags() const override;
 
-    /// @addr{0x8077CCF0}
-    void loadGraphics() override {}
+    /// @beginGetters
 
-    /// @addr{0x8077CCE8}
-    void createCollision() override {}
-
-    /// @ADDR{0X8077CCE0}
-    void loadRail() override {}
-
+    /// @brief Gets a pointer to the leader of the flock of birds
+    /// @return A const pointer to the @ref ObjectBirdLeader of the flock, @ref m_leader
     [[nodiscard]] const ObjectBirdLeader *leader() const {
         return m_leader;
     }
 
+    /// @brief Exposes the follower birds so that @ref ObjectBirdFollower can access them
+    /// @return A const ref to the collection of follower birds, @ref m_followers
     [[nodiscard]] const auto &followers() const {
         return m_followers;
     }
 
+    /// @endGetters
+
 protected:
-    ObjectBirdLeader *m_leader;
-    owning_span<ObjectBirdFollower *> m_followers;
+    ObjectBirdLeader *m_leader; ///< The main bird in the flock; other birds follow this leader
+    owning_span<ObjectBirdFollower *> m_followers; ///< The other birds that follow the leader
 };
 
-/// @brief The main bird within an @ref ObjectBird. Other birds follow this leader.
+/// @brief The main bird within an @ref ObjectBird flock. Other birds follow this leader.
 class ObjectBirdLeader : public ObjectCollidable {
 public:
-    ObjectBirdLeader(const System::MapdataGeoObj &params, ObjectBird *bird);
+    ObjectBirdLeader(const System::MapdataGeoObj &params, const ObjectBird *bird);
     ~ObjectBirdLeader() override;
 
     void init() override;
     void calc() override;
-
-    /// @addr{0x8077CCD4}
-    [[nodiscard]] LoadFlags loadFlags() const override {
-        return LoadFlags(eLoadFlags::Calc);
-    }
-
     void loadAnims() override;
-
-    /// @brief Not overridden in the base game, but collision mode 0 will cause our assert to fail.
-    void createCollision() override {}
+    void createCollision() override;
+    [[nodiscard]] LoadFlags loadFlags() const override;
 
 protected:
-    ObjectBird *m_bird;
+    const ObjectBird *const m_bird; ///< The @ref ObjectBird instance that this leader belongs to
 };
 
-/// @brief Represents all but one of the birds in an @ObjectBird group.
+/// @brief Represents all but one of the birds in an @ref ObjectBird group.
 /// @details These birds initialize their position based off of the @ref ObjectBirdLeader. They
-/// perform collision checks in their calc function to prevent them from flying through floors. We
-/// have to implement this class because it can induce a collision transformation matrix update when
-/// birds are in close proximity to a moving @ref ObjectKCL.
+/// perform collision checks in their calc function to prevent them from flying through floors.
+/// @note This object must be implemented in Kinoko to prevent certain ghost replays from desyncing
+/// on Toad's Factory. @ref ObjectBirdFollower::calc() performs a collision check between the birds
+/// and the environment to prevent them from flying through floors. Because of this, birds flying
+/// near @ref ObjectCrane instances can cause the crane's transformation matrix to update.
 class ObjectBirdFollower final : public ObjectBirdLeader {
 public:
-    ObjectBirdFollower(const System::MapdataGeoObj &params, ObjectBird *bird, u32 idx);
+    ObjectBirdFollower(const System::MapdataGeoObj &params, const ObjectBird *bird, u32 idx);
     ~ObjectBirdFollower() override;
 
     void init() override;
@@ -85,9 +81,9 @@ public:
 private:
     void calcPos();
 
-    const u32 m_idx;
-    EGG::Vector3f m_velocity;
-    f32 m_baseSpeed;
+    const u32 m_idx;          ///< Index of this follower in the flock
+    EGG::Vector3f m_velocity; ///< The current velocity of the follower bird
+    const f32 m_baseSpeed;    ///< The base speed of the follower bird
 };
 
 } // namespace Kinoko::Field

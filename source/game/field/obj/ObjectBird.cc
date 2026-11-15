@@ -11,6 +11,10 @@
 namespace Kinoko::Field {
 
 /// @addr{0x8077BD80}
+/// @brief Constructor
+/// @param params The parameters used to initialize the object
+/// @details Creates and loads one leader and a number of follower birds based on param setting 2,
+/// defaulting to 5 followers if the setting is zero.
 ObjectBird::ObjectBird(const System::MapdataGeoObj &params) : ObjectCollidable(params) {
     m_leader = EGG::egg_new<ObjectBirdLeader>(params, this);
     m_leader->load();
@@ -30,9 +34,14 @@ ObjectBird::ObjectBird(const System::MapdataGeoObj &params) : ObjectCollidable(p
 }
 
 /// @addr{0x8077CDC8}
+/// @brief Default virtual destructor
 ObjectBird::~ObjectBird() = default;
 
 /// @addr{0x8077BFC8}
+/// @copybrief ObjectBase::calc()
+/// @details Ensures that follower birds maintain a minimum spacing of `300.0f` units between each
+/// other to avoid colliding. Since this class is loaded to the @ref ObjectDirector after the
+/// followers, all position fetches reflect their current position this frame.
 void ObjectBird::calc() {
     constexpr f32 MIN_SPACING = 300.0f;
 
@@ -58,22 +67,53 @@ void ObjectBird::calc() {
     }
 }
 
+/// @addr{0x8077CCF4}
+/// @copybrief ObjectBase::loadFlags()
+/// @return Returns @ref eLoadFlags::Calc, so that the object is calculated every frame.
+ObjectBase::LoadFlags ObjectBird::loadFlags() const {
+    return LoadFlags(eLoadFlags::Calc);
+}
+
+/// @addr{0x8077CCF0}
+/// @copybrief ObjectBase::loadGraphics()
+/// @details This is a no-op in the base game.
+void ObjectBird::loadGraphics() {}
+
+/// @addr{0x8077CCE8}
+/// @copybrief ObjectBase::createCollision()
+/// @details This is a no-op in the base game.
+void ObjectBird::createCollision() {}
+
+/// @addr{0x8077CCE0}
+/// @copybrief ObjectBase::loadRail()
+/// @details This is a no-op in the base game.
+void ObjectBird::loadRail() {}
+
 /// @addr{0x8077C2F4}
-ObjectBirdLeader::ObjectBirdLeader(const System::MapdataGeoObj &params, ObjectBird *bird)
+/// @brief Constructor
+/// @param params The parameters used to initialize the object
+/// @param bird The @ref ObjectBird instance that this leader belongs to
+/// @details Sets @ref m_bird based on the provided @ref ObjectBird pointer.
+ObjectBirdLeader::ObjectBirdLeader(const System::MapdataGeoObj &params, const ObjectBird *bird)
     : ObjectCollidable(params), m_bird(bird) {}
 
 /// @addr{0x8077CE48}
+/// @brief Default virtual destructor
 ObjectBirdLeader::~ObjectBirdLeader() = default;
 
 /// @addr{0x8077C384}
+/// @copybrief ObjectBase::init()
+/// @details Plays the flying animation whose start frame is randomly chosen between 0 and the
+/// animation framecount. Also initializes and steps the rail interpolator, setting the leader's
+/// position accordingly and updating the rail's velocity based off param setting 1.
 void ObjectBirdLeader::init() {
     auto *anmMgr = m_drawMdl->anmMgr();
     anmMgr->playAnim(0.0f, 1.0f, 0);
     f32 frameCount = anmMgr->activeAnim(Render::AnmType::Chr)->frameCount();
 
     auto &rand = System::RaceManager::Instance()->random();
-    f32 rate = rand.getF32(static_cast<f32>(frameCount));
-    anmMgr->playAnim(rate, 1.0f, 0);
+    f32 anmFrame = rand.getF32(static_cast<f32>(frameCount));
+    anmMgr->playAnim(anmFrame, 1.0f, 0);
 
     m_railInterpolator->init(0.0f, 0);
     m_railInterpolator->calc();
@@ -82,12 +122,23 @@ void ObjectBirdLeader::init() {
 }
 
 /// @addr{0x8077C504}
+/// @copybrief ObjectBase::calc()
+/// @details Updates the rail interpolator and sets the leader's position accordingly.
 void ObjectBirdLeader::calc() {
     m_railInterpolator->calc();
     setPos(m_railInterpolator->curPos());
 }
 
+/// @addr{0x8077CCD4}
+/// @copybrief ObjectBase::loadFlags()
+/// @return Returns @ref eLoadFlags::Calc, so that the object is calculated every frame.
+ObjectBase::LoadFlags ObjectBirdLeader::loadFlags() const {
+    return LoadFlags(eLoadFlags::Calc);
+}
+
 /// @addr{0x8077CC78}
+/// @copybrief ObjectBase::loadAnims()
+/// @details Loads the `flying` animation for the bird leader.
 void ObjectBirdLeader::loadAnims() {
     std::array<const char *, 1> names = {{
             "flying",
@@ -100,15 +151,33 @@ void ObjectBirdLeader::loadAnims() {
     linkAnims(names, types);
 }
 
+/// @copybrief ObjectBase::createCollision()
+/// @details Not overridden in the base game, but collision mode 0 will cause our assert to
+/// fail in @ref ObjectCollidable::createCollision().
+void ObjectBirdLeader::createCollision() {}
+
 /// @addr{0x8077C580}
-ObjectBirdFollower::ObjectBirdFollower(const System::MapdataGeoObj &params, ObjectBird *bird,
+/// @brief Constructor
+/// @param params The parameters used to initialize the object
+/// @param bird The @ref ObjectBird instance that this follower belongs to
+/// @param idx The index of this follower in the flock
+/// @details Sets the bird's @ref m_idx to the provided `idx` and the bird's @ref m_baseSpeed
+/// based off param setting 1.
+ObjectBirdFollower::ObjectBirdFollower(const System::MapdataGeoObj &params, const ObjectBird *bird,
         u32 idx)
-    : ObjectBirdLeader(params, bird), m_idx(idx) {}
+    : ObjectBirdLeader(params, bird),
+      m_idx(idx),
+      m_baseSpeed(static_cast<f32>(params.setting(0))) {}
 
 /// @addr{0x8077CE88}
+/// @brief Default virtual destructor
 ObjectBirdFollower::~ObjectBirdFollower() = default;
 
 /// @addr{0x8077C5E0}
+/// @copybrief ObjectBase::init()
+/// @details Plays the flying animation whose start frame is randomly chosen between 0 and the
+/// animation framecount. Sets the initial velocity of the bird and randomly offsets its position
+/// within a defined range.
 void ObjectBirdFollower::init() {
     constexpr f32 POS_DELTA_RANGE = 1000.0f;
     constexpr f32 POS_DELTA_CENTER = 500.0f;
@@ -118,10 +187,9 @@ void ObjectBirdFollower::init() {
     f32 frameCount = anmMgr->activeAnim(Render::AnmType::Chr)->frameCount();
 
     auto &rand = System::RaceManager::Instance()->random();
-    f32 rate = rand.getF32(static_cast<f32>(frameCount));
-    anmMgr->playAnim(rate, 1.0f, 0);
+    f32 anmFrame = rand.getF32(static_cast<f32>(frameCount));
+    anmMgr->playAnim(anmFrame, 1.0f, 0);
 
-    m_baseSpeed = static_cast<f32>(m_mapObj->setting(0));
     m_velocity = EGG::Vector3f::ez * m_baseSpeed;
 
     f32 z = rand.getF32(POS_DELTA_RANGE) - POS_DELTA_CENTER;
@@ -133,6 +201,11 @@ void ObjectBirdFollower::init() {
 }
 
 /// @addr{0x8077C7F0}
+/// @copybrief ObjectBase::calc()
+/// @details Updates the position of the follower bird based off the other birds in the flock and
+/// performs collision checks to prevent it from flying through floors.
+/// @note This function is the reason that we have to implement birds for Kinoko: they can cause a
+/// transformation matrix update for @ref ObjectCrane due to the collision check.
 void ObjectBirdFollower::calc() {
     calcPos();
 
@@ -145,19 +218,24 @@ void ObjectBirdFollower::calc() {
 }
 
 /// @addr{0x8077C8F4}
+/// @brief Calculates the new position of the follower bird based on its velocity and the positions
+/// of the other birds in the flock.
+/// @details Steers the bird towards the average position of the rest of the flock (the leader and
+/// every other follower, excluding itself). The bird's speed is capped at @ref m_baseSpeed
+/// times `1.2f`.
 void ObjectBirdFollower::calcPos() {
     constexpr f32 MAX_SPEED_FACTOR = 1.2f;
 
-    EGG::Vector3f leaderPos = m_bird->leader()->pos();
+    EGG::Vector3f sumPos = m_bird->leader()->pos();
     const auto &follower = m_bird->followers();
 
     for (u32 i = 0; i < follower.size(); ++i) {
         if (i != m_idx) {
-            leaderPos += follower[i]->pos();
+            sumPos += follower[i]->pos();
         }
     }
 
-    EGG::Vector3f posDelta = leaderPos * (1.0f / static_cast<f32>(follower.size())) - pos();
+    EGG::Vector3f posDelta = sumPos * (1.0f / static_cast<f32>(follower.size())) - pos();
     posDelta.normalise();
     posDelta *= 0.5f;
 
