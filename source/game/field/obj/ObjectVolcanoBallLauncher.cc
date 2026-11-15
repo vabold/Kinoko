@@ -1,5 +1,6 @@
 #include "ObjectVolcanoBallLauncher.hh"
 
+#include "game/field/Rail.hh"
 #include "game/field/RailManager.hh"
 #include "game/field/obj/ObjectVolcanoBall.hh"
 

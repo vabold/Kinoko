@@ -1,11 +1,16 @@
 #include "RailManager.hh"
 
+#include "game/field/Rail.hh"
+
 #include "game/system/CourseMap.hh"
-#include "game/system/map/MapdataGeoObj.hh"
 
 namespace Kinoko::Field {
 
 /// @addr{0x806F09C8}
+/// @brief Creates the singleton instance of @ref RailManager and parses all rails from the
+/// @ref System::CourseMap
+/// @return A pointer to the newly created singleton instance of @ref RailManager
+/// @pre Assumes that no singleton instance of @ref RailManager has been created yet.
 RailManager *RailManager::CreateInstance() {
     ASSERT(!s_instance);
     s_instance = EGG::egg_new<RailManager>();
@@ -14,6 +19,8 @@ RailManager *RailManager::CreateInstance() {
 }
 
 /// @addr{0x806F0A4C}
+/// @brief Destroys the singleton instance of the @ref RailManager
+/// @pre Assumes that a singleton instance of @ref RailManager has already been created.
 void RailManager::DestroyInstance() {
     ASSERT(s_instance);
     auto *instance = s_instance;
@@ -22,9 +29,11 @@ void RailManager::DestroyInstance() {
 }
 
 /// @addr{0x806F0A3C}
+/// @brief Private default constructor
 RailManager::RailManager() = default;
 
 /// @addr{0x806F0A98}
+/// @brief Private destructor
 RailManager::~RailManager() {
     if (s_instance) {
         s_instance = nullptr;
@@ -37,38 +46,19 @@ RailManager::~RailManager() {
 }
 
 /// @addr{0x806F0AD8}
+/// @brief Parses all rails from the @ref System::CourseMap, distinguishing between linear and
+/// curved rails
+/// @details For a given @ref System::MapdataPointInfo, if setting 1 is set to 1, then the rail is
+/// considered a curved rail and a @ref RailSpline object is created. Otherwise, it is considered a
+/// linear rail and a @ref RailLine object is created.
 void RailManager::createPaths() {
     auto *courseMap = System::CourseMap::Instance();
-    m_pointCount = courseMap->getPointInfoCount();
-    m_extraInterplatorCount = 8;
-    u16 geoCount = courseMap->getGeoObjCount();
-    m_rails.reserve(m_pointCount + m_extraInterplatorCount);
+    u16 railCount = courseMap->getPointInfoCount();
+    m_rails.reserve(railCount);
 
-    for (u16 i = 0; i < m_pointCount; ++i) {
-        bool isObjectRoute = false;
+    for (u16 i = 0; i < railCount; ++i) {
         auto *pointInfo = courseMap->getPointInfo(i);
         bool isSpline = pointInfo->setting(0);
-
-        for (u16 j = 0; j < geoCount; ++j) {
-            auto *geoObj = courseMap->getGeoObj(j);
-
-            if (geoObj->pathId() != i) {
-                continue;
-            }
-
-            if (isSpline) {
-                m_rails.push_back(EGG::egg_new<RailSpline>(i, pointInfo));
-            } else {
-                m_rails.push_back(EGG::egg_new<RailLine>(i, pointInfo));
-            }
-
-            isObjectRoute = true;
-            break;
-        }
-
-        if (isObjectRoute) {
-            continue;
-        }
 
         if (isSpline) {
             m_rails.push_back(EGG::egg_new<RailSpline>(i, pointInfo));
@@ -78,6 +68,6 @@ void RailManager::createPaths() {
     }
 }
 
-RailManager *RailManager::s_instance = nullptr; ///> @addr{0x809C22B0}
+RailManager *RailManager::s_instance = nullptr;
 
 } // namespace Kinoko::Field

@@ -2,6 +2,7 @@
 
 #include "game/field/CollisionDirector.hh"
 #include "game/field/Rail.hh"
+#include "game/field/RailInterpolator.hh"
 #include "game/field/RailManager.hh"
 
 #include "game/kart/KartObject.hh"

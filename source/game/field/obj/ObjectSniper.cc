@@ -1,5 +1,6 @@
 #include "ObjectSniper.hh"
 
+#include "game/field/RailInterpolator.hh"
 #include "game/field/RailManager.hh"
 
 namespace Kinoko::Field {
