@@ -83,7 +83,7 @@ ObjectBase::~ObjectBase() {
 }
 
 /// @addr{0x8081FC68}
-/// @brief Run once during race initialization
+/// @brief Runs once during race initialization
 void ObjectBase::init() {}
 
 /// @addr{0x806BF448}

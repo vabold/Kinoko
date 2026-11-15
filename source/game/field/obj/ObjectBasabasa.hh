@@ -51,7 +51,7 @@ public:
 private:
     void calcState();
 
-    const bool m_bigBump;      ///< Affects the severity of the "push" when colliding with bat
+    const bool m_bigBump;      ///< Affects the severity of the "push" when colliding with the bat
     EGG::Vector3f m_posOffset; ///< RNG-based starting position offset for the bat
     bool m_active;             ///< Whether or not this bat is currently spawned
 };
@@ -60,9 +60,9 @@ private:
 /// @details Spawns bats in small groups, whose size is determined by @ref m_batsPerGroup. After
 /// that many bats have been spawned, it resets the @ref m_cycleTimer.
 class ObjectBasabasa final : public ObjectCollidable {
-    /// @brief Grants access to static member variables so a @ref Host::Context can restore their
-    /// values on context switch
-    friend Host::Context;
+    /// @brief Grants access to private static member variables so a @ref Host::Context can restore
+    /// their values on context switch
+    friend class Host::Context;
 
 public:
     ObjectBasabasa(const System::MapdataGeoObj &params);

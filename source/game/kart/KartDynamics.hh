@@ -200,7 +200,7 @@ protected:
     EGG::Vector3f m_extVel;            ///< Velocity induced by collisions.
     EGG::Vector3f m_acceleration;      ///< Basically just @ref m_totalForce.
     EGG::Vector3f m_angVel0;           ///< Angular velocity from @ref m_totalTorque.
-    EGG::Vector3f m_movingObjVel;      ///< Velocity from things like TF conveyers.
+    EGG::Vector3f m_movingObjVel;      ///< Velocity from things like TF conveyors.
     EGG::Vector3f m_angVel1;           ///< @unused
     EGG::Vector3f m_movingRoadVel;     ///< Velocity from Koopa Cape water.
     EGG::Vector3f m_velocity;          ///< Sum of the linear velocities.
