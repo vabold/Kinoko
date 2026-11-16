@@ -10,7 +10,7 @@ ObjectWoodboxWSub::~ObjectWoodboxWSub() = default;
 
 /// @addr{0x8077E49C}
 void ObjectWoodboxWSub::calc() {
-    if (m_state - 1 > 1) {
+    if (m_state == State::Inactive) {
         return;
     }
 
@@ -22,7 +22,7 @@ void ObjectWoodboxWSub::calcPosition() {
     auto status = m_railInterpolator->calc();
 
     if (status == RailInterpolator::Status::ChangingDirection) {
-        m_state = 0;
+        m_state = State::Inactive;
     }
 
     setPos(m_railInterpolator->curPos());
