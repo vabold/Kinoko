@@ -267,8 +267,8 @@ void KartSub::calcPass1() {
     f32 speedFactor = 1.0f;
     f32 handlingFactor = 0.0f;
 
-    // Kinoko-specific: the kart's position and rotation don't change within this loop, so compute
-    // the body matrix once instead of once per wheel in KartBody::wheelMatrix().
+    // OPT: The kart's position and rotation don't change within this loop, so compute the body
+    // matrix once instead of once per wheel in KartBody::wheelMatrix().
     EGG::Matrix34f bodyMat;
     bodyMat.makeQT(fullRot(), pos());
 

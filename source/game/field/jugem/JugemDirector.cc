@@ -7,9 +7,9 @@
 namespace Kinoko::Field {
 
 /// @addr{0x8071E6C0}
-/// @details Lakitu is only implemented because it can refresh the transformation matrix of drivable
-/// objects. For Kinoko, we can introduce a performance improvement by skipping Lakitu calculation
-/// if there are no drivable objects on the current course.
+/// @details OPT: Lakitu is only implemented because it can refresh the transformation matrix of
+/// drivable objects. For Kinoko, we can introduce a performance improvement by skipping Lakitu
+/// calculation if there are no drivable objects on the current course.
 void JugemDirector::calc() {
     if (ObjectDrivableDirector::Instance()->hasCalcObjects()) {
         m_unit->calc();
