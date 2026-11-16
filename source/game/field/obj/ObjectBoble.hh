@@ -4,29 +4,22 @@
 
 namespace Kinoko::Field {
 
-class ObjectBoble : public ObjectCollidable {
+/// @brief Rising and falling fireballs on GBA Bowser Castle 3
+/// @details The fireballs follow a simple rail path with per-point velocities. This allows the
+/// fireball to rise up, slow down, and fall more smoothly.
+class ObjectBoble final : public ObjectCollidable {
 public:
     ObjectBoble(const System::MapdataGeoObj &params);
     ~ObjectBoble() override;
 
     void init() override;
     void calc() override;
-
-    /// @addr{0x8075E744}
-    [[nodiscard]] LoadFlags loadFlags() const override {
-        return LoadFlags(eLoadFlags::Calc);
-    }
-
-    /// @addr{0x8075E1F4}
-    Kart::Reaction onCollision(Kart::KartObject * /*kartObj*/, Kart::Reaction reactionOnKart,
-            Kart::Reaction /*reactionOnObj*/, EGG::Vector3f & /*hitDepth*/) override {
-        return reactionOnKart;
-    }
+    [[nodiscard]] LoadFlags loadFlags() const override;
 
 private:
     void calcTangent();
 
-    EGG::Vector3f m_curTangentDir;
+    EGG::Vector3f m_curTangentDir; ///< Smoothed rail tangent direction at the current position
 };
 
 } // namespace Kinoko::Field
