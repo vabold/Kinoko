@@ -2,8 +2,6 @@
 
 #include "game/field/obj/ObjectBase.hh"
 
-#include "game/field/ObjectCollisionBase.hh"
-
 namespace Kinoko {
 
 namespace Kart {
@@ -15,6 +13,10 @@ enum class Reaction;
 
 namespace Field {
 
+class ObjectCollisionBase;
+
+/// @brief Abstract base class for all objects that can collide with karts
+/// @details Declares virtual methods for collision checks and collision callbacks.
 class ObjectCollidable : public ObjectBase {
 public:
     ObjectCollidable(const System::MapdataGeoObj &params);
@@ -30,41 +32,32 @@ public:
     virtual void loadAABB(f32 radius, f32 maxSpeed);
     virtual void processKartReactions(Kart::KartObject *kartObj, Kart::Reaction &reactionOnKart,
             Kart::Reaction &reactionOnObj);
-
-    /// @addr{0x8068179C}
-    virtual Kart::Reaction onCollision(Kart::KartObject * /*kartObj*/,
-            Kart::Reaction reactionOnKart, Kart::Reaction /*reactionOnObj*/,
-            EGG::Vector3f & /*hitDepth*/) {
-        return reactionOnKart;
-    }
-
-    virtual void onWallCollision(Kart::KartObject *, const EGG::Vector3f &) {}
-
-    virtual void onObjectCollision(Kart::KartObject *) {}
-
+    virtual Kart::Reaction onCollision(Kart::KartObject *kartObj, Kart::Reaction reactionOnKart,
+            Kart::Reaction reactionOnObj, EGG::Vector3f &hitDepth);
     virtual bool checkCollision(ObjectCollisionBase *lhs, EGG::Vector3f &dist);
 
-    /// @addr{0x8068173C}
-    virtual const EGG::Vector3f &getCollisionTranslation() const {
-        return EGG::Vector3f::zero;
-    }
+    /// @beginGetters
 
     /// @addr{0x80573518}
-    [[nodiscard]] virtual ObjectCollisionBase *collision() const {
+    /// @brief Gets a pointer to the GJK collision object
+    /// @return A pointer to the @ref ObjectCollisionBase GJK collision object, @ref m_collision
+    /// @details In the base game, this is a virtual function. Since no derived class
+    /// overrides this function, we can devirtualize for Kinoko.
+    [[nodiscard]] ObjectCollisionBase *collision() const {
         return m_collision;
     }
+
+    /// @endGetters
 
 protected:
     void createCollision() override;
 
-    /// @addr{0x806816B8}
-    [[nodiscard]] virtual const EGG::Vector3f &collisionCenter() const {
-        return EGG::Vector3f::zero;
-    }
+    [[nodiscard]] virtual const EGG::Vector3f &getCollisionTranslation() const;
+    [[nodiscard]] virtual const EGG::Vector3f &collisionCenter() const;
 
     void registerManagedObject();
 
-    ObjectCollisionBase *m_collision;
+    ObjectCollisionBase *m_collision; ///< Pointer to the associated GJK collision object
 };
 
 } // namespace Field
