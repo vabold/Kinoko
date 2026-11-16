@@ -25,6 +25,9 @@ void ObjectPakkunF::init() {
 }
 
 /// @addr{0x80774754}
+/// @note OPT: The base game also calls @ref calcCollisionTransform() every frame. Kinoko skips
+/// this, since @ref ObjectDirector::checkKartObjectCollision() always calls it before checking
+/// collision, and nothing else reads the collision transform.
 void ObjectPakkunF::calc() {
     switch (m_state) {
     case State::Wait:
@@ -36,8 +39,6 @@ void ObjectPakkunF::calc() {
     default:
         break;
     }
-
-    calcCollisionTransform();
 }
 
 /// @addr{0x80775464}
