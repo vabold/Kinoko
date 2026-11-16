@@ -1,5 +1,6 @@
 #include "ObjectChoropu.hh"
 
+#include "game/field/ObjectCollisionSphere.hh"
 #include "game/field/ObjectDirector.hh"
 #include "game/field/RailInterpolator.hh"
 #include "game/field/RailManager.hh"
@@ -14,13 +15,21 @@
 namespace Kinoko::Field {
 
 /// @addr{0x806B96A0}
+/// @copybrief ObjectCollidable::ObjectCollidable(const System::MapdataGeoObj &)
+/// @param params The parameters used to initialize the object
+/// @details Initializes @ref m_startFrameOffset based off param setting 2, @ref m_idleDuration
+/// based off param setting 1, and @ref m_isStationary based off the object's name. If the mole
+/// moves along a rail, precomputes all floor normals along the rail to align the mole's orientation
+/// when peeking above the dirt hole. If the mole is not stationary, creates the associated @ref
+/// ObjectChoropuGround instances for the dirt trail and computes the ground height. Finally,
+/// creates the @ref ObjectChoropuHoll instance for the mole's hole.
 ObjectChoropu::ObjectChoropu(const System::MapdataGeoObj &params)
-    : ObjectCollidable(params), StateManager(this, STATE_ENTRIES) {
+    : ObjectCollidable(params),
+      StateManager(this, STATE_ENTRIES),
+      m_startFrameOffset(static_cast<s16>(params.setting(1))),
+      m_idleDuration(params.setting(0)),
+      m_isStationary(strcmp(getName(), "choropu") != 0) {
     constexpr f32 MAX_SPEED = 20.0f;
-
-    m_startFrameOffset = static_cast<s16>(params.setting(1));
-    m_idleDuration = params.setting(0);
-    m_isStationary = strcmp(getName(), "choropu") != 0;
 
     s16 railIdx = params.pathId();
     if (railIdx != -1) {
@@ -53,9 +62,16 @@ ObjectChoropu::ObjectChoropu(const System::MapdataGeoObj &params)
 }
 
 /// @addr{0x806B9B8C}
+/// @brief Default virtual destructor
 ObjectChoropu::~ObjectChoropu() = default;
 
 /// @addr{0x806B9BF8}
+/// @copybrief ObjectBase::init()
+/// @details Initializes the mole's state based on whether it is stationary or moves along a rail.
+/// If the mole is stationary, it disables collision initially, scales the mole based off its hole's
+/// scale, and sets up the transform matrix. If the mole moves along a rail, it initializes the rail
+/// interpolator, sets the initial position and orientation along the rail, and disables collision
+/// for both the mole and its hole. In either case, the mole starts in the digging state.
 void ObjectChoropu::init() {
     if (m_isStationary) {
         disableCollision();
@@ -65,7 +81,7 @@ void ObjectChoropu::init() {
         m_groundLength = 0.0f;
 
         calcTransform();
-        m_transMat = transform();
+        m_initRt = transform();
     } else {
         if (m_mapObj->pathId() == -1) {
             return;
@@ -85,6 +101,11 @@ void ObjectChoropu::init() {
 }
 
 /// @addr{0x806B9E60}
+/// @copybrief ObjectBase::calc()
+/// @details If the mole hasn't spawned yet (which is the case when the race duration is below @ref
+/// m_startFrameOffset plus `300`), then returns early. If the mole moves along a rail, then stores
+/// the rail's current position in @ref m_railPos. Evaluates the mole's state machine. Finally,
+/// resets the X and Z component of the hole scale to `1.0f`.
 void ObjectChoropu::calc() {
     constexpr u32 START_DELAY = 300;
 
@@ -109,16 +130,32 @@ void ObjectChoropu::calc() {
     m_objHoll->setScale(EGG::Vector3f(1.0f, m_objHoll->scale().y, 1.0f));
 }
 
+/// @addr{0x806BBE34}
+/// @copybrief ObjectBase::loadFlags()
+/// @return Returns @ref eLoadFlags::Calc, so that the object is calculated every frame.
+ObjectBase::LoadFlags ObjectChoropu::loadFlags() const {
+    return LoadFlags(eLoadFlags::Calc);
+}
+
 /// @addr{0x806BA144}
+/// @copybrief ObjectCollidable::onCollision
+/// @param kartObj The kart object that collided with the mole (unused)
+/// @param reactionOnKart The reaction that should be applied to the kart upon collision
+/// @param reactionOnObj The reaction that should be applied to the mole upon collision (unused)
+/// @param hitDepth The depth of the collision (unused)
+/// @return @ref Kart::Reaction::SmallBump if the mole is poking its head out, otherwise @ref
+/// Kart::Reaction::SmallLaunch.
 Kart::Reaction ObjectChoropu::onCollision(Kart::KartObject * /*kartObj*/,
         Kart::Reaction reactionOnKart, Kart::Reaction /*reactionOnObj*/,
         EGG::Vector3f & /*hitDepth*/) {
     return m_currentStateId == 1 ? Kart::Reaction::SmallBump : reactionOnKart;
 }
 
-void ObjectChoropu::enterStateStub() {}
-
 /// @addr{0x806BA6D8}
+/// @brief Runs once when the mole lands back in its hole after a jump
+/// @details If the mole is stationary, then this just disables collision. If the mole moves along a
+/// rail, then it re-enables collision for the trailing dirt objects while disabling collision for
+/// both the mole and the hole and resetting the trailing dirt length to zero.
 void ObjectChoropu::enterDigging() {
     if (m_isStationary) {
         disableCollision();
@@ -134,9 +171,13 @@ void ObjectChoropu::enterDigging() {
 }
 
 /// @addr{0x806BABEC}
+/// @brief Runs once when the mole peeks out of its hole before jumping
+/// @details If the mole is stationary, then it simply sets its position based on the
+/// stored transform and enables collision. If the mole moves along a rail, then it sets its
+/// position based on the rail and updates the hole's transform and enable's the hole's collision.
 void ObjectChoropu::enterPeeking() {
     if (m_isStationary) {
-        setPos(m_transMat.base(3));
+        setPos(m_initRt.base(3));
         setRot(EGG::Vector3f(rot().x, rot().y, 0.0f));
 
         enableCollision();
@@ -157,17 +198,27 @@ void ObjectChoropu::enterPeeking() {
 }
 
 /// @addr{0x806BB39C}
+/// @brief Runs once when the mole jumps out of its hole
+/// @details Enables collision for the mole. Sets its position based on whether it
+/// is stationary or on a rail, and sets its roll to zero.
 void ObjectChoropu::enterJumping() {
     enableCollision();
 
-    setPos(m_isStationary ? m_transMat.base(3) : m_railPos);
+    setPos(m_isStationary ? m_initRt.base(3) : m_railPos);
     setRot(EGG::Vector3f(rot().x, rot().y, 0.0f));
 }
 
-void ObjectChoropu::calcStateStub() {}
-
 /// @addr{0x806BA7FC}
+/// @brief Runs once every frame while the mole is neither peeking nor jumping
+/// @details If the mole is stationary, then it simply checks if the state duration has passed and
+/// advances to the peeking state. If the mole moves along a rail, then it updates its position
+/// along the rail. If the mole has reached the end of a rail segment and the new rail node has
+/// setting 2 enabled, then the mole transitions to the peeking state. Otherwise, updates the state
+/// of the dirt trail. If the next point is a peek point and the distance remaining in the current
+/// rail segment is shorter than `250.0f` units, then it skips updating the dirt trail.
 void ObjectChoropu::calcDigging() {
+    constexpr f32 DIRT_CALC_THRESHOLD = 250.0f;
+
     if (m_isStationary) {
         if (m_currentFrame > m_idleDuration) {
             m_nextStateId = 1;
@@ -189,7 +240,7 @@ void ObjectChoropu::calcDigging() {
 
         if (m_railInterpolator->nextPoint().setting[1] == 1) {
             f32 invT = 1.0f - m_railInterpolator->segmentT();
-            if (invT * m_railInterpolator->getCurrSegmentLength() < 250.0f) {
+            if (invT * m_railInterpolator->getCurrSegmentLength() < DIRT_CALC_THRESHOLD) {
                 skipGroundCalc = true;
             }
         }
@@ -201,6 +252,11 @@ void ObjectChoropu::calcDigging() {
 }
 
 /// @addr{0x806BB144}
+/// @brief Runs once every frame while the mole is peeking out of its hole and before it jumps out
+/// @details If the mole is not stationary, then it updates @ref m_groundLength to reflect the
+/// distance traveled along the rail this frame and recalculates the positions of the ground objects
+/// accordingly. If the mole has been in this state for more than 100 frames, advances to the
+/// jumping state. Finally, disables collision if the mole has finished peeking out of its hole.
 void ObjectChoropu::calcPeeking() {
     constexpr s16 PEEK_DURATION = 40;
     constexpr s16 STATE_DURATION = 100;
@@ -221,29 +277,33 @@ void ObjectChoropu::calcPeeking() {
 }
 
 /// @addr{0x806BB5F0}
+/// @brief Runs once every frame while the mole is jumping out of its hole
+/// @details If the mole is not stationary, then it updates @ref m_groundLength to reflect the
+/// distance traveled along the rail this frame and recalculates the positions of the ground objects
+/// accordingly. If the mole has landed back in its hole, it sets @ref m_nextStateId to 0, advancing
+/// it to the digging state. Finally, it sets the mole's height to reflect its current jump height.
 void ObjectChoropu::calcJumping() {
-    constexpr f32 JUMP_LINEAR_COEFFICIENT = 65.0f;
-    constexpr f32 JUMP_QUADRATIC_COEFFICIENT = 2.7f;
-
     if (!m_isStationary) {
         m_groundLength = std::max(0.0f, m_groundLength - m_railInterpolator->speed());
         calcGroundObjs();
     }
 
-    // y = -1.35t^2 + 65.0t
-    f32 posY = JUMP_LINEAR_COEFFICIENT * static_cast<f32>(m_currentFrame) -
-            static_cast<f32>(m_currentFrame) * 0.5f * JUMP_QUADRATIC_COEFFICIENT *
-                    static_cast<f32>(m_currentFrame);
+    f32 posY = calcJumpHeight();
 
     if (posY < 0.0f) {
         m_nextStateId = 0;
     }
 
-    posY += (m_isStationary ? m_transMat.base(3).y : m_railInterpolator->curPos().y);
+    posY += (m_isStationary ? m_initRt.base(3).y : m_railInterpolator->curPos().y);
     setPos(EGG::Vector3f(pos().x, posY, pos().z));
 }
 
 /// @addr{0x806BBA7C}
+/// @brief Calculates the total length of the dirt trail behind the monty moles on MMM
+/// @details The ground length increases based off how fast the mole is traveling, which is
+/// represented by the rail interpolator's current speed. If @ref m_groundLength exceeds @ref
+/// MAX_GROUND_LEN, it is clamped to one unit below the maximum. Finally, calls @ref
+/// calcGroundObjs() to update the position of the dirt trail objects.
 void ObjectChoropu::calcGround() {
     m_groundLength += m_railInterpolator->getCurrVel();
     if (m_groundLength > MAX_GROUND_LEN) {
@@ -254,6 +314,10 @@ void ObjectChoropu::calcGround() {
 }
 
 /// @addr{0x806BB840}
+/// @brief Calculates the position and orientation of the dirt trail behind the monty moles on MMM
+/// @details Dirt objects that lie beyond the dirt trail length have their collision disabled. As
+/// the monty mole moves and the dirt trail length increases, the dirt objects are repositioned and
+/// re-scaled and additional dirt objects will have their collision enabled.
 void ObjectChoropu::calcGroundObjs() {
     size_t idx =
             std::min(static_cast<size_t>(m_groundLength / m_groundHeight) + 1, m_groundObjs.size());
@@ -283,6 +347,11 @@ void ObjectChoropu::calcGroundObjs() {
 }
 
 /// @addr{0x806B46F8}
+/// @brief Calculates position and rotation along the bezier curve of the rail at a given t
+/// @param t The parameter along the bezier curve of the rail at which to calculate the pose
+/// of the mole.
+/// @return The interpolated rotation and translation matrix at the given `t` along the
+/// bezier curve.
 EGG::Matrix34f ObjectChoropu::calcInterpolatedPose(f32 t) const {
     EGG::Vector3f curDir;
     EGG::Vector3f curTanDir;
@@ -292,7 +361,28 @@ EGG::Matrix34f ObjectChoropu::calcInterpolatedPose(f32 t) const {
     return mat;
 }
 
+/// @addr{0x806BBB14}
+/// @brief Calculates the current height offset of the mole in its parabolic jump curve
+/// @return The height offset of the mole in its parabolic jump curve.
+/// @details Follows a parabolic trajectory defined by
+/// \f$ y = -1.35t^2 + 65.0t \f$
+/// where \f$t\f$ is the current frame of the jump.
+f32 ObjectChoropu::calcJumpHeight() const {
+    constexpr f32 JUMP_LINEAR_COEFFICIENT = 65.0f;
+    constexpr f32 JUMP_QUADRATIC_COEFFICIENT = 2.7f;
+
+    return JUMP_LINEAR_COEFFICIENT * static_cast<f32>(m_currentFrame) -
+            static_cast<f32>(m_currentFrame) * 0.5f * JUMP_QUADRATIC_COEFFICIENT *
+            static_cast<f32>(m_currentFrame);
+}
+
 /// @addr{0x806B8F94}
+/// @brief Constructor
+/// @param pos The initial position of the object
+/// @param rot The initial rotation of the object
+/// @param scale The initial scale of the object
+/// @details Initializes the height of the object to be twice the absolute value of the cylinder
+/// height specified in the collision set.
 ObjectChoropuGround::ObjectChoropuGround(const EGG::Vector3f &pos, const EGG::Vector3f &rot,
         const EGG::Vector3f &scale)
     : ObjectCollidable("choropu_ground", pos, rot, scale) {
@@ -306,9 +396,36 @@ ObjectChoropuGround::ObjectChoropuGround(const EGG::Vector3f &pos, const EGG::Ve
 }
 
 /// @addr{0x806BBE6C}
+/// @brief Default virtual destructor
 ObjectChoropuGround::~ObjectChoropuGround() = default;
 
+/// @addr{0x806BBEB0}
+/// @copybrief ObjectBase::loadFlags()
+/// @return Returns @ref eLoadFlags::Calc, so that the object is calculated every frame.
+ObjectBase::LoadFlags ObjectChoropuGround::loadFlags() const {
+    return LoadFlags(eLoadFlags::Calc);
+}
+
+/// @addr{0x806B9164}
+/// @copybrief ObjectCollidable::onCollision
+/// @param kartObj The kart object that collided with the ground segment (unused)
+/// @param reactionOnKart The reaction that should be applied to the kart upon collision
+/// @param reactionOnObj The reaction that should be applied to the ground segment upon collision
+/// (unused)
+/// @param hitDepth The depth of the collision between the kart and the object
+/// @return @ref Kart::Reaction::Wall
+/// @details Also sets the hit depth to zero.
+Kart::Reaction ObjectChoropuGround::onCollision(Kart::KartObject * /*kartObj*/,
+        Kart::Reaction reactionOnKart, Kart::Reaction /*reactionOnObj*/, EGG::Vector3f &hitDepth) {
+    hitDepth.setZero();
+    return reactionOnKart;
+}
+
 /// @addr{0x806B9274}
+/// @brief Sets the ground object's transformation matrix based off of the provided pose
+/// @param height The height to scale the ground segment to
+/// @param mat The transformation matrix to base the ground segment's position and
+/// orientation on
 void ObjectChoropuGround::calcPosAndMat(f32 height, const EGG::Matrix34f &mat) {
     EGG::Matrix34f matTemp;
     SetRotTangentHorizontal(matTemp, mat.base(2), EGG::Vector3f::ey);
@@ -318,10 +435,68 @@ void ObjectChoropuGround::calcPosAndMat(f32 height, const EGG::Matrix34f &mat) {
 }
 
 /// @addr{0x806B93CC}
+/// @copybrief ObjectCollidable::ObjectCollidable(const System::MapdataGeoObj &)
+/// @param params The parameters used to initialize the object
 ObjectChoropuHoll::ObjectChoropuHoll(const System::MapdataGeoObj &params)
     : ObjectCollidable(params) {}
 
 /// @addr{0x806BBE6C}
+/// @brief Default virtual destructor
 ObjectChoropuHoll::~ObjectChoropuHoll() = default;
+
+/// @addr{0x806B94A0}
+/// @copybrief ObjectBase::init()
+/// @details Resizes the hole object's @ref BoxColUnit to have a radius of @ref RADIUS.
+void ObjectChoropuHoll::init() {
+    resize(RADIUS, 0.0f);
+}
+
+/// @addr{0x806B9428}
+/// @copybrief ObjectBase::createCollision()
+/// @details Create a stationary collision sphere with radius @ref RADIUS.
+void ObjectChoropuHoll::createCollision() {
+    m_collision = EGG::egg_new<ObjectCollisionSphere>(RADIUS, EGG::Vector3f::zero);
+}
+
+/// @addr{0x806BBE40}
+/// @copybrief ObjectBase::loadRail()
+/// @details No-op because the hole is managed by the @ref ObjectChoropu, not a rail.
+void ObjectChoropuHoll::loadRail() {}
+
+/// @addr{0x806BBE4C}
+/// @copybrief ObjectBase::getName()
+/// @return The name of the object, `holl`
+const char *ObjectChoropuHoll::getName() const {
+    return "holl";
+}
+
+/// @addr{0x806BBE64}
+/// @copybrief ObjectBase::loadFlags()
+/// @return Returns @ref eLoadFlags::Calc, so that the object is calculated every frame.
+ObjectBase::LoadFlags ObjectChoropuHoll::loadFlags() const {
+    return LoadFlags(eLoadFlags::Calc);
+}
+
+/// @addr{0x806BBE58}
+/// @copybrief ObjectBase::getKclName()
+/// @return The name of the hole object, `holl`
+const char *ObjectChoropuHoll::getKclName() const {
+    return "holl";
+}
+
+/// @addr{0x806B9594}
+/// @copybrief ObjectCollidable::onCollision
+/// @param kartObj The kart object that collided with the hole (unused)
+/// @param reactionOnKart The reaction that should be applied to the kart upon collision (unused)
+/// @param reactionOnObj The reaction that should be applied to the hole upon collision (unused)
+/// @param hitDepth The depth of the collision between the kart and the object
+/// @return @ref Kart::Reaction::Wall
+/// @details Also sets the hit depth to zero.
+Kart::Reaction ObjectChoropuHoll::onCollision(Kart::KartObject * /*kartObj*/,
+        Kart::Reaction /*reactionOnKart*/, Kart::Reaction /*reactionOnObj*/,
+        EGG::Vector3f &hitDepth) {
+    hitDepth.setZero();
+    return Kart::Reaction::Wall;
+}
 
 } // namespace Kinoko::Field
