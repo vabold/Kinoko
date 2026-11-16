@@ -23,13 +23,10 @@ void SphereLink::init() {
 }
 
 /// @addr{0x806F2074}
-void SphereLink::calcStiffness() {
+void SphereLink::calcStiffness(const EGG::Vector3f &dir, f32 dist) {
     constexpr f32 STIFFNESS = 0.15f;
 
     ASSERT(!isLeader());
-
-    EGG::Vector3f dir = m_prev->m_pos - m_pos;
-    f32 dist = dir.normalise();
 
     // Nothing to do if there is slack in the chain
     if (dist < m_prev->m_linkLen) {
@@ -53,19 +50,20 @@ void SphereLink::calc() {
         return;
     }
 
-    if (!m_next) {
-        EGG::Vector3f dir = m_prev->m_pos - m_pos;
-        f32 dist = dir.normalise();
+    // OPT: the direction to the previous link is computed once and shared with calcStiffness(),
+    // rather than being recomputed there.
+    EGG::Vector3f dir = m_prev->m_pos - m_pos;
+    f32 dist = dir.normalise();
 
+    if (!m_next) {
         if (dist > m_prev->m_linkLen) {
             m_springForce += dir * 2.0f;
         }
-
-        calcStiffness();
     } else {
-        calcSpring();
-        calcStiffness();
+        calcSpring(dir, dist);
     }
+
+    calcStiffness(dir, dist);
 }
 
 /// @addr{0x806F2490}
@@ -158,17 +156,14 @@ void SphereLink::calcPos() {
 }
 
 /// @addr{0x806F1C58}
-void SphereLink::calcSpring() {
+void SphereLink::calcSpring(const EGG::Vector3f &prevDir, f32 prevDist) {
     ASSERT(m_prev && m_next);
 
-    EGG::Vector3f dir = m_prev->m_pos - m_pos;
-    f32 dist = dir.normalise();
-
-    if (dist > m_prev->m_linkLen) {
-        m_springForce += dir * 2.0f;
+    if (prevDist > m_prev->m_linkLen) {
+        m_springForce += prevDir * 2.0f;
     }
 
-    dir = m_next->m_pos - m_pos;
+    EGG::Vector3f dir = m_next->m_pos - m_pos;
     f32 nextDist = dir.normalise();
 
     if (nextDist > m_linkLen) {
