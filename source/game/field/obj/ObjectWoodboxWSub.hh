@@ -13,7 +13,7 @@ public:
     /// @addr{0x8077E3E4}
     void init() override {
         ObjectBreakable::init();
-        m_state = 0;
+        m_state = State::Inactive;
     }
 
     void calc() override;
