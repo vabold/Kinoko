@@ -1,5 +1,7 @@
 #include "ObjectPakkunF.hh"
 
+#include "game/field/ObjectCollisionBase.hh"
+
 #include "game/render/DrawMdl.hh"
 
 #include "game/system/map/MapdataGeoObj.hh"

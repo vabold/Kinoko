@@ -1,5 +1,7 @@
 #include "ObjectWoodbox.hh"
 
+#include "game/field/ObjectCollisionBase.hh"
+
 namespace Kinoko::Field {
 
 /// @addr{0x8077E5E4}

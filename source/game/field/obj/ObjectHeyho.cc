@@ -1,6 +1,7 @@
 #include "ObjectHeyho.hh"
 
 #include "game/field/CollisionDirector.hh"
+#include "game/field/ObjectCollisionBase.hh"
 #include "game/field/RailInterpolator.hh"
 #include "game/field/RailManager.hh"
 
