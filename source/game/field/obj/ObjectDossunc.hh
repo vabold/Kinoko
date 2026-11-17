@@ -10,7 +10,6 @@ public:
     ObjectDossunc(const System::MapdataGeoObj &params);
     ~ObjectDossunc() override;
 
-    /// @addr{0x80764A38}
     void load() override;
 };
 
