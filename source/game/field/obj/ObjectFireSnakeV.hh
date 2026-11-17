@@ -4,6 +4,10 @@
 
 namespace Kinoko::Field {
 
+/// @brief Represents the bouncing fire snakes on Grumble Volcano
+/// @details These fire snakes differ in behavior from the base class @ref ObjectFireSnake in that
+/// their lifecycle is not controlled by @ref ObjectSunDS or any other @ref ObjectSniper. Instead,
+/// these fire snakes repreatedly respawn from pipes.
 class ObjectFireSnakeV final : public ObjectFireSnake {
 public:
     ObjectFireSnakeV(const System::MapdataGeoObj &params);
@@ -15,70 +19,40 @@ public:
 private:
     void calcSub();
 
-    /// @addr{0x806C30F0}
-    void enterDespawned() {
-        ObjectFireSnake::enterDespawned();
-    }
-
+    void enterDespawned();
     void enterFalling();
-
-    /// @addr{0x806C33B4}
-    void enterHighBounce() {}
-
-    void enterRest() {
-        ObjectFireSnake::enterRest();
-    }
-
-    void enterBounce() {
-        ObjectFireSnake::enterBounce();
-    }
-
-    void enterDespawning() {
-        ObjectFireSnake::enterDespawning();
-    }
-
-    /// @addr{0x806C30F4}
-    void calcDespawned() {}
+    void enterRest();
 
     void calcFalling();
     void calcHighBounce();
+    void calcRest();
+    void calcBounce();
 
-    void calcRest() {
-        ObjectFireSnake::calcRest();
-    }
-
-    void calcBounce() {
-        ObjectFireSnake::calcBounce();
-    }
-
-    void calcDespawning() {
-        ObjectFireSnake::calcDespawning();
-    }
-
+    /// @brief The enter and calc functions for each @ref StateManager entry
     static constexpr std::array<StateManagerEntry, 6> STATE_ENTRIES = {{
-            {StateEntry<ObjectFireSnakeV, &ObjectFireSnakeV::enterDespawned,
-                    &ObjectFireSnakeV::calcDespawned>(0)},
+            {StateEntry<ObjectFireSnakeV, &ObjectFireSnakeV::enterDespawned, nullptr>(0)},
             {StateEntry<ObjectFireSnakeV, &ObjectFireSnakeV::enterFalling,
                     &ObjectFireSnakeV::calcFalling>(1)},
-            {StateEntry<ObjectFireSnakeV, &ObjectFireSnakeV::enterHighBounce,
-                    &ObjectFireSnakeV::calcHighBounce>(2)},
+            {StateEntry<ObjectFireSnakeV, nullptr, &ObjectFireSnakeV::calcHighBounce>(2)},
             {StateEntry<ObjectFireSnakeV, &ObjectFireSnakeV::enterRest,
                     &ObjectFireSnakeV::calcRest>(3)},
-            {StateEntry<ObjectFireSnakeV, &ObjectFireSnakeV::enterBounce,
-                    &ObjectFireSnakeV::calcBounce>(4)},
-            {StateEntry<ObjectFireSnakeV, &ObjectFireSnakeV::enterDespawning,
-                    &ObjectFireSnakeV::calcDespawning>(5)},
+            {StateEntry<ObjectFireSnakeV, nullptr, &ObjectFireSnakeV::calcBounce>(4)},
+            {StateEntry<ObjectFireSnakeV, nullptr, nullptr>(5)},
     }};
 
-    const u16 m_cycleDuration;
-    const f32 m_distFromPipe;
-    f32 m_fallSpeed;
+    const u16 m_delayFrame;    ///< Initial delay before state lifecycle starts
+    const u16 m_cycleDuration; ///< Number of frames between two fire snake spawns
+    const f32 m_distFromPipe;  ///< Distance from spawn position to the landing position
+    const f32 m_fallSpeed;     ///< XZ speed of the fire snake after spawning and before landing
 
-    static constexpr f32 RADIUS = 130.0f;
-    static constexpr f32 GRAVITY = 3.0f;
+    static constexpr f32 RADIUS = 130.0f; ///< Collision radius of the fire snake
+    static constexpr f32 GRAVITY = 3.0f;  ///< Gravity applied during spawn and the first bounce
 
-    /// How many frames the snake falls before starting to check against floor collision
+    /// @brief How many frames the snake falls before starting to check against floor collision
     static constexpr u32 COL_CHECK_DELAY_FRAMES = 10;
+
+    /// @brief How many frames the fire snake falls when spawning from the pipe
+    static constexpr f32 SPAWN_FALL_DURATION = 140.0f;
 };
 
 } // namespace Kinoko::Field
