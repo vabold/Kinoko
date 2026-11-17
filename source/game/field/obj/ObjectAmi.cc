@@ -167,7 +167,7 @@ bool ObjectAmi::checkSphereCachedFullPush(f32 radius, const EGG::Vector3f &pos,
 /// @param mask The KCL flags to check collision against (other types are ignored)
 /// @param info Out parameter for retrieving partial collision information (if any)
 /// @param maskOut The KCL flags that were hit during the collision check (if any)
-/// @param timeOffset Optional time delta
+/// @param timeOffset Optional time offset
 /// @return Whether a collision was detected
 bool ObjectAmi::checkSpherePartialImpl(f32 radius, const EGG::Vector3f &pos,
         const EGG::Vector3f & /*prevPos*/, KCLTypeMask mask, CollisionInfoPartial *info,
@@ -185,7 +185,7 @@ bool ObjectAmi::checkSpherePartialImpl(f32 radius, const EGG::Vector3f &pos,
 /// @param mask The KCL flags to check collision against (other types are ignored)
 /// @param info Out parameter for retrieving partial collision information (if any)
 /// @param maskOut The KCL flags that were hit during the collision check (if any)
-/// @param timeOffset Optional time delta
+/// @param timeOffset Optional time offset
 /// @return Whether a collision was detected
 bool ObjectAmi::checkSpherePartialPushImpl(f32 radius, const EGG::Vector3f &pos,
         const EGG::Vector3f & /*prevPos*/, KCLTypeMask mask, CollisionInfoPartial *info,
@@ -202,7 +202,7 @@ bool ObjectAmi::checkSpherePartialPushImpl(f32 radius, const EGG::Vector3f &pos,
 /// @param mask The KCL flags to check collision against (other types are ignored)
 /// @param info Out parameter for retrieving collision information (if any)
 /// @param maskOut The KCL flags that were hit during the collision check (if any)
-/// @param timeOffset Optional time delta
+/// @param timeOffset Optional time offset
 /// @return Whether a collision was detected
 bool ObjectAmi::checkSphereFullImpl(f32 radius, const EGG::Vector3f &pos,
         const EGG::Vector3f & /*prevPos*/, KCLTypeMask mask, CollisionInfo *info,
@@ -220,7 +220,7 @@ bool ObjectAmi::checkSphereFullImpl(f32 radius, const EGG::Vector3f &pos,
 /// @param mask The KCL flags to check collision against (other types are ignored)
 /// @param info Out parameter for retrieving collision information (if any)
 /// @param maskOut The KCL flags that were hit during the collision check (if any)
-/// @param timeOffset Optional time delta
+/// @param timeOffset Optional time offset
 /// @return Whether a collision was detected
 bool ObjectAmi::checkSphereFullPushImpl(f32 radius, const EGG::Vector3f &pos,
         const EGG::Vector3f & /*prevPos*/, KCLTypeMask mask, CollisionInfo *info,
@@ -238,7 +238,7 @@ bool ObjectAmi::checkSphereFullPushImpl(f32 radius, const EGG::Vector3f &pos,
 /// @param mask The KCL flags to check collision against (other types are ignored)
 /// @param info Out parameter for retrieving full or partial collision information (if any)
 /// @param maskOut The KCL flags that were hit during the collision check (if any)
-/// @param timeOffset Optional time delta
+/// @param timeOffset Optional time offset
 /// @param push Whether to push a collision entry
 /// @return Whether a collision was detected
 /// @details If `mask` does not include `KCL_TYPE_FLOOR`, the function will immediately return
