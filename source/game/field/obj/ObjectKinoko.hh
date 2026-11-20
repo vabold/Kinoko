@@ -4,100 +4,88 @@
 
 namespace Kinoko::Field {
 
+/// @brief Distinguishes between light and dark variants of a mushroom object
 enum class KinokoType : u16 {
-    Light = 0,
-    Dark = 1,
+    Light = 0, ///< Light mushrooms outside of the cave
+    Dark = 1,  ///< Dark mushrooms inside of the cave
 };
 
 /// @brief The base class for a mushroom object with jump pad properties
+/// @details Implements a "pulse" scaling effect. Also defines a virtual oscillation function so
+/// that derived classes can have custom cyclic behavior.
 class ObjectKinoko : public ObjectKCL {
 public:
     ObjectKinoko(const System::MapdataGeoObj &params);
     ~ObjectKinoko() override;
 
     void calc() override;
+    [[nodiscard]] LoadFlags loadFlags() const override;
+    [[nodiscard]] const char *getKclName() const override;
 
-    /// @addr {0x80807DAC}
-    [[nodiscard]] LoadFlags loadFlags() const override {
-        return LoadFlags(eLoadFlags::Calc);
-    }
-
-    /// @addr{0x80807D8C}
-    [[nodiscard]] const char *getKclName() const override {
-        return m_type == KinokoType::Light ? "kinoko_r" : "kinoko_d_r";
-    }
-
+    /// @brief Updates the mushroom's position or rotation for its oscillation
     virtual void calcOscillation() = 0;
 
 protected:
-    KinokoType m_type;
-    const EGG::Vector3f m_objPos; // the initial position of the object
-    const EGG::Vector3f m_objRot; // the initial rotation of the object
-    s16 m_pulseFrame;
-    s16 m_restFrame;
-    f32 m_pulseFalloff;
-    u16 m_oscFrame;
+    const KinokoType m_type;       ///< The variant of mushroom object (light or dark)
+    const EGG::Vector3f m_initPos; ///< Initial position of the mushroom
+    const EGG::Vector3f m_initRot; ///< Initial rotation of the mushroom
+    s16 m_pulseFrame;              ///< Framecount used for the pulse sine wave
+    s16 m_restFrame;               ///< Number of frames the mushroom has been idling for
+    f32 m_pulseAmplitude;          ///< Amplitude of the pulse sine wave, decaying over the pulse
 };
 
 /// @brief Mushrooms which oscillate up and down. The stem does not move.
-/// @details This represents the first two mushrooms on MG, even though they don't oscillate up or
-/// down.
-class ObjectKinokoUd : public ObjectKinoko {
+/// @details This represents the first two mushrooms on Mushroom Gorge, even though they don't
+/// oscillate up or down.
+class ObjectKinokoUd final : public ObjectKinoko {
 public:
     ObjectKinokoUd(const System::MapdataGeoObj &params);
     ~ObjectKinokoUd() override;
 
+    [[nodiscard]] const char *getKclName() const override;
+
+    void calcScale(u32 timeOffset) override;
+
     void calcOscillation() override;
 
-    /// @addr{0x80807DFC}
-    /// @details The base game does check for the light type, however since m_type never gets set
-    /// it'll always be 0 which means it always returns "kinoko_r"
-    [[nodiscard]] const char *getKclName() const override {
-        return "kinoko_r";
-    }
-
-    /// @addr{0x80807DF8}
-    void calcScale(u32) override {}
-
 private:
-    u16 m_waitFrame;
-    s16 m_period;
-    s16 m_waitDuration;
-    s16 m_amplitude;
-    f32 m_angFreq;
+    u16 m_oscFrame;     ///< Current frame of the oscillation
+    u16 m_waitFrame;    ///< How long the mushroom has paused in the middle of its oscillation cycle
+    const s16 m_period; ///< Total oscillation period
+    const s16 m_waitDuration; ///< How long to pause at its lowest point in the cycle
+    const s16 m_amplitude;    ///< Maximum vertical displacement above the initial Y position
+    const f32 m_angFreq;      ///< Angular frequency of the oscillation cosine wave
 };
 
 /// @brief Mushrooms which bend in a certain direction
-/// @details This functionality didn't get used in the base game?
-class ObjectKinokoBend : public ObjectKinoko {
+/// @details Several red mushrooms throughout Mushroom Gorge are instances of this class, but the
+/// bending functionality is not used in the base game.
+class ObjectKinokoBend final : public ObjectKinoko {
 public:
     ObjectKinokoBend(const System::MapdataGeoObj &params);
     ~ObjectKinokoBend() override;
+
+    void calcScale(u32 timeOffset) override;
+
     void calcOscillation() override;
 
-    /// @addr{0x80807D88}
-    void calcScale(u32) override {}
-
 private:
-    s16 m_currentFrame;
-    s16 m_period;
-    f32 m_amplitude;
-    f32 m_angFreq;
+    s16 m_currentFrame;    ///< Current frame within the bend animation cycle
+    const s16 m_period;    ///< Total framecount of the animation cycle
+    const f32 m_amplitude; ///< Max bend angle in radians
+    const f32 m_angFreq;   ///< Angular frequency of the bend sine wave
 };
 
-/// @brief The class for a mushroom object with normal road properties, for the most part
-class ObjectKinokoNm : public ObjectKCL {
+/// @brief Green mushrooms with normal road properties, for the most part
+class ObjectKinokoNm final : public ObjectKCL {
 public:
     ObjectKinokoNm(const System::MapdataGeoObj &params);
     ~ObjectKinokoNm() override;
 
-    /// @addr{0x80827A74}
-    [[nodiscard]] const char *getKclName() const override {
-        return m_type == KinokoType::Light ? "kinoko_g" : "kinoko_d_g";
-    }
+    [[nodiscard]] const char *getKclName() const override;
 
 private:
-    KinokoType m_type;
+    const KinokoType m_type; ///< The variant of mushroom object (light or dark)
 };
 
 } // namespace Kinoko::Field
