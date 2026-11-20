@@ -4,7 +4,7 @@
 #include "game/field/RailInterpolator.hh"
 #include "game/field/obj/ObjectSniper.hh"
 
-#include <string>
+#include <cstring>
 
 namespace Kinoko::Field {
 
