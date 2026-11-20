@@ -1,13 +1,16 @@
 #pragma once
 
-#include "game/field/obj/ObjectCollidable.hh"
+#include <Types.hh>
+
+#include "game/field/obj/ObjectItemboxBlock.hh"
 
 namespace Kinoko::Field {
 
-class ObjectItemboxPress;
-
-/// @brief Object which represents a line of itemboxes, a brick block which may be pressed into an
-/// itembox, and a stomper. The stomper is held and managed by @ref ObjectItemboxPress.
+/// @brief Object which represents a line of itemboxes, brick blocks which may be pressed into an
+/// itembox, and a stomper.
+/// @details The stomper is managed by @ref ObjectItemboxBlock. Since we only implement the
+/// components relevant to Time Trial mode in Kinoko, the itemboxes and bricks are not implemented
+/// in full - only the stomper-related logic.
 class ObjectItemboxLine final : public ObjectCollidable {
 public:
     ObjectItemboxLine(const System::MapdataGeoObj &params);
@@ -15,16 +18,13 @@ public:
 
     void init() override;
     void calc() override;
-
-    /// @addr{0x8076E9BC}
-    [[nodiscard]] LoadFlags loadFlags() const override {
-        return LoadFlags(eLoadFlags::Calc);
-    }
+    [[nodiscard]] LoadFlags loadFlags() const override;
 
 private:
-    owning_span<ObjectItemboxPress *> m_press;
-    u32 m_stompCooldown; ///< Number of frames in between stomps
-    u32 m_curPressIdx;
+    owning_span<ObjectItemboxBlock *> m_blocks; ///< Array of itembox/block objects
+    u32 m_spawnCooldown;               ///< Number of frames until next itembox/block spawns
+    u32 m_curBlockIdx;                 ///< Index of the next block to spawn
+    const u32 m_spawnCooldownDuration; ///< Total framecount between itembox/block spawns
 };
 
 } // namespace Kinoko::Field
