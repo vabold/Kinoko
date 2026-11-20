@@ -6,39 +6,43 @@ namespace Kinoko::Field {
 
 class ObjectCarTGE;
 
-class ObjectHighwayManager : public ObjectCollidable {
+/// @brief Watcher class that checks if any car has squashed the player
+/// @details Maintains a squash cooldown via @ref m_squashTimer, which is used by @ref ObjectCarTGE
+/// objects to determine if the player can be squashed again.
+class ObjectHighwayManager final : public ObjectCollidable {
 public:
     ObjectHighwayManager();
     ~ObjectHighwayManager() override;
 
     void init() override;
     void calc() override;
+    void loadGraphics() override;
+    void createCollision() override;
+    void loadRail() override;
+    [[nodiscard]] LoadFlags loadFlags() const override;
 
-    /// @addr{0x806D5C6C}
-    [[nodiscard]] LoadFlags loadFlags() const override {
-        return LoadFlags(eLoadFlags::Calc);
-    }
+    /// @beginGetters
 
-    /// @addr{0x806D5C68}
-    void loadGraphics() override {}
-
-    /// @addr{0x806D5C60}
-    void createCollision() override {}
-
-    /// @addr{0x806D5C64}
-    void loadRail() override {}
-
+    /// @brief Gets the number of frames since the last squash occurred from any managed car/truck
+    /// object, capped at @ref SQUASH_MAX
+    /// @return The number of frames since the last squash occurred, @ref m_squashTimer
     [[nodiscard]] u32 squashTimer() const {
         return m_squashTimer;
     }
 
+    /// @endGetters
+
 private:
     void calcSquash();
 
-    owning_span<ObjectCarTGE *> m_cars;
-    u32 m_squashTimer; ///< Normally an array, one for each player.
+    owning_span<ObjectCarTGE *> m_cars; ///< Pointers to all car/truck objects
 
-    static constexpr u32 SQUASH_MAX = 600;
+    /// @brief Frames since last squash
+    /// @note In the base game, this is normally an array of timers, one for each player. For
+    /// Kinoko, we can simplify since we only implement time trials.
+    u32 m_squashTimer;
+
+    static constexpr u32 SQUASH_MAX = 600; ///< Squash timer cap
 };
 
 } // namespace Kinoko::Field
