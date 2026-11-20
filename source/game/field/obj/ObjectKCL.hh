@@ -5,6 +5,11 @@
 
 namespace Kinoko::Field {
 
+/// @brief Base class that represents a drivable object with KCL collision data
+/// @details Rather than representing an object's collision with @ref ObjectCollisionBase and
+/// leveraging the GJK algorithm for collision detection, classes inheriting from @ref ObjectKCL use
+/// KCL files to define their collision geometry. Derived classes can define their own collision
+/// behavior and interactions with the KCL data.
 class ObjectKCL : public ObjectDrivable {
 public:
     ObjectKCL(const System::MapdataGeoObj &params);
@@ -12,18 +17,10 @@ public:
 
     void createCollision() override;
     void calcCollisionTransform() override;
-
-    /// @addr{0x80681448}
-    [[nodiscard]] const EGG::Vector3f &getPosition() const override {
-        return m_kclMidpoint;
-    }
-
-    /// @addr{0x80687D70}
-    f32 getCollisionRadius() const override {
-        return m_bboxHalfSideLength + colRadiusAdditionalLength();
-    }
-
     void initCollision() override;
+    [[nodiscard]] const EGG::Vector3f &getPosition() const override;
+    [[nodiscard]] f32 getCollisionRadius() const override;
+
     [[nodiscard]] bool checkPointPartial(const EGG::Vector3f &pos, const EGG::Vector3f &prevPos,
             KCLTypeMask mask, CollisionInfoPartial *info, KCLTypeMask *maskOut) override;
     [[nodiscard]] bool checkPointPartialPush(const EGG::Vector3f &pos, const EGG::Vector3f &prevPos,
@@ -32,6 +29,7 @@ public:
             KCLTypeMask mask, CollisionInfo *info, KCLTypeMask *maskOut) override;
     [[nodiscard]] bool checkPointFullPush(const EGG::Vector3f &pos, const EGG::Vector3f &prevPos,
             KCLTypeMask mask, CollisionInfo *info, KCLTypeMask *maskOut) override;
+
     [[nodiscard]] bool checkSpherePartial(f32 radius, const EGG::Vector3f &pos,
             const EGG::Vector3f &prevPos, KCLTypeMask mask, CollisionInfoPartial *info,
             KCLTypeMask *maskOut, u32 timeOffset) override;
@@ -44,8 +42,10 @@ public:
     [[nodiscard]] bool checkSphereFullPush(f32 radius, const EGG::Vector3f &pos,
             const EGG::Vector3f &prevPos, KCLTypeMask mask, CollisionInfo *info,
             KCLTypeMask *maskOut, u32 timeOffset) override;
+
     void narrScLocal(f32 radius, const EGG::Vector3f &pos, KCLTypeMask mask,
             u32 timeOffset) override;
+
     [[nodiscard]] bool checkPointCachedPartial(const EGG::Vector3f &pos,
             const EGG::Vector3f &prevPos, KCLTypeMask mask, CollisionInfoPartial *info,
             KCLTypeMask *maskOut) override;
@@ -57,6 +57,7 @@ public:
     [[nodiscard]] bool checkPointCachedFullPush(const EGG::Vector3f &pos,
             const EGG::Vector3f &prevPos, KCLTypeMask mask, CollisionInfo *info,
             KCLTypeMask *maskOut) override;
+
     [[nodiscard]] bool checkSphereCachedPartial(f32 radius, const EGG::Vector3f &pos,
             const EGG::Vector3f &prevPos, KCLTypeMask mask, CollisionInfoPartial *info,
             KCLTypeMask *maskOut, u32 timeOffset) override;
@@ -72,38 +73,10 @@ public:
 
     virtual void update(u32 timeOffset);
     virtual void calcScale(u32 timeOffset);
-
-    /// @addr{0x80681450}
-    virtual void setMovingObjVel(const EGG::Vector3f &v) {
-        m_objColMgr->setMovingObjVel(v);
-    }
-
-    /// @addr{0x807FEAC0}
-    [[nodiscard]] virtual const EGG::Matrix34f &getUpdatedMatrix(u32 /*timeOffset*/) {
-        calcTransform();
-        return transform();
-    }
-
-    /// @addr{0x80687DB0}
-    [[nodiscard]] virtual f32 getScaleY(u32 /* timeOffset */) const {
-        return scale().y;
-    }
-
-    /// @addr{0x8068143C}
-    [[nodiscard]] virtual f32 colRadiusAdditionalLength() const {
-        return 0.0f;
-    }
-
-    /// @addr{0x0x806808EC}
-    [[nodiscard]] virtual bool shouldCheckColNoPush() const {
-        return true;
-    }
-
-    /// @addr{0x806809F8}
-    [[nodiscard]] virtual bool shouldCheckColPush() const {
-        return true;
-    }
-
+    virtual void setMovingObjVel(const EGG::Vector3f &v);
+    [[nodiscard]] virtual const EGG::Matrix34f &getUpdatedMatrix(u32 timeOffset);
+    [[nodiscard]] virtual f32 getScaleY(u32 timeOffset) const;
+    [[nodiscard]] virtual f32 colRadiusAdditionalLength() const;
     [[nodiscard]] virtual bool checkCollision(f32 radius, const EGG::Vector3f &pos,
             const EGG::Vector3f &prevPos, KCLTypeMask mask, CollisionInfo *info,
             KCLTypeMask *maskOut, u32 timeOffset);
@@ -112,10 +85,16 @@ public:
             KCLTypeMask *maskOut, u32 timeOffset);
 
 protected:
-    ObjColMgr *m_objColMgr;
-    EGG::Vector3f m_kclMidpoint;
-    f32 m_bboxHalfSideLength;
+    ObjColMgr *m_objColMgr;      ///< Collision manager for the object's KCL data
+    EGG::Vector3f m_kclMidpoint; ///< The midpoint of the KCL's bounding box
+    f32 m_bboxHalfSideLength;    ///< Half of the KCL's bounding box width
+
+    /// @brief Frame of most recent collision transform update
+    /// @details Used to avoid redundant matrix calculations within the same frame.
     s32 m_lastMtxUpdateFrame;
+
+    /// @brief Frame of most recent scale update
+    /// @details Used to keep the scale frame in sync with the matrix update frame.
     s32 m_lastScaleUpdateFrame;
 };
 
