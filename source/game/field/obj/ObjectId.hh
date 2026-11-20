@@ -6,7 +6,7 @@ namespace Kinoko::Field {
 
 /// @brief Unique identifiers for each object
 /// @note Even though @ref ObjectId::Itembox is also defined in @ref BlacklistedObjectId, it is
-/// still included here so that @ref ObjectItemboxPress::id() can return it for completeness.
+/// still included here so that @ref ObjectItemboxBlock::id() can return it for completeness.
 enum class ObjectId {
     None = 0x0,              ///< Represents the absence of an object
     Psea = 0x2,              ///< The GCN Peach Beach rising water
