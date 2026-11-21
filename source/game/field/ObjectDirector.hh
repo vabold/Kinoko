@@ -4,7 +4,6 @@
 #include "game/field/ObjectFlowTable.hh"
 #include "game/field/ObjectHitTable.hh"
 #include "game/field/obj/ObjectCollidable.hh"
-#include "game/field/obj/ObjectNoImpl.hh"
 
 #include <egg/core/Allocator.hh>
 
