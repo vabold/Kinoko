@@ -161,8 +161,8 @@ private:
     std::span<const RailLineTransition> m_transitions;
 
     /// @brief The length of @ref m_currentDirection
-    /// @details Kinoko-specific optimization. @ref setSpeed() is called every frame when using
-    /// per-point velocities, so we cache the length rather than recomputing it each time.
+    /// @details OPT: @ref setSpeed() is called every frame when using per-point velocities, so we
+    /// cache the length rather than recomputing it each time.
     f32 m_segmentLength;
 };
 
@@ -176,8 +176,8 @@ public:
     void setCurrVel(f32 speed) override;
 
     /// @addr{0x806EF93C}
-    /// @details As a Kinoko-specific optimization, @ref m_velocity calculation is deferred until
-    /// this function is called, since few objects actually read the current velocity.
+    /// @details OPT: @ref m_velocity calculation is deferred until this function is called, since
+    /// few objects actually read the current velocity.
     [[nodiscard]] f32 getCurrVel() override {
         if (m_velocityPending) {
             m_velocityPending = false;
@@ -212,8 +212,8 @@ private:
     f32 m_velocity;
 
     /// @brief Whether @ref m_velocity needs to be recomputed from @ref m_curPos and @ref m_prevPos
-    /// @details Kinoko-specific optimization. Few objects read @ref getCurrSpeed(), so @ref calc()
-    /// defers computing @ref m_velocity until it is read.
+    /// @details OPT: Few objects read @ref getCurrSpeed(), so @ref calc() defers computing @ref
+    /// m_velocity until it is read.
     bool m_velocityPending;
 };
 

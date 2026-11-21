@@ -14,8 +14,8 @@ KartBody::KartBody(KartPhysics *physics) : m_physics(physics) {
 /// @addr{0x8056C604}
 /// @brief Computes a matrix to represent wheel rotation. For Karts, this is wheel-agnostic.
 /// @param bodyMat The kart's rotation and position matrix
-/// @details For Kinoko, we introduce a performance optimization by having the caller compute
-/// `bodyMat` once for all wheels, rather than recomputing on each `wheelMatrix` call.
+/// @details OPT: We have the caller compute `bodyMat` once for all wheels, rather than recomputing
+/// on each `wheelMatrix` call.
 EGG::Matrix34f KartBody::wheelMatrix(u16, const EGG::Matrix34f &bodyMat) {
     return bodyMat;
 }
@@ -68,8 +68,8 @@ KartBodyBike::~KartBodyBike() {
 /// @brief Computes a matrix to represent the rotation of a wheel.
 /// @details For the front wheel, we factor in the handlebar rotation.
 /// For the rear wheel, we only factor in the kart's rotation.
-/// For Kinoko, we introduce a performance optimization by having the caller compute `bodyMat`
-/// once for all wheels, rather than recomputing on each `wheelMatrix` call.
+/// OPT: We have the caller compute `bodyMat` once for all wheels, rather than recomputing on each
+/// `wheelMatrix` call.
 /// @param wheelIdx 0 for front wheel, 1 for rear wheel
 /// @param bodyMat The kart's rotation and position matrix
 EGG::Matrix34f KartBodyBike::wheelMatrix(u16 wheelIdx, const EGG::Matrix34f &bodyMat) {
@@ -99,8 +99,8 @@ KartBodyQuacker::KartBodyQuacker(KartPhysics *physics) : KartBodyBike(physics) {
 KartBodyQuacker::~KartBodyQuacker() = default;
 
 /// @param bodyMat The kart's rotation and position matrix
-/// @details For Kinoko, we introduce a performance optimization by having the caller compute
-/// `bodyMat` once for all wheels, rather than recomputing on each `wheelMatrix` call.
+/// @details OPT: We have the caller compute `bodyMat` once for all wheels, rather than recomputing
+/// on each `wheelMatrix` call.
 EGG::Matrix34f KartBodyQuacker::wheelMatrix(u16 /* wheelIdx */, const EGG::Matrix34f &bodyMat) {
     return bodyMat;
 }

@@ -442,8 +442,7 @@ EGG::Vector3f RailSmoothInterpolator::calcCubicBezierTangentDir(f32 t,
 }
 
 /// @addr{0x806EF0F8}
-/// @note For Kinoko, we introduce a slight performance improvement by early returning once the
-/// correct segment is found.
+/// @note OPT: We improve performance by early returning once the correct segment is found.
 f32 RailSmoothInterpolator::calcT(f32 t) const {
     constexpr u32 ESTIMATOR_SAMPLE_COUNT = RailSpline::getEstimatorSampleCount();
     constexpr f32 ESTIMATOR_STEP = RailSpline::getEstimatorStep();

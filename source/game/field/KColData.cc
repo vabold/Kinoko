@@ -289,9 +289,9 @@ EGG::Vector3f KColData::GetVertex(f32 height, const EGG::Vector3f &vertex1,
 }
 
 /// @brief Resolves each prism's vertex, height, and normal indices into a contiguous struct
-/// @details This is a performance optimization for Kinoko to avoid having to byteswap and index
-/// several different arrays to fetch a prism's geometry. Memory cost is 64 bytes per prism for the
-/// geometry plus 2 bytes per prism for the attribute, which is at worst ~690KB (for Maple Treeway).
+/// @details OPT: This allows us to avoid having to byteswap and index several different arrays to
+/// fetch a prism's geometry. Memory cost is 64 bytes per prism for the geometry plus 2 bytes per
+/// prism for the attribute, which is at worst ~690KB (for Maple Treeway).
 void KColData::preloadPrismGeometry() {
     size_t prismCount =
             (reinterpret_cast<uintptr_t>(m_blockData) - reinterpret_cast<uintptr_t>(m_prismData)) /
