@@ -2,33 +2,34 @@
 
 #include "game/field/obj/ObjectBase.hh"
 
-#include <egg/math/BoundBox.hh>
-
 namespace Kinoko::Field {
 
-class ObjectObakeBlock : public ObjectBase {
+/// @brief Represents a falling block on SNES Ghost Valley 2
+/// @details Most @ref ObjectBase virtual functions are no-ops because collision is handled by @ref
+/// ObjectObakeManager, which manages the lifecycle of these blocks in a spatially indexed cache.
+/// The block's second and third param settings define the number of seconds and additional frames
+/// to wait before falling. If these are both zero, then the block never falls.
+class ObjectObakeBlock final : public ObjectBase {
 public:
+    /// @brief Represents the current state of the block in its falling lifecycle
     enum class FallState {
-        Rest = 0,
-        Falling = 1,
-        FinishedFalling = 2,
+        Rest = 0,            ///< The block is stationary and has not yet started falling
+        Falling = 1,         ///< The block is currently falling
+        FinishedFalling = 2, ///< The block has finished falling and is now stationary
     };
 
     ObjectObakeBlock(const System::MapdataGeoObj &params);
     ~ObjectObakeBlock() override;
 
     void calc() override;
-
-    /// @addr{0x8080BDE0}
-    void load() override {}
-
-    /// @addr{0x8080BDDC}
-    void createCollision() override {}
-
-    /// @addr{0x8080BDD4}
-    void calcCollisionTransform() override {}
+    void load() override;
+    void createCollision() override;
+    void calcCollisionTransform() override;
 
     /// @beginSetters
+
+    /// @brief Sets the block's fall state
+    /// @param state The new fall state to set for the block
     void setFallState(FallState state) {
         m_fallState = state;
     }
@@ -36,10 +37,15 @@ public:
     /// @endSetters
 
     /// @beginGetters
+
+    /// @brief Gets the block's current fall state
+    /// @return The current fall state of the block, @ref m_fallState
     [[nodiscard]] FallState fallState() const {
         return m_fallState;
     }
 
+    /// @brief Gets the frame the block starts falling, or zero if the block never falls
+    /// @return The value of @ref m_fallFrame
     [[nodiscard]] s32 fallFrame() const {
         return m_fallFrame;
     }
@@ -47,13 +53,12 @@ public:
     /// @endGetters
 
 private:
-    const EGG::Vector3f m_initialPos; ///< Position is computed relative to initialPos.
-    FallState m_fallState;
-    s32 m_framesFallen; ///< How long the block has been falling for, capped at 256.
-    EGG::Vector3f m_fallVel;
-    EGG::Vector3f m_fallAngVel;
-    EGG::BoundBox3f m_bbox;
-    s32 m_fallFrame; ///< Frame the block starts falling, or 0 if it never falls.
+    const EGG::Vector3f m_initPos; ///< Initial position of the block
+    FallState m_fallState;         ///< Current state of the block in its falling lifecycle
+    s32 m_framesFallen;            ///< How long the block has been falling for, capped at 256
+    EGG::Vector3f m_xzFallVel;     ///< Lateral velocity while the block is falling
+    EGG::Vector3f m_fallAngVel;    ///< Angular velocity while the block is falling
+    const s32 m_fallFrame;         ///< Frame the block starts falling, or 0 if it never falls
 };
 
 } // namespace Kinoko::Field

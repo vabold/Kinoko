@@ -1,44 +1,32 @@
 #pragma once
 
-#include "game/field/ObjectCollisionBox.hh"
-#include "game/field/ObjectCollisionSphere.hh"
+#include <Types.hh>
+
 #include "game/field/obj/ObjectDrivable.hh"
-#include "game/field/obj/ObjectObakeBlock.hh"
-
-#include "game/system/map/MapdataGeoObj.hh"
-
-#include <egg/core/Allocator.hh>
-
-#include <vector>
 
 namespace Kinoko::Field {
 
-/// @brief The manager class for SNES Ghost Valley 2 blocks.
+class ObjectObakeBlock;
+class ObjectCollisionBox;
+class ObjectCollisionSphere;
+
+/// @brief The manager class for SNES Ghost Valley 2 blocks
 /// @details Blocks are constructed via this manager. When blocks are added, they're placed in a
 /// spatially-indexed cache, which reduces the number of collision checks the game would have to
-/// perform if blocks were managed like normal objects.
-class ObjectObakeManager : public ObjectDrivable {
+/// perform if blocks were managed like normal objects. When a collision check occurs, the manager
+/// uses the cache to find the blocks that require collision checks.
+class ObjectObakeManager final : public ObjectDrivable {
 public:
     ObjectObakeManager(const System::MapdataGeoObj &params);
     ~ObjectObakeManager() override;
 
     void calc() override;
+    void createCollision() override;
+    void calcCollisionTransform() override;
+    [[nodiscard]] LoadFlags loadFlags() const override;
+    [[nodiscard]] f32 getCollisionRadius() const override;
 
-    /// @addr{0x8080BE9C}
-    [[nodiscard]] LoadFlags loadFlags() const override {
-        return LoadFlags(eLoadFlags::Calc, eLoadFlags::Draw);
-    }
-
-    /// @addr{0x8080BE98}
-    void createCollision() override {}
-
-    /// @addr{0x8080BE94}
-    void calcCollisionTransform() override {}
-
-    /// @addr{0x8080BE84}
-    [[nodiscard]] f32 getCollisionRadius() const override {
-        return 100000.0f;
-    }
+    /// @beginPublicColCheckFuncs
 
     [[nodiscard]] bool checkPointPartial(const EGG::Vector3f &pos, const EGG::Vector3f &prevPos,
             KCLTypeMask mask, CollisionInfoPartial *info, KCLTypeMask *maskOut) override;
@@ -87,43 +75,54 @@ public:
             const EGG::Vector3f &prevPos, KCLTypeMask mask, CollisionInfo *info,
             KCLTypeMask *maskOut, u32 timeOffset) override;
 
+    /// @endPublicColCheckFuncs
+
     void addBlock(const System::MapdataGeoObj &params);
 
 private:
-    static constexpr size_t CACHE_SIZE_X = 122;
-    static constexpr size_t CACHE_SIZE_Z = 116;
-    static constexpr f32 SPECIAL_WALL_BOUNDING_RADIUS = 85.0f;
-    static constexpr EGG::Vector3f SPECIAL_WALL_SCALE = EGG::Vector3f(1.0f, 1.1f, 1.0f);
-    static constexpr EGG::Vector3f ROAD_SCALE = EGG::Vector3f(1.0f, 0.95f, 1.0f);
+    static constexpr size_t CACHE_SIZE_X = 122;        ///< Width of the spatial cache
+    static constexpr size_t CACHE_SIZE_Z = 116;        ///< Depth of the spatial cache
+    static constexpr f32 WALL_BOUNDING_RADIUS = 85.0f; ///< Radius of a block's GJK collision box
+
+    /// @beginPrivateColCheckFuncs
 
     [[nodiscard]] bool checkSpherePartialImpl(f32 radius, const EGG::Vector3f &pos,
-            const EGG::Vector3f &prevPos, KCLTypeMask mask, CollisionInfoPartial *info,
-            KCLTypeMask *maskOut);
+            KCLTypeMask mask, CollisionInfoPartial *info, KCLTypeMask *maskOut);
     [[nodiscard]] bool checkSpherePartialPushImpl(f32 radius, const EGG::Vector3f &pos,
-            const EGG::Vector3f &prevPos, KCLTypeMask mask, CollisionInfoPartial *info,
-            KCLTypeMask *maskOut);
-    [[nodiscard]] bool checkSphereFullImpl(f32 radius, const EGG::Vector3f &pos,
-            const EGG::Vector3f &prevPos, KCLTypeMask mask, CollisionInfo *info,
-            KCLTypeMask *maskOut);
+            KCLTypeMask mask, CollisionInfoPartial *info, KCLTypeMask *maskOut);
+    [[nodiscard]] bool checkSphereFullImpl(f32 radius, const EGG::Vector3f &pos, KCLTypeMask mask,
+            CollisionInfo *info, KCLTypeMask *maskOut);
     [[nodiscard]] bool checkSphereFullPushImpl(f32 radius, const EGG::Vector3f &pos,
-            const EGG::Vector3f &prevPos, KCLTypeMask mask, CollisionInfo *info,
-            KCLTypeMask *maskOut);
+            KCLTypeMask mask, CollisionInfo *info, KCLTypeMask *maskOut);
 
-    [[nodiscard]] static std::pair<s32, s32> SpatialIndex(const EGG::Vector3f &pos);
+    template <typename T>
+        requires std::is_same_v<T, CollisionInfo> || std::is_same_v<T, CollisionInfoPartial>
+    [[nodiscard]] bool checkSphereImpl(f32 radius, const EGG::Vector3f &pos, KCLTypeMask mask,
+            T *info, KCLTypeMask *maskOut, bool push);
 
-    ObjectCollisionBox *m_colBox;       ///< Represents hitbox of a particular block
-    ObjectCollisionSphere *m_colSphere; ///< Represents a kart hitbox
+    /// @endPrivateColCheckFuncs
 
-    /// Spatially-indexed array of blocks for faster collision lookups.
+    ObjectCollisionBox *m_colBox;       ///< The hitbox of the block to check collision against
+    ObjectCollisionSphere *m_colSphere; ///< The kart hitbox to check collision against
+
+    /// @brief Spatially-indexed 122-by-116 array of blocks for faster collision lookups
     std::array<std::array<ObjectObakeBlock *, CACHE_SIZE_X>, CACHE_SIZE_Z> m_blockCache;
 
-    /// @brief All blocks
+    /// @brief Vector of all blocks
     /// @details OPT: Sorted by the frame each block starts falling, with blocks that
     /// never fall placed last. This way, the falling blocks are always the first @ref
     /// m_fallingBlockCount blocks, so the base game's separate array of falling blocks isn't
     /// needed, and @ref calc() only checks the blocks that are next to fall.
     fixed_vector<ObjectObakeBlock *> m_blocks;
-    size_t m_fallingBlockCount; ///< Number of blocks at the start of @ref m_blocks that are falling
+    size_t m_fallingBlockCount; ///< Number of blocks that have started falling
+
+    [[nodiscard]] static std::pair<s32, s32> SpatialIndex(const EGG::Vector3f &pos);
+
+    /// @brief Scale of a block's wall collision
+    static constexpr EGG::Vector3f WALL_SCALE = EGG::Vector3f(1.0f, 1.1f, 1.0f);
+
+    /// @brief Scale of a block's road collision
+    static constexpr EGG::Vector3f ROAD_SCALE = EGG::Vector3f(1.0f, 0.95f, 1.0f);
 
     static constexpr size_t MAX_BLOCKS = 656; ///< Allocated size of m_blocks
 };
