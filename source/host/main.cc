@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <array>
 #include <string_view>
-#include <utility>
 
 using namespace Kinoko;
 
@@ -25,11 +24,17 @@ static void FlushDenormalsToZero() {
 }
 #endif
 
-using ModeEntry = std::pair<std::string_view, KSystem *(*)()>;
+struct ModeEntry {
+    std::string_view name;
+    std::string_view description;
+    KSystem *(*create)();
+};
 
 static constexpr std::array<ModeEntry, 2> MODE_MAP = {{
-        {"test", []() -> KSystem * { return KTestSystem::CreateInstance(); }},
-        {"replay", []() -> KSystem * { return KReplaySystem::CreateInstance(); }},
+        {"test", "Validate ghosts frame-by-frame against reference data",
+                []() -> KSystem * { return KTestSystem::CreateInstance(); }},
+        {"replay", "Replay a ghost and verify its pre-lap and final race times",
+                []() -> KSystem * { return KReplaySystem::CreateInstance(); }},
 }};
 
 static void *s_memorySpace = nullptr;
@@ -44,24 +49,94 @@ static void InitMemory() {
     EGG::SceneManager::SetRootHeap(s_rootHeap);
 }
 
+static void PrintHelp() {
+    printf("Usage: kinoko <mode> [options]\n"
+           "       kinoko help [mode]\n"
+           "\n"
+           "Modes:\n");
+
+    for (const auto &entry : MODE_MAP) {
+        printf("  %-8.*s%.*s\n", static_cast<int>(entry.name.size()), entry.name.data(),
+                static_cast<int>(entry.description.size()), entry.description.data());
+    }
+
+    printf("\n"
+           "Options:\n"
+           "  -h, --help  Show this help message\n"
+           "\n"
+           "Run 'kinoko <mode> --help' for mode-specific options.\n"
+           "\n"
+           "Environment Variables:\n"
+           "  KINOKO_FILESYSTEM_ROOT  Directory containing the game's filesystem's Race folder\n"
+           "                          (defaults to the current working directory)\n");
+}
+
+static bool IsHelpFlag(const char *arg) {
+    return Host::Option::CheckFlag(arg) == Host::EOption::Help;
+}
+
+static const ModeEntry *FindMode(std::string_view mode) {
+    auto it = std::ranges::find(MODE_MAP, mode, &ModeEntry::name);
+    return it != MODE_MAP.end() ? &*it : nullptr;
+}
+
+/// @brief Handles `kinoko help [mode]`.
+/// @param argc The number of arguments after "help".
+/// @param argv The arguments after "help".
+/// @return The process exit code.
+static int RunHelp(int argc, char **argv) {
+    if (argc < 1) {
+        PrintHelp();
+        return 0;
+    }
+
+    const ModeEntry *entry = FindMode(argv[0]);
+    if (!entry) {
+        printf("Error: Invalid mode '%s'!\n\n", argv[0]);
+        PrintHelp();
+        return 1;
+    }
+
+    entry->create()->printHelp();
+    return 0;
+}
+
 int main(int argc, char **argv) {
     FlushDenormalsToZero();
     InitMemory();
 
     if (argc < 2) {
-        PANIC("Too few arguments!");
+        PrintHelp();
+        return 1;
     }
 
     // The first argument is the executable, so we ignore it
     // The second argument is the mode
     const std::string_view mode = argv[1];
 
-    auto it = std::ranges::find(MODE_MAP, mode, &ModeEntry::first);
-    if (it == MODE_MAP.end()) {
-        PANIC("Invalid mode!");
+    if (IsHelpFlag(argv[1])) {
+        PrintHelp();
+        return 0;
     }
 
-    KSystem *sys = it->second();
+    if (mode == "help") {
+        return RunHelp(argc - 2, argv + 2);
+    }
+
+    const ModeEntry *entry = FindMode(mode);
+    if (!entry) {
+        printf("Error: Invalid mode '%s'!\n\n", argv[1]);
+        PrintHelp();
+        return 1;
+    }
+
+    KSystem *sys = entry->create();
+
+    if (std::any_of(argv + 2, argv + argc, IsHelpFlag)) {
+        sys->printHelp();
+        return 0;
+    }
+
     sys->parseOptions(argc - 2, argv + 2);
     sys->init();
     return sys->run() ? 0 : 1;
