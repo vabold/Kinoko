@@ -113,7 +113,7 @@ ObjectBase::LoadFlags ObjectKoopaBall::loadFlags() const {
 /// @copybrief ObjectCollidable::onCollision()
 /// @param reactionOnKart The reaction that should be applied to the kart upon collision
 /// @return @ref Kart::Reaction::ExplosionLoseItem if the fireball is exploding, otherwise @ref
-/// Kart::Reaction::Sideways.
+/// Kart::Reaction::LaunchSpin.
 /// @details Throws the player upwards and removes items if the fireball is exploding, otherwise
 /// the player will flip sideways without losing their item.
 Kart::Reaction ObjectKoopaBall::onCollision(Kart::KartObject * /*kartObj*/,
