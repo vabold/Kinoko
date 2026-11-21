@@ -89,7 +89,7 @@ const char *ObjectHwanwan::getKclName() const {
 /// @param kartObj The kart object that collided with this object
 /// @param reactionOnKart The reaction that should be applied to the kart upon collision
 /// @return @ref Kart::Reaction::WallAllSpeed if the player's speed is under 50%, otherwise @ref
-/// Kart::Reaction::LaunchAwayFlipTwice.
+/// Kart::Reaction::KnockbackBumpLoseItem.
 /// @details Chain Chomps act like a wall when the kart is driving under 50% of its base speed.
 Kart::Reaction ObjectHwanwan::onCollision(Kart::KartObject *kartObj, Kart::Reaction reactionOnKart,
         Kart::Reaction /*reactionOnObj*/, EGG::Vector3f & /*hitDepth*/) {
