@@ -141,5 +141,5 @@ Any commits should be formatted using the project's clang-format file.
 
 - [Kinoko Discord](https://discord.gg/qjt66ptQde) - Discuss development, offer suggestions, and more!
 - [MKW-SP Discord](https://discord.gg/TPSKtyKgqD) - Request Ghidra server access and chat with contributors.
-- [Matching Decompilation](https://github.com/riidefi/mkw) - A repository that compiles back into the game's original assembly.
-- [Tockdom](http://wiki.tockdom.com/wiki/Main_Page) - A wiki maintained by multiple community members, most notably used for file formats.
+- [Matching Decompilation](https://github.com/doldecomp/mkw) - A repository that compiles back into the game's original assembly.
+- [MKWiiki](https://mkwiiki.org/wiki/Main_Page) - A wiki maintained by multiple community members, most notably used for file formats.
