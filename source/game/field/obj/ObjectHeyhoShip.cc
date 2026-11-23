@@ -75,7 +75,7 @@ ObjectBase::LoadFlags ObjectHeyhoShip::loadFlags() const {
 /// should be launched from
 /// @return The index of the rail point from which to launch the cannonball, or -1 if no
 /// cannonball should be launched this frame.
-s16 ObjectHeyhoShip::launchPointIdx() {
+s16 ObjectHeyhoShip::launchPointIdx() const {
     return m_framesSinceLastLaunch == 0 ? m_railInterpolator->curPointIdx() : -1;
 }
 

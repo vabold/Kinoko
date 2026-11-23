@@ -23,7 +23,7 @@ public:
         return LoadFlags(eLoadFlags::Calc);
     }
 
-    [[nodiscard]] s16 launchPointIdx() override;
+    [[nodiscard]] s16 launchPointIdx() const override;
 
 private:
     /// @addr{0x806DE1C8}

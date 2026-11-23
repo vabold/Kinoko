@@ -17,7 +17,7 @@ public:
     void calc() override;
     [[nodiscard]] LoadFlags loadFlags() const override;
 
-    [[nodiscard]] s16 launchPointIdx() override;
+    [[nodiscard]] s16 launchPointIdx() const override;
 
     const EGG::Vector3f &initRailDir(u16 idx);
 

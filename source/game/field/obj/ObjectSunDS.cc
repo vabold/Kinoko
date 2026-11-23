@@ -37,7 +37,7 @@ void ObjectSunDS::calc() {
 }
 
 /// @addr{0x806DE598}
-s16 ObjectSunDS::launchPointIdx() {
+s16 ObjectSunDS::launchPointIdx() const {
     constexpr u16 THROW_DELAY = 30;
 
     if (m_currentStateId != 0 || THROW_DELAY != m_currentFrame) {
