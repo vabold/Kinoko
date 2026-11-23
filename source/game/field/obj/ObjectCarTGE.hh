@@ -79,7 +79,7 @@ private:
     char m_mdlName[32];                  ///< Model/KCL name
     CarType m_carType;                   ///< Car, truck, or bomb car
     ObjectId m_dummyId;                  ///< Dummy id (CarBody or KartTruck) used for hit reaction
-    EGG::Vector3f m_vel;                 ///< %Rail tangent scaled by current speed
+    EGG::Vector3f m_vel;                 ///< Rail tangent scaled by current speed
     f32 m_currSpeed;                     ///< Current speed of the vehicle along the rail
     EGG::Vector3f m_tangent;             ///< Smoothed forward direction along the rail
     bool m_squashed;                     ///< Set if this vehicle squashed player in last 200 frames
