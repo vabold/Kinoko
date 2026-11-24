@@ -4,6 +4,7 @@
 #include "game/field/RailInterpolator.hh"
 #include "game/field/RailManager.hh"
 #include "game/field/obj/ObjectHeyhoShip.hh"
+#include "game/field/obj/ObjectProjectile.hh"
 
 #include <cstring>
 

@@ -1,17 +1,20 @@
 #pragma once
 
-#include "game/field/obj/ObjectProjectile.hh"
-#include "game/field/obj/ObjectProjectileLauncher.hh"
+#include <Types.hh>
+
+#include "game/field/obj/ObjectCollidable.hh"
 
 namespace Kinoko::Field {
 
+class ObjectProjectile;
+class ObjectProjectileLauncher;
+
 /// @brief The base class for a manager object which is responsible for synchronizing a set of
 /// projectiles and a projectile launcher.
-/// @details In the base game, this is used for:
-/// - DS Desert Hills: The sun and FireSnakes
-/// - GBA Shy Guy Beach: The ship and the bombs
-/// Every frame, this class checks if the launcher is ready to spawn a projectile, and it maps
-/// between the launcher's current rail point and the corresponding projectile to launch.
+/// @details Every frame, this class checks if the launcher is ready to spawn a projectile, and it
+/// maps between the launcher's current rail point and the corresponding projectile to launch.
+/// Derived classes are expected to populate @ref m_projectiles and @ref m_launcher, and allocate
+/// @ref m_pointIdxs to the launcher's rail point count.
 class ObjectSniper : public ObjectCollidable {
 public:
     ObjectSniper();
@@ -19,24 +22,17 @@ public:
 
     void init() override;
     void calc() override;
-
-    /// @addr{0x806D2900}
-    [[nodiscard]] LoadFlags loadFlags() const override {
-        return LoadFlags(eLoadFlags::Calc);
-    }
-
-    /// @addr{0x806D28FC}
-    void loadGraphics() override {}
-
-    /// @addr{0x806D28F4}
-    void createCollision() override {}
-
-    /// @addr{0x806D28F8}
-    void loadRail() override {}
+    void loadGraphics() override;
+    void createCollision() override;
+    void loadRail() override;
+    [[nodiscard]] LoadFlags loadFlags() const override;
 
 protected:
-    owning_span<ObjectProjectile *> m_projectiles;
-    ObjectProjectileLauncher *m_launcher; // The rDH sun or the RSGB ship
+    owning_span<ObjectProjectile *> m_projectiles; ///< Pointers to the managed projectiles
+    ObjectProjectileLauncher *m_launcher;          ///< The object launching the projectiles
+
+    /// @brief Maps each launcher rail point index to the index of the projectile in @ref
+    /// m_projectiles to launch there, or `-1` if none
     owning_span<s16> m_pointIdxs;
 };
 
