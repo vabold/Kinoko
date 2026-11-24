@@ -1,58 +1,42 @@
 #pragma once
 
-#include "game/field/RailInterpolator.hh"
 #include "game/field/StateManager.hh"
 #include "game/field/obj/ObjectProjectileLauncher.hh"
 
 namespace Kinoko::Field {
 
-class ObjectSunDS : public ObjectProjectileLauncher, public StateManager {
+/// @brief Represents the sun on DS Desert Hills that launches @ref ObjectFireSnake projectiles
+/// @details Follows a rail, stopping for a duration specified by the rail point. @ref
+/// ObjectSunManager interfaces with this class via @ref launchPointIdx() to determine if a @ref
+/// ObjectFireSnake projectile should be launched.
+class ObjectSunDS final : public ObjectProjectileLauncher, private StateManager {
 public:
     ObjectSunDS(const System::MapdataGeoObj &params);
     ~ObjectSunDS() override;
 
-    /// @addr{0x806DDFD4}
-    void init() override {
-        m_stillDuration = 0;
-    }
-
+    void init() override;
     void calc() override;
-
-    /// @addr{0x806DE614}
-    [[nodiscard]] LoadFlags loadFlags() const override {
-        return LoadFlags(eLoadFlags::Calc);
-    }
-
+    [[nodiscard]] LoadFlags loadFlags() const override;
     [[nodiscard]] s16 launchPointIdx() const override;
 
 private:
-    /// @addr{0x806DE1C8}
-    void enterStill() {
-        m_railInterpolator->setCurrVel(0.0f);
-    }
+    void enterStill();
+    void enterRevolving();
 
-    /// @addr{0x806DE408}
-    void enterRevolving() {
-        m_railInterpolator->setCurrVel(m_revolutionSpeed);
-    }
+    void calcStill();
 
-    /// @addr{0x806DE1E4}
-    void calcStill() {
-        if (m_currentFrame >= m_stillDuration) {
-            m_nextStateId = 1;
-        }
-    }
-
-    /// @addr{0x806DE454}
-    void calcRevolving() {}
+    void calcRail();
+    void calcPos();
+    void checkStop();
 
     const f32 m_revolutionSpeed; ///< Speed of sun revolving around the course
     const s32 m_startFrame;      ///< The sun is inactive until this frame
     u32 m_stillDuration;         ///< How long the sun remains stationary for before moving again
 
+    /// @brief The enter and calc functions for each @ref StateManager entry
     static constexpr std::array<StateManagerEntry, 2> STATE_ENTRIES = {{
             {StateEntry<ObjectSunDS, &ObjectSunDS::enterStill, &ObjectSunDS::calcStill>(0)},
-            {StateEntry<ObjectSunDS, &ObjectSunDS::enterRevolving, &ObjectSunDS::calcRevolving>(1)},
+            {StateEntry<ObjectSunDS, &ObjectSunDS::enterRevolving, nullptr>(1)},
     }};
 };
 
