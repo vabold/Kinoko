@@ -10,7 +10,8 @@ namespace Kinoko::Field {
 /// @copybrief ObjectCollidable::ObjectCollidable(const System::MapdataGeoObj &)
 /// @param params The parameters used to initialize the object
 /// @details Sets @ref m_yVel to zero.
-ObjectSanbo::ObjectSanbo(const System::MapdataGeoObj &params) : ObjectCollidable(params) {
+ObjectSanbo::ObjectSanbo(const System::MapdataGeoObj &params)
+    : ObjectCollidable(params), m_initForward(calcInitForward()) {
     m_yVel = 0.0f;
 }
 
@@ -25,10 +26,6 @@ ObjectSanbo::~ObjectSanbo() = default;
 /// rail interpolator to the start of the rail.
 void ObjectSanbo::init() {
     m_up = EGG::Vector3f::ey;
-    EGG::Matrix34f rotMat;
-    rotMat.makeR(rot());
-    m_initForward = rotMat.base(2);
-    m_initForward.normalise();
     m_standstill = false;
     m_railInterpolator->init(0.0f, 0);
 }
@@ -45,6 +42,16 @@ void ObjectSanbo::calc() {
 /// @return Returns @ref eLoadFlags::Calc, so that the object is calculated every frame.
 ObjectBase::LoadFlags ObjectSanbo::loadFlags() const {
     return LoadFlags(eLoadFlags::Calc);
+}
+
+/// @brief Helper function to initialize @ref m_initForward
+/// @return The normalized forward direction of the Pokey based on its rotation matrix
+EGG::Vector3f ObjectSanbo::calcInitForward() const {
+    EGG::Matrix34f rotMat;
+    rotMat.makeR(rot());
+    EGG::Vector3f forward = rotMat.base(2);
+    forward.normalise();
+    return forward;
 }
 
 /// @addr{0x8077A5F8}
