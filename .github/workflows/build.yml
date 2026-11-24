@@ -129,6 +129,12 @@ jobs:
           cd ..
           doxygen
 
+      - name: Delete prior Pages artifact
+        uses: geekyeggo/delete-artifact@v6
+        with:
+          name: github-pages
+          path: out/website/
+          failOnError: false
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:
