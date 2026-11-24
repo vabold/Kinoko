@@ -18,14 +18,16 @@ public:
     [[nodiscard]] LoadFlags loadFlags() const override;
 
 private:
+    [[nodiscard]] EGG::Vector3f calcInitForward() const;
+
     void calcMove();
     void checkSphere();
 
-    bool m_standstill;           ///< Whether or not the Pokey is currently idle
-    u32 m_stillTimer;            ///< Frames before the Pokey will start to walk
-    f32 m_yVel;                  ///< Falling speed
-    EGG::Vector3f m_up;          ///< Upwards direction of the Pokey
-    EGG::Vector3f m_initForward; ///< Initial forward direction of the Pokey
+    bool m_standstill;                 ///< Whether or not the Pokey is currently idle
+    u32 m_stillTimer;                  ///< Frames before the Pokey will start to walk
+    f32 m_yVel;                        ///< Falling speed
+    EGG::Vector3f m_up;                ///< Upwards direction of the Pokey
+    const EGG::Vector3f m_initForward; ///< Initial forward direction of the Pokey
 };
 
 } // namespace Kinoko::Field
