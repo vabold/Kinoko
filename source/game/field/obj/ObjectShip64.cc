@@ -55,7 +55,7 @@ void ObjectShip64::calcCollisionTransform() {
     v.normalise();
 
     mat.setAxisRotation(F_PI / 2.0f, v);
-    mat.setBase(3, v);
+    mat.setBase(3, pos());
     m_auxCollision->transform(mat, scale());
 }
 
