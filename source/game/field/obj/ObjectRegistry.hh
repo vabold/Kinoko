@@ -1,5 +1,10 @@
 #pragma once
 
+/// @file ObjectRegistry.hh
+/// @brief Registry of all object headers in the game field
+/// @details This exists solely to avoid bloating up @ref ObjectDirector.cc with ~70 header
+/// includes.
+
 #include "game/field/obj/ObjectAmi.hh"
 #include "game/field/obj/ObjectAurora.hh"
 #include "game/field/obj/ObjectBasabasa.hh"
