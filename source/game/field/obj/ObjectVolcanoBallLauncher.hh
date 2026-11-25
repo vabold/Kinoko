@@ -1,12 +1,17 @@
 #pragma once
 
+#include <Types.hh>
+
 #include "game/field/obj/ObjectCollidable.hh"
 
 namespace Kinoko::Field {
 
 class ObjectVolcanoBall;
 
-/// @brief The manager class that launch fireballs on Grumble Volcano.
+/// @brief The manager class that launches fireballs on Grumble Volcano
+/// @details Lies dormant until @ref m_initDelay frames have elapsed. Then, every @ref
+/// m_cycleDuration frames, a fireball is launched. The launcher rotates through an array of
+/// fireballs to launch.
 class ObjectVolcanoBallLauncher final : public ObjectCollidable {
 public:
     ObjectVolcanoBallLauncher(const System::MapdataGeoObj &params);
@@ -15,26 +20,17 @@ public:
     void init() override;
     void calc() override;
 
-    /// @addr{0x806E3A74}
-    [[nodiscard]] LoadFlags loadFlags() const override {
-        return LoadFlags(eLoadFlags::Calc);
-    };
-
-    /// @addr{0x806E3A70}
-    void loadGraphics() override {}
-
-    /// @addr{0x806E3A68}
-    void createCollision() override {}
-
-    /// @addr{0x806E3A6C}
-    void loadRail() override {}
+    void loadGraphics() override;
+    void createCollision() override;
+    void loadRail() override;
+    [[nodiscard]] LoadFlags loadFlags() const override;
 
 private:
-    owning_span<ObjectVolcanoBall *> m_balls;
-    const f32 m_initDelay;
-    const f32 m_cycleDuration;
-    u32 m_currBallIdx;
-    bool m_active; ///< False when the volcano is dormant, true after @ref m_initDelay
+    owning_span<ObjectVolcanoBall *> m_balls; ///< Array of fireballs managed by the launcher
+    const f32 m_initDelay;     ///< Frames the launcher lies dormant at the start of the race
+    const f32 m_cycleDuration; ///< Frames between consecutive fireball launches
+    u32 m_currBallIdx;         ///< Index of the next fireball to be launched
+    bool m_active;             ///< False when the volcano is dormant, true after @ref m_initDelay
 };
 
 } // namespace Kinoko::Field
