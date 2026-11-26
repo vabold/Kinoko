@@ -193,7 +193,7 @@ void ObjectHwanwanManager::init() {
     m_hwanwan->calc();
 
     ASSERT(m_mapObj);
-    m_railInterpolator->setCurrVel(static_cast<f32>(m_mapObj->setting(0)));
+    m_railInterpolator->setSpeed(static_cast<f32>(m_mapObj->setting(0)));
 }
 
 /// @addr{0x806C5AC4}

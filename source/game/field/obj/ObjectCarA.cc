@@ -104,7 +104,7 @@ void ObjectCarA::calcCollisionTransform() {
     mat.setBase(3, transform().base(3) + HEIGHT_OFFSET * transform().base(1));
 
     objCol->transform(mat, scale(),
-            -m_railInterpolator->curTangentDir() * m_railInterpolator->getCurrVel());
+            -m_railInterpolator->curTangentDir() * m_railInterpolator->getCurrSpeed());
 }
 
 /// @addr{0x806B7E60}
@@ -126,10 +126,10 @@ Kart::Reaction ObjectCarA::onCollision(Kart::KartObject *kartObj, Kart::Reaction
 /// interpolator. Finally, sets @ref m_changingDir based on whether the car has reached the end of
 /// its rail.
 void ObjectCarA::calcRail() {
-    m_railInterpolator->setCurrVel(m_currVel);
+    m_railInterpolator->setSpeed(m_currVel);
 
     auto status = m_railInterpolator->calc();
-    m_changingDir = (status == RailInterpolator::Status::ChangingDirection);
+    m_changingDir = (status == RailInterpolator::Status::RailEnd);
 }
 
 /// @addr{0x806B8D3C}

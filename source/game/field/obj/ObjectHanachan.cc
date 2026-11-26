@@ -352,7 +352,7 @@ void ObjectHanachan::enterWalk() {
 /// resets the sway amplitude to @ref INIT_SWAY_AMPLITUDE.
 void ObjectHanachan::calcWalk() {
     if (m_still) {
-        m_railInterpolator->setCurrVel(0.0f);
+        m_railInterpolator->setSpeed(0.0f);
         m_nextStateId = 1;
     }
 
@@ -400,7 +400,7 @@ void ObjectHanachan::onSegmentEnd() {
 /// @ref m_walkSpeed.
 void ObjectHanachan::initRail() {
     m_railInterpolator->init(0.0f, 0);
-    m_railInterpolator->setCurrVel(m_walkSpeed);
+    m_railInterpolator->setSpeed(m_walkSpeed);
 }
 
 /// @addr{0x806CA27C}
@@ -584,7 +584,7 @@ void ObjectHanachan::calcLateralMotion(f32 amplitude, f32 period, f32 wavelength
 /// @addr{0x806CBE2C}
 /// @brief Sets the rail interpolator's velocity to the Wiggler's movement speed
 void ObjectHanachan::setRailVel() {
-    m_railInterpolator->setCurrVel(m_walkSpeed);
+    m_railInterpolator->setSpeed(m_walkSpeed);
 }
 
 /// @addr{0x806CAFB8}

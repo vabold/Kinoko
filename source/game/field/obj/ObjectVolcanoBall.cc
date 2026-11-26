@@ -80,9 +80,9 @@ void ObjectVolcanoBall::enterFalling() {
 /// interpolator's current tangent direction and position.
 void ObjectVolcanoBall::calcFalling() {
     f32 sqVel = std::max(0.01f, m_finalVelSq - 2.0f * m_accel * (pos().y - m_endPosY));
-    m_railInterpolator->setCurrVel(EGG::Mathf::sqrt(m_sqVelXZ + sqVel));
+    m_railInterpolator->setSpeed(EGG::Mathf::sqrt(m_sqVelXZ + sqVel));
 
-    if (m_railInterpolator->calc() == RailInterpolator::Status::ChangingDirection) {
+    if (m_railInterpolator->calc() == RailInterpolator::Status::RailEnd) {
         m_nextStateId = 2;
     } else {
         EGG::Vector3f tangent = m_railInterpolator->curTangentDir();

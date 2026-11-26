@@ -1,6 +1,7 @@
 #include "ObjectBasabasa.hh"
 
 #include "game/field/ObjectDirector.hh"
+#include "game/field/Rail.hh"
 #include "game/field/RailInterpolator.hh"
 #include "game/field/RailManager.hh"
 
@@ -98,7 +99,7 @@ void ObjectBasabasaDummy::calcState() {
         return;
     }
 
-    if (m_railInterpolator->calc() == RailInterpolator::Status::ChangingDirection) {
+    if (m_railInterpolator->calc() == RailInterpolator::Status::RailEnd) {
         m_active = false;
         unregisterCollision();
     } else {

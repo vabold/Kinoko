@@ -196,7 +196,7 @@ void ObjectPenguinS::calcRail() {
         enterDive();
     }
 
-    m_railInterpolator->setCurrVel(static_cast<f32>(curPoint.setting[1]));
+    m_railInterpolator->setSpeed(static_cast<f32>(curPoint.setting[1]));
 }
 
 /// @addr{0x80776B7C}

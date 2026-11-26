@@ -71,14 +71,14 @@ s16 ObjectSunDS::launchPointIdx() const {
 /// @brief Runs once when the sun has reached a point along its rail designated as a stop point
 /// @details Sets the rail interpolator's speed to zero.
 void ObjectSunDS::enterStill() {
-    m_railInterpolator->setCurrVel(0.0f);
+    m_railInterpolator->setSpeed(0.0f);
 }
 
 /// @addr{0x806DE408}
 /// @brief Runs once when the sun begins revolving around the course again
 /// @details Sets the rail interpolator's speed to @ref m_revolutionSpeed.
 void ObjectSunDS::enterRevolving() {
-    m_railInterpolator->setCurrVel(m_revolutionSpeed);
+    m_railInterpolator->setSpeed(m_revolutionSpeed);
 }
 
 /// @addr{0x806DE1E4}

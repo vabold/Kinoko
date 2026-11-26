@@ -2,6 +2,7 @@
 
 #include "game/field/ObjectCollisionCylinder.hh"
 #include "game/field/ObjectDirector.hh"
+#include "game/field/Rail.hh"
 #include "game/field/RailInterpolator.hh"
 #include "game/field/RailManager.hh"
 #include "game/field/obj/ObjectHighwayManager.hh"
@@ -136,9 +137,9 @@ void ObjectCarTGE::init() {
     auto *rail = RailManager::Instance()->rail(m_mapObj->pathId());
     u16 speedSetting = rail->points()[idx].setting[1];
     if (speedSetting == 1) {
-        m_railInterpolator->setCurrVel(m_highwaySpeed);
+        m_railInterpolator->setSpeed(m_highwaySpeed);
     } else if (speedSetting == 0) {
-        m_railInterpolator->setCurrVel(m_localSpeed);
+        m_railInterpolator->setSpeed(m_localSpeed);
     }
 
     calcState();
@@ -354,7 +355,7 @@ void ObjectCarTGE::calcSpeedup() {
         m_nextStateId = 0;
     }
 
-    m_railInterpolator->setCurrVel(m_currSpeed);
+    m_railInterpolator->setSpeed(m_currSpeed);
     m_vel = m_railInterpolator->curTangentDir() * m_currSpeed;
 }
 
@@ -375,7 +376,7 @@ void ObjectCarTGE::calcSlowdown() {
         m_nextStateId = 0;
     }
 
-    m_railInterpolator->setCurrVel(m_currSpeed);
+    m_railInterpolator->setSpeed(m_currSpeed);
     m_vel = m_railInterpolator->curTangentDir() * m_currSpeed;
 }
 
@@ -396,7 +397,7 @@ void ObjectCarTGE::calcPos() {
 
     EGG::Vector3f rearPos;
     EGG::Vector3f rearTangentDir;
-    m_railInterpolator->evalCubicBezierOnPath(dist, rearPos, rearTangentDir);
+    m_railInterpolator->evalPositionAndTangentBehind(dist, rearPos, rearTangentDir);
 
     const EGG::Vector3f curPos = m_railInterpolator->curPos();
     EGG::Vector3f posDelta = curPos - rearPos;

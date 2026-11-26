@@ -118,7 +118,7 @@ void ObjectBirdLeader::init() {
     m_railInterpolator->init(0.0f, 0);
     m_railInterpolator->calc();
     setPos(m_railInterpolator->curPos());
-    m_railInterpolator->setCurrVel(static_cast<f32>(m_mapObj->setting(0)));
+    m_railInterpolator->setSpeed(static_cast<f32>(m_mapObj->setting(0)));
 }
 
 /// @addr{0x8077C504}
