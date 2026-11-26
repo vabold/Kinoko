@@ -38,7 +38,7 @@ ObjectRock::~ObjectRock() = default;
 /// m_initVelY.
 void ObjectRock::init() {
     m_railInterpolator->init(0.0f, 0);
-    m_railInterpolator->setCurrVel(m_railSpeed);
+    m_railInterpolator->setSpeed(m_railSpeed);
     m_railInterpolator->calc();
 
     m_state = State::Tangible;
@@ -75,7 +75,7 @@ void ObjectRock::calc() {
 
     --m_cooldownTimer;
     EGG::Vector3f scaledTang =
-            m_railInterpolator->curTangentDir() * m_railInterpolator->getCurrVel();
+            m_railInterpolator->curTangentDir() * m_railInterpolator->getCurrSpeed();
     m_vel.x = scaledTang.x;
     m_vel.z = scaledTang.z;
 }
@@ -103,7 +103,7 @@ void ObjectRock::calcTangible() {
     constexpr f32 GRAVITY = 2.0f;
 
     auto railStatus = m_railInterpolator->calc();
-    if (railStatus == RailInterpolator::Status::ChangingDirection) {
+    if (railStatus == RailInterpolator::Status::RailEnd) {
         breakRock();
     }
 
@@ -170,7 +170,7 @@ void ObjectRock::calcCollisionTransform() {
 void ObjectRock::breakRock() {
     m_state = State::Intangible;
     m_railInterpolator->init(0.0f, 0);
-    m_railInterpolator->setCurrVel(m_railSpeed);
+    m_railInterpolator->setSpeed(m_railSpeed);
     setPos(EGG::Vector3f(pos().x, m_startYPos, pos().z));
     disableCollision();
 }

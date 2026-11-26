@@ -43,7 +43,7 @@ void ObjectKuribo::init() {
     m_forward = transform().base(2);
 
     m_railInterpolator->init(0.0f, 0);
-    m_railInterpolator->setCurrVel(0.0f);
+    m_railInterpolator->setSpeed(0.0f);
 
     m_currSpeed = 0.0f;
     m_animTimer = 0.0f;
@@ -141,11 +141,11 @@ void ObjectKuribo::calcAnim() {
         m_currSpeed = std::max(0.0f, m_currSpeed - m_accel);
     }
 
-    m_railInterpolator->setCurrVel(m_currSpeed);
+    m_railInterpolator->setSpeed(m_currSpeed);
     const auto &curPos = m_railInterpolator->curPos();
     setPos(EGG::Vector3f(curPos.x, pos().y, curPos.z));
 
-    if (m_railInterpolator->calc() == RailInterpolator::Status::ChangingDirection) {
+    if (m_railInterpolator->calc() == RailInterpolator::Status::RailEnd) {
         m_nextStateId = 0;
         m_currSpeed = 0.0f;
     }

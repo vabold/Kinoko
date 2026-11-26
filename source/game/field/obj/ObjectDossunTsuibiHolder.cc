@@ -49,7 +49,7 @@ void ObjectDossunTsuibiHolder::init() {
     m_initYaw = rot().y;
     m_state = State::Still;
     m_railInterpolator->init(0.0f, 0);
-    m_speed = m_railInterpolator->currVel();
+    m_speed = m_railInterpolator->currSpeed();
     m_forwardTimer = 0;
     m_movingForward = false;
     m_movingSideways = false;
@@ -127,7 +127,7 @@ ObjectBase::LoadFlags ObjectDossunTsuibiHolder::loadFlags() const {
 /// Thwomp's speed.
 void ObjectDossunTsuibiHolder::startStill() {
     m_state = State::Backward;
-    m_railInterpolator->setCurrVel(m_speed);
+    m_railInterpolator->setSpeed(m_speed);
 }
 
 /// @addr{0x807623AC}
@@ -223,7 +223,7 @@ void ObjectDossunTsuibiHolder::calcStomp() {
 /// and sets @ref m_facingBackwards to `false`. Finally, re-initializes the rail interpolator to the
 /// start of the rail.
 void ObjectDossunTsuibiHolder::calcBackwards() {
-    if (m_railInterpolator->calc() == RailInterpolator::Status::ChangingDirection) {
+    if (m_railInterpolator->calc() == RailInterpolator::Status::RailEnd) {
         m_resetZVel = (m_lastStompZ - m_railInterpolator->curPos().z) /
                 static_cast<f32>(HOME_RESET_FRAMES);
 
@@ -286,9 +286,9 @@ void ObjectDossunTsuibiHolder::calcRot() {
 /// @addr{0x8076321C}
 /// @brief Updates position from the rail every frame while the Thwomps are moving forward
 void ObjectDossunTsuibiHolder::calcForwardRail() {
-    m_railInterpolator->setCurrVel(m_forwardVel);
+    m_railInterpolator->setSpeed(m_forwardVel);
 
-    if (m_railInterpolator->calc() == RailInterpolator::Status::ChangingDirection) {
+    if (m_railInterpolator->calc() == RailInterpolator::Status::RailEnd) {
         enterStartStomp();
     }
 

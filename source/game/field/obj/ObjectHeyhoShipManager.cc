@@ -1,8 +1,8 @@
 #include "ObjectHeyhoShipManager.hh"
 
 #include "game/field/ObjectDirector.hh"
+#include "game/field/Rail.hh"
 #include "game/field/RailInterpolator.hh"
-#include "game/field/RailManager.hh"
 #include "game/field/obj/ObjectHeyhoShip.hh"
 #include "game/field/obj/ObjectProjectile.hh"
 
@@ -70,7 +70,7 @@ void ObjectHeyhoShipManager::init() {
     }
 
     auto *ship = reinterpret_cast<ObjectHeyhoShip *>(m_launcher);
-    auto *launcherRail = RailManager::Instance()->rail(launcherRailInterp->railIdx());
+    const auto *launcherRail = launcherRailInterp->rail();
     for (auto *&obj : m_projectiles) {
         const s16 idx = obj->idx();
         const auto &dir = ship->initRailDir(idx);

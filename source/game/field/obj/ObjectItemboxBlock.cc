@@ -97,7 +97,7 @@ void ObjectItemboxBlock::calcRail() {
         if (m_railInterpolator->curPoint().setting[1] == 1) {
             m_senko->beginStomp();
         }
-    } else if (result == RailInterpolator::Status::ChangingDirection) {
+    } else if (result == RailInterpolator::Status::RailEnd) {
         m_state = State::Despawned;
     }
 }

@@ -45,7 +45,7 @@ void ObjectKoopaBall::init() {
     initCooldownTimer();
 
     m_railInterpolator->init(0.0f, 0);
-    m_railInterpolator->setCurrVel(INITIAL_SPEED);
+    m_railInterpolator->setSpeed(INITIAL_SPEED);
     m_railInterpolator->calc();
 
     m_initPosY = m_railInterpolator->curPos().y;
@@ -97,7 +97,8 @@ void ObjectKoopaBall::calc() {
 
     --m_cooldownTimer;
 
-    EGG::Vector3f railVel = m_railInterpolator->curTangentDir() * m_railInterpolator->getCurrVel();
+    EGG::Vector3f railVel =
+            m_railInterpolator->curTangentDir() * m_railInterpolator->getCurrSpeed();
     m_vel.x = railVel.x;
     m_vel.z = railVel.z;
 }
@@ -152,7 +153,7 @@ void ObjectKoopaBall::calcTangible() {
     case RailInterpolator::Status::SegmentEnd:
         calcSlowdown();
         break;
-    case RailInterpolator::Status::ChangingDirection: {
+    case RailInterpolator::Status::RailEnd: {
         m_state = State::Exploding;
         setExplosionScale();
         m_explodeTimer = m_animDuration;
@@ -210,7 +211,7 @@ void ObjectKoopaBall::calcIntangible() {
     }
 
     m_state = State::Tangible;
-    m_railInterpolator->setCurrVel(INITIAL_SPEED);
+    m_railInterpolator->setSpeed(INITIAL_SPEED);
     m_angSpeed = INITIAL_ANGULAR_SPEED;
     m_vel.y = INITIAL_Y_SPEED;
     m_cooldownTimer = COOLDOWN_FRAMES;
@@ -238,7 +239,7 @@ void ObjectKoopaBall::calcSlowdown() {
     constexpr f32 VERTICAL_SPEED = 60.0f;
 
     m_vel.y = VERTICAL_SPEED;
-    m_railInterpolator->setCurrVel(INITIAL_SPEED / INITIAL_ANGULAR_SPEED);
+    m_railInterpolator->setSpeed(INITIAL_SPEED / INITIAL_ANGULAR_SPEED);
 }
 
 /// @addr{0x80771B68}

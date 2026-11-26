@@ -2,6 +2,7 @@
 
 #include "game/field/ObjectCollisionSphere.hh"
 #include "game/field/ObjectDirector.hh"
+#include "game/field/Rail.hh"
 #include "game/field/RailInterpolator.hh"
 #include "game/field/RailManager.hh"
 
@@ -305,7 +306,7 @@ void ObjectChoropu::calcJumping() {
 /// MAX_GROUND_LEN, it is clamped to one unit below the maximum. Finally, calls @ref
 /// calcGroundObjs() to update the position of the dirt trail objects.
 void ObjectChoropu::calcGround() {
-    m_groundLength += m_railInterpolator->getCurrVel();
+    m_groundLength += m_railInterpolator->getCurrSpeed();
     if (m_groundLength > MAX_GROUND_LEN) {
         m_groundLength = MAX_GROUND_LEN - 1.0f;
     }
@@ -355,7 +356,7 @@ void ObjectChoropu::calcGroundObjs() {
 EGG::Matrix34f ObjectChoropu::calcInterpolatedPose(f32 t) const {
     EGG::Vector3f curDir;
     EGG::Vector3f curTanDir;
-    m_railInterpolator->evalCubicBezierOnPath(t, curDir, curTanDir);
+    m_railInterpolator->evalPositionAndTangentBehind(t, curDir, curTanDir);
     EGG::Matrix34f mat = OrthonormalBasis(curTanDir);
     mat.setBase(3, curDir);
     return mat;

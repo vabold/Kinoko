@@ -2,7 +2,6 @@
 
 #include "game/field/Rail.hh"
 #include "game/field/RailInterpolator.hh"
-#include "game/field/RailManager.hh"
 #include "game/field/obj/ObjectProjectile.hh"
 #include "game/field/obj/ObjectProjectileLauncher.hh"
 
@@ -30,7 +29,7 @@ void ObjectSniper::init() {
         point = -1;
     }
 
-    const auto *launcherRail = RailManager::Instance()->rail(launcherRailInterp->railIdx());
+    const auto *launcherRail = launcherRailInterp->rail();
 
     for (size_t i = 0; i < m_projectiles.size(); ++i) {
         auto *obj = m_projectiles[i];

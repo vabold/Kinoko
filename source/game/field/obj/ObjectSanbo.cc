@@ -74,7 +74,7 @@ void ObjectSanbo::calcMove() {
     }
 
     auto railStatus = m_railInterpolator->calc();
-    if (railStatus == RailInterpolator::Status::ChangingDirection) {
+    if (railStatus == RailInterpolator::Status::RailEnd) {
         m_standstill = true;
         m_stillTimer = m_railInterpolator->curPoint().setting[0];
     }

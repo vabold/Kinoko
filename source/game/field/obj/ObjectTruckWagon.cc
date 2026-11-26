@@ -292,15 +292,15 @@ void ObjectTruckWagonCart::calcRailAndVel() {
     case RailInterpolator::Status::SegmentEnd:
         checkRailPointState();
         break;
-    case RailInterpolator::Status::ChangingDirection:
+    case RailInterpolator::Status::RailEnd:
         deactivate();
         break;
     default:
         break;
     }
 
-    m_vel.x = m_railInterpolator->currVel() * m_railInterpolator->curTangentDir().x;
-    m_vel.z = m_railInterpolator->currVel() * m_railInterpolator->curTangentDir().z;
+    m_vel.x = m_railInterpolator->currSpeed() * m_railInterpolator->curTangentDir().x;
+    m_vel.z = m_railInterpolator->currSpeed() * m_railInterpolator->curTangentDir().z;
 }
 
 /// @addr{0x806E24FC}

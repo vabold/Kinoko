@@ -63,7 +63,7 @@ private:
     void calcPosition() {
         auto status = m_railInterpolator->calc();
 
-        if (status == RailInterpolator::Status::ChangingDirection) {
+        if (status == RailInterpolator::Status::RailEnd) {
             m_state = State::Inactive;
         }
 
