@@ -252,8 +252,7 @@ bool ObjectEscalator::checkCollision(f32 radius, const EGG::Vector3f &pos,
     }
 
     auto *colDir = CollisionDirector::Instance();
-    const auto *entry =
-            colDir->findClosestCollisionEntry(maskOut, KCL_TYPE_BIT(COL_TYPE_MOVING_ROAD));
+    const auto *entry = colDir->findClosestCollisionEntry(KCL_TYPE_BIT(COL_TYPE_MOVING_ROAD));
     if (!entry) {
         return false;
     }
@@ -294,8 +293,7 @@ bool ObjectEscalator::checkCollisionCached(f32 radius, const EGG::Vector3f &pos,
     }
 
     auto *colDir = CollisionDirector::Instance();
-    const auto *entry =
-            colDir->findClosestCollisionEntry(maskOut, KCL_TYPE_BIT(COL_TYPE_MOVING_ROAD));
+    const auto *entry = colDir->findClosestCollisionEntry(KCL_TYPE_BIT(COL_TYPE_MOVING_ROAD));
     if (!entry) {
         return false;
     }

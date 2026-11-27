@@ -336,12 +336,12 @@ void KartCollide::calcTriggers(Field::KCLTypeMask *mask, const EGG::Vector3f &po
 /// @addr{0x8056F510}
 void KartCollide::handleTriggers(Field::KCLTypeMask *mask) {
     calcFallBoundary(mask, false);
-    processCannon(mask);
+    processCannon();
 
     if (*mask & KCL_TYPE_BIT(COL_TYPE_EFFECT_TRIGGER)) {
         auto *colDir = Field::CollisionDirector::Instance();
         const auto *entry =
-                colDir->findClosestCollisionEntry(mask, KCL_TYPE_BIT(COL_TYPE_EFFECT_TRIGGER));
+                colDir->findClosestCollisionEntry(KCL_TYPE_BIT(COL_TYPE_EFFECT_TRIGGER));
         if (entry && entry->variant() == 4) {
             halfPipe()->end(true);
             status().setBit(eStatus::EndHalfPipe);
@@ -358,8 +358,7 @@ void KartCollide::calcFallBoundary(Field::KCLTypeMask *mask, bool shortBoundary)
 
     if (shortBoundary) {
         auto *colDir = Field::CollisionDirector::Instance();
-        const auto *entry =
-                colDir->findClosestCollisionEntry(mask, KCL_TYPE_BIT(COL_TYPE_FALL_BOUNDARY));
+        const auto *entry = colDir->findClosestCollisionEntry(KCL_TYPE_BIT(COL_TYPE_FALL_BOUNDARY));
         if (!entry || entry->variant() != 7) {
             return;
         }
@@ -609,7 +608,7 @@ void KartCollide::processBody(CollisionData &collisionData, Hitbox &hitbox,
         calcSideCollision(collisionData, hitbox, colInfo);
     }
 
-    processCannon(maskOut);
+    processCannon();
 }
 
 /// @addr{0x8056E930}
@@ -619,8 +618,7 @@ void KartCollide::processMovingWater(CollisionData &collisionData, Field::KCLTyp
     }
 
     auto *colDir = Field::CollisionDirector::Instance();
-    const auto *entry =
-            colDir->findClosestCollisionEntry(maskOut, KCL_TYPE_BIT(COL_TYPE_MOVING_WATER));
+    const auto *entry = colDir->findClosestCollisionEntry(KCL_TYPE_BIT(COL_TYPE_MOVING_WATER));
     if (!entry) {
         return;
     }
@@ -654,13 +652,13 @@ bool KartCollide::processWall(CollisionData &collisionData, Field::KCLTypeMask *
     }
 
     auto *colDirector = Field::CollisionDirector::Instance();
-    if (!colDirector->findClosestCollisionEntry(maskOut, KCL_TYPE_DRIVER_WALL_NO_INVISIBLE_WALL2)) {
+    if (!colDirector->findClosestCollisionEntry(KCL_TYPE_DRIVER_WALL_NO_INVISIBLE_WALL2)) {
         return false;
     }
 
     if (*maskOut & KCL_TYPE_DRIVER_WALL_NO_INVISIBLE_WALL) {
-        const auto *entry = colDirector->findClosestCollisionEntry(maskOut,
-                KCL_TYPE_DRIVER_WALL_NO_INVISIBLE_WALL);
+        const auto *entry =
+                colDirector->findClosestCollisionEntry(KCL_TYPE_DRIVER_WALL_NO_INVISIBLE_WALL);
         if (entry) {
             collisionData.closestWallFlags = entry->baseType();
             collisionData.closestWallSettings = entry->variant();
@@ -695,7 +693,7 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
 
     auto *colDirector = Field::CollisionDirector::Instance();
 
-    const auto *closestColEntry = colDirector->findClosestCollisionEntry(maskOut, KCL_TYPE_FLOOR);
+    const auto *closestColEntry = colDirector->findClosestCollisionEntry(KCL_TYPE_FLOOR);
     if (!closestColEntry) {
         return;
     }
@@ -729,7 +727,7 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
     }
 
     const auto *boostRampEntry = (*maskOut & BOOST_RAMP_MASK) ?
-            colDirector->findClosestCollisionEntry(maskOut, BOOST_RAMP_MASK) :
+            colDirector->findClosestCollisionEntry(BOOST_RAMP_MASK) :
             nullptr;
     if (boostRampEntry) {
         move()->padType().setBit(KartMove::ePadType::BoostRamp);
@@ -751,7 +749,7 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
 
     Field::KCLTypeMask halfPipeRampMask = KCL_TYPE_BIT(COL_TYPE_HALFPIPE_RAMP);
     if (*maskOut & halfPipeRampMask) {
-        const auto *entry = colDirector->findClosestCollisionEntry(maskOut, halfPipeRampMask);
+        const auto *entry = colDirector->findClosestCollisionEntry(halfPipeRampMask);
         if (entry) {
             status.setBit(eStatus::HalfPipeRamp);
             state()->setHalfPipeInvisibilityTimer(2);
@@ -763,7 +761,7 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
 
     Field::KCLTypeMask jumpPadMask = KCL_TYPE_BIT(COL_TYPE_JUMP_PAD);
     if (*maskOut & jumpPadMask) {
-        const auto *entry = colDirector->findClosestCollisionEntry(maskOut, jumpPadMask);
+        const auto *entry = colDirector->findClosestCollisionEntry(jumpPadMask);
         if (entry) {
             if (status.offAnyBit(eStatus::TouchingGround, eStatus::JumpPad) &&
                     status.offBit(eStatus::JumpPadMushroomVelYInc)) {
@@ -777,10 +775,10 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
 
 /// @addr{0x8056F490}
 /// @brief Checks if we are colliding with a cannon trigger and sets the state flag if so.
-void KartCollide::processCannon(Field::KCLTypeMask *maskOut) {
+void KartCollide::processCannon() {
     auto *colDirector = Field::CollisionDirector::Instance();
     const auto *entry =
-            colDirector->findClosestCollisionEntry(maskOut, KCL_TYPE_BIT(COL_TYPE_CANNON_TRIGGER));
+            colDirector->findClosestCollisionEntry(KCL_TYPE_BIT(COL_TYPE_CANNON_TRIGGER));
     if (entry) {
         state()->setCannonPointId(entry->variant());
         status().setBit(eStatus::CannonStart);
