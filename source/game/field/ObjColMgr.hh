@@ -82,6 +82,13 @@ public:
 
     /// @endSetters
 
+    /// @beginGetters
+    [[nodiscard]] const KColData *data() const {
+        return m_data;
+    }
+
+    /// @endGetters
+
 private:
     KColData *m_data;
     EGG::Matrix34f m_mtx;

@@ -12,7 +12,6 @@ set(COMMON_CXX_FLAGS
     -fcheck-new
     -fno-asynchronous-unwind-tables
     -fno-exceptions
-    -fno-rtti
     -fshort-wchar
     -fstack-protector-strong
     -Wall
@@ -23,13 +22,18 @@ set(COMMON_CXX_FLAGS
     -Wsuggest-override
 )
 
+option(KINOKO_USE_RTTI "Enable RTTI (disable -fno-rtti)" OFF)
+if(NOT KINOKO_USE_RTTI)
+    list(APPEND COMMON_CXX_FLAGS -fno-rtti)
+endif()
+
 set(RK_INCLUDE_DIRS
     include
     source
 )
 
 # Source files
-file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/**/*.cc)
+file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/**/*.cc)
 list(FILTER SOURCE_FILES EXCLUDE REGEX ".*/host/main\\.cc$")
 
 add_library(libkinoko ${SOURCE_FILES})

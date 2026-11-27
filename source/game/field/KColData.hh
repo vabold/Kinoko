@@ -79,6 +79,16 @@ public:
         return m_prismCache[idx];
     }
 
+    /// @brief One-indexed array of each prism's geometry. Entry 0 is unused.
+    [[nodiscard]] std::span<const KCollisionPrismGeometry> prismGeometry() const {
+        return m_prismGeometry.view();
+    }
+
+    /// @brief One-indexed array of each prism's KCL attribute. Entry 0 is unused.
+    [[nodiscard]] std::span<const u16> prismAttributes() const {
+        return m_prismAttributes.view();
+    }
+
     /// @endGetters
 
     [[nodiscard]] static EGG::Vector3f GetVertex(f32 height, const EGG::Vector3f &vertex1,
