@@ -25,6 +25,10 @@ public:
         return m_initRadius;
     }
 
+    [[nodiscard]] std::span<const EGG::Vector3f> worldPoints() const {
+        return m_worldPoints.view();
+    }
+
     /// @addr{0x8080C414}
     virtual void setBoundingRadius(f32 val) {
         m_worldRadius = val;

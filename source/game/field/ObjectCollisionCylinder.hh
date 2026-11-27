@@ -23,6 +23,21 @@ public:
         return m_worldRadius;
     }
 
+    /// @beginGetters
+    [[nodiscard]] const EGG::Vector3f &center() const {
+        return m_center;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &top() const {
+        return m_top;
+    }
+
+    [[nodiscard]] const EGG::Vector3f &bottom() const {
+        return m_bottom;
+    }
+
+    /// @endGetters
+
 private:
     f32 m_radius;
     f32 m_height;

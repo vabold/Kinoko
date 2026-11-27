@@ -57,6 +57,10 @@ public:
         return m_hitDepths[idx];
     }
 
+    [[nodiscard]] const fixed_vector<ObjectBase *> &objects() const {
+        return m_objects;
+    }
+
     [[nodiscard]] fixed_vector<ObjectCollidable *> &managedObjects() {
         return m_managedObjects;
     }
