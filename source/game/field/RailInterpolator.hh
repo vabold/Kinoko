@@ -64,8 +64,18 @@ public:
 
     /// @beginSetters
 
-    void setPerPointVelocities(bool isSet);
-    void setT(f32 t);
+    /// @brief Sets whether to use per-point velocities for interpolation
+    /// @param isSet `true` to use per-point velocities, `false` to use a constant velocity
+    void setPerPointVelocities(bool isSet) {
+        m_usePerPointVelocities = isSet;
+    }
+
+    /// @addr{0x806C63A8}
+    /// @brief Sets the normalized position along the current segment
+    /// @param t The normalized position along the current segment [0.0, 1.0]
+    void setT(f32 t) {
+        m_segmentT = t;
+    }
 
     /// @endSetters
 
@@ -73,18 +83,82 @@ public:
 
     [[nodiscard]] const EGG::Vector3f &floorNrm(size_t idx) const;
     [[nodiscard]] f32 railLength() const;
-    [[nodiscard]] const System::MapdataPointInfo::Point &curPoint() const;
-    [[nodiscard]] const System::MapdataPointInfo::Point &nextPoint() const;
-    [[nodiscard]] const Rail *rail() const;
-    [[nodiscard]] u16 pointCount() const;
-    [[nodiscard]] f32 speed() const;
-    [[nodiscard]] const EGG::Vector3f &curPos() const;
-    [[nodiscard]] const EGG::Vector3f &curTangentDir() const;
-    [[nodiscard]] f32 currSpeed() const;
-    [[nodiscard]] f32 segmentT() const;
-    [[nodiscard]] bool isMovementDirectionForward() const;
-    [[nodiscard]] s16 curPointIdx() const;
-    [[nodiscard]] s16 nextPointIdx() const;
+
+    /// @brief Gets the point that the rail interpolator is currently at or past
+    /// @return The current point that the rail interpolator is at or past
+    /// @pre Requires that @ref m_currPointIdx is a valid index within @ref m_points
+    [[nodiscard]] const System::MapdataPointInfo::Point &curPoint() const {
+        ASSERT(static_cast<size_t>(m_currPointIdx) < m_points.size());
+        return m_points[m_currPointIdx];
+    }
+
+    /// @brief Gets the point that the rail interpolator is moving towards
+    /// @return The next point that the rail interpolator is moving towards
+    /// @pre Requires that @ref m_nextPointIdx is a valid index within @ref m_points
+    [[nodiscard]] const System::MapdataPointInfo::Point &nextPoint() const {
+        ASSERT(static_cast<size_t>(m_nextPointIdx) < m_points.size());
+        return m_points[m_nextPointIdx];
+    }
+
+    /// @brief Gets the underlying rail that this class interpolates along
+    /// @return A const pointer to the underlying rail, @ref m_rail
+    [[nodiscard]] const Rail *rail() const {
+        return m_rail;
+    }
+
+    /// @brief Gets the number of points along the rail
+    /// @return The number of points along the rail, @ref m_pointCount
+    [[nodiscard]] u16 pointCount() const {
+        return m_pointCount;
+    }
+
+    /// @brief Gets the default speed of the rail interpolator
+    /// @return The default speed of the rail interpolator, @ref m_baseSpeed
+    [[nodiscard]] f32 speed() const {
+        return m_baseSpeed;
+    }
+
+    /// @brief Gets the current position of the rail interpolator
+    /// @return The current position of the rail interpolator, @ref m_curPos
+    [[nodiscard]] const EGG::Vector3f &curPos() const {
+        return m_curPos;
+    }
+
+    /// @brief Gets the current tangent direction of the rail interpolator
+    /// @return The current tangent direction of the rail interpolator, @ref m_curTangentDir
+    [[nodiscard]] const EGG::Vector3f &curTangentDir() const {
+        return m_curTangentDir;
+    }
+
+    /// @brief Gets the current speed of the rail interpolator
+    /// @return The current speed of the rail interpolator, @ref m_currSpeed
+    [[nodiscard]] f32 currSpeed() const {
+        return m_currSpeed;
+    }
+
+    /// @brief Gets the normalized position along the current segment
+    /// @return The normalized position along the current segment [0.0, 1.0], @ref m_segmentT
+    [[nodiscard]] f32 segmentT() const {
+        return m_segmentT;
+    }
+
+    /// @brief Checks if the movement direction is forward
+    /// @return The value of @ref m_forward
+    [[nodiscard]] bool isMovementDirectionForward() const {
+        return m_forward;
+    }
+
+    /// @brief Gets the index of the current point
+    /// @return The index of the current point within the rail's points, @ref m_currPointIdx
+    [[nodiscard]] s16 curPointIdx() const {
+        return m_currPointIdx;
+    }
+
+    /// @brief Gets the index of the next point
+    /// @return The index of the next point within the rail's points, @ref m_nextPointIdx
+    [[nodiscard]] s16 nextPointIdx() const {
+        return m_nextPointIdx;
+    }
 
     /// @endGetters
 
