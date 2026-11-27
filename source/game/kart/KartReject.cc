@@ -159,7 +159,7 @@ bool KartReject::calcCollision(Field::CollisionInfo &colInfo, Field::KCLTypeMask
     auto *colDir = Field::CollisionDirector::Instance();
 
     if (mask & KCL_TYPE_INVISIBLE_WALL) {
-        const auto *entry = colDir->findClosestCollisionEntry(&mask, KCL_TYPE_INVISIBLE_WALL);
+        const auto *entry = colDir->findClosestCollisionEntry(KCL_TYPE_INVISIBLE_WALL);
         if (entry && entry->variant() == 0) {
             tangentOff = colInfo.wallNrm;
             status().setBit(eStatus::NoSparkInvisibleWall);
@@ -169,7 +169,7 @@ bool KartReject::calcCollision(Field::CollisionInfo &colInfo, Field::KCLTypeMask
 
     Field::KCLTypeMask halfPipeInvisMask = KCL_TYPE_BIT(COL_TYPE_HALFPIPE_INVISIBLE_WALL);
     if (mask & halfPipeInvisMask) {
-        if (colDir->findClosestCollisionEntry(&mask, halfPipeInvisMask)) {
+        if (colDir->findClosestCollisionEntry(halfPipeInvisMask)) {
             tangentOff = colInfo.wallNrm;
             status().setBit(eStatus::NoSparkInvisibleWall);
             return true;
@@ -177,7 +177,7 @@ bool KartReject::calcCollision(Field::CollisionInfo &colInfo, Field::KCLTypeMask
     }
 
     if (mask & KCL_TYPE_DRIVER_FLOOR) {
-        const auto *entry = colDir->findClosestCollisionEntry(&mask, KCL_TYPE_DRIVER_FLOOR);
+        const auto *entry = colDir->findClosestCollisionEntry(KCL_TYPE_DRIVER_FLOOR);
         if (entry &&
                 entry->attribute.onBit(Field::CollisionDirector::eCollisionAttribute::RejectRoad)) {
             tangentOff = colInfo.floorNrm;
