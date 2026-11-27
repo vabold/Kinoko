@@ -31,19 +31,6 @@ void RailInterpolator::reverseDirection() {
     m_segmentT = 1.0f - m_segmentT;
 }
 
-/// @brief Sets whether to use per-point velocities for interpolation
-/// @param isSet `true` to use per-point velocities, `false` to use a constant velocity
-void RailInterpolator::setPerPointVelocities(bool isSet) {
-    m_usePerPointVelocities = isSet;
-}
-
-/// @addr{0x806C63A8}
-/// @brief Sets the normalized position along the current segment
-/// @param t The normalized position along the current segment [0.0, 1.0]
-void RailInterpolator::setT(f32 t) {
-    m_segmentT = t;
-}
-
 /// @addr{0x806ED24C}
 /// @brief Gets the up vector of the point at the given index
 /// @param idx The index of the point whose up vector is being retrieved
@@ -57,82 +44,6 @@ const EGG::Vector3f &RailInterpolator::floorNrm(size_t idx) const {
 /// @return The sum of the lengths of the edges along the rail
 f32 RailInterpolator::railLength() const {
     return m_rail->getPathLength();
-}
-
-/// @brief Gets the point that the rail interpolator is currently at or past
-/// @return The current point that the rail interpolator is at or past
-/// @pre Requires that @ref m_currPointIdx is a valid index within @ref m_points
-const System::MapdataPointInfo::Point &RailInterpolator::curPoint() const {
-    ASSERT(static_cast<size_t>(m_currPointIdx) < m_points.size());
-    return m_points[m_currPointIdx];
-}
-
-/// @brief Gets the point that the rail interpolator is moving towards
-/// @return The next point that the rail interpolator is moving towards
-/// @pre Requires that @ref m_nextPointIdx is a valid index within @ref m_points
-const System::MapdataPointInfo::Point &RailInterpolator::nextPoint() const {
-    ASSERT(static_cast<size_t>(m_nextPointIdx) < m_points.size());
-    return m_points[m_nextPointIdx];
-}
-
-/// @brief Gets the underlying rail that this class interpolates along
-/// @return A const pointer to the underlying rail, @ref m_rail
-const Rail *RailInterpolator::rail() const {
-    return m_rail;
-}
-
-/// @brief Gets the number of points along the rail
-/// @return The number of points along the rail, @ref m_pointCount
-u16 RailInterpolator::pointCount() const {
-    return m_pointCount;
-}
-
-/// @brief Gets the default speed of the rail interpolator
-/// @return The default speed of the rail interpolator, @ref m_baseSpeed
-f32 RailInterpolator::speed() const {
-    return m_baseSpeed;
-}
-
-/// @brief Gets the current position of the rail interpolator
-/// @return The current position of the rail interpolator, @ref m_curPos
-const EGG::Vector3f &RailInterpolator::curPos() const {
-    return m_curPos;
-}
-
-/// @brief Gets the current tangent direction of the rail interpolator
-/// @return The current tangent direction of the rail interpolator, @ref m_curTangentDir
-const EGG::Vector3f &RailInterpolator::curTangentDir() const {
-    return m_curTangentDir;
-}
-
-/// @brief Gets the current speed of the rail interpolator
-/// @return The current speed of the rail interpolator, @ref m_currSpeed
-f32 RailInterpolator::currSpeed() const {
-    return m_currSpeed;
-}
-
-/// @brief Gets the normalized position along the current segment
-/// @return The normalized position along the current segment [0.0, 1.0], @ref m_segmentT
-f32 RailInterpolator::segmentT() const {
-    return m_segmentT;
-}
-
-/// @brief Checks if the movement direction is forward
-/// @return The value of @ref m_forward
-bool RailInterpolator::isMovementDirectionForward() const {
-    return m_forward;
-}
-
-/// @brief Gets the index of the current point
-/// @return The index of the current point within the rail's points, @ref m_currPointIdx
-s16 RailInterpolator::curPointIdx() const {
-    return m_currPointIdx;
-}
-
-/// @brief Gets the index of the next point
-/// @return The index of the next point within the rail's points, @ref m_nextPointIdx
-s16 RailInterpolator::nextPointIdx() const {
-    return m_nextPointIdx;
 }
 
 /// @addr{0x806ED3E4}
