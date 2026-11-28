@@ -148,14 +148,27 @@ void CollisionDirector::resetCollisionEntries(KCLTypeMask *maskOut) {
 /// @brief Called upon finding collision that should be saved to the @ref m_entries cache
 /// temporarily
 /// @param dist How far the colliding body penetrates the tri
-/// @param typeMask Out parameter that is updated to include `kclTypeBit`
-/// @param kclTypeBit The base type of the tri we are colliding with
+/// @param typeMask Out parameter that is updated to include the bit for the attribute's base type
 /// @param attribute The attribute and additional info about the tri we are colliding with
-void CollisionDirector::pushCollisionEntry(f32 dist, KCLTypeMask *typeMask, KCLTypeMask kclTypeBit,
+/// @details The base game also takes the type mask bit as a separate parameter. Every caller
+/// derives it from `attribute`, so Kinoko computes it here instead.
+void CollisionDirector::pushCollisionEntry(f32 dist, KCLTypeMask *typeMask,
         CollisionAttribute attribute) {
+    KCLTypeMask kclTypeBit = KCL_ATTRIBUTE_TYPE_BIT(attribute);
     *typeMask = *typeMask | kclTypeBit;
     m_collisionEntryCount = std::min(m_collisionEntryCount, m_entries.size() - 1);
     m_entries[m_collisionEntryCount++] = CollisionEntry(kclTypeBit, attribute, dist);
+}
+
+/// @brief Helper function that pushes a collision entry for a @ref KColType with no additional
+/// attribute bits set
+/// @param dist How far the colliding body penetrates the tri
+/// @param typeMask Out parameter that is updated to include the bit for `type`
+/// @param type The base type of the tri we are colliding with
+/// @details This function is added in Kinoko to prevent callers from having to cast the @ref
+/// KColType on each push.
+void CollisionDirector::pushCollisionEntry(f32 dist, KCLTypeMask *typeMask, KColType type) {
+    pushCollisionEntry(dist, typeMask, static_cast<u16>(type));
 }
 
 /// @addr{0x807BD96C}

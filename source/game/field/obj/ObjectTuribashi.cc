@@ -294,7 +294,7 @@ bool ObjectTuribashi::checkSphereImpl(f32 radius, const EGG::Vector3f &pos, KCLT
     if (maskOut) {
         if (push) {
             auto *colDirector = CollisionDirector::Instance();
-            colDirector->pushCollisionEntry(dist, maskOut, KCL_TYPE_BIT(KColType::Road), 0);
+            colDirector->pushCollisionEntry(dist, maskOut, KColType::Road);
             colDirector->setCurrentCollisionVariant(4);
             colDirector->setCurrentCollisionTrickable(false);
         } else {

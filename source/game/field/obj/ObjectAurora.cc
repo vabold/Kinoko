@@ -224,8 +224,7 @@ bool ObjectAurora::checkSphereImpl(f32 radius, const EGG::Vector3f &pos,
         auto *colDir = CollisionDirector::Instance();
 
         if (push) {
-            colDir->pushCollisionEntry(dist, maskOut, KCL_TYPE_BIT(KColType::Road2),
-                    static_cast<u16>(KColType::Road2));
+            colDir->pushCollisionEntry(dist, maskOut, KColType::Road2);
             colDir->setCurrentCollisionVariant(7);
             colDir->setCurrentCollisionTrickable(true);
         } else {
@@ -234,8 +233,7 @@ bool ObjectAurora::checkSphereImpl(f32 radius, const EGG::Vector3f &pos,
 
         if (relPos.z > BOOST_RAMP_START) {
             if (push) {
-                colDir->pushCollisionEntry(dist, maskOut, KCL_TYPE_BIT(KColType::BoostRamp),
-                        static_cast<u16>(KColType::BoostRamp));
+                colDir->pushCollisionEntry(dist, maskOut, KColType::BoostRamp);
             } else {
                 *maskOut |= KCL_TYPE_BIT(KColType::BoostRamp);
             }

@@ -286,8 +286,7 @@ bool ObjectAmi::checkSphereImpl(f32 radius, const EGG::Vector3f &pos, KCLTypeMas
     if (maskOut) {
         if (push) {
             auto *colDirector = CollisionDirector::Instance();
-            colDirector->pushCollisionEntry(dist, maskOut, KCL_TYPE_BIT(KColType::RotatingRoad),
-                    static_cast<u16>(KColType::RotatingRoad));
+            colDirector->pushCollisionEntry(dist, maskOut, KColType::RotatingRoad);
             colDirector->setCurrentCollisionVariant(0);
             colDirector->setCurrentCollisionTrickable(true);
         } else {

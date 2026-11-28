@@ -368,8 +368,7 @@ bool ObjectObakeManager::checkSphereImpl(f32 radius, const EGG::Vector3f &pos, K
                             if (push) {
                                 auto *colDir = CollisionDirector::Instance();
                                 colDir->pushCollisionEntry(dist.length(), maskOut,
-                                        KCL_TYPE_BIT(KColType::SpecialWall),
-                                        static_cast<u16>(KColType::SpecialWall));
+                                        KColType::SpecialWall);
                                 colDir->setCurrentCollisionVariant(2);
                             } else {
                                 *maskOut |= KCL_TYPE_BIT(KColType::SpecialWall);
@@ -406,9 +405,7 @@ bool ObjectObakeManager::checkSphereImpl(f32 radius, const EGG::Vector3f &pos, K
                         if (maskOut) {
                             if (push) {
                                 auto *colDir = CollisionDirector::Instance();
-                                colDir->pushCollisionEntry(dist.length(), maskOut,
-                                        KCL_TYPE_BIT(KColType::Road),
-                                        static_cast<u16>(KColType::Road));
+                                colDir->pushCollisionEntry(dist.length(), maskOut, KColType::Road);
                             } else {
                                 *maskOut |= KCL_TYPE_BIT(KColType::Road);
                             }

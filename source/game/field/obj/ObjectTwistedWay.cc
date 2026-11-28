@@ -317,8 +317,7 @@ bool ObjectTwistedWay::checkWallCollision(f32 angle, f32 radius, u32 t, const EG
 
         if (maskOut) {
             if (push) {
-                CollisionDirector::Instance()->pushCollisionEntry(dist, maskOut,
-                        KCL_TYPE_BIT(KColType::Wall), static_cast<u16>(KColType::Wall));
+                CollisionDirector::Instance()->pushCollisionEntry(dist, maskOut, KColType::Wall);
             } else {
                 *maskOut |= KCL_TYPE_BIT(KColType::Wall);
             }
@@ -345,8 +344,7 @@ bool ObjectTwistedWay::checkWallCollision(f32 angle, f32 radius, u32 t, const EG
 
     if (maskOut) {
         if (push) {
-            CollisionDirector::Instance()->pushCollisionEntry(dist, maskOut,
-                    KCL_TYPE_BIT(KColType::Wall), static_cast<u16>(KColType::Wall));
+            CollisionDirector::Instance()->pushCollisionEntry(dist, maskOut, KColType::Wall);
         } else {
             *maskOut |= KCL_TYPE_BIT(KColType::Wall);
         }
@@ -397,8 +395,7 @@ bool ObjectTwistedWay::checkFloorCollision(f32 angle, f32 radius, const EGG::Vec
     if (maskOut) {
         if (push) {
             auto *colDir = CollisionDirector::Instance();
-            colDir->pushCollisionEntry(dist, maskOut, KCL_TYPE_BIT(KColType::Road),
-                    static_cast<u16>(KColType::Road));
+            colDir->pushCollisionEntry(dist, maskOut, KColType::Road);
             colDir->setCurrentCollisionVariant(2);
 
             if (EGG::Mathf::abs(relPos.z) < HALF_DEPTH * TRICKABLE_RADIUS_FACTOR) {
