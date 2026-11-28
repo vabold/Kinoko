@@ -502,8 +502,7 @@ bool CourseColMgr::doCheckWithInfo(KColData *data, CollisionCheckFunc collisionC
             u32 flags = KCL_ATTRIBUTE_TYPE_BIT(attribute);
             if (maskOut) {
                 if (push) {
-                    CollisionDirector::Instance()->pushCollisionEntry(dist, maskOut, flags,
-                            attribute);
+                    CollisionDirector::Instance()->pushCollisionEntry(dist, maskOut, attribute);
                 } else {
                     *maskOut = *maskOut | flags;
                 }
@@ -544,8 +543,7 @@ bool CourseColMgr::doCheckMaskOnly(KColData *data, CollisionCheckFunc collisionC
     while ((data->*collisionCheckFunc)(&dist, nullptr, &attribute)) {
         if ((!m_noBounceWallInfo || !(attribute & KCL_SOFT_WALL_MASK)) && maskOut) {
             if (push) {
-                CollisionDirector::Instance()->pushCollisionEntry(dist, maskOut,
-                        KCL_ATTRIBUTE_TYPE_BIT(attribute), attribute);
+                CollisionDirector::Instance()->pushCollisionEntry(dist, maskOut, attribute);
             } else {
                 *maskOut |= KCL_ATTRIBUTE_TYPE_BIT(attribute);
             }

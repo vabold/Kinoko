@@ -126,8 +126,9 @@ public:
     /// @endPublicColCheckFuncs
 
     void resetCollisionEntries(KCLTypeMask *maskOut);
-    void pushCollisionEntry(f32 dist, KCLTypeMask *typeMask, KCLTypeMask kclTypeBit,
-            CollisionAttribute attribute);
+    void pushCollisionEntry(f32 dist, KCLTypeMask *typeMask, CollisionAttribute attribute);
+    void pushCollisionEntry(f32 dist, KCLTypeMask *typeMask, KColType type);
+
     [[nodiscard]] const CollisionEntry *findClosestCollisionEntry(KCLTypeMask type) const;
 
     /// @beginSetters
