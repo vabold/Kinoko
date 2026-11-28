@@ -55,6 +55,8 @@ cd out
 ./kinoko test -s testCases.bin
 ```
 
+Run `./kinoko --help` to list all modes, or `./kinoko <mode> --help` for a mode's options.
+
 ## Replaying a Ghost
 
 The simplest use of Kinoko is to just determine whether or not a ghost finishes the race with the timer matching what is present in the ghost `.rkg` file header. To replay a ghost, you can run:

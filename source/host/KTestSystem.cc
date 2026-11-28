@@ -138,8 +138,8 @@ bool KTestSystem::run() {
 /// @param argc The number of arguments.
 /// @param argv The arguments.
 void KTestSystem::parseOptions(int argc, char **argv) {
-    if (argc < 2) {
-        PANIC("Expected suite/ghost/krkg argument!");
+    if (argc == 0) {
+        exitWithHelp("No options specified for mode 'test'!");
     }
 
     std::optional<char *> rkgPath;
@@ -149,19 +149,20 @@ void KTestSystem::parseOptions(int argc, char **argv) {
     for (int i = 0; i < argc; ++i) {
         std::optional<Host::EOption> flag = Host::Option::CheckFlag(argv[i]);
         if (!flag || *flag == Host::EOption::Invalid) {
-            WARN("Expected a flag! Got: %s", argv[i]);
-            continue;
+            exitWithHelp("Expected a flag! Got: %s", argv[i]);
         }
 
         switch (*flag) {
         case Host::EOption::Suite: {
             if (m_testMode != Host::EOption::Invalid) {
-                PANIC("Mode was already set!");
+                exitWithHelp("--suite cannot be repeated or combined with --ghost/--krkg!");
             }
 
             m_testMode = Host::EOption::Suite;
 
-            ASSERT(i + 1 < argc);
+            if (i + 1 >= argc) {
+                exitWithHelp("No suite file specified for mode 'test'!");
+            }
 
             size_t size;
             u8 *data = Abstract::File::LoadHost(argv[++i], size);
@@ -176,55 +177,62 @@ void KTestSystem::parseOptions(int argc, char **argv) {
         } break;
         case Host::EOption::Ghost:
             if (m_testMode != Host::EOption::Invalid && m_testMode != Host::EOption::Ghost) {
-                PANIC("Mode was already set!");
+                exitWithHelp("--ghost cannot be combined with --suite!");
             }
 
             m_testMode = Host::EOption::Ghost;
-            ASSERT(i + 1 < argc);
+
+            if (i + 1 >= argc) {
+                exitWithHelp("No ghost file specified for mode 'test'!");
+            }
+
             rkgPath = argv[++i];
 
             break;
         case Host::EOption::KRKG:
             if (m_testMode != Host::EOption::Invalid && m_testMode != Host::EOption::Ghost) {
-                PANIC("Mode was already set!");
+                exitWithHelp("--krkg cannot be combined with --suite!");
             }
 
             m_testMode = Host::EOption::Ghost;
-            ASSERT(i + 1 < argc);
+
+            if (i + 1 >= argc) {
+                exitWithHelp("No KRKG file specified for mode 'test'!");
+            }
+
             krkgPath = argv[++i];
 
             break;
-        case Host::EOption::TargetFrame:
-            ASSERT(i + 1 < argc);
-            {
-                if (strlen(argv[++i]) > 5) {
-                    PANIC("Target has too many digits");
-                }
-                target = atoi(argv[i]);
-                if (target < 0 || target > std::numeric_limits<u16>::max()) {
-                    PANIC("Target is out of bounds (expected 0-65535), got %d\n", *target);
-                }
+        case Host::EOption::TargetFrame: {
+            if (i + 1 >= argc) {
+                exitWithHelp("No target frame specified for mode 'test'!");
             }
 
-            break;
+            if (strlen(argv[++i]) > 5) {
+                exitWithHelp("Target frame has too many digits! Got: %s", argv[i]);
+            }
+            target = atoi(argv[i]);
+            if (target < 0 || target > std::numeric_limits<u16>::max()) {
+                exitWithHelp("Target frame is out of bounds (expected 0-65535)! Got: %d", *target);
+            }
+        } break;
         case Host::EOption::Invalid:
         default:
-            PANIC("Invalid flag!");
-            break;
+            exitWithHelp("Invalid flag! %s", argv[i]);
         }
     }
 
     if (target && m_testMode != Host::EOption::Ghost) {
-        PANIC("'--framecount' is only supported in a single ghost test");
+        exitWithHelp("--framecount is only supported in a single ghost test!");
     }
 
     if (m_testMode == Host::EOption::Ghost) {
         if (!rkgPath) {
-            PANIC("Missing ghost argument!");
+            exitWithHelp("--krkg requires --ghost!");
         }
 
         if (!krkgPath) {
-            PANIC("Missing KRKG argument!");
+            exitWithHelp("--ghost requires --krkg!");
         }
 
         if (!target) {
@@ -233,6 +241,26 @@ void KTestSystem::parseOptions(int argc, char **argv) {
 
         m_testCases.emplace(*rkgPath, *rkgPath, *krkgPath, *target);
     }
+}
+
+/// @brief Prints the command line usage for test mode.
+void KTestSystem::printHelp() const {
+    printf("Usage: kinoko test -s <suite>\n"
+           "       kinoko test -g <ghost> -k <krkg> [-f <frame>]\n"
+           "\n"
+           "Validates ghosts frame-by-frame against reference data captured from the game.\n"
+           "\n"
+           "Options:\n"
+           "  -s, --suite <file>        Run all test cases in a suite (e.g. testCases.bin)\n"
+           "  -g, --ghost <file>        Ghost (.rkg) to test; requires --krkg\n"
+           "  -k, --krkg <file>         Reference data (.krkg) for --ghost\n"
+           "  -f, --framecount <frame>  Frame to validate up to (0-65535); requires --ghost\n"
+           "                            0 or past the end validates the entire ghost\n"
+           "  -h, --help                Show this help message\n"
+           "\n"
+           "Examples:\n"
+           "  kinoko test -s testCases.bin\n"
+           "  kinoko test -g ghost.rkg -k ghost.krkg -f 1000\n");
 }
 
 KTestSystem *KTestSystem::CreateInstance() {

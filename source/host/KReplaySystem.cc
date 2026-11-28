@@ -48,20 +48,21 @@ bool KReplaySystem::run() {
 /// @param argc The number of arguments.
 /// @param argv The arguments.
 void KReplaySystem::parseOptions(int argc, char **argv) {
-    if (argc < 2) {
-        PANIC("Expected ghost argument!");
+    if (argc == 0) {
+        exitWithHelp("No options specified for mode 'replay'!");
     }
 
     for (int i = 0; i < argc; ++i) {
         std::optional<Host::EOption> flag = Host::Option::CheckFlag(argv[i]);
         if (!flag || *flag == Host::EOption::Invalid) {
-            WARN("Expected a flag! Got: %s", argv[i]);
-            continue;
+            exitWithHelp("Expected a flag! Got: %s", argv[i]);
         }
 
         switch (*flag) {
         case Host::EOption::Ghost: {
-            ASSERT(i + 1 < argc);
+            if (i + 1 >= argc) {
+                exitWithHelp("No ghost file specified for mode 'replay'!");
+            }
 
             m_currentGhostFileName = argv[++i];
             m_currentRawGhost =
@@ -80,10 +81,25 @@ void KReplaySystem::parseOptions(int argc, char **argv) {
         } break;
         case Host::EOption::Invalid:
         default:
-            PANIC("Invalid flag!");
-            break;
+            exitWithHelp("Invalid flag! %s", argv[i]);
         }
     }
+}
+
+/// @brief Prints the command line usage for replay mode.
+void KReplaySystem::printHelp() const {
+    printf("Usage: kinoko replay -g <ghost>\n"
+           "\n"
+           "Replays a ghost file and checks that the race finishes with per-lap and total race\n"
+           "times that match what is stored in the ghost file's header. Failures are written to\n"
+           "results.txt.\n"
+           "\n"
+           "Options:\n"
+           "  -g, --ghost <file>  Ghost (.rkg) to replay\n"
+           "  -h, --help          Show this help message\n"
+           "\n"
+           "Example:\n"
+           "  kinoko replay -g ghost.rkg\n");
 }
 
 KReplaySystem *KReplaySystem::CreateInstance() {

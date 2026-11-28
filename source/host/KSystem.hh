@@ -29,7 +29,12 @@ public:
     /// @param argv The arguments.
     virtual void parseOptions(int argc, char **argv) = 0;
 
+    /// @brief Prints the command line usage for the system.
+    virtual void printHelp() const = 0;
+
 protected:
+    void exitWithHelp(const char *fmt, ...) const;
+
     static KSystem *s_instance;
 };
 
