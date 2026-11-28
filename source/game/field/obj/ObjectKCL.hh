@@ -21,6 +21,8 @@ public:
     [[nodiscard]] const EGG::Vector3f &getPosition() const override;
     [[nodiscard]] f32 getCollisionRadius() const override;
 
+    /// @beginPublicColCheckFuncs
+
     [[nodiscard]] bool checkPointPartial(const EGG::Vector3f &pos, const EGG::Vector3f &prevPos,
             KCLTypeMask mask, CollisionInfoPartial *info, KCLTypeMask *maskOut) override;
     [[nodiscard]] bool checkPointPartialPush(const EGG::Vector3f &pos, const EGG::Vector3f &prevPos,
@@ -71,6 +73,8 @@ public:
             const EGG::Vector3f &prevPos, KCLTypeMask mask, CollisionInfo *info,
             KCLTypeMask *maskOut, u32 timeOffset) override;
 
+    /// @endPublicColCheckFuncs
+
     virtual void update(u32 timeOffset);
     virtual void calcScale(u32 timeOffset);
     virtual void setMovingObjVel(const EGG::Vector3f &v);
@@ -84,10 +88,15 @@ public:
             const EGG::Vector3f &prevPos, KCLTypeMask mask, CollisionInfo *info,
             KCLTypeMask *maskOut, u32 timeOffset);
 
-    /// @brief The KCL data backing this object's collision, in the object's local model space.
+    /// @beginGetters
+
+    /// @brief Gets the KCL data backing this object's collision, in the object's local model space
+    /// @return Pointer to the KCL data, or `nullptr` if there is no KCL data
     [[nodiscard]] const KColData *kclData() const {
         return m_objColMgr ? m_objColMgr->data() : nullptr;
     }
+
+    /// @endGetters
 
 protected:
     ObjColMgr *m_objColMgr;      ///< Collision manager for the object's KCL data
