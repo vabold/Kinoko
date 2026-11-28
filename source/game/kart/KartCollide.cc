@@ -220,11 +220,11 @@ void KartCollide::calcBodyCollision(f32 totalScale, f32 sinkDepth, const EGG::Qu
     bool bVar1 = false;
 
     for (u16 hitboxIdx = 0; hitboxIdx < hitboxGroup->hitboxCount(); ++hitboxIdx) {
-        Field::KCLTypeMask flags = KCL_TYPE_DRIVER_SOLID_SURFACE;
+        Field::KCLTypeMask flags = Field::KCL_TYPE_BODY_COLLIDABLE;
         Hitbox &hitbox = hitboxGroup->hitbox(hitboxIdx);
 
         if (hitbox.bspHitbox()->wallsOnly != 0) {
-            flags = 0x4A109000;
+            flags = Field::KCL_TYPE_BODY_WALLS_ONLY_COLLIDABLE;
             Field::CourseColMgr::Instance()->setNoBounceWallInfo(&noBounceWallInfo);
         }
 
@@ -268,7 +268,7 @@ void KartCollide::calcFloorEffect() {
     m_numFloorOnlyCollisions = 0;
     m_numSoftWallCollisions = 0;
 
-    Field::KCLTypeMask mask = KCL_NONE;
+    Field::KCLTypeMask mask = Field::KCL_NONE;
     calcTriggers(&mask, pos(), false);
 
     auto *colDir = Field::CollisionDirector::Instance();
@@ -278,17 +278,17 @@ void KartCollide::calcFloorEffect() {
         activateOob(true, &mask, false, false);
     }
 
-    mask = KCL_NONE;
+    mask = Field::KCL_NONE;
     calcTriggers(&mask, pos(), true);
 
     m_solidOobTimer =
             m_surfaceFlags.onBit(eSurfaceFlags::SolidOOB) ? std::min(3, m_solidOobTimer + 1) : 0;
 
     if (status().onBit(eStatus::Wall3Collision, eStatus::WallCollision)) {
-        Field::KCLTypeMask maskOut = KCL_NONE;
+        Field::KCLTypeMask maskOut = Field::KCL_NONE;
 
         if (colDir->checkSphereCachedPartialPush(m_boundingRadius, pos(), EGG::Vector3f::inf,
-                    KCL_TYPE_BIT(COL_TYPE_FALL_BOUNDARY), nullptr, &maskOut, 0)) {
+                    Field::KCL_TYPE_BIT(Field::KColType::FallBoundary), nullptr, &maskOut, 0)) {
             calcFallBoundary(&maskOut, true);
         }
     }
@@ -298,11 +298,11 @@ void KartCollide::calcFloorEffect() {
 void KartCollide::calcTriggers(Field::KCLTypeMask *mask, const EGG::Vector3f &pos, bool twoPoint) {
     // Kinoko-specific performance optimization: the non-directional check's result is only used to
     // set the wall and solid OOB surface flags, so we skip checking against all other KCL types.
-    constexpr Field::KCLTypeMask NON_DIRECTIONAL_MASK =
-            KCL_TYPE_NON_DIRECTIONAL & (KCL_TYPE_WALL | KCL_TYPE_BIT(COL_TYPE_SOLID_OOB));
+    constexpr Field::KCLTypeMask NON_DIRECTIONAL_MASK = Field::KCL_TYPE_NON_DIRECTIONAL &
+            (Field::KCL_TYPE_WALL | Field::KCL_TYPE_BIT(Field::KColType::SolidOOB));
 
     EGG::Vector3f v1 = twoPoint ? physics()->pos() : EGG::Vector3f::inf;
-    Field::KCLTypeMask typeMask = twoPoint ? KCL_TYPE_DIRECTIONAL : NON_DIRECTIONAL_MASK;
+    Field::KCLTypeMask typeMask = twoPoint ? Field::KCL_TYPE_DIRECTIONAL : NON_DIRECTIONAL_MASK;
     f32 radius = twoPoint ? 80.0f : 100.0f * move()->totalScale();
     f32 scalar = -bsp().initialYPos * move()->totalScale() * 0.3f;
     EGG::Vector3f scaledPos = pos + scalar * componentYAxis();
@@ -323,11 +323,11 @@ void KartCollide::calcTriggers(Field::KCLTypeMask *mask, const EGG::Vector3f &po
     if (twoPoint) {
         handleTriggers(mask);
     } else {
-        if (*mask & KCL_TYPE_WALL) {
+        if (*mask & Field::KCL_TYPE_WALL) {
             m_surfaceFlags.setBit(eSurfaceFlags::Wall);
         }
 
-        if (*mask & KCL_TYPE_BIT(COL_TYPE_SOLID_OOB)) {
+        if (*mask & Field::KCL_TYPE_BIT(Field::KColType::SolidOOB)) {
             m_surfaceFlags.setBit(eSurfaceFlags::SolidOOB);
         }
     }
@@ -338,10 +338,10 @@ void KartCollide::handleTriggers(Field::KCLTypeMask *mask) {
     calcFallBoundary(mask, false);
     processCannon();
 
-    if (*mask & KCL_TYPE_BIT(COL_TYPE_EFFECT_TRIGGER)) {
+    if (*mask & Field::KCL_TYPE_BIT(Field::KColType::EffectTrigger)) {
         auto *colDir = Field::CollisionDirector::Instance();
-        const auto *entry =
-                colDir->findClosestCollisionEntry(KCL_TYPE_BIT(COL_TYPE_EFFECT_TRIGGER));
+        const auto *entry = colDir->findClosestCollisionEntry(
+                Field::KCL_TYPE_BIT(Field::KColType::EffectTrigger));
         if (entry && entry->variant() == 4) {
             halfPipe()->end(true);
             status().setBit(eStatus::EndHalfPipe);
@@ -352,13 +352,14 @@ void KartCollide::handleTriggers(Field::KCLTypeMask *mask) {
 
 /// @addr{0x80571D98}
 void KartCollide::calcFallBoundary(Field::KCLTypeMask *mask, bool shortBoundary) {
-    if (!(*mask & KCL_TYPE_BIT(COL_TYPE_FALL_BOUNDARY))) {
+    if (!(*mask & Field::KCL_TYPE_BIT(Field::KColType::FallBoundary))) {
         return;
     }
 
     if (shortBoundary) {
         auto *colDir = Field::CollisionDirector::Instance();
-        const auto *entry = colDir->findClosestCollisionEntry(KCL_TYPE_BIT(COL_TYPE_FALL_BOUNDARY));
+        const auto *entry = colDir->findClosestCollisionEntry(
+                Field::KCL_TYPE_BIT(Field::KColType::FallBoundary));
         if (!entry || entry->variant() != 7) {
             return;
         }
@@ -429,7 +430,7 @@ void KartCollide::calcWheelCollision(u16 /*wheelIdx*/, CollisionGroup *hitboxGro
 
     bool collided = Field::CollisionDirector::Instance()->checkSphereCachedFullPush(
             firstHitbox.radius(), firstHitbox.worldPos(), firstHitbox.lastPos(),
-            KCL_TYPE_VEHICLE_COLLIDEABLE, &colInfo, &kclOut, 0);
+            Field::KCL_TYPE_VEHICLE_COLLIDABLE, &colInfo, &kclOut, 0);
 
     CollisionData &collisionData = hitboxGroup->collisionData();
 
@@ -447,7 +448,7 @@ void KartCollide::calcWheelCollision(u16 /*wheelIdx*/, CollisionGroup *hitboxGro
         collisionData.bSoftWall = true;
     }
 
-    if (kclOut & KCL_TYPE_FLOOR) {
+    if (kclOut & Field::KCL_TYPE_FLOOR) {
         collisionData.bFloor = true;
         collisionData.floorNrm = colInfo.floorNrm;
     }
@@ -501,8 +502,8 @@ void KartCollide::calcSideCollision(CollisionData &collisionData, Hitbox &hitbox
         Field::CollisionInfoPartial tempColInfo;
 
         if (Field::CollisionDirector::Instance()->checkSphereCachedPartial(hitbox.radius(),
-                    effectivePos, hitbox.lastPos(), KCL_TYPE_DRIVER_WALL, &tempColInfo, nullptr,
-                    0)) {
+                    effectivePos, hitbox.lastPos(), Field::KCL_TYPE_DRIVER_WALL, &tempColInfo,
+                    nullptr, 0)) {
             tangents[i] = colInfo->tangentOff.squaredLength();
         }
     }
@@ -613,12 +614,13 @@ void KartCollide::processBody(CollisionData &collisionData, Hitbox &hitbox,
 
 /// @addr{0x8056E930}
 void KartCollide::processMovingWater(CollisionData &collisionData, Field::KCLTypeMask *maskOut) {
-    if (!(*maskOut & KCL_TYPE_BIT(COL_TYPE_MOVING_WATER))) {
+    if (!(*maskOut & Field::KCL_TYPE_BIT(Field::KColType::MovingWater))) {
         return;
     }
 
     auto *colDir = Field::CollisionDirector::Instance();
-    const auto *entry = colDir->findClosestCollisionEntry(KCL_TYPE_BIT(COL_TYPE_MOVING_WATER));
+    const auto *entry =
+            colDir->findClosestCollisionEntry(Field::KCL_TYPE_BIT(Field::KColType::MovingWater));
     if (!entry) {
         return;
     }
@@ -647,20 +649,20 @@ void KartCollide::processMovingWater(CollisionData &collisionData, Field::KCLTyp
 
 /// @addr{0x8056F184}
 bool KartCollide::processWall(CollisionData &collisionData, Field::KCLTypeMask *maskOut) {
-    if (!(*maskOut & KCL_TYPE_DRIVER_WALL_NO_INVISIBLE_WALL2)) {
+    if (!(*maskOut & Field::KCL_TYPE_DRIVER_WALL_NO_INVISIBLE_WALL2)) {
         return false;
     }
 
     auto *colDirector = Field::CollisionDirector::Instance();
-    if (!colDirector->findClosestCollisionEntry(KCL_TYPE_DRIVER_WALL_NO_INVISIBLE_WALL2)) {
+    if (!colDirector->findClosestCollisionEntry(Field::KCL_TYPE_DRIVER_WALL_NO_INVISIBLE_WALL2)) {
         return false;
     }
 
-    if (*maskOut & KCL_TYPE_DRIVER_WALL_NO_INVISIBLE_WALL) {
-        const auto *entry =
-                colDirector->findClosestCollisionEntry(KCL_TYPE_DRIVER_WALL_NO_INVISIBLE_WALL);
+    if (*maskOut & Field::KCL_TYPE_DRIVER_WALL_NO_INVISIBLE_WALL) {
+        const auto *entry = colDirector->findClosestCollisionEntry(
+                Field::KCL_TYPE_DRIVER_WALL_NO_INVISIBLE_WALL);
         if (entry) {
-            collisionData.closestWallFlags = entry->baseType();
+            collisionData.closestWallFlags = static_cast<Field::KColType>(entry->baseType());
             collisionData.closestWallSettings = entry->variant();
 
             if (entry->attribute.onBit(Field::CollisionDirector::eCollisionAttribute::Soft)) {
@@ -680,20 +682,20 @@ bool KartCollide::processWall(CollisionData &collisionData, Field::KCLTypeMask *
 /// @param wheel Differentiates between body and wheel floor collision (boost panels)
 void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
         Field::CollisionInfo * /*colInfo*/, Field::KCLTypeMask *maskOut, bool wheel) {
-    constexpr Field::KCLTypeMask BOOST_RAMP_MASK = KCL_TYPE_BIT(COL_TYPE_BOOST_RAMP);
+    constexpr Field::KCLTypeMask BOOST_RAMP_MASK = Field::KCL_TYPE_BIT(Field::KColType::BoostRamp);
 
     if (collisionData.bSoftWall) {
         ++m_numSoftWallCollisions;
         m_sumHitboxBottomHeightSoftWall += hitbox.worldPos().y - hitbox.radius();
     }
 
-    if (!(*maskOut & KCL_TYPE_FLOOR)) {
+    if (!(*maskOut & Field::KCL_TYPE_FLOOR)) {
         return;
     }
 
     auto *colDirector = Field::CollisionDirector::Instance();
 
-    const auto *closestColEntry = colDirector->findClosestCollisionEntry(KCL_TYPE_FLOOR);
+    const auto *closestColEntry = colDirector->findClosestCollisionEntry(Field::KCL_TYPE_FLOOR);
     if (!closestColEntry) {
         return;
     }
@@ -722,7 +724,7 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
     collisionData.closestFloorFlags = closestColEntry->typeMask;
     collisionData.closestFloorSettings = closestColEntry->variant();
 
-    if (wheel && !!(*maskOut & KCL_TYPE_BIT(COL_TYPE_BOOST_PAD))) {
+    if (wheel && !!(*maskOut & Field::KCL_TYPE_BIT(Field::KColType::BoostPad))) {
         move()->padType().setBit(KartMove::ePadType::BoostPanel);
     }
 
@@ -743,11 +745,11 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
         m_sumHitboxBottomHeightFloorOnly += hitbox.worldPos().y - hitbox.radius();
     }
 
-    if (*maskOut & KCL_TYPE_BIT(COL_TYPE_STICKY_ROAD)) {
+    if (*maskOut & Field::KCL_TYPE_BIT(Field::KColType::StickyRoad)) {
         status.setBit(eStatus::StickyRoad);
     }
 
-    Field::KCLTypeMask halfPipeRampMask = KCL_TYPE_BIT(COL_TYPE_HALFPIPE_RAMP);
+    Field::KCLTypeMask halfPipeRampMask = Field::KCL_TYPE_BIT(Field::KColType::HalfpipeRamp);
     if (*maskOut & halfPipeRampMask) {
         const auto *entry = colDirector->findClosestCollisionEntry(halfPipeRampMask);
         if (entry) {
@@ -759,7 +761,7 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
         }
     }
 
-    Field::KCLTypeMask jumpPadMask = KCL_TYPE_BIT(COL_TYPE_JUMP_PAD);
+    Field::KCLTypeMask jumpPadMask = Field::KCL_TYPE_BIT(Field::KColType::JumpPad);
     if (*maskOut & jumpPadMask) {
         const auto *entry = colDirector->findClosestCollisionEntry(jumpPadMask);
         if (entry) {
@@ -777,8 +779,8 @@ void KartCollide::processFloor(CollisionData &collisionData, Hitbox &hitbox,
 /// @brief Checks if we are colliding with a cannon trigger and sets the state flag if so.
 void KartCollide::processCannon() {
     auto *colDirector = Field::CollisionDirector::Instance();
-    const auto *entry =
-            colDirector->findClosestCollisionEntry(KCL_TYPE_BIT(COL_TYPE_CANNON_TRIGGER));
+    const auto *entry = colDirector->findClosestCollisionEntry(
+            Field::KCL_TYPE_BIT(Field::KColType::CannonTrigger));
     if (entry) {
         state()->setCannonPointId(entry->variant());
         status().setBit(eStatus::CannonStart);
@@ -897,8 +899,8 @@ void KartCollide::applySomeFloorMoment(f32 down, f32 rate, CollisionGroup *hitbo
 bool KartCollide::FUN_805B6A9C(CollisionData &collisionData, const Hitbox &hitbox,
         EGG::BoundBox3f &minMax, EGG::Vector3f &relPos, s32 &count,
         const Field::KCLTypeMask &maskOut, const Field::CollisionInfo &colInfo) {
-    if (maskOut & KCL_TYPE_WALL) {
-        if (!(maskOut & KCL_TYPE_FLOOR) && status().onBit(eStatus::HWG) &&
+    if (maskOut & Field::KCL_TYPE_WALL) {
+        if (!(maskOut & Field::KCL_TYPE_FLOOR) && status().onBit(eStatus::HWG) &&
                 state()->softWallSpeed().dot(colInfo.wallNrm) < 0.3f) {
             return true;
         }
@@ -907,20 +909,20 @@ bool KartCollide::FUN_805B6A9C(CollisionData &collisionData, const Hitbox &hitbo
 
         collisionData.wallNrm += colInfo.wallNrm;
 
-        if (maskOut & KCL_TYPE_ANY_INVISIBLE_WALL) {
+        if (maskOut & Field::KCL_TYPE_ANY_INVISIBLE_WALL) {
             collisionData.bInvisibleWall = true;
 
-            if (!(maskOut & KCL_TYPE_4010D000)) {
+            if (!(maskOut & Field::KCL_TYPE_VISIBLE_WALL)) {
                 collisionData.bInvisibleWallOnly = true;
 
-                if (maskOut & KCL_TYPE_BIT(COL_TYPE_HALFPIPE_INVISIBLE_WALL)) {
+                if (maskOut & Field::KCL_TYPE_BIT(Field::KColType::HalfpipeInvisibleWall)) {
                     skipWalls = true;
                 }
             }
         }
 
         if (!skipWalls) {
-            if (maskOut & KCL_TYPE_BIT(COL_TYPE_WALL_2)) {
+            if (maskOut & Field::KCL_TYPE_BIT(Field::KColType::Wall2)) {
                 collisionData.bWall3 = true;
             } else {
                 collisionData.bWall = true;
@@ -928,7 +930,7 @@ bool KartCollide::FUN_805B6A9C(CollisionData &collisionData, const Hitbox &hitbo
         }
     }
 
-    if (maskOut & KCL_TYPE_FLOOR) {
+    if (maskOut & Field::KCL_TYPE_FLOOR) {
         collisionData.floorNrm += colInfo.floorNrm;
         collisionData.bFloor = true;
     }

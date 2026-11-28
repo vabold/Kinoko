@@ -15,8 +15,8 @@ void CollisionData::reset() {
     rotFactor = 0.0f;
     closestFloorFlags = 0;
     closestFloorSettings = 0xffffffff;
-    closestWallFlags = 0;
-    closestFloorSettings = 0xffffffff;
+    closestWallFlags = Field::KColType::Road;
+    closestWallSettings = 0xffffffff;
     intensity = 0.0f;
     colPerpendicularity = 0.0f;
 

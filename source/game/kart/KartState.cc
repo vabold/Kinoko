@@ -237,7 +237,7 @@ void KartState::calcCollisions() {
         if (!wasWallCollision) {
             m_status.setBit(eStatus::WallCollisionStart);
 
-            if (wallKclType() == COL_TYPE_SPECIAL_WALL && wallKclVariant() == 0) {
+            if (wallKclType() == Field::KColType::SpecialWall && wallKclVariant() == 0) {
                 if (m_status.offBit(eStatus::TriggerRespawn, eStatus::InRespawn,
                             eStatus::AfterRespawn, eStatus::BeforeRespawn, eStatus::InAction,
                             eStatus::CannonStart, eStatus::InCannon)) {

@@ -320,7 +320,7 @@ void ObjectFireSnake::calcBounce(f32 initialVel) {
 
     if (m_currentFrame > BOUNCE_COL_CHECK_DELAY) {
         bool hasCol = CollisionDirector::Instance()->checkSphereFull(RADIUS, m_trajectoryPos,
-                EGG::Vector3f::inf, KCL_TYPE_64EBDFFF, &info, nullptr, 0);
+                EGG::Vector3f::inf, KCL_TYPE_OBJECT_COLLIDABLE, &info, nullptr, 0);
 
         if (hasCol) {
             m_trajectoryPos += info.tangentOff;

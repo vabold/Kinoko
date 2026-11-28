@@ -341,7 +341,7 @@ bool ObjectObakeManager::checkSphereImpl(f32 radius, const EGG::Vector3f &pos, K
             }
 
             // Bonking on top of block
-            if (mask & KCL_TYPE_BIT(COL_TYPE_SPECIAL_WALL)) {
+            if (mask & KCL_TYPE_BIT(KColType::SpecialWall)) {
                 t.makeT(block->pos());
                 m_colBox->setBoundingRadius(WALL_BOUNDING_RADIUS);
                 m_colBox->transform(t, WALL_SCALE, EGG::Vector3f::zero);
@@ -368,10 +368,11 @@ bool ObjectObakeManager::checkSphereImpl(f32 radius, const EGG::Vector3f &pos, K
                             if (push) {
                                 auto *colDir = CollisionDirector::Instance();
                                 colDir->pushCollisionEntry(dist.length(), maskOut,
-                                        KCL_TYPE_BIT(COL_TYPE_SPECIAL_WALL), COL_TYPE_SPECIAL_WALL);
+                                        KCL_TYPE_BIT(KColType::SpecialWall),
+                                        static_cast<u16>(KColType::SpecialWall));
                                 colDir->setCurrentCollisionVariant(2);
                             } else {
-                                *maskOut |= KCL_TYPE_BIT(COL_TYPE_SPECIAL_WALL);
+                                *maskOut |= KCL_TYPE_BIT(KColType::SpecialWall);
                             }
                         }
                     }
@@ -380,7 +381,7 @@ bool ObjectObakeManager::checkSphereImpl(f32 radius, const EGG::Vector3f &pos, K
                 collision |= collided;
             }
 
-            if (mask & KCL_TYPE_BIT(COL_TYPE_ROAD)) {
+            if (mask & KCL_TYPE_BIT(KColType::Road)) {
                 t.makeT(block->pos());
                 m_colBox->transform(t, ROAD_SCALE, EGG::Vector3f::zero);
 
@@ -406,9 +407,10 @@ bool ObjectObakeManager::checkSphereImpl(f32 radius, const EGG::Vector3f &pos, K
                             if (push) {
                                 auto *colDir = CollisionDirector::Instance();
                                 colDir->pushCollisionEntry(dist.length(), maskOut,
-                                        KCL_TYPE_BIT(COL_TYPE_ROAD), COL_TYPE_ROAD);
+                                        KCL_TYPE_BIT(KColType::Road),
+                                        static_cast<u16>(KColType::Road));
                             } else {
-                                *maskOut |= KCL_TYPE_BIT(COL_TYPE_ROAD);
+                                *maskOut |= KCL_TYPE_BIT(KColType::Road);
                             }
                         }
                     }

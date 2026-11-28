@@ -500,7 +500,7 @@ bool KColData::checkSphereImpl(f32 *distOut, EGG::Vector3f *fnrmOut, u16 *flagsO
 /// returns `false`. If `Type` is `CollisionCheckType::Edge`, then checks to see if the sphere is at
 /// least colliding with the edge of the prism, otherwise checks to see if the sphere is colliding
 /// with the inside of the prism; if these checks fail, returns `false`. If `Type` is
-/// `CollisionCheckType::Movement`, the prism has any #KCL_TYPE_DIRECTIONAL flags set, and the
+/// `CollisionCheckType::Movement`, the prism has any @ref KCL_TYPE_DIRECTIONAL flags set, and the
 /// sphere is moving away from the direction of the prism's face normal, then returns `false`.
 ///
 /// After computing the distance between the sphere and each edge of the prism, first checks to see

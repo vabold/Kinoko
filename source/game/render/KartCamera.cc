@@ -206,7 +206,7 @@ void KartCamera::calcCollision(KartCameraState &state, bool isBackwards) const {
     Field::CollisionDirector::Instance()->resetCollisionEntries(&mask);
 
     if (!Field::ObjectDrivableDirector::Instance()->checkSphereFullPush(radius, state.m_pos,
-                state.m_prevPos, KCL_TYPE_CAMERA_COLLIDABLE, &info, &mask, 0)) {
+                state.m_prevPos, Field::KCL_TYPE_CAMERA_COLLIDABLE, &info, &mask, 0)) {
         state.m_prevPos = state.m_pos;
     }
 }

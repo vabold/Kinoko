@@ -411,7 +411,7 @@ bool KartObjectProxy::isInRespawn() const {
 }
 
 /// @addr{0x805911A8}
-Field::KCLTypeMask KartObjectProxy::wallKclType() const {
+Field::KColType KartObjectProxy::wallKclType() const {
     return collisionData().closestWallFlags;
 }
 

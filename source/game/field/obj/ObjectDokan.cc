@@ -104,7 +104,7 @@ void ObjectDokan::calcFloor() {
     KCLTypeMask typeMask;
 
     if (!CollisionDirector::Instance()->checkSphereFull(PIPE_RADIUS, colPos, EGG::Vector3f::inf,
-                KCL_TYPE_64EBDFFF, &colInfo, &typeMask, 0)) {
+                KCL_TYPE_OBJECT_COLLIDABLE, &colInfo, &typeMask, 0)) {
         return;
     }
 
