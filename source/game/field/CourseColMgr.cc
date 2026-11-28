@@ -441,7 +441,7 @@ bool CourseColMgr::checkSphereImpl(KColData *data, f32 scale, f32 radius, const 
 
     f32 invScale = 1.0f / scale;
     if (cached) {
-        data->lookupSphereCached(pos * invScale, prevPos * invScale, mask, radius * invScale);
+        data->lookupSphereCached(radius * invScale, pos * invScale, prevPos * invScale, mask);
     } else {
         data->lookupSphere(radius * invScale, pos * invScale, prevPos * invScale, mask);
     }
