@@ -190,7 +190,7 @@ void ObjectHeyho::calcJump() {
     Field::KCLTypeMask flags = KCL_NONE;
 
     if (CollisionDirector::Instance()->checkSphereFull(COLLISION_RADIUS, pos() + COLLISION_OFFSET,
-                EGG::Vector3f::inf, KCL_TYPE_VEHICLE_COLLIDEABLE, &info, &flags, 0)) {
+                EGG::Vector3f::inf, KCL_TYPE_VEHICLE_COLLIDABLE, &info, &flags, 0)) {
         m_floorCollision = true;
         if (info.floorDist > -std::numeric_limits<f32>::min()) {
             m_floorNrm = info.floorNrm;
@@ -203,7 +203,7 @@ void ObjectHeyho::calcJump() {
         f32 zPos = pos().z + info.tangentOff.z - m_floorNrm.z * 60.0f;
         setPos(EGG::Vector3f(xPos, pos().y, zPos));
 
-        if (!(flags & KCL_TYPE_BIT(COL_TYPE_INVISIBLE_WALL)) && m_currentAnim != Animation::Move) {
+        if (!(flags & KCL_TYPE_BIT(KColType::InvisibleWall)) && m_currentAnim != Animation::Move) {
             m_forward = m_railInterpolator->nextPoint().pos - m_railInterpolator->curPoint().pos;
             if (m_currentAnim == Animation::Jump) {
                 m_currentAnim = Animation::Jumped;

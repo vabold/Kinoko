@@ -471,7 +471,7 @@ bool CourseColMgr::checkSphereImpl(KColData *data, f32 scale, f32 radius, const 
 ///
 /// Otherwise, if `maskOut` is provided, it sets the @ref KColType bits that were hit; it also
 /// pushes to the @ref CollisionDirector cache if `push` is `true`. If the colliding flags include
-/// #KCL_TYPE_SOLID_SURFACE, `info` is updated accordingly.
+/// @ref KCL_TYPE_SOLID_SURFACE, `info` is updated accordingly.
 ///
 /// Finally, clears @ref m_localMtx to ensure it does not affect subsequent collision checks.
 /// Returns `true` if at least one collision occurred.

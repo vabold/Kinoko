@@ -13,13 +13,13 @@ enum class eStatus {
     /// or not the acceleration button is pressed. This can lead to "successful" synchronization
     /// of ghosts which could not have been created legitimately in the first place.
     DriftInput = 2,
-    DriftManual = 3,                ///< Currently in a drift w/ manual.
-    BeforeRespawn = 4,              ///< Set on respawn collision, cleared on position snap.
-    Wall3Collision = 5,             ///< Set when colliding with wall KCL #COL_TYPE_WALL_2
-    WallCollision = 6,              ///< Set if we are colliding with a wall.
-    HopStart = 7,                   ///< Set if @ref m_bDriftInput was toggled on this frame.
-    AccelerateStart = 8,            ///< Set if @ref m_bAccelerate was toggled on this frame.
-    GroundStart = 9,                ///< Set first frame landing from airtime.
+    DriftManual = 3,     ///< Currently in a drift w/ manual.
+    BeforeRespawn = 4,   ///< Set on respawn collision, cleared on position snap.
+    Wall3Collision = 5,  ///< Set when colliding with wall KCL @ref Field::KColType::Wall2
+    WallCollision = 6,   ///< Set if we are colliding with a wall.
+    HopStart = 7,        ///< Set if @ref m_bDriftInput was toggled on this frame.
+    AccelerateStart = 8, ///< Set if @ref m_bAccelerate was toggled on this frame.
+    GroundStart = 9,     ///< Set first frame landing from airtime.
     VehicleBodyFloorCollision = 10, ///< Set if the vehicle body is colliding with the floor.
     AnyWheelCollision = 11,         ///< Set when any wheel is touching floor collision.
     AllWheelsCollision = 12,        ///< Set when all wheels are touching floor collision.

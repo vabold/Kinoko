@@ -252,11 +252,11 @@ bool ObjectTwistedWay::checkSphereImpl(f32 radius, const EGG::Vector3f &pos,
     f32 angle = isInRace ? CalcWaveAngle(-relPos.z / HALF_DEPTH, t) : 0.0f;
 
     bool hasCol = false;
-    if (mask & KCL_TYPE_BIT(COL_TYPE_WALL)) {
+    if (mask & KCL_TYPE_BIT(KColType::Wall)) {
         hasCol |= checkWallCollision(angle, radius, t, relPos, info, maskOut, push);
     }
 
-    if (mask & KCL_TYPE_BIT(COL_TYPE_ROAD)) {
+    if (mask & KCL_TYPE_BIT(KColType::Road)) {
         hasCol |= checkFloorCollision(angle, radius, relPos, info, maskOut, push);
     }
 
@@ -318,9 +318,9 @@ bool ObjectTwistedWay::checkWallCollision(f32 angle, f32 radius, u32 t, const EG
         if (maskOut) {
             if (push) {
                 CollisionDirector::Instance()->pushCollisionEntry(dist, maskOut,
-                        KCL_TYPE_BIT(COL_TYPE_WALL), COL_TYPE_WALL);
+                        KCL_TYPE_BIT(KColType::Wall), static_cast<u16>(KColType::Wall));
             } else {
-                *maskOut |= KCL_TYPE_BIT(COL_TYPE_WALL);
+                *maskOut |= KCL_TYPE_BIT(KColType::Wall);
             }
         }
 
@@ -346,9 +346,9 @@ bool ObjectTwistedWay::checkWallCollision(f32 angle, f32 radius, u32 t, const EG
     if (maskOut) {
         if (push) {
             CollisionDirector::Instance()->pushCollisionEntry(dist, maskOut,
-                    KCL_TYPE_BIT(COL_TYPE_WALL), COL_TYPE_WALL);
+                    KCL_TYPE_BIT(KColType::Wall), static_cast<u16>(KColType::Wall));
         } else {
-            *maskOut |= KCL_TYPE_BIT(COL_TYPE_WALL);
+            *maskOut |= KCL_TYPE_BIT(KColType::Wall);
         }
     }
 
@@ -397,14 +397,15 @@ bool ObjectTwistedWay::checkFloorCollision(f32 angle, f32 radius, const EGG::Vec
     if (maskOut) {
         if (push) {
             auto *colDir = CollisionDirector::Instance();
-            colDir->pushCollisionEntry(dist, maskOut, KCL_TYPE_BIT(COL_TYPE_ROAD), COL_TYPE_ROAD);
+            colDir->pushCollisionEntry(dist, maskOut, KCL_TYPE_BIT(KColType::Road),
+                    static_cast<u16>(KColType::Road));
             colDir->setCurrentCollisionVariant(2);
 
             if (EGG::Mathf::abs(relPos.z) < HALF_DEPTH * TRICKABLE_RADIUS_FACTOR) {
                 colDir->setCurrentCollisionTrickable(true);
             }
         } else {
-            *maskOut |= KCL_TYPE_BIT(COL_TYPE_ROAD);
+            *maskOut |= KCL_TYPE_BIT(KColType::Road);
         }
     }
 

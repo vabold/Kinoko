@@ -52,7 +52,7 @@ void ObjectPylon::init() {
     EGG::Vector3f prevPos = pos() + EGG::Vector3f::ey * (RADIUS + FALL_VEL);
 
     bool hasCol = CollisionDirector::Instance()->checkSphereFull(RADIUS, colPos, prevPos,
-            KCL_TYPE_6CEBDFFF, &info, &mask, 0);
+            KCL_TYPE_OBJECT_COLLIDABLE_MODIFIABLE, &info, &mask, 0);
 
     if (hasCol) {
         addPos(info.tangentOff);
@@ -239,7 +239,7 @@ void ObjectPylon::checkIntraCollision(const EGG::Vector3f &hitDepth) {
     EGG::Vector3f colPos = pos() + EGG::Vector3f::ey * RADIUS;
 
     bool hasCol = CollisionDirector::Instance()->checkSphereFullPush(RADIUS, colPos, pos(),
-            KCL_TYPE_60E8DFFF, &info, &mask, 0);
+            KCL_TYPE_OBJECT_SOLID_SURFACE, &info, &mask, 0);
     if (hasCol) {
         addPos(info.tangentOff);
 
@@ -278,7 +278,7 @@ void ObjectPylon::startHit(f32 velFactor, EGG::Vector3f &hitDepth) {
 /// pylon's velocity is less than `0.5f`, the pylon's y-axis position is negative, or 300 frames
 /// have elapsed while in the Hit state, then the pylon will transition to the @ref State::Hiding
 /// state and the function returns early. For the first 5 frames of the Hit state, this function
-/// only performs collision checks against #KCL_TYPE_OBJECT_WALL. On subsequent frames it checks
+/// only performs collision checks against @ref KCL_TYPE_OBJECT_WALL. On subsequent frames it checks
 /// both walls and floors. When a collision occurs, the cone is redirected away from the direction
 /// of impact. If the collision was with the floor, then a velocity dampener reduces the pylon's
 /// flying speed by 25%. If 5 collisions have occurred, then the pylon transitions to the @ref
@@ -431,7 +431,7 @@ void ObjectPylon::calcComeBack() {
         EGG::Vector3f prevPos = pos() + EGG::Vector3f::ey * (RADIUS + COME_BACK_VEL) * scale().x;
 
         bool hasCol = CollisionDirector::Instance()->checkSphereFullPush(RADIUS * scale().x, colPos,
-                prevPos, KCL_TYPE_60E8DFFF, &info, &mask, 0);
+                prevPos, KCL_TYPE_OBJECT_SOLID_SURFACE, &info, &mask, 0);
 
         if (hasCol) {
             addPos(info.tangentOff);
@@ -455,7 +455,7 @@ void ObjectPylon::calcComeBack() {
         EGG::Vector3f prevPos = pos() + EGG::Vector3f::ey * (RADIUS + COME_BACK_VEL) * scale().x;
 
         bool hasCol = CollisionDirector::Instance()->checkSphereFull(RADIUS * scale().x, colPos,
-                prevPos, KCL_TYPE_60E8DFFF, &info, nullptr, 0);
+                prevPos, KCL_TYPE_OBJECT_SOLID_SURFACE, &info, nullptr, 0);
 
         if (hasCol) {
             addPos(info.tangentOff);

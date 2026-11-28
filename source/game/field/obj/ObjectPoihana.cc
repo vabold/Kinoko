@@ -158,7 +158,7 @@ void ObjectPoihana::calcCollision() {
     EGG::Vector3f pos = collisionPos();
 
     bool hasCol = CollisionDirector::Instance()->checkSphereFull(m_radius, pos, EGG::Vector3f::inf,
-            KCL_TYPE_64EBDFFF, &info, nullptr, 0);
+            KCL_TYPE_OBJECT_COLLIDABLE, &info, nullptr, 0);
 
     if (!hasCol) {
         return;

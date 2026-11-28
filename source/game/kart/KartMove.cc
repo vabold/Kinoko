@@ -259,12 +259,12 @@ void KartMove::setInitialPhysicsValues(const EGG::Vector3f &position, const EGG:
     EGG::Quatf quaternion = EGG::Quatf::FromRPY(angles * DEG2RAD);
     EGG::Vector3f newPos = position;
     Field::CollisionInfo info;
-    Field::KCLTypeMask kcl_flags = KCL_NONE;
+    Field::KCLTypeMask kcl_flags = Field::KCL_NONE;
 
     bool bColliding = Field::CollisionDirector::Instance()->checkSphereFullPush(100.0f, newPos,
-            EGG::Vector3f::inf, KCL_ANY, &info, &kcl_flags, 0);
+            EGG::Vector3f::inf, Field::KCL_ANY, &info, &kcl_flags, 0);
 
-    if (bColliding && (kcl_flags & KCL_TYPE_FLOOR)) {
+    if (bColliding && (kcl_flags & Field::KCL_TYPE_FLOOR)) {
         newPos = newPos + info.tangentOff + (info.floorNrm * -100.0f);
         newPos += info.floorNrm * bsp().initialYPos;
     }
@@ -625,8 +625,8 @@ void KartMove::calcDirs() {
 /// @addr{0x80583B88}
 void KartMove::calcStickyRoad() {
     constexpr f32 STICKY_RADIUS = 200.0f;
-    constexpr Field::KCLTypeMask STICKY_MASK =
-            KCL_TYPE_BIT(COL_TYPE_STICKY_ROAD) | KCL_TYPE_BIT(COL_TYPE_MOVING_WATER);
+    constexpr Field::KCLTypeMask STICKY_MASK = Field::KCL_TYPE_BIT(Field::KColType::StickyRoad) |
+            Field::KCL_TYPE_BIT(Field::KColType::MovingWater);
 
     auto &status = KartObjectProxy::status();
 
@@ -645,7 +645,7 @@ void KartMove::calcStickyRoad() {
     EGG::Vector3f vel = dynamics()->movingObjVel() + m_speed * m_vel1Dir;
     Field::CollisionInfo colInfo;
     colInfo.bbox.setZero();
-    Field::KCLTypeMask kcl_flags = KCL_NONE;
+    Field::KCLTypeMask kcl_flags = Field::KCL_NONE;
     bool stickyRoad = false;
 
     for (size_t i = 0; i < 3; ++i) {
@@ -1667,12 +1667,12 @@ void KartMove::calcWallCollisionStart(f32 param_2) {
             }
 
             dynamics()->applyWrenchScaled(newPos, projRejSum, bumpDeviation);
-        } else if (wallKclType() == COL_TYPE_SPECIAL_WALL && wallKclVariant() == 2) {
+        } else if (wallKclType() == Field::KColType::SpecialWall && wallKclVariant() == 2) {
             dynamics()->addForce(colData.wallNrm * 15.0f);
             collide()->startFloorMomentRate();
         }
 
-        if (wallKclType() == COL_TYPE_SPECIAL_WALL && wallKclVariant() == 0) {
+        if (wallKclType() == Field::KColType::SpecialWall && wallKclVariant() == 0) {
             dynamics()->addForce(colData.wallNrm * 15.0f);
             collide()->startFloorMomentRate();
         }
@@ -2015,7 +2015,8 @@ void KartMove::tryStartBoostRamp() {
 }
 
 /// @stage 2
-/// @brief Applies calculations to start interacting with a @ref COL_TYPE_JUMP_PAD "jump pad".
+/// @brief Applies calculations to start interacting with a
+/// @ref Field::KColType::JumpPad "jump pad".
 /// @addr{0x8057FD18}
 /// @details If applicable, updates @ref KartDynamics::m_extVel "external velocity"
 void KartMove::tryStartJumpPad() {

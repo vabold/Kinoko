@@ -191,26 +191,26 @@ bool ObjectBelt::checkSphereCachedFullPush(f32 /*radius*/, const EGG::Vector3f &
 /// @param maskOut The KCL flags that were hit during the course KCL check (if any)
 /// @param timeOffset The time offset to use when calculating the road velocity
 /// @return Whether or not a collision with the conveyor belt was detected
-/// @details Early returns `false` if `maskOut` does not have #COL_TYPE_MOVING_ROAD set. Next,
-/// ensures that we actually have a collision entry of type #COL_TYPE_MOVING_ROAD, returning `false`
-/// if this is not the case. #COL_TYPE_MOVING_ROAD, returning `false` if this is not the case. Next,
-/// checks to see if the conveyor belt is actually moving, returning `false` if it is stationary.
-/// Finally, if a collision is detected, sets the collision info's moving floor distance and road
-/// velocity based on the player's position, the conveyor belt's variant, and the race framecount.
+/// @details Early returns `false` if `maskOut` does not have @ref KColType::MovingRoad set. Next,
+/// ensures that we actually have a collision entry of type @ref KColType::MovingRoad, returning
+/// `false` if this is not the case. Next, checks to see if the conveyor belt is actually moving,
+/// returning `false` if it is stationary. Finally, if a collision is detected, sets the collision
+/// info's moving floor distance and road velocity based on the player's position, the conveyor
+/// belt's variant, and the race framecount.
 /// @note This function is unique from other collision check functions in that it requires that
-/// `maskOut` has already had #COL_TYPE_MOVING_ROAD set before calling. Conveyor belts will only
-/// register collisions if the conveyor belt is placed on #COL_TYPE_MOVING_ROAD present in the
+/// `maskOut` has already had @ref KColType::MovingRoad set before calling. Conveyor belts will only
+/// register collisions if the conveyor belt is placed on @ref KColType::MovingRoad present in the
 /// course KCL.
 /// @note This function is normally virtual in the base game, but since no derived class overrides
 /// it, we can devirtualize for Kinoko.
 bool ObjectBelt::calcCollision(const EGG::Vector3f &pos, CollisionInfo *info, KCLTypeMask *maskOut,
         u32 timeOffset) {
-    if ((*maskOut & KCL_TYPE_BIT(COL_TYPE_MOVING_ROAD)) == 0) {
+    if ((*maskOut & KCL_TYPE_BIT(KColType::MovingRoad)) == 0) {
         return false;
     }
 
     auto *colDir = CollisionDirector::Instance();
-    const auto *entry = colDir->findClosestCollisionEntry(KCL_TYPE_BIT(COL_TYPE_MOVING_ROAD));
+    const auto *entry = colDir->findClosestCollisionEntry(KCL_TYPE_BIT(KColType::MovingRoad));
     if (!entry) {
         return false;
     }

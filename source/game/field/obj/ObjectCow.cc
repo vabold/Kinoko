@@ -71,7 +71,7 @@ void ObjectCow::calcFloor() {
     CollisionInfo info;
 
     bool hasCol = CollisionDirector::Instance()->checkSphereFull(RADIUS, pos() + POS_OFFSET,
-            EGG::Vector3f::inf, KCL_TYPE_64EBDFFF, &info, nullptr, 0);
+            EGG::Vector3f::inf, KCL_TYPE_OBJECT_COLLIDABLE, &info, nullptr, 0);
 
     if (hasCol) {
         addPos(info.tangentOff);

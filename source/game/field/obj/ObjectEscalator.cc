@@ -231,7 +231,7 @@ f32 ObjectEscalator::colRadiusAdditionalLength() const {
 /// @details Updates the escalator's @ref ObjColMgr transform. If the player is outside of the range
 /// `[@ref m_checkColYPosMin, @ref m_checkColYPosMax]`, then early returns `false` and does not
 /// perform any collision checks. Dispatches to the @ref ObjColMgr to check for collision between
-/// the player and the escalator. If a collision occurred with #COL_TYPE_MOVING_ROAD, sets the
+/// the player and the escalator. If a collision occurred with @ref KColType::MovingRoad, sets the
 /// moving road velocity and distance to `info` and returns `true`, otherwise returns
 /// `false`.
 bool ObjectEscalator::checkCollision(f32 radius, const EGG::Vector3f &pos,
@@ -247,12 +247,12 @@ bool ObjectEscalator::checkCollision(f32 radius, const EGG::Vector3f &pos,
         return false;
     }
 
-    if ((*maskOut & KCL_TYPE_BIT(COL_TYPE_MOVING_ROAD)) == 0) {
+    if ((*maskOut & KCL_TYPE_BIT(KColType::MovingRoad)) == 0) {
         return false;
     }
 
     auto *colDir = CollisionDirector::Instance();
-    const auto *entry = colDir->findClosestCollisionEntry(KCL_TYPE_BIT(COL_TYPE_MOVING_ROAD));
+    const auto *entry = colDir->findClosestCollisionEntry(KCL_TYPE_BIT(KColType::MovingRoad));
     if (!entry) {
         return false;
     }
@@ -272,9 +272,9 @@ bool ObjectEscalator::checkCollision(f32 radius, const EGG::Vector3f &pos,
 /// @details Updates the escalator's transform. If the player is outside of the range `[@ref
 /// m_checkColYPosMin, @ref m_checkColYPosMax]`, then early returns and does not perform any
 /// collision checks. Dispatches to the @ref ObjColMgr to check for collision between the player and
-/// the escalator using the cached prism data. If a collision occurred with #COL_TYPE_MOVING_ROAD,
-/// sets the moving road velocity and distance to `info` and returns `true`, otherwise
-/// returns `false`.
+/// the escalator using the cached prism data. If a collision occurred with @ref
+/// KColType::MovingRoad, sets the moving road velocity and distance to `info` and returns `true`,
+/// otherwise returns `false`.
 bool ObjectEscalator::checkCollisionCached(f32 radius, const EGG::Vector3f &pos,
         const EGG::Vector3f &prevPos, KCLTypeMask mask, CollisionInfo *info, KCLTypeMask *maskOut,
         u32 timeOffset) {
@@ -288,12 +288,12 @@ bool ObjectEscalator::checkCollisionCached(f32 radius, const EGG::Vector3f &pos,
         return false;
     }
 
-    if ((*maskOut & KCL_TYPE_BIT(COL_TYPE_MOVING_ROAD)) == 0) {
+    if ((*maskOut & KCL_TYPE_BIT(KColType::MovingRoad)) == 0) {
         return false;
     }
 
     auto *colDir = CollisionDirector::Instance();
-    const auto *entry = colDir->findClosestCollisionEntry(KCL_TYPE_BIT(COL_TYPE_MOVING_ROAD));
+    const auto *entry = colDir->findClosestCollisionEntry(KCL_TYPE_BIT(KColType::MovingRoad));
     if (!entry) {
         return false;
     }

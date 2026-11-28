@@ -208,8 +208,8 @@ bool ObjectTuribashi::checkSphereFullPushImpl(f32 radius, const EGG::Vector3f &p
 /// @param timeOffset Optional time delta
 /// @param push Whether to push a collision entry
 /// @return `true` if the kart is considered to be colliding with the bridge, `false` otherwise.
-/// @details If `mask` does not include #COL_TYPE_ROAD, then this function early returns. In the
-/// base game, this check is normally performed after the stage check, but in Kinoko, we take
+/// @details If `mask` does not include @ref KColType::Road, then this function early returns. In
+/// the base game, this check is normally performed after the stage check, but in Kinoko, we take
 /// creative liberty to perform the check earlier to avoid unnecessary computation of the bridge's
 /// angle in this function. If the kart's position does not intersect with the bridge (determined by
 /// comparing the kart's X-position to @ref HALF_WIDTH and Z-position to @ref HALF_LENGTH), the
@@ -228,7 +228,7 @@ bool ObjectTuribashi::checkSphereFullPushImpl(f32 radius, const EGG::Vector3f &p
 ///
 /// With the kart's effective distance computed, populates `info` with the collision details. If
 /// `push` is true, then the collision entry is pushed to the @ref CollisionDirector. Otherwise,
-/// sets the #COL_TYPE_ROAD bit in `maskOut`.
+/// sets the @ref KColType::Road bit in `maskOut`.
 /// @note Interestingly, this function makes assumptions about the object's rotation. Even if the
 /// object is rotated, collision will still act as if it is oriented along the z-axis.
 template <typename T>
@@ -240,7 +240,7 @@ bool ObjectTuribashi::checkSphereImpl(f32 radius, const EGG::Vector3f &pos, KCLT
 
     // This check normally happens after the stage check,
     // but there's no difference in behavior if we check earlier.
-    if ((mask & KCL_TYPE_BIT(COL_TYPE_ROAD)) == 0) {
+    if ((mask & KCL_TYPE_BIT(KColType::Road)) == 0) {
         return false;
     }
 
@@ -294,11 +294,11 @@ bool ObjectTuribashi::checkSphereImpl(f32 radius, const EGG::Vector3f &pos, KCLT
     if (maskOut) {
         if (push) {
             auto *colDirector = CollisionDirector::Instance();
-            colDirector->pushCollisionEntry(dist, maskOut, KCL_TYPE_BIT(COL_TYPE_ROAD), 0);
+            colDirector->pushCollisionEntry(dist, maskOut, KCL_TYPE_BIT(KColType::Road), 0);
             colDirector->setCurrentCollisionVariant(4);
             colDirector->setCurrentCollisionTrickable(false);
         } else {
-            *maskOut |= KCL_TYPE_BIT(COL_TYPE_ROAD);
+            *maskOut |= KCL_TYPE_BIT(KColType::Road);
         }
     }
 

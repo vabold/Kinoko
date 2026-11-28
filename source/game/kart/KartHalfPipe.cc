@@ -177,13 +177,13 @@ void KartHalfPipe::calcLanding(bool notAirborne) {
     EGG::Vector3f upLocal;
 
     auto &status = KartObjectProxy::status();
-    Field::KCLTypeMask mask = KCL_TYPE_ANY_INVISIBLE_WALL;
+    Field::KCLTypeMask mask = Field::KCL_TYPE_ANY_INVISIBLE_WALL;
     bool overZipper = status.onBit(eStatus::OverZipper);
     if (!overZipper) {
         if (notAirborne && velocity().y < 0.0f) {
-            mask = KCL_NONE;
+            mask = Field::KCL_NONE;
         } else {
-            mask = KCL_TYPE_BIT(COL_TYPE_HALFPIPE_INVISIBLE_WALL);
+            mask = Field::KCL_TYPE_BIT(Field::KColType::HalfpipeInvisibleWall);
         }
     }
 
@@ -192,20 +192,20 @@ void KartHalfPipe::calcLanding(bool notAirborne) {
     EGG::Vector3f prevPos = m_prevPos + EGG::Vector3f::ey * PREVIOUS_RADIUS;
 
     bool hasDriverFloorCollision = move()->calcZipperCollision(LANDING_RADIUS, bsp().initialYPos,
-            pos, upLocal, prevPos, &colInfo, &maskOut, KCL_TYPE_DRIVER_FLOOR);
+            pos, upLocal, prevPos, &colInfo, &maskOut, Field::KCL_TYPE_DRIVER_FLOOR);
 
     prevPos = hasDriverFloorCollision ? EGG::Vector3f::inf : prevPos;
 
     if (overZipper) {
         if (!move()->calcZipperCollision(MIDAIR_RADIUS, bsp().initialYPos, pos, upLocal, prevPos,
                     &colInfo2, &maskOut, mask)) {
-            mask |= KCL_TYPE_DRIVER_WALL;
+            mask |= Field::KCL_TYPE_DRIVER_WALL;
         }
     }
 
     if (move()->calcZipperCollision(WALL_RADIUS, bsp().initialYPos, pos, upLocal, prevPos,
                 &colInfo2, &maskOut, mask)) {
-        if ((maskOut & ~KCL_TYPE_BIT(COL_TYPE_HALFPIPE_INVISIBLE_WALL)) == 0) {
+        if ((maskOut & ~Field::KCL_TYPE_BIT(Field::KColType::HalfpipeInvisibleWall)) == 0) {
             status.setBit(eStatus::HalfpipeMidair);
         }
 

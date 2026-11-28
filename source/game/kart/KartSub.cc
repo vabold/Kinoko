@@ -237,7 +237,7 @@ void KartSub::calcPass1() {
     body()->calcSinkDepth();
 
     Field::CollisionDirector::Instance()->checkCourseColNarrScLocal(250.0f, pos(),
-            KCL_TYPE_VEHICLE_INTERACTABLE, 0);
+            Field::KCL_TYPE_VEHICLE_INTERACTABLE, 0);
 
     if (status.offBit(eStatus::InCannon)) {
         if (status.offBit(eStatus::ZipperStick)) {

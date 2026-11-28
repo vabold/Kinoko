@@ -172,7 +172,7 @@ bool ObjectAurora::checkSphereCachedFullPush(f32 radius, const EGG::Vector3f &po
 /// @param timeOffset The time offset for the collision calculation
 /// @param push Whether to push a collision entry
 /// @return Whether a collision was detected
-/// @details If `mask` does not include `#KCL_TYPE_FLOOR`, the function will immediately return
+/// @details If `mask` does not include @ref KCL_TYPE_FLOOR, the function will immediately return
 /// `false` without performing further collision checks. If the kart's relative X or Z position are
 /// outside the bounds of the wavy road's @ref COLLISION_SIZE "bounding box", early returns `false`.
 /// Calls @ref calcCollision() with the current race framecount to determine if the kart collided
@@ -180,8 +180,8 @@ bool ObjectAurora::checkSphereCachedFullPush(f32 radius, const EGG::Vector3f &po
 /// accordingly based on whether `info` was provided, whether `info` is @ref CollisionInfo or @ref
 /// CollisionInfoPartial, whether `maskOut` was provided, and whether `push` is `true`. If the
 /// kart's relative Z position is on the last 16% of the wavy road, then treats the collision as
-/// `#COL_TYPE_BOOST_RAMP`, otherwise treats it as trickable `#COL_TYPE_ROAD2`.
-/// @note OPT: The `#KCL_TYPE_FLOOR` check normally occurs after checking the kart's position
+/// @ref KColType::BoostRamp, otherwise treats it as trickable @ref KColType::Road2.
+/// @note OPT: The @ref KCL_TYPE_FLOOR check normally occurs after checking the kart's position
 /// relative to the wavy road, but we take creative liberty to move this check earlier as a slight
 /// performance improvement.
 template <typename T>
@@ -224,19 +224,20 @@ bool ObjectAurora::checkSphereImpl(f32 radius, const EGG::Vector3f &pos,
         auto *colDir = CollisionDirector::Instance();
 
         if (push) {
-            colDir->pushCollisionEntry(dist, maskOut, KCL_TYPE_BIT(COL_TYPE_ROAD2), COL_TYPE_ROAD2);
+            colDir->pushCollisionEntry(dist, maskOut, KCL_TYPE_BIT(KColType::Road2),
+                    static_cast<u16>(KColType::Road2));
             colDir->setCurrentCollisionVariant(7);
             colDir->setCurrentCollisionTrickable(true);
         } else {
-            *maskOut |= KCL_TYPE_BIT(COL_TYPE_ROAD2);
+            *maskOut |= KCL_TYPE_BIT(KColType::Road2);
         }
 
         if (relPos.z > BOOST_RAMP_START) {
             if (push) {
-                colDir->pushCollisionEntry(dist, maskOut, KCL_TYPE_BIT(COL_TYPE_BOOST_RAMP),
-                        COL_TYPE_BOOST_RAMP);
+                colDir->pushCollisionEntry(dist, maskOut, KCL_TYPE_BIT(KColType::BoostRamp),
+                        static_cast<u16>(KColType::BoostRamp));
             } else {
-                *maskOut |= KCL_TYPE_BIT(COL_TYPE_BOOST_RAMP);
+                *maskOut |= KCL_TYPE_BIT(KColType::BoostRamp);
             }
         }
     }
